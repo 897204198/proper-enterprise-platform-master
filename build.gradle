@@ -74,7 +74,7 @@ subprojects {
 
         testCompile libraries.groovy,
                     libraries.junit,
-                    libraries.spring_test
+                    libraries.spock
     }
 
 }
