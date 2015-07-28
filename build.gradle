@@ -1,3 +1,7 @@
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.5'
+}
+
 allprojects {
     group = 'com.proper.enterprise.platform'
     version = '0.0.1'
