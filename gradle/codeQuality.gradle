@@ -1,0 +1,34 @@
+apply plugin: 'checkstyle'
+apply plugin: 'codenarc'
+apply plugin: 'findbugs'
+
+def configDir = new File(buildscript.sourceFile.parentFile.parentFile, 'config')
+
+ext.checkstyleConfigDir = "$configDir/checkstyle"
+
+checkstyle {
+    configFile = new File(checkstyleConfigDir, "checkstyle.xml")
+    configProperties.checkstyleConfigDir = checkstyleConfigDir
+}
+
+codenarc {
+    configFile = new File(configDir, "codenarc.xml")
+}
+
+findbugs {
+	toolVersion = '2.0.3'
+}
+
+configurations.codenarc.resolutionStrategy.force(libraries.groovy_all)
+
+tasks.withType(Checkstyle) {
+    include '**/com/proper/**/dfs/**'
+}
+
+tasks.withType(FindBugs) {
+    include '**/com/proper/**/dfs/**'
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}

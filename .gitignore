@@ -1,0 +1,17 @@
+# ignore temp files and folders
+.DS_Store
+.zip
+
+# ignore eclipse config files and folders
+.settings
+.project
+.classpath
+
+# ignore build related 
+.gradle
+build
+bin
+META-INF
+
+# ignore generate scripts
+init_mongo_for_proper_dfs.js

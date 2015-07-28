@@ -1,0 +1,76 @@
+allprojects {
+    group = 'com.proper.enterprise.platform'
+    version = '0.0.1'
+
+    repositories {
+        maven {
+            url 'https://repo.gradle.org/gradle/libs'
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'utf-8'
+        options.compilerArgs = ['-Xlint:-options']
+    }
+
+    tasks.withType(GroovyCompile) {
+        options.encoding = 'utf-8'
+        options.compilerArgs = ['-Xlint:-options']
+        groovyOptions.encoding = 'utf-8'
+    }
+}
+
+// could use init-${sub-project-name} task to initial a sub project folder
+tasks.addRule('Pattern: init-pep-<ID>') { String initSubProj ->
+    if (initSubProj.startsWith('init-pep-')) {
+        task(initSubProj) << {
+            def subProjName = (initSubProj - 'init-').toLowerCase()
+            def subProjRoot = "${rootProject.projectDir}/subprojects/$subProjName"
+            def confPath = "$subProjRoot/src/main/resources/conf/${(subProjName - 'pep-').replace('-', '/')}"
+
+            delete(subProjRoot)
+            mkdir(subProjRoot)
+            mkdir("$subProjRoot/src/main/java")
+            mkdir("$subProjRoot/src/main/resources")
+            mkdir(confPath)
+            mkdir("$subProjRoot/src/test/groovy")
+            mkdir("$subProjRoot/src/test/resources")
+
+            file("$confPath/${subProjName - 'pep-'}-context.xml").createNewFile()
+            file("$confPath/${subProjName - 'pep-'}-properties").createNewFile()
+            file("$subProjRoot/${subProjName}.gradle").createNewFile()
+            file("$subProjRoot/README.md").withWriter {
+                it.write("""$subProjName
+===""")
+            }
+        }
+    }
+}
+
+subprojects {
+    apply plugin: 'eclipse-wtp'
+    apply plugin: 'java'
+    apply plugin: 'groovy'
+
+    apply from: "$rootDir/gradle/dependencies.gradle"
+    
+    apply from: "$rootDir/gradle/codeQuality.gradle"
+
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    dependencies {
+        compile libraries.guava,
+                libraries.logback_classic
+
+        testCompile libraries.groovy,
+                    libraries.junit,
+                    libraries.spring_test
+    }
+
+}
