@@ -54,11 +54,11 @@
 
     <error-page>
         <error-code>404</error-code>
-        <location>/common/404.jsp</location>
+        <location>/WEB-INF/views/common/404.jsp</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>
-        <location>/common/500.jsp</location>
+        <location>/WEB-INF/views/common/500.jsp</location>
     </error-page>
 
 </web-app>
