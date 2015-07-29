@@ -40,8 +40,8 @@ tasks.addRule('Pattern: init-pep-<ID>') { String initSubProj ->
             mkdir("$subProjRoot/src/test/groovy")
             mkdir("$subProjRoot/src/test/resources")
 
-            file("$confPath/${subProjName - 'pep-'}-context.xml").createNewFile()
-            file("$confPath/${subProjName - 'pep-'}-properties").createNewFile()
+            // file("$confPath/${subProjName - 'pep-'}-context.xml").createNewFile()
+            // file("$confPath/${subProjName - 'pep-'}.properties").createNewFile()
             file("$subProjRoot/${subProjName}.gradle").createNewFile()
             file("$subProjRoot/README.md").withWriter {
                 it.write("""$subProjName
