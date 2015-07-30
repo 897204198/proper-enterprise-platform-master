@@ -21,12 +21,7 @@ findbugs {
 
 configurations.codenarc.resolutionStrategy.force(libraries.groovy_all)
 
-tasks.withType(Checkstyle) {
-    include '**/com/proper/**/dfs/**'
-}
-
 tasks.withType(FindBugs) {
-    include '**/com/proper/**/dfs/**'
     reports {
         xml.enabled = false
         html.enabled = true
