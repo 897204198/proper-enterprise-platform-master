@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd"
+       default-lazy-init="true">
+
+    <context:property-placeholder location="conf/webapp/database/webapp-database.properties"/>
+    
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${datasource.driverClassName}" />
+        <property name="url" value="${datasource.url}" />
+        <property name="username" value="${datasource.username}" />
+        <property name="password" value="${datasource.password}" />
+        <property name="maxActive" value="${datasource.maxActive}" />
+        <property name="maxIdle" value="${datasource.maxIdle}" />
+        <property name="maxWait" value="${datasource.maxWait}" />
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" lazy-init="false">
+        <property name="dataSource" ref="dataSource" />
+        <property name="namingStrategy">
+            <bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+        </property>
+        <property name="hibernateProperties">
+            <value>
+                hibernate.dialect=${hibernate.dialect}
+                hibernate.show_sql=${hibernate.show_sql}
+                hibernate.format_sql=${hibernate.format_sql}
+                hibernate.cache.use_second_level_cache=${hibernate.cache.use_second_level_cache}
+                hibernate.cache.use_query_cache=${hibernate.cache.use_query_cache}
+                hibernate.query.substitutions=${hibernate.query.substitutions}
+                jdbc.use_scrollable_resultset=${hibernate.jdbc.use_scrollable_resultset}
+                hibernate.cache.provider_class=${hibernate.cache.provider_class}
+                hibernate.cache.region.factory_class=${hibernate.cache.region.factory_class}
+                hibernate.generate_statistics=${hibernate.generate_statistics}
+                hibernate.current_session_context_class=${hibernate.current_session_context_class}
+            </value>
+        </property>
+        <property name="packagesToScan" value="com.proper" />
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+</beans>
