@@ -1,3 +1,6 @@
 dependencies {
+    compile libraries.guava,
+            libraries.logback_classic
+
     testRuntime fileTree(dir: 'libs', include: 'conf-in-jar.jar') 
 }

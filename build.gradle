@@ -69,9 +69,7 @@ subprojects {
     }
 
     dependencies {
-        compile libraries.guava,
-                libraries.logback_classic,
-                libraries.spring_webmvc
+        compile libraries.spring_webmvc
 
         testCompile libraries.groovy,
                     libraries.junit,
