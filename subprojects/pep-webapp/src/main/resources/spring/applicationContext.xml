@@ -11,10 +11,7 @@
     <context:annotation-config />
     
     <!-- Auto scan beans -->
-    <context:component-scan base-package="com.proper">
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
-    </context:component-scan>
+    <context:component-scan base-package="com.proper" />
 
     <!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
