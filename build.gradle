@@ -46,7 +46,9 @@ tasks.addRule('Pattern: init-pep-<ID>') { String initSubProj ->
             file("$subProjRoot/${subProjName}.gradle").createNewFile()
             file("$subProjRoot/README.md").withWriter {
                 it.write("""$subProjName
-${'=' * subProjName.length()}""")
+${'=' * subProjName.length()}
+
+Proper Enterprise Platform""")
             }
         }
     }
