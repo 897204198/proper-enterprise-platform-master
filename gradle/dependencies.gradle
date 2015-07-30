@@ -31,7 +31,7 @@ libraries.commons_collections = 'commons-collections:commons-collections:3.2.1'
 libraries.commons_lang = 'commons-lang:commons-lang:2.5'
 
 versions.groovy = '2.4.3'
-// groovy-all include all below modules
+// groovy-all include all below modules, used by code quality
 libraries.groovy_all = "org.codehaus.groovy:groovy-all:${versions.groovy}"
 // sub modules
 libraries.groovy = "org.codehaus.groovy:groovy:${versions.groovy}"
@@ -54,13 +54,15 @@ libraries.groovy = "org.codehaus.groovy:groovy:${versions.groovy}"
 libraries.guava = 'com.google.guava:guava:18.0'
 
 versions.hibernate = '4.3.10.Final'
-libraries.hibernate_c3p0 = "org.hibernate:hibernate-c3p0:${versions.hibernate}"
-libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
-libraries.hibernate_ehcache = "org.hibernate:hibernate-ehcache:${versions.hibernate}"
-libraries.hibernate_entitymanager = "org.hibernate:hibernate-entitymanager:${versions.hibernate}"
-libraries.hibernate_envers = "org.hibernate:hibernate-envers:${versions.hibernate}"
-libraries.hibernate_infinispan = "org.hibernate:hibernate-infinispan:${versions.hibernate}"
-libraries.hibernate_proxool = "org.hibernate:hibernate-proxool:${versions.hibernate}"
+//libraries.hibernate_c3p0 = "org.hibernate:hibernate-c3p0:${versions.hibernate}"
+//libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
+//libraries.hibernate_ehcache = "org.hibernate:hibernate-ehcache:${versions.hibernate}"
+libraries.hibernate_entitymanager = dependencies.module("org.hibernate:hibernate-entitymanager:${versions.hibernate}") {
+    exclude group: 'org.jboss.logging', module: 'jboss-logging'
+}
+//libraries.hibernate_envers = "org.hibernate:hibernate-envers:${versions.hibernate}"
+//libraries.hibernate_infinispan = "org.hibernate:hibernate-infinispan:${versions.hibernate}"
+//libraries.hibernate_proxool = "org.hibernate:hibernate-proxool:${versions.hibernate}"
 
 libraries.jackson_core_asl = "org.codehaus.jackson:jackson-core-asl:${versions.jackson}"
 libraries.jackson_mapper_asl = "org.codehaus.jackson:jackson-mapper-asl:${versions.jackson}"
