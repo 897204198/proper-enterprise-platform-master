@@ -55,11 +55,9 @@ libraries.guava = 'com.google.guava:guava:18.0'
 
 versions.hibernate = '4.3.10.Final'
 //libraries.hibernate_c3p0 = "org.hibernate:hibernate-c3p0:${versions.hibernate}"
-//libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
+libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
 //libraries.hibernate_ehcache = "org.hibernate:hibernate-ehcache:${versions.hibernate}"
-libraries.hibernate_entitymanager = dependencies.module("org.hibernate:hibernate-entitymanager:${versions.hibernate}") {
-    exclude group: 'org.jboss.logging', module: 'jboss-logging'
-}
+//libraries.hibernate_entitymanager = "org.hibernate:hibernate-entitymanager:${versions.hibernate}"
 //libraries.hibernate_envers = "org.hibernate:hibernate-envers:${versions.hibernate}"
 //libraries.hibernate_infinispan = "org.hibernate:hibernate-infinispan:${versions.hibernate}"
 //libraries.hibernate_proxool = "org.hibernate:hibernate-proxool:${versions.hibernate}"
@@ -116,16 +114,12 @@ versions.spring = '4.1.7.RELEASE'
 //libraries.spring_beans = "org.springframework:spring-beans:${versions.spring}"
 //libraries.spring_context = "org.springframework:spring-context:${versions.spring}"
 //libraries.spring_context_support = "org.springframework:spring-context-support:${versions.spring}"
-//libraries.spring_core = dependencies.module("org.springframework:spring-core:${versions.spring}") {
-//    exclude group: 'commons-logging', module: 'commons-logging'
-//}
+//libraries.spring_core = "org.springframework:spring-core:${versions.spring}"
 libraries.spring_orm = "org.springframework:spring-orm:${versions.spring}"
 //libraries.spring_test = "org.springframework:spring-test:${versions.spring}"
 //libraries.spring_tx = "org.springframework:spring-tx:${versions.spring}"
 //libraries.spring_web = "org.springframework:spring-web:${versions.spring}"
-libraries.spring_webmvc = dependencies.module("org.springframework:spring-webmvc:${versions.spring}") {
-    exclude group: 'commons-logging', module: 'commons-logging'
-}
+libraries.spring_webmvc = "org.springframework:spring-webmvc:${versions.spring}"
 
 versions.spring_security = '4.0.1.RELEASE'
 libraries.spring_security_acl = "org.springframework.security:spring-security-acl:${versions.spring_security}"

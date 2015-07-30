@@ -24,36 +24,6 @@ allprojects {
     }
 }
 
-// could use init-${sub-project-name} task to initial a sub project folder
-tasks.addRule('Pattern: init-pep-<ID>') { String initSubProj ->
-    if (initSubProj.startsWith('init-pep-')) {
-        task(initSubProj) << {
-            def subProjName = (initSubProj - 'init-').toLowerCase()
-            def subProjRoot = "${rootProject.projectDir}/subprojects/$subProjName"
-            def confPath = (subProjName - 'pep-').replace('-', '/')
-
-            delete(subProjRoot)
-            mkdir(subProjRoot)
-            mkdir("$subProjRoot/src/main/java")
-            mkdir("$subProjRoot/src/main/resources")
-            mkdir("$subProjRoot/src/main/resources/conf/$confPath")
-            file("$subProjRoot/src/main/resources/conf/$confPath/${subProjName - 'pep-'}.properties").createNewFile()
-            mkdir("$subProjRoot/src/main/resources/spring/$confPath")
-            file("$subProjRoot/src/main/resources/spring/$confPath/applicationContext-${subProjName - 'pep-'}.xml").createNewFile()
-            mkdir("$subProjRoot/src/test/groovy")
-            mkdir("$subProjRoot/src/test/resources")
-            
-            file("$subProjRoot/${subProjName}.gradle").createNewFile()
-            file("$subProjRoot/README.md").withWriter {
-                it.write("""$subProjName
-${'=' * subProjName.length()}
-
-Proper Enterprise Platform""")
-            }
-        }
-    }
-}
-
 subprojects {
     apply plugin: 'eclipse-wtp'
     apply plugin: 'java'
@@ -71,6 +41,11 @@ subprojects {
         from sourceSets.main.allSource
     }
 
+    configurations {
+        all*.exclude group: 'commons-logging', module: 'commons-logging'
+        all*.exclude group: 'org.jboss.logging'
+    }
+
     dependencies {
         compile libraries.spring_webmvc
 
@@ -79,4 +54,34 @@ subprojects {
                     libraries.spock
     }
 
+}
+
+// could use init-${sub-project-name} task to initial a sub project folder
+tasks.addRule('Pattern: init-pep-<ID>') { String initSubProj ->
+    if (initSubProj.startsWith('init-pep-')) {
+        task(initSubProj) << {
+            def subProjName = (initSubProj - 'init-').toLowerCase()
+            def subProjRoot = "${rootProject.projectDir}/subprojects/$subProjName"
+            def confPath = (subProjName - 'pep-').replace('-', '/')
+
+            delete(subProjRoot)
+            mkdir(subProjRoot)
+            mkdir("$subProjRoot/src/main/java/com/proper/enterprise/platform")
+            mkdir("$subProjRoot/src/main/resources")
+            mkdir("$subProjRoot/src/main/resources/conf/$confPath")
+            file("$subProjRoot/src/main/resources/conf/$confPath/${subProjName - 'pep-'}.properties").createNewFile()
+            mkdir("$subProjRoot/src/main/resources/spring/$confPath")
+            file("$subProjRoot/src/main/resources/spring/$confPath/applicationContext-${subProjName - 'pep-'}.xml").createNewFile()
+            mkdir("$subProjRoot/src/test/groovy/com/proper/enterprise/platform")
+            mkdir("$subProjRoot/src/test/resources")
+            
+            file("$subProjRoot/${subProjName}.gradle").createNewFile()
+            file("$subProjRoot/README.md").withWriter {
+                it.write("""$subProjName
+${'=' * subProjName.length()}
+
+Proper Enterprise Platform""")
+            }
+        }
+    }
 }
