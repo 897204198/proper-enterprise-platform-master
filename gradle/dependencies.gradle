@@ -7,8 +7,6 @@ versions.activiti = '5.15'
 
 versions.aspectj = '1.6.10'
 
-versions.jackson = '1.9.11'
-
 versions.jcaptcha = '1.0'
 
 versions.tomcat_plugin = '2.0'
@@ -29,6 +27,8 @@ libraries.cglib = 'cglib:cglib:2.2'
 libraries.commons_collections = 'commons-collections:commons-collections:3.2.1'
 
 libraries.commons_lang = 'commons-lang:commons-lang:2.5'
+
+libraries.fastjson = 'com.alibaba:fastjson:1.2.4'
 
 versions.groovy = '2.4.3'
 // groovy-all include all below modules, used by code quality
@@ -62,9 +62,10 @@ libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
 //libraries.hibernate_infinispan = "org.hibernate:hibernate-infinispan:${versions.hibernate}"
 //libraries.hibernate_proxool = "org.hibernate:hibernate-proxool:${versions.hibernate}"
 
-libraries.jackson_core_asl = "org.codehaus.jackson:jackson-core-asl:${versions.jackson}"
-libraries.jackson_mapper_asl = "org.codehaus.jackson:jackson-mapper-asl:${versions.jackson}"
-libraries.jackson_mapper_lgpl = "org.codehaus.jackson:jackson-mapper-lgpl:${versions.jackson}"
+//versions.jackson = '1.9.11'
+//libraries.jackson_core_asl = "org.codehaus.jackson:jackson-core-asl:${versions.jackson}"
+//libraries.jackson_mapper_asl = "org.codehaus.jackson:jackson-mapper-asl:${versions.jackson}"
+//libraries.jackson_mapper_lgpl = "org.codehaus.jackson:jackson-mapper-lgpl:${versions.jackson}"
 
 libraries.jcaptcha = dependencies.module("com.octo.captcha:jcaptcha:${versions.jcaptcha}") {
     dependency "com.octo.captcha:jcaptcha-api:${versions.jcaptcha}"
@@ -73,7 +74,7 @@ libraries.jcaptcha = dependencies.module("com.octo.captcha:jcaptcha:${versions.j
 
 libraries.junit = 'junit:junit:4.12'
 
-libraries.json_lib = 'net.sf.json-lib:json-lib:2.4:jdk15@jar'
+//libraries.json_lib = 'net.sf.json-lib:json-lib:2.4:jdk15@jar'
 
 libraries.jsp_api = 'javax.servlet.jsp:jsp-api:2.2'
 

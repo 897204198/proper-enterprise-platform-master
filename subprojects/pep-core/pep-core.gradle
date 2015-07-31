@@ -1,5 +1,6 @@
 dependencies {
-    compile libraries.guava,
+    compile libraries.fastjson,
+            libraries.guava,
             libraries.hibernate_core,
             libraries.logback_classic
 
