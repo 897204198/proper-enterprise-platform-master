@@ -122,22 +122,22 @@ public class DateUtil {
 		return changeDate(changeDate(firstDate, MONTH, 1), DAY, -1);
 	}
 	
-	public static BigDecimal getYearMargin(Date endDate, Date startDate) {
-		Calendar currentCal = Calendar.getInstance();
-		currentCal.setTime(endDate);
+	public static BigDecimal getYearMargin(Date start, Date end) {
+		Calendar endCal = Calendar.getInstance();
+		endCal.setTime(end);
 		Calendar startCal = Calendar.getInstance();
-		startCal.setTime(startDate);
+		startCal.setTime(start);
 		
 		// compute years in this unit
-		int curYear = currentCal.get(Calendar.YEAR);
+		int endYear = endCal.get(Calendar.YEAR);
 		int startYear = startCal.get(Calendar.YEAR);
-		int curMonth = currentCal.get(Calendar.MONTH);
+		int endMonth = endCal.get(Calendar.MONTH);
 		int startMonth = startCal.get(Calendar.MONTH);
-		int curDay = currentCal.get(Calendar.DAY_OF_MONTH);
+		int endDay = endCal.get(Calendar.DAY_OF_MONTH);
 		int startDay = startCal.get(Calendar.DAY_OF_MONTH);
-		int months = (curYear - startYear - (curMonth>=startMonth ? 0 : 1)) * 12;
-		months += curMonth>=startMonth ? curMonth-startMonth : 12-(startMonth-curMonth);
-		months += curDay>=startDay ? 0 : -1;
+		int months = (endYear - startYear - (endMonth>=startMonth ? 0 : 1)) * 12;
+		months += endMonth>=startMonth ? endMonth-startMonth : 12-(startMonth-endMonth);
+		months += endDay>=startDay ? 0 : -1;
 		return new BigDecimal(months).divide(new BigDecimal(12), 2, BigDecimal.ROUND_HALF_UP);
 	}
 	
