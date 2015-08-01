@@ -90,9 +90,17 @@ public class DateUtil {
         cal.setTime(dateToChange);
         int field = 0;
         switch(unit) {
-        	case DAY: field = Calendar.DAY_OF_MONTH; break;
-        	case MONTH: field = Calendar.MONTH; break;
-        	case YEAR: field = Calendar.YEAR; break;
+        	case DAY: 
+        	    field = Calendar.DAY_OF_MONTH; 
+        	    break;
+        	case MONTH: 
+        	    field = Calendar.MONTH; 
+        	    break;
+        	case YEAR: 
+        	    field = Calendar.YEAR; 
+        	    break;
+        	default: 
+        	    break;
         }
         cal.add(field, amount);
         return cal.getTime();

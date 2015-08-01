@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.api.authc.entity;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -161,7 +162,7 @@ public class UserEntity extends BaseEntity {
             this.extendPropertiesText = "{}";
         }
         JSONObject jsonObject = JSONUtil.parseObject(extendPropertiesText);
-        if(jsonObject.containsKey(key) == true){
+        if (jsonObject.containsKey(key)){
             jsonObject.remove(key);
         }
         
@@ -171,10 +172,8 @@ public class UserEntity extends BaseEntity {
     }
 
     public void putExtendProperty(Map<String, String> extendProperties) {
-        String value = null;
-        for(String key : extendProperties.keySet()){
-            value = extendProperties.get(key);
-            this.putExtendProperty(key, value);
+        for (Entry<String, String> entry : extendProperties.entrySet()) {
+            putExtendProperty(entry.getKey(), entry.getValue());
         }
     }
 

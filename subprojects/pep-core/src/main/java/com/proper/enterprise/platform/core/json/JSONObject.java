@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class JSONObject implements Map<String, Object>, Cloneable, Serializable {
+public class JSONObject implements Map<String, Object>, Serializable {
 
     private static final long serialVersionUID = -6896564586841449574L;
     
@@ -74,5 +74,5 @@ public class JSONObject implements Map<String, Object>, Cloneable, Serializable 
     public Set<java.util.Map.Entry<String, Object>> entrySet() {
         return obj.entrySet();
     }
-
+    
 }
