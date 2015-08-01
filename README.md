@@ -4,8 +4,8 @@ proper-enterprise-platform
 Proper Enterprise Platform
 
 
-技术选型
--------
+主要技术选型
+-----------
 
 |Catalog|Version|
 |:--|:--|

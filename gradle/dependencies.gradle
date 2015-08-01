@@ -53,6 +53,8 @@ libraries.groovy = "org.codehaus.groovy:groovy:${versions.groovy}"
 
 libraries.guava = 'com.google.guava:guava:18.0'
 
+libraries.h2 = 'com.h2database:h2:1.3.176'
+
 versions.hibernate = '4.3.10.Final'
 //libraries.hibernate_c3p0 = "org.hibernate:hibernate-c3p0:${versions.hibernate}"
 libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
