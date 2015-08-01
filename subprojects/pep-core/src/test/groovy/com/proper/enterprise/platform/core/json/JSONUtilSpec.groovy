@@ -41,4 +41,28 @@ class JSONUtilSpec extends Specification {
         _ | [entity, entity]
     }
     
+    def "Parse JSON string to object"() {
+        given:
+        def result = JSONUtil.parse(str)
+        def len = 0
+        if (result instanceof JSONObject) {
+            len = result.size()
+            println result.entrySet()
+        } else if (result instanceof JSONObject[]) {
+            len = result.length
+            println result.each {
+                println it.entrySet()
+            }
+        }
+        
+        expect:
+        result != null
+        len == size
+        
+        where:
+        size    | str
+        2       | '{"a":"a1","b":"b2"}'
+        2       | '[{"a1":"a1","a2":"a2","a3":"a3"},{"b1":"b1","b2":"b2","b3":"b3"}]' 
+    }
+    
 }
