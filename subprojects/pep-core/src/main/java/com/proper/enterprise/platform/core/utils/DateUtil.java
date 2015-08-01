@@ -31,8 +31,9 @@ public class DateUtil {
 	}
 	
 	public static Date toDate(String dateStr, String format) {
-		if(dateStr == null || dateStr.trim().equals("")) 
+		if(dateStr == null || dateStr.trim().equals("")) {
 			return null;
+		}
 		
         SimpleDateFormat formatter = new SimpleDateFormat(format);
         formatter.setLenient(false);
@@ -54,8 +55,9 @@ public class DateUtil {
 	}
 	
 	public static String toDateString(Date date, String format) {
-		if(date == null)
+		if(date == null) {
 			return null;
+		}
 		
         SimpleDateFormat formatter = new SimpleDateFormat(format);
         return formatter.format(date);
@@ -106,7 +108,7 @@ public class DateUtil {
 	 * @return new date
 	 */
 	public Date updateTimePart(Date date, String timeStr) {
-		return toDateTime((toDateTimeString(date).replaceFirst("\\d+:\\d+:\\d+", timeStr)));
+		return toDateTime(toDateTimeString(date).replaceFirst("\\d+:\\d+:\\d+", timeStr));
 	}
 	
 	public static Date getYearMonth1stDate(String year, String month) {
