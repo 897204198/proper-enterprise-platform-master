@@ -10,21 +10,23 @@ versions.aspectj = '1.6.10'
 versions.jcaptcha = '1.0'
 
 
-libraries.activiti_engine = "org.activiti:activiti-engine:${versions.activiti}"
-libraries.activiti_spring = "org.activiti:activiti-spring:${versions.activiti}"
+//libraries.activiti_engine = "org.activiti:activiti-engine:${versions.activiti}"
+//libraries.activiti_spring = "org.activiti:activiti-spring:${versions.activiti}"
 
-libraries.aspectjrt = "org.aspectj:aspectjrt:${versions.aspectj}"
-libraries.aspectjweaver = "org.aspectj:aspectjweaver:${versions.aspectj}"
+//libraries.aspectjrt = "org.aspectj:aspectjrt:${versions.aspectj}"
+//libraries.aspectjweaver = "org.aspectj:aspectjweaver:${versions.aspectj}"
 
-libraries.cas_server_core = 'org.jasig.cas:cas-server-core:3.5.2'
+//libraries.cas_server_core = 'org.jasig.cas:cas-server-core:3.5.2'
 
-libraries.cas_client_core = 'org.jasig.cas.client:cas-client-core:3.1.12'
+//libraries.cas_client_core = 'org.jasig.cas.client:cas-client-core:3.1.12'
 
-libraries.cglib = 'cglib:cglib:2.2'
+//libraries.cglib = 'cglib:cglib:2.2'
 
-libraries.commons_collections = 'commons-collections:commons-collections:3.2.1'
+//libraries.commons_collections = 'commons-collections:commons-collections:3.2.1'
 
-libraries.commons_lang = 'commons-lang:commons-lang:2.5'
+libraries.commons_dbcp2 = 'org.apache.commons:commons-dbcp2:2.1'
+
+//libraries.commons_lang = 'commons-lang:commons-lang:2.5'
 
 libraries.fastjson = 'com.alibaba:fastjson:1.2.4'
 
@@ -65,10 +67,10 @@ libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
 //libraries.jackson_mapper_asl = "org.codehaus.jackson:jackson-mapper-asl:${versions.jackson}"
 //libraries.jackson_mapper_lgpl = "org.codehaus.jackson:jackson-mapper-lgpl:${versions.jackson}"
 
-libraries.jcaptcha = dependencies.module("com.octo.captcha:jcaptcha:${versions.jcaptcha}") {
-    dependency "com.octo.captcha:jcaptcha-api:${versions.jcaptcha}"
-    exclude group: 'com.jhlabs', module: 'imaging'
-}
+//libraries.jcaptcha = dependencies.module("com.octo.captcha:jcaptcha:${versions.jcaptcha}") {
+//    dependency "com.octo.captcha:jcaptcha-api:${versions.jcaptcha}"
+//   exclude group: 'com.jhlabs', module: 'imaging'
+//}
 
 libraries.junit = 'junit:junit:4.12'
 
@@ -78,11 +80,11 @@ libraries.jsp_api = 'javax.servlet.jsp:jsp-api:2.2'
 
 libraries.jstl = 'jstl:jstl:1.2'
 
-libraries.log4j = dependencies.module('log4j:log4j:1.2.15') {
-    exclude group: 'com.sun.jdmk', module: 'jmxtools'
-    exclude group: 'javax.jms', module: 'jms'
-    exclude group: 'com.sun.jmx', module: 'jmxri'
-}
+//libraries.log4j = dependencies.module('log4j:log4j:1.2.15') {
+//    exclude group: 'com.sun.jdmk', module: 'jmxtools'
+//    exclude group: 'javax.jms', module: 'jms'
+//    exclude group: 'com.sun.jmx', module: 'jmxri'
+//}
 
 versions.logback = '1.1.3'
 versions.slf4j = '1.7.12'
@@ -93,9 +95,9 @@ libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:
 
 libraries.mongo_java_driver = 'org.mongodb:mongo-java-driver:2.13.0'
 
-libraries.poi = 'org.apache.poi:poi:3.7'
+//libraries.poi = 'org.apache.poi:poi:3.7'
 
-libraries.quartz = 'org.quartz-scheduler:quartz:2.2.1'
+//libraries.quartz = 'org.quartz-scheduler:quartz:2.2.1'
 
 libraries.servlet_api = 'javax.servlet:javax.servlet-api:3.0.1'
 
@@ -114,7 +116,10 @@ versions.spring = '4.1.7.RELEASE'
 //libraries.spring_context = "org.springframework:spring-context:${versions.spring}"
 //libraries.spring_context_support = "org.springframework:spring-context-support:${versions.spring}"
 //libraries.spring_core = "org.springframework:spring-core:${versions.spring}"
-libraries.spring_orm = "org.springframework:spring-orm:${versions.spring}"
+libraries.spring_orm = [
+    "org.springframework:spring-orm:${versions.spring}",
+    'org.aspectj:aspectjweaver:1.8.6'
+]
 //libraries.spring_test = "org.springframework:spring-test:${versions.spring}"
 //libraries.spring_tx = "org.springframework:spring-tx:${versions.spring}"
 //libraries.spring_web = "org.springframework:spring-web:${versions.spring}"
@@ -139,4 +144,4 @@ libraries.tomcat = [
 
 libraries.tomcat_plugin = 'com.bmuschko:gradle-tomcat-plugin:2.2.2'
 
-libraries.urlrewritefilter = 'org.tuckey:urlrewritefilter:4.0.3'
+//libraries.urlrewritefilter = 'org.tuckey:urlrewritefilter:4.0.3'

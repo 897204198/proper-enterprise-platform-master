@@ -14,7 +14,8 @@ tomcatRun.contextPath = 'pep'
 
 dependencies {
     compile project(':pep-authc-api')
-    runtime libraries.spring_orm,
+    runtime libraries.commons_dbcp2,
+            libraries.spring_orm,
             libraries.spring_webmvc
 
     // tomcat plugin dependencies

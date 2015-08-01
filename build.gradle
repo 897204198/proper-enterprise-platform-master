@@ -43,7 +43,6 @@ subprojects {
 
     configurations {
         all*.exclude group: 'commons-logging', module: 'commons-logging'
-        all*.exclude group: 'org.jboss.logging'
     }
 
     dependencies {
