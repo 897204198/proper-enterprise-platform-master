@@ -11,7 +11,7 @@
                            http://www.springframework.org/schema/tx/spring-tx.xsd"
        default-lazy-init="true">
 
-    <context:property-placeholder location="conf/webapp/database/webapp-database.properties"/>
+    <context:property-placeholder location="classpath:/conf/webapp/database/webapp-database.properties"/>
     
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${datasource.driverClassName}" />

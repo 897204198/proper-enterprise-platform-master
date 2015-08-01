@@ -1,3 +1,23 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath libraries.tomcat_plugin
+    }
+}
+apply plugin: 'com.bmuschko.tomcat'
+apply plugin: 'war'
+
+tomcat.httpPort = 9090
+tomcatRun.contextPath = 'pep'
+
 dependencies {
-    compile project(':pep-core')
+    compile project(':pep-authc-api')
+    runtime libraries.spring_orm,
+            libraries.spring_webmvc
+
+    // tomcat plugin dependencies
+    tomcat libraries.tomcat
+    providedRuntime libraries.servlet_api
 }

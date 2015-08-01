@@ -9,8 +9,6 @@ versions.aspectj = '1.6.10'
 
 versions.jcaptcha = '1.0'
 
-versions.tomcat_plugin = '2.0'
-
 
 libraries.activiti_engine = "org.activiti:activiti-engine:${versions.activiti}"
 libraries.activiti_spring = "org.activiti:activiti-spring:${versions.activiti}"
@@ -132,11 +130,13 @@ libraries.spring_security_taglibs = "org.springframework.security:spring-securit
 libraries.spring_security_web = "org.springframework.security:spring-security-web:${versions.spring_security}"
 
 versions.tomcat = '7.0.63'
-libraries.tomcat = dependencies.module("org.apache.tomcat:catalina:${versions.tomcat}") {
-	dependency "org.apache.tomcat:coyote:${versions.tomcat}"
-    dependency "org.apache.tomcat:jasper:${versions.tomcat}"
-	dependency "org.apache.tomcat:annotations-api:${versions.tomcat}"
-}
-libraries.tomcat_plugin = "com.bmuschko:gradle-tomcat-plugin:${versions.tomcat_plugin}"
+libraries.tomcat = [
+    "org.apache.tomcat.embed:tomcat-embed-core:${versions.tomcat}",
+    "org.apache.tomcat.embed:tomcat-embed-logging-juli:${versions.tomcat}",
+    "org.apache.tomcat.embed:tomcat-embed-jasper:${versions.tomcat}",
+    'commons-logging:commons-logging:1.1.1'
+]
+
+libraries.tomcat_plugin = 'com.bmuschko:gradle-tomcat-plugin:2.2.2'
 
 libraries.urlrewritefilter = 'org.tuckey:urlrewritefilter:4.0.3'
