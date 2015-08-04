@@ -36,5 +36,9 @@ test {
 }
 
 dependencies {
+    // tomcat plugin dependencies
+    tomcat libraries.tomcat
+    providedRuntime libraries.servlet_api
+
     compile project(':pep-authc-api')
 }
