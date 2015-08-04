@@ -2,7 +2,8 @@ dependencies {
     compile libraries.fastjson,
             libraries.guava,
             libraries.hibernate_core,
-            libraries.logback_classic
+            libraries.logback_classic,
+            libraries.spring_orm
 
     testRuntime fileTree(dir: 'libs', include: 'conf-in-jar.jar') 
 }

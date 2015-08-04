@@ -9,6 +9,14 @@ buildscript {
 
 apply plugin: 'com.bmuschko.tomcat-base'
 
+dependencies {
+    // tomcat plugin dependencies
+    tomcat libraries.tomcat
+    providedRuntime libraries.servlet_api
+
+    compile project(':pep-authc-api')
+}
+
 ext {
     tomcatStopPort = 8081
     tomcatStopKey = 'stopKey'
@@ -31,14 +39,8 @@ task integrationTest(type: Test) {
     finalizedBy integrationTomcatStop
 }
 
+build.dependsOn integrationTest
+
 test {
     exclude '**/*IntegrationTest.*'
-}
-
-dependencies {
-    // tomcat plugin dependencies
-    tomcat libraries.tomcat
-    providedRuntime libraries.servlet_api
-
-    compile project(':pep-authc-api')
 }
