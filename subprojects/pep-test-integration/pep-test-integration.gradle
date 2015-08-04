@@ -1,0 +1,40 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath libraries.tomcat_plugin
+    }
+}
+
+apply plugin: 'com.bmuschko.tomcat-base'
+
+ext {
+    tomcatStopPort = 8081
+    tomcatStopKey = 'stopKey'
+}
+
+task integrationTomcatRun(type: com.bmuschko.gradle.tomcat.tasks.TomcatRun) {
+    stopPort = tomcatStopPort
+    stopKey = tomcatStopKey
+    daemon = true
+}
+
+task integrationTomcatStop(type: com.bmuschko.gradle.tomcat.tasks.TomcatStop) {
+    stopPort = tomcatStopPort
+    stopKey = tomcatStopKey
+}
+
+task integrationTest(type: Test) {
+    include '**/*IntegrationTest.*'
+    dependsOn integrationTomcatRun
+    finalizedBy integrationTomcatStop
+}
+
+test {
+    exclude '**/*IntegrationTest.*'
+}
+
+dependencies {
+    compile project(':pep-authc-api')
+}
