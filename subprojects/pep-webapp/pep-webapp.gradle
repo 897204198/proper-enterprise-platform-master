@@ -9,8 +9,15 @@ buildscript {
 apply plugin: 'com.bmuschko.tomcat'
 apply plugin: 'war'
 
-tomcat.httpPort = 9090
-tomcatRun.contextPath = 'pep'
+ext {
+    tomcatContextPath = 'pep'
+    tomcatHttpPort = 8080
+    tomcatStopPort = 8081
+    tomcatStopKey = 'stopKey'
+}
+
+tomcat.httpPort = tomcatHttpPort
+tomcatRun.contextPath = tomcatContextPath
 
 dependencies {
     // tomcat plugin dependencies
@@ -18,9 +25,36 @@ dependencies {
     providedRuntime libraries.servlet_api
 
     compile project(':pep-authc-api')
+
+    testCompile libraries.spring_test
+
     runtime libraries.commons_dbcp2,
             libraries.h2,
             libraries.hibernate_ehcache,
             libraries.spring_orm,
             libraries.spring_webmvc
+}
+
+task integrationTomcatRun(type: com.bmuschko.gradle.tomcat.tasks.TomcatRun) {
+    contextPath = tomcatContextPath
+    stopPort = tomcatStopPort
+    stopKey = tomcatStopKey
+    daemon = true
+}
+
+task integrationTomcatStop(type: com.bmuschko.gradle.tomcat.tasks.TomcatStop) {
+    stopPort = tomcatStopPort
+    stopKey = tomcatStopKey
+}
+
+task integrationTest(type: Test) {
+    include '**/*IntegrationTest.*'
+    dependsOn integrationTomcatRun
+    finalizedBy integrationTomcatStop
+}
+
+build.dependsOn integrationTest
+
+test {
+    exclude '**/*IntegrationTest.*'
 }

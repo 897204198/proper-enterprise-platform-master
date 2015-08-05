@@ -24,7 +24,7 @@ versions.jcaptcha = '1.0'
 
 //libraries.commons_collections = 'commons-collections:commons-collections:3.2.1'
 
-libraries.commons_dbcp2 = 'org.apache.commons:commons-dbcp2:2.1'
+//libraries.commons_dbcp2 = 'org.apache.commons:commons-dbcp2:2.1'
 
 //libraries.commons_lang = 'commons-lang:commons-lang:2.5'
 
@@ -61,6 +61,7 @@ libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
 libraries.hibernate_ehcache = "org.hibernate:hibernate-ehcache:${versions.hibernate}"
 //libraries.hibernate_entitymanager = "org.hibernate:hibernate-entitymanager:${versions.hibernate}"
 //libraries.hibernate_envers = "org.hibernate:hibernate-envers:${versions.hibernate}"
+libraries.hibernate_hikaricp = "org.hibernate:hibernate-hikaricp:${versions.hibernate}"
 //libraries.hibernate_infinispan = "org.hibernate:hibernate-infinispan:${versions.hibernate}"
 //libraries.hibernate_proxool = "org.hibernate:hibernate-proxool:${versions.hibernate}"
 
@@ -73,6 +74,8 @@ libraries.hibernate_ehcache = "org.hibernate:hibernate-ehcache:${versions.hibern
 //    dependency "com.octo.captcha:jcaptcha-api:${versions.jcaptcha}"
 //   exclude group: 'com.jhlabs', module: 'imaging'
 //}
+
+libraries.hikaricp = 'com.zaxxer:HikariCP:2.4.0'
 
 libraries.junit = 'junit:junit:4.12'
 
@@ -122,7 +125,7 @@ libraries.spring_orm = [
     "org.springframework:spring-orm:${versions.spring}",
     'org.aspectj:aspectjweaver:1.8.6'
 ]
-//libraries.spring_test = "org.springframework:spring-test:${versions.spring}"
+libraries.spring_test = "org.springframework:spring-test:${versions.spring}"
 //libraries.spring_tx = "org.springframework:spring-tx:${versions.spring}"
 //libraries.spring_web = "org.springframework:spring-web:${versions.spring}"
 libraries.spring_webmvc = "org.springframework:spring-webmvc:${versions.spring}"

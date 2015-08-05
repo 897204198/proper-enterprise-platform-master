@@ -20,7 +20,8 @@ Proper Enterprise Platform
 |Cache|ehcache 2.10.0|
 |Validator|Hibernate Validator 5.1.3.Final|
 |ORM|Hibernate ORM 4.3.10.Final|
-|数据库，事务，连接池||
+|数据库，事务||
+|连接池|[HikariCP](https://github.com/brettwooldridge/HikariCP) 2.4.0|
 |任务调度|quartz 2.2.1|
 |Unit Test|junit 4.12, spock 0.7|
 |通用工具|guava 18.0|
