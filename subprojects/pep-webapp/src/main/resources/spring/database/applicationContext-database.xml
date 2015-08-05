@@ -31,7 +31,7 @@
                 hibernate.hikari.dataSourceClassName    = ${datasource.driverClassName}
                 hibernate.hikari.idleTimeout            = ${datasource.idleTimeout}
                 hibernate.hikari.maximumPoolSize        = ${datasource.maxPoolSize}
-                hibernate.hikari.minimumPoolSize        = ${datasource.minPoolSize}
+                hibernate.hikari.minimumIdle            = ${datasource.minIdle}
                 hibernate.hbm2ddl.auto                  = ${hibernate.hbm2ddl.auto}
                 hibernate.query.substitutions           = ${hibernate.query.substitutions}
                 hibernate.show_sql                      = ${hibernate.show_sql}

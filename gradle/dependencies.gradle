@@ -61,7 +61,9 @@ libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
 libraries.hibernate_ehcache = "org.hibernate:hibernate-ehcache:${versions.hibernate}"
 //libraries.hibernate_entitymanager = "org.hibernate:hibernate-entitymanager:${versions.hibernate}"
 //libraries.hibernate_envers = "org.hibernate:hibernate-envers:${versions.hibernate}"
-libraries.hibernate_hikaricp = "org.hibernate:hibernate-hikaricp:${versions.hibernate}"
+libraries.hibernate_hikaricp = dependencies.module("org.hibernate:hibernate-hikaricp:${versions.hibernate}") {
+    dependency 'com.zaxxer:HikariCP:2.4.0'
+}
 //libraries.hibernate_infinispan = "org.hibernate:hibernate-infinispan:${versions.hibernate}"
 //libraries.hibernate_proxool = "org.hibernate:hibernate-proxool:${versions.hibernate}"
 
@@ -74,8 +76,6 @@ libraries.hibernate_hikaricp = "org.hibernate:hibernate-hikaricp:${versions.hibe
 //    dependency "com.octo.captcha:jcaptcha-api:${versions.jcaptcha}"
 //   exclude group: 'com.jhlabs', module: 'imaging'
 //}
-
-libraries.hikaricp = 'com.zaxxer:HikariCP:2.4.0'
 
 libraries.junit = 'junit:junit:4.12'
 
