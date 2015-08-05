@@ -28,9 +28,9 @@ dependencies {
 
     testCompile libraries.spring_test
 
-    runtime libraries.commons_dbcp2,
-            libraries.h2,
+    runtime libraries.h2,
             libraries.hibernate_ehcache,
+            libraries.hibernate_hikaricp,
             libraries.spring_orm,
             libraries.spring_webmvc
 }
