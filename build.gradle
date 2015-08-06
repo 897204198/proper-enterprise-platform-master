@@ -41,6 +41,10 @@ subprojects {
         from sourceSets.main.allSource
     }
 
+    configurations {
+        all*.exclude group: 'commons-logging', module: 'commons-logging'
+    }
+
     dependencies {
         compile libraries.spring_webmvc
 

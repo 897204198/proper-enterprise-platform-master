@@ -21,7 +21,7 @@ Proper Enterprise Platform
 |Validator|Hibernate Validator 5.1.3.Final|
 |数据库，事务||
 |Connection Pool|[HikariCP 2.4.0](https://github.com/brettwooldridge/HikariCP/tree/HikariCP-2.4.0)|
-|JPA Provider|[Hibernate ORM 4.3.10.Final](https://github.com/hibernate/hibernate-orm/tree/4.3.10.Final)|
+|JPA Provider|[Hibernate EntityManager 4.3.10.Final](https://github.com/hibernate/hibernate-orm/tree/4.3.10.Final)|
 |Data Access Layer|[Spring Data JPA 1.8.2.RELEASE](https://github.com/spring-projects/spring-data-jpa/tree/1.8.2.RELEASE)|
 |任务调度|quartz 2.2.1|
 |Unit Test|junit 4.12, spock 0.7|

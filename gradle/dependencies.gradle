@@ -57,9 +57,9 @@ libraries.h2 = 'com.h2database:h2:1.3.176'
 
 versions.hibernate = '4.3.10.Final'
 //libraries.hibernate_c3p0 = "org.hibernate:hibernate-c3p0:${versions.hibernate}"
-libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
+//libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
 libraries.hibernate_ehcache = "org.hibernate:hibernate-ehcache:${versions.hibernate}"
-//libraries.hibernate_entitymanager = "org.hibernate:hibernate-entitymanager:${versions.hibernate}"
+libraries.hibernate_entitymanager = "org.hibernate:hibernate-entitymanager:${versions.hibernate}"
 //libraries.hibernate_envers = "org.hibernate:hibernate-envers:${versions.hibernate}"
 libraries.hibernate_hikaricp = dependencies.module("org.hibernate:hibernate-hikaricp:${versions.hibernate}") {
     dependency 'com.zaxxer:HikariCP:2.4.0'

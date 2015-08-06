@@ -1,7 +1,7 @@
 dependencies {
     compile libraries.fastjson,
             libraries.guava,
-            libraries.hibernate_core,
+            libraries.hibernate_entitymanager,
             libraries.logback_classic,
             libraries.spring_orm
 
