@@ -19,9 +19,10 @@ Proper Enterprise Platform
 |Logging|Slf4j 1.7.12，Logback 1.1.3|
 |Cache|ehcache 2.10.0|
 |Validator|Hibernate Validator 5.1.3.Final|
-|ORM|Hibernate ORM 4.3.10.Final|
 |数据库，事务||
-|连接池|[HikariCP 2.4.0](https://github.com/brettwooldridge/HikariCP/tree/HikariCP-2.4.0)|
+|Connection Pool|[HikariCP 2.4.0](https://github.com/brettwooldridge/HikariCP/tree/HikariCP-2.4.0)|
+|JPA Provider|[Hibernate ORM 4.3.10.Final](https://github.com/hibernate/hibernate-orm/tree/4.3.10.Final)|
+|Data Access Layer|[Spring Data JPA 1.8.2.RELEASE](https://github.com/spring-projects/spring-data-jpa/tree/1.8.2.RELEASE)|
 |任务调度|quartz 2.2.1|
 |Unit Test|junit 4.12, spock 0.7|
 |通用工具|guava 18.0|
@@ -30,7 +31,7 @@ Proper Enterprise Platform
 |JSON|fastjson 1.2.4|
 |消息队列||
 |前端框架||
-|自动构建|Gradle 2.5|
+|Build System|[Gradle 2.5](https://github.com/gradle/gradle)|
 |持续集成||
 |license||
 
