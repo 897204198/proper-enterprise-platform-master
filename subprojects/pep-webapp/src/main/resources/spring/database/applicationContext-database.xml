@@ -19,6 +19,7 @@
                 hibernate.dialect                       = ${hibernate.dialect}
                 hibernate.format_sql                    = ${hibernate.format_sql}
                 hibernate.generate_statistics           = ${hibernate.generate_statistics}
+                hibernate.hikari.autoCommit             = ${datasource.autoCommit}
                 hibernate.hikari.dataSource.password    = ${datasource.password}
                 hibernate.hikari.dataSource.url         = ${datasource.url}
                 hibernate.hikari.dataSource.user        = ${datasource.username}
