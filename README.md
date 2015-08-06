@@ -14,7 +14,7 @@ Proper Enterprise Platform
 |JSP|2.2|
 |JSTL|1.2|
 |Tomcat|7.0.63|
-|Spring|spring-framework 4.1.7.RELEASE|
+|Spring|[Spring Framework 4.1.7.RELEASE](https://github.com/spring-projects/spring-framework/tree/v4.1.7.RELEASE)|
 |Security|spring-security 4.0.1.RELEASE|
 |Logging|Slf4j 1.7.12，Logback 1.1.3|
 |Cache|ehcache 2.10.0|
