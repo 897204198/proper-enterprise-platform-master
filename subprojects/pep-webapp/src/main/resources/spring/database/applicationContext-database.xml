@@ -7,33 +7,44 @@
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" lazy-init="false">
-        <property name="hibernateProperties">
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <constructor-arg name="properties">
+            <value>
+                autoCommit          = ${datasource.autoCommit}
+                dataSource.password = ${datasource.password}
+                dataSource.url      = ${datasource.url}
+                dataSource.user     = ${datasource.username}
+                dataSourceClassName = ${datasource.driverClassName}
+                idleTimeout         = ${datasource.idleTimeout}
+                maximumPoolSize     = ${datasource.maxPoolSize}
+                minimumIdle         = ${datasource.minIdle}
+            </value>
+        </constructor-arg>
+    </bean>
+
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+        <constructor-arg ref="hikariConfig" />
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" lazy-init="false">
+        <property name="dataSource" ref="dataSource" />
+        <property name="packagesToScan" value="com.proper.**.entity" />
+        <property name="jpaProperties">
             <value>
                 hibernate.cache.provider_class          = ${hibernate.cache.provider_class}
                 hibernate.cache.region.factory_class    = ${hibernate.cache.region.factory_class}
                 hibernate.cache.use_query_cache         = ${hibernate.cache.use_query_cache}
                 hibernate.cache.use_second_level_cache  = ${hibernate.cache.use_second_level_cache}
-                hibernate.connection.provider_class     = ${hibernate.connection.provider_class}
                 hibernate.current_session_context_class = ${hibernate.current_session_context_class}
                 hibernate.dialect                       = ${hibernate.dialect}
                 hibernate.format_sql                    = ${hibernate.format_sql}
                 hibernate.generate_statistics           = ${hibernate.generate_statistics}
-                hibernate.hikari.autoCommit             = ${datasource.autoCommit}
-                hibernate.hikari.dataSource.password    = ${datasource.password}
-                hibernate.hikari.dataSource.url         = ${datasource.url}
-                hibernate.hikari.dataSource.user        = ${datasource.username}
-                hibernate.hikari.dataSourceClassName    = ${datasource.driverClassName}
-                hibernate.hikari.idleTimeout            = ${datasource.idleTimeout}
-                hibernate.hikari.maximumPoolSize        = ${datasource.maxPoolSize}
-                hibernate.hikari.minimumIdle            = ${datasource.minIdle}
                 hibernate.hbm2ddl.auto                  = ${hibernate.hbm2ddl.auto}
                 hibernate.query.substitutions           = ${hibernate.query.substitutions}
                 hibernate.show_sql                      = ${hibernate.show_sql}
                 jdbc.use_scrollable_resultset           = ${hibernate.jdbc.use_scrollable_resultset}
             </value>
         </property>
-        <property name="packagesToScan" value="com.proper" />
     </bean>
 
 </beans>
