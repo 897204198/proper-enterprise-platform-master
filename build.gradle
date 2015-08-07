@@ -42,7 +42,8 @@ subprojects {
     }
 
     dependencies {
-        compile libraries.spring_webmvc
+        compile libraries.spring_data_jpa,
+                libraries.spring_webmvc
 
         testCompile libraries.groovy,
                     libraries.junit,

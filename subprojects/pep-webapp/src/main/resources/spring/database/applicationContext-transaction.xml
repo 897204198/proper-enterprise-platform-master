@@ -3,12 +3,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx.xsd
                            http://www.springframework.org/schema/aop
-                           http://www.springframework.org/schema/aop/spring-aop.xsd"
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/data/jpa
+                           http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
        default-lazy-init="true">
     
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
@@ -30,5 +33,8 @@
         <aop:pointcut id="txEntryPoint" expression="execution(* com.proper..service.impl.*ServiceImpl.*(..))" />
         <aop:advisor pointcut-ref="txEntryPoint" advice-ref="txAdvice" />
     </aop:config>
+
+    <!-- Spring Data JPA -->
+    <jpa:repositories base-package="com.proper.**.repository" transaction-manager-ref="transactionManager" entity-manager-factory-ref="entityManagerFactory"/>
 
 </beans>

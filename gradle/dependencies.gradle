@@ -130,6 +130,8 @@ libraries.spring_test = "org.springframework:spring-test:${versions.spring}"
 //libraries.spring_web = "org.springframework:spring-web:${versions.spring}"
 libraries.spring_webmvc = "org.springframework:spring-webmvc:${versions.spring}"
 
+libraries.spring_data_jpa = 'org.springframework.data:spring-data-jpa:1.8.2.RELEASE'
+
 versions.spring_security = '4.0.1.RELEASE'
 libraries.spring_security_acl = "org.springframework.security:spring-security-acl:${versions.spring_security}"
 libraries.spring_security_cas = "org.springframework.security:spring-security-cas:${versions.spring_security}"
