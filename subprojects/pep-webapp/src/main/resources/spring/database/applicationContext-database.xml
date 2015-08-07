@@ -5,28 +5,29 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
-                           http://www.springframework.org/schema/context/spring-context.xsd">
+                           http://www.springframework.org/schema/context/spring-context.xsd"
+       default-lazy-init="true">
 
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-        <constructor-arg name="properties">
+        <property name="dataSourceClassName" value="${datasource.driverClassName}" />
+        <property name="minimumIdle" value="${datasource.minIdle}" />
+        <property name="maximumPoolSize" value="${datasource.maxPoolSize}" />
+        <property name="idleTimeout" value="${datasource.idleTimeout}" />
+        <property name="autoCommit" value="${datasource.autoCommit}" />
+        <property name="dataSourceProperties">
             <value>
-                autoCommit          = ${datasource.autoCommit}
-                dataSource.password = ${datasource.password}
-                dataSource.url      = ${datasource.url}
-                dataSource.user     = ${datasource.username}
-                dataSourceClassName = ${datasource.driverClassName}
-                idleTimeout         = ${datasource.idleTimeout}
-                maximumPoolSize     = ${datasource.maxPoolSize}
-                minimumIdle         = ${datasource.minIdle}
+                url      = ${datasource.url}
+                user     = ${datasource.username}
+                password = ${datasource.password}
             </value>
-        </constructor-arg>
+        </property>
     </bean>
 
-    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
         <constructor-arg ref="hikariConfig" />
     </bean>
 
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" lazy-init="false">
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource" />
         <property name="packagesToScan" value="com.proper.**.entity" />
         <property name="jpaProperties">
