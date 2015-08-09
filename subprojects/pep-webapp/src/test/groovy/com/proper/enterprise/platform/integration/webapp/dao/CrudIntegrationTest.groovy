@@ -7,14 +7,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
 import com.proper.enterprise.platform.api.authc.entity.UserEntity
 import com.proper.enterprise.platform.integration.IntegTest
-import com.proper.enterprise.platform.integration.webapp.dao.repository.UserRepository
+import com.proper.enterprise.platform.integration.webapp.dao.repository.BaseDAOTestRepository
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @IntegTest
 class CrudIntegrationTest {
     
     @Autowired
-    UserRepository repository
+    BaseDAOTestRepository repository
     
     @Test
     void crud() {
