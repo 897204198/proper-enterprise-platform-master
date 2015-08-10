@@ -28,87 +28,78 @@ public class UserEntity extends BaseEntity {
     /**
      * 登录名，唯一
      */
-    @Column(name = "login_name", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String loginName;
     
     /**
      * 账号，唯一
      */
-    @Column(name = "account", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String account;
 
     /**
      * 密码
      */
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
     /**
      * 姓名
      */
-    @Column(name = "name")
     private String name;
 
     /**
      * 编号
      */
-    @Column(name = "code")
     private String code;
     
     /**
      * 用户分类Id
      */
-    @Column(name = "category_code")
     private String categoryCode;
 
     /**
      * 用户分类名称
      */
-    @Column(name = "category_name")
     private String categoryName;
     
     /**
      * 用户分类名称
      */
-    @Column(name = "category_id")
     private String categoryId;
 
     /**
      * 注册机构Id
      */
-    @Column(name = "ra_id")
     private String raId;
 
     /**
      * 注册机构名称
      */
-    @Column(name = "ra_name")
     private String raName;
 
     /**
      * 注册机构编号
      */
-    @Column(name = "ra_code")
     private String raCode;
 
     /**
      * 备注
      */
-    @Column(name = "decription")
     private String decription;
 
     /**
      * 启用状态
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "active_status", nullable = false)
+    @Column(nullable = false)
     private ActiveStatus activeStatus = ActiveStatus.INACTIVE;
 
     /**
      * 锁定状态
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "locked_status", nullable = false)
+    @Column(nullable = false)
     private UseStatus useStatus = UseStatus.STOP;
     
     /**
@@ -121,25 +112,21 @@ public class UserEntity extends BaseEntity {
     /**
      * 到期的时间
      */
-    @Column(name = "due_date")
     private String dueDate;
     
     /**
      * 邮箱，用于找回密码
      */
-    @Column(name = "email")
     private String email;
     
     /**
      *扩展属性
      */
-    @Column(name = "extend_id")
     private String extendId;
     
     /**
      * 扩展属性
      */
-    @Column(name = "extend_properties")
     private String extendPropertiesText;
     
     @Override

@@ -21,16 +21,16 @@ public class BaseEntity implements Serializable {
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     protected String id;
     
-    @Column(name = "create_user_id", updatable = false, nullable = false)
+    @Column(updatable = false, nullable = false)
     protected String createUserId;
     
-    @Column(name = "create_time", updatable = false, nullable = false)
+    @Column(updatable = false, nullable = false)
     protected String createTime = DateUtil.getCurrentDateString();
     
-    @Column(name = "last_modify_user_id", nullable = false)
+    @Column(nullable = false)
     protected String lastModifyUserId;
     
-    @Column(name = "last_modify_time", nullable = false)
+    @Column(nullable = false)
     protected String lastModifyTime = DateUtil.getCurrentDateString();
 
     public String getId() {
