@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -16,6 +17,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
                        "/spring/applicationContext-profile.xml", 
                        "/spring/dal/applicationContext-datasource.xml", 
                        "/spring/dal/applicationContext-jpa.xml"})
+@Transactional
 @ActiveProfiles("test")
 public @interface IntegTest {
 
