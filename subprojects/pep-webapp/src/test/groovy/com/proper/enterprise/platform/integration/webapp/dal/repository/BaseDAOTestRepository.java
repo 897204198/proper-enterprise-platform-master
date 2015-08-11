@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.integration.webapp.dao.repository;
+package com.proper.enterprise.platform.integration.webapp.dal.repository;
 
 import org.springframework.data.repository.CrudRepository;
 
