@@ -12,7 +12,7 @@ class Crud {
     @Autowired
     BaseDAOTestRepository repository
     
-    static String id
+    String id
     
     void create() {
         UserEntity user = new UserEntity()

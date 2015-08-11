@@ -6,7 +6,6 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
 import com.proper.enterprise.platform.integration.IntegTest
-import com.proper.enterprise.platform.integration.webapp.dal.repository.BaseDAOTestRepository
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @IntegTest

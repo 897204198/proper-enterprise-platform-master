@@ -54,6 +54,7 @@ task integTest(type: Test) {
     //finalizedBy integTomcatStop
 }
 
+check.dependsOn integTest
 build.dependsOn integTest
 
 test {
