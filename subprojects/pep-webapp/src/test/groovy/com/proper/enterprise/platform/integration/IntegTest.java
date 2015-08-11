@@ -14,8 +14,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 @ContextConfiguration({"/spring/applicationContext.xml", 
                        "/spring/applicationContext-profile.xml", 
-                       "/spring/database/applicationContext-database.xml", 
-                       "/spring/database/applicationContext-transaction.xml"})
+                       "/spring/dal/applicationContext-datasource.xml", 
+                       "/spring/dal/applicationContext-jpa.xml"})
 @ActiveProfiles("test")
 public @interface IntegTest {
 
