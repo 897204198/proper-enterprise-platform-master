@@ -80,6 +80,14 @@ Proper Enterprise Platform
 导入后的项目会自动配置好 `java` 项目或 `web` 项目的类别，`web` 项目可以直接发布到 `tomcat` 下进行开发。
 
 
+测试
+----
+
+* 单元测试 `$ ./gradlew test`
+* 集成测试 `$ ./gradlew integTest`
+* 测试及代码检查 `$ ./gradlew check`
+
+
 初始化新模块
 ----------
 
