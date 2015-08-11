@@ -36,26 +36,26 @@ dependencies {
             libraries.spring_webmvc
 }
 
-task integrationTomcatRun(type: com.bmuschko.gradle.tomcat.tasks.TomcatRun) {
+task integTomcatRun(type: com.bmuschko.gradle.tomcat.tasks.TomcatRun) {
     contextPath = tomcatContextPath
     stopPort = tomcatStopPort
     stopKey = tomcatStopKey
     daemon = true
 }
 
-task integrationTomcatStop(type: com.bmuschko.gradle.tomcat.tasks.TomcatStop) {
+task integTomcatStop(type: com.bmuschko.gradle.tomcat.tasks.TomcatStop) {
     stopPort = tomcatStopPort
     stopKey = tomcatStopKey
 }
 
-task integrationTest(type: Test) {
-    include '**/*IntegrationTest.*'
-    dependsOn integrationTomcatRun
-    finalizedBy integrationTomcatStop
+task integTest(type: Test) {
+    include '**/*IntegTest.*'
+    //dependsOn integTomcatRun
+    //finalizedBy integTomcatStop
 }
 
-build.dependsOn integrationTest
+build.dependsOn integTest
 
 test {
-    exclude '**/*IntegrationTest.*'
+    exclude '**/*IntegTest.*'
 }

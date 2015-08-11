@@ -11,7 +11,7 @@ import com.proper.enterprise.platform.integration.webapp.dao.repository.BaseDAOT
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @IntegTest
-class CrudIntegrationTest {
+class CrudIntegTest {
     
     @Autowired
     BaseDAOTestRepository repository
