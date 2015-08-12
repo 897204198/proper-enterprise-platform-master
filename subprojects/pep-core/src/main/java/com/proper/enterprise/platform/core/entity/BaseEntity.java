@@ -26,13 +26,13 @@ public class BaseEntity implements Serializable {
     protected String id;
     
     @Column(updatable = false, nullable = false)
-    protected String createUserId;
+    protected String createUserId = "sys";
     
     @Column(updatable = false, nullable = false)
     protected String createTime = DateUtil.getCurrentDateString();
     
     @Column(nullable = false)
-    protected String lastModifyUserId;
+    protected String lastModifyUserId = "sys";
     
     @Column(nullable = false)
     protected String lastModifyTime = DateUtil.getCurrentDateString();
