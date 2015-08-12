@@ -1,18 +1,14 @@
 package com.proper.enterprise.platform.integration.auth
 
-import java.util.List;
-
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 
-import com.proper.enterprise.platform.api.auth.Resource;
-import com.proper.enterprise.platform.api.auth.User;
-import com.proper.enterprise.platform.api.auth.service.ResourceService;
-import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.api.auth.Resource
+import com.proper.enterprise.platform.api.auth.User
+import com.proper.enterprise.platform.api.auth.service.ResourceService
+import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.entity.RoleEntity
 import com.proper.enterprise.platform.auth.entity.RoleResourceEntity
@@ -23,7 +19,7 @@ import com.proper.enterprise.platform.auth.repository.RoleRepository
 import com.proper.enterprise.platform.auth.repository.RoleResourceRepository
 import com.proper.enterprise.platform.auth.repository.UserRepository
 import com.proper.enterprise.platform.auth.repository.UserRoleRepository
-import com.proper.enterprise.platform.test.integration.annotation.IntegTest;
+import com.proper.enterprise.platform.test.integration.annotation.IntegTest
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @IntegTest
