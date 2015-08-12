@@ -26,8 +26,8 @@ dependencies {
     providedRuntime libraries.servlet_api
 
     compile project(':pep-auth-common')
-
-    testCompile libraries.spring_test
+    
+    testCompile project(':pep-test')
 
     runtime libraries.h2,
             libraries.hibernate_ehcache,
