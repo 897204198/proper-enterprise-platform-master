@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.api.auth.entity;
+package com.proper.enterprise.platform.auth.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +15,7 @@ import com.proper.enterprise.platform.core.enums.UseStatus;
 
 @Entity
 @Table(name = "pep_auth_user")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "com.proper.enterprise.platform.api.auth.entity.UserEntity")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "com.proper.enterprise.platform.auth.entity.UserEntity")
 public class UserEntity extends BaseEntity {
 
     private static final long serialVersionUID = -932921035920514049L;

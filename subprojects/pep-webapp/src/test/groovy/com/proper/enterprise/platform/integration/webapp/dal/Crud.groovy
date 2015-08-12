@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.integration.webapp.dal
 
 import org.springframework.beans.factory.annotation.Autowired
 
-import com.proper.enterprise.platform.api.auth.entity.UserEntity
+import com.proper.enterprise.platform.auth.entity.UserEntity;
 import com.proper.enterprise.platform.core.enums.ActiveStatus
 import com.proper.enterprise.platform.core.enums.UseStatus
 import com.proper.enterprise.platform.integration.webapp.dal.repository.BaseDAOTestRepository

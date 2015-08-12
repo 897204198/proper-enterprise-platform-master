@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.api.auth.entity;
+package com.proper.enterprise.platform.auth.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +11,7 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 
 @Entity
 @Table(name = "pep_auth_resource")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "com.proper.enterprise.platform.api.auth.entity.ResourceEntity")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "com.proper.enterprise.platform.auth.entity.ResourceEntity")
 public class ResourceEntity extends BaseEntity {
 
     private static final long serialVersionUID = 5499576398861944356L;
