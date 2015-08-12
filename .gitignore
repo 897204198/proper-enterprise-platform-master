@@ -15,3 +15,7 @@ META-INF
 
 # ignore generate scripts
 init_mongo_for_proper_dfs.js
+
+# ignore IntellJ IDEA files and folders
+.idea/
+*.iml
