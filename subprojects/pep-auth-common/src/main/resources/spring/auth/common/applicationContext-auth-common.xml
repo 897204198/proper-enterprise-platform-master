@@ -7,7 +7,7 @@
                            http://www.springframework.org/schema/security
                            http://www.springframework.org/schema/security/spring-security.xsd">
     
-    <bean id="userDetailsManager" class="com.proper.enterprise.platform.authc.service.impl.UserDetailsServiceImpl" >
+    <bean id="userDetailsManager" class="com.proper.enterprise.platform.auth.service.impl.UserDetailsServiceImpl" >
         <property name="usersDao" ref="usersDao" />
         <property name="roleResourceRelationDao" ref="roleResourceRelationDao" />
     </bean>
