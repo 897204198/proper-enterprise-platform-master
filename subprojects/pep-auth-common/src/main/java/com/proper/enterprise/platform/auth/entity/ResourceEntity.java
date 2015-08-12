@@ -60,7 +60,7 @@ public class ResourceEntity extends BaseEntity {
      * 显示顺序
      */
     @Column(nullable = false)
-    private int sequenceNumber = 0;
+    private int sequenceNumber;
     
     /**
      * 安全控制属性

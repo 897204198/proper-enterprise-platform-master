@@ -81,8 +81,8 @@ public class UserEntity extends BaseEntity {
     
     @Override
     public String toString() {
-        return "User [id=" + id + ", loginName=" + loginName + ", name=" + name +
-                ", extendPropertiesText=" + extendPropertiesText + ", extendId=" + extendId + "]";
+        return "User [id=" + id + ", loginName=" + loginName + ", name=" + name
+                + ", extendPropertiesText=" + extendPropertiesText + ", extendId=" + extendId + "]";
     }
     
     public String getLoginName() {

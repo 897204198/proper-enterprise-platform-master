@@ -25,8 +25,7 @@ dependencies {
     tomcat libraries.tomcat
     providedRuntime libraries.servlet_api
 
-    compile project(':pep-auth-api'),
-            project(':pep-auth-common')
+    compile project(':pep-auth-common')
 
     testCompile libraries.spring_test
 

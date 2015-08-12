@@ -43,13 +43,13 @@ class Crud {
     
     void update() {
         UserEntity user = repository.findOne(id)
-        user.decription = 'desc of user'
+        user.description = 'desc of user'
         repository.save(user)
     }
     
     void updateCheck() {
         UserEntity user = repository.findOne(id)
-        assert user.decription == 'desc of user'
+        assert user.description == 'desc of user'
     }
 
     void delete() {
