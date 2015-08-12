@@ -50,6 +50,11 @@ subprojects {
                     libraries.junit,
                     libraries.spock,
                     libraries.spring_test
+
+        testRuntime libraries.h2,
+                    libraries.hibernate_hikaricp,
+                    libraries.hibernate_ehcache,
+                    libraries.servlet_api
     }
 
 }
