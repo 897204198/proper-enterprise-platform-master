@@ -43,10 +43,10 @@ Proper Enterprise Platform
 
 ### 包路径及类名
 
-* 实体：`com.proper.enterprise.platform.api.[module].entity.*Entity`
 * 接口：`com.proper.enterprise.platform.api.[module].service.*Service`
 * 实现：`com.proper.enterprise.platform.[module].service.impl.*ServiceImpl`
-* Repository：`com.proper.enterprise.platform.api.[module].repository.*Repository`
+* 实体：`com.proper.enterprise.platform.[module].entity.*Entity`
+* Repository：`com.proper.enterprise.platform.[module].repository.*Repository`
 * 单元测试：与被测试的类相同路径，被测试类名称为测试类名前缀，基于 `Junit` 的测试以 `Test` 为后缀，基于 `Spock` 的测试以 `Spec` 为后缀
 * 集成测试：`com.proper.enterprise.platform.integration.**.*IntegTest`
 
