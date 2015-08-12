@@ -16,6 +16,11 @@ public class RoleResourceEntity extends BaseEntity {
 
     private static final long serialVersionUID = -4804048854364046699L;
     
+    public RoleResourceEntity(String roleId, String resourceId) {
+        this.roleId = roleId;
+        this.resourceId = resourceId;
+    }
+    
     /**
      * 角色id
      */

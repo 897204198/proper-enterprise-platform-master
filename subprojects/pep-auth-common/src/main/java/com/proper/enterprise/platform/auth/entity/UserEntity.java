@@ -20,6 +20,12 @@ public class UserEntity extends BaseEntity {
 
     private static final long serialVersionUID = -932921035920514049L;
     
+    public UserEntity(String loginName, String account, String password) {
+        this.loginName = loginName;
+        this.account = account;
+        this.password = password;
+    }
+    
     /**
      * 登录名，唯一
      */

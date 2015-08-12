@@ -16,6 +16,11 @@ public class UserRoleEntity extends BaseEntity {
 
     private static final long serialVersionUID = 8763871766032994582L;
     
+    public UserRoleEntity(String userId, String roleId) {
+        this.userId = userId;
+        this.roleId = roleId;
+    }
+    
     /**
      * 角色id
      */
