@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.api.authc.entity;
+package com.proper.enterprise.platform.api.auth.entity;
 
 import java.util.Map;
 import java.util.Map.Entry;

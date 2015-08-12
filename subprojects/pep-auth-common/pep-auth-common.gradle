@@ -1,4 +1,4 @@
 dependencies {
     compile libraries.spring_security_web,
-            project(':pep-authc-api')
+            project(':pep-auth-api')
 }
