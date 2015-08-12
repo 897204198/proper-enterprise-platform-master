@@ -4,6 +4,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 
 import com.proper.enterprise.platform.auth.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.entity.RoleEntity
@@ -15,7 +17,7 @@ import com.proper.enterprise.platform.auth.repository.RoleRepository
 import com.proper.enterprise.platform.auth.repository.RoleResourceRepository
 import com.proper.enterprise.platform.auth.repository.UserRepository
 import com.proper.enterprise.platform.auth.repository.UserRoleRepository
-import com.proper.enterprise.platform.test.integration.IntegTest
+import com.proper.enterprise.platform.test.integration.annotation.IntegTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @IntegTest

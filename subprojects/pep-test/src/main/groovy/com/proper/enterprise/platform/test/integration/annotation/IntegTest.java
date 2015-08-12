@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.test.integration;
+package com.proper.enterprise.platform.test.integration.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
