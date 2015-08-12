@@ -1,7 +1,8 @@
 package com.proper.enterprise.platform.auth.service.impl;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,15 +25,15 @@ public class ResourceServiceImpl implements ResourceService {
     RoleResourceRepository rrRepo;
 
     @Override
-    public List<Resource> getResourcesByUser(String userId) {
+    public Set<Resource> getResourcesByUser(String userId) {
         List<UserRoleEntity> ures = urRepo.findAllByUserId(userId);
         int len = ures.size();
-        String[] roles = new String[len];
-        for (int i = 0; i < len; i++) {
-            roles[i] = ures.get(i).getRoleId();
+        Set<String> roles = new HashSet<String>(len);
+        for (UserRoleEntity ure : ures) {
+            roles.add(ure.getRoleId());
         }
-        List<RoleResourceEntity> rres = rrRepo.findAllByRoles(roles);
-        List<Resource> resources = new ArrayList<Resource>();
+        List<RoleResourceEntity> rres = rrRepo.findByRoleIdIn(roles);
+        Set<Resource> resources = new HashSet<Resource>(rres.size());
         for (RoleResourceEntity rre : rres) {
             resources.add(ResourceConverter.toResource(rre));
         }

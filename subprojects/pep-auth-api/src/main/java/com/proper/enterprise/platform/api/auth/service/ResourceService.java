@@ -1,11 +1,11 @@
 package com.proper.enterprise.platform.api.auth.service;
 
-import java.util.List;
+import java.util.Set;
 
 import com.proper.enterprise.platform.api.auth.Resource;
 
 public interface ResourceService {
     
-    List<Resource> getResourcesByUser(String userId);
+    Set<Resource> getResourcesByUser(String userId);
 
 }

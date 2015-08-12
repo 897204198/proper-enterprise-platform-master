@@ -1,5 +1,7 @@
 package com.proper.enterprise.platform.integration.auth
 
+import java.util.List;
+
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,6 +9,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
+import com.proper.enterprise.platform.api.auth.Resource;
+import com.proper.enterprise.platform.api.auth.User;
+import com.proper.enterprise.platform.api.auth.service.ResourceService;
+import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.entity.RoleEntity
 import com.proper.enterprise.platform.auth.entity.RoleResourceEntity
@@ -38,6 +44,12 @@ class GetUserResourcesIntegTest {
     @Autowired
     RoleResourceRepository rrRepo
     
+    @Autowired
+    UserService userService;
+    
+    @Autowired
+    ResourceService resService;
+    
     String userId
     
     String roleAId
@@ -47,7 +59,15 @@ class GetUserResourcesIntegTest {
     String[] resIds = new String[10]
     
     @Test
-    public void insertData() {
+    public void test() {
+        insertData()
+        
+        User user = userService.getUserByUsername('hinex')
+        Set<Resource> resources = resService.getResourcesByUser(user.id)
+        assert resources.size() == 10
+    }
+    
+    private void insertData() {
         createUser()
         createRoles()
         grantUserRoles()

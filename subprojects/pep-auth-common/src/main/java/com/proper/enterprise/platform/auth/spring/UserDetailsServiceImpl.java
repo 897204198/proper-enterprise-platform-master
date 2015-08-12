@@ -2,7 +2,6 @@ package com.proper.enterprise.platform.auth.spring;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -45,7 +44,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private Collection<GrantedAuthority> obtainGrantedAuthorities(String userId) {
         Set<GrantedAuthority> authSet = new HashSet<GrantedAuthority>();
         
-        List<Resource> resources = resService.getResourcesByUser(userId);
+        Set<Resource> resources = resService.getResourcesByUser(userId);
         for (Resource res : resources) {
             authSet.add(new SimpleGrantedAuthority(res.getId()));
         }
