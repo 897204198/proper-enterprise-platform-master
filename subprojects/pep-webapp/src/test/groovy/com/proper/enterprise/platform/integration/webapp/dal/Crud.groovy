@@ -2,20 +2,20 @@ package com.proper.enterprise.platform.integration.webapp.dal
 
 import org.springframework.beans.factory.annotation.Autowired
 
-import com.proper.enterprise.platform.auth.entity.UserEntity;
 import com.proper.enterprise.platform.core.enums.ActiveStatus
 import com.proper.enterprise.platform.core.enums.UseStatus
-import com.proper.enterprise.platform.integration.webapp.dal.repository.BaseDAOTestRepository
+import com.proper.enterprise.platform.integration.webapp.dal.entity.TestEntity
+import com.proper.enterprise.platform.integration.webapp.dal.repository.TestRepository
 
 class Crud {
     
     @Autowired
-    BaseDAOTestRepository repository
+    TestRepository repository
     
     String id
     
     void create() {
-        UserEntity user = new UserEntity()
+        TestEntity user = new TestEntity()
         user.setCreateUserId('1')
         user.setLastModifyUserId('1')
         user.setLoginName('test')
@@ -26,7 +26,7 @@ class Crud {
     }
     
     void retrieve() {
-        UserEntity user = repository.findOne(id)
+        TestEntity user = repository.findOne(id)
         
         // check set values
         assert user.createUserId == '1'
@@ -42,13 +42,13 @@ class Crud {
     }
     
     void update() {
-        UserEntity user = repository.findOne(id)
+        TestEntity user = repository.findOne(id)
         user.description = 'desc of user'
         repository.save(user)
     }
     
     void updateCheck() {
-        UserEntity user = repository.findOne(id)
+        TestEntity user = repository.findOne(id)
         assert user.description == 'desc of user'
     }
 
