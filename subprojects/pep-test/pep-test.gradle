@@ -1,4 +1,5 @@
 dependencies {
     compile libraries.groovy,
+            libraries.junit,
             libraries.spring_test
 }
