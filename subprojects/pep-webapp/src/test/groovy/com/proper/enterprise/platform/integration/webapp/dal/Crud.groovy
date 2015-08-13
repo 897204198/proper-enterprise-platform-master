@@ -6,8 +6,9 @@ import com.proper.enterprise.platform.core.enums.ActiveStatus
 import com.proper.enterprise.platform.core.enums.UseStatus
 import com.proper.enterprise.platform.integration.webapp.dal.entity.TestEntity
 import com.proper.enterprise.platform.integration.webapp.dal.repository.TestRepository
+import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 
-class Crud {
+class Crud extends AbstractIntegTest {
     
     @Autowired
     TestRepository repository
