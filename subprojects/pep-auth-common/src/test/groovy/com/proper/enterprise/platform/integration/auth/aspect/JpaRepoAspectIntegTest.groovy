@@ -7,7 +7,7 @@ import org.springframework.test.context.ContextHierarchy
 
 import com.proper.enterprise.platform.auth.entity.UserEntity
 import com.proper.enterprise.platform.auth.repository.UserRepository
-import com.proper.enterprise.platform.test.integration.AbstractIntegTest;
+import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 
 @ContextHierarchy(@ContextConfiguration('/spring/auth/common/applicationContext-auth-common.xml'))
 class JpaRepoAspectIntegTest extends AbstractIntegTest {
