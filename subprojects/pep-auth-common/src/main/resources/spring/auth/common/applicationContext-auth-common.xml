@@ -2,20 +2,31 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/security
-                           http://www.springframework.org/schema/security/spring-security.xsd">
+                           http://www.springframework.org/schema/security/spring-security.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd">
     
-    <bean id="userDetailsManager" class="com.proper.enterprise.platform.auth.service.impl.UserDetailsServiceImpl" >
-        <property name="usersDao" ref="usersDao" />
-        <property name="roleResourceRelationDao" ref="roleResourceRelationDao" />
-    </bean>
+    <bean id="userDetailsManager" class="com.proper.enterprise.platform.auth.spring.UserDetailsServiceImpl" />
 
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider user-service-ref="userDetailsManager">
-           <security:password-encoder hash="md5"/>
+           <security:password-encoder hash="md5" />
         </security:authentication-provider>
     </security:authentication-manager>
+    
+    <!-- JpaRepository save aspect, use this to auto update lastModifyUserId and lastModifyTime of BaseEntity -->
+    
+    <bean id="jpaRepositoryAspect" class="com.proper.enterprise.platform.auth.aspect.JpaRepositoryAspect" />
+    
+    <aop:config>
+        <aop:aspect id="jpaRepoAspect" ref="jpaRepositoryAspect">
+	        <aop:pointcut id="savePointcut" expression="execution(* org.springframework.data.jpa.repository.JpaRepository.save*(..))" />
+	        <aop:before pointcut-ref="savePointcut" method="beforeSave" />
+        </aop:aspect>
+    </aop:config>
 
 </beans>
