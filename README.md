@@ -58,12 +58,10 @@ Proper Enterprise Platform
 * Repository：`com.proper.enterprise.platform.[module]..repository.*Repository`，需继承 `JpaRepository`
 * 单元测试：与被测试的类相同路径，被测试类名称为测试类名前缀，基于 `Junit` 的测试以 `Test` 为后缀，基于 `Spock` 的测试以 `Spec` 为后缀
 * 集成测试：`com.proper.enterprise.platform.integration.**.*IntegTest`
-    > 集成测试需用 `IntegTest` 注解标识，如：
+    > 集成测试继承 `AbstractIntegTest`，如：
 
     ```
-    @RunWith(SpringJUnit4ClassRunner.class)
-    @IntegTest
-    class CrudIntegTest
+    class Crud extends AbstractIntegTest
     ```
 
 
@@ -151,6 +149,6 @@ Proper Enterprise Platform
 
 平台只包含一个 web 应用，即 `pep-webapp`，其余模块以 `jar` 包形式被其依赖
 
-    $ ./gradlew pep-webapp:clean pep-webapp:war
+    $ ./gradlew clean war
 
 构建好的 `war` 包会输出到 `pep-webapp` 项目根路径下的 `build/libs` 路径内。
