@@ -1,39 +1,17 @@
 package com.proper.enterprise.platform.api.auth;
 
-import java.io.Serializable;
+public interface User {
 
-public class User implements Serializable {
+    String getId();
 
-    private static final long serialVersionUID = -4058894818685669872L;
-    
-    private String id;
-    
-    private String username;
-    
-    private String password;
+    void setId(String id);
 
-    public String getId() {
-        return id;
-    }
+    String getUsername();
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    void setUsername(String username);
 
-    public String getUsername() {
-        return username;
-    }
+    String getPassword();
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    void setPassword(String password);
     
 }

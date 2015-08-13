@@ -41,8 +41,6 @@ Proper Enterprise Platform
 
 **TODO**
 
-### 包路径及类名
-
 * 接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
 * 实现：`com.proper.enterprise.platform.[module]..service.impl.*ServiceImpl`
 * 实体：`com.proper.enterprise.platform.[module]..entity.*Entity`
@@ -55,6 +53,8 @@ Proper Enterprise Platform
 	public class UserEntity extends BaseEntity
     ```
         
+* DTO：`com.proper.enterprise.platform.[module]..dto.*DTO`
+    > 为避免使用 `openSessionInView` 模式，使用 `DTO` 储存实体中数据，以供数据传输及界面显示使用（合并 `VO` 职能）。`DTO` 中需提供根据相应实体构造 `DTO` 的构造函数
 * Repository：`com.proper.enterprise.platform.[module]..repository.*Repository`，需继承 `JpaRepository`
 * 单元测试：与被测试的类相同路径，被测试类名称为测试类名前缀，基于 `Junit` 的测试以 `Test` 为后缀，基于 `Spock` 的测试以 `Spec` 为后缀
 * 集成测试：`com.proper.enterprise.platform.integration.**.*IntegTest`

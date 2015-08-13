@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
-import com.proper.enterprise.platform.auth.ResourceConverter;
+import com.proper.enterprise.platform.auth.dto.ResourceDTO;
 import com.proper.enterprise.platform.auth.entity.RoleResourceEntity;
 import com.proper.enterprise.platform.auth.entity.UserRoleEntity;
 import com.proper.enterprise.platform.auth.repository.RoleResourceRepository;
@@ -35,7 +35,7 @@ public class ResourceServiceImpl implements ResourceService {
         List<RoleResourceEntity> rres = rrRepo.findByRoleIdIn(roles);
         Set<Resource> resources = new HashSet<Resource>(rres.size());
         for (RoleResourceEntity rre : rres) {
-            resources.add(ResourceConverter.toResource(rre));
+            resources.add(new ResourceDTO(rre));
         }
         return resources;
     }
