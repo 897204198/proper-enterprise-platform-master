@@ -8,13 +8,13 @@
                            http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
     <security:http auto-config="true">
-        <security:intercept-url pattern="/**/*.jpg" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/**/*.png" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/**/*.gif" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/**/*.css" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/**/*.js" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/**/*.ico" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/login" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <security:intercept-url pattern="/**/*.jpg" access="isAnonymous()" />
+        <security:intercept-url pattern="/**/*.png" access="isAnonymous()" />
+        <security:intercept-url pattern="/**/*.gif" access="isAnonymous()" />
+        <security:intercept-url pattern="/**/*.css" access="isAnonymous()" />
+        <security:intercept-url pattern="/**/*.js" access="isAnonymous()" />
+        <security:intercept-url pattern="/**/*.ico" access="isAnonymous()" />
+        <security:intercept-url pattern="/login" access="isAnonymous()" />
         <security:intercept-url pattern="/**" access="ROLE_USER" />
 
         <security:form-login login-page="/login" authentication-failure-url="/login?error=true" default-target-url="/index" />
