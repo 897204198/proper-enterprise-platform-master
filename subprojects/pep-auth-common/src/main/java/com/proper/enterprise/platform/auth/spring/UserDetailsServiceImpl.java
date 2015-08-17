@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.auth.spring;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.proper.enterprise.platform.api.auth.Resource;
+import com.proper.enterprise.platform.api.auth.User;
+import com.proper.enterprise.platform.api.auth.service.ResourceService;
+import com.proper.enterprise.platform.api.auth.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.proper.enterprise.platform.api.auth.Resource;
-import com.proper.enterprise.platform.api.auth.User;
-import com.proper.enterprise.platform.api.auth.service.ResourceService;
-import com.proper.enterprise.platform.api.auth.service.UserService;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class UserDetailsServiceImpl implements UserDetailsService {
     
@@ -42,7 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
     
     private Collection<GrantedAuthority> obtainGrantedAuthorities(String userId) {
-        Set<GrantedAuthority> authSet = new HashSet<GrantedAuthority>();
+        Set<GrantedAuthority> authSet = new HashSet<>();
         
         Set<Resource> resources = resService.getResourcesByUser(userId);
         for (Resource res : resources) {

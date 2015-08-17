@@ -1,13 +1,11 @@
 package com.proper.enterprise.platform.auth.dto;
 
-import java.io.Serializable;
-
+import com.proper.enterprise.platform.api.auth.Resource;
+import com.proper.enterprise.platform.auth.entity.ResourceEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.proper.enterprise.platform.api.auth.Resource;
-import com.proper.enterprise.platform.auth.entity.ResourceEntity;
-import com.proper.enterprise.platform.auth.entity.RoleResourceEntity;
+import java.io.Serializable;
 
 public class ResourceDTO implements Serializable, Resource {
     
@@ -16,20 +14,15 @@ public class ResourceDTO implements Serializable, Resource {
     private static final long serialVersionUID = -8467254578546259161L;
     
     private String id;
+
+    private String url;
     
     public ResourceDTO(ResourceEntity entity) {
         if (entity == null) {
             LOGGER.error("Entity SHOULD NOT NULL!");
         } else {
             this.id = entity.getId();
-        }
-    }
-    
-    public ResourceDTO(RoleResourceEntity entity) {
-        if (entity == null) {
-            LOGGER.error("Entity SHOULD NOT NULL!");
-        } else {
-            this.id = entity.getResourceId();
+            this.url = entity.getUrl();
         }
     }
     
@@ -59,6 +52,16 @@ public class ResourceDTO implements Serializable, Resource {
     @Override
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public String getUrl() {
+        return url;
+    }
+
+    @Override
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 }

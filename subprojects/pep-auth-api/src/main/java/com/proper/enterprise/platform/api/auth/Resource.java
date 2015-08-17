@@ -5,5 +5,9 @@ public interface Resource {
     String getId();
 
     void setId(String id);
+
+    String getUrl();
+
+    void setUrl(String url);
     
 }
