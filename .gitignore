@@ -11,7 +11,6 @@
 .gradle
 build
 bin
-META-INF
 
 # ignore generate scripts
 init_mongo_for_proper_dfs.js
