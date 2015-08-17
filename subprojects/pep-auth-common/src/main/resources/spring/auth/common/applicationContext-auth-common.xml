@@ -17,8 +17,9 @@
         <security:intercept-url pattern="/login" access="isAnonymous()" />
         <security:intercept-url pattern="/**" access="hasRole('USER')" />
 
-        <security:form-login login-page="/login" authentication-failure-url="/login?error=true" default-target-url="/index" />
-
+        <!--<security:form-login login-page="/login" authentication-failure-url="/login?error=true" default-target-url="/index" />-->
+        <security:form-login />
+        
         <security:custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR" />
     </security:http>
 
