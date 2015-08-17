@@ -1,5 +1,4 @@
 package com.proper.enterprise.platform.integration.auth.aspect
-
 import com.proper.enterprise.platform.auth.entity.UserEntity
 import com.proper.enterprise.platform.auth.repository.UserRepository
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
@@ -17,6 +16,9 @@ class JpaRepoAspectIntegTest extends AbstractIntegTest {
     @Test
     def void saveEntity() {
         def user = repo.save(new UserEntity('hinex', 'hinex_account', 'hinex_password'))
+        println user.getLastModifyUserId()
+        println user.getLastModifyTime()
+        println user
     }
 
 }

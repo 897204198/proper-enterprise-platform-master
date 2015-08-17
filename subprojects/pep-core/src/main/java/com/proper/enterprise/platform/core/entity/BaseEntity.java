@@ -1,19 +1,17 @@
 package com.proper.enterprise.platform.core.entity;
 
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Map.Entry;
+import com.proper.enterprise.platform.core.json.JSONObject;
+import com.proper.enterprise.platform.core.json.JSONUtil;
+import com.proper.enterprise.platform.core.utils.DateUtil;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import com.proper.enterprise.platform.core.json.JSONObject;
-import com.proper.enterprise.platform.core.json.JSONUtil;
-import com.proper.enterprise.platform.core.utils.DateUtil;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Map.Entry;
 
 @MappedSuperclass
 public class BaseEntity implements Serializable {
@@ -26,13 +24,13 @@ public class BaseEntity implements Serializable {
     protected String id;
     
     @Column(updatable = false, nullable = false)
-    protected String createUserId = "sys";
+    protected String createUserId;
     
     @Column(updatable = false, nullable = false)
     protected String createTime = DateUtil.getCurrentDateString();
     
     @Column(nullable = false)
-    protected String lastModifyUserId = "sys";
+    protected String lastModifyUserId;
     
     @Column(nullable = false)
     protected String lastModifyTime = DateUtil.getCurrentDateString();
