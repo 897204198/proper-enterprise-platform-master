@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.aop;
 
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.MethodBeforeAdvice;
@@ -14,6 +15,8 @@ import java.util.Iterator;
 public class HistoricalAdvice implements MethodBeforeAdvice {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
+
+    private String userId = "aop";
 
     @Override
     public void before(Method method, Object[] args, Object target) throws Throwable {
@@ -30,7 +33,11 @@ public class HistoricalAdvice implements MethodBeforeAdvice {
     }
 
     private void update(BaseEntity entity) {
-        entity.setLastModifyUserId("aop");
+        if (StringUtil.isNull(entity.getId())) {
+            entity.setCreateUserId(userId);
+            entity.setCreateTime(DateUtil.getCurrentDateString());
+        }
+        entity.setLastModifyUserId(userId);
         entity.setLastModifyTime(DateUtil.getCurrentDateString());
     }
 }
