@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.integration.webapp.dal
 
+import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 import com.proper.enterprise.platform.core.enums.ActiveStatus
@@ -17,8 +18,6 @@ class Crud extends AbstractIntegTest {
     
     void create() {
         TestEntity user = new TestEntity()
-        user.setCreateUserId('1')
-        user.setLastModifyUserId('1')
         user.setLoginName('test')
         user.setAccount('testaccount')
         user.setPassword('testpassword')
@@ -30,8 +29,8 @@ class Crud extends AbstractIntegTest {
         TestEntity user = repository.findOne(id)
         
         // check set values
-        assert user.createUserId == '1'
-        assert user.lastModifyUserId == '1'
+        assert user.createUserId > ''
+        assert user.lastModifyUserId > ''
         assert user.loginName == 'test'
         assert user.account == 'testaccount'
         assert user.password == 'testpassword'
@@ -39,7 +38,7 @@ class Crud extends AbstractIntegTest {
         // check default values
         assert user.activeStatus == ActiveStatus.INACTIVE
         assert user.useStatus == UseStatus.STOP
-        assert user.neverExpired == false
+        assert !user.neverExpired
     }
     
     void update() {
@@ -56,5 +55,8 @@ class Crud extends AbstractIntegTest {
     void delete() {
         repository.delete(id)
     }
+
+    @Test
+    void testNothing() { }
 
 }
