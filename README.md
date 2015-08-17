@@ -13,13 +13,13 @@ Proper Enterprise Platform
 |Servlet|3.0.1|
 |JSP|2.2|
 |JSTL|1.2|
-|Tomcat|7.0.63|
+|Tomcat|[7.0.63](http://tomcat.apache.org/download-70.cgi)|
 |Spring|[Spring Framework 4.1.7.RELEASE](https://github.com/spring-projects/spring-framework/tree/v4.1.7.RELEASE)|
-|Security|spring-security 4.0.1.RELEASE|
-|Logging|Slf4j 1.7.12，Logback 1.1.3|
+|Security|[Spring Security 4.0.1.RELEASE](https://github.com/spring-projects/spring-security/tree/4.0.1.RELEASE)|
+|Logging|[SLF4J 1.7.12](https://github.com/qos-ch/slf4j/tree/v_1.7.12)<br/>[Logback 1.1.3](https://github.com/qos-ch/logback)|
 |Cache|ehcache 2.10.0|
 |Validator|Hibernate Validator 5.1.3.Final|
-|数据库，事务||
+|数据库|[H2 Database 1.3.176](https://github.com/h2database/h2database/tree/version-1.3/version-1.3.176/h2)|
 |Connection Pool|[HikariCP 2.4.0](https://github.com/brettwooldridge/HikariCP/tree/HikariCP-2.4.0)|
 |JPA Provider|[Hibernate EntityManager 4.3.10.Final](https://github.com/hibernate/hibernate-orm/tree/4.3.10.Final)|
 |Data Access Layer|[Spring Data JPA 1.8.2.RELEASE](https://github.com/spring-projects/spring-data-jpa/tree/1.8.2.RELEASE)|
@@ -90,7 +90,9 @@ Proper Enterprise Platform
 开发环境
 -------
 
-目前仅支持作为 `eclipse` 工程导入。导入前需先生成 `eclipse` 使用的配置文件：
+### Eclipse
+
+导入前需先生成 `eclipse` 使用的配置文件：
 
     $ ./gradlew cleanEclipse eclipse
 
@@ -101,6 +103,10 @@ Proper Enterprise Platform
     $ ./gradlew pep-core:cleanEclipse pep-core:eclipse
     
 导入后的项目会自动配置好 `java` 项目或 `web` 项目的类别，`web` 项目可以直接发布到 `tomcat` 下进行开发。
+
+### IntelliJ IDEA
+
+    $ ./gradlew cleanIdea idea
 
 
 测试
