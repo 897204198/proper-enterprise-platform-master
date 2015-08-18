@@ -1,17 +1,12 @@
 package com.proper.enterprise.platform.auth.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.enums.ActiveStatus;
 import com.proper.enterprise.platform.core.enums.UseStatus;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "pep_auth_user")
@@ -19,6 +14,8 @@ import com.proper.enterprise.platform.core.enums.UseStatus;
 public class UserEntity extends BaseEntity {
 
     private static final long serialVersionUID = -932921035920514049L;
+
+    public UserEntity() { }
     
     public UserEntity(String loginName, String account, String password) {
         this.loginName = loginName;

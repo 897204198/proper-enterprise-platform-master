@@ -76,7 +76,7 @@ class GetUserResourcesIntegTest extends AbstractIntegTest {
     private void createRoles() {
         def roleA = new RoleEntity('roleA')
         def roleB = new RoleEntity('roleB')
-        def roles = roleRepo.save([roleA, roleB])
+        roleRepo.save([roleA, roleB])
         roleAId = roleA.id
         roleBId = roleB.id
         assert roleAId > ''

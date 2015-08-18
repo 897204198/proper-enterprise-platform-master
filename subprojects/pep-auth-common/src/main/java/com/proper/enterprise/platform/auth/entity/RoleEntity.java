@@ -1,16 +1,11 @@
 package com.proper.enterprise.platform.auth.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-
+import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.enums.UseStatus;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.proper.enterprise.platform.core.entity.BaseEntity;
-import com.proper.enterprise.platform.core.enums.UseStatus;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "pep_auth_role")
@@ -19,19 +14,19 @@ public class RoleEntity extends BaseEntity {
 
     private static final long serialVersionUID = 619340355704563195L;
     
-    public RoleEntity(String code) {
-        this.code = code;
+    public RoleEntity(String name) {
+        this.name = name;
     }
     
     /**
      * 名称
      */
+    @Column(nullable = false, unique = true)
     private String name;
     
     /**
      * code
      */
-    @Column(nullable = false, unique = true)
     private String code;
     
     /**
