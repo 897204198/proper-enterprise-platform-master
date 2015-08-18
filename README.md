@@ -65,6 +65,9 @@ Proper Enterprise Platform
     class Crud extends AbstractIntegTest
     ```
 
+* 建表：Hibernate 按照 JPA 的注解自动创建
+* 初始化数据：sql 语句放在对应模块 `src/main/resources/sql/*.sql`，系统运行时自动执行
+
 
 项目构建
 --------
