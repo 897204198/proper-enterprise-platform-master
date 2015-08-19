@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.integration.webapp.dal
 import org.junit.Test
 import org.springframework.transaction.annotation.Transactional
 
-class TxIntegTest extends Crud {
+class TxIntegTest extends CrudBaseIntegTest {
     
     @Test
     void normal() {

@@ -9,14 +9,13 @@ import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.Iterator;
 
 @Component
 public class HistoricalAdvice implements MethodBeforeAdvice {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
 
-    private String userId = "aop";
+    public static String USER_ID = "aop";
 
     @Override
     public void before(Method method, Object[] args, Object target) throws Throwable {
@@ -25,19 +24,18 @@ public class HistoricalAdvice implements MethodBeforeAdvice {
         if (obj instanceof BaseEntity) {
             update((BaseEntity) obj);
         } else if (obj instanceof Iterable) {
-            Iterator<BaseEntity> iter = ((Iterable) obj).iterator();
-            while (iter.hasNext()) {
-                update(iter.next());
+            for (Object entity : (Iterable) obj) {
+                update((BaseEntity)entity);
             }
         }
     }
 
     private void update(BaseEntity entity) {
         if (StringUtil.isNull(entity.getId())) {
-            entity.setCreateUserId(userId);
+            entity.setCreateUserId(USER_ID);
             entity.setCreateTime(DateUtil.getCurrentDateString());
         }
-        entity.setLastModifyUserId(userId);
+        entity.setLastModifyUserId(USER_ID);
         entity.setLastModifyTime(DateUtil.getCurrentDateString());
     }
 }

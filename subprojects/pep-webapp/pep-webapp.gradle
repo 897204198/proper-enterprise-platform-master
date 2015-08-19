@@ -48,15 +48,9 @@ task integTomcatStop(type: com.bmuschko.gradle.tomcat.tasks.TomcatStop) {
     stopKey = tomcatStopKey
 }
 
-task integTest(type: Test) {
-    include '**/*IntegTest.*'
-    //dependsOn integTomcatRun
-    //finalizedBy integTomcatStop
-}
+//task integTest(type: Test) {
+//    include '**/*IntegTest.*'
+//    //dependsOn integTomcatRun
+//    //finalizedBy integTomcatStop
+//}
 
-check.dependsOn integTest
-build.dependsOn integTest
-
-test {
-    exclude '**/*IntegTest.*'
-}

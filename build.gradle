@@ -42,6 +42,17 @@ subprojects {
         from sourceSets.main.allSource
     }
 
+    task integTest(type: Test) {
+        include '**/*IntegTest.*'
+    }
+
+    test {
+        exclude '**/*IntegTest.*'
+    }
+
+    check.dependsOn integTest
+    build.dependsOn integTest
+
     dependencies {
         compile libraries.spring_data_jpa,
                 libraries.spring_webmvc

@@ -9,7 +9,7 @@ import com.proper.enterprise.platform.integration.webapp.dal.entity.TestEntity
 import com.proper.enterprise.platform.integration.webapp.dal.repository.TestRepository
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 
-class Crud extends AbstractIntegTest {
+class CrudBaseIntegTest extends AbstractIntegTest {
     
     @Autowired
     TestRepository repository
