@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.core.entity;
 import com.proper.enterprise.platform.core.json.JSONObject;
 import com.proper.enterprise.platform.core.json.JSONUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -39,8 +40,11 @@ public class BaseEntity implements Serializable {
     protected String extendProperties;
     
     public String getExtendProperty(String key) {
-        JSONObject jsonObject = JSONUtil.parseObject(extendProperties);
+        if (StringUtil.isNull(extendProperties)) {
+            return null;
+        }
 
+        JSONObject jsonObject = JSONUtil.parseObject(extendProperties);
         if (jsonObject.containsKey(key)) {
             return jsonObject.get(key).toString();
         }
@@ -58,7 +62,7 @@ public class BaseEntity implements Serializable {
         
         jsonObject.put(key, value);
 
-        this.extendProperties = jsonObject.toString();
+        this.extendProperties = JSONUtil.toJSONString(jsonObject);
     }
 
     public void putExtendProperty(Map<String, String> extendProperties) {

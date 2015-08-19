@@ -17,9 +17,8 @@ public class UserEntity extends BaseEntity {
 
     public UserEntity() { }
     
-    public UserEntity(String loginName, String account, String password) {
+    public UserEntity(String loginName, String password) {
         this.loginName = loginName;
-        this.account = account;
         this.password = password;
     }
     
@@ -29,12 +28,6 @@ public class UserEntity extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String loginName;
     
-    /**
-     * 账号，唯一
-     */
-    @Column(unique = true, nullable = false)
-    private String account;
-
     /**
      * 密码
      */
@@ -99,14 +92,6 @@ public class UserEntity extends BaseEntity {
 
     public void setLoginName(String loginName) {
         this.loginName = loginName;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
     }
 
     public String getPassword() {
