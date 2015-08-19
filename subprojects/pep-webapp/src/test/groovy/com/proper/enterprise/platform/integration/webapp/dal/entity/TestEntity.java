@@ -1,14 +1,10 @@
 package com.proper.enterprise.platform.integration.webapp.dal.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.enums.ActiveStatus;
 import com.proper.enterprise.platform.core.enums.UseStatus;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "pep_test_dal")
@@ -74,6 +70,8 @@ public class TestEntity extends BaseEntity {
      * 邮箱，用于找回密码
      */
     private String email;
+
+    private String description;
 
     public String getLoginName() {
         return loginName;
@@ -155,4 +153,11 @@ public class TestEntity extends BaseEntity {
         this.email = email;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

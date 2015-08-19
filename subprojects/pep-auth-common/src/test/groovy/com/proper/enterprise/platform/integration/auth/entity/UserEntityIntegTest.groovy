@@ -23,6 +23,7 @@ class UserEntityIntegTest extends AbstractIntegTest {
         repo.save(entity)
         
         UserEntity user = repo.findByLoginName('hinex')
+        assert user.getExtendProperties() != null
         assert user.getExtendProperties().startsWith("{");
         ['a':'1', 'b':'2', 'c':'3', 'd':'4'].entrySet().each { entry ->
             assertThat user.getExtendProperty(entry.key), equalTo(entry.value)

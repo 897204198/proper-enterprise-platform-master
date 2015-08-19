@@ -78,7 +78,7 @@ public class UserEntity extends BaseEntity {
     /**
      * override property in super class
      */
-    private String extendProperties;
+    private String extendProperties = "";
     
     @Override
     public String toString() {

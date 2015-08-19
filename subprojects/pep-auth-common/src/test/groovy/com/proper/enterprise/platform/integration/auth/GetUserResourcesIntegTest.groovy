@@ -68,7 +68,7 @@ class GetUserResourcesIntegTest extends AbstractIntegTest {
     }
     
     private void createUser() {
-        def user = userRepo.save(new UserEntity('hinex', 'hinex_account', 'hinex_password'))
+        def user = userRepo.save(new UserEntity('hinex', 'hinex_password'))
         userId = user.id
         assert userId > ''
     }

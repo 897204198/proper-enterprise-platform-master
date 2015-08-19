@@ -32,7 +32,7 @@ public class BaseEntity implements Serializable {
     
     @Column(nullable = false)
     protected String lastModifyTime = DateUtil.getCurrentDateString();
-    
+
     /**
      * 扩展属性
      */

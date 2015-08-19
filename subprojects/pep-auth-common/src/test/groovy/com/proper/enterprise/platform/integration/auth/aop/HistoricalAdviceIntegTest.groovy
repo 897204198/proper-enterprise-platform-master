@@ -13,15 +13,15 @@ class HistoricalAdviceIntegTest extends AbstractIntegTest {
     
     @Test
     def void saveEntity() {
-        def user = repo.save(new UserEntity('hinex', 'hinex_account', 'hinex_password'))
+        def user = repo.save(new UserEntity('hinex', 'hinex_password'))
         assert user.createUserId == 'aop'
         assert user.lastModifyUserId == 'aop'
     }
 
     @Test
     def void saveEntities() {
-        def user1 = new UserEntity('hinex1', 'hinex_account1', 'hinex_password1')
-        def user2 = new UserEntity('hinex2', 'hinex_account2', 'hinex_password2')
+        def user1 = new UserEntity('hinex1', 'hinex_password1')
+        def user2 = new UserEntity('hinex2', 'hinex_password2')
         repo.save([user1, user2])
         assert user1.createUserId == 'aop'
         assert user2.lastModifyUserId == 'aop'
