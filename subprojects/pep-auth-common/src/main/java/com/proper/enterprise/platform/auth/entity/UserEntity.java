@@ -81,11 +81,16 @@ public class UserEntity extends BaseEntity {
      * 邮箱，用于找回密码
      */
     private String email;
+
+    /**
+     * override property in super class
+     */
+    private String extendProperties;
     
     @Override
     public String toString() {
         return "User [id=" + id + ", loginName=" + loginName + ", name=" + name
-                + ", extendPropertiesText=" + extendPropertiesText + ", extendId=" + extendId + "]";
+                + ", extendProperties=" + extendProperties + "]";
     }
     
     public String getLoginName() {

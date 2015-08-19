@@ -49,9 +49,9 @@ class GetUserResourcesIntegTest extends AbstractIntegTest {
     String roleBId
     
     String[] resIds = new String[10]
-    
+
     @Test
-    public void test() {
+    public void getUserResources() {
         insertData()
         
         User user = userService.getUserByUsername('hinex')

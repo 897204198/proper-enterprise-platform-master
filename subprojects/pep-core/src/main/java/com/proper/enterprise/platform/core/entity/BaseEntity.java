@@ -5,10 +5,7 @@ import com.proper.enterprise.platform.core.json.JSONUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,20 +32,14 @@ public class BaseEntity implements Serializable {
     @Column(nullable = false)
     protected String lastModifyTime = DateUtil.getCurrentDateString();
     
-    protected String description;
-    
-    /**
-     *扩展属性
-     */
-    protected String extendId;
-    
     /**
      * 扩展属性
      */
-    protected String extendPropertiesText;
+    @Transient
+    protected String extendProperties;
     
     public String getExtendProperty(String key) {
-        JSONObject jsonObject = JSONUtil.parseObject(extendPropertiesText);
+        JSONObject jsonObject = JSONUtil.parseObject(extendProperties);
 
         if (jsonObject.containsKey(key)) {
             return jsonObject.get(key).toString();
@@ -57,17 +48,17 @@ public class BaseEntity implements Serializable {
     }
 
     public void putExtendProperty(String key, String value) {
-        if (this.extendPropertiesText == null) {
-            this.extendPropertiesText = "{}";
+        if (this.extendProperties == null) {
+            this.extendProperties = "{}";
         }
-        JSONObject jsonObject = JSONUtil.parseObject(extendPropertiesText);
+        JSONObject jsonObject = JSONUtil.parseObject(extendProperties);
         if (jsonObject.containsKey(key)){
             jsonObject.remove(key);
         }
         
         jsonObject.put(key, value);
 
-        this.extendPropertiesText = jsonObject.toString();
+        this.extendProperties = jsonObject.toString();
     }
 
     public void putExtendProperty(Map<String, String> extendProperties) {
@@ -116,28 +107,12 @@ public class BaseEntity implements Serializable {
         this.lastModifyTime = lastModifyTime;
     }
 
-    public String getExtendId() {
-        return extendId;
+    public String getExtendProperties() {
+        return extendProperties;
     }
 
-    public void setExtendId(String extendId) {
-        this.extendId = extendId;
+    public void setExtendProperties(String extendProperties) {
+        this.extendProperties = extendProperties;
     }
 
-    public String getExtendPropertiesText() {
-        return extendPropertiesText;
-    }
-
-    public void setExtendPropertiesText(String extendPropertiesText) {
-        this.extendPropertiesText = extendPropertiesText;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
 }
