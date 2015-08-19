@@ -15,7 +15,7 @@ public class HistoricalAdvice implements MethodBeforeAdvice {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
 
-    public static String USER_ID = "aop";
+    public static final String USER_ID = "aop";
 
     @Override
     public void before(Method method, Object[] args, Object target) throws Throwable {
