@@ -4,7 +4,6 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -48,7 +47,6 @@ public class ResourceEntity extends BaseEntity {
     /**
      * 显示顺序
      */
-    @Column(nullable = false)
     private int sequenceNumber;
     
     public String getCode() {

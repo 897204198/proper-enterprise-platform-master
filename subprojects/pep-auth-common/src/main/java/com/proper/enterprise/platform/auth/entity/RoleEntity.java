@@ -33,7 +33,6 @@ public class RoleEntity extends BaseEntity {
      * 使用状态
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private UseStatus useStatus = UseStatus.STOP;
 
     public String getName() {

@@ -1,12 +1,12 @@
 package com.proper.enterprise.platform.auth.entity;
 
 import com.proper.enterprise.platform.core.entity.BaseEntity;
-import com.proper.enterprise.platform.core.enums.ActiveStatus;
-import com.proper.enterprise.platform.core.enums.UseStatus;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "pep_auth_user")
@@ -39,37 +39,6 @@ public class UserEntity extends BaseEntity {
      */
     private String name;
 
-    /**
-     * 编号
-     */
-    private String code;
-    
-    /**
-     * 启用状态
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ActiveStatus activeStatus = ActiveStatus.INACTIVE;
-
-    /**
-     * 锁定状态
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UseStatus useStatus = UseStatus.STOP;
-    
-    /**
-     * 永不过期
-     */
-    @Column(nullable = false)
-    @org.hibernate.annotations.Type(type = "yes_no")
-    private boolean neverExpired;
-
-    /**
-     * 到期的时间
-     */
-    private String dueDate;
-    
     /**
      * 邮箱，用于找回密码
      */
@@ -108,46 +77,6 @@ public class UserEntity extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public ActiveStatus getActiveStatus() {
-        return activeStatus;
-    }
-
-    public void setActiveStatus(ActiveStatus activeStatus) {
-        this.activeStatus = activeStatus;
-    }
-
-    public UseStatus getUseStatus() {
-        return useStatus;
-    }
-
-    public void setUseStatus(UseStatus useStatus) {
-        this.useStatus = useStatus;
-    }
-
-    public boolean isNeverExpired() {
-        return neverExpired;
-    }
-
-    public void setNeverExpired(boolean neverExpired) {
-        this.neverExpired = neverExpired;
-    }
-
-    public String getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(String dueDate) {
-        this.dueDate = dueDate;
     }
 
     public String getEmail() {
