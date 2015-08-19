@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class JpaRepoAspectIntegTest extends AbstractIntegTest {
+class HistoricalAdviceIntegTest extends AbstractIntegTest {
     
     @Autowired
     UserRepository repo
