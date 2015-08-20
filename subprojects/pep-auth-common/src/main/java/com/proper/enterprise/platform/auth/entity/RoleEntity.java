@@ -15,8 +15,8 @@ public class RoleEntity extends BaseEntity {
 
     private static final long serialVersionUID = 619340355704563195L;
 
-    public RoleEntity(String name) {
-        this.name = name;
+    public RoleEntity(String code) {
+        this.code = code;
     }
 
     /**
