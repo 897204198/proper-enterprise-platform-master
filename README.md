@@ -46,7 +46,7 @@ Proper Enterprise Platform
 * 接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
 * 实现：`com.proper.enterprise.platform.[module]..service.impl.*ServiceImpl`
 * 实体：`com.proper.enterprise.platform.[module]..entity.*Entity`
-    > 实体类需继承基类 `BaseEntity`，表名规则为 `pep_[module]_[name]`，缓存区域为实体类全路径。如：
+    > 实体类需继承基类 `BaseEntity`，且必须有可用的默认构造函数；表名规则为 `pep_[module]_[name]`；缓存区域为实体类全路径。如：
        
     ```
     @Entity
