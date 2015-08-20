@@ -6,6 +6,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "pep_auth_role")
@@ -13,22 +14,28 @@ import javax.persistence.*;
 public class RoleEntity extends BaseEntity {
 
     private static final long serialVersionUID = 619340355704563195L;
-    
+
     public RoleEntity(String name) {
         this.name = name;
     }
-    
-    /**
-     * 名称
-     */
-    @Column(nullable = false, unique = true)
-    private String name;
-    
+
     /**
      * code
      */
+    @Column(nullable = false, unique = true)
     private String code;
-    
+
+    /**
+     * 名称
+     */
+    private String name;
+
+    @ManyToMany(mappedBy = "roles")
+    private List<UserEntity> users;
+
+    @ManyToMany
+    private List<ResourceEntity> resources;
+
     /**
      * 使用状态
      */
@@ -58,5 +65,21 @@ public class RoleEntity extends BaseEntity {
     public void setUseStatus(UseStatus useStatus) {
         this.useStatus = useStatus;
     }
-    
+
+    public List<UserEntity> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserEntity> users) {
+        this.users = users;
+    }
+
+    public List<ResourceEntity> getResources() {
+        return resources;
+    }
+
+    public void setResources(List<ResourceEntity> resources) {
+        this.resources = resources;
+    }
+
 }

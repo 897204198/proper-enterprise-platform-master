@@ -5,7 +5,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "pep_auth_resource")
@@ -48,6 +50,9 @@ public class ResourceEntity extends BaseEntity {
      * 显示顺序
      */
     private int sequenceNumber;
+
+    @ManyToMany(mappedBy = "resources")
+    private List<RoleEntity> roles;
     
     public String getCode() {
         return code;
@@ -105,4 +110,11 @@ public class ResourceEntity extends BaseEntity {
         this.sequenceNumber = sequenceNumber;
     }
 
+    public List<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleEntity> roles) {
+        this.roles = roles;
+    }
 }

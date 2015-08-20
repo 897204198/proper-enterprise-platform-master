@@ -4,9 +4,8 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "pep_auth_user")
@@ -48,6 +47,9 @@ public class UserEntity extends BaseEntity {
      * override property in super class
      */
     private String extendProperties = "";
+
+    @ManyToMany
+    private List<RoleEntity> roles;
     
     @Override
     public String toString() {
@@ -85,6 +87,14 @@ public class UserEntity extends BaseEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleEntity> roles) {
+        this.roles = roles;
     }
 
 }
