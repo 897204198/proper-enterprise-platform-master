@@ -6,7 +6,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Collection;
 
 @Entity
 @Table(name = "pep_auth_role")
@@ -31,10 +31,10 @@ public class RoleEntity extends BaseEntity {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    private List<UserEntity> users;
+    private Collection<UserEntity> users;
 
     @ManyToMany
-    private List<ResourceEntity> resources;
+    private Collection<ResourceEntity> resources;
 
     /**
      * 使用状态
@@ -66,19 +66,19 @@ public class RoleEntity extends BaseEntity {
         this.useStatus = useStatus;
     }
 
-    public List<UserEntity> getUsers() {
+    public Collection<UserEntity> getUsers() {
         return users;
     }
 
-    public void setUsers(List<UserEntity> users) {
+    public void setUsers(Collection<UserEntity> users) {
         this.users = users;
     }
 
-    public List<ResourceEntity> getResources() {
+    public Collection<ResourceEntity> getResources() {
         return resources;
     }
 
-    public void setResources(List<ResourceEntity> resources) {
+    public void setResources(Collection<ResourceEntity> resources) {
         this.resources = resources;
     }
 

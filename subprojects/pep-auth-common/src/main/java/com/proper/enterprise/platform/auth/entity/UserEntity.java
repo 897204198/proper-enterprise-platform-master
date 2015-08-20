@@ -4,8 +4,11 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import java.util.Collection;
 
 @Entity
 @Table(name = "pep_auth_user")
@@ -49,7 +52,7 @@ public class UserEntity extends BaseEntity {
     private String extendProperties = "";
 
     @ManyToMany
-    private List<RoleEntity> roles;
+    private Collection<RoleEntity> roles;
     
     @Override
     public String toString() {
@@ -89,11 +92,11 @@ public class UserEntity extends BaseEntity {
         this.email = email;
     }
 
-    public List<RoleEntity> getRoles() {
+    public Collection<RoleEntity> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<RoleEntity> roles) {
+    public void setRoles(Collection<RoleEntity> roles) {
         this.roles = roles;
     }
 

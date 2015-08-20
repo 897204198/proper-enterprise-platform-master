@@ -37,7 +37,7 @@ class GetUserResourcesIntegTest extends AbstractIntegTest {
     public void getUserResources() {
         insertData()
         
-        Set<Resource> resources = userService.getUserResources('hinex')
+        Collection<Resource> resources = userService.getUserResourcesByUsername('hinex')
         assert resources.size() == 10
     }
     
@@ -78,14 +78,11 @@ class GetUserResourcesIntegTest extends AbstractIntegTest {
     }
     
     private void grantRoleResources() {
-        6.times { idx ->
-            roleA.setResources([resources[idx]])
-            roleRepo.save(roleA)
-        }
-        (4..9).each { idx ->
-            roleB.setResources([resources[idx]])
-            roleRepo.save(roleB)
-        }
+        roleA.setResources(resources[0..5])
+        roleRepo.save(roleA)
+
+        roleB.setResources(resources[4..9])
+        roleRepo.save(roleB)
     }
 
 }

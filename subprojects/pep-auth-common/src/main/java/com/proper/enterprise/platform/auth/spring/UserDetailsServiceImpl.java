@@ -2,7 +2,6 @@ package com.proper.enterprise.platform.auth.spring;
 
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.User;
-import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +23,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     UserService userService;
     
-    @Autowired
-    ResourceService resService;
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         LOGGER.info("Username is {}", username);
@@ -43,7 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private Collection<GrantedAuthority> obtainGrantedAuthorities(String userId) {
         Set<GrantedAuthority> authSet = new HashSet<>();
         
-        Set<Resource> resources = resService.getResourcesByUser(userId);
+        Collection<Resource> resources = userService.getUserResources(userId);
         for (Resource res : resources) {
             authSet.add(new SimpleGrantedAuthority(res.getId()));
         }

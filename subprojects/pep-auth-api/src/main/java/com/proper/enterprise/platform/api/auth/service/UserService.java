@@ -3,12 +3,14 @@ package com.proper.enterprise.platform.api.auth.service;
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.User;
 
-import java.util.Set;
+import java.util.Collection;
 
 public interface UserService {
     
     User getUserByUsername(String username);
 
-    Set<Resource> getUserResources(String username);
+    Collection<Resource> getUserResources(String userId);
+
+    Collection<Resource> getUserResourcesByUsername(String username);
 
 }
