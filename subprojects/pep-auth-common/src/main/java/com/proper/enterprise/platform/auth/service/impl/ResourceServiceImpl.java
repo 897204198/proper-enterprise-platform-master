@@ -4,10 +4,7 @@ import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.auth.dto.ResourceDTO;
 import com.proper.enterprise.platform.auth.entity.ResourceEntity;
-import com.proper.enterprise.platform.auth.entity.RoleEntity;
-import com.proper.enterprise.platform.auth.entity.UserEntity;
 import com.proper.enterprise.platform.auth.repository.ResourceRepository;
-import com.proper.enterprise.platform.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,28 +16,11 @@ import java.util.Set;
 public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
-    UserRepository userRepo;
-    
-    @Autowired
-    ResourceRepository resRepo;
-
-    @Override
-    public Set<Resource> getResourcesByUser(String userId) {
-        UserEntity userEntity = userRepo.findOne(userId);
-        Set<Resource> resources = new HashSet<>();
-        if (userEntity != null) {
-            for (RoleEntity roleEntity : userEntity.getRoles()) {
-                for (ResourceEntity resEntity : roleEntity.getResources()) {
-                    resources.add(new ResourceDTO(resEntity));
-                }
-            }
-        }
-        return resources;
-    }
+    ResourceRepository repo;
 
     @Override
     public Set<Resource> getAllResources() {
-        List<ResourceEntity> list = resRepo.findAll();
+        List<ResourceEntity> list = repo.findAll();
         Set<Resource> resources = new HashSet<>(list.size());
         for (ResourceEntity res : list) {
             resources.add(new ResourceDTO(res));

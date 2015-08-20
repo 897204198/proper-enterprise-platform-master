@@ -6,8 +6,6 @@ import java.util.Set;
 
 public interface ResourceService {
     
-    Set<Resource> getResourcesByUser(String userId);
-
     Set<Resource> getAllResources();
 
 }

@@ -1,23 +1,15 @@
 package com.proper.enterprise.platform.integration.auth
-
-import org.junit.Test
-import org.springframework.beans.factory.annotation.Autowired
-
 import com.proper.enterprise.platform.api.auth.Resource
-import com.proper.enterprise.platform.api.auth.User
-import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.entity.RoleEntity
-
 import com.proper.enterprise.platform.auth.entity.UserEntity
-
 import com.proper.enterprise.platform.auth.repository.ResourceRepository
 import com.proper.enterprise.platform.auth.repository.RoleRepository
-
 import com.proper.enterprise.platform.auth.repository.UserRepository
-
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
+import org.junit.Test
+import org.springframework.beans.factory.annotation.Autowired
 
 class GetUserResourcesIntegTest extends AbstractIntegTest {
     
@@ -33,9 +25,6 @@ class GetUserResourcesIntegTest extends AbstractIntegTest {
     @Autowired
     UserService userService;
     
-    @Autowired
-    ResourceService resService;
-    
     UserEntity user
     
     RoleEntity roleA
@@ -48,8 +37,7 @@ class GetUserResourcesIntegTest extends AbstractIntegTest {
     public void getUserResources() {
         insertData()
         
-        User user = userService.getUserByUsername('hinex')
-        Set<Resource> resources = resService.getResourcesByUser(user.id)
+        Set<Resource> resources = userService.getUserResources('hinex')
         assert resources.size() == 10
     }
     
