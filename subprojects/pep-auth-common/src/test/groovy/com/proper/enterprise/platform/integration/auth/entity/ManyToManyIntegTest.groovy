@@ -1,10 +1,12 @@
 package com.proper.enterprise.platform.integration.auth.entity
+
 import com.proper.enterprise.platform.auth.entity.RoleEntity
 import com.proper.enterprise.platform.auth.entity.UserEntity
 import com.proper.enterprise.platform.auth.repository.RoleRepository
 import com.proper.enterprise.platform.auth.repository.UserRepository
 import com.proper.enterprise.platform.integration.auth.InsertDataWorker
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
+import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -25,20 +27,29 @@ class ManyToManyIntegTest extends AbstractIntegTest {
     @PersistenceContext
     private EntityManager em
 
-    @Test
-    public void checkManyToManyRelationship() {
+    @Before
+    public void setUp() {
         worker.insertData()
+    }
 
+    @Test
+    public void getRoleFromUser() {
         UserEntity user = userRepo.findByLoginName(worker.username)
         em.refresh(user)
-        println "user roles: ${user.roles}"
+        assert user.roles.size() == 2
         user.roles.each {
-            println it.users
             assert it.users.contains(user)
         }
+    }
 
+    @Test
+    public void getUserFromRole() {
         RoleEntity role = roleRepo.findByCode('roleA')
-        println "role users: ${role.users}"
+        em.refresh(role)
+        assert role.users.size() == 1
+        role.users.each {
+            assert it.loginName == worker.username
+        }
     }
 
 }
