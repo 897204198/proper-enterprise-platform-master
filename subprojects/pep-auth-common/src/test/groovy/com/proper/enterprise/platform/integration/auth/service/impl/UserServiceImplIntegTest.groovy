@@ -19,7 +19,7 @@ class UserServiceImplIntegTest extends AbstractIntegTest {
     public void getUserResources() {
         worker.insertData()
         
-        Collection<Resource> resources = userService.getUserResourcesByUsername(worker.username)
+        Collection<Resource> resources = userService.getUserResourcesByUsername(worker.user1name)
         assert resources.size() == 10
     }
 

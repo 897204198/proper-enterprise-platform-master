@@ -32,10 +32,10 @@ public class RoleEntity extends BaseEntity {
      */
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
     private Collection<UserEntity> users;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private Collection<ResourceEntity> resources;
 
     /**
@@ -43,6 +43,11 @@ public class RoleEntity extends BaseEntity {
      */
     @Enumerated(EnumType.STRING)
     private UseStatus useStatus = UseStatus.STOP;
+
+    @Override
+    public String toString() {
+        return "code: " + code;
+    }
 
     public String getName() {
         return name;

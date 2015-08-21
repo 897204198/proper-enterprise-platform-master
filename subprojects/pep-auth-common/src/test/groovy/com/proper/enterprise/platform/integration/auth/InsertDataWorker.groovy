@@ -1,5 +1,4 @@
 package com.proper.enterprise.platform.integration.auth
-
 import com.proper.enterprise.platform.auth.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.entity.RoleEntity
 import com.proper.enterprise.platform.auth.entity.UserEntity
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Component
 @Component
 class InsertDataWorker {
 
-    def username = 'hinex'
-
     @Autowired
     UserRepository userRepo
 
@@ -23,12 +20,12 @@ class InsertDataWorker {
     @Autowired
     ResourceRepository resRepo
 
-    UserEntity user
+    def user1name = 'hinex1', user2name = 'hinex2'
+    def userpwd = 'pwd'
+    def roleAcode = 'roleA', roleBcode = 'roleB', roleCcode = 'roleC'
 
-    RoleEntity roleA
-
-    RoleEntity roleB
-
+    UserEntity user1, user2
+    RoleEntity roleA, roleB, roleC
     ResourceEntity[] resources = new ResourceEntity[10]
 
     public void insertData() {
@@ -40,21 +37,26 @@ class InsertDataWorker {
     }
 
     private void createUser() {
-        user = userRepo.save(new UserEntity(username, 'hinex_password'))
-        assert user.id > ''
+        user1 = userRepo.save(new UserEntity(user1name, userpwd))
+        user2 = userRepo.save(new UserEntity(user2name, userpwd))
+        assert user1.id > ''
+        assert user2.id > ''
     }
 
     private void createRoles() {
-        roleA = new RoleEntity('roleA')
-        roleB = new RoleEntity('roleB')
-        roleRepo.save([roleA, roleB])
+        roleA = new RoleEntity(roleAcode)
+        roleB = new RoleEntity(roleBcode)
+        roleC = new RoleEntity(roleCcode)
+        roleRepo.save([roleA, roleB, roleC])
         assert roleA.id > ''
         assert roleB.id > ''
+        assert roleC.id > ''
     }
 
     private void grantUserRoles() {
-        user.setRoles([roleA, roleB])
-        userRepo.save(user)
+        user1.setRoles([roleA, roleB])
+        user2.setRoles([roleA, roleB, roleC])
+        userRepo.save([user1, user2])
     }
 
     private void createResources() {
@@ -69,10 +71,9 @@ class InsertDataWorker {
 
     private void grantRoleResources() {
         roleA.setResources(resources[0..5])
-        roleRepo.save(roleA)
-
         roleB.setResources(resources[4..9])
-        roleRepo.save(roleB)
+        roleC.setResources(resources.toList())
+        roleRepo.save([roleA, roleB, roleC])
     }
 
 }

@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
@@ -51,7 +52,7 @@ public class ResourceEntity extends BaseEntity {
      */
     private int sequenceNumber;
 
-    @ManyToMany(mappedBy = "resources")
+    @ManyToMany(mappedBy = "resources", cascade = CascadeType.ALL)
     private List<RoleEntity> roles;
     
     public String getCode() {

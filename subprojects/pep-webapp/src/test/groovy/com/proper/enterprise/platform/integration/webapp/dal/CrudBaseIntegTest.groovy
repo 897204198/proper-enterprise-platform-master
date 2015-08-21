@@ -43,13 +43,13 @@ class CrudBaseIntegTest extends AbstractIntegTest {
     
     void update() {
         TestEntity user = repository.findOne(id)
-        user.description = 'desc of user'
+        user.description = 'desc of user1'
         repository.save(user)
     }
     
     void updateCheck() {
         TestEntity user = repository.findOne(id)
-        assert user.description == 'desc of user'
+        assert user.description == 'desc of user1'
     }
 
     void delete() {

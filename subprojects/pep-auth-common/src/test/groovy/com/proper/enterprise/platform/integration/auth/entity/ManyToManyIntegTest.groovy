@@ -30,11 +30,12 @@ class ManyToManyIntegTest extends AbstractIntegTest {
     @Before
     public void setUp() {
         worker.insertData()
+        em.flush()
     }
 
     @Test
     public void getRoleFromUser() {
-        UserEntity user = userRepo.findByLoginName(worker.username)
+        UserEntity user = userRepo.findByLoginName(worker.user1name)
         em.refresh(user)
         assert user.roles.size() == 2
         user.roles.each {
@@ -44,12 +45,59 @@ class ManyToManyIntegTest extends AbstractIntegTest {
 
     @Test
     public void getUserFromRole() {
-        RoleEntity role = roleRepo.findByCode('roleA')
+        RoleEntity role = roleRepo.findByCode(worker.roleAcode)
         em.refresh(role)
-        assert role.users.size() == 1
-        role.users.each {
-            assert it.loginName == worker.username
+        assert role.users.size() == 2
+    }
+
+    @Test
+    public void removeUser1() {
+        UserEntity user = userRepo.findByLoginName(worker.user1name)
+        userRepo.delete(user.id)
+        assert userRepo.findOne(user.id) == null
+        em.flush()
+
+        RoleEntity roleA = roleRepo.findByCode(worker.roleAcode)
+        em.refresh(roleA)
+        assert roleA.users.size() == 1
+        assert roleA.users.getAt(0).loginName == worker.user2name
+    }
+
+    @Test
+    public void removeRoleADirectlyFailed() {
+        RoleEntity roleA = roleRepo.findByCode(worker.roleAcode)
+        roleRepo.delete(roleA.id)
+
+        assert roleRepo.findByCode(worker.roleAcode) != null
+        assert userRepo.findByLoginName(worker.user1name).roles.size() == 2
+        assert userRepo.findByLoginName(worker.user2name).roles.size() == 3
+    }
+
+    @Test
+    public void removeRoleANeedToRemoveItFromUserFirst() {
+        RoleEntity roleA = roleRepo.findByCode(worker.roleAcode)
+        em.refresh(roleA)
+        assert roleA.users.size() == 2
+
+        roleA.users.each {
+            it.roles.remove(roleA)
         }
+        roleRepo.delete(roleA.id)
+
+        assert roleRepo.findByCode(worker.roleAcode) == null
+
+        userRepo.findAll().each {
+            println it
+        }
+
+        roleRepo.findAll().each {
+            println it
+        }
+
+//        UserEntity user = userRepo.findByLoginName(worker.user1name)
+//        em.refresh(user)
+//        assert user.roles.size() == 1
+//        assert user.roles.getAt(0).code == worker.roleBcode
     }
 
 }
