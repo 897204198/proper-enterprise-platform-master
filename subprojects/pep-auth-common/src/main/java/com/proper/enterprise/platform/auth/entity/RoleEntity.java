@@ -35,7 +35,7 @@ public class RoleEntity extends BaseEntity {
     @ManyToMany(mappedBy = "roles")
     private Collection<UserEntity> users;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private Collection<ResourceEntity> resources;
 
     /**

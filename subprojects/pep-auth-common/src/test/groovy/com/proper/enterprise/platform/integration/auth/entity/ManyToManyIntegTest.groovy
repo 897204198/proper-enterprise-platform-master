@@ -71,24 +71,12 @@ class ManyToManyIntegTest extends AbstractIntegTest {
         roleA.getUsers().each { user ->
             user.getRoles().remove(roleA)
         }
-        userRepo.save(roleA.getUsers())
-        userRepo.flush()
-        roleRepo.saveAndFlush(roleA)
         roleRepo.delete(roleA.id)
         assert roleRepo.findByCode(worker.roleAcode) == null
-//
-//        userRepo.findAll().each {
-//            println it
-//        }
-//
-//        roleRepo.findAll().each {
-//            println it
-//        }
 
-//        UserEntity user = userRepo.findByLoginName(worker.user1name)
-//        em.refresh(user)
-//        assert user.roles.size() == 1
-//        assert user.roles.getAt(0).code == worker.roleBcode
+        UserEntity user = userRepo.findByLoginName(worker.user1name)
+        assert user.roles.size() == 1
+        assert user.roles.getAt(0).code == worker.roleBcode
     }
 
 }
