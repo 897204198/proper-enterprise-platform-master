@@ -8,6 +8,9 @@ import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
+
 class ManyToManyIntegTest extends AbstractIntegTest {
 
     @Autowired
@@ -19,15 +22,19 @@ class ManyToManyIntegTest extends AbstractIntegTest {
     @Autowired
     RoleRepository roleRepo
 
+    @PersistenceContext
+    private EntityManager em
+
     @Test
     public void checkManyToManyRelationship() {
         worker.insertData()
 
         UserEntity user = userRepo.findByLoginName(worker.username)
+        em.refresh(user)
         println "user roles: ${user.roles}"
         user.roles.each {
             println it.users
-//            assert it.users.contains(user)
+            assert it.users.contains(user)
         }
 
         RoleEntity role = roleRepo.findByCode('roleA')

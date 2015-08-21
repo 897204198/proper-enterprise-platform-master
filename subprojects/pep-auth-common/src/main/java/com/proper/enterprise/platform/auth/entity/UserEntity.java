@@ -4,10 +4,7 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
@@ -51,7 +48,7 @@ public class UserEntity extends BaseEntity {
      */
     private String extendProperties = "";
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private Collection<RoleEntity> roles;
     
     @Override
