@@ -32,7 +32,7 @@ public class RoleEntity extends BaseEntity {
      */
     private String name;
 
-    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "roles")
     private Collection<UserEntity> users;
 
     @ManyToMany(cascade = CascadeType.ALL)

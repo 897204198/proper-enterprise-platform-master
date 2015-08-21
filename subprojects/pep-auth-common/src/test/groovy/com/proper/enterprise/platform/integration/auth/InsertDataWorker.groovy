@@ -1,32 +1,24 @@
 package com.proper.enterprise.platform.integration.auth
-import com.proper.enterprise.platform.auth.entity.ResourceEntity
-import com.proper.enterprise.platform.auth.entity.RoleEntity
-import com.proper.enterprise.platform.auth.entity.UserEntity
-import com.proper.enterprise.platform.auth.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.repository.RoleRepository
-import com.proper.enterprise.platform.auth.repository.UserRepository
-import org.springframework.beans.factory.annotation.Autowired
+
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 @Component
 class InsertDataWorker {
 
-    @Autowired
-    UserRepository userRepo
+    Logger logger = LoggerFactory.getLogger(InsertDataWorker.class)
 
-    @Autowired
-    RoleRepository roleRepo
+    @PersistenceContext
+    EntityManager em
 
-    @Autowired
-    ResourceRepository resRepo
-
+    def sqls = new ArrayList<String>()
     def user1name = 'hinex1', user2name = 'hinex2'
-    def userpwd = 'pwd'
+    def userpwd = 'e10adc3949ba59abbe56e057f20f883e'
     def roleAcode = 'roleA', roleBcode = 'roleB', roleCcode = 'roleC'
-
-    UserEntity user1, user2
-    RoleEntity roleA, roleB, roleC
-    ResourceEntity[] resources = new ResourceEntity[10]
 
     public void insertData() {
         createUser()
@@ -34,46 +26,66 @@ class InsertDataWorker {
         grantUserRoles()
         createResources()
         grantRoleResources()
+
+        sqls.each { sql ->
+            logger.trace(sql)
+            em.createNativeQuery(sql).executeUpdate()
+        }
     }
 
     private void createUser() {
-        user1 = userRepo.save(new UserEntity(user1name, userpwd))
-        user2 = userRepo.save(new UserEntity(user2name, userpwd))
-        assert user1.id > ''
-        assert user2.id > ''
+        [user1name, user2name].each { username ->
+            sqls << """
+INSERT INTO pep_auth_user
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, login_name, password)
+VALUES
+('$username-$userpwd', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', '${username}', '${userpwd}');"""
+        }
     }
 
     private void createRoles() {
-        roleA = new RoleEntity(roleAcode)
-        roleB = new RoleEntity(roleBcode)
-        roleC = new RoleEntity(roleCcode)
-        roleRepo.save([roleA, roleB, roleC])
-        assert roleA.id > ''
-        assert roleB.id > ''
-        assert roleC.id > ''
+        [roleAcode, roleBcode, roleCcode].each { role ->
+            sqls << """
+INSERT INTO pep_auth_role
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name)
+VALUES
+('$role-$role', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', '$role', '$role');"""
+        }
     }
 
     private void grantUserRoles() {
-        user1.setRoles([roleA, roleB])
-        user2.setRoles([roleA, roleB, roleC])
-        userRepo.save([user1, user2])
+        [["$user1name", roleAcode], ["$user1name", roleBcode],
+         ["$user2name", roleAcode], ["$user2name", roleBcode], ["$user2name", roleCcode]].each {
+            def username = it[0]
+            def role = it[1]
+            sqls << """
+INSERT INTO pep_auth_user_roles
+(users, roles)
+VALUES
+('$username-$userpwd', '$role-$role');"""
+        }
     }
 
     private void createResources() {
-        10.times { idx ->
-            ResourceEntity res = new ResourceEntity()
-            res.setUrl("/auth/res$idx")
-            resRepo.save(res)
-            resources[idx] = res
-            assert resources[idx].id > ''
+        (1..10).each { idx ->
+            sqls << """
+INSERT INTO pep_auth_resource
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, url, sequence_number)
+VALUES
+('res$idx', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', '/auth/res$idx', $idx);"""
         }
     }
 
     private void grantRoleResources() {
-        roleA.setResources(resources[0..5])
-        roleB.setResources(resources[4..9])
-        roleC.setResources(resources.toList())
-        roleRepo.save([roleA, roleB, roleC])
+        ["$roleAcode": (1..6), "$roleBcode": (5..10), "$roleCcode": (1..10)].each { role, range ->
+            range.each { idx ->
+                sqls << """
+INSERT INTO pep_auth_role_resources
+(roles, resources)
+VALUES
+('$role-$role', 'res$idx');"""
+            }
+        }
     }
 
 }

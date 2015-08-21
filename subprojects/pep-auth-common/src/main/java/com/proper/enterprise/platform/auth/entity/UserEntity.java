@@ -48,7 +48,7 @@ public class UserEntity extends BaseEntity {
      */
     private String extendProperties = "";
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private Collection<RoleEntity> roles;
     
     @Override
