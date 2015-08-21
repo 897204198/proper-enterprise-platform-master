@@ -23,10 +23,7 @@ class ManyToManyIntegTest extends AbstractIntegTest {
 
     @Before
     public void setUp() {
-        try {
-            worker.insertData()
-        } catch (ex) {
-        }
+        worker.insertData()
     }
 
     @Test

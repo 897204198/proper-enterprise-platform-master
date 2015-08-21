@@ -27,10 +27,12 @@ class InsertDataWorker {
         createResources()
         grantRoleResources()
 
-        sqls.each { sql ->
-            logger.trace(sql)
-            em.createNativeQuery(sql).executeUpdate()
-        }
+        try {
+            sqls.each { sql ->
+                logger.trace(sql)
+                em.createNativeQuery(sql).executeUpdate()
+            }
+        } catch (ex) { }
     }
 
     private void createUser() {
