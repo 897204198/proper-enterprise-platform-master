@@ -1,4 +1,6 @@
 package com.proper.enterprise.platform.integration.auth.entity
+
+import com.proper.enterprise.platform.auth.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.entity.RoleEntity
 import com.proper.enterprise.platform.auth.entity.UserEntity
 import com.proper.enterprise.platform.auth.repository.RoleRepository
@@ -74,6 +76,22 @@ class ManyToManyIntegTest extends AbstractIntegTest {
         UserEntity user = userRepo.findByLoginName(worker.user1name)
         assert user.roles.size() == 1
         assert user.roles.getAt(0).code == worker.roleBcode
+    }
+
+    @Test
+    public void getResourceByRole() {
+        RoleEntity roleB = roleRepo.findByCode(worker.roleBcode)
+        assert roleB.getResources().size() == 6
+    }
+
+    @Test
+    public void getResourceByUser() {
+        UserEntity user2 = userRepo.findByLoginName(worker.user2name)
+        Set<ResourceEntity> resources = new HashSet<>()
+        user2.getRoles().each {
+            resources.addAll(it.getResources())
+        }
+        println resources.size()
     }
 
 }
