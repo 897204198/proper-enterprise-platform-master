@@ -7,7 +7,7 @@
                            http://www.springframework.org/schema/security
                            http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-    <security:http>
+    <security:http auto-config="true" access-decision-manager-ref="myAccessDecisionManager">
         <security:intercept-url pattern="/**/*.jpg" access="isAnonymous()" />
         <security:intercept-url pattern="/**/*.png" access="isAnonymous()" />
         <security:intercept-url pattern="/**/*.gif" access="isAnonymous()" />
@@ -15,10 +15,11 @@
         <security:intercept-url pattern="/**/*.js" access="isAnonymous()" />
         <security:intercept-url pattern="/**/*.ico" access="isAnonymous()" />
         <security:intercept-url pattern="/login" access="isAnonymous()" />
+        <security:intercept-url pattern="/**" access="hasRole('USER')" />
 
         <!--<security:form-login login-page="/login" authentication-failure-url="/login?error=true" default-target-url="/index" />-->
         <security:form-login />
-        
+
         <security:custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR" />
     </security:http>
 
