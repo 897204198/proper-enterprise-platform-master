@@ -15,7 +15,6 @@
         <security:intercept-url pattern="/**/*.js" access="isAnonymous()" />
         <security:intercept-url pattern="/**/*.ico" access="isAnonymous()" />
         <security:intercept-url pattern="/login" access="isAnonymous()" />
-        <!--<security:intercept-url pattern="/**" access="hasRole('USER')" />-->
 
         <!--<security:form-login login-page="/login" authentication-failure-url="/login?error=true" default-target-url="/index" />-->
         <security:form-login />
