@@ -22,6 +22,7 @@
         <property name="suffix" value=".jsp" />
     </bean>
 
+    <mvc:annotation-driven />
     <mvc:view-controller path="/" view-name="index" />
 
 </beans>
