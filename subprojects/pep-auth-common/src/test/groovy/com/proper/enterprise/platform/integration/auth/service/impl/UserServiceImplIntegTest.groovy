@@ -1,5 +1,4 @@
 package com.proper.enterprise.platform.integration.auth.service.impl
-
 import com.proper.enterprise.platform.api.auth.Resource
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.integration.auth.InsertDataWorker
@@ -21,6 +20,11 @@ class UserServiceImplIntegTest extends AbstractIntegTest {
         
         Collection<Resource> resources = userService.getUserResourcesByUsername(worker.user1name)
         assert resources.size() == 10
+    }
+
+    @Test
+    public void getCurrentUser() {
+        println userService.getCurrentUser()
     }
 
 }
