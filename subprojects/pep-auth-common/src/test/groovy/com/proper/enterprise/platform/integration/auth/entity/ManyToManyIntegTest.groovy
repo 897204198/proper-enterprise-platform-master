@@ -80,18 +80,29 @@ class ManyToManyIntegTest extends AbstractIntegTest {
 
     @Test
     public void getResourceByRole() {
+        RoleEntity roleA = roleRepo.findByCode(worker.roleAcode)
+        assert roleA.getResources().size() == 6
+
         RoleEntity roleB = roleRepo.findByCode(worker.roleBcode)
         assert roleB.getResources().size() == 6
+
+        RoleEntity roleC = roleRepo.findByCode(worker.roleCcode)
+        assert roleC.getResources().size() == 10
     }
 
     @Test
     public void getResourceByUser() {
-        UserEntity user2 = userRepo.findByLoginName(worker.user2name)
+        assert getAllResources(worker.user1name).size() == 10
+        assert getAllResources(worker.user2name).size() == 10
+    }
+
+    private Set<ResourceEntity> getAllResources(String username) {
+        UserEntity user = userRepo.findByLoginName(username)
         Set<ResourceEntity> resources = new HashSet<>()
-        user2.getRoles().each {
+        user.getRoles().each {
             resources.addAll(it.getResources())
         }
-        println resources.size()
+        resources
     }
 
 }
