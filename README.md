@@ -42,6 +42,7 @@ Proper Enterprise Platform
 
 **TODO**
 
+* 页面：`pep-webapp/src/main/webapp/WEB-INF/views/[module]/../*.jsp`
 * Controller：`com.proper.enterprise.platform.[module]..controller.*Controller`
 * 接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
 * 实现：`com.proper.enterprise.platform.[module]..service.impl.*ServiceImpl`
