@@ -13,4 +13,6 @@ public interface UserService {
 
     Collection<Resource> getUserResourcesByUsername(String username);
 
+    User getCurrentUser();
+
 }

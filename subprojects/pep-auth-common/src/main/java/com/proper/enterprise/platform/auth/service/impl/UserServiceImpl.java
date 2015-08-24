@@ -10,6 +10,8 @@ import com.proper.enterprise.platform.auth.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.entity.UserEntity;
 import com.proper.enterprise.platform.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -48,6 +50,13 @@ public class UserServiceImpl implements UserService {
     public Collection<Resource> getUserResourcesByUsername(String username) {
         UserEntity userEntity = repo.findByLoginName(username);
         return getResources(userEntity);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : principal.toString();
+        return getUserByUsername(username);
     }
 
 }
