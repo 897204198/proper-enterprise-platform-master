@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.integration.auth.InsertDataWorker
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.test.context.support.WithMockUser
 
 class UserServiceImplIntegTest extends AbstractIntegTest {
 
@@ -23,8 +24,9 @@ class UserServiceImplIntegTest extends AbstractIntegTest {
     }
 
     @Test
+    @WithMockUser("admin")
     public void getCurrentUser() {
-        println userService.getCurrentUser()
+        assert userService.getCurrentUser().getUsername() == 'admin'
     }
 
 }

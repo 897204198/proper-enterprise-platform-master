@@ -15,27 +15,32 @@ public class HistoricalAdvice implements MethodBeforeAdvice {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
 
-    public static final String USER_ID = "aop";
+//    @Autowired
+//    UserService userService;
 
     @Override
     public void before(Method method, Object[] args, Object target) throws Throwable {
         LOGGER.trace("HistoricalAdvice before {} with {} args.", method, args.length);
+
+//        User user = userService.getCurrentUser();
+//        LOGGER.trace("Current user is {}({})", user.getUsername(), user.getId());
+
         Object obj = args[0];
         if (obj instanceof BaseEntity) {
-            update((BaseEntity) obj);
+            update((BaseEntity) obj, "admin");
         } else if (obj instanceof Iterable) {
             for (Object entity : (Iterable) obj) {
-                update((BaseEntity)entity);
+                update((BaseEntity)entity, "admin");
             }
         }
     }
 
-    private void update(BaseEntity entity) {
+    private void update(BaseEntity entity, String userId) {
         if (StringUtil.isNull(entity.getId())) {
-            entity.setCreateUserId(USER_ID);
+            entity.setCreateUserId(userId);
             entity.setCreateTime(DateUtil.getCurrentDateString());
         }
-        entity.setLastModifyUserId(USER_ID);
+        entity.setLastModifyUserId(userId);
         entity.setLastModifyTime(DateUtil.getCurrentDateString());
     }
 }
