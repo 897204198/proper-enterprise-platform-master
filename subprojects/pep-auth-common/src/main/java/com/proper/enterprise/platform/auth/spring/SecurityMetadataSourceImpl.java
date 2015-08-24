@@ -31,7 +31,6 @@ public class SecurityMetadataSourceImpl implements FilterInvocationSecurityMetad
         return resourceMap.get(requestUrl);
     }
 
-    //加载所有资源与权限的关系
     private void loadResourceDefine() {
         if (resourceMap == null) {
             resourceMap = new HashMap<>();
@@ -41,7 +40,6 @@ public class SecurityMetadataSourceImpl implements FilterInvocationSecurityMetad
         for (Resource resource : resources) {
             Collection<ConfigAttribute> configAttributes = new ArrayList<>();
 
-            //以权限名封装为Spring的security Object
             ConfigAttribute configAttribute = new SecurityConfig(resource.getId());
             configAttributes.add(configAttribute);
             resourceMap.put(resource.getUrl(), configAttributes);
