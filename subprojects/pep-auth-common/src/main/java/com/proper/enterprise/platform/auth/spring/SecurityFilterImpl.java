@@ -39,10 +39,6 @@ public class SecurityFilterImpl extends AbstractSecurityInterceptor implements F
         InterceptorStatusToken token = super.beforeInvocation(filterInvocation);
         try {
             filterInvocation.getChain().doFilter(filterInvocation.getRequest(), filterInvocation.getResponse());
-        } catch(IOException exception){
-            throw exception;
-        } catch(ServletException exception){
-            throw exception;
         } finally {
             super.afterInvocation(token, null);
         }
