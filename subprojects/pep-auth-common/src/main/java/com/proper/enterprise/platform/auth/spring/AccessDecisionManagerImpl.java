@@ -5,7 +5,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.FilterInvocation;
 
 import java.util.Collection;
@@ -29,7 +29,7 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
 
         Object principal = authentication.getPrincipal();
 
-        if(!(principal instanceof User)){
+        if(!(principal instanceof UserDetails)){
             // 没有权限
             throw new AccessDeniedException(" 没有权限访问！ ");
         }
