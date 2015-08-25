@@ -2,10 +2,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
                            http://www.springframework.org/schema/security
-                           http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+                           http://www.springframework.org/schema/security/spring-security-4.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+    <context:property-placeholder location="classpath:conf/auth/common/auth-common.properties" />
 
     <security:http access-decision-manager-ref="myAccessDecisionManager">
         <security:intercept-url pattern="/**/*.jpg" access="isAnonymous()" />
@@ -14,11 +19,11 @@
         <security:intercept-url pattern="/**/*.css" access="isAnonymous()" />
         <security:intercept-url pattern="/**/*.js" access="isAnonymous()" />
         <security:intercept-url pattern="/**/*.ico" access="isAnonymous()" />
-        <security:intercept-url pattern="/login" access="isAnonymous()" />
+        <security:intercept-url pattern="${security.login.url}" access="isAnonymous()" />
         <security:intercept-url pattern="/**" access="hasRole('USER')" />
 
-        <!--<security:form-login login-page="/login" authentication-failure-url="/login?error=true" default-target-url="/index" />-->
-        <security:form-login />
+        <security:form-login login-page="${security.login.url}" authentication-failure-url="${security.login.failure}" />
+        <security:logout logout-url="${security.logout.url}" />
 
         <security:custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR" />
     </security:http>
