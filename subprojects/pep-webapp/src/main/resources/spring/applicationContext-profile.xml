@@ -11,15 +11,15 @@
     <import resource="dal/applicationContext-jpa.xml" />
 
     <beans profile="dev">
-        <context:property-placeholder location="classpath:/conf/webapp/database/webapp-database.properties"/>
+        <context:property-placeholder location="classpath:/conf/webapp/database/webapp-database.properties" />
     </beans>
 
     <beans profile="test">
-        <context:property-placeholder location="classpath:/conf/webapp/database/webapp-database-h2.properties"/>
+        <context:property-placeholder location="classpath:/conf/webapp/database/webapp-database-h2.properties" />
     </beans>
 
     <beans profile="production">
-        <context:property-placeholder location="classpath:/conf/webapp/database/webapp-database-oracle.properties"/>
+        <context:property-placeholder location="classpath:/conf/webapp/database/webapp-database-oracle.properties" />
     </beans>
 
 </beans>
