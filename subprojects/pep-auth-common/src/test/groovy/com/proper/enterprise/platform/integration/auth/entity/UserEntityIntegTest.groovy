@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.auth.repository.UserRepository
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.test.context.support.WithMockUser
 
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.core.IsEqual.equalTo
@@ -15,6 +16,7 @@ class UserEntityIntegTest extends AbstractIntegTest {
     UserRepository repo
 
     @Test
+    @WithMockUser('admin')
     public void checkUserExtendProperties() {
         UserEntity entity = new UserEntity('hinex', '123456')
         entity.putExtendProperty('a', '1')
