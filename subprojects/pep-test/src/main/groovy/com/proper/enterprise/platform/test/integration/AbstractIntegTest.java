@@ -9,10 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration({"/spring/applicationContext.xml", 
-                       "/spring/applicationContext-profile.xml", 
-                       "/spring/dal/applicationContext-datasource.xml", 
-                       "/spring/dal/applicationContext-jpa.xml"})
+@ContextConfiguration("/spring/applicationContext.xml")
 @Transactional
 @ActiveProfiles("test")
 public abstract class AbstractIntegTest {
