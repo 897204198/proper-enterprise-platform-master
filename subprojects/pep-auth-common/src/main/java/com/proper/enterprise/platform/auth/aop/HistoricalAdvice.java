@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.aop;
 
 import com.proper.enterprise.platform.api.auth.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.core.conf.ConfManager;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -14,7 +15,7 @@ public class HistoricalAdvice {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
 
-    private static final String DEFAULT_USER_ID = "SYS";
+    private static final String DEFAULT_USER_ID = ConfManager.getString("auth.common", "historical.defaultUserId", "SYS");
 
     @Autowired
     UserService userService;
