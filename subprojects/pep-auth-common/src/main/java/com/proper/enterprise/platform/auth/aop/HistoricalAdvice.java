@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class HistoricalAdvice {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
+
+    private static final String DEFAULT_USER_ID = "SYS";
 
     @Autowired
     UserService userService;
@@ -20,15 +22,21 @@ public class HistoricalAdvice {
     public void beforeSave(JoinPoint jp) {
         LOGGER.trace("HistoricalAdvice before {} with {} args.", jp.getSignature().getName(), jp.getArgs());
 
-        User user = userService.getCurrentUser();
-        LOGGER.trace("Current user is {}({})", user.getUsername(), user.getId());
+        String userId = DEFAULT_USER_ID;
+        try {
+            User user = userService.getCurrentUser();
+            LOGGER.trace("Current user is {}({})", user.getUsername(), user.getId());
+            userId = user.getId();
+        } catch (Exception e) {
+            LOGGER.debug("Get current user throws exception {}", e);
+        }
 
         Object obj = jp.getArgs()[0];
         if (obj instanceof BaseEntity) {
-            update((BaseEntity) obj, user.getId());
+            update((BaseEntity) obj, userId);
         } else if (obj instanceof Iterable) {
             for (Object entity : (Iterable) obj) {
-                update((BaseEntity)entity, user.getId());
+                update((BaseEntity)entity, userId);
             }
         }
     }
