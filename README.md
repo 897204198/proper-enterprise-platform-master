@@ -159,6 +159,23 @@ Proper Enterprise Platform
 构建 `war` 包
 ------------
 
+### 设定 `profile`
+
+平台定义了三个 `profile` 版本，分别为：
+
+* `dev`：开发版
+* `test`：测试版
+* `production`：产品版
+
+可以在 `web.xml` 中修改应用所使用的版本，默认为`开发版`
+
+    <context-param>
+        <param-name>spring.profiles.default</param-name>
+        <param-value>dev</param-value>
+    </context-param>
+
+### 打包
+
 平台只包含一个 web 应用，即 `pep-webapp`，其余模块以 `jar` 包形式被其依赖
 
     $ ./gradlew clean war

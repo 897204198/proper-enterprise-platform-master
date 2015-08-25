@@ -5,8 +5,8 @@ dependencies {
 }
 
 task syncCtx(type: Copy) {
-    file('src/main/resources/conf').delete()
-    file('src/main/resources/spring').delete()
+    file('src/main/resources/conf').deleteDir()
+    file('src/main/resources/spring').deleteDir()
 
     copy {
         from project(':pep-webapp').file('src/main/resources/conf')
