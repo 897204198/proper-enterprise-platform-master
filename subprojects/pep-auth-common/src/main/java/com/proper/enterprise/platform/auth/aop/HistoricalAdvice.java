@@ -1,36 +1,34 @@
 package com.proper.enterprise.platform.auth.aop;
 
+import com.proper.enterprise.platform.api.auth.User;
+import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import org.aspectj.lang.JoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.MethodBeforeAdvice;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.Method;
-
-@Component
-public class HistoricalAdvice implements MethodBeforeAdvice {
+public class HistoricalAdvice {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
 
-//    @Autowired
-//    UserService userService;
+    @Autowired
+    UserService userService;
 
-    @Override
-    public void before(Method method, Object[] args, Object target) throws Throwable {
-        LOGGER.trace("HistoricalAdvice before {} with {} args.", method, args.length);
+    public void beforeSave(JoinPoint jp) {
+        LOGGER.trace("HistoricalAdvice before {} with {} args.", jp.getSignature().getName(), jp.getArgs());
 
-//        User user = userService.getCurrentUser();
-//        LOGGER.trace("Current user is {}({})", user.getUsername(), user.getId());
+        User user = userService.getCurrentUser();
+        LOGGER.trace("Current user is {}({})", user.getUsername(), user.getId());
 
-        Object obj = args[0];
+        Object obj = jp.getArgs()[0];
         if (obj instanceof BaseEntity) {
-            update((BaseEntity) obj, "admin");
+            update((BaseEntity) obj, user.getUsername());
         } else if (obj instanceof Iterable) {
             for (Object entity : (Iterable) obj) {
-                update((BaseEntity)entity, "admin");
+                update((BaseEntity)entity, user.getUsername());
             }
         }
     }
