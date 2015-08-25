@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithMockUser
 
 class HistoricalAdviceIntegTest extends AbstractIntegTest {
+
+    def static final ADMIN_ID = 'dc65766c-0176-4a1e-ad0e-dd06ba645c7l'
     
     @Autowired
     UserRepository repo
@@ -16,8 +18,8 @@ class HistoricalAdviceIntegTest extends AbstractIntegTest {
     @WithMockUser('admin')
     def void saveEntity() {
         def user = repo.save(new UserEntity('hinex', 'hinex_password'))
-        assert user.createUserId == 'admin'
-        assert user.lastModifyUserId == 'admin'
+        assert user.createUserId == ADMIN_ID
+        assert user.lastModifyUserId == ADMIN_ID
     }
 
     @Test
@@ -26,8 +28,8 @@ class HistoricalAdviceIntegTest extends AbstractIntegTest {
         def user1 = new UserEntity('hinex1', 'hinex_password1')
         def user2 = new UserEntity('hinex2', 'hinex_password2')
         repo.save([user1, user2])
-        assert user1.createUserId == 'admin'
-        assert user2.lastModifyUserId == 'admin'
+        assert user1.createUserId == ADMIN_ID
+        assert user2.lastModifyUserId == ADMIN_ID
     }
 
 }

@@ -25,10 +25,10 @@ public class HistoricalAdvice {
 
         Object obj = jp.getArgs()[0];
         if (obj instanceof BaseEntity) {
-            update((BaseEntity) obj, user.getUsername());
+            update((BaseEntity) obj, user.getId());
         } else if (obj instanceof Iterable) {
             for (Object entity : (Iterable) obj) {
-                update((BaseEntity)entity, user.getUsername());
+                update((BaseEntity)entity, user.getId());
             }
         }
     }
