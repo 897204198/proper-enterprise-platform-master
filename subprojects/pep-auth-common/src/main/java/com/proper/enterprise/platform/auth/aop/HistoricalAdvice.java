@@ -29,7 +29,7 @@ public class HistoricalAdvice {
             LOGGER.trace("Current user is {}({})", user.getUsername(), user.getId());
             userId = user.getId();
         } catch (Exception e) {
-            LOGGER.debug("Get current user throws exception {}", e);
+            LOGGER.debug("Get current user throws exception {}", e.getMessage());
         }
 
         Object obj = jp.getArgs()[0];
