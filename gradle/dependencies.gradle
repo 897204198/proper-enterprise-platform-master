@@ -28,6 +28,8 @@ versions.jcaptcha = '1.0'
 
 //libraries.commons_lang = 'commons-lang:commons-lang:2.5'
 
+libraries.ehcache = 'net.sf.ehcache:ehcache-core:2.6.9'
+
 libraries.fastjson = 'com.alibaba:fastjson:1.2.4'
 
 versions.groovy = '2.4.3'
@@ -60,7 +62,7 @@ versions.hibernate = '4.3.10.Final'
 //libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
 libraries.hibernate_ehcache = [
     "org.hibernate:hibernate-ehcache:${versions.hibernate}",
-    'net.sf.ehcache:ehcache-core:2.6.9'
+    libraries.ehcache
 ]
 libraries.hibernate_entitymanager = "org.hibernate:hibernate-entitymanager:${versions.hibernate}"
 //libraries.hibernate_envers = "org.hibernate:hibernate-envers:${versions.hibernate}"

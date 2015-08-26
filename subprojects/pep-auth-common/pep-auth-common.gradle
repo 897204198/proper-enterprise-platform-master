@@ -5,6 +5,9 @@ dependencies {
             project(':pep-auth-api'),
             project(':pep-core')
 
-    testCompile libraries.spring_security_test,
+    testCompile libraries.ehcache,
+                libraries.spring_security_test,
                 project(':pep-test')
+
+    testRuntime libraries.spring_context_support
 }
