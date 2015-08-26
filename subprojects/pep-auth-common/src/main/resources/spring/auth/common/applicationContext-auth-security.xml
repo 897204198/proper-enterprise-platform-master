@@ -30,12 +30,10 @@
     </bean>
 
     <security:authentication-manager alias="authenticationManager">
-        <security:authentication-provider user-service-ref="userDetailsManager">
+        <security:authentication-provider user-service-ref="cachingUserDetailsService">
              <security:password-encoder hash="md5" />
         </security:authentication-provider>
     </security:authentication-manager>
-
-    <bean id="userDetailsManager" class="com.proper.enterprise.platform.auth.spring.UserDetailsServiceImpl" />
 
     <bean id="myAccessDecisionManager" class="com.proper.enterprise.platform.auth.spring.AccessDecisionManagerImpl" />
 
