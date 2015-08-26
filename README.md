@@ -17,7 +17,7 @@ Proper Enterprise Platform
 |Spring|[Spring Framework 4.1.7.RELEASE](https://github.com/spring-projects/spring-framework/tree/v4.1.7.RELEASE)|
 |Security|[Spring Security 4.0.1.RELEASE](https://github.com/spring-projects/spring-security/tree/4.0.1.RELEASE)|
 |Logging|[SLF4J 1.7.12](https://github.com/qos-ch/slf4j/tree/v_1.7.12)<br/>[Logback 1.1.3](https://github.com/qos-ch/logback)|
-|Cache|ehcache 2.10.0|
+|Cache|[ehcache](http://ehcache.org/)-core 2.6.9|
 |Validator|Hibernate Validator 5.1.3.Final|
 |数据库|[H2 Database 1.3.176](https://github.com/h2database/h2database/tree/version-1.3/version-1.3.176/h2)|
 |Connection Pool|[HikariCP 2.4.0](https://github.com/brettwooldridge/HikariCP/tree/HikariCP-2.4.0)|

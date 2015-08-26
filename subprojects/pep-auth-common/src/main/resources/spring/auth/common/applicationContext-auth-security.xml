@@ -30,12 +30,26 @@
     </bean>
 
     <security:authentication-manager alias="authenticationManager">
-        <security:authentication-provider user-service-ref="userDetailsManager">
+        <security:authentication-provider user-service-ref="cachingUserDetailsService">
              <security:password-encoder hash="md5" />
         </security:authentication-provider>
     </security:authentication-manager>
 
-    <bean id="userDetailsManager" class="com.proper.enterprise.platform.auth.spring.UserDetailsServiceImpl" />
+    <bean id="cachingUserDetailsService" class="org.springframework.security.config.authentication.CachingUserDetailsService">
+        <constructor-arg ref="userDetailsService" />
+        <property name="userCache">
+            <bean class="org.springframework.security.core.userdetails.cache.EhCacheBasedUserCache">
+                <property name="cache" ref="userCache" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="userCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+        <property name="cacheName" value="userCache" />
+        <property name="cacheManager" ref="cacheManager" />
+    </bean>
+
+    <bean id="userDetailsService" class="com.proper.enterprise.platform.auth.spring.UserDetailsServiceImpl" />
 
     <bean id="myAccessDecisionManager" class="com.proper.enterprise.platform.auth.spring.AccessDecisionManagerImpl" />
 
