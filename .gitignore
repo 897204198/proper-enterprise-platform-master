@@ -1,3 +1,7 @@
+# ignore duplicated configurations in pep-test module
+pep-test/src/main/resources/conf/
+pep-test/src/main/resources/spring/
+
 # ignore temp files and folders
 .DS_Store
 .zip
