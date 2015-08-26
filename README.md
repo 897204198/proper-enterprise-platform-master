@@ -25,11 +25,11 @@ Proper Enterprise Platform
 |JPA Provider|[Hibernate EntityManager 4.3.10.Final](https://github.com/hibernate/hibernate-orm/tree/4.3.10.Final)|
 |Data Access Layer|[Spring Data JPA 1.8.2.RELEASE](https://github.com/spring-projects/spring-data-jpa/tree/1.8.2.RELEASE)|
 |任务调度|quartz 2.2.1|
-|Unit Test|junit 4.12, spock 0.7|
+|Unit Test|[junit 4.12](https://github.com/junit-team/junit/tree/r4.12)<br />[spock 0.7](https://github.com/spockframework/spock/tree/spock-0.7-groovy-2.0)|
 |通用工具|guava 18.0|
 |编码及加密|common-codec，bounce-casle|
 |xml|dom4j|
-|JSON|fastjson 1.2.4|
+|JSON|[fastjson 1.2.4](https://github.com/alibaba/fastjson/tree/1.2.4)|
 |消息队列||
 |前端框架||
 |Build System|[Gradle 2.5](https://github.com/gradle/gradle)|
@@ -42,6 +42,10 @@ Proper Enterprise Platform
 
 **TODO**
 
+* 配置文件：
+    1. spring 配置文件放置在 `src/main/resources/spring/[module]
+    2. 其他配置文件放置在 `src/main/resources/conf/[module]
+    > 可参考 `./gradlew init-pep-[module]` 自动生成的配置文件
 * 页面：`pep-webapp/src/main/webapp/WEB-INF/views/[module]/../*.jsp`
 * Controller：`com.proper.enterprise.platform.[module]..controller.*Controller`
 * 接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
