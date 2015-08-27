@@ -11,6 +11,13 @@ import javax.persistence.*;
 public class TestEntity extends BaseEntity {
 
     private static final long serialVersionUID = -1491308886515558807L;
+
+    public TestEntity() { }
+
+    public TestEntity(String loginName, String password) {
+        this.loginName = loginName;
+        this.password = password;
+    }
     
     /**
      * 登录名，唯一
@@ -21,7 +28,7 @@ public class TestEntity extends BaseEntity {
     /**
      * 账号，唯一
      */
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String account;
 
     /**
@@ -44,20 +51,17 @@ public class TestEntity extends BaseEntity {
      * 启用状态
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private ActiveStatus activeStatus = ActiveStatus.INACTIVE;
 
     /**
      * 锁定状态
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private UseStatus useStatus = UseStatus.STOP;
     
     /**
      * 永不过期
      */
-    @Column(nullable = false)
     @org.hibernate.annotations.Type(type = "yes_no")
     private boolean neverExpired;
 

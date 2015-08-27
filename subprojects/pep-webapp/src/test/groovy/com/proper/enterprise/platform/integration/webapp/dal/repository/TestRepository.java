@@ -1,9 +1,8 @@
 package com.proper.enterprise.platform.integration.webapp.dal.repository;
 
-import org.springframework.data.repository.CrudRepository;
-
 import com.proper.enterprise.platform.integration.webapp.dal.entity.TestEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TestRepository extends CrudRepository<TestEntity, String> {
+public interface TestRepository extends JpaRepository<TestEntity, String> {
 
 }
