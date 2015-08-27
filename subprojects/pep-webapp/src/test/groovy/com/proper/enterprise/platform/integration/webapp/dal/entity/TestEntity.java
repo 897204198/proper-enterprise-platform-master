@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "pep_test_dal")
+@Cacheable
 public class TestEntity extends BaseEntity {
 
     private static final long serialVersionUID = -1491308886515558807L;
