@@ -5,17 +5,27 @@
 
     <diskStore path="java.io.tmpdir/pep-ehcache"/>
 
-    <defaultCache
-            maxElementsInMemory="10000"
-            eternal="false"
-            timeToIdleSeconds="120"
-            timeToLiveSeconds="120"
-            maxElementsOnDisk="10000000"
-            diskExpiryThreadIntervalSeconds="120"
-            memoryStoreEvictionPolicy="LRU">
+    <defaultCache maxElementsInMemory="10000"
+                  eternal="false"
+                  timeToIdleSeconds="120"
+                  timeToLiveSeconds="120"
+                  maxElementsOnDisk="10000000"
+                  diskExpiryThreadIntervalSeconds="120"
+                  memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap"/>
     </defaultCache>
 
+    <cache name="org.hibernate.cache.internal.StandardQueryCache"
+           maxEntriesLocalHeap="500"
+           eternal="false"
+           timeToLiveSeconds="120">
+        <persistence strategy="localTempSwap" />
+    </cache>
 
+    <cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
+           maxEntriesLocalHeap="5000"
+           eternal="true">
+        <persistence strategy="localTempSwap" />
+    </cache>
 
 </ehcache>
