@@ -1,9 +1,9 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="ehcache.xsd"
-         name="ehcache"
+         name="pepCacheManager"
          updateCheck="false">
 
-    <diskStore path="java.io.tmpdir"/>
+    <diskStore path="java.io.tmpdir/pep-ehcache"/>
 
     <defaultCache
             maxElementsInMemory="10000"
@@ -15,4 +15,7 @@
             memoryStoreEvictionPolicy="LRU">
         <persistence strategy="localTempSwap"/>
     </defaultCache>
+
+
+
 </ehcache>
