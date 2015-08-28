@@ -23,6 +23,7 @@ class QueryCacheIntegTest extends AbstractIntegTest {
 
     @Test
     public void repeatQuery() {
+        println cacheManager.cacheNames
         repo.findByLoginName('abc')
         repo.findByLoginName('abc')
         repo.findByLoginName('abc')
