@@ -36,7 +36,7 @@ class QueryCacheIntegTest extends AbstractIntegTest {
         def sqcHitcount = sqc.get(sqc.keys[0]).hitCount
         def utcHitcount = utc.get(utc.keys[0]).hitCount
 
-        3.times {
+        for (int i = 0; i < 3; i++) {
             repo.findByLoginName('abc')
             def t1 = sqc.get(sqc.keys[0]).hitCount
             def t2 = utc.get(utc.keys[0]).hitCount
