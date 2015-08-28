@@ -27,7 +27,8 @@ dependencies {
 
     compile project(':pep-auth-common')
     
-    testCompile project(':pep-test')
+    testCompile libraries.ehcache,
+                project(':pep-test')
 
     runtime libraries.h2,
             libraries.hibernate_ehcache,
