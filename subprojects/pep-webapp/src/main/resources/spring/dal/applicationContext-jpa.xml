@@ -19,7 +19,6 @@
                 hibernate.cache.region.factory_class        = ${hibernate.cache.region.factory_class}
                 hibernate.cache.use_query_cache             = ${hibernate.cache.use_query_cache}
                 hibernate.cache.use_second_level_cache      = ${hibernate.cache.use_second_level_cache}
-                hibernate.current_session_context_class     = ${hibernate.current_session_context_class}
                 hibernate.dialect                           = ${hibernate.dialect}
                 hibernate.ejb.naming_strategy               = ${hibernate.ejb.naming_strategy}
                 hibernate.format_sql                        = ${hibernate.format_sql}
@@ -27,7 +26,6 @@
                 hibernate.hbm2ddl.auto                      = ${hibernate.hbm2ddl.auto}
                 hibernate.query.substitutions               = ${hibernate.query.substitutions}
                 hibernate.show_sql                          = ${hibernate.show_sql}
-                jdbc.use_scrollable_resultset               = ${jdbc.use_scrollable_resultset}
                 net.sf.ehcache.configurationResourceName    = ${net.sf.ehcache.configurationResourceName}
                 net.sf.ehcache.hibernate.cache_lock_timeout = ${net.sf.ehcache.hibernate.cache_lock_timeout}
             </value>

@@ -23,29 +23,42 @@ class QueryCacheIntegTest extends AbstractIntegTest {
     }
 
     @Test
-    public void repeatQuery() {
+    public void checkQueryCache() {
+        // query cache and second level cache use these two cache keys
         Cache sqc = cacheManager.getCache('org.hibernate.cache.internal.StandardQueryCache').nativeCache
         Cache utc = cacheManager.getCache('org.hibernate.cache.spi.UpdateTimestampsCache').nativeCache
+        // non cache element in these caches
         assert sqc.size == 0
         assert utc.size == 0
 
-        repo.findByLoginName('abc')
+        TestEntity entity = repo.findByLoginName('abc')
+        // cache entity after first load
         assert sqc.size == 1
         assert utc.size == 1
 
-        def sqcHitcount = sqc.get(sqc.keys[0]).hitCount
-        def utcHitcount = utc.get(utc.keys[0]).hitCount
+        def eleInSqc = sqc.get(sqc.keys[0])
+        def eleInUtc = utc.get(utc.keys[0])
+        def sqcHitcount = eleInSqc.hitCount
+        def utcHitcount = eleInUtc.hitCount
 
+        // hit count of cache will be increased after each load operation
         for (int i = 0; i < 3; i++) {
             repo.findByLoginName('abc')
-            def t1 = sqc.get(sqc.keys[0]).hitCount
-            def t2 = utc.get(utc.keys[0]).hitCount
-            assert t1 == sqcHitcount + 2
-            assert t2 == utcHitcount + 2
+            def t1 = eleInSqc.hitCount
+            def t2 = eleInUtc.hitCount
+            assert t1 == sqcHitcount + 1
+            assert t2 == utcHitcount + 1
             sqcHitcount = t1
             utcHitcount = t2
         }
 
+        entity.setAccount('update_account')
+        repo.save(entity)
+
+        repo.findByLoginName('abc')
+        // hit count will be reset after update
+        assert sqc.get(sqc.keys[0]).hitCount < sqcHitcount
+        assert utc.get(utc.keys[0]).hitCount < utcHitcount
     }
 
 }
