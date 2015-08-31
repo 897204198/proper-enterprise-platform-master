@@ -2,15 +2,13 @@ package com.proper.enterprise.platform.auth.entity;
 
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.enums.UseStatus;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
 @Table(name = "pep_auth_role")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "com.proper.enterprise.platform.auth.entity.RoleEntity")
+@Cacheable
 public class RoleEntity extends BaseEntity {
 
     private static final long serialVersionUID = 619340355704563195L;

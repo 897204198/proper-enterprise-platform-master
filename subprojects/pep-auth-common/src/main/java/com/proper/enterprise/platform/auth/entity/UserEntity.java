@@ -1,8 +1,6 @@
 package com.proper.enterprise.platform.auth.entity;
 
 import com.proper.enterprise.platform.core.entity.BaseEntity;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -10,7 +8,6 @@ import java.util.Collection;
 @Entity
 @Table(name = "pep_auth_user")
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class UserEntity extends BaseEntity {
 
     private static final long serialVersionUID = -932921035920514049L;

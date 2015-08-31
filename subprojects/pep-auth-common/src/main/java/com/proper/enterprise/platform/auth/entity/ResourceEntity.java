@@ -1,9 +1,8 @@
 package com.proper.enterprise.platform.auth.entity;
 
 import com.proper.enterprise.platform.core.entity.BaseEntity;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
@@ -11,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "pep_auth_resource")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "com.proper.enterprise.platform.auth.entity.ResourceEntity")
+@Cacheable
 public class ResourceEntity extends BaseEntity {
 
     private static final long serialVersionUID = 5499576398861944356L;
