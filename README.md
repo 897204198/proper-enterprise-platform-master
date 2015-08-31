@@ -51,18 +51,28 @@ Proper Enterprise Platform
 * 接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
 * 实现：`com.proper.enterprise.platform.[module]..service.impl.*ServiceImpl`
 * 实体：`com.proper.enterprise.platform.[module]..entity.*Entity`
-    > 实体类需继承基类 `BaseEntity`，且必须有可用的默认构造函数；表名规则为 `pep_[module]_[name]`；缓存区域为实体类全路径。如：
+    > 实体类需继承基类 `BaseEntity`，且必须有可用的默认构造函数；表名规则为 `pep_[module]_[name]`；需缓存的表要添加 `Cacheable` 注解。如：
        
     ```
     @Entity
 	@Table(name = "pep_auth_user")
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "com.proper.enterprise.platform.auth.entity.UserEntity")
+	@Cacheable
 	public class UserEntity extends BaseEntity
     ```
         
 * DTO：`com.proper.enterprise.platform.[module]..dto.*DTO`
     > 为避免使用 `openSessionInView` 模式，使用 `DTO` 储存实体中数据，以供数据传输及界面显示使用（合并 `VO` 职能）。`DTO` 中需提供根据相应实体构造 `DTO` 的构造函数
-* Repository：`com.proper.enterprise.platform.[module]..repository.*Repository`，需继承 `JpaRepository`
+* Repository：`com.proper.enterprise.platform.[module]..repository.*Repository`，需继承 `JpaRepository`；需缓存的方法需添加如下注解，且对应 `Entity` 也需要有 `Cacheable` 注解标识：
+
+    ```
+    public interface UserRepository extends JpaRepository<UserEntity, String> {
+    
+        @QueryHints({ @QueryHint(name = "org.hibernate.cacheable", value = "true") })
+        UserEntity findByLoginName(String loginName);
+    
+    }
+    ```
+
 * 单元测试：与被测试的类相同路径，被测试类名称为测试类名前缀，基于 `Junit` 的测试以 `Test` 为后缀，基于 `Spock` 的测试以 `Spec` 为后缀
 * 集成测试：`com.proper.enterprise.platform.integration.**.*IntegTest`
     > 集成测试继承 `AbstractIntegTest`，如：

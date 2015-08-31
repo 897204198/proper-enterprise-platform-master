@@ -8,7 +8,7 @@ import javax.persistence.QueryHint;
 
 public interface TestRepository extends JpaRepository<TestEntity, String> {
 
-    @QueryHints({ @QueryHint(name = "org.hibernate.cacheable", value = "true")})
+    @QueryHints({ @QueryHint(name = "org.hibernate.cacheable", value = "true") })
     TestEntity findByLoginName(String loginName);
 
 }
