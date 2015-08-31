@@ -17,6 +17,7 @@ codenarc {
 
 findbugs {
 	toolVersion = '2.0.3'
+    excludeFilter = file("$configDir/findbugs/excludeFilter.xml")
 }
 
 configurations.codenarc.resolutionStrategy.force(libraries.groovy_all)

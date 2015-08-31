@@ -42,7 +42,7 @@ class QueryCacheIntegTest extends AbstractIntegTest {
         def utcHitcount = eleInUtc.hitCount
 
         // hit count of cache will be increased after each load operation
-        for (int i = 0; i < 3; i++) {
+        3.times {
             repo.findByLoginName('abc')
             def t1 = eleInSqc.hitCount
             def t2 = eleInUtc.hitCount
