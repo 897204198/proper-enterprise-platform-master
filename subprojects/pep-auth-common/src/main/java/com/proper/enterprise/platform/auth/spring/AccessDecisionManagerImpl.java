@@ -26,7 +26,7 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
 
         Object principal = authentication.getPrincipal();
         if (principal instanceof UserDetails) {
-            String authUrl = "";
+            String authUrl;
             for (GrantedAuthority authority : ((UserDetails) principal).getAuthorities()) {
                 authUrl = authority.getAuthority();
                 if (url.equals(authUrl) || (url.startsWith(authUrl) && !authUrl.equals("/"))) {
