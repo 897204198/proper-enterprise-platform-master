@@ -37,9 +37,12 @@
                     </ul>
                 </li>
                 <li style="padding-left: 0px;">
-                    <a href="javascript:void(0);" id="logoutButton">
+                    <a href="javascript:logout();" id="logoutButton">
                         <div class="plat-tools-bt-logout"><span>&nbsp;</span></div> 退出
                     </a>
+                    <form action="${path}/logout" method="post" id="logoutForm">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                    </form>
                 </li>
             </ul>
         </div>
@@ -50,5 +53,11 @@
     <div id="footer" class="plat-footer">
         <div class="plat-footer-inner">版权所有<span class="cc">©</span></div>
     </div>
+
+    <script>
+    function logout() {
+        document.getElementById('logoutForm').submit();
+    }
+    </script>
 </body>
 </html>
