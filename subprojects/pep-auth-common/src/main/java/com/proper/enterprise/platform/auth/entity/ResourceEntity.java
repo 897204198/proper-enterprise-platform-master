@@ -2,10 +2,7 @@ package com.proper.enterprise.platform.auth.entity;
 
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -38,6 +35,7 @@ public class ResourceEntity extends BaseEntity {
     /**
      * 权限对应的Url地址
      */
+    @Column(nullable = false, unique = true)
     private String url;
     
     /**

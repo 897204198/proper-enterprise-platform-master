@@ -5,6 +5,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.FilterInvocation;
 
@@ -23,16 +24,19 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
         FilterInvocation filterInvocation = (FilterInvocation) object;
         String url = filterInvocation.getRequestUrl();
 
-        if (url.startsWith("/file/")){
-            return;
-        }
-
         Object principal = authentication.getPrincipal();
-
-        if(!(principal instanceof UserDetails)){
-            // 没有权限
-            throw new AccessDeniedException(" 没有权限访问！ ");
+        if (principal instanceof UserDetails) {
+            String authUrl = "";
+            for (GrantedAuthority authority : ((UserDetails) principal).getAuthorities()) {
+                authUrl = authority.getAuthority();
+                if (url.equals(authUrl) || (url.startsWith(authUrl) && !authUrl.equals("/"))) {
+                    return;
+                }
+            }
         }
+
+        // 没有权限
+        throw new AccessDeniedException(" 没有权限访问！ ");
     }
 
     @Override
