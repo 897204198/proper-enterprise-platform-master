@@ -7,7 +7,7 @@
                            http://www.springframework.org/schema/security
                            http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-    <security:http access-decision-manager-ref="myAccessDecisionManager">
+    <security:http access-decision-manager-ref="myAccessDecisionManager" create-session="never">
         <security:intercept-url pattern="/**/*.jpg" access="isAnonymous()" />
         <security:intercept-url pattern="/**/*.png" access="isAnonymous()" />
         <security:intercept-url pattern="/**/*.gif" access="isAnonymous()" />
