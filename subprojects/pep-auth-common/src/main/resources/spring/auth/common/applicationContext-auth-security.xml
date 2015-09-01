@@ -7,13 +7,9 @@
                            http://www.springframework.org/schema/security
                            http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
+    <security:http pattern="/resources/**" security="none" />
+
     <security:http access-decision-manager-ref="myAccessDecisionManager" create-session="never">
-        <security:intercept-url pattern="/**/*.jpg" access="isAnonymous()" />
-        <security:intercept-url pattern="/**/*.png" access="isAnonymous()" />
-        <security:intercept-url pattern="/**/*.gif" access="isAnonymous()" />
-        <security:intercept-url pattern="/**/*.css" access="isAnonymous()" />
-        <security:intercept-url pattern="/**/*.js" access="isAnonymous()" />
-        <security:intercept-url pattern="/**/*.ico" access="isAnonymous()" />
         <security:intercept-url pattern="/login" access="isAnonymous()" />
         <security:intercept-url pattern="/**" access="hasRole('USER')" />
 

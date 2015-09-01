@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>Index</title>
-    <link rel="stylesheet" href="${path}/css/theme/blue/default.css" />
+    <link rel="stylesheet" href="${path}/resources/css/theme/blue/default.css" />
 </head>
 <body class="plat-content-bg">
     <div id="headerWrap" class="plat-header-wrap">
