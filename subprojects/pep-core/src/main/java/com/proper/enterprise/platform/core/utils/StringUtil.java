@@ -5,6 +5,15 @@ import java.util.Collection;
 public class StringUtil {
     
     private StringUtil() { }
+
+    public static String cleanUrl(String url) {
+        if (isNull(url)) {
+            return "";
+        }
+
+        int idx = url.indexOf("?");
+        return idx > 0 ? url.substring(0, idx) : url;
+    }
     
     /**
      * 从传入的collection中获得格式化的字符串

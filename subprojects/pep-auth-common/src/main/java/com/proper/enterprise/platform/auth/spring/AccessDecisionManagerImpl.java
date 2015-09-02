@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.spring;
 
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -29,7 +30,7 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
             String authUrl;
             for (GrantedAuthority authority : ((UserDetails) principal).getAuthorities()) {
                 authUrl = authority.getAuthority();
-                if (url.equals(authUrl) || (url.startsWith(authUrl) && !authUrl.equals("/"))) {
+                if (url.equals(authUrl) || StringUtil.cleanUrl(url).equals(authUrl)) {
                     return;
                 }
             }

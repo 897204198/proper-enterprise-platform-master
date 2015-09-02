@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.spring;
 
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class SecurityMetadataSourceImpl implements FilterInvocationSecurityMetad
         if (resourceMap == null) {
             loadResourceDefine();
         }
-        return resourceMap.get(requestUrl);
+        return resourceMap.get(StringUtil.cleanUrl(requestUrl));
     }
 
     private void loadResourceDefine() {
