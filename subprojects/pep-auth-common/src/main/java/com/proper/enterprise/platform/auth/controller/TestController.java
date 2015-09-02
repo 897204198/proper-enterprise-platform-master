@@ -16,7 +16,7 @@ public class TestController {
     @Autowired
     UserService service;
 
-    @RequestMapping("/test")
+    @RequestMapping("/index")
     public String test() {
         User user = service.getCurrentUser();
         LOGGER.debug("current user is {}, {}, {}", user.getId(), user.getUsername(), user.getPassword());

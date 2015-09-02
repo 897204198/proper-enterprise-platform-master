@@ -10,7 +10,7 @@
     <div id="headerWrap" class="plat-header-wrap">
         <div id="logoPanel" class="plat-logo"></div>
         <div id="plat-menu-wrap" class="plat-menu-wrap">
-            <a href="javascript:pageAjaxLocation('${path}/');">test</a>
+            <a href="javascript:pageAjaxLocation('${path}/index');">test</a>
         </div>
         <div id="toolsPanel" class="plat-tools-wrap">
             <ul class="plat-tools">
