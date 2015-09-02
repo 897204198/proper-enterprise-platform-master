@@ -9,7 +9,9 @@
 <body class="plat-content-bg">
     <div id="headerWrap" class="plat-header-wrap">
         <div id="logoPanel" class="plat-logo"></div>
-        <div id="plat-menu-wrap" class="plat-menu-wrap"></div>
+        <div id="plat-menu-wrap" class="plat-menu-wrap">
+            <a href="javascript:pageAjaxLocation('${path}/');">test</a>
+        </div>
         <div id="toolsPanel" class="plat-tools-wrap">
             <ul class="plat-tools">
                 <li class="selected">
@@ -54,9 +56,27 @@
         <div class="plat-footer-inner">版权所有<span class="cc">©</span></div>
     </div>
 
+    <script src="${path}/resources/scripts/vendor/jquery/jquery.js"></script>
     <script>
     function logout() {
         document.getElementById('logoutForm').submit();
+    }
+
+    function pageAjaxLocation(url) {
+        $("#content").html("");
+        // 异步加载html片段
+        $.ajax({
+            type : "GET",
+            url : url,
+            dataType : 'html',
+            cache : false,
+            success : function(htmlFragment) {
+                $("#content").html(htmlFragment);
+            },
+            error : function() {
+                console.log('error');
+            }
+        });
     }
     </script>
 </body>
