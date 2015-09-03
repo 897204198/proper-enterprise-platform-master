@@ -9,9 +9,7 @@
 <body class="plat-content-bg">
     <div id="headerWrap" class="plat-header-wrap">
         <div id="logoPanel" class="plat-logo"></div>
-        <div id="plat-menu-wrap" class="plat-menu-wrap">
-            <a href="javascript:pageAjaxLocation('${path}/index');">test</a>
-        </div>
+        <div id="plat-menu-wrap" class="plat-menu-wrap"></div>
         <div id="toolsPanel" class="plat-tools-wrap">
             <ul class="plat-tools">
                 <li class="selected">
@@ -50,7 +48,9 @@
         </div>
     </div>
     <div id="contentwrap" class="plat-content-wrap">
-        <div id="content" class="plat-content"></div>
+        <div id="content" class="plat-content">
+            <iframe src="${path}/index" frameborder="0" width="100%" height="100%"></iframe>
+        </div>
     </div>
     <div id="footer" class="plat-footer">
         <div class="plat-footer-inner">版权所有<span class="cc">©</span></div>
@@ -60,23 +60,6 @@
     <script>
     function logout() {
         document.getElementById('logoutForm').submit();
-    }
-
-    function pageAjaxLocation(url) {
-        $("#content").html("");
-        // 异步加载html片段
-        $.ajax({
-            type : "GET",
-            url : url,
-            dataType : 'html',
-            cache : false,
-            success : function(htmlFragment) {
-                $("#content").html(htmlFragment);
-            },
-            error : function() {
-                console.log('error');
-            }
-        });
     }
     </script>
 </body>
