@@ -13,6 +13,10 @@
         <security:intercept-url pattern="/login" access="isAnonymous()" />
         <security:intercept-url pattern="/**" access="hasRole('USER')" />
 
+        <security:headers>
+            <security:frame-options policy="SAMEORIGIN" />
+        </security:headers>
+
         <security:form-login />
         <security:logout />
 
