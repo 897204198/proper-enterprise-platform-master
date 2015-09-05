@@ -45,7 +45,7 @@ Proper Enterprise Platform
 * 配置文件：
     1. spring 配置文件放置在 `src/main/resources/spring/[module]
     2. 其他配置文件放置在 `src/main/resources/conf/[module]
-    > 可参考 `./gradlew init-pep-[module]` 自动生成的配置文件
+        > 可参考 `./gradlew init-pep-[module]` 自动生成的配置文件
 * 页面：`pep-webapp/src/main/webapp/WEB-INF/views/[module]/../*.jsp`
 * Controller：`com.proper.enterprise.platform.[module]..controller.*Controller`
 * 接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
