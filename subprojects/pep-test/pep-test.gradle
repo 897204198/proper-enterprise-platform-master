@@ -1,7 +1,10 @@
 dependencies {
     compile libraries.groovy,
+            libraries.groovy_sql,
             libraries.junit,
             libraries.spring_test
+
+    runtime libraries.h2
 }
 
 task syncCtx(type: Copy) {
