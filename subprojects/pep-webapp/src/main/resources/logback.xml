@@ -8,6 +8,9 @@
 	</appender>
 
 	<logger name="com.proper" level="trace" />
+	<logger name="org.springframework.cache" level="trace" />
+	<logger name="org.hibernate.cache" level="trace" />
+	<logger name="net.sf.ehcache" level="trace" />
 
 	<root level="error">
 		<appender-ref ref="console" />
