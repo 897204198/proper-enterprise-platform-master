@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.core;
+package com.proper.enterprise.platform.core.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
