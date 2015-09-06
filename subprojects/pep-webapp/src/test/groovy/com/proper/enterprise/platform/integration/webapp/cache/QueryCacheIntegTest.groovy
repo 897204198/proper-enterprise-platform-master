@@ -63,13 +63,4 @@ class QueryCacheIntegTest extends AbstractIntegTest {
         assert utc.get(utc.keys[0]).hitCount < utcHitcount
     }
 
-    @Test
-    public void test() {
-        def id = repo.findAll()[0].id
-
-        3.times {
-            repo.findOne(id)
-        }
-    }
-
 }
