@@ -27,6 +27,8 @@ class QueryCacheIntegTest extends AbstractIntegTest {
         // query cache and second level cache use these two cache keys
         Cache sqc = cacheManager.getCache('org.hibernate.cache.internal.StandardQueryCache').nativeCache
         Cache utc = cacheManager.getCache('org.hibernate.cache.spi.UpdateTimestampsCache').nativeCache
+        sqc.removeAll()
+        utc.removeAll()
         // non cache element in these caches
         assert sqc.size == 0
         assert utc.size == 0
