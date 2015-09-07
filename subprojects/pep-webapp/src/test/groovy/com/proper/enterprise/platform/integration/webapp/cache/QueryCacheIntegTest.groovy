@@ -54,7 +54,7 @@ class QueryCacheIntegTest extends AbstractIntegTest {
             utcHitcount = t2
         }
 
-        entity.setAccount('update_account')
+        entity.setDescription('update_account')
         repo.save(entity)
 
         repo.findByUsername('abc')

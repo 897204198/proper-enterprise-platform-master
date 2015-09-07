@@ -50,8 +50,9 @@ public class SearchConditionBuilder {
                     }
                 }
 
-                return predicates.isEmpty() ?
-                        cb.conjunction() : cb.and(predicates.toArray(new Predicate[predicates.size()]));
+                return predicates.isEmpty()
+                        ? cb.conjunction()
+                        : cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
     }
