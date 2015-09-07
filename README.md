@@ -53,23 +53,23 @@ Proper Enterprise Platform
 * 接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
 * 实现：`com.proper.enterprise.platform.[module]..service.impl.*ServiceImpl`
 * 实体：`com.proper.enterprise.platform.[module]..entity.*Entity`
-    > 实体类需继承基类 `BaseEntity`，且必须有可用的默认构造函数；表名规则为 `pep_[module]_[name]`；需缓存的表要添加 `Cacheable` 注解。如：
+    > 实体类需继承基类 `BaseEntity`，且必须有可用的默认构造函数；表名规则为 `pep_[module]_[name]`；需缓存的表要添加 `CacheEntity` 注解（`CacheEntity` 注解为实体开启 `JPA` 缓存及 `Hibernate` 二级缓存，可以用作大部分实体的通用配置。如实体有特殊需求，也可自行设置）。如：
        
     ```
     @Entity
 	@Table(name = "pep_auth_user")
-	@Cacheable
+	@CacheEntity
 	public class UserEntity extends BaseEntity
     ```
         
 * DTO：`com.proper.enterprise.platform.[module]..dto.*DTO`
     > 为避免使用 `openSessionInView` 模式，使用 `DTO` 储存实体中数据，以供数据传输及界面显示使用（合并 `VO` 职能）。`DTO` 中需提供根据相应实体构造 `DTO` 的构造函数
-* Repository：`com.proper.enterprise.platform.[module]..repository.*Repository`，需继承 `JpaRepository`；需缓存的方法需添加如下注解，且对应 `Entity` 也需要有 `Cacheable` 注解标识：
+* Repository：`com.proper.enterprise.platform.[module]..repository.*Repository`，需继承 `BaseRepository`；需缓存的方法需添加 `CacheQuery` 注解，且对应 `Entity` 也需要有 `CacheEntity` 注解标识：
 
     ```
-    public interface UserRepository extends JpaRepository<UserEntity, String> {
+    public interface UserRepository extends BaseRepository<UserEntity, String> {
     
-        @QueryHints({ @QueryHint(name = "org.hibernate.cacheable", value = "true") })
+        @CacheQuery
         UserEntity findByLoginName(String loginName);
     
     }
