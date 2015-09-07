@@ -1,13 +1,17 @@
 package com.proper.enterprise.platform.auth.entity;
 
+import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.Collection;
 
 @Entity
 @Table(name = "pep_auth_user")
-@Cacheable
+@CacheEntity
 public class UserEntity extends BaseEntity {
 
     private static final long serialVersionUID = -932921035920514049L;

@@ -15,7 +15,7 @@ import java.util.Map.Entry;
 public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 8769611929269353212L;
-    
+
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.entity;
 
+import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
 import javax.persistence.*;
@@ -7,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "pep_auth_resource")
-@Cacheable
+@CacheEntity
 public class ResourceEntity extends BaseEntity {
 
     private static final long serialVersionUID = 5499576398861944356L;

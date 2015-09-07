@@ -1,15 +1,15 @@
 package com.proper.enterprise.platform.integration.webapp.dal.entity;
 
+import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "pep_test_b")
-@Cacheable
+@CacheEntity
 public class BEntity extends BaseEntity {
 
     public BEntity(String name) {

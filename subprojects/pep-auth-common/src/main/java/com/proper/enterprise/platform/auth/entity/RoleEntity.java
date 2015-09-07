@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.entity;
 
+import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.enums.UseStatus;
 
@@ -8,7 +9,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "pep_auth_role")
-@Cacheable
+@CacheEntity
 public class RoleEntity extends BaseEntity {
 
     private static final long serialVersionUID = 619340355704563195L;
