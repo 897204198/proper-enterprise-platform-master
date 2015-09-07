@@ -4,7 +4,6 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.enums.UseStatus;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 @Entity
 @Table(name = "pep_test_a")
@@ -26,8 +25,8 @@ public class AEntity extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany
-    private Collection<BEntity> bs;
+    @OneToOne
+    private BEntity b;
 
     private UseStatus useStatus = UseStatus.STOP;
 
@@ -49,14 +48,6 @@ public class AEntity extends BaseEntity {
         this.password = password;
     }
 
-    public Collection<BEntity> getBs() {
-        return bs;
-    }
-
-    public void setBs(Collection<BEntity> bs) {
-        this.bs = bs;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -71,5 +62,13 @@ public class AEntity extends BaseEntity {
 
     public void setUseStatus(UseStatus useStatus) {
         this.useStatus = useStatus;
+    }
+
+    public BEntity getB() {
+        return b;
+    }
+
+    public void setB(BEntity b) {
+        this.b = b;
     }
 }

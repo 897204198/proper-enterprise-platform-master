@@ -2,8 +2,10 @@ package com.proper.enterprise.platform.integration.webapp.dal.entity;
 
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
-import javax.persistence.*;
-import java.util.Collection;
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "pep_test_b")
@@ -17,23 +19,12 @@ public class BEntity extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "bs")
-    private Collection<AEntity> as;
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Collection<AEntity> getAs() {
-        return as;
-    }
-
-    public void setAs(Collection<AEntity> as) {
-        this.as = as;
     }
 
 }

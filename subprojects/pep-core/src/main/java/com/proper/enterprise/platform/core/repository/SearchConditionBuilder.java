@@ -17,8 +17,14 @@ public class SearchConditionBuilder {
             @Override
             public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = Lists.newArrayListWithCapacity(conditions.length);
+                String[] names;
+                Path expression;
                 for (SearchCondition condition : conditions) {
-                    Path expression = root.get(condition.getField());
+                    names = condition.getField().split("\\.");
+                    expression = root;
+                    for (int i = 0; i < names.length; i++) {
+                        expression = expression.get(names[i]);
+                    }
                     switch (condition.getOperator()) {
                         case EQ:
                             predicates.add(cb.equal(expression, condition.getValue()));
