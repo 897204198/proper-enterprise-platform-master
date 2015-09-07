@@ -25,6 +25,7 @@ public class SearchConditionBuilder {
                             break;
                         case LIKE:
                             predicates.add(cb.like(expression, "%" + condition.getValue() + "%"));
+                            break;
                         case LT:
                             predicates.add(cb.lessThan(expression, (Comparable)condition.getValue()));
                             break;

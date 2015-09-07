@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.integration.webapp.cache
 
-import com.proper.enterprise.platform.integration.webapp.dal.entity.TestEntity
-import com.proper.enterprise.platform.integration.webapp.dal.repository.TestRepository
+import com.proper.enterprise.platform.integration.webapp.dal.entity.AEntity
+import com.proper.enterprise.platform.integration.webapp.dal.repository.ARepository
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import net.sf.ehcache.Cache
 import org.junit.Before
@@ -15,11 +15,11 @@ class QueryCacheIntegTest extends AbstractIntegTest {
     CacheManager cacheManager
 
     @Autowired
-    TestRepository repo
+    ARepository repo
 
     @Before
     public void setUp() {
-        repo.save(new TestEntity('abc', '123'))
+        repo.save(new AEntity('abc', '123'))
     }
 
     @Test
@@ -33,7 +33,7 @@ class QueryCacheIntegTest extends AbstractIntegTest {
         assert sqc.size == 0
         assert utc.size == 0
 
-        TestEntity entity = repo.findByLoginName('abc')
+        AEntity entity = repo.findByUsername('abc')
         // cache entity after first load
         assert sqc.size == 1
         assert utc.size == 1
@@ -45,7 +45,7 @@ class QueryCacheIntegTest extends AbstractIntegTest {
 
         // hit count of cache will be increased after each load operation
         3.times {
-            repo.findByLoginName('abc')
+            repo.findByUsername('abc')
             def t1 = eleInSqc.hitCount
             def t2 = eleInUtc.hitCount
             assert t1 == sqcHitcount + 1
@@ -57,7 +57,7 @@ class QueryCacheIntegTest extends AbstractIntegTest {
         entity.setAccount('update_account')
         repo.save(entity)
 
-        repo.findByLoginName('abc')
+        repo.findByUsername('abc')
         // hit count will be reset after update
         assert sqc.get(sqc.keys[0]).hitCount < sqcHitcount
         assert utc.get(utc.keys[0]).hitCount < utcHitcount

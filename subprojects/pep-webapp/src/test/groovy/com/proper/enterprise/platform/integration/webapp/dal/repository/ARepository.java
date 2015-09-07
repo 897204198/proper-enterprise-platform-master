@@ -2,11 +2,11 @@ package com.proper.enterprise.platform.integration.webapp.dal.repository;
 
 import com.proper.enterprise.platform.core.repository.BaseRepository;
 import com.proper.enterprise.platform.core.annotation.CacheQuery;
-import com.proper.enterprise.platform.integration.webapp.dal.entity.TestEntity;
+import com.proper.enterprise.platform.integration.webapp.dal.entity.AEntity;
 
-public interface TestRepository extends BaseRepository<TestEntity, String> {
+public interface ARepository extends BaseRepository<AEntity, String> {
 
     @CacheQuery
-    TestEntity findByLoginName(String loginName);
+    AEntity findByUsername(String username);
 
 }
