@@ -26,16 +26,25 @@ class SearchConditionBuilderIntegTest extends AbstractIntegTest {
         bRepo.save([b1, b2])
 
         AEntity a1 = new AEntity('u1', 'p1')
+        a1.setDescription('abc')
         a1.setB(b1)
 
         AEntity a2 = new AEntity('u2', 'p2')
+        a2.setDescription('def')
         a2.setB(b2)
 
         AEntity a3 = new AEntity('u3', 'p3')
+        a3.setDescription('def')
 
         AEntity a4 = new AEntity('u4', 'p4')
+        a4.setDescription('abc')
 
         aRepo.save([a1, a2, a3, a4])
+    }
+
+    @Test(expected = IllegalArgumentException)
+    public void useErrorOp() {
+        new SearchCondition('username', SearchCondition.Operator.LIKE)
     }
 
     @Test
@@ -56,6 +65,15 @@ class SearchConditionBuilderIntegTest extends AbstractIntegTest {
         sc2 = new SearchCondition('username', SearchCondition.Operator.LE, 'u4')
         result = aRepo.findAll(SearchConditionBuilder.build(sc1, sc2))
         assert 3 == result.size()
+
+        sc1 = new SearchCondition('description', SearchCondition.Operator.ASC)
+        sc2 = new SearchCondition('username', SearchCondition.Operator.DESC)
+        def sc3 = new SearchCondition('password', SearchCondition.Operator.GT, 'p1')
+        result = aRepo.findAll(SearchConditionBuilder.build(sc1, sc2, sc3))
+        assert 3 == result.size()
+        assert result[0].username == 'u4'
+        assert result[1].username == 'u3'
+        assert result[2].username == 'u2'
     }
 
     @Test

@@ -16,7 +16,9 @@ public class SearchConditionBuilder {
         return new Specification<T>() {
             @Override
             public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                List<Predicate> predicates = Lists.newArrayListWithCapacity(conditions.length);
+                int len = conditions.length;
+                List<Predicate> predicates = Lists.newArrayListWithCapacity(len);
+                List<Order> orders = Lists.newArrayListWithCapacity(len);
                 String[] names;
                 Path expression;
                 for (SearchCondition condition : conditions) {
@@ -33,16 +35,22 @@ public class SearchConditionBuilder {
                             predicates.add(cb.like(expression, "%" + condition.getValue() + "%"));
                             break;
                         case LT:
-                            predicates.add(cb.lessThan(expression, (Comparable)condition.getValue()));
+                            predicates.add(cb.lessThan(expression, (Comparable) condition.getValue()));
                             break;
                         case GT:
-                            predicates.add(cb.greaterThan(expression, (Comparable)condition.getValue()));
+                            predicates.add(cb.greaterThan(expression, (Comparable) condition.getValue()));
                             break;
                         case LE:
-                            predicates.add(cb.lessThanOrEqualTo(expression, (Comparable)condition.getValue()));
+                            predicates.add(cb.lessThanOrEqualTo(expression, (Comparable) condition.getValue()));
                             break;
                         case GE:
-                            predicates.add(cb.greaterThanOrEqualTo(expression, (Comparable)condition.getValue()));
+                            predicates.add(cb.greaterThanOrEqualTo(expression, (Comparable) condition.getValue()));
+                            break;
+                        case ASC:
+                            orders.add(cb.asc(expression));
+                            break;
+                        case DESC:
+                            orders.add(cb.desc(expression));
                             break;
                         default:
                             LOGGER.debug("Not supported operator: {}", condition.getOperator());
@@ -50,6 +58,9 @@ public class SearchConditionBuilder {
                     }
                 }
 
+                if (!orders.isEmpty()) {
+                    query.orderBy(orders);
+                }
                 return predicates.isEmpty()
                         ? cb.conjunction()
                         : cb.and(predicates.toArray(new Predicate[predicates.size()]));

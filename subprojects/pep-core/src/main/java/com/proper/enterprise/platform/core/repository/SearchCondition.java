@@ -1,9 +1,11 @@
 package com.proper.enterprise.platform.core.repository;
 
+import org.springframework.util.Assert;
+
 public class SearchCondition {
 
     public enum Operator {
-        EQ, LIKE, GT, LT, GE, LE
+        EQ, LIKE, GT, LT, GE, LE, ASC, DESC
     }
 
     private String field;
@@ -18,6 +20,12 @@ public class SearchCondition {
         this.field = field;
         this.operator = op;
         this.value = val;
+    }
+
+    public SearchCondition(String field, Operator op) {
+        Assert.isTrue(op.equals(Operator.ASC) || op.equals(Operator.DESC), "This constructor only supports ASC or DESC operator!");
+        this.field = field;
+        this.operator = op;
     }
 
     public Object getValue() {
