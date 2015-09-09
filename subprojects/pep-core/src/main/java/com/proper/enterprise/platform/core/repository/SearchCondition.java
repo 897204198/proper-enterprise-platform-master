@@ -5,7 +5,7 @@ import org.springframework.util.Assert;
 public class SearchCondition {
 
     public enum Operator {
-        EQ, LIKE, GT, LT, GE, LE, ASC, DESC
+        EQ, LIKE, GT, LT, GE, LE, ASC, DESC, NOTNULL
     }
 
     private String field;
@@ -23,7 +23,10 @@ public class SearchCondition {
     }
 
     public SearchCondition(String field, Operator op) {
-        Assert.isTrue(op.equals(Operator.ASC) || op.equals(Operator.DESC), "This constructor only supports ASC or DESC operator!");
+        Assert.isTrue(op.equals(Operator.ASC)
+                        || op.equals(Operator.DESC)
+                        || op.equals(Operator.NOTNULL)
+                      , "This constructor only supports ASC or DESC or NOTNULL operator!");
         this.field = field;
         this.operator = op;
     }

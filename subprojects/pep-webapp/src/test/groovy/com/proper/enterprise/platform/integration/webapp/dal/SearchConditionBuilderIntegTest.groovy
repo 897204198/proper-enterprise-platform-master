@@ -83,6 +83,12 @@ class SearchConditionBuilderIntegTest extends AbstractIntegTest {
         assert result[0].username == 'u4'
         assert result[1].username == 'u3'
         assert result[2].username == 'u2'
+
+        sc1 = new SearchCondition('b', SearchCondition.Operator.NOTNULL)
+        sc2 = new SearchCondition('username', SearchCondition.Operator.DESC)
+        result = aRepo.findAll(SearchConditionBuilder.build(sc1, sc2))
+        assert result.size() == 2
+        assert result[0].username == 'u2'
     }
 
     @Test

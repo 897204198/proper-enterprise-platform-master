@@ -52,6 +52,9 @@ public class SearchConditionBuilder {
                         case DESC:
                             orders.add(cb.desc(expression));
                             break;
+                        case NOTNULL:
+                            predicates.add(cb.isNotNull(expression));
+                            break;
                         default:
                             LOGGER.debug("Not supported operator: {}", condition.getOperator());
                             break;
