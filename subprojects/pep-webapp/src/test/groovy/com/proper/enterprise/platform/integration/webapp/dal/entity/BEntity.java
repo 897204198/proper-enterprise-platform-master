@@ -19,6 +19,8 @@ public class BEntity extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
+    private String attr1;
+
     public String getName() {
         return name;
     }
@@ -27,4 +29,11 @@ public class BEntity extends BaseEntity {
         this.name = name;
     }
 
+    public String getAttr1() {
+        return attr1;
+    }
+
+    public void setAttr1(String attr1) {
+        this.attr1 = attr1;
+    }
 }
