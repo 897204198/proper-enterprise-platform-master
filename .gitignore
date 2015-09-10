@@ -5,6 +5,10 @@ subprojects/pep-test/src/main/resources/spring/
 # ignore vendor libs
 vendor
 
+# ignore node and bower dependencies
+node_modules/
+bower_components/
+
 # ignore temp files and folders
 .DS_Store
 .zip
