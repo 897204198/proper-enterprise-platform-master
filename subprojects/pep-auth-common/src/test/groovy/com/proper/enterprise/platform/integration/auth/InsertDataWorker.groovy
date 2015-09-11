@@ -11,6 +11,7 @@ class InsertDataWorker {
     def roleAcode = 'roleA', roleBcode = 'roleB', roleCcode = 'roleC'
 
     public def getBeforeDMLs() {
+        sqls << getAfterDMLs()
         createUser()
         createRoles()
         grantUserRoles()
@@ -21,11 +22,11 @@ class InsertDataWorker {
 
     public def getAfterDMLs() {
         [
-            'DELETE FROM pep_auth_role_resources;',
-            'DELETE FROM pep_auth_resource;',
-            'DELETE FROM pep_auth_user_roles;',
-            'DELETE FROM pep_auth_role;',
-            'DELETE FROM pep_auth_user;'
+            "DELETE FROM pep_auth_role_resources WHERE roles LIKE 'IDW-%';",
+            "DELETE FROM pep_auth_resource WHERE id LIKE 'IDW-%';",
+            "DELETE FROM pep_auth_user_roles WHERE users LIKE 'IDW-%';",
+            "DELETE FROM pep_auth_role WHERE id LIKE 'IDW-%';",
+            "DELETE FROM pep_auth_user WHERE id LIKE 'IDW-%';"
         ]
     }
 
@@ -35,7 +36,7 @@ class InsertDataWorker {
 INSERT INTO pep_auth_user
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, login_name, password)
 VALUES
-(${username + '-' + userpwd}, 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', $username, $userpwd);"""
+(${'IDW-' + username}, 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', $username, $userpwd);"""
         }
     }
 
@@ -45,7 +46,7 @@ VALUES
 INSERT INTO pep_auth_role
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name)
 VALUES
-(${role + '-' + role}, 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', $role, $role);"""
+(${'IDW-' + role}, 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', $role, $role);"""
         }
     }
 
@@ -54,8 +55,8 @@ VALUES
          ["$user2name", roleAcode], ["$user2name", roleBcode], ["$user2name", roleCcode]].each {
             def username = it[0]
             def role = it[1]
-            def users = "$username-$userpwd".toString()
-            def roles = "$role-$role".toString()
+            def users = "IDW-$username".toString()
+            def roles = "IDW-$role".toString()
             sqls << """
 INSERT INTO pep_auth_user_roles
 (users, roles)
@@ -70,7 +71,7 @@ VALUES
 INSERT INTO pep_auth_resource
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, url, method, sequence_number)
 VALUES
-(${'res' + idx}, 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', ${'/auth/res' + idx}, 'GET', $idx);"""
+(${'IDW-res' + idx}, 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', ${'/auth/res' + idx}, 'GET', $idx);"""
         }
     }
 
@@ -81,7 +82,7 @@ VALUES
 INSERT INTO pep_auth_role_resources
 (roles, resources)
 VALUES
-(${(role + '-' + role).toString()}, ${'res' + idx});"""
+(${('IDW-' + role).toString()}, ${'IDW-res' + idx});"""
             }
         }
     }

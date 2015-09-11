@@ -17,10 +17,14 @@ class UserServiceImplIntegTest extends AbstractIntegTest {
     
     @Test
     public void getUserResources() {
-        worker.insertData()
+        push(worker.getBeforeDMLs())
+        executeSqls()
         
         Collection<Resource> resources = userService.getUserResourcesByUsername(worker.user1name)
         assert resources.size() == 10
+
+        push(worker.getAfterDMLs())
+        executeSqls()
     }
 
     @Test
