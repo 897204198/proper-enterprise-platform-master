@@ -2,6 +2,8 @@ package com.proper.enterprise.platform.auth.entity;
 
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.enums.MOC;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.*;
 import java.util.List;
@@ -26,18 +28,24 @@ public class ResourceEntity extends BaseEntity {
     /**
      * 父资源
      */
-    private String parent;
+    @OneToOne
+    private ResourceEntity parent;
     
     /**
      * 类型
      */
-    private String moc;
+    @Enumerated(EnumType.STRING)
+    private MOC moc;
     
     /**
      * 权限对应的Url地址
      */
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String url;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RequestMethod method = RequestMethod.GET;
     
     /**
      * 图标
@@ -66,22 +74,6 @@ public class ResourceEntity extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getParent() {
-        return parent;
-    }
-
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
-
-    public String getMoc() {
-        return moc;
-    }
-
-    public void setMoc(String moc) {
-        this.moc = moc;
     }
 
     public String getUrl() {
@@ -115,4 +107,29 @@ public class ResourceEntity extends BaseEntity {
     public void setRoles(List<RoleEntity> roles) {
         this.roles = roles;
     }
+
+    public ResourceEntity getParent() {
+        return parent;
+    }
+
+    public void setParent(ResourceEntity parent) {
+        this.parent = parent;
+    }
+
+    public MOC getMoc() {
+        return moc;
+    }
+
+    public void setMoc(MOC moc) {
+        this.moc = moc;
+    }
+
+    public RequestMethod getMethod() {
+        return method;
+    }
+
+    public void setMethod(RequestMethod method) {
+        this.method = method;
+    }
+
 }
