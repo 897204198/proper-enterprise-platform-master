@@ -14,4 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 public abstract class AbstractIntegTest {
 
+    private SqlWorker worker = new SqlWorker()
+
+    public void push(sqls) {
+        worker.push(sqls)
+    }
+
+    public void executeSqls() {
+        worker.work()
+    }
+
 }

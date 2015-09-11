@@ -9,7 +9,10 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "pep_auth_resource")
+@Table(
+    name = "pep_auth_resource",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"url", "method"})
+)
 @CacheEntity
 public class ResourceEntity extends BaseEntity {
 
