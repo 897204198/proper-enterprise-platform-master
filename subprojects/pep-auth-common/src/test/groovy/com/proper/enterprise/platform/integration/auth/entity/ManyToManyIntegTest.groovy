@@ -1,5 +1,4 @@
 package com.proper.enterprise.platform.integration.auth.entity
-
 import com.proper.enterprise.platform.auth.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.entity.RoleEntity
 import com.proper.enterprise.platform.auth.entity.UserEntity
@@ -7,6 +6,8 @@ import com.proper.enterprise.platform.auth.repository.RoleRepository
 import com.proper.enterprise.platform.auth.repository.UserRepository
 import com.proper.enterprise.platform.integration.auth.InsertDataWorker
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
+import com.proper.enterprise.platform.test.integration.SqlWorker
+import org.junit.AfterClass
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,9 +24,23 @@ class ManyToManyIntegTest extends AbstractIntegTest {
     @Autowired
     RoleRepository roleRepo
 
+    static boolean hasSetUp = false
+
     @Before
     public void setUp() {
-        worker.insertData()
+        if (!hasSetUp) {
+            push(worker.getBeforeDMLs())
+            executeSqls()
+            hasSetUp = true
+        }
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        SqlWorker sqlWorker = new SqlWorker()
+        InsertDataWorker worker = new InsertDataWorker()
+        sqlWorker.push(worker.getAfterDMLs())
+        sqlWorker.work()
     }
 
     @Test
