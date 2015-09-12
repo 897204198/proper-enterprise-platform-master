@@ -41,7 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         
         Collection<Resource> resources = userService.getUserResources(userId);
         for (Resource res : resources) {
-            authSet.add(new SimpleGrantedAuthority(res.getUrl()));
+            authSet.add(new SimpleGrantedAuthority(res.getMethod().name() + ":" + res.getUrl()));
         }
         return authSet;
     }

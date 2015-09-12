@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.auth.entity.ResourceEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.Serializable;
 
@@ -14,8 +15,8 @@ public class ResourceDTO implements Serializable, Resource {
     private static final long serialVersionUID = -8467254578546259161L;
     
     private String id;
-
     private String url;
+    private RequestMethod method;
     
     public ResourceDTO(ResourceEntity entity) {
         if (entity == null) {
@@ -23,6 +24,7 @@ public class ResourceDTO implements Serializable, Resource {
         } else {
             this.id = entity.getId();
             this.url = entity.getUrl();
+            this.method = entity.getMethod();
         }
     }
     
@@ -64,4 +66,13 @@ public class ResourceDTO implements Serializable, Resource {
         this.url = url;
     }
 
+    @Override
+    public RequestMethod getMethod() {
+        return method;
+    }
+
+    @Override
+    public void setMethod(RequestMethod method) {
+        this.method = method;
+    }
 }

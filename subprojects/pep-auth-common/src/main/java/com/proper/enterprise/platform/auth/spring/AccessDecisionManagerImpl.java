@@ -24,13 +24,14 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
 
         FilterInvocation filterInvocation = (FilterInvocation) object;
         String url = filterInvocation.getRequestUrl();
+        String method = filterInvocation.getHttpRequest().getMethod().toUpperCase();
+        String auth = method + ":" + url;
 
         Object principal = authentication.getPrincipal();
         if (principal instanceof UserDetails) {
-            String authUrl;
             for (GrantedAuthority authority : ((UserDetails) principal).getAuthorities()) {
-                authUrl = authority.getAuthority();
-                if (url.equals(authUrl) || StringUtil.cleanUrl(url).equals(authUrl)) {
+                if (auth.equals(authority.getAuthority())
+                        || StringUtil.cleanUrl(auth).equals(authority.getAuthority())) {
                     return;
                 }
             }
