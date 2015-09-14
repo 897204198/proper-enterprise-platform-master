@@ -9,6 +9,8 @@ import com.proper.enterprise.platform.auth.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.entity.UserEntity;
 import com.proper.enterprise.platform.auth.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,13 +21,19 @@ import java.util.HashSet;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     
     @Autowired
     UserRepository repo;
 
     @Override
     public User getUserByUsername(String username) {
-        return new UserDTO(repo.findByLoginName(username));
+        UserEntity entity = repo.findByLoginName(username);
+        if (entity == null) {
+            LOGGER.debug("User with username '{}' is not exist!", username);
+        }
+        return new UserDTO(entity);
     }
 
     @Override

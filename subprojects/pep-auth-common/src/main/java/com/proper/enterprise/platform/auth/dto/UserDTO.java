@@ -1,12 +1,11 @@
 package com.proper.enterprise.platform.auth.dto;
 
-import java.io.Serializable;
-
+import com.proper.enterprise.platform.api.auth.User;
+import com.proper.enterprise.platform.auth.entity.UserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.proper.enterprise.platform.api.auth.User;
-import com.proper.enterprise.platform.auth.entity.UserEntity;
+import java.io.Serializable;
 
 public class UserDTO implements Serializable, User {
     
@@ -20,7 +19,7 @@ public class UserDTO implements Serializable, User {
     
     public UserDTO(UserEntity entity) {
         if (entity == null) {
-            LOGGER.error("Entity SHOULD NOT NULL!");
+            LOGGER.debug("Entity SHOULD NOT NULL!");
         } else {
             this.id = entity.getId();
             this.username = entity.getLoginName();

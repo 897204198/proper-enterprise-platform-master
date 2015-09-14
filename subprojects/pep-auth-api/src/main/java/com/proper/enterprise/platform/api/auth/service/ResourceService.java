@@ -5,7 +5,12 @@ import com.proper.enterprise.platform.api.auth.Resource;
 import java.util.Set;
 
 public interface ResourceService {
-    
-    Set<Resource> getAllResources();
+
+    /**
+     * Get all authorized resources of current user
+     *
+     * @return resource set
+     */
+    Set<Resource> getAllResourcesOfCurrentUser();
 
 }
