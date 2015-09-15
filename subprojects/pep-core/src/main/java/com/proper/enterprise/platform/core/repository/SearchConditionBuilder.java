@@ -55,6 +55,9 @@ public class SearchConditionBuilder {
                         case NOTNULL:
                             predicates.add(cb.isNotNull(expression));
                             break;
+                        case IN:
+                            predicates.add(expression.in(condition.getValue()));
+                            break;
                         default:
                             LOGGER.debug("Not supported operator: {}", condition.getOperator());
                             break;

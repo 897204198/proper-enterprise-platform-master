@@ -5,7 +5,11 @@ import org.springframework.util.Assert;
 public class SearchCondition {
 
     public enum Operator {
-        EQ, LIKE, GT, LT, GE, LE, ASC, DESC, NOTNULL
+        EQ, LIKE,
+        GT, LT, GE, LE,
+        ASC, DESC,
+        NOTNULL,
+        IN
     }
 
     private String field;
