@@ -19,23 +19,8 @@ public class BEntity extends BaseEntity {
     }
 
     @Column(nullable = false, unique = true)
-    private String name;
+    String name;
 
-    private String attr1;
+    String attr1;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAttr1() {
-        return attr1;
-    }
-
-    public void setAttr1(String attr1) {
-        this.attr1 = attr1;
-    }
 }
