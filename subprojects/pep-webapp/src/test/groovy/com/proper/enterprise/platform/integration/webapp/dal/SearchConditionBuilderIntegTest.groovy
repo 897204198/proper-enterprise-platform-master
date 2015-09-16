@@ -4,8 +4,10 @@ import com.proper.enterprise.platform.core.repository.SearchCondition
 import com.proper.enterprise.platform.core.repository.SearchConditionBuilder
 import com.proper.enterprise.platform.integration.webapp.dal.entity.AEntity
 import com.proper.enterprise.platform.integration.webapp.dal.entity.BEntity
+import com.proper.enterprise.platform.integration.webapp.dal.entity.CEntity
 import com.proper.enterprise.platform.integration.webapp.dal.repository.ARepository
 import com.proper.enterprise.platform.integration.webapp.dal.repository.BRepository
+import com.proper.enterprise.platform.integration.webapp.dal.repository.CRepository
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.Before
 import org.junit.Test
@@ -22,6 +24,9 @@ class SearchConditionBuilderIntegTest extends AbstractIntegTest {
     @Autowired
     BRepository bRepo
 
+    @Autowired
+    CRepository cRepo
+
     @Before
     public void setUp() {
         BEntity b1 = new BEntity('b10')
@@ -36,11 +41,17 @@ class SearchConditionBuilderIntegTest extends AbstractIntegTest {
         a2.setDescription('def')
         a2.setB(b2)
 
+        CEntity c1 = new CEntity('c1')
+        CEntity c2 = new CEntity('c2')
+        cRepo.save([c1, c2])
+
         AEntity a3 = new AEntity('u3', 'p3')
         a3.setDescription('def')
+        a3.setcEntities([c1, c2])
 
         AEntity a4 = new AEntity('u4', 'p4')
         a4.setDescription('abc')
+        a4.setcEntities([c1, c2])
 
         aRepo.save([a1, a2, a3, a4])
 
@@ -114,6 +125,10 @@ class SearchConditionBuilderIntegTest extends AbstractIntegTest {
         sc1 = new SearchCondition('b.name', SearchCondition.Operator.IN, ['b10', 'b11', 'b25'])
         result = aRepo.findAll(SearchConditionBuilder.build(sc1))
         assert result.size() == 2
+
+        sc1 = new SearchCondition('b', SearchCondition.Operator.IN, bRepo.findAll())
+        result = aRepo.findAll(SearchConditionBuilder.build(sc1))
+        assert result.size() == 2
     }
 
     @Test
@@ -167,6 +182,14 @@ class SearchConditionBuilderIntegTest extends AbstractIntegTest {
         sort = new Sort(order)
         result = aRepo.findAll(sort)
         assert result[0].username == 'u2'
+    }
+
+    @Test
+    public void manyToManyQuery() {
+        def cs = cRepo.findAll()
+        def sc1 = new SearchCondition('cEntities', SearchCondition.Operator.IN, cs)
+        def result = aRepo.findAll(SearchConditionBuilder.build(sc1))
+        println result
     }
 
 }
