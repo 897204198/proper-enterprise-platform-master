@@ -12,6 +12,8 @@ import javax.persistence.Table
 @CacheEntity
 class CEntity extends BaseEntity {
 
+    private static final long serialVersionUID = 1L;
+
     public CEntity(String name) {
         this.name = name
     }
