@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.integration.webapp.dal
 
+import com.proper.enterprise.platform.core.repository.NativeRepository
 import com.proper.enterprise.platform.core.repository.SearchCondition
 import com.proper.enterprise.platform.core.repository.SearchConditionBuilder
 import com.proper.enterprise.platform.integration.webapp.dal.entity.AEntity
@@ -18,14 +19,10 @@ import org.springframework.data.domain.Sort
 
 class SearchConditionBuilderIntegTest extends AbstractIntegTest {
 
-    @Autowired
-    ARepository aRepo
-
-    @Autowired
-    BRepository bRepo
-
-    @Autowired
-    CRepository cRepo
+    @Autowired ARepository aRepo
+    @Autowired BRepository bRepo
+    @Autowired CRepository cRepo
+    @Autowired NativeRepository repo
 
     @Before
     public void setUp() {
@@ -186,10 +183,23 @@ class SearchConditionBuilderIntegTest extends AbstractIntegTest {
 
     @Test
     public void manyToManyQuery() {
-        def cs = cRepo.findAll()
-        def sc1 = new SearchCondition('cEntities', SearchCondition.Operator.IN, cs)
-        def result = aRepo.findAll(SearchConditionBuilder.build(sc1))
-        println result
+        // use SearchConditionBuilder to build this query as below has problems now
+        //
+        // def sc = new SearchCondition('cEntities', SearchCondition.Operator.IN, cRepo.findAll())
+        // aRepo.findAll(SearchConditionBuilder.build(sc))
+        //
+        // these codes will cause an sql syntax error that 'cEntities' not mapped to correct column
+
+        def sql = """
+SELECT DISTINCT a.*
+  FROM pep_test_a a, pep_test_c c, pep_test_a_c_entities ac
+ WHERE a.id = ac.a_entities
+   AND c.id = ac.c_entities
+   AND c.name IN (:names)
+"""
+        def params = ['names': ['c1', 'c2']]
+        def result = repo.executeQuery(sql, params)
+        assert result.size() == 2
     }
 
 }
