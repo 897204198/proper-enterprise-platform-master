@@ -6,8 +6,8 @@ import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.dto.ResourceDTO;
 import com.proper.enterprise.platform.auth.dto.UserDTO;
 import com.proper.enterprise.platform.auth.entity.ResourceEntity;
-import com.proper.enterprise.platform.auth.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.entity.UserEntity;
+import com.proper.enterprise.platform.auth.repository.ResourceRepository;
 import com.proper.enterprise.platform.auth.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +25,14 @@ public class UserServiceImpl implements UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     
     @Autowired
-    UserRepository repo;
+    UserRepository userRepo;
+
+    @Autowired
+    ResourceRepository resRepo;
 
     @Override
     public User getUserByUsername(String username) {
-        UserEntity entity = repo.findByLoginName(username);
+        UserEntity entity = userRepo.findByLoginName(username);
         if (entity == null) {
             LOGGER.debug("User with username '{}' is not exist!", username);
         }
@@ -38,17 +41,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<Resource> getUserResources(String userId) {
-        UserEntity userEntity = repo.findOne(userId);
+        UserEntity userEntity = userRepo.findOne(userId);
         return getResources(userEntity);
     }
 
     private Collection<Resource> getResources(UserEntity userEntity) {
         Collection<Resource> resources = new HashSet<>();
         if (userEntity != null) {
-            for (RoleEntity roleEntity : userEntity.getRoles()) {
-                for (ResourceEntity resEntity : roleEntity.getResources()) {
-                    resources.add(new ResourceDTO(resEntity));
-                }
+            for (ResourceEntity resEntity : resRepo.findByRoles(userEntity.getRoles())) {
+                resources.add(new ResourceDTO(resEntity));
             }
         }
         return resources;
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<Resource> getUserResourcesByUsername(String username) {
-        UserEntity userEntity = repo.findByLoginName(username);
+        UserEntity userEntity = userRepo.findByLoginName(username);
         return getResources(userEntity);
     }
 
