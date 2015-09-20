@@ -15,6 +15,7 @@ public class ResourceDTO extends BaseDTO implements Resource {
     
     private String url;
     private RequestMethod method;
+    private String name;
     
     public ResourceDTO(ResourceEntity entity) {
         super(entity);
@@ -23,6 +24,7 @@ public class ResourceDTO extends BaseDTO implements Resource {
         } else {
             this.url = entity.getUrl();
             this.method = entity.getMethod();
+            this.name = entity.getName();
         }
     }
     
@@ -62,5 +64,15 @@ public class ResourceDTO extends BaseDTO implements Resource {
     @Override
     public void setMethod(RequestMethod method) {
         this.method = method;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 }

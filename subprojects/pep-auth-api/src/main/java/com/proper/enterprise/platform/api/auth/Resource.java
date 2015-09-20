@@ -12,5 +12,9 @@ public interface Resource extends IBase {
     RequestMethod getMethod();
 
     void setMethod(RequestMethod method);
+
+    String getName();
+
+    void setName(String name);
     
 }

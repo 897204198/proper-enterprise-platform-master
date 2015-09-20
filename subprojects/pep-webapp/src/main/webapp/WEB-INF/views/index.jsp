@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>Index</title>
-    <link rel="stylesheet" href="${path}/resources/css/theme/blue/default.css" />
+    <link rel="stylesheet" href="${path}/resources/css/vendor/qui/theme/blue/default.css" />
 </head>
 <body class="plat-content-bg">
     <div id="headerWrap" class="plat-header-wrap">
@@ -48,9 +48,7 @@
         </div>
     </div>
     <div id="contentwrap" class="plat-content-wrap">
-        <div id="content" class="plat-content">
-            <iframe src="${path}/index" frameborder="0" width="100%" height="100%"></iframe>
-        </div>
+        <div id="content" class="plat-content"></div>
     </div>
     <div id="footer" class="plat-footer">
         <div class="plat-footer-inner">版权所有<span class="cc">©</span></div>
