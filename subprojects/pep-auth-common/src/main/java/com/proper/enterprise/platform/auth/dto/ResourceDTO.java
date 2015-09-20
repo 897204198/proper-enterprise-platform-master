@@ -2,19 +2,17 @@ package com.proper.enterprise.platform.auth.dto;
 
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.auth.entity.ResourceEntity;
+import com.proper.enterprise.platform.core.dto.BaseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.io.Serializable;
-
-public class ResourceDTO implements Serializable, Resource {
+public class ResourceDTO extends BaseDTO implements Resource {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceDTO.class);
 
     private static final long serialVersionUID = -8467254578546259161L;
     
-    private String id;
     private String url;
     private RequestMethod method;
     
@@ -46,16 +44,6 @@ public class ResourceDTO implements Serializable, Resource {
         }
     }
     
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(String id) {
-        this.id = id;
-    }
-
     @Override
     public String getUrl() {
         return url;

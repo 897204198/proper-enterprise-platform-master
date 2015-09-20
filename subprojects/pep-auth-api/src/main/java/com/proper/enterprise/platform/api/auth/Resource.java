@@ -1,12 +1,9 @@
 package com.proper.enterprise.platform.api.auth;
 
+import com.proper.enterprise.platform.core.api.IBase;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-public interface Resource {
-
-    String getId();
-
-    void setId(String id);
+public interface Resource extends IBase {
 
     String getUrl();
 

@@ -12,7 +12,6 @@ public class UserDTO extends BaseDTO implements User {
     
     private static final long serialVersionUID = 5471358115263090637L;
     
-    private String id;
     private String username;
     private String password;
 
@@ -24,16 +23,6 @@ public class UserDTO extends BaseDTO implements User {
             this.username = entity.getLoginName();
             this.password = entity.getPassword();
         }
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(String id) {
-        this.id = id;
     }
 
     @Override

@@ -4,11 +4,11 @@ import com.proper.enterprise.platform.core.api.IBase;
 
 public class BaseDTO implements IBase {
 
-    private String id;
-    private String createUserId;
-    private String createTime;
-    private String lastModifyUserId;
-    private String lastModifyTime;
+    protected String id;
+    protected String createUserId;
+    protected String createTime;
+    protected String lastModifyUserId;
+    protected String lastModifyTime;
 
     @Override
     public String getId() {

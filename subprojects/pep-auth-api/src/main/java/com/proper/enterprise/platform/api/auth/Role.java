@@ -1,9 +1,7 @@
 package com.proper.enterprise.platform.api.auth;
 
-public interface Role {
+import com.proper.enterprise.platform.core.api.IBase;
 
-    String getId();
-    
-    void setId(String id);
+public interface Role extends IBase {
 
 }
