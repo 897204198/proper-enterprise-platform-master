@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.aspect.auth;
+package com.proper.enterprise.platform.aspect.historical;
 
 import com.proper.enterprise.platform.api.auth.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
