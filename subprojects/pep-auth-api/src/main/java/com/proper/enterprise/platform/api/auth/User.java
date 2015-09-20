@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.api.auth;
 
-public interface User {
+import com.proper.enterprise.platform.core.api.IBase;
+
+public interface User extends IBase {
 
     String getId();
 
@@ -13,13 +15,5 @@ public interface User {
     String getPassword();
 
     void setPassword(String password);
-
-    String getCreateUserId();
-
-    void setCreateUserId(String createUserId);
-
-    String getLastModifyUserId();
-
-    void setLastModifyUserId(String lastModifyUserId);
 
 }

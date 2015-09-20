@@ -2,12 +2,11 @@ package com.proper.enterprise.platform.auth.dto;
 
 import com.proper.enterprise.platform.api.auth.User;
 import com.proper.enterprise.platform.auth.entity.UserEntity;
+import com.proper.enterprise.platform.core.dto.BaseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
-
-public class UserDTO implements Serializable, User {
+public class UserDTO extends BaseDTO implements User {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDTO.class);
     
@@ -16,9 +15,7 @@ public class UserDTO implements Serializable, User {
     private String id;
     private String username;
     private String password;
-    private String createUserId;
-    private String lastModifyUserId;
-    
+
     public UserDTO(UserEntity entity) {
         if (entity == null) {
             LOGGER.debug("Entity SHOULD NOT NULL!");
@@ -57,26 +54,6 @@ public class UserDTO implements Serializable, User {
     @Override
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Override
-    public String getCreateUserId() {
-        return createUserId;
-    }
-
-    @Override
-    public void setCreateUserId(String createUserId) {
-        this.createUserId = createUserId;
-    }
-
-    @Override
-    public String getLastModifyUserId() {
-        return lastModifyUserId;
-    }
-
-    @Override
-    public void setLastModifyUserId(String lastModifyUserId) {
-        this.lastModifyUserId = lastModifyUserId;
     }
 
 }
