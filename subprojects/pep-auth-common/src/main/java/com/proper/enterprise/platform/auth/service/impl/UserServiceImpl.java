@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.service.impl;
 
+import com.google.common.collect.Lists;
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -66,6 +68,19 @@ public class UserServiceImpl implements UserService {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : principal.toString();
         return getUserByUsername(username);
+    }
+
+    @Override
+    public void addUser(User... users) {
+        if (users == null) {
+            LOGGER.debug("Pass in users array SHOULD NOT NULL!");
+            return;
+        }
+        List<UserEntity> entities = Lists.newArrayListWithCapacity(users.length);
+        for (User user : users) {
+            entities.add(new UserEntity(user.getUsername(), user.getPassword()));
+        }
+        userRepo.save(entities);
     }
 
 }

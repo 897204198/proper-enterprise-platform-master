@@ -13,10 +13,9 @@ public class RoleDTO extends BaseDTO implements Role {
     private static final long serialVersionUID = 5288209482528086680L;
     
     public RoleDTO(RoleEntity entity) {
+        super(entity);
         if (entity == null) {
             LOGGER.error("Entity SHOULD NOT NULL!");
-        } else {
-            this.id = entity.getId();
         }
     }
 

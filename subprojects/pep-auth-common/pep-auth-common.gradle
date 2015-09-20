@@ -6,8 +6,9 @@ dependencies {
             project(':pep-core')
 
     testCompile libraries.ehcache,
+                libraries.spring_context_support,
                 libraries.spring_security_test,
                 project(':pep-test')
 
-    testRuntime libraries.spring_context_support
+    testRuntime project(':pep-aspect')
 }

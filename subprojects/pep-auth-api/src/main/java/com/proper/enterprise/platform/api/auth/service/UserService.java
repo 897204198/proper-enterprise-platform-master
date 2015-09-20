@@ -15,4 +15,6 @@ public interface UserService {
 
     User getCurrentUser();
 
+    void addUser(User... users);
+
 }

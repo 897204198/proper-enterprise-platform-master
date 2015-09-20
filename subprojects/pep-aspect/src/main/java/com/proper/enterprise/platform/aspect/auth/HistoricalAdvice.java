@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.webapp.auth.aop;
+package com.proper.enterprise.platform.aspect.auth;
 
 import com.proper.enterprise.platform.api.auth.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;

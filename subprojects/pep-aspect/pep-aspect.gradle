@@ -1,0 +1,10 @@
+dependencies {
+    compile project(':pep-auth-api')
+
+    testCompile libraries.spring_security_test,
+                project(':pep-auth-common'), // choose one implementation of pep-auth-api
+                project(':pep-test')
+
+
+    testRuntime libraries.spring_context_support
+}

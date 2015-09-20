@@ -17,10 +17,10 @@ public class ResourceDTO extends BaseDTO implements Resource {
     private RequestMethod method;
     
     public ResourceDTO(ResourceEntity entity) {
+        super(entity);
         if (entity == null) {
             LOGGER.error("Entity SHOULD NOT NULL!");
         } else {
-            this.id = entity.getId();
             this.url = entity.getUrl();
             this.method = entity.getMethod();
         }

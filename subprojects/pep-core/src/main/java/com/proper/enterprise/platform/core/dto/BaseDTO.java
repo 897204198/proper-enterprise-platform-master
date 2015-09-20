@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.dto;
 
 import com.proper.enterprise.platform.core.api.IBase;
+import com.proper.enterprise.platform.core.entity.BaseEntity;
 
 public class BaseDTO implements IBase {
 
@@ -9,6 +10,19 @@ public class BaseDTO implements IBase {
     protected String createTime;
     protected String lastModifyUserId;
     protected String lastModifyTime;
+
+    public BaseDTO() { }
+
+    public BaseDTO(BaseEntity entity) {
+        if (entity == null) {
+            return;
+        }
+        this.id = entity.getId();
+        this.createUserId = entity.getCreateUserId();
+        this.createTime = entity.getCreateTime();
+        this.lastModifyUserId = entity.getLastModifyUserId();
+        this.lastModifyTime = entity.getLastModifyTime();
+    }
 
     @Override
     public String getId() {

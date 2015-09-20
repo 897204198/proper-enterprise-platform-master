@@ -16,13 +16,18 @@ public class UserDTO extends BaseDTO implements User {
     private String password;
 
     public UserDTO(UserEntity entity) {
+        super(entity);
         if (entity == null) {
             LOGGER.debug("Entity SHOULD NOT NULL!");
         } else {
-            this.id = entity.getId();
             this.username = entity.getLoginName();
             this.password = entity.getPassword();
         }
+    }
+
+    public UserDTO(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     @Override
