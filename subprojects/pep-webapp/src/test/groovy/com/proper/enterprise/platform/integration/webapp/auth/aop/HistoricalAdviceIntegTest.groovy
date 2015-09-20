@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.integration.auth.aop
+package com.proper.enterprise.platform.integration.webapp.auth.aop
 
 import com.proper.enterprise.platform.auth.entity.UserEntity
 import com.proper.enterprise.platform.auth.repository.UserRepository

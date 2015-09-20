@@ -16,6 +16,8 @@ public class UserDTO implements Serializable, User {
     private String id;
     private String username;
     private String password;
+    private String createUserId;
+    private String lastModifyUserId;
     
     public UserDTO(UserEntity entity) {
         if (entity == null) {
@@ -55,6 +57,26 @@ public class UserDTO implements Serializable, User {
     @Override
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String getCreateUserId() {
+        return createUserId;
+    }
+
+    @Override
+    public void setCreateUserId(String createUserId) {
+        this.createUserId = createUserId;
+    }
+
+    @Override
+    public String getLastModifyUserId() {
+        return lastModifyUserId;
+    }
+
+    @Override
+    public void setLastModifyUserId(String lastModifyUserId) {
+        this.lastModifyUserId = lastModifyUserId;
     }
 
 }
