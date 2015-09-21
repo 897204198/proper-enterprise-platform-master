@@ -49,10 +49,10 @@ Proper Enterprise Platform
         > 可参考 `./gradlew init-pep-[module]` 自动生成的配置文件
         
 * 页面：`pep-webapp/src/main/webapp/WEB-INF/views/[module]/../*.jsp`
-* Controller：`com.proper.enterprise.platform.[module]..controller.*Controller`
-* 接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
-* 实现：`com.proper.enterprise.platform.[module]..service.impl.*ServiceImpl`
-* 实体：`com.proper.enterprise.platform.[module]..entity.*Entity`
+* Controller：`com.proper.enterprise.platform.webapp.[module]..controller.*Controller`，Controller 都放置在 `pep-webapp` 模块中
+* 服务接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
+* 服务实现：`com.proper.enterprise.platform.[module]..service.impl.*ServiceImpl`
+* 数据实体：`com.proper.enterprise.platform.[module]..entity.*Entity`
     > 实体类需继承基类 `BaseEntity`，且必须有可用的默认构造函数；表名规则为 `pep_[module]_[name]`；需缓存的表要添加 `CacheEntity` 注解（`CacheEntity` 注解为实体开启 `JPA` 缓存及 `Hibernate` 二级缓存，可以用作大部分实体的通用配置。如实体有特殊需求，也可自行设置）。如：
        
     ```
@@ -61,9 +61,20 @@ Proper Enterprise Platform
 	@CacheEntity
 	public class UserEntity extends BaseEntity
     ```
-        
-* DTO：`com.proper.enterprise.platform.[module]..dto.*DTO`
-    > 为避免使用 `openSessionInView` 模式，使用 `DTO` 储存实体中数据，以供数据传输及界面显示使用（合并 `VO` 职能）。`DTO` 中需提供根据相应实体构造 `DTO` 的构造函数
+
+* 数据接口：数据实体以数据接口和数据传输对象对外提供服务，以便可以从其他数据来源获得数据。数据接口只提供 getter 和 setter 方法，且当代表的数据实体继承自 `BaseEntity` 时，数据接口需扩展 `IBase` 接口，如：
+
+    ```
+    public interface User extends IBase
+    ```
+
+* 数据传输对象DTO：`com.proper.enterprise.platform.[module]..dto.*DTO`
+    > 为避免使用 `openSessionInView` 模式，使用 `DTO` 储存实体中数据，以供数据传输及界面显示使用（合并 `VO` 职能）。`DTO` 中需提供根据相应实体构造 `DTO` 的构造函数。DTO 实现的接口扩展了 `IBase` 接口时，可通过继承 `BaseDTO` 的方式实现所需方法，如：
+    
+    ```
+    public class UserDTO extends BaseDTO implements User
+    ```
+
 * Repository：`com.proper.enterprise.platform.[module]..repository.*Repository`，需继承 `BaseRepository`；需缓存的方法需添加 `CacheQuery` 注解，且对应 `Entity` 也需要有 `CacheEntity` 注解标识：
 
     ```
