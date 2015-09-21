@@ -1,0 +1,9 @@
+{
+  "name": "pep-ngapp",
+  "description": "Proper Enterprise Platform AngularJS app",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "angular-material": "~0.11.0"
+  }
+}

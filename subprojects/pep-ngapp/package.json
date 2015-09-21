@@ -1,0 +1,9 @@
+{
+  "name": "pep-ngapp",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Proper Enterprise Platform AngularJS app",
+  "devDependencies": {
+    "bower": "^1.3.1"
+  }
+}
