@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/resource")
-public class ResourceController {
+@RequestMapping("/auth/resources")
+public class ResourcesController {
 
     @Autowired
     ResourceService service;
