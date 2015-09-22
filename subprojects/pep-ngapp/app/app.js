@@ -1,4 +1,12 @@
-var app = angular.module('pep', ['ngMaterial']);
+var app = angular.module('pep', ['ngRoute', 'ngMaterial']);
+
+app.config(['$routeProvider', function($routeProvider) {
+    $routeProvider
+        .when('/resources/list', {
+            controller: 'ResourcesListCtrl',
+            templateUrl: 'views/resources/list.html'
+        });
+}]);
 
 app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', function($scope, $mdSidenav, $http) {
     $scope.toggleSidenav = function(menuId) {
@@ -10,7 +18,6 @@ app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', function($scope, $md
 
     $scope.clickMenu = function(res) {
         $scope.title = res.name;
-        console.log(res.url);
     };
 
     $http.get('/data/resources.json').success(function(data) {

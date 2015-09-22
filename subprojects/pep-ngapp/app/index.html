@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" href="bower_components/angular-material-data-table/dist/md-data-table.css">
     <link rel="stylesheet" href="asset/app.css">
 </head>
 <body layout="column" ng-controller="AppCtrl">
@@ -12,7 +13,7 @@
                 <md-icon aria-label="Menu" md-svg-icon="images/icons/menu.svg"></md-icon>
             </md-button>
             <h1 flex="20">LOGO</h1>
-            <h2 flex="70">{{title}}</h2>
+            <h2 flex="70">{{ title }}</h2>
             <md-button class="md-icon-button" aria-label="Search">
                 <md-icon md-svg-icon="images/icons/menu.svg"></md-icon>
             </md-button>
@@ -34,7 +35,7 @@
             </md-content>
             <md-list flex>
                 <md-list-item ng-repeat="res in resources" ng-click="clickMenu(res);">
-                    {{ res.name }}
+                    <a href="#{{ res.url }}">{{ res.name }}</a>
                 </md-list-item>
             </md-list>
         </md-sidenav>
@@ -44,10 +45,13 @@
     </div>
 
     <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="bower_components/angular-aria/angular-aria.js"></script>
     <script src="bower_components/angular-material/angular-material.js"></script>
+    <script src="bower_components/angular-material-data-table/dist/md-data-table.js"></script>
 
     <script src="app.js"></script>
+    <script src="views/resources/resources.js"></script>
 </body>
 </html>
