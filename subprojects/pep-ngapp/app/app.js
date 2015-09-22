@@ -5,10 +5,12 @@ app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', function($scope, $md
         $mdSidenav(menuId).toggle();
     };
 
+    $scope.title;
     $scope.resources = [];
 
-    $scope.showUrl = function(url) {
-        console.log(url);
+    $scope.clickMenu = function(res) {
+        $scope.title = res.name;
+        console.log(res.url);
     };
 
     $http.get('/data/resources.json').success(function(data) {

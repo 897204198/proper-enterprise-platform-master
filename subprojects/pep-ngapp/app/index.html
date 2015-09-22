@@ -11,8 +11,8 @@
             <md-button ng-click="toggleSidenav('menu')" class="md-icon-button">
                 <md-icon aria-label="Menu" md-svg-icon="images/icons/menu.svg"></md-icon>
             </md-button>
-            <h1>LOGO</h1>
-            <span flex></span>
+            <h1 flex="20">LOGO</h1>
+            <h2 flex="70">{{title}}</h2>
             <md-button class="md-icon-button" aria-label="Search">
                 <md-icon md-svg-icon="images/icons/menu.svg"></md-icon>
             </md-button>
@@ -33,7 +33,7 @@
                 </md-input-container>
             </md-content>
             <md-list flex>
-                <md-list-item ng-repeat="res in resources" ng-click="showUrl(res.url);">
+                <md-list-item ng-repeat="res in resources" ng-click="clickMenu(res);">
                     {{ res.name }}
                 </md-list-item>
             </md-list>
