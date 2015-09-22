@@ -1,0 +1,3 @@
+task ngappPy2(type: Exec) {
+    commandLine 'python', '-m', 'SimpleHTTPServer'
+}
