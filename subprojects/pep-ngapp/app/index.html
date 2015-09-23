@@ -35,7 +35,7 @@
             </md-content>
             <md-list flex>
                 <md-list-item ng-repeat="res in resources" ng-click="clickMenu(res);">
-                    <a href="#{{ res.url }}">{{ res.name }}</a>
+                    <span ng-bind="res.name"></span>
                 </md-list-item>
             </md-list>
         </md-sidenav>

@@ -8,7 +8,7 @@
     </md-card>
     <md-card flex>
         <md-data-table-toolbar>
-            <h2 class="md-title">Nutrition</h2>
+            <h2 class="md-title">资源列表</h2>
         </md-data-table-toolbar>
 
         <md-data-table-container>
@@ -16,19 +16,19 @@
                 <thead md-order="query.order" md-trigger="onorderchange">
                     <tr>
                         <th name="名称" order-by="name"></th>
-                        <th name="简称" order-by="calories.value"></th>
-                        <th name="序号" order-by="carbs.value"></th>
-                        <th name="URL" order-by="protein.value"></th>
-                        <th name="分类" order-by="sodium.value"></th>
+                        <th name="序号"></th>
+                        <th name="URL" order-by="url"></th>
+                        <th name="分类" order-by="method"></th>
+                        <th name="备注"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr md-auto-select ng-repeat="res in resources.data | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
                         <td>{{res.name}}</td>
-                        <td>{{res.name}}</td>
-                        <td>{{resources.indexOf(res)}}</td>
+                        <td>{{resources.data.indexOf(res) + 1}}</td>
                         <td>{{res.url}}</td>
                         <td>{{res.method}}</td>
+                        <td>abcdefghijklmnopqrstuvwxyz</td>
                     </tr>
                 </tbody>
             </table>
