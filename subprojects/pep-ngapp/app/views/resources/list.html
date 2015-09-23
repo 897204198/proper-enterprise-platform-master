@@ -17,32 +17,25 @@
                     <tr>
                         <th name="名称" order-by="name"></th>
                         <th name="简称" order-by="calories.value"></th>
-                        <th name="编号" order-by="fat.value"></th>
                         <th name="序号" order-by="carbs.value"></th>
                         <th name="URL" order-by="protein.value"></th>
                         <th name="分类" order-by="sodium.value"></th>
-                        <th name="图标" order-by="calcium.value"></th>
-                        <th name="匿名资源" order-by="iron.value"></th>
-                        <th name="备注" order-by="iron.value"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr md-auto-select ng-repeat="dessert in desserts.data | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
-                        <td>{{dessert.name}}</td>
-                        <td>{{dessert.calories.value}}</td>
-                        <td>{{dessert.fat.value | number: 1}}</td>
-                        <td>{{dessert.carbs.value}}</td>
-                        <td>{{dessert.protein.value | number: 1}}</td>
-                        <td>{{dessert.sodium.value}}</td>
-                        <td show-unit>{{dessert.calcium.value}}</td>
-                        <td show-unit>{{dessert.iron.value}}</td>
+                    <tr md-auto-select ng-repeat="res in resources.data | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
+                        <td>{{res.name}}</td>
+                        <td>{{res.name}}</td>
+                        <td>{{resources.indexOf(res)}}</td>
+                        <td>{{res.url}}</td>
+                        <td>{{res.method}}</td>
                     </tr>
                 </tbody>
             </table>
         </md-data-table-container>
 
         <md-data-table-pagination md-label="query.label" md-row-select="[10,20,30,40,50]"
-                                  md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}"
+                                  md-limit="query.limit" md-page="query.page" md-total="{{resources.count}}"
                                   md-trigger="onpagechange"></md-data-table-pagination>
     </md-card>
 </div>
