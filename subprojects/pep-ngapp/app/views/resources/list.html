@@ -1,36 +1,48 @@
-<md-card>
-    <md-data-table-toolbar>
-        <h2 class="md-title">Nutrition</h2>
-    </md-data-table-toolbar>
+<div layout="row">
+    <md-card flex="15">
+        <md-content>
+            <md-input-container>
+                <label>tree</label>
+            </md-input-container>
+        </md-content>
+    </md-card>
+    <md-card flex>
+        <md-data-table-toolbar>
+            <h2 class="md-title">Nutrition</h2>
+        </md-data-table-toolbar>
 
-    <md-data-table-container>
-        <table md-data-table md-row-select="selected" md-progress="deferred">
-            <thead md-order="query.order" md-trigger="onorderchange">
-                <tr>
-                    <th name="Dessert" unit="100g serving" order-by="name"></th>
-                    <th numeric name="Calories" order-by="calories.value"></th>
-                    <th numeric name="Fat" unit="g" order-by="fat.value"></th>
-                    <th numeric name="Carbs" unit="g" order-by="carbs.value"></th>
-                    <th numeric name="Protein" unit="g" order-by="protein.value"></th>
-                    <th numeric name="Sodium" unit="mg" order-by="sodium.value"></th>
-                    <th numeric name="Calcium" unit="%" order-by="calcium.value"></th>
-                    <th numeric name="Iron" unit="%" order-by="iron.value"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr md-auto-select ng-repeat="dessert in desserts.data | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
-                    <td>{{dessert.name}}</td>
-                    <td>{{dessert.calories.value}}</td>
-                    <td>{{dessert.fat.value | number: 1}}</td>
-                    <td>{{dessert.carbs.value}}</td>
-                    <td>{{dessert.protein.value | number: 1}}</td>
-                    <td>{{dessert.sodium.value}}</td>
-                    <td show-unit>{{dessert.calcium.value}}</td>
-                    <td show-unit>{{dessert.iron.value}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </md-data-table-container>
+        <md-data-table-container>
+            <table md-data-table md-row-select="selected" md-progress="deferred">
+                <thead md-order="query.order" md-trigger="onorderchange">
+                    <tr>
+                        <th name="名称" order-by="name"></th>
+                        <th name="简称" order-by="calories.value"></th>
+                        <th name="编号" order-by="fat.value"></th>
+                        <th name="序号" order-by="carbs.value"></th>
+                        <th name="URL" order-by="protein.value"></th>
+                        <th name="分类" order-by="sodium.value"></th>
+                        <th name="图标" order-by="calcium.value"></th>
+                        <th name="匿名资源" order-by="iron.value"></th>
+                        <th name="备注" order-by="iron.value"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr md-auto-select ng-repeat="dessert in desserts.data | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
+                        <td>{{dessert.name}}</td>
+                        <td>{{dessert.calories.value}}</td>
+                        <td>{{dessert.fat.value | number: 1}}</td>
+                        <td>{{dessert.carbs.value}}</td>
+                        <td>{{dessert.protein.value | number: 1}}</td>
+                        <td>{{dessert.sodium.value}}</td>
+                        <td show-unit>{{dessert.calcium.value}}</td>
+                        <td show-unit>{{dessert.iron.value}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </md-data-table-container>
 
-    <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-trigger="onpagechange"></md-data-table-pagination>
-</md-card>
+        <md-data-table-pagination md-label="query.label" md-row-select="[10,20,30,40,50]"
+                                  md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}"
+                                  md-trigger="onpagechange"></md-data-table-pagination>
+    </md-card>
+</div>

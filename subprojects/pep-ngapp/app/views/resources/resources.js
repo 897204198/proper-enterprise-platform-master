@@ -4,8 +4,12 @@ app.controller('ResourcesListCtrl', ['$scope', '$q', '$timeout', function($scope
 
     $scope.query = {
         order: 'name',
-        limit: 5,
-        page: 1
+        limit: 10,
+        page: 1,
+        label: {
+            text: '每页行数',
+            of: '/'
+        }
     };
 
     $scope.desserts = {
