@@ -1,4 +1,4 @@
-var app = angular.module('pep', ['ngRoute', 'ngMaterial']);
+var app = angular.module('pep', ['ngRoute', 'ngMaterial', 'md.data.table']);
 
 app.config(['$routeProvider', function($routeProvider) {
     $routeProvider
