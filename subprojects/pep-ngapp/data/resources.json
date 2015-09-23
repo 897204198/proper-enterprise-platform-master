@@ -21,6 +21,6 @@
   },
   {
     "name":"资源管理",
-    "url":"resources/list"
+    "url":"/resources/list"
   }
 ]

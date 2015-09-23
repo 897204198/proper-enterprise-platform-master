@@ -8,7 +8,7 @@ app.config(['$routeProvider', function($routeProvider) {
         });
 }]);
 
-app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', function($scope, $mdSidenav, $http) {
+app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', '$timeout', function($scope, $mdSidenav, $http, $timeout) {
     $scope.toggleSidenav = function(menuId) {
         $mdSidenav(menuId).toggle();
     };
@@ -18,6 +18,9 @@ app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', function($scope, $md
 
     $scope.clickMenu = function(res) {
         $scope.title = res.name;
+        $timeout(function() {
+            $scope.toggleSidenav('menu');
+        }, 500);
     };
 
     $http.get('/data/resources.json').success(function(data) {
