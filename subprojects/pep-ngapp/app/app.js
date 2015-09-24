@@ -35,6 +35,5 @@ app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', '$timeout', '$locati
         if ('text' != actEleType && code == 113) {
             $scope.toggleSidenav('menu');
         }
-        console.log(actEleType);
     });
 }]);
