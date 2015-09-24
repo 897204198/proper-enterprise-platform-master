@@ -8,7 +8,7 @@ app.config(['$routeProvider', function($routeProvider) {
         });
 }]);
 
-app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', '$timeout', '$location', function($scope, $mdSidenav, $http, $timeout, $location) {
+app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', '$timeout', '$location', '$document', function($scope, $mdSidenav, $http, $timeout, $location, $document) {
     $scope.toggleSidenav = function(menuId) {
         $mdSidenav(menuId).toggle();
     };
@@ -28,4 +28,13 @@ app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', '$timeout', '$locati
         $scope.resources = data;
     });
 
+    $document.bind('keypress', function(event) {
+        // key code 113 is 'q'
+        var code = event.keyCode || event.charCode;
+        var actEleType = document.activeElement.type;
+        if ('text' != actEleType && code == 113) {
+            $scope.toggleSidenav('menu');
+        }
+        console.log(actEleType);
+    });
 }]);
