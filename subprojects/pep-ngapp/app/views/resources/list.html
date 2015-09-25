@@ -9,6 +9,21 @@
     <md-card flex>
         <md-data-table-toolbar>
             <h2 class="md-title">资源列表</h2>
+            <div flex></div>
+            <md-button ng-click="filter.show = true">
+                <md-icon md-svg-icon="images/icons/menu.svg"></md-icon>
+            </md-button>
+            <md-button ng-click="addItem($event)">
+                <md-icon md-svg-icon="images/icons/menu.svg"></md-icon>
+            </md-button>
+        </md-data-table-toolbar>
+        <md-data-table-toolbar ng-show="filter.show && !selected.length">
+            <md-input-container>
+                <input type="text" ng-model="query.filter" placeholder="search">
+            </md-input-container>
+            <md-button ng-click="removeFilter()">
+                <md-icon md-svg-icon="images/icons/menu.svg"></md-icon>
+            </md-button>
         </md-data-table-toolbar>
 
         <md-data-table-container>
