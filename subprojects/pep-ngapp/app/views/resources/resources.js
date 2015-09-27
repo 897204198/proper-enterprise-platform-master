@@ -2,6 +2,10 @@ app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', functi
 
     $scope.selected = [];
 
+    $scope.filter = {
+        show: false
+    };
+
     $scope.query = {
         order: 'name',
         limit: 10,
