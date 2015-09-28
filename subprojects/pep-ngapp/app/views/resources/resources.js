@@ -1,4 +1,4 @@
-app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', function($scope, $http, $q, $timeout) {
+app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', '$mdDialog', function($scope, $http, $q, $timeout, $mdDialog) {
 
     $scope.selected = [];
 
@@ -42,4 +42,25 @@ app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', functi
 
         return deferred.promise;
     };
+
+    $scope.addItem = function(ev) {
+        $mdDialog.show({
+            controller: DialogCtrl,
+            templateUrl: 'views/resources/new.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: false,
+            escapeToClose: false
+        });
+    };
+
 }]);
+
+function DialogCtrl($scope, $mdDialog) {
+    $scope.hide = function() {
+        $mdDialog.hide();
+    };
+    $scope.cancel = function() {
+        $mdDialog.cancel();
+    };
+}
