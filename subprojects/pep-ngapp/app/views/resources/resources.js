@@ -51,6 +51,8 @@ app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', '$mdDi
             targetEvent: ev,
             clickOutsideToClose: false,
             escapeToClose: false
+        }).then(function(data) {
+            console.log(data);
         });
     };
 
@@ -63,10 +65,7 @@ function DialogCtrl($scope, $mdDialog) {
     $scope.cancel = function() {
         $mdDialog.cancel();
     };
-    $mdDialog.save = function() {
-        console.log($scope.res);
-    };
     $scope.save = function() {
-        $mdDialog.save();
+        $mdDialog.hide($scope.res);
     };
 }
