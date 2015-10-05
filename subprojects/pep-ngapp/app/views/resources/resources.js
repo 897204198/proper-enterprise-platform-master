@@ -52,7 +52,10 @@ app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', '$mdDi
             clickOutsideToClose: false,
             escapeToClose: false
         }).then(function(data) {
-            console.log(data);
+            if ($scope.resources.count && $scope.resources.data) {
+                $scope.resources.data.push(data);
+                $scope.resources.count += 1;
+            }
         });
     };
 
