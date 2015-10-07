@@ -50,7 +50,10 @@ app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', '$mdDi
             parent: angular.element(document.body),
             targetEvent: ev,
             clickOutsideToClose: false,
-            escapeToClose: false
+            escapeToClose: false,
+            locals: {
+                res: null
+            }
         }).then(function(data) {
             if ($scope.resources.count && $scope.resources.data) {
                 $scope.resources.data.push(data);
@@ -59,9 +62,27 @@ app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', '$mdDi
         });
     };
 
+    $scope.editItem = function(ev) {
+        $mdDialog.show({
+            controller: DialogCtrl,
+            templateUrl: 'views/resources/edit.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: false,
+            escapeToClose: false,
+            locals: {
+                res: $scope.selected[0]
+            }
+        });
+    };
+
 }]);
 
-function DialogCtrl($scope, $mdDialog) {
+function DialogCtrl($scope, $mdDialog, res) {
+    if (res) {
+        $scope.res = res;
+    }
+
     $scope.hide = function() {
         $mdDialog.hide();
     };

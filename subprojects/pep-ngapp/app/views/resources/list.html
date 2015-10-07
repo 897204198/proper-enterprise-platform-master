@@ -31,7 +31,7 @@
         <md-data-table-toolbar ng-show="selected.length">
             <h2 class="md-title">选中 {{selected.length}} 项</h2>
             <div flex></div>
-            <md-button ng-show="selected.length == 1" aria-label="Edit">
+            <md-button ng-show="selected.length == 1" aria-label="Edit" ng-click="editItem($event)">
                 <md-tooltip>Edit</md-tooltip>
                 <md-icon md-svg-icon="images/icons/menu.svg"></md-icon>
             </md-button>
