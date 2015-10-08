@@ -58,6 +58,11 @@ app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', '$mdDi
             if ($scope.resources.count && $scope.resources.data) {
                 $scope.resources.data.push(data);
                 $scope.resources.count += 1;
+            } else {
+                $scope.resources = {
+                    data: [data],
+                    count: 1
+                }
             }
         });
     };
@@ -74,6 +79,17 @@ app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', '$mdDi
                 res: $scope.selected[0]
             }
         });
+    };
+
+    $scope.delItem = function() {
+        var ele;
+        while(ele = $scope.selected.pop()) {
+            var idx = $scope.resources.data.indexOf(ele);
+            if (idx > -1) {
+                $scope.resources.data.splice(idx, 1);
+                $scope.resources.count -= 1;
+            }
+        }
     };
 
 }]);
