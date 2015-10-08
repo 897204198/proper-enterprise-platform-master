@@ -19,6 +19,7 @@
         </md-data-table-toolbar>
         <md-data-table-toolbar ng-show="filter.show && !selected.length">
             <md-input-container flex md-no-float style="padding-bottom: 0px;">
+                <md-icon md-svg-src="images/icons/ic_search_black_18px.svg"></md-icon>
                 <input type="text" ng-model="query.filter" placeholder="search">
             </md-input-container>
             <md-button class="md-icon-button" ng-click="filter.show = false" aria-label="Close" title="关闭">
