@@ -37,7 +37,7 @@
                 </md-input-container>
             </md-content>
             <md-list flex>
-                <md-list-item ng-repeat="res in resources" ng-click="clickMenu(res);">
+                <md-list-item ng-repeat="res in resources | filter: quickSearch" ng-click="clickMenu(res);">
                     {{res.name}}
                 </md-list-item>
             </md-list>
