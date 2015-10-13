@@ -1,4 +1,4 @@
-var app = angular.module('pep', ['ngRoute', 'ngMaterial', 'md.data.table']);
+var app = angular.module('pep', ['ngRoute', 'ngMaterial', 'md.data.table', 'ares']);
 
 app.config(['$routeProvider', function($routeProvider) {
     $routeProvider
@@ -8,12 +8,8 @@ app.config(['$routeProvider', function($routeProvider) {
         });
 }]);
 
-app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', '$timeout', '$location', '$document', function($scope, $mdSidenav, $http, $timeout, $location, $document) {
-    $scope.toggleSidenav = function(menuId) {
-        $mdSidenav(menuId).toggle();
-    };
-
-    $scope.title;
+app.controller('AppCtrl', ['$scope', '$http', '$timeout', '$location', '$document', function($scope, $http, $timeout, $location, $document) {
+    $scope.title = '';
     $scope.resources = [];
 
     $scope.clickMenu = function(res) {
