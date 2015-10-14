@@ -21,7 +21,7 @@ app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', '$timeout', '$locati
         $location.url(res.url);
         $timeout(function() {
             $scope.toggleSidenav('menu');
-        }, 500);
+        }, 100);
     };
 
     $http.get('/data/resources.json').success(function(data) {
