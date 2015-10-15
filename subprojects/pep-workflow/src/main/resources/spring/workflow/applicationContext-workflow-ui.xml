@@ -7,14 +7,6 @@
                            http://www.springframework.org/schema/aop
                            http://www.springframework.org/schema/aop/spring-aop-4.1.xsd">
 
-    <!-- This application context will be included in Alfresco as-is -->
-
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" name="activitiUiPropertyPlaceholder">
-        <property name="location" value="classpath:conf/workflow/ui/workflow-ui.properties" />
-        <!-- Allow other PropertyPlaceholderConfigurer to run as well -->
-        <property name="ignoreUnresolvablePlaceholders" value="true" />
-    </bean>
-
     <!-- Global scoped beans -->
 
     <bean name="navigatorManager" class="org.activiti.explorer.navigation.NavigatorManager" />
