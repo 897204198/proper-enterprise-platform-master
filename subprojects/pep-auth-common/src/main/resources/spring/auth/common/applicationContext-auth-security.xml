@@ -8,6 +8,7 @@
                            http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
     <security:http pattern="/resources/**" security="none" />
+    <security:http pattern="/VAADIN/**" security="none" />
 
     <security:http access-decision-manager-ref="myAccessDecisionManager" create-session="never">
         <security:intercept-url pattern="/login" access="isAnonymous()" />
