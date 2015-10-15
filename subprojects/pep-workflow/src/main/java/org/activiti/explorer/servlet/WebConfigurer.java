@@ -59,7 +59,7 @@ public class WebConfigurer implements ServletContextListener {
     dispatcherServletConfiguration.register(DispatcherServletConfiguration.class);
 
     log.debug("Registering Spring MVC Servlet");
-    ServletRegistration.Dynamic dispatcherServlet = servletContext.addServlet("dispatcher", new DispatcherServlet(dispatcherServletConfiguration));
+    ServletRegistration.Dynamic dispatcherServlet = servletContext.addServlet("activitiDispatcher", new DispatcherServlet(dispatcherServletConfiguration));
     dispatcherServlet.addMapping("/service/*");
     dispatcherServlet.setLoadOnStartup(1);
     dispatcherServlet.setAsyncSupported(true);

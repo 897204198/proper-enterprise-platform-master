@@ -11,6 +11,7 @@
 	<logger name="org.springframework.cache" level="trace" />
 	<logger name="org.hibernate.cache" level="trace" />
 	<logger name="net.sf.ehcache" level="trace" />
+	<logger name="org.activiti.explorer" level="trace" />
 
 	<root level="error">
 		<appender-ref ref="console" />
