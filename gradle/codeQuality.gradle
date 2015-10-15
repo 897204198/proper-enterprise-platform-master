@@ -22,7 +22,12 @@ findbugs {
 
 configurations.codenarc.resolutionStrategy.force(libraries.groovy_all)
 
+tasks.withType(Checkstyle) {
+    exclude '**/org/activiti/**'
+}
+
 tasks.withType(FindBugs) {
+    exclude '**/org/activiti/**'
     reports {
         xml.enabled = false
         html.enabled = true

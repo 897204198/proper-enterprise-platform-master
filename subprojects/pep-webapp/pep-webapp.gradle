@@ -27,7 +27,8 @@ dependencies {
 
     compile project(':pep-auth-common')
 
-    runtime project(':pep-aspect')
+    runtime project(':pep-aspect'),
+            project(':pep-workflow')
     
     testCompile libraries.ehcache,
                 project(':pep-test')

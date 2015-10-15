@@ -10,6 +10,9 @@ allprojects {
         maven {
             url 'https://repo.gradle.org/gradle/libs'
         }
+        maven {
+            url 'http://maven.vaadin.com/vaadin-addons'
+        }
     }
 
     tasks.withType(JavaCompile) {
