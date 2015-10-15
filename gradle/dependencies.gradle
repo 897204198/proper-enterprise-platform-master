@@ -3,15 +3,20 @@ ext {
     libraries = [:]
 }
 
-versions.activiti = '5.15'
+versions.activiti = '5.18.0'
 
 versions.aspectj = '1.6.10'
 
 versions.jcaptcha = '1.0'
 
 
-//libraries.activiti_engine = "org.activiti:activiti-engine:${versions.activiti}"
-//libraries.activiti_spring = "org.activiti:activiti-spring:${versions.activiti}"
+libraries.activiti_diagram_rest = "org.activiti:activiti-diagram-rest:${versions.activiti}"
+libraries.activiti_engine = "org.activiti:activiti-engine:${versions.activiti}"
+libraries.activiti_explorer = "org.activiti:activiti-explorer:${versions.activiti}"
+libraries.activiti_modeler = "org.activiti:activiti-modeler:${versions.activiti}"
+libraries.activiti_simple_workflow = "org.activiti:activiti-simple-workflow:${versions.activiti}"
+libraries.activiti_spring = "org.activiti:activiti-spring:${versions.activiti}"
+
 
 //libraries.aspectjrt = "org.aspectj:aspectjrt:${versions.aspectj}"
 //libraries.aspectjweaver = "org.aspectj:aspectjweaver:${versions.aspectj}"
@@ -54,6 +59,8 @@ libraries.groovy_sql = "org.codehaus.groovy:groovy-sql:${versions.groovy}"
 // libraries.groovy_xml = "org.codehaus.groovy:groovy-xml:${versions.groovy}"
 
 libraries.guava = 'com.google.guava:guava:18.0'
+
+libraries.gwt_servlet = 'com.google.gwt:gwt-servlet:2.3.0'
 
 libraries.h2 = 'com.h2database:h2:1.3.176'
 
