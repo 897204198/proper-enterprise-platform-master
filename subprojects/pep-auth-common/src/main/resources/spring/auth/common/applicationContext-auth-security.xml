@@ -10,6 +10,9 @@
     <security:http pattern="/resources/**" security="none" />
     <security:http pattern="/VAADIN/**" security="none" />
     <security:http pattern="/ui/**" security="none" />
+    <security:http pattern="/diagram-viewer/**" security="none" />
+    <security:http pattern="/editor-app/**" security="none" />
+    <security:http pattern="/modeler.html" security="none" />
 
     <security:http access-decision-manager-ref="myAccessDecisionManager" create-session="never">
         <security:intercept-url pattern="/login" access="isAnonymous()" />

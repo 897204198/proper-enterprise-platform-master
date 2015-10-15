@@ -29,7 +29,12 @@
             <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter" />
         </mvc:message-converters>
     </mvc:annotation-driven>
+
     <mvc:resources mapping="/resources/**" location="/resources/" />
+    <mvc:resources mapping="/diagram-viewer/**" location="/diagram-viewer/" />
+    <mvc:resources mapping="/editor-app/**" location="/editor-app/" />
+    <mvc:resources mapping="/modeler.html" location="/modeler.html" />
+
     <mvc:view-controller path="/" view-name="index" />
 
 </beans>
