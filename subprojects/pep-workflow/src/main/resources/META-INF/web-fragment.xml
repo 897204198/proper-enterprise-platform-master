@@ -12,9 +12,9 @@
 	</context-param>
 
 	<!-- To load the Spring context -->
-	<listener>
-		<listener-class>org.activiti.explorer.servlet.WebConfigurer</listener-class>
-	</listener>
+	<!--<listener>-->
+		<!--<listener-class>org.activiti.explorer.servlet.WebConfigurer</listener-class>-->
+	<!--</listener>-->
 
 	<!-- To allow session-scoped beans in Spring -->
 	<listener>
