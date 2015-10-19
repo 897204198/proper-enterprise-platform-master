@@ -21,5 +21,5 @@
 var ACTIVITI = ACTIVITI || {};
 
 ACTIVITI.CONFIG = {
-	'contextRoot' : '/pep/activiti-explorer/service',
+	'contextRoot' : '/pep/service',
 };
