@@ -35,6 +35,7 @@ dependencies {
     runtime libraries.h2,
             libraries.hibernate_ehcache,
             libraries.hibernate_hikaricp,
+            libraries.jackson_databind,
             libraries.jstl,
             libraries.spring_context_support,
             libraries.spring_orm,
