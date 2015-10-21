@@ -11,15 +11,15 @@
     <import resource="dal/applicationContext-jpa.xml" />
 
     <beans profile="dev">
-        <context:property-placeholder location="classpath:conf/webapp/database/webapp-database-dev.properties" />
+        <context:property-placeholder location="classpath:conf/webapp/database/webapp-database-dev.properties" ignore-unresolvable="true" />
     </beans>
 
     <beans profile="test">
-        <context:property-placeholder location="classpath:conf/webapp/database/webapp-database-test.properties" />
+        <context:property-placeholder location="classpath:conf/webapp/database/webapp-database-test.properties" ignore-unresolvable="true" />
     </beans>
 
     <beans profile="production">
-        <context:property-placeholder location="classpath:conf/webapp/database/webapp-database-production.properties" />
+        <context:property-placeholder location="classpath:conf/webapp/database/webapp-database-production.properties" ignore-unresolvable="true" />
     </beans>
 
 </beans>
