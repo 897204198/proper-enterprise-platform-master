@@ -77,11 +77,6 @@ versions.jackson = '2.6.3'
 //libraries.jackson_core = "com.fasterxml.jackson.core:jackson-core:${versions.jackson}"
 libraries.jackson_databind = "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
 
-//versions.jackson = '1.9.11'
-//libraries.jackson_core_asl = "org.codehaus.jackson:jackson-core-asl:${versions.jackson}"
-//libraries.jackson_mapper_asl = "org.codehaus.jackson:jackson-mapper-asl:${versions.jackson}"
-//libraries.jackson_mapper_lgpl = "org.codehaus.jackson:jackson-mapper-lgpl:${versions.jackson}"
-
 //libraries.jcaptcha = dependencies.module("com.octo.captcha:jcaptcha:${versions.jcaptcha}") {
 //    dependency "com.octo.captcha:jcaptcha-api:${versions.jcaptcha}"
 //   exclude group: 'com.jhlabs', module: 'imaging'
