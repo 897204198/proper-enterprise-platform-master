@@ -5,7 +5,5 @@ dependencies {
             libraries.activiti_modeler,
             libraries.activiti_diagram_rest,
             libraries.activiti_simple_workflow,
-            libraries.groovy_all,
-            libraries.gwt_servlet,
             libraries.servlet_api
 }
