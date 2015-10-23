@@ -1,6 +1,3 @@
-# ignore pep-workflow module first
-subprojects/pep-workflow/
-
 # ignore duplicated configurations in pep-test module
 subprojects/pep-test/src/main/resources/conf/
 subprojects/pep-test/src/main/resources/spring/
