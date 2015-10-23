@@ -25,9 +25,6 @@
     <mvc:annotation-driven/>
 
     <mvc:resources mapping="/resources/**" location="/resources/" />
-    <mvc:resources mapping="/workflow/diagram-viewer/**" location="/diagram-viewer/" />
-    <mvc:resources mapping="/workflow/editor-app/**" location="/editor-app/" />
-    <mvc:resources mapping="/workflow/modeler.html" location="/modeler.html" />
 
     <mvc:view-controller path="/" view-name="index" />
 
