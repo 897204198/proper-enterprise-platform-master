@@ -3,15 +3,22 @@ ext {
     libraries = [:]
 }
 
-versions.activiti = '5.15'
+versions.activiti = '5.18.0'
 
 versions.aspectj = '1.6.10'
 
 versions.jcaptcha = '1.0'
 
 
-//libraries.activiti_engine = "org.activiti:activiti-engine:${versions.activiti}"
-//libraries.activiti_spring = "org.activiti:activiti-spring:${versions.activiti}"
+libraries.activiti_diagram_rest = "org.activiti:activiti-diagram-rest:${versions.activiti}"
+libraries.activiti_engine = "org.activiti:activiti-engine:${versions.activiti}"
+libraries.activiti_explorer = dependencies.module("org.activiti:activiti-explorer:${versions.activiti}") {
+    exclude group: 'org.vaadin.addons', module: 'dcharts-widget'
+}
+libraries.activiti_modeler = "org.activiti:activiti-modeler:${versions.activiti}"
+libraries.activiti_simple_workflow = "org.activiti:activiti-simple-workflow:${versions.activiti}"
+libraries.activiti_spring = "org.activiti:activiti-spring:${versions.activiti}"
+
 
 //libraries.aspectjrt = "org.aspectj:aspectjrt:${versions.aspectj}"
 //libraries.aspectjweaver = "org.aspectj:aspectjweaver:${versions.aspectj}"

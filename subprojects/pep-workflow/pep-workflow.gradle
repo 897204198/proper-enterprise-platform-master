@@ -1,0 +1,9 @@
+dependencies {
+    compile libraries.activiti_engine,
+            libraries.activiti_spring,
+            libraries.activiti_explorer,
+            libraries.activiti_modeler,
+            libraries.activiti_diagram_rest,
+            libraries.activiti_simple_workflow,
+            libraries.servlet_api
+}

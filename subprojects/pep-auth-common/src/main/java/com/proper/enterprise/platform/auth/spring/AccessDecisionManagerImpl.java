@@ -11,12 +11,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.FilterInvocation;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 
 import java.util.Collection;
 
 public class AccessDecisionManagerImpl implements AccessDecisionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessDecisionManagerImpl.class);
+
+    private static PathMatcher matcher = new AntPathMatcher();
 
     @Override
     public void decide(Authentication authentication, Object object,
@@ -35,8 +39,7 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
         Object principal = authentication.getPrincipal();
         if (principal instanceof UserDetails) {
             for (GrantedAuthority authority : ((UserDetails) principal).getAuthorities()) {
-                if (auth.equals(authority.getAuthority())
-                        || StringUtil.cleanUrl(auth).equals(authority.getAuthority())) {
+                if (matcher.match(authority.getAuthority(), StringUtil.cleanUrl(auth))) {
                     return;
                 }
             }
