@@ -13,4 +13,9 @@ INSERT INTO pep_auth_resource
 VALUES
 ('7E0960C6B1CC44959DCFB5E36D63F3E2', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', 'workflow.service.model', '流程模型', 'BBD7A5193ECC493DB202A7F0DECF386C', 'SUBSYSTEM', '/workflow/service/model/*/json', 'GET', 2);
 
+INSERT INTO pep_auth_resource
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name, parent, moc, url, method, sequence_number)
+VALUES
+('7E0960C6B1CC44959DCFB5E36D63F3E3', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', 'workflow', '流程', 'BBD7A5193ECC493DB202A7F0DECF386C', 'SUBSYSTEM', '/workflow/**', 'GET', 3);
+
 COMMIT;

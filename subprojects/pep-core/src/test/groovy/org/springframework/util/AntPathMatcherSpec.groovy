@@ -20,6 +20,7 @@ class AntPathMatcherSpec extends Specification {
         false   | 'GET:/auth/resources/*/*/xml'         | 'POST:/auth/resources/1/2/xml'
         true    | 'GET:/workflow/service/model/3*/json' | 'GET:/workflow/service/model/3225/json'
         false   | 'GET:/workflow/service/model/3*/json' | 'GET:/workflow/service/model/42/json'
+        true    | 'GET:/workflow/**'                    | 'GET:/workflow/modeler.html'
     }
 
 }
