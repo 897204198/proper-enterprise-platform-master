@@ -6,4 +6,6 @@ dependencies {
             libraries.activiti_diagram_rest,
             libraries.activiti_simple_workflow,
             libraries.servlet_api
+
+    runtime fileTree(dir:'libs', include: "activiti-web-designer-${versions.activiti}.jar")
 }
