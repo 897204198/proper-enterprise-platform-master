@@ -12,10 +12,12 @@
 
     <import resource="classpath*:spring/workflow/workflow-*.xml" />
 
-    <context:component-scan base-package="org.activiti.rest.editor, org.activiti.rest.diagram" />
-    
     <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+    <bean id="restResponseFactory" class="org.activiti.rest.service.api.RestResponseFactory" />
+    <bean id="contentTypeResolver" class="org.activiti.rest.common.application.DefaultContentTypeResolver" />
 
+    <context:component-scan base-package="org.activiti.rest" />
+    
     <mvc:resources mapping="/workflow/diagram-viewer/**" location="classpath:/META-INF/resources/diagram-viewer/" />
     <mvc:resources mapping="/workflow/editor-app/**" location="classpath:/META-INF/resources/editor-app/" />
     <mvc:resources mapping="/workflow/*.html" location="classpath:/META-INF/resources/"/>
