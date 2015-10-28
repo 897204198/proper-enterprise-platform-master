@@ -5,8 +5,6 @@ ext {
 
 versions.activiti = '5.18.0'
 
-versions.aspectj = '1.6.10'
-
 versions.jcaptcha = '1.0'
 
 
@@ -25,7 +23,7 @@ libraries.activiti_spring = "org.activiti:activiti-spring:${versions.activiti}"
 
 
 //libraries.aspectjrt = "org.aspectj:aspectjrt:${versions.aspectj}"
-//libraries.aspectjweaver = "org.aspectj:aspectjweaver:${versions.aspectj}"
+libraries.aspectjweaver = "org.aspectj:aspectjweaver:1.8.6"
 
 //libraries.cas_server_core = 'org.jasig.cas:cas-server-core:3.5.2'
 
@@ -139,7 +137,7 @@ libraries.spring_context_support = "org.springframework:spring-context-support:$
 //libraries.spring_core = "org.springframework:spring-core:${versions.spring}"
 libraries.spring_orm = [
     "org.springframework:spring-orm:${versions.spring}",
-    'org.aspectj:aspectjweaver:1.8.6'
+    libraries.aspectjweaver
 ]
 libraries.spring_test = "org.springframework:spring-test:${versions.spring}"
 //libraries.spring_tx = "org.springframework:spring-tx:${versions.spring}"

@@ -34,15 +34,18 @@ class CachingUserDetailsIntegTest extends AbstractIntegTest {
 
         cachingUserDetailsService.loadUserByUsername('admin')
         assert ehcache.size == 1
-        def userCache1 = ehcache.get('admin')
+        def userCache1 = ehcache.getQuiet('admin').clone()
         assert userCache1 != null
 
         cachingUserDetailsService.loadUserByUsername('admin')
         assert ehcache.size == 1
-        def userCache2 = ehcache.get('admin')
+        def userCache2 = ehcache.getQuiet('admin').clone()
         assert userCache2 != null
 
-        assert userCache1.creationTime != userCache2.creationTime
+        // here want to check the second query was hit the cache again, but maybe not the property way
+        assert (userCache1.creationTime != userCache2.creationTime
+                || userCache1.hitCount != userCache2.hitCount
+                || userCache1.lastAccessTime != userCache2.lastAccessTime)
     }
 
 }

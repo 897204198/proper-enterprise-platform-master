@@ -62,10 +62,13 @@ subprojects {
                     libraries.spock,
                     libraries.spring_test
 
-        testRuntime libraries.h2,
+        testRuntime libraries.aspectjweaver,
+                    libraries.h2,
                     libraries.hibernate_hikaricp,
                     libraries.hibernate_ehcache,
-                    libraries.servlet_api
+                    libraries.hibernate_entitymanager,
+                    libraries.servlet_api,
+                    libraries.spring_context_support
     }
 
 }
