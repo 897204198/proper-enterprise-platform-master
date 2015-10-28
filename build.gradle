@@ -54,8 +54,11 @@ subprojects {
     build.dependsOn integTest
 
     dependencies {
-        compile libraries.spring_data_jpa,
+        compile libraries.slf4j_api,
+                libraries.spring_data_jpa,
                 libraries.spring_webmvc
+
+        runtime libraries.logback_classic
 
         testCompile libraries.groovy,
                     libraries.junit,
