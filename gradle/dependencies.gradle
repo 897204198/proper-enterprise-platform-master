@@ -14,9 +14,12 @@ libraries.activiti_diagram_rest = "org.activiti:activiti-diagram-rest:${versions
 libraries.activiti_engine = "org.activiti:activiti-engine:${versions.activiti}"
 libraries.activiti_explorer = dependencies.module("org.activiti:activiti-explorer:${versions.activiti}") {
     exclude group: 'org.vaadin.addons', module: 'dcharts-widget'
+    exclude group: 'org.slf4j', module: 'slf4j-log4j12'
 }
 libraries.activiti_modeler = "org.activiti:activiti-modeler:${versions.activiti}"
-libraries.activiti_rest = "org.activiti:activiti-rest:${versions.activiti}"
+libraries.activiti_rest = dependencies.module("org.activiti:activiti-rest:${versions.activiti}") {
+    exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+}
 libraries.activiti_simple_workflow = "org.activiti:activiti-simple-workflow:${versions.activiti}"
 libraries.activiti_spring = "org.activiti:activiti-spring:${versions.activiti}"
 
