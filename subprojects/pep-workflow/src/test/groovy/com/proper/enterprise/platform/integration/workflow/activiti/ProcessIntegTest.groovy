@@ -6,11 +6,13 @@ import org.activiti.engine.RuntimeService
 import org.activiti.engine.TaskService
 import org.activiti.engine.runtime.ProcessInstance
 import org.activiti.engine.task.Task
+import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 class ProcessIntegTest extends AbstractIntegTest {
 
+    private static final String DEPLOY_NAME = 'process-integ-test'
     private static final String PROC_DEF_KEY = 'approve-process'
     private static final String PROC_DEF_V1 = 'approve-process-v1.bpmn20.xml'
     private static final String PROC_DEF_V2 = 'approve-process-v2.bpmn20.xml'
@@ -18,6 +20,15 @@ class ProcessIntegTest extends AbstractIntegTest {
     @Autowired RepositoryService repositoryService
     @Autowired RuntimeService runtimeService
     @Autowired TaskService taskService
+
+    @After
+    public void tearDown() {
+        repositoryService.createDeploymentQuery().list().each {
+            if (it.name == DEPLOY_NAME) {
+                repositoryService.deleteDeployment(it.id)
+            }
+        }
+    }
 
     @Test
     public void noNeedMoreDevWhileProcDefChanged() {
@@ -31,24 +42,28 @@ class ProcessIntegTest extends AbstractIntegTest {
         assert startProcAndGetApprovePath(['同意', '不同意']) == ['一级审批', '二级审批', '不同意咋整']
     }
 
+    @Test
+    public void deployNewVerProcDefWhileStillHavingProcInstRunning() {
+        deployProcess(PROC_DEF_V1)
+        def procInst1 = startProcess()
+
+        deployProcess(PROC_DEF_V2)
+        def procInst2 = startProcess()
+
+        assert getApprovePath(procInst1.processInstanceId, ['同意', '不同意']) == ['一级审批', '二级审批']
+        assert getApprovePath(procInst2.processInstanceId, ['同意', '不同意']) == ['一级审批', '二级审批', '不同意咋整']
+    }
+
     private void deployProcess(String procDefKey) {
         repositoryService.createDeployment()
+                         .name(DEPLOY_NAME)
                          .addClasspathResource(procDefKey)
                          .deploy()
     }
 
     private List startProcAndGetApprovePath(List approveOpinions) {
         def procInst = startProcess()
-        def path = [], i = 0
-        Task task
-        while (!isProcInstEnded(procInst.processInstanceId)) {
-            task = getCurrentTask(procInst.processInstanceId)
-            path << task.name
-            taskService.setVariableLocal(task.id, 'localApproveResult', approveOpinions[i])
-            taskService.setVariable(task.id, 'approveResult', approveOpinions[i++])
-            taskService.complete(task.id)
-        }
-        path
+        getApprovePath(procInst.processInstanceId, approveOpinions)
     }
 
     private ProcessInstance startProcess() {
@@ -56,6 +71,19 @@ class ProcessIntegTest extends AbstractIntegTest {
                       .processDefinitionKey(PROC_DEF_KEY)
                       .addVariable('approveResult', '')
                       .start()
+    }
+
+    private List getApprovePath(String procInstId, List approveOpinions) {
+        def path = [], i = 0
+        Task task
+        while (!isProcInstEnded(procInstId)) {
+            task = getCurrentTask(procInstId)
+            path << task.name
+            taskService.setVariableLocal(task.id, 'localApproveResult', approveOpinions[i])
+            taskService.setVariable(task.id, 'approveResult', approveOpinions[i++])
+            taskService.complete(task.id)
+        }
+        path
     }
 
     private boolean isProcInstEnded(String procInstId) {
