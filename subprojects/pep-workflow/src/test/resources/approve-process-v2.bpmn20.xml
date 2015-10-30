@@ -2,8 +2,8 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
   <process id="approve-process" name="approve-process-definition" isExecutable="true">
     <startEvent id="sid-40C387C8-BAC7-4ABE-9838-B0EAADDC78E4"></startEvent>
-    <userTask id="sid-9B523EBD-D4A7-44EA-9CDA-3EC3465B8EB4" name="一级审批" activiti:assignee="hinex"></userTask>
-    <userTask id="sid-6B10A7AC-8CA1-4F1B-8A0C-60913AB1870F" name="二级审批" activiti:assignee="hinex"></userTask>
+    <userTask id="sid-9B523EBD-D4A7-44EA-9CDA-3EC3465B8EB4" name="一级审批" activiti:assignee="${assigneeService.getDeptMaster(applicant)}"></userTask>
+    <userTask id="sid-6B10A7AC-8CA1-4F1B-8A0C-60913AB1870F" name="二级审批" activiti:candidateUsers="${assigneeService.getDeptMasters('testDept')}"></userTask>
     <endEvent id="sid-343A38C7-F0EE-43B8-BB03-B0BFE804D578"></endEvent>
     <sequenceFlow id="sid-7FD011BE-5462-480F-A4DB-1921EE96AF82" sourceRef="sid-40C387C8-BAC7-4ABE-9838-B0EAADDC78E4" targetRef="sid-9B523EBD-D4A7-44EA-9CDA-3EC3465B8EB4"></sequenceFlow>
     <userTask id="sid-ADFC0A27-3D09-4D5E-A097-CFE33A344FE3" name="三级审批"></userTask>
@@ -57,8 +57,8 @@
         <omgdi:waypoint x="615.0" y="300.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-EC4F13F4-299F-4463-B9B8-D46CD83CCC1C" id="BPMNEdge_sid-EC4F13F4-299F-4463-B9B8-D46CD83CCC1C">
-        <omgdi:waypoint x="475.0" y="181.43979057591622"></omgdi:waypoint>
-        <omgdi:waypoint x="615.0" y="115.47120418848168"></omgdi:waypoint>
+        <omgdi:waypoint x="475.0" y="186.25"></omgdi:waypoint>
+        <omgdi:waypoint x="615.0" y="133.75"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-7FD011BE-5462-480F-A4DB-1921EE96AF82" id="BPMNEdge_sid-7FD011BE-5462-480F-A4DB-1921EE96AF82">
         <omgdi:waypoint x="90.0" y="205.0"></omgdi:waypoint>

@@ -70,6 +70,7 @@ class ProcessIntegTest extends AbstractIntegTest {
         runtimeService.createProcessInstanceBuilder()
                       .processDefinitionKey(PROC_DEF_KEY)
                       .addVariable('approveResult', '')
+                      .addVariable('applicant', 'hinex')
                       .start()
     }
 
