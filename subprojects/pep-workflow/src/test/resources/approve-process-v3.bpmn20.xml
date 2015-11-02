@@ -6,12 +6,12 @@
     <userTask id="sid-6B10A7AC-8CA1-4F1B-8A0C-60913AB1870F" name="二级审批" activiti:candidateUsers="${assigneeService.getDeptMasters('testDept')}"></userTask>
     <endEvent id="sid-343A38C7-F0EE-43B8-BB03-B0BFE804D578"></endEvent>
     <sequenceFlow id="sid-7FD011BE-5462-480F-A4DB-1921EE96AF82" sourceRef="sid-40C387C8-BAC7-4ABE-9838-B0EAADDC78E4" targetRef="sid-9B523EBD-D4A7-44EA-9CDA-3EC3465B8EB4"></sequenceFlow>
-    <userTask id="sid-ADFC0A27-3D09-4D5E-A097-CFE33A344FE3" name="三级审批">
+    <userTask id="sid-ADFC0A27-3D09-4D5E-A097-CFE33A344FE3" name="三级审批" activiti:assignee="${csAssignee}">
       <extensionElements>
         <activiti:executionListener event="end" expression="${assigneeService.executionEnd(execution)}"></activiti:executionListener>
         <activiti:taskListener event="complete" expression="${assigneeService.taskEnd(task)}"></activiti:taskListener>
       </extensionElements>
-      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${assigneeService.getCountersignAssigneeList()}">
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${assigneeService.getCountersignAssigneeList()}" activiti:elementVariable="csAssignee">
         <completionCondition>${nrOfCompletedInstances == nrOfInstances}</completionCondition>
       </multiInstanceLoopCharacteristics>
     </userTask>

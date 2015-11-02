@@ -1,11 +1,17 @@
 package com.proper.enterprise.platform.integration.workflow.activiti.service
 
+import org.activiti.engine.TaskService
+import org.activiti.engine.delegate.DelegateTask
+import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class AssigneeService {
+
+    @Autowired TaskService taskService
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeService.class)
 
@@ -26,14 +32,20 @@ class AssigneeService {
         }
     }
 
-    public void executionEnd(def execution) {
-        LOGGER.info("Invoke into executionEnd method.")
-        LOGGER.info("execution type is ${execution.class}")
+    public void executionEnd(ExecutionListenerExecution execution) {
+        LOGGER.info("Invoke into executionEnd method")
+        def nrOfInstances = execution.getVariable('nrOfInstances')
+        def nrOfCompletedInstances = execution.getVariable('nrOfCompletedInstances')
+        if (nrOfInstances == nrOfCompletedInstances) {
+            execution.setVariable('approveResult', '不同意')
+        }
+        execution.getVariables().each {
+            println it
+        }
     }
 
-    public void taskEnd(def task) {
-        LOGGER.info("Invoke into taskEnd method.")
-        LOGGER.info("task type is ${task.class}")
+    public void taskEnd(DelegateTask task) {
+        LOGGER.info("Invoke into taskEnd method and task is ${task.getVariables()} ${task.getAssignee()}")
     }
 
 }
