@@ -61,7 +61,8 @@ class ProcessIntegTest extends AbstractIntegTest {
             taskService.complete(task.id)
         }
 
-        assert getApprovePath(procInst.processInstanceId, [], 1) == ['不同意咋整']
+//        assert getApprovePath(procInst.processInstanceId, [], 1) == ['不同意咋整']
+        assert isProcInstEnd(procInst.processInstanceId)
     }
 
     private void deployProcess(String procDefKey) {
@@ -103,6 +104,10 @@ class ProcessIntegTest extends AbstractIntegTest {
 
     private List getCurrentTasks(String procInstId) {
         taskService.createTaskQuery().processInstanceId(procInstId).list()
+    }
+
+    private boolean isProcInstEnd(String procInstId) {
+        runtimeService.createProcessInstanceQuery().processInstanceId(procInstId).singleResult() == null
     }
 
 }

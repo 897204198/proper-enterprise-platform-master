@@ -37,7 +37,7 @@ class AssigneeService {
         def nrOfInstances = execution.getVariable('nrOfInstances')
         def nrOfCompletedInstances = execution.getVariable('nrOfCompletedInstances')
         if (nrOfInstances == nrOfCompletedInstances) {
-            execution.setVariable('approveResult', '不同意')
+            execution.setVariable('approveResult', '同意')
         }
         execution.getVariables().each {
             println it
