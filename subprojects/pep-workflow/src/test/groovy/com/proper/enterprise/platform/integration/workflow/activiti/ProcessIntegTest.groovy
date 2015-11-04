@@ -1,12 +1,11 @@
 package com.proper.enterprise.platform.integration.workflow.activiti
-
+import com.proper.enterprise.platform.integration.workflow.activiti.service.AssigneeService
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.activiti.engine.RepositoryService
 import org.activiti.engine.RuntimeService
 import org.activiti.engine.TaskService
 import org.activiti.engine.runtime.ProcessInstance
 import org.activiti.engine.task.Task
-import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -21,15 +20,7 @@ class ProcessIntegTest extends AbstractIntegTest {
     @Autowired RepositoryService repositoryService
     @Autowired RuntimeService runtimeService
     @Autowired TaskService taskService
-
-    @After
-    public void tearDown() {
-        repositoryService.createDeploymentQuery().list().each {
-            if (it.name == DEPLOY_NAME) {
-                repositoryService.deleteDeployment(it.id)
-            }
-        }
-    }
+    @Autowired AssigneeService assigneeService
 
     @Test
     public void noNeedMoreDevWhileProcDefChanged() {
@@ -61,7 +52,11 @@ class ProcessIntegTest extends AbstractIntegTest {
         def procInst = startProcess()
         assert getApprovePath(procInst.processInstanceId, ['同意', '同意']) == ['一级审批', '二级审批']
 
-        for (Task task : getCurrentTasks(procInst.processInstanceId)) {
+        def tasks = getCurrentTasks(procInst.processInstanceId)
+        assert tasks.size() == assigneeService.getCountersignAssigneeList().size()
+
+        for (Task task : tasks) {
+            assert taskService.getVariable(task.id, 'csAssignee') == task.getAssignee()
             taskService.setVariableLocal(task.id, 'localApproveResult', '会签同意')
             taskService.complete(task.id)
         }
