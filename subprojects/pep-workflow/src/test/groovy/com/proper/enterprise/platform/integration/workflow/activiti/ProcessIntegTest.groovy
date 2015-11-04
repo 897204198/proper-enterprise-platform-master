@@ -1,4 +1,5 @@
 package com.proper.enterprise.platform.integration.workflow.activiti
+
 import com.proper.enterprise.platform.integration.workflow.activiti.service.AssigneeService
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.activiti.engine.RepositoryService
@@ -48,6 +49,8 @@ class ProcessIntegTest extends AbstractIntegTest {
 
     @Test
     public void testCountersign() {
+        def csAgree = '会签同意', csDeny = '会签不同意'
+
         deployProcess(PROC_DEF_V3)
         def procInst = startProcess()
         assert getApprovePath(procInst.processInstanceId, ['同意', '同意']) == ['一级审批', '二级审批']
@@ -55,13 +58,24 @@ class ProcessIntegTest extends AbstractIntegTest {
         def tasks = getCurrentTasks(procInst.processInstanceId)
         assert tasks.size() == assigneeService.getCountersignAssigneeList().size()
 
+        def csars = [[csAgree]*6, [csDeny]*4].flatten()
         for (Task task : tasks) {
             assert taskService.getVariable(task.id, 'csAssignee') == task.getAssignee()
-            taskService.setVariableLocal(task.id, 'localApproveResult', '会签同意')
+            taskService.setVariableLocal(task.id, 'csApproveResult', csars.pop())
             taskService.complete(task.id)
         }
+        assert isProcInstEnd(procInst.processInstanceId)
 
-//        assert getApprovePath(procInst.processInstanceId, [], 1) == ['不同意咋整']
+        // start a new instance
+        procInst = startProcess()
+        getApprovePath(procInst.processInstanceId, ['同意', '同意']) == ['一级审批', '二级审批']
+        tasks = getCurrentTasks(procInst.processInstanceId)
+        csars = [[csAgree]*4, [csDeny]*6].flatten()
+        for (Task task : tasks) {
+            taskService.setVariableLocal(task.id, 'csApproveResult', csars.pop())
+            taskService.complete(task.id)
+        }
+        assert getApprovePath(procInst.processInstanceId, [], 1) == ['不同意咋整']
         assert isProcInstEnd(procInst.processInstanceId)
     }
 

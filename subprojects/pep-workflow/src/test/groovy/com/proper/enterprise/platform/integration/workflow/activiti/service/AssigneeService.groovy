@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.integration.workflow.activiti.service
 
-import org.activiti.engine.TaskService
+import org.activiti.engine.HistoryService
 import org.activiti.engine.delegate.DelegateTask
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution
 import org.slf4j.Logger
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 @Component
 class AssigneeService {
 
-    @Autowired TaskService taskService
+    @Autowired HistoryService historyService
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeService.class)
 
@@ -33,14 +33,17 @@ class AssigneeService {
     }
 
     public void executionEnd(ExecutionListenerExecution execution) {
-        LOGGER.info("Invoke into executionEnd method")
         def nrOfInstances = execution.getVariable('nrOfInstances')
-        def nrOfCompletedInstances = execution.getVariable('nrOfCompletedInstances')
-        if (nrOfInstances == nrOfCompletedInstances) {
-            execution.setVariable('approveResult', '同意')
-        }
-        execution.getVariables().each {
-            println it
+        def loopCounter = execution.getVariable('loopCounter')
+        if (loopCounter != null && nrOfInstances == loopCounter + 1) {
+            def vars = historyService.createHistoricVariableInstanceQuery()
+                                     .processInstanceId(execution.getProcessInstanceId())
+                                     .variableName('csApproveResult')
+                                     .list()
+            def passCount = vars.count { it.value == '会签同意' }
+            def notPassCount = vars.count { it.value == '会签不同意' }
+            LOGGER.info("Countersign result: $passCount pass , $notPassCount not pass.")
+            execution.setVariable('approveResult', passCount > notPassCount ? '同意' : '不同意')
         }
     }
 
