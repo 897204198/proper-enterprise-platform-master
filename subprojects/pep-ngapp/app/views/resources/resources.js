@@ -1,12 +1,14 @@
-app.config(['$routeProvider', function($routeProvider) {
+var resourcesRoute = function($routeProvider) {
     $routeProvider
         .when('/resources', {
-            controller: 'ResourcesListCtrl',
+            controller: 'ResourcesCtrl',
             templateUrl: 'views/resources/list.html'
         });
-}]);
+};
 
-app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', '$mdDialog', function($scope, $http, $q, $timeout, $mdDialog) {
+app.config(['$routeProvider', resourcesRoute]);
+
+var resourcesCtrl = function($scope, $http, $q, $timeout, $mdDialog) {
 
     $scope.selected = [];
 
@@ -100,7 +102,7 @@ app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', '$mdDi
         }
     };
 
-}]);
+};
 
 function DialogCtrl($scope, $mdDialog, res) {
     if (res) {
@@ -117,3 +119,5 @@ function DialogCtrl($scope, $mdDialog, res) {
         $mdDialog.hide($scope.res);
     };
 }
+
+app.controller('ResourcesCtrl', ['$scope', '$http', '$q', '$timeout', '$mdDialog', resourcesCtrl]);
