@@ -1,3 +1,11 @@
+app.config(['$routeProvider', function($routeProvider) {
+    $routeProvider
+        .when('/resources', {
+            controller: 'ResourcesListCtrl',
+            templateUrl: 'views/resources/list.html'
+        });
+}]);
+
 app.controller('ResourcesListCtrl', ['$scope', '$http', '$q', '$timeout', '$mdDialog', function($scope, $http, $q, $timeout, $mdDialog) {
 
     $scope.selected = [];

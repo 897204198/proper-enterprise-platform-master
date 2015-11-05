@@ -21,6 +21,10 @@
   },
   {
     "name":"资源管理",
-    "url":"/resources/list"
+    "url":"/resources"
+  },
+  {
+    "name":"流程管理",
+    "url":"/workflow"
   }
 ]

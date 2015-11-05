@@ -1,13 +1,5 @@
 var app = angular.module('pep', ['ngRoute', 'ngMaterial', 'md.data.table', 'ares']);
 
-app.config(['$routeProvider', function($routeProvider) {
-    $routeProvider
-        .when('/resources/list', {
-            controller: 'ResourcesListCtrl',
-            templateUrl: 'views/resources/list.html'
-        });
-}]);
-
 app.controller('AppCtrl', ['$scope', '$mdSidenav', '$http', '$timeout', '$location', '$document', function($scope, $mdSidenav, $http, $timeout, $location, $document) {
     $scope.title = '';
     $scope.resources = [];
