@@ -43,7 +43,7 @@ Proper Enterprise Platform
 |JSON|[fastjson 1.2.4](https://github.com/alibaba/fastjson/tree/1.2.4)|
 |消息队列||
 |前端框架||
-|Build System|[Gradle 2.5](https://github.com/gradle/gradle)|
+|Build System|[Gradle 2.8](https://github.com/gradle/gradle)|
 |持续集成||
 |license||
 
