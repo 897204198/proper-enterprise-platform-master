@@ -18,7 +18,7 @@ public class JSONObject implements Serializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JSONObject.class);
     
-    private ObjectNode obj;
+    private transient ObjectNode obj;
     
     public JSONObject(ObjectNode obj) {
         this.obj = obj;
