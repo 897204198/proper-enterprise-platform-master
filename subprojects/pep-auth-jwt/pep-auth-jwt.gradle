@@ -1,0 +1,4 @@
+dependencies {
+    compile libraries.servlet_api,
+            project(':pep-auth-api')
+}
