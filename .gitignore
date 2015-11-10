@@ -29,4 +29,6 @@ init_mongo_for_proper_dfs.js
 # ignore IntellJ IDEA files and folders
 .idea/
 *.iml
+*.ipr
+*.iws
 out/

@@ -20,6 +20,9 @@ allprojects {
     }
 }
 
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
 subprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
