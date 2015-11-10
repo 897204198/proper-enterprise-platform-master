@@ -62,7 +62,7 @@ public class BaseEntity implements Serializable {
         
         jsonObject.put(key, value);
 
-        this.extendProperties = JSONUtil.toJSONString(jsonObject);
+        this.extendProperties = jsonObject.toString();
     }
 
     public void putExtendProperty(Map<String, String> extendProperties) {

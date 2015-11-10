@@ -7,9 +7,6 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithMockUser
 
-import static org.hamcrest.MatcherAssert.assertThat
-import static org.hamcrest.core.IsEqual.equalTo
-
 class UserEntityIntegTest extends AbstractIntegTest {
 
     @Autowired
@@ -28,7 +25,7 @@ class UserEntityIntegTest extends AbstractIntegTest {
         assert user.getExtendProperties() != null
         assert user.getExtendProperties().startsWith("{");
         ['a':'1', 'b':'2', 'c':'3', 'd':'4'].entrySet().each { entry ->
-            assertThat user.getExtendProperty(entry.key), equalTo(entry.value)
+            assert user.getExtendProperty(entry.key) == entry.value
         }
     }
 

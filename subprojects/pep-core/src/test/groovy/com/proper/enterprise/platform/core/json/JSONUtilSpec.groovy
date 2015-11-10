@@ -64,5 +64,5 @@ class JSONUtilSpec extends Specification {
         2       | '{"a":"a1","b":"b2"}'
         2       | '[{"a1":"a1","a2":"a2","a3":"a3"},{"b1":"b1","b2":"b2","b3":"b3"}]' 
     }
-    
+
 }
