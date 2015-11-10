@@ -2,8 +2,7 @@ dependencies {
     compile libraries.servlet_api,
             libraries.spring_security_config,
             libraries.spring_security_web,
-            project(':pep-auth-api'),
-            project(':pep-core')
+            project(':pep-auth-api')
 
     testCompile libraries.ehcache,
                 libraries.spring_context_support,
