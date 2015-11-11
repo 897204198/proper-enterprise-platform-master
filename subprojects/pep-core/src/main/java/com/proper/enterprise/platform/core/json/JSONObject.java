@@ -1,78 +1,84 @@
 package com.proper.enterprise.platform.core.json;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public class JSONObject implements Map<String, Object>, Serializable {
+public class JSONObject implements Serializable {
 
     private static final long serialVersionUID = -6896564586841449574L;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JSONObject.class);
     
-    private com.alibaba.fastjson.JSONObject obj;
+    private transient ObjectNode obj;
     
-    public JSONObject(com.alibaba.fastjson.JSONObject obj) {
+    public JSONObject(ObjectNode obj) {
         this.obj = obj;
     }
-    
-    @Override
-    public boolean containsKey(Object key) {
-        return obj.containsKey(key);
-    }
-    
-    @Override
-    public Object remove(Object key) {
-        return obj.remove(key);
-    }
-    
-    @Override
-    public Object put(String key, Object value) {
-        return obj.put(key, value);
-    }
 
-    @Override
     public int size() {
         return obj.size();
     }
 
-    @Override
     public boolean isEmpty() {
-        return obj.isEmpty();
+        return obj.size() == 0;
     }
 
-    @Override
+    public boolean containsKey(Object key) {
+        return obj.has((String) key);
+    }
+
     public boolean containsValue(Object value) {
-        return obj.containsValue(value);
+        return obj.findValue((String) value) != null;
     }
 
-    @Override
-    public Object get(Object key) {
-        return obj.get(key);
+    public String get(Object key) {
+        return obj.get((String) key).asText();
     }
 
-    @Override
-    public void putAll(Map<? extends String, ? extends Object> m) {
-        obj.putAll(m);
+    public String put(String key, String value) {
+        return obj.put(key, value).asText();
     }
 
-    @Override
+    public String remove(Object key) {
+        return obj.remove((String) key).asText();
+    }
+
+    public void putAll(Map<? extends String, ? extends String> m) {
+        for (Map.Entry entry : m.entrySet()) {
+            obj.put((String) entry.getKey(), (String) entry.getValue());
+        }
+    }
+
     public void clear() {
-        obj.clear();
+        obj.removeAll();
     }
 
-    @Override
     public Set<String> keySet() {
-        return obj.keySet();
+        Iterator<String> iter = obj.fieldNames();
+        Set<String> set = new HashSet<String>();
+        while (iter.hasNext()) {
+            set.add(iter.next());
+        }
+        return set;
     }
 
-    @Override
-    public Collection<Object> values() {
-        return obj.values();
+    public String toString() {
+        String str = "";
+        try {
+            str = new ObjectMapper().writeValueAsString(obj);
+        } catch (JsonProcessingException jpe) {
+            LOGGER.error("Object to json error!", jpe);
+        }
+        return str;
     }
 
-    @Override
-    public Set<java.util.Map.Entry<String, Object>> entrySet() {
-        return obj.entrySet();
-    }
-    
 }

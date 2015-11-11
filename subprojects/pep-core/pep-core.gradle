@@ -1,5 +1,5 @@
 dependencies {
-    compile libraries.fastjson,
+    compile libraries.jackson_databind,
             libraries.guava,
             libraries.hibernate_entitymanager,
             libraries.spring_orm

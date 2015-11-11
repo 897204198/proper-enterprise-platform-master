@@ -33,12 +33,12 @@ class JSONUtilSpec extends Specification {
         println "Entity to JSON string result is: $result"
         
         expect:
-        result > ''
+        result ==~ regEx
         
         where:
-        _ | obj
-        _ | entity
-        _ | [entity, entity]
+        obj                 | regEx
+        entity              | /\{(".*":"?.*"?,?)+\}/
+        [entity, entity]    | /\[\{.*\},\{.*\}\]/
     }
     
     def "Parse JSON string to object"() {
@@ -47,11 +47,11 @@ class JSONUtilSpec extends Specification {
         def len = 0
         if (result instanceof JSONObject) {
             len = result.size()
-            println result.entrySet()
+            println result.keySet()
         } else if (result instanceof JSONObject[]) {
             len = result.length
-            println result.each {
-                println it.entrySet()
+            result.each {
+                println it.keySet()
             }
         }
         
@@ -64,5 +64,5 @@ class JSONUtilSpec extends Specification {
         2       | '{"a":"a1","b":"b2"}'
         2       | '[{"a1":"a1","a2":"a2","a3":"a3"},{"b1":"b1","b2":"b2","b3":"b3"}]' 
     }
-    
+
 }

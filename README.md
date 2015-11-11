@@ -40,7 +40,7 @@ Proper Enterprise Platform
 |通用工具|guava 18.0|
 |编码及加密|common-codec，bounce-casle|
 |xml|dom4j|
-|JSON|[fastjson 1.2.4](https://github.com/alibaba/fastjson/tree/1.2.4)|
+|JSON|[jackson-databind 2.3.6](https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.6.3)|
 |消息队列||
 |前端框架||
 |Build System|[Gradle 2.8](https://github.com/gradle/gradle)|

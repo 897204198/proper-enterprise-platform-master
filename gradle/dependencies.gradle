@@ -39,8 +39,6 @@ libraries.aspectjweaver = "org.aspectj:aspectjweaver:1.8.6"
 
 libraries.ehcache = 'net.sf.ehcache:ehcache-core:2.6.9'
 
-libraries.fastjson = 'com.alibaba:fastjson:1.2.4'
-
 versions.groovy = '2.4.3'
 // groovy-all include all below modules, used by code quality
 libraries.groovy_all = "org.codehaus.groovy:groovy-all:${versions.groovy}"
@@ -81,10 +79,11 @@ libraries.hibernate_hikaricp = dependencies.module("org.hibernate:hibernate-hika
 //libraries.hibernate_infinispan = "org.hibernate:hibernate-infinispan:${versions.hibernate}"
 //libraries.hibernate_proxool = "org.hibernate:hibernate-proxool:${versions.hibernate}"
 
-versions.jackson = '2.6.3'
+//versions.jackson = '2.6.3'
 //libraries.jackson_annotations = "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}"
 //libraries.jackson_core = "com.fasterxml.jackson.core:jackson-core:${versions.jackson}"
-libraries.jackson_databind = "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
+//libraries.jackson_databind = "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
+libraries.jackson_databind = 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
 
 //libraries.jcaptcha = dependencies.module("com.octo.captcha:jcaptcha:${versions.jcaptcha}") {
 //    dependency "com.octo.captcha:jcaptcha-api:${versions.jcaptcha}"
