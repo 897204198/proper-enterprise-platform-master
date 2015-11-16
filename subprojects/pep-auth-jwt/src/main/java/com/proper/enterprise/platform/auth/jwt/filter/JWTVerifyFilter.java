@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.auth.jwt.filter;
 
-import com.proper.enterprise.platform.auth.jwt.JWTUtil;
+import com.proper.enterprise.platform.auth.jwt.JWTService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +26,9 @@ public class JWTVerifyFilter implements Filter {
             }
         }
         
-        String token = JWTUtil.getTokenFromHeader(req);
+        String token = JWTService.getTokenFromHeader(req);
         LOGGER.info("JSON Web Token: " + token);
-        if (JWTUtil.verify(token)) {
+        if (JWTService.verify(token)) {
             LOGGER.debug("JWT verfiy succeed, invoke next filter in filter chain.");
             filterChain.doFilter(request, response);
         } else {
