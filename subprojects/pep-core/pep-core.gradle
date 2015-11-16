@@ -4,5 +4,7 @@ dependencies {
             libraries.hibernate_entitymanager,
             libraries.spring_orm
 
+    runtime libraries.commons_codec
+
     testRuntime fileTree(dir: 'libs', include: 'conf-in-jar.jar') 
 }

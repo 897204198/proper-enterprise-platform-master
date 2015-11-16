@@ -33,7 +33,7 @@ libraries.aspectjweaver = "org.aspectj:aspectjweaver:1.8.6"
 
 //libraries.commons_collections = 'commons-collections:commons-collections:3.2.1'
 
-//libraries.commons_dbcp2 = 'org.apache.commons:commons-dbcp2:2.1'
+libraries.commons_codec = 'commons-codec:commons-codec:1.10'
 
 //libraries.commons_lang = 'commons-lang:commons-lang:2.5'
 
