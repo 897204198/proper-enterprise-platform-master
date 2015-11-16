@@ -38,7 +38,7 @@ Proper Enterprise Platform
 |任务调度|quartz 2.2.1|
 |Unit Test|[junit 4.12](https://github.com/junit-team/junit/tree/r4.12)<br />[spock 0.7](https://github.com/spockframework/spock/tree/spock-0.7-groovy-2.0)|
 |通用工具|guava 18.0|
-|编码及加密|common-codec，bounce-casle|
+|编码及加密|[common-codec 1.10](https://github.com/apache/commons-codec/tree/1.10)<br />bounce-casle|
 |xml|dom4j|
 |JSON|[jackson-databind 2.3.6](https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.6.3)|
 |消息队列||

@@ -1,4 +1,5 @@
 dependencies {
-    compile libraries.servlet_api,
+    compile libraries.commons_codec,
+            libraries.servlet_api,
             project(':pep-auth-api')
 }
