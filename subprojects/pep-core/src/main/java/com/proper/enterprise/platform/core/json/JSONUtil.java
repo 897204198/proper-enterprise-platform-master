@@ -47,7 +47,7 @@ public class JSONUtil {
             return null;
         }
     }
-    
+
     private static JSONObject[] toJSONObjectArray(ArrayNode array) {
         JSONObject[] objs = new JSONObject[array.size()];
         Iterator<JsonNode> iter = array.elements();
@@ -71,6 +71,34 @@ public class JSONUtil {
             LOGGER.error("Parse json to object error!", ioe);
         }
         return root == null ? null : new JSONObject(root);
+    }
+
+    public static <T> T parseObject(String str, Class<T> clz) {
+        if (StringUtil.isNull(str)) {
+            return null;
+        }
+
+        T result = null;
+        try {
+            result = mapper.readValue(str, clz);
+        } catch (IOException ioe) {
+            LOGGER.error("Parse json to {} error!", clz.getName(), ioe);
+        }
+        return result;
+    }
+
+    public static <T> T parseObject(byte[] bytes, Class<T> clz) {
+        if (bytes == null) {
+            return null;
+        }
+
+        T result = null;
+        try {
+            result = mapper.readValue(bytes, clz);
+        } catch (IOException ioe) {
+            LOGGER.error("Parse json to {} error!", clz.getName(), ioe);
+        }
+        return result;
     }
     
     public static JSONObject[] parseArray(String str) {

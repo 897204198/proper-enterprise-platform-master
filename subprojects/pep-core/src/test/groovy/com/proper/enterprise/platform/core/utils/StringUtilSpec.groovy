@@ -20,4 +20,30 @@ class StringUtilSpec extends Specification {
         null            | ''
     }
 
+    @Unroll
+    def "'#input' is #result"() {
+        expect:
+        result == (StringUtil.isNull(input) ? 'null' : 'not null')
+
+        where:
+        input   | result
+        ''      | 'null'
+        ' '     | 'null'
+        ' ab '  | 'not null'
+    }
+
+    @Unroll
+    def "Join #input with #separator is #result"() {
+        expect:
+        result == StringUtil.join(input, separator)
+
+        where:
+        separator   | input         | result
+        '.'         | ['a', 'b']    | 'a.b'
+        ''          | []            | ''
+        null        | []            | ''
+        ''          | ['a', 'b']    | 'ab'
+        ','         | ['a']         | 'a'
+    }
+
 }

@@ -35,7 +35,7 @@ libraries.aspectjweaver = "org.aspectj:aspectjweaver:1.8.6"
 
 libraries.commons_codec = 'commons-codec:commons-codec:1.10'
 
-//libraries.commons_lang = 'commons-lang:commons-lang:2.5'
+libraries.commons_lang3 = 'org.apache.commons:commons-lang3:3.4'
 
 libraries.ehcache = 'net.sf.ehcache:ehcache-core:2.6.9'
 

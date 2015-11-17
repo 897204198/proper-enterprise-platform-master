@@ -1,5 +1,6 @@
 dependencies {
-    compile libraries.jackson_databind,
+    compile libraries.commons_lang3,
+            libraries.jackson_databind,
             libraries.guava,
             libraries.hibernate_entitymanager,
             libraries.spring_orm

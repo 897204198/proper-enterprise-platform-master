@@ -1,10 +1,18 @@
 package com.proper.enterprise.platform.core.utils;
 
-import java.util.Collection;
+import org.apache.commons.lang3.StringUtils;
 
-public class StringUtil {
+public class StringUtil extends StringUtils {
     
     private StringUtil() { }
+
+    public static boolean isNull(String str) {
+        return isBlank(str);
+    }
+
+    public static boolean isNotNull(String str) {
+        return isNotBlank(str);
+    }
 
     public static String cleanUrl(String url) {
         if (isNull(url)) {
@@ -14,28 +22,9 @@ public class StringUtil {
         int idx = url.indexOf("?");
         return idx > 0 ? url.substring(0, idx) : url;
     }
-    
-    /**
-     * 从传入的collection中获得格式化的字符串
-     * 返回值格式如：131151,131152,131153
-     * @author Hinex
-     * @date 2011-5-30 03:08:53
-     * @param col       包含要处理的值的collection
-     * @param separator 项目间的分隔符，如,
-     * @return
-     */
-    public static String getStringFrom(Collection<? extends Object> col, String separator) {
-        StringBuilder result = new StringBuilder();
 
-        if (col==null||col.size()==0) {
-            return result.toString();
-        }
-        
-        for (Object temp: col) {
-            result.append(separator + temp);
-        }
-        
-        return result.delete(0, separator.length()).toString();
+    public static String join(char separator, String... strs) {
+        return join(strs, separator);
     }
     
     public static String validStr(Object obj) {
@@ -122,11 +111,4 @@ public class StringUtil {
         return Character.toLowerCase(str.charAt(0)) + str.substring(1);
     }
     
-    public static boolean isNull(String str) {
-        return str == null || str.trim().equals("");
-    }
-    
-    public static boolean isNotNull(String str) {
-        return !isNull(str);
-    }
 }
