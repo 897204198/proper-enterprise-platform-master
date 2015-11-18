@@ -62,7 +62,7 @@ public class JWTService {
         return Base64.encodeBase64URLSafeString(str.getBytes(Constants.DEFAULT_CHARSET));
     }
 
-    @CachePut(value = CACHE_SECRETS, key = "#key")
+    @CachePut(value = CACHE_SECRETS)
     public String generateAPISecret(String key) {
         String apiSecret = key;
         for (int i = 0; i < 3; i++) {
@@ -75,17 +75,20 @@ public class JWTService {
         return Base64.encodeBase64URLSafeString(DigestUtils.md5(message));
     }
 
-    @Cacheable(value = CACHE_SECRETS, key = "#key")
+    @Cacheable(value = CACHE_SECRETS)
     public String getAPISecret(String key) {
         Cache cache = cacheManager.getCache(CACHE_SECRETS);
         if (cache.get(key) != null) {
-            return (String) cache.get(key).get();
+            String result = cache.get(key, String.class);
+            LOGGER.debug("Use cached apiSecret: {}", result);
+            return result;
         } else {
+            LOGGER.debug("Could not find cached apiSecret, generate a new one.");
             return generateAPISecret(key);
         }
     }
 
-    @CacheEvict(value = CACHE_SECRETS, key = "#key")
+    @CacheEvict(value = CACHE_SECRETS)
     public void clearAPISecret(String key) {
         // spring evict the cache, no need to do nothing more
     }
