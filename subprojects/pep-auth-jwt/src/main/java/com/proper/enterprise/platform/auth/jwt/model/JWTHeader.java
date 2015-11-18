@@ -12,6 +12,9 @@ public class JWTHeader implements Serializable {
     // User name
     private String uname;
 
+    // Expire time (millisecond)
+    private long expire;
+
     public String getUname() {
         return uname;
     }
@@ -26,6 +29,14 @@ public class JWTHeader implements Serializable {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public long getExpire() {
+        return expire;
+    }
+
+    public void setExpire(long expire) {
+        this.expire = expire;
     }
 
 }

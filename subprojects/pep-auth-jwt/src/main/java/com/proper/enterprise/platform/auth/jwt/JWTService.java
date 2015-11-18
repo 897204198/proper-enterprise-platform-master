@@ -9,13 +9,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,15 +24,17 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Hinex
  */
-@Service
 public class JWTService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTService.class);
 
     public static final String CACHE_SECRETS = "apiSecrets";
 
-    @Autowired
     private CacheManager cacheManager;
+
+    public void setCacheManager(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
 
     public String getTokenFromHeader(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
@@ -85,9 +85,9 @@ public class JWTService {
     }
     
     public boolean verify(String token) {
-        boolean result = false;
         if (StringUtil.isNotNull(token) || !token.contains(".")) {
-            return result;
+            LOGGER.debug("Token should NOT NULL!");
+            return false;
         }
         
         String[] split = token.split("\\.");
@@ -95,17 +95,21 @@ public class JWTService {
         String payloadStr = split[1];
         String sign = split[2];
         
-        try {
-            JWTHeader header = getHeader(token);
-            String apiSecret = getAPISecret(header.getUid());
-            result = sign.equals(hmacSha256Base64(apiSecret, StringUtil.join('.', headerStr, payloadStr)));
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+        JWTHeader header = getHeader(token);
+        String apiSecret = getAPISecret(header.getUid());
+        if ( ! sign.equals(hmacSha256Base64(apiSecret, StringUtil.join('.', headerStr, payloadStr))) ) {
+            LOGGER.debug("Token is INVALID!");
+            return false;
         }
-        return result;
+
+        if (header.getExpire() < System.currentTimeMillis()) {
+            LOGGER.debug("Token is EXPIRED");
+            return false;
+        }
+        return true;
     }
     
-    public JWTHeader getHeader(String token) throws Exception {
+    public JWTHeader getHeader(String token) {
         String[] split = token.split("\\.");
         String headerStr = split[0];
         return JSONUtil.parseObject(Base64.decodeBase64(headerStr), JWTHeader.class);

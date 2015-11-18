@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.jwt.filter;
 
 import com.proper.enterprise.platform.auth.jwt.JWTService;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,22 +14,21 @@ public class JWTVerifyFilter implements Filter {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTVerifyFilter.class);
 
+    private JWTService jwtService;
+
+    public void setJwtService(JWTService jwtService) {
+        this.jwtService = jwtService;
+    }
+
     public void destroy() { }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response,
+                         FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         
-        if (LOGGER.isDebugEnabled()) {
-            String uri = req.getRequestURI();
-            LOGGER.debug("Request to {}", uri);
-            if (uri.startsWith("/portal/ws/rest/api/debug")) {
-                filterChain.doFilter(request, response);
-            }
-        }
-        
-        String token = JWTService.getTokenFromHeader(req);
+        String token = jwtService.getTokenFromHeader(req);
         LOGGER.info("JSON Web Token: " + token);
-        if (JWTService.verify(token)) {
+        if (StringUtil.isNotNull(token) && jwtService.verify(token)) {
             LOGGER.debug("JWT verfiy succeed, invoke next filter in filter chain.");
             filterChain.doFilter(request, response);
         } else {
@@ -36,7 +36,7 @@ public class JWTVerifyFilter implements Filter {
             HttpServletResponse resp = (HttpServletResponse) response;
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.setHeader("WWW-Authenticate", 
-                           "Bearer realm=\"portal\", error=\"invalid_token\", error_description=\"COULD NOT ACCESS THIS API WITHOUT A VALID TOKEN\"");
+                           "Bearer realm=\"pep\", error=\"invalid_token\", error_description=\"COULD NOT ACCESS THIS API WITHOUT A VALID TOKEN\"");
         }
     }
 
