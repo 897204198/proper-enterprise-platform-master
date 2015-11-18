@@ -2,6 +2,9 @@ package com.proper.enterprise.platform.auth.jwt.model;
 
 import java.io.Serializable;
 
+/**
+ * Header part of JSON Web Token (http://jwt.io/)
+ */
 public class JWTHeader implements Serializable {
 
     private static final long serialVersionUID = 388046039690163330L;

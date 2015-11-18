@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Filter request to verify JWT with it
+ */
 public class JWTVerifyFilter implements Filter {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTVerifyFilter.class);
