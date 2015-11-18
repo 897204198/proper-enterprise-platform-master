@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.jwt;
 
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.model.JWTPayload;
+import com.proper.enterprise.platform.core.conf.Constants;
 import com.proper.enterprise.platform.core.json.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -48,12 +49,17 @@ public class JWTService {
         String apiSecret = generateAPISecret(header.getUid());
         String headerStr = JSONUtil.toJSONString(header);
         String payloadStr = JSONUtil.toJSONString(payload);
-        String sign = hmacSha256Base64(apiSecret, StringUtil.join('.', headerStr, payloadStr));
-        return StringUtil.join('.', headerStr, payloadStr, sign);
+        LOGGER.debug("apiSecret: {}, header: {}, payload: {}", apiSecret, headerStr, payloadStr);
+        String sign = hmacSha256Base64(apiSecret, headerStr + "." + payloadStr);
+        return StringUtil.join(new String[]{base64(headerStr), base64(payloadStr), sign}, ".");
     }
 
     private String hmacSha256Base64(String secret, String message) {
         return Base64.encodeBase64URLSafeString(HmacUtils.hmacSha256(secret, message));
+    }
+
+    private String base64(String str) {
+        return Base64.encodeBase64URLSafeString(str.getBytes(Constants.DEFAULT_CHARSET));
     }
 
     @CachePut(value = CACHE_SECRETS, key = "#key")
@@ -97,7 +103,7 @@ public class JWTService {
         
         JWTHeader header = getHeader(token);
         String apiSecret = getAPISecret(header.getUid());
-        if ( ! sign.equals(hmacSha256Base64(apiSecret, StringUtil.join('.', headerStr, payloadStr))) ) {
+        if ( ! sign.equals(hmacSha256Base64(apiSecret, headerStr + "." + payloadStr)) ) {
             LOGGER.debug("Token is INVALID!");
             return false;
         }

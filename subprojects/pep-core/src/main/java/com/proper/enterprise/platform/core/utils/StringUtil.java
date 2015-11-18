@@ -23,10 +23,6 @@ public class StringUtil extends StringUtils {
         return idx > 0 ? url.substring(0, idx) : url;
     }
 
-    public static String join(char separator, String... strs) {
-        return join(strs, separator);
-    }
-    
     public static String validStr(Object obj) {
         if (obj==null || !(obj instanceof String)) {
             return "";
