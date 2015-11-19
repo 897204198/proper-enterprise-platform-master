@@ -39,9 +39,9 @@ public class JWTVerifyFilter implements Filter {
             HttpServletResponse resp = (HttpServletResponse) response;
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.setHeader("WWW-Authenticate", 
-                           "Bearer realm=\"pep\", " +
-                                   "error=\"invalid_token\", " +
-                                   "error_description=\"COULD NOT ACCESS THIS API WITHOUT A VALID TOKEN\"");
+                           "Bearer realm=\"pep\", "
+                                   + "error=\"invalid_token\", "
+                                   + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A VALID TOKEN\"");
         }
     }
 

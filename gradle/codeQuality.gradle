@@ -13,6 +13,7 @@ checkstyle {
 
 codenarc {
     configFile = new File(configDir, "codenarc.xml")
+    toolVersion = '0.24.1'
 }
 
 findbugs {

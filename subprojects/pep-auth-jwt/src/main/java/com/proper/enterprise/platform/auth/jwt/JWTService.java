@@ -106,7 +106,7 @@ public class JWTService {
         
         JWTHeader header = getHeader(token);
         String apiSecret = getAPISecret(header.getUid());
-        if ( ! sign.equals(hmacSha256Base64(apiSecret, headerStr + "." + payloadStr)) ) {
+        if (!sign.equals(hmacSha256Base64(apiSecret, headerStr + "." + payloadStr))) {
             LOGGER.debug("Token is INVALID!");
             return false;
         }

@@ -32,4 +32,11 @@
         <persistence strategy="localTempSwap" />
     </cache>
 
+    <cache name="apiSecrets"
+           maxEntriesLocalHeap="5000"
+           timeToIdleSeconds="120"
+           timeToLiveSeconds="120">
+        <persistence strategy="localTempSwap" />
+    </cache>
+
 </ehcache>
