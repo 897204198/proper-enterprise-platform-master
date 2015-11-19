@@ -3,10 +3,14 @@
          name="pepCacheManager"
          updateCheck="false">
 
+    <!-- View java.io.File.createTempFile(java.lang.String, java.lang.String, java.io.File)
+    to see where 'java.io.tmpdir' is -->
     <diskStore path="java.io.tmpdir/pep-ehcache"/>
 
+    <!-- The "defaultCache" does not provide "defaults" for every cache, but its just a way
+    of specifying config for caches that can/are added dynamically - using
+    cacheManager.addCache(String cacheName). -->
     <defaultCache maxElementsInMemory="10000"
-                  eternal="false"
                   timeToIdleSeconds="120"
                   timeToLiveSeconds="120"
                   maxElementsOnDisk="10000000"
@@ -17,7 +21,7 @@
 
     <cache name="org.hibernate.cache.internal.StandardQueryCache"
            maxEntriesLocalHeap="500"
-           eternal="false"
+           timeToIdleSeconds="120"
            timeToLiveSeconds="120">
         <persistence strategy="localTempSwap" />
     </cache>

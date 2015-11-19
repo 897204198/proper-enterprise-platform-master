@@ -39,6 +39,12 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="diskStore">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+    The DiskStore provides a disk spooling facility that can be used for additional storage
+    during cache operation and for persisting caches through system restarts.
+            ]]></xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:attribute name="path" use="optional"/>
         </xs:complexType>
@@ -89,6 +95,15 @@
     </xs:element>
     <!-- add clone support for addition of cacheExceptionHandler. Important! -->
     <xs:element name="defaultCache">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+    While a defaultCache configuration is not required, an error is generated if caches are
+    created by name (programmatically) with no defaultCache loaded.
+    As with Hibernate, Ehcache's OpenJPA module (from 0.2) uses the defaultCache configured
+    in ehcache.xml to create caches. For production, we recommend configuring a cache configuration
+    in ehcache.xml for each cache, so that it may be correctly tuned.
+            ]]></xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element minOccurs="0" maxOccurs="unbounded" ref="cacheEventListenerFactory"/>
