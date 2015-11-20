@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.integration.auth.jwt
 
-import com.proper.enterprise.platform.auth.jwt.APISecret
-import com.proper.enterprise.platform.auth.jwt.JWTService
+import com.proper.enterprise.platform.auth.jwt.service.APISecret
+import com.proper.enterprise.platform.auth.jwt.service.JWTService
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest

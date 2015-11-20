@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.integration.auth.jwt
 
-import com.proper.enterprise.platform.auth.jwt.APISecret
+import com.proper.enterprise.platform.auth.jwt.service.APISecret
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired

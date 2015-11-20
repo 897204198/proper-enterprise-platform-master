@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.jwt;
+package com.proper.enterprise.platform.auth.jwt.service;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;

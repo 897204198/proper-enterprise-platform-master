@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.auth.jwt.filter;
 
-import com.proper.enterprise.platform.auth.jwt.JWTService;
+import com.proper.enterprise.platform.auth.jwt.service.JWTService;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

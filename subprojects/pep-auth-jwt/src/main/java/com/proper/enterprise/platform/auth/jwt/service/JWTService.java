@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.jwt;
+package com.proper.enterprise.platform.auth.jwt.service;
 
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.model.JWTPayload;
