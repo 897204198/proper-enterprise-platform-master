@@ -1,7 +1,7 @@
-package com.proper.enterprise.platform.integration.auth.entity
+package com.proper.enterprise.platform.integration.auth.common.entity
 
-import com.proper.enterprise.platform.auth.entity.UserEntity
-import com.proper.enterprise.platform.auth.repository.UserRepository
+import com.proper.enterprise.platform.auth.common.entity.UserEntity
+import com.proper.enterprise.platform.auth.common.repository.UserRepository
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired

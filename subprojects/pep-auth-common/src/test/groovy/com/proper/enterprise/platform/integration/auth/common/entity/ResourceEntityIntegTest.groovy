@@ -1,7 +1,7 @@
-package com.proper.enterprise.platform.integration.auth.entity
+package com.proper.enterprise.platform.integration.auth.common.entity
 
-import com.proper.enterprise.platform.auth.entity.ResourceEntity
-import com.proper.enterprise.platform.auth.repository.ResourceRepository
+import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
+import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
 import com.proper.enterprise.platform.core.enums.MOC
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.After

@@ -1,6 +1,6 @@
-package com.proper.enterprise.platform.auth.repository;
+package com.proper.enterprise.platform.auth.common.repository;
 
-import com.proper.enterprise.platform.auth.entity.UserEntity;
+import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.core.repository.BaseRepository;
 import com.proper.enterprise.platform.core.annotation.CacheQuery;
 

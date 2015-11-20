@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.integration.auth
+package com.proper.enterprise.platform.integration.auth.common
 
 import org.springframework.stereotype.Component
 

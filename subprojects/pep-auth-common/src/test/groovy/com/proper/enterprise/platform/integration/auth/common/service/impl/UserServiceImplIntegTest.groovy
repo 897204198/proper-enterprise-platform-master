@@ -1,7 +1,8 @@
-package com.proper.enterprise.platform.integration.auth.service.impl
+package com.proper.enterprise.platform.integration.auth.common.service.impl
+
 import com.proper.enterprise.platform.api.auth.Resource
 import com.proper.enterprise.platform.api.auth.service.UserService
-import com.proper.enterprise.platform.integration.auth.InsertDataWorker
+import com.proper.enterprise.platform.integration.auth.common.InsertDataWorker
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired

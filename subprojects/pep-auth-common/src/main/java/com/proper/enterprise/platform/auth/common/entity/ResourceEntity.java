@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.entity;
+package com.proper.enterprise.platform.auth.common.entity;
 
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;

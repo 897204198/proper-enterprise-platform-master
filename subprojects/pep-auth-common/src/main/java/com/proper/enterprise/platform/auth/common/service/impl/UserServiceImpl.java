@@ -1,15 +1,15 @@
-package com.proper.enterprise.platform.auth.service.impl;
+package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.google.common.collect.Lists;
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.auth.dto.ResourceDTO;
-import com.proper.enterprise.platform.auth.dto.UserDTO;
-import com.proper.enterprise.platform.auth.entity.ResourceEntity;
-import com.proper.enterprise.platform.auth.entity.UserEntity;
-import com.proper.enterprise.platform.auth.repository.ResourceRepository;
-import com.proper.enterprise.platform.auth.repository.UserRepository;
+import com.proper.enterprise.platform.auth.common.dto.ResourceDTO;
+import com.proper.enterprise.platform.auth.common.dto.UserDTO;
+import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
+import com.proper.enterprise.platform.auth.common.entity.UserEntity;
+import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
+import com.proper.enterprise.platform.auth.common.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

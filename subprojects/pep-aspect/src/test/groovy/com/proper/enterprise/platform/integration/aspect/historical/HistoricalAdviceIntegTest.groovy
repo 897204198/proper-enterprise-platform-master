@@ -1,7 +1,7 @@
-package com.proper.enterprise.platform.integration.aspect.auth
+package com.proper.enterprise.platform.integration.aspect.historical
 
 import com.proper.enterprise.platform.api.auth.service.UserService
-import com.proper.enterprise.platform.auth.dto.UserDTO
+import com.proper.enterprise.platform.auth.common.dto.UserDTO
 import com.proper.enterprise.platform.core.conf.ConfManager
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.Test

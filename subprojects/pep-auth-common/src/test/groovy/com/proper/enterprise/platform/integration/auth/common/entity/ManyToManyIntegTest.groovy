@@ -1,10 +1,11 @@
-package com.proper.enterprise.platform.integration.auth.entity
-import com.proper.enterprise.platform.auth.entity.ResourceEntity
-import com.proper.enterprise.platform.auth.entity.RoleEntity
-import com.proper.enterprise.platform.auth.entity.UserEntity
-import com.proper.enterprise.platform.auth.repository.RoleRepository
-import com.proper.enterprise.platform.auth.repository.UserRepository
-import com.proper.enterprise.platform.integration.auth.InsertDataWorker
+package com.proper.enterprise.platform.integration.auth.common.entity
+
+import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
+import com.proper.enterprise.platform.auth.common.entity.RoleEntity
+import com.proper.enterprise.platform.auth.common.entity.UserEntity
+import com.proper.enterprise.platform.auth.common.repository.RoleRepository
+import com.proper.enterprise.platform.auth.common.repository.UserRepository
+import com.proper.enterprise.platform.integration.auth.common.InsertDataWorker
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import com.proper.enterprise.platform.test.integration.SqlWorker
 import org.junit.AfterClass

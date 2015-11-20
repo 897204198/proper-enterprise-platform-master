@@ -1,7 +1,7 @@
-package com.proper.enterprise.platform.auth.dto;
+package com.proper.enterprise.platform.auth.common.dto;
 
 import com.proper.enterprise.platform.api.auth.Role;
-import com.proper.enterprise.platform.auth.entity.RoleEntity;
+import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
 import com.proper.enterprise.platform.core.dto.BaseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
