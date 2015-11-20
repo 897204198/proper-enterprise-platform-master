@@ -10,28 +10,36 @@ public class JWTHeader implements Serializable {
     private static final long serialVersionUID = 388046039690163330L;
 
     // User ID
-    private String uid;
+    private String id;
 
     // User name
-    private String uname;
+    private String name;
 
     // Expire time (millisecond)
     private long expire;
 
-    public String getUname() {
-        return uname;
+    public JWTHeader() { }
+
+    public JWTHeader(String id, String name, long expire) {
+        this.id = id;
+        this.name = name;
+        this.expire = expire;
     }
 
-    public void setUname(String uname) {
-        this.uname = uname;
+    public String getId() {
+        return id;
     }
 
-    public String getUid() {
-        return uid;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public long getExpire() {
@@ -41,5 +49,4 @@ public class JWTHeader implements Serializable {
     public void setExpire(long expire) {
         this.expire = expire;
     }
-
 }
