@@ -21,7 +21,8 @@ class APISecretIntegTest extends AbstractIntegTest {
 
         s1 = secret.getAPISecret(key)
         assert s1 == secret.getAPISecret(key)
-        // Waiting for cache expired
+        // Waiting for cache expired,
+        // expire time depends on the configuration of underlying cache implements
 //        sleep(120 * 1000)
 //        assert s1 != secret.getAPISecret(key)
     }
