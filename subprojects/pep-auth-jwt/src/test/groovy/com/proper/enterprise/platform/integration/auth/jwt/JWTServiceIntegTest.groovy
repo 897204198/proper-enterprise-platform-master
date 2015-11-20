@@ -31,12 +31,12 @@ class JWTServiceIntegTest extends AbstractIntegTest {
 
     @Test
     public void testMultiTokens() {
-        def header1 = new JWTHeader('1', 't1', System.currentTimeMillis()+2000)
+        def header1 = new JWTHeader('k1', 't1', System.currentTimeMillis()+2000)
         def payload1 = new JWTPayloadImpl('t1emp')
         def secret1 = secret.getAPISecret(header1.getId())
         def token1 = jwtService.generateToken(header1, payload1)
 
-        def header2 = new JWTHeader('2', 't2', System.currentTimeMillis()+2000)
+        def header2 = new JWTHeader('k2', 't2', System.currentTimeMillis()+2000)
         def payload2 = new JWTPayloadImpl('t2emp')
         def secret2 = secret.getAPISecret(header2.getId())
         def token2 = jwtService.generateToken(header2, payload2)
