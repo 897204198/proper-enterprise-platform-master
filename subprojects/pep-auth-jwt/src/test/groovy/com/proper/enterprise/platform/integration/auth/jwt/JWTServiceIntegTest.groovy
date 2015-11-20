@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.integration.auth.jwt
 
-import com.proper.enterprise.platform.auth.jwt.JWT
 import com.proper.enterprise.platform.auth.jwt.JWTService
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
@@ -12,9 +11,6 @@ class JWTServiceIntegTest extends AbstractIntegTest {
 
     @Autowired
     private JWTService jwtService
-
-    @Autowired
-    private JWT jwt
 
     @Test
     public void testGenerateAndVerifyToken() {

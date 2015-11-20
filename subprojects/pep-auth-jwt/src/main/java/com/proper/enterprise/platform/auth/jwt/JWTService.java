@@ -23,10 +23,10 @@ public class JWTService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTService.class);
 
-    private JWT jwt;
+    private APISecret secret;
 
-    public void setJwt(JWT jwt) {
-        this.jwt = jwt;
+    public void setSecret(APISecret secret) {
+        this.secret = secret;
     }
 
     public String getTokenFromHeader(HttpServletRequest request) {
@@ -38,7 +38,7 @@ public class JWTService {
     }
 
     public String generateToken(JWTHeader header, JWTPayload payload) {
-        String apiSecret = jwt.getAPISecret(header.getUid());
+        String apiSecret = secret.getAPISecret(header.getUid());
         String headerStr = JSONUtil.toJSONString(header);
         String payloadStr = JSONUtil.toJSONString(payload);
         LOGGER.debug("apiSecret: {}, header: {}, payload: {}", apiSecret, headerStr, payloadStr);
@@ -70,7 +70,7 @@ public class JWTService {
         String sign = split[2];
         
         JWTHeader header = getHeader(token);
-        String apiSecret = jwt.getAPISecret(header.getUid());
+        String apiSecret = secret.getAPISecret(header.getUid());
         if (!sign.equals(hmacSha256Base64(apiSecret, headerBase64 + "." + payloadBase64))) {
             LOGGER.debug("Token is INVALID! Sign is {}", sign);
             return false;

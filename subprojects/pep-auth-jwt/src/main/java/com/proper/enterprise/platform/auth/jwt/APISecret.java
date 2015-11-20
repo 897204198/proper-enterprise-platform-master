@@ -5,11 +5,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
-public class JWT {
+public class APISecret {
 
-    public static final String CACHE_SECRETS = "apiSecrets";
+    public static final String CACHE_NAME = "apiSecrets";
 
-    @Cacheable(value = CACHE_SECRETS)
+    @Cacheable(value = CACHE_NAME)
     public String getAPISecret(String key) {
         String apiSecret = key;
         for (int i = 0; i < 3; i++) {
@@ -22,7 +22,7 @@ public class JWT {
         return Base64.encodeBase64URLSafeString(DigestUtils.md5(message));
     }
 
-    @CacheEvict(value = CACHE_SECRETS)
+    @CacheEvict(value = CACHE_NAME)
     public void clearAPISecret(String key) {
         // spring evict the cache, no need to do nothing more
     }
