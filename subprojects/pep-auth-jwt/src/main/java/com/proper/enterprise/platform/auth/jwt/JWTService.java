@@ -10,10 +10,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,12 +28,6 @@ public class JWTService {
 
     public static final String CACHE_SECRETS = "apiSecrets";
 
-    private CacheManager cacheManager;
-
-    public void setCacheManager(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
-    }
-
     public String getTokenFromHeader(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         if (StringUtil.isNotNull(token) && token.contains("Bearer")) {
@@ -45,8 +36,25 @@ public class JWTService {
         return token;
     }
 
-    public String generateToken(JWTHeader header, JWTPayload payload) {
-        String apiSecret = generateAPISecret(header.getUid());
+    @Cacheable(value = CACHE_SECRETS)
+    public String getAPISecret(String key) {
+        String apiSecret = key;
+        for (int i = 0; i < 3; i++) {
+            apiSecret = md5Base64(apiSecret + System.currentTimeMillis());
+        }
+        return apiSecret;
+    }
+
+    private String md5Base64(String message) {
+        return Base64.encodeBase64URLSafeString(DigestUtils.md5(message));
+    }
+
+    @CacheEvict(value = CACHE_SECRETS)
+    public void clearAPISecret(String key) {
+        // spring evict the cache, no need to do nothing more
+    }
+
+    public String generateToken(JWTHeader header, JWTPayload payload, String apiSecret) {
         String headerStr = JSONUtil.toJSONString(header);
         String payloadStr = JSONUtil.toJSONString(payload);
         LOGGER.debug("apiSecret: {}, header: {}, payload: {}", apiSecret, headerStr, payloadStr);
@@ -62,39 +70,8 @@ public class JWTService {
         return Base64.encodeBase64URLSafeString(str.getBytes(Constants.DEFAULT_CHARSET));
     }
 
-    @CachePut(value = CACHE_SECRETS)
-    public String generateAPISecret(String key) {
-        String apiSecret = key;
-        for (int i = 0; i < 3; i++) {
-            apiSecret = md5Base64(apiSecret + System.currentTimeMillis());
-        }
-        return apiSecret;
-    }
-
-    private String md5Base64(String message) {
-        return Base64.encodeBase64URLSafeString(DigestUtils.md5(message));
-    }
-
-    @Cacheable(value = CACHE_SECRETS)
-    public String getAPISecret(String key) {
-        Cache cache = cacheManager.getCache(CACHE_SECRETS);
-        if (cache.get(key) != null) {
-            String result = cache.get(key, String.class);
-            LOGGER.debug("Use cached apiSecret: {}", result);
-            return result;
-        } else {
-            LOGGER.debug("Could not find cached apiSecret, generate a new one.");
-            return generateAPISecret(key);
-        }
-    }
-
-    @CacheEvict(value = CACHE_SECRETS)
-    public void clearAPISecret(String key) {
-        // spring evict the cache, no need to do nothing more
-    }
-    
     public boolean verify(String token) {
-        if (StringUtil.isNotNull(token) || !token.contains(".")) {
+        if (StringUtil.isNull(token) || !token.contains(".")) {
             LOGGER.debug("Token should NOT NULL!");
             return false;
         }

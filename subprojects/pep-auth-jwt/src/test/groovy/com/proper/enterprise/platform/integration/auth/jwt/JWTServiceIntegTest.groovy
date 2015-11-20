@@ -13,18 +13,19 @@ class JWTServiceIntegTest extends AbstractIntegTest {
     private JWTService jwtService
 
     @Test
-    public void testGenerateToken() {
+    public void testGenerateAndVerifyToken() {
         def header = new JWTHeader()
         header.setUid('1')
         header.setUname('test')
         header.setExpire(System.currentTimeMillis() + 1000);
+        header.setAlg('HS256')
         def payload = new JWTPayloadImpl()
         payload.setRoles('a,b,c')
-        def token = jwtService.generateToken(header, payload)
         def apiSecret = jwtService.getAPISecret(header.uid)
+        def token = jwtService.generateToken(header, payload, apiSecret)
 
         println token
-        println apiSecret
+        assert jwtService.verify(token)
     }
 
 }
