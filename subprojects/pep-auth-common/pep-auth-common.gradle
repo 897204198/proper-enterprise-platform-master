@@ -1,12 +1,9 @@
 dependencies {
     compile libraries.servlet_api,
             libraries.spring_context_support,
-            libraries.spring_security_config,
-            libraries.spring_security_web,
             project(':pep-auth-api')
 
     testCompile libraries.ehcache,
-                libraries.spring_security_test,
                 project(':pep-test')
 
     testRuntime project(':pep-aspect')
