@@ -4,7 +4,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
 
-    <bean id="jwtService" class="com.proper.enterprise.platform.auth.jwt.JWTService" />
+    <bean id="jwt" class="com.proper.enterprise.platform.auth.jwt.JWT" />
+
+    <bean id="jwtService" class="com.proper.enterprise.platform.auth.jwt.JWTService">
+        <property name="jwt" ref="jwt" />
+    </bean>
 
     <bean id="jwtVerifyFilter" class="com.proper.enterprise.platform.auth.jwt.filter.JWTVerifyFilter">
         <property name="jwtService" ref="jwtService" />

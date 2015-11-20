@@ -6,12 +6,9 @@ import com.proper.enterprise.platform.core.conf.Constants;
 import com.proper.enterprise.platform.core.json.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,7 +23,11 @@ public class JWTService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTService.class);
 
-    public static final String CACHE_SECRETS = "apiSecrets";
+    private JWT jwt;
+
+    public void setJwt(JWT jwt) {
+        this.jwt = jwt;
+    }
 
     public String getTokenFromHeader(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
@@ -36,34 +37,21 @@ public class JWTService {
         return token;
     }
 
-    @Cacheable(value = CACHE_SECRETS)
-    public String getAPISecret(String key) {
-        String apiSecret = key;
-        for (int i = 0; i < 3; i++) {
-            apiSecret = md5Base64(apiSecret + System.currentTimeMillis());
-        }
-        return apiSecret;
-    }
-
-    private String md5Base64(String message) {
-        return Base64.encodeBase64URLSafeString(DigestUtils.md5(message));
-    }
-
-    @CacheEvict(value = CACHE_SECRETS)
-    public void clearAPISecret(String key) {
-        // spring evict the cache, no need to do nothing more
-    }
-
-    public String generateToken(JWTHeader header, JWTPayload payload, String apiSecret) {
+    public String generateToken(JWTHeader header, JWTPayload payload) {
+        String apiSecret = jwt.getAPISecret(header.getUid());
         String headerStr = JSONUtil.toJSONString(header);
         String payloadStr = JSONUtil.toJSONString(payload);
         LOGGER.debug("apiSecret: {}, header: {}, payload: {}", apiSecret, headerStr, payloadStr);
-        String sign = hmacSha256Base64(apiSecret, headerStr + "." + payloadStr);
-        return StringUtil.join(new String[]{base64(headerStr), base64(payloadStr), sign}, ".");
+        String headerBase64 = base64(headerStr);
+        String payloadBase64 = base64(payloadStr);
+        String sign = hmacSha256Base64(apiSecret, headerBase64 + "." + payloadBase64);
+        return StringUtil.join(new String[]{headerBase64, payloadBase64, sign}, ".");
     }
 
     private String hmacSha256Base64(String secret, String message) {
-        return Base64.encodeBase64URLSafeString(HmacUtils.hmacSha256(secret, message));
+        String result = Base64.encodeBase64URLSafeString(HmacUtils.hmacSha256(secret, message));
+        LOGGER.debug("API secrect is {}, message is {} and result is {}", secret, message, result);
+        return result;
     }
 
     private String base64(String str) {
@@ -77,14 +65,14 @@ public class JWTService {
         }
         
         String[] split = token.split("\\.");
-        String headerStr = split[0];
-        String payloadStr = split[1];
+        String headerBase64= split[0];
+        String payloadBase64 = split[1];
         String sign = split[2];
         
         JWTHeader header = getHeader(token);
-        String apiSecret = getAPISecret(header.getUid());
-        if (!sign.equals(hmacSha256Base64(apiSecret, headerStr + "." + payloadStr))) {
-            LOGGER.debug("Token is INVALID!");
+        String apiSecret = jwt.getAPISecret(header.getUid());
+        if (!sign.equals(hmacSha256Base64(apiSecret, headerBase64 + "." + payloadBase64))) {
+            LOGGER.debug("Token is INVALID! Sign is {}", sign);
             return false;
         }
 

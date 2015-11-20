@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.integration.auth.jwt
 
+import com.proper.enterprise.platform.auth.jwt.JWT
 import com.proper.enterprise.platform.auth.jwt.JWTService
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
@@ -12,19 +13,19 @@ class JWTServiceIntegTest extends AbstractIntegTest {
     @Autowired
     private JWTService jwtService
 
+    @Autowired
+    private JWT jwt
+
     @Test
     public void testGenerateAndVerifyToken() {
         def header = new JWTHeader()
         header.setUid('1')
         header.setUname('test')
         header.setExpire(System.currentTimeMillis() + 1000);
-        header.setAlg('HS256')
         def payload = new JWTPayloadImpl()
         payload.setRoles('a,b,c')
-        def apiSecret = jwtService.getAPISecret(header.uid)
-        def token = jwtService.generateToken(header, payload, apiSecret)
+        def token = jwtService.generateToken(header, payload)
 
-        println token
         assert jwtService.verify(token)
     }
 
