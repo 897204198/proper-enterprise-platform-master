@@ -15,15 +15,11 @@ public class JWTHeader implements Serializable {
     // User name
     private String name;
 
-    // Expire time (millisecond)
-    private long expire;
-
     public JWTHeader() { }
 
-    public JWTHeader(String id, String name, long expire) {
+    public JWTHeader(String id, String name) {
         this.id = id;
         this.name = name;
-        this.expire = expire;
     }
 
     public String getId() {
@@ -42,11 +38,4 @@ public class JWTHeader implements Serializable {
         this.name = name;
     }
 
-    public long getExpire() {
-        return expire;
-    }
-
-    public void setExpire(long expire) {
-        this.expire = expire;
-    }
 }

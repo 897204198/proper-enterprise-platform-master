@@ -32,10 +32,12 @@
         <persistence strategy="localTempSwap" />
     </cache>
 
+    <!-- This cache is used by JWT secret,
+    elements in this cache have two weeks time to live -->
     <cache name="apiSecrets"
            maxEntriesLocalHeap="5000"
-           timeToIdleSeconds="120"
-           timeToLiveSeconds="120">
+           timeToIdleSeconds="1209600"
+           timeToLiveSeconds="1209600">
         <persistence strategy="localTempSwap" />
     </cache>
 

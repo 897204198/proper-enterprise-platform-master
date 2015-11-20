@@ -72,14 +72,10 @@ public class JWTService {
         JWTHeader header = getHeader(token);
         String apiSecret = secret.getAPISecret(header.getId());
         if (!sign.equals(hmacSha256Base64(apiSecret, headerBase64 + "." + payloadBase64))) {
-            LOGGER.debug("Token is INVALID! Sign is {}", sign);
+            LOGGER.debug("Token is INVALID or EXPIRED! Sign is {}", sign);
             return false;
         }
 
-        if (header.getExpire() < System.currentTimeMillis()) {
-            LOGGER.debug("Token is EXPIRED");
-            return false;
-        }
         return true;
     }
     
