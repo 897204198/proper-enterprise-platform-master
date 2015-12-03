@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.auth.common.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.repository.RoleRepository
 import com.proper.enterprise.platform.auth.common.repository.UserRepository
-import com.proper.enterprise.platform.integration.auth.common.InsertDataWorker
+import com.proper.enterprise.platform.test.auth.InsertDataWorker
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import com.proper.enterprise.platform.test.integration.SqlWorker
 import org.junit.AfterClass
