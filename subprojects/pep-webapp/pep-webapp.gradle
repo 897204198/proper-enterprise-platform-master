@@ -25,7 +25,7 @@ dependencies {
     tomcat libraries.tomcat
     providedRuntime libraries.servlet_api
 
-    compile project(':pep-auth-common')
+    compile project(':pep-auth-security')
 
     runtime project(':pep-aspect'),
             project(':pep-workflow')
