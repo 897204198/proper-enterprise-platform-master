@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.integration.auth.security.service.impl
+package com.proper.enterprise.platform.integration.auth.service.impl
 
 import com.proper.enterprise.platform.api.auth.Resource
 import com.proper.enterprise.platform.api.auth.service.UserService

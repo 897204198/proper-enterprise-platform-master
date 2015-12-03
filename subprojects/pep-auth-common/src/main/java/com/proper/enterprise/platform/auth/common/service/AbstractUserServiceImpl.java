@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.common.service.impl;
+package com.proper.enterprise.platform.auth.common.service;
 
 import com.google.common.collect.Lists;
 import com.proper.enterprise.platform.api.auth.Resource;
@@ -13,19 +13,15 @@ import com.proper.enterprise.platform.auth.common.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-@Service
-public class UserServiceImpl implements UserService {
+public abstract class AbstractUserServiceImpl implements UserService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-    
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUserServiceImpl.class);
+
     @Autowired
     UserRepository userRepo;
 
@@ -64,11 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getCurrentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : principal.toString();
-        return getUserByUsername(username);
-    }
+    public abstract User getCurrentUser();
 
     @Override
     public void addUser(User... users) {

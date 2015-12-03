@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.integration.auth.common.entity
+package com.proper.enterprise.platform.integration.auth.security.entity
 
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.entity.RoleEntity
