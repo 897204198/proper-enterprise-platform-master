@@ -70,6 +70,10 @@ public class JWTService {
         String sign = split[2];
         
         JWTHeader header = getHeader(token);
+        if (header == null) {
+            LOGGER.debug("Want to parse header from token, but get NULL! Maybe token is INVALID!");
+            return false;
+        }
         String apiSecret = secret.getAPISecret(header.getId());
         if (!sign.equals(hmacSha256Base64(apiSecret, headerBase64 + "." + payloadBase64))) {
             LOGGER.debug("Token is INVALID or EXPIRED! Sign is {}", sign);
