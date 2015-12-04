@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.auth.service.impl;
 
-import com.proper.enterprise.platform.auth.common.service.AbstractResourceServiceImpl;
+import com.proper.enterprise.platform.auth.common.service.impl.AbstractResourceServiceImpl;
 import org.springframework.stereotype.Service;
 
 @Service

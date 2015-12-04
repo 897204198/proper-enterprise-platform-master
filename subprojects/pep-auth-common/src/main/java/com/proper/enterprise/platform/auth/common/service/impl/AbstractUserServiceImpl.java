@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.common.service;
+package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.google.common.collect.Lists;
 import com.proper.enterprise.platform.api.auth.Resource;
