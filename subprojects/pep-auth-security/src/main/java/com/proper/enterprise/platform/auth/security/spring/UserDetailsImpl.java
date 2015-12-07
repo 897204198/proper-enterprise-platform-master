@@ -1,9 +1,9 @@
-package com.proper.enterprise.platform.auth.spring;
-
-import java.util.Collection;
+package com.proper.enterprise.platform.auth.security.spring;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
 

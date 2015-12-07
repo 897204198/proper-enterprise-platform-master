@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.spring;
+package com.proper.enterprise.platform.auth.security.spring;
 
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.User;

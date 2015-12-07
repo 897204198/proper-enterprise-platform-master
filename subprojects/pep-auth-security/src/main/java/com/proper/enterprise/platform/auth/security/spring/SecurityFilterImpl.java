@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.spring;
+package com.proper.enterprise.platform.auth.security.spring;
 
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;

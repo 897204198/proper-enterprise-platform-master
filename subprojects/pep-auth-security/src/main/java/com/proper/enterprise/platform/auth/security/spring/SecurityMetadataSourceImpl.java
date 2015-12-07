@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.spring;
+package com.proper.enterprise.platform.auth.security.spring;
 
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
