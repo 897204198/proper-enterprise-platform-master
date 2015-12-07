@@ -1,5 +1,6 @@
 dependencies {
-    compile libraries.commons_lang3,
+    compile libraries.commons_codec,
+            libraries.commons_lang3,
             libraries.jackson_databind,
             libraries.guava,
             libraries.hibernate_entitymanager,

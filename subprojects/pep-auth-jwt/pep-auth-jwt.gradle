@@ -1,7 +1,7 @@
 dependencies {
-    compile libraries.commons_codec,
-            libraries.servlet_api,
-            project(':pep-auth-common')
+    compile libraries.servlet_api,
+            project(':pep-auth-common'),
+            project(':pep-core')
 
     testCompile project(':pep-test')
 }

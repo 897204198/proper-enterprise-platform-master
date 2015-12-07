@@ -9,7 +9,7 @@
         <property name="userCache" ref="ehcacheBasedUserCache" />
     </bean>
 
-    <bean id="userDetailsService" class="com.proper.enterprise.platform.auth.spring.UserDetailsServiceImpl" />
+    <bean id="userDetailsService" class="com.proper.enterprise.platform.auth.security.spring.UserDetailsServiceImpl" />
 
     <bean id="ehcacheBasedUserCache" class="org.springframework.security.core.userdetails.cache.EhCacheBasedUserCache">
         <property name="cache" ref="userCache" />
