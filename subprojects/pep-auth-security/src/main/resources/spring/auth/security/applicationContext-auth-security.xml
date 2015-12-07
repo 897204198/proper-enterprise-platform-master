@@ -23,7 +23,7 @@
         <security:custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR" />
     </security:http>
 
-    <bean id="myFilter" class="com.proper.enterprise.platform.auth.spring.SecurityFilterImpl">
+    <bean id="myFilter" class="com.proper.enterprise.platform.auth.security.spring.SecurityFilterImpl">
         <property name="authenticationManager" ref="authenticationManager" />
         <property name="accessDecisionManager" ref="myAccessDecisionManager" />
         <property name="securityMetadataSource" ref="mySecurityMetadataSource" />
@@ -35,8 +35,8 @@
         </security:authentication-provider>
     </security:authentication-manager>
 
-    <bean id="myAccessDecisionManager" class="com.proper.enterprise.platform.auth.spring.AccessDecisionManagerImpl" />
+    <bean id="myAccessDecisionManager" class="com.proper.enterprise.platform.auth.security.spring.AccessDecisionManagerImpl" />
 
-    <bean id="mySecurityMetadataSource" class="com.proper.enterprise.platform.auth.spring.SecurityMetadataSourceImpl" />
+    <bean id="mySecurityMetadataSource" class="com.proper.enterprise.platform.auth.security.spring.SecurityMetadataSourceImpl" />
 
 </beans>
