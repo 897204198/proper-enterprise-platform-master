@@ -14,7 +14,8 @@ public class AuthcService {
 
     public boolean authenticate(String username, String pwd) {
         User user = userService.getUserByUsername(username);
-        return user != null && user.getPassword().equals(MD5Util.md5Hex(pwd));
+        return username.equals(user.getUsername())
+                && MD5Util.md5Hex(pwd).equals(user.getPassword());
     }
 
 }

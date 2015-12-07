@@ -28,6 +28,12 @@ public class JWTVerifyFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
+
+        if (req.getRequestURI().equals("/pep/auth/login")) {
+            LOGGER.info("No need JWT of this url: {}", req.getRequestURI());
+            filterChain.doFilter(request, response);
+            return;
+        }
         
         String token = jwtService.getTokenFromHeader(req);
         LOGGER.info("JSON Web Token: " + token);
@@ -38,10 +44,10 @@ public class JWTVerifyFilter implements Filter {
             LOGGER.error("JWT verfiy failed.");
             HttpServletResponse resp = (HttpServletResponse) response;
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            resp.setHeader("WWW-Authenticate", 
-                           "Bearer realm=\"pep\", "
-                                   + "error=\"invalid_token\", "
-                                   + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A VALID TOKEN\"");
+            resp.setHeader("WWW-Authenticate",
+                    "Bearer realm=\"pep\", "
+                            + "error=\"invalid_token\", "
+                            + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A VALID TOKEN\"");
         }
     }
 

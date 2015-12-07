@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class LoginController {
@@ -23,7 +21,7 @@ public class LoginController {
     @Autowired private UserService userService;
 
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> login(LoginBean loginBean) {
+    public ResponseEntity<String> login(@RequestBody LoginBean loginBean) {
         String username = loginBean.getUsername();
         String pwd = loginBean.getPwd();
 
@@ -33,6 +31,7 @@ public class LoginController {
             header.setId(user.getId());
             header.setName(user.getUsername());
             JWTPayloadImpl payload = new JWTPayloadImpl();
+            jwtService.clearToken(header);
             return new ResponseEntity<String>(jwtService.generateToken(header, payload), HttpStatus.OK);
         } else {
             return new ResponseEntity<String>("Failed to authenticate", HttpStatus.UNAUTHORIZED);

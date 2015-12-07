@@ -88,5 +88,9 @@ public class JWTService {
         String headerStr = split[0];
         return JSONUtil.parseObject(Base64.decodeBase64(headerStr), JWTHeader.class);
     }
+
+    public void clearToken(JWTHeader header) {
+        secret.clearAPISecret(header.getId());
+    }
     
 }
