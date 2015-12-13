@@ -6,12 +6,21 @@
 
     <bean id="apiSecret" class="com.proper.enterprise.platform.auth.jwt.service.APISecret" />
 
+    <bean id="authzService" class="com.proper.enterprise.platform.auth.jwt.authz.AuthzService">
+        <property name="ignorePatterns">
+            <list>
+                <value>POST:/auth/login</value>
+            </list>
+        </property>
+    </bean>
+
     <bean id="jwtService" class="com.proper.enterprise.platform.auth.jwt.service.JWTService">
         <property name="secret" ref="apiSecret" />
     </bean>
 
     <bean id="jwtVerifyFilter" class="com.proper.enterprise.platform.auth.jwt.filter.JWTVerifyFilter">
         <property name="jwtService" ref="jwtService" />
+        <property name="authzService" ref="authzService" />
     </bean>
 
 </beans>
