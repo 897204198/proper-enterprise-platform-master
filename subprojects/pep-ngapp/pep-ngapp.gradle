@@ -1,7 +1,0 @@
-task ngappPy2(type: Exec) {
-    // python2 version
-    commandLine 'python', '-m', 'SimpleHTTPServer'
-
-    // python3 version
-    //commandLine 'py', '-m', 'http.server'
-}
