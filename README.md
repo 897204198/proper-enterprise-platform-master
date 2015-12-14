@@ -22,11 +22,9 @@ Proper Enterprise Platform
 |:--|:--|
 |JDK|oraclejdk7|
 |Servlet|3.0.1|
-|JSP|2.2|
-|JSTL|1.2|
 |Tomcat|[7.0.63](http://tomcat.apache.org/download-70.cgi)|
 |Spring|[Spring Framework 4.1.7.RELEASE](https://github.com/spring-projects/spring-framework/tree/v4.1.7.RELEASE)|
-|Security|[Spring Security 4.0.1.RELEASE](https://github.com/spring-projects/spring-security/tree/4.0.1.RELEASE)|
+|Workflow Platform|[Activiti 5.19.0](https://github.com/Activiti/Activiti/tree/activiti-5.19.0)<br/>[Activiti Web Designer](https://github.com/AlphaHinex/Activiti/tree/web-designer)|
 |Logging|[SLF4J 1.7.12](https://github.com/qos-ch/slf4j/tree/v_1.7.12)<br/>[Logback 1.1.3](https://github.com/qos-ch/logback)|
 |Cache|[ehcache](http://ehcache.org/)-core 2.6.9|
 |Validator|Hibernate Validator 5.1.3.Final|
@@ -36,13 +34,12 @@ Proper Enterprise Platform
 |JPA Provider|[Hibernate EntityManager 4.3.10.Final](https://github.com/hibernate/hibernate-orm/tree/4.3.10.Final)|
 |Data Access Layer|[Spring Data JPA 1.8.2.RELEASE](https://github.com/spring-projects/spring-data-jpa/tree/1.8.2.RELEASE)|
 |任务调度|quartz 2.2.1|
-|Unit Test|[junit 4.12](https://github.com/junit-team/junit/tree/r4.12)<br />[spock 0.7](https://github.com/spockframework/spock/tree/spock-0.7-groovy-2.0)|
+|Unit Test|[junit 4.12](https://github.com/junit-team/junit/tree/r4.12)<br/>[spock 0.7](https://github.com/spockframework/spock/tree/spock-0.7-groovy-2.0)|
 |通用工具|guava 18.0|
-|编码及加密|[common-codec 1.10](https://github.com/apache/commons-codec/tree/1.10)<br />bounce-casle|
+|编码及加密|[common-codec 1.10](https://github.com/apache/commons-codec/tree/1.10)<br/>bounce-casle|
 |xml|dom4j|
 |JSON|[jackson-databind 2.3.6](https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.6.3)|
 |消息队列||
-|前端框架||
 |Build System|[Gradle 2.8](https://github.com/gradle/gradle)|
 |持续集成||
 |license||
@@ -59,7 +56,6 @@ Proper Enterprise Platform
 
         > 可参考 `./gradlew init-pep-[module]` 自动生成的配置文件
         
-* 页面：`pep-webapp/src/main/webapp/WEB-INF/views/[module]/../*.jsp`
 * Controller：`com.proper.enterprise.platform.webapp.[module]..controller.*Controller`，Controller 都放置在 `pep-webapp` 模块中
 * 服务接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
 * 服务实现：`com.proper.enterprise.platform.[module]..service.impl.*ServiceImpl`

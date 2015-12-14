@@ -3,7 +3,7 @@ ext {
     libraries = [:]
 }
 
-versions.activiti = '5.18.0'
+versions.activiti = '5.19.0'
 
 versions.jcaptcha = '1.0'
 
