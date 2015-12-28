@@ -12,8 +12,8 @@ apply plugin: 'war'
 
 ext {
     tomcatContextPath = 'pep'
-    tomcatHttpPort = 8080
-    tomcatStopPort = 8081
+    tomcatHttpPort = 9090 
+    tomcatStopPort = 9091
     tomcatStopKey = 'stopKey'
 }
 
