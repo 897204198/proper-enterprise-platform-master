@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(
-    name = "pep_auth_resource",
+    name = "pep_auth_resources",
     uniqueConstraints = @UniqueConstraint(columnNames = {"url", "method"})
 )
 @CacheEntity
