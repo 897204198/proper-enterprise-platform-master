@@ -34,7 +34,8 @@ dependencies {
     testCompile libraries.ehcache,
                 project(':pep-test')
 
-    runtime libraries.h2,
+    runtime libraries.commons_fileupload,
+            libraries.h2,
             libraries.hibernate_ehcache,
             libraries.hibernate_hikaricp,
             libraries.jackson_databind,
