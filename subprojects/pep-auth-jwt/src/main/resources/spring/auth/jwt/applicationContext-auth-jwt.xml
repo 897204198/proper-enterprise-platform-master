@@ -10,6 +10,7 @@
         <property name="ignorePatterns">
             <list>
                 <value>POST:/auth/login</value>
+                <value>*:/workflow/**</value>
             </list>
         </property>
     </bean>

@@ -12,9 +12,15 @@
 
     <import resource="classpath*:spring/workflow/workflow-*.xml" />
 
+    <!-- Activiti use jackson to handle json resources -->
     <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+
+    <!-- These two beans are necessary for using RESTFul API -->
     <bean id="restResponseFactory" class="org.activiti.rest.service.api.RestResponseFactory" />
     <bean id="contentTypeResolver" class="org.activiti.rest.common.application.DefaultContentTypeResolver" />
+
+    <!-- This resolver allows PUT multipart form data -->
+    <bean id="multipartResolver" class="org.activiti.rest.service.api.PutAwareCommonsMultipartResolver" />
 
     <context:component-scan base-package="org.activiti.rest" />
     

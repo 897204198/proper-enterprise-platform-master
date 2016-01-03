@@ -21,6 +21,11 @@ VALUES
 INSERT INTO pep_auth_role_resources
 (roles, resources)
 VALUES
+('79aaea92-7c8c-4b63-9fd7-03ed1adf26a5', '20151231135516');
+
+INSERT INTO pep_auth_role_resources
+(roles, resources)
+VALUES
 ('79aaea92-7c8c-4b63-9fd7-03ed1adf26a5', '20151229164416');
 
 INSERT INTO pep_auth_role_resources
