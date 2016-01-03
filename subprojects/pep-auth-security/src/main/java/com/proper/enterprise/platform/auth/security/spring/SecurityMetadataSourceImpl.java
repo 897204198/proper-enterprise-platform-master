@@ -16,7 +16,7 @@ public class SecurityMetadataSourceImpl implements FilterInvocationSecurityMetad
 
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
-        Collection<ConfigAttribute> configAttributes = new ArrayList<>();
+        Collection<ConfigAttribute> configAttributes = new ArrayList<ConfigAttribute>();
         ConfigAttribute configAttribute = new SecurityConfig("Config attribute is not used in pep");
         configAttributes.add(configAttribute);
         return configAttributes;

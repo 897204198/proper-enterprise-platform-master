@@ -44,7 +44,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     private Collection<Resource> getResources(UserEntity userEntity) {
-        Collection<Resource> resources = new HashSet<>();
+        Collection<Resource> resources = new HashSet<Resource>();
         if (userEntity != null) {
             for (ResourceEntity resEntity : resRepo.findByRoles(userEntity.getRoles())) {
                 resources.add(new ResourceDTO(resEntity));

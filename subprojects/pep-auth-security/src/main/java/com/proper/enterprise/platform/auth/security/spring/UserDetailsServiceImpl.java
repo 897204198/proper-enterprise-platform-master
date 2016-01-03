@@ -37,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
     
     private Collection<GrantedAuthority> obtainGrantedAuthorities(String userId) {
-        Set<GrantedAuthority> authSet = new HashSet<>();
+        Set<GrantedAuthority> authSet = new HashSet<GrantedAuthority>();
         
         Collection<Resource> resources = userService.getUserResources(userId);
         for (Resource res : resources) {
