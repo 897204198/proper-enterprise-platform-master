@@ -3,7 +3,8 @@ dependencies {
             libraries.activiti_explorer,
             libraries.activiti_spring,
             // use modeler in compile block only when need to insert demo data
-            libraries.activiti_modeler
+            //libraries.activiti_modeler,
+            libraries.servlet_api
 
     runtime libraries.activiti_diagram_rest,
             libraries.activiti_modeler,
