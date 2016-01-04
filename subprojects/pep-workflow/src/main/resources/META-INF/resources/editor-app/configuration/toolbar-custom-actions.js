@@ -18,8 +18,10 @@
  */
 'use strict';
 
-var ACTIVITI = ACTIVITI || {};
-
-ACTIVITI.CONFIG = {
-  'contextRoot' : '/pep/workflow/service',
+// Change close editor target location
+var KISBPM = KISBPM || {};
+KISBPM.TOOLBAR = KISBPM.TOOLBAR || {};
+KISBPM.TOOLBAR.ACTIONS = KISBPM.TOOLBAR.ACTIONS || {};
+KISBPM.TOOLBAR.ACTIONS.closeEditor = function() {
+  window.location.href = "../../#/workflow/designer";
 };

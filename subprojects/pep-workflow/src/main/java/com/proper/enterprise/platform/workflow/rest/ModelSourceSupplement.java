@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.workflow.rest;
 
+import com.proper.enterprise.platform.core.PEPConstants;
 import org.activiti.engine.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class ModelSourceSupplement {
 
     @RequestMapping(value="/repository/models/{modelId}/source", method = RequestMethod.POST)
     public void test(@PathVariable String modelId, HttpServletResponse response) {
-        repositoryService.addModelEditorSource(modelId, INIT_EDITOR_SOURCE.getBytes());
+        repositoryService.addModelEditorSource(modelId, INIT_EDITOR_SOURCE.getBytes(PEPConstants.DEFAULT_CHARSET));
         response.setStatus(HttpStatus.OK.value());
     }
 
