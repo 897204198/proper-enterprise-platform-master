@@ -22,9 +22,9 @@ class InsertDataWorker {
 
     public def getAfterDMLs() {
         [
-            "DELETE FROM pep_auth_role_resources WHERE roles LIKE 'IDW-%';",
+            "DELETE FROM pep_auth_roles_resources WHERE roles LIKE 'IDW-%';",
             "DELETE FROM pep_auth_resources WHERE id LIKE 'IDW-%';",
-            "DELETE FROM pep_auth_user_roles WHERE users LIKE 'IDW-%';",
+            "DELETE FROM pep_auth_users_roles WHERE users LIKE 'IDW-%';",
             "DELETE FROM pep_auth_roles WHERE id LIKE 'IDW-%';",
             "DELETE FROM pep_auth_users WHERE id LIKE 'IDW-%';"
         ]
@@ -58,7 +58,7 @@ VALUES
             def users = "IDW-$username".toString()
             def roles = "IDW-$role".toString()
             sqls << """
-INSERT INTO pep_auth_user_roles
+INSERT INTO pep_auth_users_roles
 (users, roles)
 VALUES
 ($users, $roles);"""
@@ -79,7 +79,7 @@ VALUES
         ["$roleAcode": (1..6), "$roleBcode": (5..10), "$roleCcode": (1..10)].each { role, range ->
             range.each { idx ->
                 sqls << """
-INSERT INTO pep_auth_role_resources
+INSERT INTO pep_auth_roles_resources
 (roles, resources)
 VALUES
 (${('IDW-' + role).toString()}, ${'IDW-res' + idx});"""
