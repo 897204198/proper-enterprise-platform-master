@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-@Table(name = "pep_auth_role")
+@Table(name = "pep_auth_roles")
 @CacheEntity
 public class RoleEntity extends BaseEntity {
 

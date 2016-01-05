@@ -19,13 +19,13 @@ class ResourceEntityIntegTest extends AbstractIntegTest {
     @Before
     public void setUp() {
         push("""
-INSERT INTO pep_auth_resource
+INSERT INTO pep_auth_resources
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name, parent, moc, url, method, sequence_number)
 VALUES
 ('test1', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', 'test1', '默认根资源', null, 'SYSTEM', '/test1', 'GET', 0);
 """)
         push("""
-INSERT INTO pep_auth_resource
+INSERT INTO pep_auth_resources
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name, parent, moc, url, method, sequence_number)
 VALUES
 ('test2', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', 'test2', '首页', 'test1', 'SUBSYSTEM', '/test2', 'GET', 1);
@@ -35,8 +35,8 @@ VALUES
 
     @After
     public void tearDown() {
-        push("DELETE FROM pep_auth_resource WHERE id='test2'")
-        push("DELETE FROM pep_auth_resource WHERE id = 'test1'")
+        push("DELETE FROM pep_auth_resources WHERE id='test2'")
+        push("DELETE FROM pep_auth_resources WHERE id = 'test1'")
         executeSqls()
     }
 

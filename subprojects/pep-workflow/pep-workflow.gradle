@@ -15,4 +15,6 @@ dependencies {
     runtime fileTree(dir:'libs', include: "activiti-web-designer-${versions.activiti}.jar")
 
     testCompile project(':pep-test')
+
+    testRuntime libraries.commons_fileupload
 }

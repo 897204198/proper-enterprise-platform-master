@@ -23,17 +23,17 @@ class InsertDataWorker {
     public def getAfterDMLs() {
         [
             "DELETE FROM pep_auth_role_resources WHERE roles LIKE 'IDW-%';",
-            "DELETE FROM pep_auth_resource WHERE id LIKE 'IDW-%';",
+            "DELETE FROM pep_auth_resources WHERE id LIKE 'IDW-%';",
             "DELETE FROM pep_auth_user_roles WHERE users LIKE 'IDW-%';",
-            "DELETE FROM pep_auth_role WHERE id LIKE 'IDW-%';",
-            "DELETE FROM pep_auth_user WHERE id LIKE 'IDW-%';"
+            "DELETE FROM pep_auth_roles WHERE id LIKE 'IDW-%';",
+            "DELETE FROM pep_auth_users WHERE id LIKE 'IDW-%';"
         ]
     }
 
     private void createUser() {
         [user1name, user2name].each { username ->
             sqls << """
-INSERT INTO pep_auth_user
+INSERT INTO pep_auth_users
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, login_name, password)
 VALUES
 (${'IDW-' + username}, 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', $username, $userpwd);"""
@@ -43,7 +43,7 @@ VALUES
     private void createRoles() {
         [roleAcode, roleBcode, roleCcode].each { role ->
             sqls << """
-INSERT INTO pep_auth_role
+INSERT INTO pep_auth_roles
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name)
 VALUES
 (${'IDW-' + role}, 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', $role, $role);"""
@@ -68,7 +68,7 @@ VALUES
     private void createResources() {
         (1..10).each { idx ->
             sqls << """
-INSERT INTO pep_auth_resource
+INSERT INTO pep_auth_resources
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, url, method, sequence_number)
 VALUES
 (${'IDW-res' + idx}, 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', ${'/auth/res' + idx}, 'GET', $idx);"""

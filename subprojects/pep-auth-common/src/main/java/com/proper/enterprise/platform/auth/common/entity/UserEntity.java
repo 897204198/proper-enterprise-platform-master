@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import java.util.Collection;
 
 @Entity
-@Table(name = "pep_auth_user")
+@Table(name = "pep_auth_users")
 @CacheEntity
 public class UserEntity extends BaseEntity {
 
