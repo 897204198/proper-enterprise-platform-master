@@ -5,9 +5,9 @@ dependencies {
             libraries.spring_security_web,
             project(':pep-auth-common')
 
-    testCompile libraries.ehcache,
-            libraries.spring_security_test,
-            project(':pep-test')
+    runtime project(':pep-aspect')
 
-    testRuntime project(':pep-aspect')
+    testCompile libraries.ehcache,
+                libraries.spring_security_test,
+                project(':pep-test')
 }
