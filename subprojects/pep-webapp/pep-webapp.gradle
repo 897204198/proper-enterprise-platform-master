@@ -19,6 +19,7 @@ gretty {
     servletContainer = 'tomcat7'
     port = 9090
     contextPath = 'pep'
+    debugSuspend = false
 }
 
 dependencies {
