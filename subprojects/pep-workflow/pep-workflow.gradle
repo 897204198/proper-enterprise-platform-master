@@ -1,6 +1,7 @@
 dependencies {
     compile libraries.activiti_engine,
             libraries.activiti_explorer,
+            libraries.activiti_json_converter,
             libraries.activiti_spring,
             // use modeler in compile block only when need to insert demo data
             //libraries.activiti_modeler,

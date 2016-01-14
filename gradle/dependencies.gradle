@@ -14,6 +14,7 @@ libraries.activiti_explorer = dependencies.module("org.activiti:activiti-explore
     exclude group: 'org.vaadin.addons', module: 'dcharts-widget'
     exclude group: 'org.slf4j', module: 'slf4j-log4j12'
 }
+libraries.activiti_json_converter = "org.activiti:activiti-json-converter:${versions.activiti}"
 libraries.activiti_modeler = "org.activiti:activiti-modeler:${versions.activiti}"
 libraries.activiti_rest = dependencies.module("org.activiti:activiti-rest:${versions.activiti}") {
     exclude group: 'org.slf4j', module: 'slf4j-log4j12'
