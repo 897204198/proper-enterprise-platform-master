@@ -7,7 +7,7 @@ Proper Enterprise Platform
 主要设计目标
 ----------
 
-* 以 [Spring Framework](http://projects.spring.io/spring-framework/) 为基础，采用当前主流且活跃的开源技术和框架，以简化开发步骤、提升开发效率和质量为目标，稳定且可持续发展为愿景，对平台进行架构
+* 以 [Spring Framework](http://projects.spring.io/spring-framework/) 为基础，采用当前主流且活跃的开源技术和框架，以简化开发步骤、提升开发效率和质量为目标，拥抱并响应变化为宗旨，稳定坚固可持续发展为愿景，对平台进行架构
 * 平台功能按模块进行划分及构建，除核心功能模块和公共模块外，各模块尽量保持独立，且可按需组合
 * 部署方式可集中可分布。集中式部署时为一个 web 应用，分布式部署时为多个 web 应用。分布式部署时通过反向代理保持部署方式对用户的透明，系统内部无需单点登录
 * 模块间需要依赖时，面向接口和服务编程，以便模块按不同数据来源提供不同实现
@@ -147,6 +147,29 @@ Proper Enterprise Platform
 ### IntelliJ IDEA
 
     $ ./gradlew cleanIdea idea
+
+> 在 IDEA 中需要配置为 gradle 项目才可部署至 tomcat 中开发
+
+
+内嵌 servlet 容器开发及调试
+------------------------
+
+平台使用 [gretty](https://github.com/akhikhl/gretty) gradle 插件以支持在内嵌的容器中运行及调试。
+
+默认使用 tomcat7.x，端口 `9090`，上下文根 `pep`。
+
+### 直接运行
+
+    $ ./gradlew appRun
+
+### 远程调试
+
+    $ ./gradlew appRunDebug
+
+IDE 开启远程调试方式可参见：
+
+* [IntelliJ Remote Run/Debug Configuration](http://www.jetbrains.com/idea/webhelp/run-debug-configuration-remote.html)
+* [Eclipse Remote Debugging](http://help.eclipse.org/indigo/index.jsp?topic=%2Forg.eclipse.jdt.doc.user%2Fconcepts%2Fcremdbug.htm)
 
 
 测试
