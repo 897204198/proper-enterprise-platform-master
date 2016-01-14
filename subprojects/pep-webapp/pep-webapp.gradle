@@ -3,28 +3,25 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath libraries.tomcat_plugin
+        classpath 'org.akhikhl.gretty:gretty:+'
     }
 }
-apply plugin: 'com.bmuschko.tomcat'
+
+repositories {
+    jcenter()
+}
+
+apply plugin: 'org.akhikhl.gretty'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'war'
 
-ext {
-    tomcatContextPath = 'pep'
-    tomcatHttpPort = 9090 
-    tomcatStopPort = 9091
-    tomcatStopKey = 'stopKey'
+gretty {
+    servletContainer = 'tomcat7'
+    port = 9090
+    contextPath = 'pep'
 }
 
-tomcat.httpPort = tomcatHttpPort
-tomcatRun.contextPath = tomcatContextPath
-
 dependencies {
-    // tomcat plugin dependencies
-    tomcat libraries.tomcat
-    providedRuntime libraries.servlet_api
-
 //    compile project(':pep-auth-security')
     compile project(':pep-auth-jwt')
 
@@ -44,22 +41,3 @@ dependencies {
             libraries.spring_orm,
             libraries.spring_webmvc
 }
-
-task integTomcatRun(type: com.bmuschko.gradle.tomcat.tasks.TomcatRun) {
-    contextPath = tomcatContextPath
-    stopPort = tomcatStopPort
-    stopKey = tomcatStopKey
-    daemon = true
-}
-
-task integTomcatStop(type: com.bmuschko.gradle.tomcat.tasks.TomcatStop) {
-    stopPort = tomcatStopPort
-    stopKey = tomcatStopKey
-}
-
-//task integTest(type: Test) {
-//    include '**/*IntegTest.*'
-//    //dependsOn integTomcatRun
-//    //finalizedBy integTomcatStop
-//}
-

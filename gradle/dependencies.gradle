@@ -154,14 +154,4 @@ libraries.spring_security_config = "org.springframework.security:spring-security
 libraries.spring_security_test = "org.springframework.security:spring-security-test:${versions.spring_security}"
 libraries.spring_security_web = "org.springframework.security:spring-security-web:${versions.spring_security}"
 
-versions.tomcat = '7.0.63'
-libraries.tomcat = [
-    "org.apache.tomcat.embed:tomcat-embed-core:${versions.tomcat}",
-    "org.apache.tomcat.embed:tomcat-embed-logging-juli:${versions.tomcat}",
-    "org.apache.tomcat.embed:tomcat-embed-jasper:${versions.tomcat}",
-    'commons-logging:commons-logging:1.1.1'
-]
-
-libraries.tomcat_plugin = 'com.bmuschko:gradle-tomcat-plugin:2.2.2'
-
 //libraries.urlrewritefilter = 'org.tuckey:urlrewritefilter:4.0.3'
