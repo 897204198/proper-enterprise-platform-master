@@ -7,6 +7,8 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,20 +21,20 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class ModelSupplement {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelSupplement.class);
+
     @Autowired
     ObjectMapper objectMapper;
 
     @Autowired
     RepositoryService repositoryService;
 
-    // TODO
     @RequestMapping(value="/repository/models/{modelId}/deploy", method = RequestMethod.POST)
     public void deployModel(@PathVariable String modelId, HttpServletResponse response) {
         Model model = repositoryService.getModel(modelId);
         byte[] es = repositoryService.getModelEditorSource(modelId);
-        ObjectNode node;
         try {
-            node = (ObjectNode) objectMapper.readTree(es);
+            ObjectNode node = (ObjectNode) objectMapper.readTree(es);
             BpmnModel bpmnModel = new BpmnJsonConverter().convertToBpmnModel(node);
             byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(bpmnModel);
 
@@ -41,12 +43,12 @@ public class ModelSupplement {
                     .name(model.getName())
                     .addString(processName, new String(bpmnBytes))
                     .deploy();
+
+            response.setStatus(HttpStatus.OK.value());
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            es = null;
+            LOGGER.error("Deploy model {} error: ", model.getName(), e);
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        response.setStatus(HttpStatus.OK.value());
     }
 
 }

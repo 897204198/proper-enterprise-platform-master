@@ -160,11 +160,11 @@ Proper Enterprise Platform
 
 ### 直接运行
 
-    $ ./gradlew appRun
+    $ ./gradlew run
 
 ### 远程调试
 
-    $ ./gradlew appRunDebug
+    $ ./gradlew debug
 
 IDE 开启远程调试方式可参见：
 
