@@ -13,7 +13,7 @@ dependencies {
             libraries.activiti_rest
 //            libraries.activiti_simple_workflow
 
-    runtime fileTree(dir:'libs', include: "activiti-web-designer-${versions.activiti}.jar")
+    runtime files("libs/activiti-web-designer-${versions.activiti}.jar")
 
     testCompile project(':pep-test')
 

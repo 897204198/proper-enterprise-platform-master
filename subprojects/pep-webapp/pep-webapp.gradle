@@ -27,12 +27,8 @@ dependencies {
     compile project(':pep-auth-jwt')
 
     runtime project(':pep-aspect'),
-            project(':pep-workflow')
-    
-    testCompile libraries.ehcache,
-                project(':pep-test')
-
-    runtime libraries.commons_fileupload,
+            project(':pep-workflow'),
+            libraries.commons_fileupload,
             libraries.h2,
             libraries.hibernate_ehcache,
             libraries.hibernate_hikaricp,
@@ -41,4 +37,7 @@ dependencies {
             libraries.spring_context_support,
             libraries.spring_orm,
             libraries.spring_webmvc
+
+    testCompile libraries.ehcache,
+                project(':pep-test')
 }
