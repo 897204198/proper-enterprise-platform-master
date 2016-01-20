@@ -12,7 +12,7 @@ public class UserServiceImpl extends AbstractUserServiceImpl {
     public User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : principal.toString();
-        return getUserByUsername(username);
+        return getUser(username);
     }
 
 }

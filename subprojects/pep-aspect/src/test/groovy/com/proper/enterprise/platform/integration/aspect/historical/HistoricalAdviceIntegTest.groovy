@@ -20,7 +20,7 @@ class HistoricalAdviceIntegTest extends AbstractIntegTest {
         def user = new UserDTO('hinex', 'hinex_password')
         service.addUser(user)
 
-        def result = service.getUserByUsername('hinex')
+        def result = service.getUser('hinex')
         assert result.getCreateUserId() == MOCK_USER_ID
         assert result.getLastModifyUserId() == MOCK_USER_ID
     }
@@ -32,8 +32,8 @@ class HistoricalAdviceIntegTest extends AbstractIntegTest {
         def user2 = new UserDTO('hinex2', 'hinex_password2')
         service.addUser(user1, user2)
 
-        assert service.getUserByUsername('hinex1').getCreateUserId() == MOCK_USER_ID
-        assert service.getUserByUsername('hinex2').getLastModifyUserId() == MOCK_USER_ID
+        assert service.getUser('hinex1').getCreateUserId() == MOCK_USER_ID
+        assert service.getUser('hinex2').getLastModifyUserId() == MOCK_USER_ID
     }
 
 }

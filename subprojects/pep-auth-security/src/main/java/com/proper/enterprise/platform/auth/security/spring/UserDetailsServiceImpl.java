@@ -27,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         LOGGER.info("Username is {}", username);
         
-        User user = userService.getUserByUsername(username);
+        User user = userService.getUser(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
@@ -39,7 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private Collection<GrantedAuthority> obtainGrantedAuthorities(String userId) {
         Set<GrantedAuthority> authSet = new HashSet<GrantedAuthority>();
         
-        Collection<Resource> resources = userService.getUserResources(userId);
+        Collection<Resource> resources = userService.getResourcesById(userId);
         for (Resource res : resources) {
             authSet.add(new SimpleGrantedAuthority(res.getMethod().name() + ":" + res.getUrl()));
         }

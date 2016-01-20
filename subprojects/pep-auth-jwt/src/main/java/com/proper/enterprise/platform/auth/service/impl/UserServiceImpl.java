@@ -34,7 +34,7 @@ public class UserServiceImpl extends AbstractUserServiceImpl {
             return null;
         }
         String username = header.getName();
-        return getUserByUsername(username);
+        return getUser(username);
     }
 
 }

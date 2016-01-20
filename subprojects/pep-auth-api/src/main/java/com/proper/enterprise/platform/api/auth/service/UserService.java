@@ -7,16 +7,12 @@ import com.proper.enterprise.platform.core.enums.ResourceType;
 import java.util.Collection;
 
 public interface UserService {
-    
-    User getUserByUsername(String username);
 
-    Collection<Resource> getUserResources(String userId);
-
-    Collection<Resource> getUserResourcesByUsername(String username);
+    void addUser(User... users);
 
     User getCurrentUser();
 
-    void addUser(User... users);
+    User getUser(String username);
 
     /**
      * Get all authorized resources of current user
@@ -31,5 +27,9 @@ public interface UserService {
      * @return
      */
     Collection<Resource> getResources(ResourceType resourceType);
+
+    Collection<Resource> getResourcesById(String userId);
+
+    Collection<Resource> getResources(String username);
 
 }

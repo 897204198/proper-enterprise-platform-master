@@ -16,7 +16,7 @@ public abstract class AbstractResourceServiceImpl implements ResourceService {
     @Override
     public Set<Resource> getAllResourcesOfCurrentUser() {
         User user = userService.getCurrentUser();
-        return (Set<Resource>)userService.getUserResources(user.getId());
+        return (Set<Resource>)userService.getResourcesById(user.getId());
     }
 
 }
