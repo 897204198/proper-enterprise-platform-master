@@ -38,4 +38,14 @@ INSERT INTO pep_auth_roles_resources
 VALUES
 ('79aaea92-7c8c-4b63-9fd7-03ed1adf26a5', '20151229164730');
 
+INSERT INTO pep_auth_roles_resources
+(roles, resources)
+VALUES
+('79aaea92-7c8c-4b63-9fd7-03ed1adf26a5', '20160120164030');
+
+INSERT INTO pep_auth_roles_resources
+(roles, resources)
+VALUES
+('79aaea92-7c8c-4b63-9fd7-03ed1adf26a5', '20160120164230');
+
 COMMIT;
