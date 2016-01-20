@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.auth.common.entity;
 
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
-import com.proper.enterprise.platform.core.enums.MOC;
+import com.proper.enterprise.platform.core.enums.ResourceType;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.*;
@@ -38,7 +38,7 @@ public class ResourceEntity extends BaseEntity {
      * 类型
      */
     @Enumerated(EnumType.STRING)
-    private MOC moc;
+    private ResourceType resourceType;
     
     /**
      * 权限对应的Url地址
@@ -119,12 +119,12 @@ public class ResourceEntity extends BaseEntity {
         this.parent = parent;
     }
 
-    public MOC getMoc() {
-        return moc;
+    public ResourceType getResourceType() {
+        return resourceType;
     }
 
-    public void setMoc(MOC moc) {
-        this.moc = moc;
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
     }
 
     public RequestMethod getMethod() {

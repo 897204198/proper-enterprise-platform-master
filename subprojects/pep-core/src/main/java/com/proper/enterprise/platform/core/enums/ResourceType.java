@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.core.enums;
 
-public enum MOC {
+public enum ResourceType {
 
     MENU,
 
