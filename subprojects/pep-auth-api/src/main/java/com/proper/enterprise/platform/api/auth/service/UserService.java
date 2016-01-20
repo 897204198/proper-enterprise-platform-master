@@ -6,6 +6,11 @@ import com.proper.enterprise.platform.core.enums.ResourceType;
 
 import java.util.Collection;
 
+/**
+ * 用户服务接口
+ * 用户名（username）作为系统内可见的用户唯一标识
+ * 用户ID（userId）同样为用户唯一标识，但系统内不可见
+ */
 public interface UserService {
 
     void addUser(User... users);
@@ -15,16 +20,17 @@ public interface UserService {
     User getUser(String username);
 
     /**
-     * Get all authorized resources of current user
+     * 获得当前登录用户权限范围内资源集合
      *
-     * @return resources collection
+     * @return 资源集合
      */
     Collection<Resource> getResources();
 
     /**
-     * Get all authorized resources of current user by ResourceType
-     * @param resourceType
-     * @return
+     * 根据资源类型获得当前登录用户权限范围内资源集合
+     *
+     * @param resourceType 资源类型
+     * @return 资源集合
      */
     Collection<Resource> getResources(ResourceType resourceType);
 
