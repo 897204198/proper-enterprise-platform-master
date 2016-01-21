@@ -12,7 +12,7 @@ public class SearchConditionBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchConditionBuilder.class);
 
-    public static <T> Specification<T> build(final SearchCondition... conditions) {
+    public static <T> Specification<T> build(Class<T> clz, final SearchCondition... conditions) {
         return new Specification<T>() {
             @Override
             public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {

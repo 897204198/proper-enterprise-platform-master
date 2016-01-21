@@ -31,7 +31,7 @@ public interface UserService {
      *
      * @return 资源集合
      */
-    Collection<Resource> getResources();
+    Collection<? extends Resource> getResources();
 
     /**
      * 根据资源类型获得当前登录用户权限范围内资源集合
@@ -39,10 +39,10 @@ public interface UserService {
      * @param resourceType 资源类型
      * @return 资源集合
      */
-    Collection<Resource> getResources(ResourceType resourceType);
+    Collection<? extends Resource> getResources(ResourceType resourceType);
 
-    Collection<Resource> getResourcesById(String userId);
+    Collection<? extends Resource> getResourcesById(String userId);
 
-    Collection<Resource> getResources(String username);
+    Collection<? extends Resource> getResources(String username);
 
 }

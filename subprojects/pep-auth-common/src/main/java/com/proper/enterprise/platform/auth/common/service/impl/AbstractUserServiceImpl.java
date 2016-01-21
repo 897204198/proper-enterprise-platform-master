@@ -60,39 +60,35 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<Resource> getResources() {
-        User user = getCurrentUser();
-        return getResources(user.getId());
+    public Collection<? extends Resource> getResources() {
+        return getResources(getCurrentUser().getUsername());
     }
 
     @Override
-    public Collection<Resource> getResources(ResourceType resourceType) {
-        UserEntity userEntity = userRepo.findOne(getCurrentUser().getId());
-        SearchCondition scRole = new SearchCondition("roles", SearchCondition.Operator.IN, userEntity.getRoles());
-        SearchCondition scType = new SearchCondition("resourceType", SearchCondition.Operator.EQ, resourceType);
-        return resRepo.findAll(SearchConditionBuilder.build(scRole, scType));
-    }
-
-    @Override
-    public Collection<Resource> getResourcesById(String userId) {
-        UserEntity userEntity = userRepo.findOne(userId);
+    public Collection<? extends Resource> getResources(String username) {
+        UserEntity userEntity = userRepo.findByUsername(username);
         return getResources(userEntity);
     }
 
-    private  Collection<Resource> getResources(UserEntity userEntity) {
-        Collection<Resource> resources = new ArrayList<Resource>();
+    private  Collection<? extends Resource> getResources(UserEntity userEntity) {
         if (userEntity != null) {
-            Collection<ResourceEntity> results = resRepo.findAll(userEntity.getRoles());
-            for (ResourceEntity entity : results) {
-                resources.add(entity);
-            }
+            return resRepo.findAll(userEntity.getRoles());
+        } else {
+            return new ArrayList<Resource>();
         }
-        return resources;
     }
 
     @Override
-    public Collection<Resource> getResources(String username) {
-        UserEntity userEntity = userRepo.findByUsername(username);
+    public Collection<? extends Resource> getResources(ResourceType resourceType) {
+        UserEntity userEntity = userRepo.findOne(getCurrentUser().getId());
+        SearchCondition scRole = new SearchCondition("roles", SearchCondition.Operator.IN, userEntity.getRoles());
+        SearchCondition scType = new SearchCondition("resourceType", SearchCondition.Operator.EQ, resourceType);
+        return resRepo.findAll(SearchConditionBuilder.build(ResourceEntity.class, scRole, scType));
+    }
+
+    @Override
+    public Collection<? extends Resource> getResourcesById(String userId) {
+        UserEntity userEntity = userRepo.findOne(userId);
         return getResources(userEntity);
     }
 
