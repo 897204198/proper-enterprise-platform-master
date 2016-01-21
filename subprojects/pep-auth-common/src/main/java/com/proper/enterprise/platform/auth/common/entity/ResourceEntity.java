@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
+import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.enums.ResourceType;
@@ -14,7 +15,7 @@ import java.util.List;
     uniqueConstraints = @UniqueConstraint(columnNames = {"url", "method"})
 )
 @CacheEntity
-public class ResourceEntity extends BaseEntity {
+public class ResourceEntity extends BaseEntity implements Resource {
 
     private static final long serialVersionUID = 5499576398861944356L;
     

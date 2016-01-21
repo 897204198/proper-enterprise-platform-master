@@ -4,8 +4,6 @@ import com.google.common.collect.Lists;
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.auth.common.dto.ResourceDTO;
-import com.proper.enterprise.platform.auth.common.dto.UserDTO;
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
@@ -17,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -58,7 +56,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
         if (entity == null) {
             LOGGER.debug("User with username '{}' is not exist!", username);
         }
-        return new UserDTO(entity);
+        return entity;
     }
 
     @Override
@@ -81,11 +79,12 @@ public abstract class AbstractUserServiceImpl implements UserService {
         return getResources(userEntity);
     }
 
-    private Collection<Resource> getResources(UserEntity userEntity) {
-        Collection<Resource> resources = new HashSet<Resource>();
+    private  Collection<Resource> getResources(UserEntity userEntity) {
+        Collection<Resource> resources = new ArrayList<Resource>();
         if (userEntity != null) {
-            for (ResourceEntity resEntity : resRepo.findAll(userEntity.getRoles())) {
-                resources.add(new ResourceDTO(resEntity));
+            Collection<ResourceEntity> results = resRepo.findAll(userEntity.getRoles());
+            for (ResourceEntity entity : results) {
+                resources.add(entity);
             }
         }
         return resources;

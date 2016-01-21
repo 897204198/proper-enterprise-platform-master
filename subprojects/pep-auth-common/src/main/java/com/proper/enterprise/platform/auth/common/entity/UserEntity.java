@@ -10,7 +10,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.Collection;
 
-// TODO username 改成 username，去掉 name 属性
 @Entity
 @Table(name = "pep_auth_users")
 @CacheEntity
@@ -26,7 +25,7 @@ public class UserEntity extends BaseEntity implements User {
     }
     
     /**
-     * 登录名，唯一
+     * 用户名，唯一
      */
     @Column(unique = true, nullable = false)
     private String username;
@@ -36,11 +35,6 @@ public class UserEntity extends BaseEntity implements User {
      */
     @Column(nullable = false)
     private String password;
-
-    /**
-     * 姓名
-     */
-    private String name;
 
     /**
      * 邮箱，用于找回密码
@@ -57,8 +51,7 @@ public class UserEntity extends BaseEntity implements User {
     
     @Override
     public String toString() {
-        return "User [id=" + id + ", username=" + username + ", name=" + name
-                + ", extendProperties=" + extendProperties + "]";
+        return "User [id=" + id + ", username=" + username + ", extendProperties=" + extendProperties + "]";
     }
     
     public String getUsername() {
@@ -75,14 +68,6 @@ public class UserEntity extends BaseEntity implements User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmail() {
