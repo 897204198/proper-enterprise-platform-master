@@ -54,7 +54,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public User getUser(String username) {
-        UserEntity entity = userRepo.findByLoginName(username);
+        UserEntity entity = userRepo.findByUsername(username);
         if (entity == null) {
             LOGGER.debug("User with username '{}' is not exist!", username);
         }
@@ -93,7 +93,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public Collection<Resource> getResources(String username) {
-        UserEntity userEntity = userRepo.findByLoginName(username);
+        UserEntity userEntity = userRepo.findByUsername(username);
         return getResources(userEntity);
     }
 

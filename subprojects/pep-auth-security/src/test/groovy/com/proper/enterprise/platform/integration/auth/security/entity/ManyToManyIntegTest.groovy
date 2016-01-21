@@ -46,7 +46,7 @@ class ManyToManyIntegTest extends AbstractIntegTest {
 
     @Test
     public void getRoleFromUser() {
-        UserEntity user = userRepo.findByLoginName(worker.user1name)
+        UserEntity user = userRepo.findByUsername(worker.user1name)
         assert user.roles.size() == 2
         user.roles.each {
             assert it.users.contains(user)
@@ -61,7 +61,7 @@ class ManyToManyIntegTest extends AbstractIntegTest {
 
     @Test
     public void removeUser1() {
-        UserEntity user = userRepo.findByLoginName(worker.user1name)
+        UserEntity user = userRepo.findByUsername(worker.user1name)
         userRepo.delete(user.id)
         assert userRepo.findOne(user.id) == null
         userRepo.flush()
@@ -89,7 +89,7 @@ class ManyToManyIntegTest extends AbstractIntegTest {
         roleRepo.delete(roleA.id)
         assert roleRepo.findByCode(worker.roleAcode) == null
 
-        UserEntity user = userRepo.findByLoginName(worker.user1name)
+        UserEntity user = userRepo.findByUsername(worker.user1name)
         assert user.roles.size() == 1
         assert user.roles.getAt(0).code == worker.roleBcode
     }
@@ -113,7 +113,7 @@ class ManyToManyIntegTest extends AbstractIntegTest {
     }
 
     private Set<ResourceEntity> getAllResources(String username) {
-        UserEntity user = userRepo.findByLoginName(username)
+        UserEntity user = userRepo.findByUsername(username)
         Set<ResourceEntity> resources = new HashSet<>()
         user.getRoles().each {
             resources.addAll(it.getResources())

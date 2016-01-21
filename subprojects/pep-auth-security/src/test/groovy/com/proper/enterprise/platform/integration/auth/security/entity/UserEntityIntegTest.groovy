@@ -21,7 +21,7 @@ class UserEntityIntegTest extends AbstractIntegTest {
         entity.putExtendProperty(['c': '3', 'd': '4'])
         repo.save(entity)
         
-        UserEntity user = repo.findByLoginName('hinex')
+        UserEntity user = repo.findByUsername('hinex')
         assert user.getExtendProperties() != null
         assert user.getExtendProperties().startsWith("{");
         ['a':'1', 'b':'2', 'c':'3', 'd':'4'].entrySet().each { entry ->
