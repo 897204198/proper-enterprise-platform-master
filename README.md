@@ -88,7 +88,7 @@ Proper Enterprise Platform
     public interface UserRepository extends BaseRepository<UserEntity, String> {
     
         @CacheQuery
-        UserEntity findByLoginName(String loginName);
+        UserEntity findByUsername(String username);
     
     }
     ```

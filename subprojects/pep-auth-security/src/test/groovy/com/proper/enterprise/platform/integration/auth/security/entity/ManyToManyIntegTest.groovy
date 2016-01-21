@@ -68,7 +68,7 @@ class ManyToManyIntegTest extends AbstractIntegTest {
 
         RoleEntity roleA = roleRepo.findByCode(worker.roleAcode)
         assert roleA.getUsers().size() == 1
-        assert roleA.getUsers().getAt(0).loginName == worker.user2name
+        assert roleA.getUsers().getAt(0).username == worker.user2name
     }
 
     @Test(expected = DataIntegrityViolationException)

@@ -34,7 +34,7 @@ class InsertDataWorker {
         [user1name, user2name].each { username ->
             sqls << """
 INSERT INTO pep_auth_users
-(id, create_user_id, create_time, last_modify_user_id, last_modify_time, login_name, password)
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, username, password)
 VALUES
 (${'IDW-' + username}, 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', $username, $userpwd);"""
         }
