@@ -9,6 +9,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.Collection;
 
+// TODO loginName 改成 username，去掉 name 属性
 @Entity
 @Table(name = "pep_auth_users")
 @CacheEntity

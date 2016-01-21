@@ -8,8 +8,15 @@ import java.util.Collection;
 
 /**
  * 用户服务接口
- * 用户名（username）作为系统内可见的用户唯一标识
- * 用户ID（userId）同样为用户唯一标识，但系统内不可见
+ *
+ * 用户名（username）作为用户唯一标识，可为用户所见
+ * 用户ID（userId）同样为用户唯一标识，但对用户透明，仅在系统内部使用
+ *
+ * // TODO
+ * 用户服务接口提供如下服务：
+ *
+ *  - 用户的增删改查操作
+ *  - 根据提供的用户或当前用户查询角色及资源
  */
 public interface UserService {
 
