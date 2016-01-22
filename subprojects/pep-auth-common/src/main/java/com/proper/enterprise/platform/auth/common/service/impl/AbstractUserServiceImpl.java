@@ -4,20 +4,16 @@ import com.google.common.collect.Lists;
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
 import com.proper.enterprise.platform.auth.common.repository.UserRepository;
 import com.proper.enterprise.platform.core.enums.ResourceType;
-import com.proper.enterprise.platform.core.repository.SearchCondition;
-import com.proper.enterprise.platform.core.repository.SearchConditionBuilder;
+import com.proper.enterprise.platform.core.repository.NativeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * 通用的/抽象的用户服务接口实现
@@ -33,6 +29,9 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Autowired
     ResourceRepository resRepo;
+
+    @Autowired
+    NativeRepository repo;
 
     @Override
     public abstract User getCurrentUser();
@@ -80,10 +79,24 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends Resource> getResources(ResourceType resourceType) {
-        UserEntity userEntity = userRepo.findOne(getCurrentUser().getId());
-        SearchCondition scRole = new SearchCondition("roles", SearchCondition.Operator.IN, userEntity.getRoles());
-        SearchCondition scType = new SearchCondition("resourceType", SearchCondition.Operator.EQ, resourceType);
-        return resRepo.findAll(SearchConditionBuilder.build(ResourceEntity.class, scRole, scType));
+        String sql = "SELECT res.id AS id, "
+                   + "       res.url AS url, "
+                   + "       res.method AS method, "
+                   + "       res.name AS name "
+                   + "  FROM pep_auth_resources res, pep_auth_users u, "
+                   + "       pep_auth_users_roles ur, pep_auth_roles_resources rr "
+                   + " WHERE u.id = ur.users "
+                   + "   AND ur.roles = rr.roles "
+                   + "   AND rr.resources = res.id "
+                   + "   AND u.name = :name "
+                   + "   AND res.resource_type = :type";
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("name", getCurrentUser().getUsername());
+        params.put("type", resourceType.name());
+
+//        List result = repo.executeQuery(sql, params);
+        return null;
     }
 
     @Override

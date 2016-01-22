@@ -68,25 +68,25 @@ class SearchConditionBuilderIntegTest extends AbstractIntegTest {
     public void singleEntityQuery() {
         def sc1 = new SearchCondition('username', SearchCondition.Operator.LIKE, 'u')
         def sc2 = new SearchCondition('password', 'p3')
-        def result = aRepo.findAll(SearchConditionBuilder.build(sc1, sc2))
+        def result = aRepo.findAll(SearchConditionBuilder.build(AEntity.class, sc1, sc2))
         assert 1 == result.size()
         assert result[0].username == 'u3'
 
         sc1 = new SearchCondition('username', SearchCondition.Operator.GT, 'u2')
         sc2 = new SearchCondition('username', SearchCondition.Operator.LT, 'u4')
-        result = aRepo.findAll(SearchConditionBuilder.build(sc1, sc2))
+        result = aRepo.findAll(SearchConditionBuilder.build(AEntity.class, sc1, sc2))
         assert 1 == result.size()
         assert result[0].username == 'u3'
 
         sc1 = new SearchCondition('username', SearchCondition.Operator.GE, 'u2')
         sc2 = new SearchCondition('username', SearchCondition.Operator.LE, 'u4')
-        result = aRepo.findAll(SearchConditionBuilder.build(sc1, sc2))
+        result = aRepo.findAll(SearchConditionBuilder.build(AEntity.class, sc1, sc2))
         assert 3 == result.size()
 
         sc1 = new SearchCondition('description', SearchCondition.Operator.ASC)
         sc2 = new SearchCondition('username', SearchCondition.Operator.DESC)
         def sc3 = new SearchCondition('password', SearchCondition.Operator.GT, 'p1')
-        result = aRepo.findAll(SearchConditionBuilder.build(sc1, sc2, sc3))
+        result = aRepo.findAll(SearchConditionBuilder.build(AEntity.class, sc1, sc2, sc3))
         assert 3 == result.size()
         assert result[0].username == 'u4'
         assert result[1].username == 'u3'
@@ -94,37 +94,37 @@ class SearchConditionBuilderIntegTest extends AbstractIntegTest {
 
         sc1 = new SearchCondition('b', SearchCondition.Operator.NOTNULL)
         sc2 = new SearchCondition('username', SearchCondition.Operator.DESC)
-        result = aRepo.findAll(SearchConditionBuilder.build(sc1, sc2))
+        result = aRepo.findAll(SearchConditionBuilder.build(AEntity.class, sc1, sc2))
         assert result.size() == 2
         assert result[0].username == 'u2'
 
         sc1 = new SearchCondition('username', SearchCondition.Operator.IN, ['u2', 'u3'])
-        result = aRepo.findAll(SearchConditionBuilder.build(sc1))
+        result = aRepo.findAll(SearchConditionBuilder.build(AEntity.class, sc1))
         assert result.size() == 2
     }
 
     @Test
     public void relatedQuery() {
         def sc1 = new SearchCondition('b.name', 'b10')
-        def result = aRepo.findAll(SearchConditionBuilder.build(sc1))
+        def result = aRepo.findAll(SearchConditionBuilder.build(AEntity.class, sc1))
         assert 1 == result.size()
         assert result[0].username == 'u1'
 
         sc1 = new SearchCondition('b.name', SearchCondition.Operator.LIKE, 'b')
-        result = aRepo.findAll(SearchConditionBuilder.build(sc1))
+        result = aRepo.findAll(SearchConditionBuilder.build(AEntity.class, sc1))
         assert 2 == result.size()
 
         def sc2 = new SearchCondition('password', 'p2')
-        result = aRepo.findAll(SearchConditionBuilder.build(sc1, sc2))
+        result = aRepo.findAll(SearchConditionBuilder.build(AEntity.class, sc1, sc2))
         assert 1 == result.size()
         assert result[0].username == 'u2'
 
         sc1 = new SearchCondition('b.name', SearchCondition.Operator.IN, ['b10', 'b11', 'b25'])
-        result = aRepo.findAll(SearchConditionBuilder.build(sc1))
+        result = aRepo.findAll(SearchConditionBuilder.build(AEntity.class, sc1))
         assert result.size() == 2
 
         sc1 = new SearchCondition('b', SearchCondition.Operator.IN, bRepo.findAll())
-        result = aRepo.findAll(SearchConditionBuilder.build(sc1))
+        result = aRepo.findAll(SearchConditionBuilder.build(AEntity.class, sc1))
         assert result.size() == 2
     }
 
@@ -164,7 +164,7 @@ class SearchConditionBuilderIntegTest extends AbstractIntegTest {
         assert result[0].name == 'b39'
 
         def sc1 = new SearchCondition('attr1', SearchCondition.Operator.GE, '0')
-        result = bRepo.findAll(SearchConditionBuilder.build(sc1), page)
+        result = bRepo.findAll(SearchConditionBuilder.build(BEntity.class, sc1), page)
         assert result.size() == 12
         assert result[0].name == 'b35'
     }
@@ -199,6 +199,7 @@ SELECT DISTINCT a.*
 """
         def params = ['names': ['c1', 'c2']]
         def result = repo.executeQuery(sql, params)
+        println result
         assert result.size() == 2
     }
 

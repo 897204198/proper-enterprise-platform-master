@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.workflow.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.conf.Constants;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
@@ -55,7 +56,7 @@ public class ModelsSupplement {
             String processName = model.getName() + ".bpmn20.xml";
             repositoryService.createDeployment()
                     .name(model.getName())
-                    .addString(processName, new String(bpmnBytes))
+                    .addString(processName, new String(bpmnBytes, Constants.DEFAULT_CHARSET))
                     .deploy();
 
             response.setStatus(HttpStatus.CREATED.value());
