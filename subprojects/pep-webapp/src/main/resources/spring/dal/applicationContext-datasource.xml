@@ -27,8 +27,12 @@
         <constructor-arg ref="hikariConfig" />
     </bean>
 
-    <jdbc:initialize-database data-source="dataSource" ignore-failures="ALL">
-        <jdbc:script location="classpath*:sql/*.sql"/>
+    <jdbc:initialize-database data-source="dataSource">
+        <jdbc:script location="classpath*:sql/users.sql"/>
+        <jdbc:script location="classpath*:sql/roles.sql"/>
+        <jdbc:script location="classpath*:sql/resources.sql"/>
+        <jdbc:script location="classpath*:sql/users-roles.sql"/>
+        <jdbc:script location="classpath*:sql/roles-resources.sql"/>
     </jdbc:initialize-database>
 
 </beans>
