@@ -3,11 +3,21 @@ ext {
     libraries = [:]
 }
 
-versions.activiti = '5.19.0'
-
 versions.jcaptcha = '1.0'
+versions.spring = '4.1.7.RELEASE'
+versions.spring_security = '4.0.1.RELEASE'
 
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'org.springframework') {
+            details.useVersion versions.spring
+        } else if (details.requested.group == 'org.springframework.security') {
+            details.useVersion versions.spring_security
+        }
+    }
+}
 
+versions.activiti = '5.19.0'
 libraries.activiti_diagram_rest = "org.activiti:activiti-diagram-rest:${versions.activiti}"
 libraries.activiti_engine = "org.activiti:activiti-engine:${versions.activiti}"
 libraries.activiti_explorer = dependencies.module("org.activiti:activiti-explorer:${versions.activiti}") {
@@ -129,7 +139,6 @@ libraries.spock = [
     'cglib:cglib-nodep:2.2.2'
 ]
 
-versions.spring = '4.1.7.RELEASE'
 //libraries.spring_beans = "org.springframework:spring-beans:${versions.spring}"
 //libraries.spring_context = "org.springframework:spring-context:${versions.spring}"
 libraries.spring_context_support = "org.springframework:spring-context-support:${versions.spring}"
@@ -145,7 +154,6 @@ libraries.spring_webmvc = "org.springframework:spring-webmvc:${versions.spring}"
 
 libraries.spring_data_jpa = 'org.springframework.data:spring-data-jpa:1.8.2.RELEASE'
 
-versions.spring_security = '4.0.1.RELEASE'
 //libraries.spring_security_acl = "org.springframework.security:spring-security-acl:${versions.spring_security}"
 //libraries.spring_security_cas = "org.springframework.security:spring-security-cas:${versions.spring_security}"
 libraries.spring_security_config = "org.springframework.security:spring-security-config:${versions.spring_security}"
