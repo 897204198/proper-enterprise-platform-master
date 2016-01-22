@@ -199,7 +199,6 @@ SELECT DISTINCT a.*
 """
         def params = ['names': ['c1', 'c2']]
         def result = repo.executeQuery(sql, params)
-        println result
         assert result.size() == 2
     }
 

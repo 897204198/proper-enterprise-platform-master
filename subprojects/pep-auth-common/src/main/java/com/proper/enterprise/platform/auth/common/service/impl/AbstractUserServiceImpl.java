@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
 import com.proper.enterprise.platform.auth.common.repository.UserRepository;
@@ -12,6 +13,7 @@ import com.proper.enterprise.platform.core.repository.NativeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.*;
 
@@ -88,15 +90,27 @@ public abstract class AbstractUserServiceImpl implements UserService {
                    + " WHERE u.id = ur.users "
                    + "   AND ur.roles = rr.roles "
                    + "   AND rr.resources = res.id "
-                   + "   AND u.name = :name "
+                   + "   AND u.username = :name "
                    + "   AND res.resource_type = :type";
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", getCurrentUser().getUsername());
         params.put("type", resourceType.name());
 
-//        List result = repo.executeQuery(sql, params);
-        return null;
+        List result = repo.executeQuery(sql, params);
+        Collection<ResourceEntity> reses = new ArrayList<ResourceEntity>();
+        Object[] objs;
+        ResourceEntity res;
+        for (Object obj : result) {
+            objs = (Object[]) obj;
+            res = new ResourceEntity();
+            res.setId((String) objs[0]);
+            res.setUrl((String) objs[1]);
+            res.setMethod(RequestMethod.valueOf((String) objs[2]));
+            res.setName((String) objs[3]);
+            reses.add(res);
+        }
+        return reses;
     }
 
     @Override
