@@ -20,6 +20,8 @@ gretty {
     port = 9090
     contextPath = 'pep'
     debugSuspend = false
+    fileLogEnabled = false
+    managedClassReload = true
 }
 
 dependencies {

@@ -9,9 +9,10 @@ versions.spring_security = '4.0.1.RELEASE'
 
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'org.springframework') {
+        def req = details.requested
+        if (req.group == 'org.springframework' && req.name != 'springloaded') {
             details.useVersion versions.spring
-        } else if (details.requested.group == 'org.springframework.security') {
+        } else if (req.group == 'org.springframework.security') {
             details.useVersion versions.spring_security
         }
     }
