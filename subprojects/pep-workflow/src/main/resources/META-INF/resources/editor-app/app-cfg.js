@@ -21,5 +21,6 @@
 var ACTIVITI = ACTIVITI || {};
 
 ACTIVITI.CONFIG = {
-  'contextRoot' : '/pep/workflow/service',
+  'contextRoot': '/pep/workflow/service',
+  'lang': 'zh'
 };
