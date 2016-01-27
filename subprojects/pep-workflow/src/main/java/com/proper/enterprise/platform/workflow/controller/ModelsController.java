@@ -94,10 +94,14 @@ public class ModelsController {
         }
     }
 
-    @RequestMapping(value = "/import", method = RequestMethod.POST)
+    @RequestMapping(value = "/import", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void importModel(@RequestParam("file") MultipartFile file, HttpServletResponse response) {
-        if (!file.getName().endsWith(".bpmn20.xml") && !file.getName().endsWith(".bpmn")) {
-            LOGGER.error("Unsupported file type {}", file.getName());
+        String filename = file.getOriginalFilename();
+        LOGGER.debug("Prepare to import model from file '{}'", filename);
+
+        if (!filename.endsWith(".bpmn20.xml") && !filename.endsWith(".bpmn")) {
+            LOGGER.error("Unsupported file type according to filename: {}. ", filename);
+            LOGGER.error("Only support *.bpmn20.xml and *.bpmn file types.");
             response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
             return;
         }
@@ -128,12 +132,14 @@ public class ModelsController {
             modelData.setMetaInfo(modelObjectNode.toString());
             modelData.setName(processName);
             repositoryService.saveModel(modelData);
+            LOGGER.debug("Save model {}:{}", modelData.getId(), processName);
 
             BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
             ObjectNode editorNode = jsonConverter.convertToJson(bpmnModel);
 
             repositoryService.addModelEditorSource(modelData.getId(),
                     editorNode.toString().getBytes(PEPConstants.DEFAULT_CHARSET));
+            LOGGER.debug("Save editor source for model: {}", modelData.getId());
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (Exception e) {
             LOGGER.error("Import model error!", e);
