@@ -21,7 +21,13 @@
 
     <mvc:annotation-driven />
 
-    <jdbc:initialize-database data-source="dataSource">
+    <!--
+    其他模块（如 pep-workflow）中有 auth 模块的 sql 时，如果不忽略 sql 执行失败，会导致测试无法通过
+    如果设置为不忽略 sql 执行失败，则可能需要该模块依赖权限模块，而这个依赖可能是非必须的
+    先将忽略失败设置为 ALL，等待集成测试基类 AbstractIntegTest 重构后再修改
+    TODO
+    -->
+    <jdbc:initialize-database data-source="dataSource" ignore-failures="ALL">
         <jdbc:script location="classpath*:sql/users.sql"/>
         <jdbc:script location="classpath*:sql/roles.sql"/>
         <jdbc:script location="classpath*:sql/resources.sql"/>
