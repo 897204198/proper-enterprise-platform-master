@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.webapp.auth.controller;
+package com.proper.enterprise.platform.auth.common.controller;
 
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.service.UserService;

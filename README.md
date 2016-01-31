@@ -56,7 +56,7 @@ Proper Enterprise Platform
 
         > 可参考 `./gradlew init-pep-[module]` 自动生成的配置文件
         
-* Controller：`com.proper.enterprise.platform.webapp.[module]..controller.*Controller`，Controller 都放置在 `pep-webapp` 模块中
+* Controller：`com.proper.enterprise.platform.[module]..controller.*Controller`，Controller 放置在各模块中
 * 服务接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
 * 服务实现：`com.proper.enterprise.platform.[module]..service.impl.*ServiceImpl`
 * 数据实体：`com.proper.enterprise.platform.[module]..entity.*Entity`
