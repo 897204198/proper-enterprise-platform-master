@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
-import com.google.common.collect.Lists;
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
@@ -44,7 +43,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
             LOGGER.debug("Pass in users array SHOULD NOT NULL!");
             return;
         }
-        List<UserEntity> entities = Lists.newArrayListWithCapacity(users.length);
+        List<UserEntity> entities = new ArrayList<UserEntity>(users.length);
         for (User user : users) {
             entities.add(new UserEntity(user.getUsername(), user.getPassword()));
         }

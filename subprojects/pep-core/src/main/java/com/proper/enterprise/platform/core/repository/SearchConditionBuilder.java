@@ -1,11 +1,11 @@
 package com.proper.enterprise.platform.core.repository;
 
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchConditionBuilder {
@@ -17,8 +17,8 @@ public class SearchConditionBuilder {
             @Override
             public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 int len = conditions.length;
-                List<Predicate> predicates = Lists.newArrayListWithCapacity(len);
-                List<Order> orders = Lists.newArrayListWithCapacity(len);
+                List<Predicate> predicates = new ArrayList<Predicate>(len);
+                List<Order> orders = new ArrayList<Order>(len);
                 String[] names;
                 Path expression;
                 for (SearchCondition condition : conditions) {

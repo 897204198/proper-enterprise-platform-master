@@ -2,7 +2,6 @@ dependencies {
     compile libraries.commons_codec,
             libraries.commons_lang3,
             libraries.jackson_databind,
-            libraries.guava,
             libraries.hibernate_entitymanager,
             libraries.spring_orm
 
