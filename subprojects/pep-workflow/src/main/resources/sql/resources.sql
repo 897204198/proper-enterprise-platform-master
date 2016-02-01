@@ -41,11 +41,11 @@ VALUES
 INSERT INTO pep_auth_resources
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name, parent, resource_type, url, method, sequence_number)
 VALUES
-('20160120164030', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', 'workflow.deployments', '已部流程', 'BBD7A5193ECC493DB202A7F0DECF386C', 'MENU', '/workflow/deployments', 'GET', 1);
+('20160120164030', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', 'workflow.definitions', '流程定义', 'BBD7A5193ECC493DB202A7F0DECF386C', 'MENU', '/workflow/definitions', 'GET', 1);
 
 INSERT INTO pep_auth_resources
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name, parent, resource_type, url, method, sequence_number)
 VALUES
-('20160120164230', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', 'workflow.deployments.list', '部署列表', 'BBD7A5193ECC493DB202A7F0DECF386C', 'API', '/workflow/service/repository/deployments', 'GET', 1);
+('20160120164230', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', 'workflow.definitions.list', '流程定义列表', 'BBD7A5193ECC493DB202A7F0DECF386C', 'API', '/workflow/service/repository/process-definitions', 'GET', 1);
 
 COMMIT;
