@@ -2,6 +2,7 @@ dependencies {
     compile libraries.activiti_engine,
             libraries.activiti_explorer,
             libraries.activiti_json_converter,
+            libraries.activiti_rest,
             libraries.activiti_spring,
             // use modeler in compile block only when need to insert demo data
             //libraries.activiti_modeler,
@@ -9,8 +10,7 @@ dependencies {
             project(':pep-core')
 
     runtime libraries.activiti_diagram_rest,
-            libraries.activiti_modeler,
-            libraries.activiti_rest
+            libraries.activiti_modeler
 //            libraries.activiti_simple_workflow
 
     runtime files("libs/activiti-web-designer-${versions.activiti}.jar")

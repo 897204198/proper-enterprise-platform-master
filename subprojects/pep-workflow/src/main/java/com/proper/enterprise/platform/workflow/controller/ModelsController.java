@@ -10,12 +10,16 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.explorer.util.XmlUtil;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.activiti.rest.service.api.repository.DeploymentResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +44,9 @@ public class ModelsController {
     @Autowired
     RepositoryService repositoryService;
 
+    @Autowired
+    RestResponseFactory restResponseFactory;
+
     /**
      * According to activiti-webapp-explorer2, an initial editor source is needed when
      * creating a new model. The RESTFul API in activiti-rest module only support a PUT
@@ -53,21 +60,23 @@ public class ModelsController {
         repositoryService.addModelEditorSource(modelId, INIT_EDITOR_SOURCE.getBytes(PEPConstants.DEFAULT_CHARSET));
     }
 
-    @RequestMapping(value="/{modelId}/deployment", method = RequestMethod.POST)
-    public void deployModel(@PathVariable String modelId, HttpServletResponse response) {
+    @RequestMapping(value="/{modelId}/deployment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public DeploymentResponse deployModel(@PathVariable String modelId, HttpServletResponse response) {
         Model model = repositoryService.getModel(modelId);
         try {
             String processName = model.getName() + ".bpmn20.xml";
-            repositoryService
+            Deployment deployment = repositoryService
                     .createDeployment()
                     .name(model.getName())
                     .addString(processName, new String(getModelXml(modelId), Constants.DEFAULT_CHARSET))
                     .deploy();
 
             response.setStatus(HttpStatus.CREATED.value());
+            return restResponseFactory.createDeploymentResponse(deployment);
         } catch (IOException e) {
             LOGGER.error("Deploy model {} error! {}", model.getName(), e);
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return null;
         }
     }
 
