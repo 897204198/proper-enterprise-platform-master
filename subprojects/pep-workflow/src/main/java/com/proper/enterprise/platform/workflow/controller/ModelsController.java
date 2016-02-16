@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.conf.Constants;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.workflow.EditorSource;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
@@ -35,9 +36,6 @@ public class ModelsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelsController.class);
 
-    private static final String INIT_EDITOR_SOURCE =
-            "{\"id\":\"canvas\",\"resourceId\":\"canvas\",\"stencilset\":{\"namespace\":\"http://b3mn.org/stencilset/bpmn2.0#\"}}";
-
     @Autowired
     ObjectMapper objectMapper;
 
@@ -56,8 +54,9 @@ public class ModelsController {
      */
     @RequestMapping(value="/{modelId}/source", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void postInitEditorSource(@PathVariable String modelId) {
-        repositoryService.addModelEditorSource(modelId, INIT_EDITOR_SOURCE.getBytes(PEPConstants.DEFAULT_CHARSET));
+    public void postInitEditorSource(@PathVariable String modelId, @RequestParam String name) {
+        repositoryService.addModelEditorSource(modelId,
+                EditorSource.initialSource(modelId, name).getBytes(PEPConstants.DEFAULT_CHARSET));
     }
 
     @RequestMapping(value="/{modelId}/deployment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
