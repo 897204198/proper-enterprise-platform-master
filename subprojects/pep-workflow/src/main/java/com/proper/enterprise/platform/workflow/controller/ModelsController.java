@@ -54,9 +54,9 @@ public class ModelsController {
      */
     @RequestMapping(value="/{modelId}/source", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void postInitEditorSource(@PathVariable String modelId, @RequestParam String name) {
+    public void postInitEditorSource(@PathVariable String modelId, @RequestParam String name, @RequestParam String description) {
         repositoryService.addModelEditorSource(modelId,
-                EditorSource.initialSource(modelId, name).getBytes(PEPConstants.DEFAULT_CHARSET));
+                EditorSource.initialSource(modelId, name, description).getBytes(PEPConstants.DEFAULT_CHARSET));
     }
 
     @RequestMapping(value="/{modelId}/deployment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
