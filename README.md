@@ -40,7 +40,7 @@ Proper Enterprise Platform
 |xml|dom4j|
 |JSON|[jackson-databind 2.3.6](https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.6.3)|
 |消息队列||
-|Build System|[Gradle 2.8](https://github.com/gradle/gradle)|
+|Build System|[Gradle 2.8](https://github.com/gradle/gradle)<br/>[gretty](https://github.com/akhikhl/gretty)|
 |持续集成||
 |license||
 
@@ -73,13 +73,6 @@ Proper Enterprise Platform
 
     ```
     public interface User extends IBase
-    ```
-
-* 数据传输对象DTO：`com.proper.enterprise.platform.[module]..dto.*DTO`
-    > 为避免使用 `openSessionInView` 模式，使用 `DTO` 储存实体中数据，以供数据传输及界面显示使用（合并 `VO` 职能）。`DTO` 中需提供根据相应实体构造 `DTO` 的构造函数。DTO 实现的接口扩展了 `IBase` 接口时，可通过继承 `BaseDTO` 的方式实现所需方法，如：
-    
-    ```
-    public class UserDTO extends BaseDTO implements User
     ```
 
 * Repository：`com.proper.enterprise.platform.[module]..repository.*Repository`，需继承 `BaseRepository`；需缓存的方法需添加 `CacheQuery` 注解，且对应 `Entity` 也需要有 `CacheEntity` 注解标识：
@@ -238,3 +231,18 @@ IDE 开启远程调试方式可参见：
     $ ./gradlew clean war
 
 构建好的 `war` 包会输出到 `pep-webapp` 项目根路径下的 `build/libs` 路径内。
+
+
+产品发布
+-------
+
+因为产品可能需要对容器进行一些设定，如 tomcat 对接收到的请求默认使用的编码是 `ISO-8859-1`，若要修改默认编码需在 `[server.xml](subprojects/pep-webapp/config/tomcat/server.xml)` 中进行设定。
+故以 war 包形式发布产品时还需对容器配置进行调整。
+
+借助 `gretty` 可以生成一个能够直接运行的产品发布包（包含容器、war 包以及启动脚本等），**推荐使用此种方式发布产品**。
+
+    # 打包
+    $ ./gradlew buildProduct
+    # 进入发布包路径
+    $ cd subprojects/pep-webapp/build/output/pep-webapp
+    $ ./run.sh
