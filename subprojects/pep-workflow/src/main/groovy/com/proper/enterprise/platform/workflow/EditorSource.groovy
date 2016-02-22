@@ -23,7 +23,7 @@ class EditorSource {
     "properties": {
       "process_id": "$procId",
       "name": "$name",
-      "documentation": "${description.replace('\r', '\\r').replace('\n', '\\n')}"
+      "documentation": "${description ? description.replace('\r', '\\r').replace('\n', '\\n') : ''}"
     },
     "stencilset": {
       "url": "stencilsets/bpmn2.0/bpmn2.0.json",
