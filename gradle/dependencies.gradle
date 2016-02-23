@@ -108,9 +108,9 @@ libraries.junit = 'junit:junit:4.12'
 
 //libraries.json_lib = 'net.sf.json-lib:json-lib:2.4:jdk15@jar'
 
-libraries.jsp_api = 'javax.servlet.jsp:jsp-api:2.2'
+//libraries.jsp_api = 'javax.servlet.jsp:jsp-api:2.2'
 
-libraries.jstl = 'jstl:jstl:1.2'
+//libraries.jstl = 'jstl:jstl:1.2'
 
 //libraries.log4j = dependencies.module('log4j:log4j:1.2.15') {
 //    exclude group: 'com.sun.jdmk', module: 'jmxtools'
