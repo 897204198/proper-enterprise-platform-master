@@ -1,11 +1,10 @@
 package com.proper.enterprise.platform.integration.auth.common.service.mock
-
 import com.proper.enterprise.platform.api.auth.User
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.service.impl.AbstractUserServiceImpl
 import org.springframework.stereotype.Service
 
-@Service
+@Service("mockUserService")
 class MockUserServiceImpl extends AbstractUserServiceImpl {
 
     @Override

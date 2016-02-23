@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.integration.webapp.dal
 
-import com.proper.enterprise.platform.core.enums.UseStatus
+import com.proper.enterprise.platform.api.auth.enums.UseStatus
 import com.proper.enterprise.platform.integration.webapp.dal.entity.AEntity
 import com.proper.enterprise.platform.integration.webapp.dal.repository.ARepository
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest

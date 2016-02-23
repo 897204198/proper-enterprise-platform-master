@@ -7,7 +7,7 @@ import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
 import com.proper.enterprise.platform.auth.common.repository.UserRepository;
-import com.proper.enterprise.platform.core.enums.ResourceType;
+import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.core.repository.NativeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -4,12 +4,15 @@ import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
 class HistoricalAdviceIntegTest extends AbstractIntegTest {
 
     def static final MOCK_USER_ID = 'MockUserId'
     
-    @Autowired UserService service
+    @Autowired
+    @Qualifier('mockUserService')
+    UserService service
     
     @Test
     def void saveEntity() {

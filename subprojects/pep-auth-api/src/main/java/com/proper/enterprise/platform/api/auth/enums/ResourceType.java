@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.core.enums;
+package com.proper.enterprise.platform.api.auth.enums;
 
 public enum ResourceType {
 

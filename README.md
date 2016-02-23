@@ -50,6 +50,7 @@ Proper Enterprise Platform
 
 **TODO**
 
+* 统一使用 PEPConstants.VERSION 作为 serialVersionUID
 * 配置文件：
     1. spring 配置文件放置在 `src/main/resources/spring/[module]
     2. 其他配置文件放置在 `src/main/resources/conf/[module]

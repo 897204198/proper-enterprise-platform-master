@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.api.auth;
 
 import com.proper.enterprise.platform.core.api.IBase;
-import com.proper.enterprise.platform.core.enums.ResourceType;
+import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 public interface Resource extends IBase {

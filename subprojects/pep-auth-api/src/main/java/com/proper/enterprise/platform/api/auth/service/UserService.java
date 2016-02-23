@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.api.auth.service;
 
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.User;
-import com.proper.enterprise.platform.core.enums.ResourceType;
+import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 
 import java.util.Collection;
 

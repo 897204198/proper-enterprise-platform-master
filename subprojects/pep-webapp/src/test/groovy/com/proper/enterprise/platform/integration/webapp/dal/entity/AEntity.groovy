@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.integration.webapp.dal.entity
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.annotation.CacheEntity
 import com.proper.enterprise.platform.core.entity.BaseEntity
-import com.proper.enterprise.platform.core.enums.UseStatus
+import com.proper.enterprise.platform.api.auth.enums.UseStatus
 
 import javax.persistence.*
 

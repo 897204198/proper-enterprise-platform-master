@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
-import com.proper.enterprise.platform.core.enums.ResourceType;
+import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMethod;

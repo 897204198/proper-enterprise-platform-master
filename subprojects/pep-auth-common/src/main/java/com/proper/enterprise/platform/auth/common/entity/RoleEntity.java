@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.api.auth.Role;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
-import com.proper.enterprise.platform.core.enums.UseStatus;
+import com.proper.enterprise.platform.api.auth.enums.UseStatus;
 
 import javax.persistence.*;
 import java.util.Collection;

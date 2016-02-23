@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.auth.common.controller;
 
 import com.proper.enterprise.platform.api.auth.Resource;
 import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.core.enums.ResourceType;
+import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
