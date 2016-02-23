@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
-import com.proper.enterprise.platform.api.auth.Resource;
-import com.proper.enterprise.platform.api.auth.User;
+import com.proper.enterprise.platform.api.auth.model.Resource;
+import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;

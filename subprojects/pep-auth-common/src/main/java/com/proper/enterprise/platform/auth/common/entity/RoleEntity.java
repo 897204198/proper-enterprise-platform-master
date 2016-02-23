@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
-import com.proper.enterprise.platform.api.auth.Role;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;

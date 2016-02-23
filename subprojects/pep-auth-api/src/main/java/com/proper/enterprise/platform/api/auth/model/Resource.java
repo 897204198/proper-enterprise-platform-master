@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.api.auth;
+package com.proper.enterprise.platform.api.auth.model;
 
 import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.api.auth.enums.ResourceType;

@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.auth.service.impl;
 
-import com.proper.enterprise.platform.api.auth.User;
+import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.auth.common.service.impl.AbstractUserServiceImpl;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.service.JWTService;

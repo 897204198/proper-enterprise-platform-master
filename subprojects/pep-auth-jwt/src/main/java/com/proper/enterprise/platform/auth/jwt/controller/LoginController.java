@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.auth.jwt.controller;
 
-import com.proper.enterprise.platform.api.auth.User;
+import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.jwt.authc.AuthcService;
 import com.proper.enterprise.platform.auth.jwt.bean.LoginBean;
