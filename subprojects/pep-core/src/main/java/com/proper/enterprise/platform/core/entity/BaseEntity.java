@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.entity;
 
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.json.JSONObject;
 import com.proper.enterprise.platform.core.json.JSONUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
@@ -14,7 +15,7 @@ import java.util.Map.Entry;
 @MappedSuperclass
 public class BaseEntity implements Serializable {
 
-    private static final long serialVersionUID = 8769611929269353212L;
+    private static final long serialVersionUID = PEPConstants.VERSION;
 
     @Id
     @GeneratedValue(generator = "system-uuid")

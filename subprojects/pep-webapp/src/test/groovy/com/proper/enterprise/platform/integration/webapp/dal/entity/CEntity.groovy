@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.integration.webapp.dal.entity
 
+import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.annotation.CacheEntity
 import com.proper.enterprise.platform.core.entity.BaseEntity
 
@@ -12,7 +13,7 @@ import javax.persistence.Table
 @CacheEntity
 class CEntity extends BaseEntity {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = PEPConstants.VERSION;
 
     public CEntity(String name) {
         this.name = name

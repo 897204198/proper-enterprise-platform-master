@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.core.json;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.proper.enterprise.platform.core.PEPConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +15,7 @@ import java.util.Set;
 
 public class JSONObject implements Serializable {
 
-    private static final long serialVersionUID = -6896564586841449574L;
+    private static final long serialVersionUID = PEPConstants.VERSION;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JSONObject.class);
     

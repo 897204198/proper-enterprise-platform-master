@@ -1,5 +1,7 @@
 package com.proper.enterprise.platform.auth.jwt.model;
 
+import com.proper.enterprise.platform.core.PEPConstants;
+
 import java.io.Serializable;
 
 /**
@@ -7,7 +9,7 @@ import java.io.Serializable;
  */
 public class JWTHeader implements Serializable {
 
-    private static final long serialVersionUID = 388046039690163330L;
+    private static final long serialVersionUID = PEPConstants.VERSION;
 
     // User ID
     private String id;

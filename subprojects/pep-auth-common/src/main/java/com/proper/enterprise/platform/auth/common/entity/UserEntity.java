@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
 import com.proper.enterprise.platform.api.auth.User;
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
@@ -15,7 +16,7 @@ import java.util.Collection;
 @CacheEntity
 public class UserEntity extends BaseEntity implements User {
 
-    private static final long serialVersionUID = -932921035920514049L;
+    private static final long serialVersionUID = PEPConstants.VERSION;
 
     public UserEntity() { }
     

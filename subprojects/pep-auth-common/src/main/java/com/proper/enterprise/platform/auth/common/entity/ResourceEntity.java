@@ -1,9 +1,12 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
 import com.proper.enterprise.platform.api.auth.Resource;
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.enums.ResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.*;
@@ -17,7 +20,9 @@ import java.util.List;
 @CacheEntity
 public class ResourceEntity extends BaseEntity implements Resource {
 
-    private static final long serialVersionUID = 5499576398861944356L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceEntity.class);
+
+    private static final long serialVersionUID = PEPConstants.VERSION;
     
     /**
      * 编号
@@ -112,12 +117,17 @@ public class ResourceEntity extends BaseEntity implements Resource {
         this.roles = roles;
     }
 
-    public ResourceEntity getParent() {
+    public Resource getParent() {
         return parent;
     }
 
-    public void setParent(ResourceEntity parent) {
-        this.parent = parent;
+    public void setParent(Resource parent) {
+        if (parent instanceof ResourceEntity) {
+            this.parent = (ResourceEntity)parent;
+        } else {
+            LOGGER.error("Parent of a Resource SHOULD BE  ResourceEntity type, but get {} here.",
+                    parent.getClass().getCanonicalName());
+        }
     }
 
     public ResourceType getResourceType() {
