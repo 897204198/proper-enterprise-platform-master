@@ -23,7 +23,17 @@ findbugs {
 
 configurations.codenarc.resolutionStrategy.force(libraries.groovy_all)
 
+def excludePattern = 'org/activiti'
+def excludePatternAnt = "**/$excludePattern/**"
+
+tasks.withType(Checkstyle) {
+    exclude excludePatternAnt
+}
+
 tasks.withType(FindBugs) {
+    classes = classes.filter {
+        !it.path.contains(excludePattern)
+    }
     reports {
         xml.enabled = false
         html.enabled = true
