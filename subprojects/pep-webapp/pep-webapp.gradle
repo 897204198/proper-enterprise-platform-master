@@ -29,8 +29,7 @@ dependencies {
 //    compile project(':pep-auth-security')
     compile project(':pep-auth-jwt')
 
-    runtime project(':pep-aspect'),
-            project(':pep-workflow'),
+    runtime project(':pep-workflow'),
             libraries.commons_fileupload,
             libraries.h2,
             libraries.hibernate_ehcache,
