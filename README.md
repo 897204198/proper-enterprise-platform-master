@@ -60,6 +60,12 @@ Proper Enterprise Platform
 * Controller：`com.proper.enterprise.platform.[module]..controller.*Controller`，Controller 放置在各模块中
 * 服务接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
 * 服务实现：`com.proper.enterprise.platform.[module]..service.impl.*ServiceImpl`
+* 数据接口：数据实体以数据接口和数据传输对象对外提供服务，以便可以从其他数据来源获得数据。数据接口只提供 getter 和 setter 方法，且当代表的数据实体继承自 `BaseEntity` 时，数据接口需扩展 `IBase` 接口，如：
+
+    ```
+    public interface User extends IBase
+    ```
+
 * 数据实体：`com.proper.enterprise.platform.[module]..entity.*Entity`
     > 实体类需继承基类 `BaseEntity`，且必须有可用的默认构造函数；表名规则为 `pep_[module]_[name]`；需缓存的表要添加 `CacheEntity` 注解（`CacheEntity` 注解为实体开启 `JPA` 缓存及 `Hibernate` 二级缓存，可以用作大部分实体的通用配置。如实体有特殊需求，也可自行设置）。如：
        
@@ -67,13 +73,7 @@ Proper Enterprise Platform
     @Entity
 	@Table(name = "pep_auth_user")
 	@CacheEntity
-	public class UserEntity extends BaseEntity
-    ```
-
-* 数据接口：数据实体以数据接口和数据传输对象对外提供服务，以便可以从其他数据来源获得数据。数据接口只提供 getter 和 setter 方法，且当代表的数据实体继承自 `BaseEntity` 时，数据接口需扩展 `IBase` 接口，如：
-
-    ```
-    public interface User extends IBase
+	public class UserEntity extends BaseEntity implements User
     ```
 
 * Repository：`com.proper.enterprise.platform.[module]..repository.*Repository`，需继承 `BaseRepository`；需缓存的方法需添加 `CacheQuery` 注解，且对应 `Entity` 也需要有 `CacheEntity` 注解标识：

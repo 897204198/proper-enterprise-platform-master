@@ -5,10 +5,7 @@ import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
@@ -49,6 +46,9 @@ public class UserEntity extends BaseEntity implements User {
 
     @ManyToMany
     private Collection<RoleEntity> roles;
+
+    @ManyToOne
+    private PersonEntity personEntity;
     
     @Override
     public String toString() {
