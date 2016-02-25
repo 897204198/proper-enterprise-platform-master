@@ -48,6 +48,7 @@ public class UserEntity extends BaseEntity implements User {
     private Collection<RoleEntity> roles;
 
     @ManyToOne
+    @JoinColumn(name = "PERSON_ID")
     private PersonEntity personEntity;
     
     @Override
@@ -85,6 +86,14 @@ public class UserEntity extends BaseEntity implements User {
 
     public void setRoles(Collection<RoleEntity> roles) {
         this.roles = roles;
+    }
+
+    public PersonEntity getPersonEntity() {
+        return personEntity;
+    }
+
+    public void setPersonEntity(PersonEntity personEntity) {
+        this.personEntity = personEntity;
     }
 
 }

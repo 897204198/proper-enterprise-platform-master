@@ -74,4 +74,12 @@ public class PersonEntity extends BaseEntity implements Person {
         this.name = name;
     }
 
+    public Collection<UserEntity> getUserEntities() {
+        return userEntities;
+    }
+
+    public void setUserEntities(Collection<UserEntity> userEntities) {
+        this.userEntities = userEntities;
+    }
+
 }
