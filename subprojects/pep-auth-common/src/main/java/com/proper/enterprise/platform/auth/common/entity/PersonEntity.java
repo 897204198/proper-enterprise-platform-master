@@ -38,6 +38,11 @@ public class PersonEntity extends BaseEntity implements Person {
      */
     private String name;
 
+    @Override
+    public String toString() {
+        return "[id: " + id + ", name: " + name + ", gender: " + gender + "]";
+    }
+
     @OneToMany(mappedBy = "personEntity")
     private Collection<UserEntity> userEntities;
 
