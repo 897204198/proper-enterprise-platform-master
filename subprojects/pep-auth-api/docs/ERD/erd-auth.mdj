@@ -316,6 +316,30 @@
 											"width": 114,
 											"height": 13,
 											"autoResize": false
+										},
+										{
+											"_type": "ERDColumnView",
+											"_id": "AAAAAAFTK+BLGiMWIaU=",
+											"_parent": {
+												"$ref": "AAAAAAFTDJFPrvczAig="
+											},
+											"model": {
+												"$ref": "AAAAAAFTK+BLBCMT7pQ="
+											},
+											"visible": true,
+											"enabled": true,
+											"lineColor": "#000000",
+											"fillColor": "#ffffff",
+											"fontColor": "#000000",
+											"font": "Arial;13;0",
+											"showShadow": true,
+											"containerChangeable": false,
+											"containerExtending": false,
+											"left": 133,
+											"top": 298,
+											"width": 114,
+											"height": 13,
+											"autoResize": false
 										}
 									],
 									"visible": true,
@@ -330,7 +354,7 @@
 									"left": 128,
 									"top": 263,
 									"width": 124,
-									"height": 38,
+									"height": 53,
 									"autoResize": false
 								}
 							],
@@ -792,19 +816,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 442,
-									"top": 269,
-									"width": 40,
+									"left": 440,
+									"top": 264,
+									"width": 55,
 									"height": 13,
 									"autoResize": false,
-									"alpha": 0.5235987755982988,
-									"distance": 30,
+									"alpha": 0.5880024497014492,
+									"distance": 36.05551275463989,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDJ8P2/fjATQ="
 									},
 									"edgePosition": 2,
 									"underline": false,
-									"text": "Role.id",
+									"text": "ROLE_ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								},
@@ -823,19 +847,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 480,
+									"left": 456,
 									"top": 304,
-									"width": 69,
+									"width": 93,
 									"height": 13,
 									"autoResize": false,
-									"alpha": 0.4101274200327616,
-									"distance": 50.15974481593781,
+									"alpha": 0.3320595206778565,
+									"distance": 61.35144660071187,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDJ8P2/fjATQ="
 									},
 									"edgePosition": 0,
 									"underline": false,
-									"text": "Resource.id",
+									"text": "RESOURCE_ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								}
@@ -922,19 +946,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 256,
-									"top": 256,
-									"width": 41,
+									"left": 255,
+									"top": 248,
+									"width": 56,
 									"height": 13,
 									"autoResize": false,
-									"alpha": 0.5235987755982988,
-									"distance": 30,
+									"alpha": 0.6231991818336456,
+									"distance": 39.408120990476064,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDKJVD/h2u0w="
 									},
 									"edgePosition": 2,
 									"underline": false,
-									"text": "User.id",
+									"text": "USER_ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								},
@@ -953,19 +977,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 303,
+									"left": 288,
 									"top": 288,
-									"width": 40,
+									"width": 55,
 									"height": 13,
 									"autoResize": false,
-									"alpha": 0.5302159232191466,
-									"distance": 33.61547262794322,
+									"alpha": 0.43069261391970315,
+									"distance": 40.718546143004666,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDKJVD/h2u0w="
 									},
 									"edgePosition": 0,
 									"underline": false,
-									"text": "Role.id",
+									"text": "ROLE_ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								}
@@ -1052,19 +1076,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 567,
+									"left": 615,
 									"top": 192,
-									"width": 69,
+									"width": 13,
 									"height": 13,
 									"autoResize": false,
-									"alpha": -5.135242500072744,
-									"distance": 43.86342439892262,
+									"alpha": -5.445203830790049,
+									"distance": 26.90724809414742,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDKLjpviMWio="
 									},
 									"edgePosition": 2,
 									"underline": false,
-									"text": "Resource.id",
+									"text": "ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								},
@@ -1083,9 +1107,9 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 736,
+									"left": 730,
 									"top": 303,
-									"width": 95,
+									"width": 107,
 									"height": 13,
 									"autoResize": false,
 									"alpha": -0.23684872162108395,
@@ -1095,7 +1119,7 @@
 									},
 									"edgePosition": 0,
 									"underline": false,
-									"text": "Resource.parent",
+									"text": "PARENT_RES_ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								}
@@ -1309,7 +1333,7 @@
 									"containerExtending": false,
 									"left": 728,
 									"top": 405,
-									"width": 97.2548828125,
+									"width": 139,
 									"height": 13,
 									"autoResize": false,
 									"underline": false,
@@ -1347,7 +1371,7 @@
 											"containerExtending": false,
 											"left": 733,
 											"top": 428,
-											"width": 87.2548828125,
+											"width": 129,
 											"height": 13,
 											"autoResize": false
 										},
@@ -1371,7 +1395,7 @@
 											"containerExtending": false,
 											"left": 733,
 											"top": 443,
-											"width": 87.2548828125,
+											"width": 129,
 											"height": 13,
 											"autoResize": false
 										},
@@ -1395,7 +1419,7 @@
 											"containerExtending": false,
 											"left": 733,
 											"top": 458,
-											"width": 87.2548828125,
+											"width": 129,
 											"height": 13,
 											"autoResize": false
 										}
@@ -1411,7 +1435,7 @@
 									"containerExtending": false,
 									"left": 728,
 									"top": 423,
-									"width": 97.2548828125,
+									"width": 139,
 									"height": 53,
 									"autoResize": false
 								}
@@ -1427,7 +1451,7 @@
 							"containerExtending": false,
 							"left": 728,
 							"top": 400,
-							"width": 97.2548828125,
+							"width": 139,
 							"height": 76,
 							"autoResize": false,
 							"nameLabel": {
@@ -1671,19 +1695,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 119,
-									"top": 368,
-									"width": 55,
+									"left": 160,
+									"top": 367,
+									"width": 13,
 									"height": 13,
 									"autoResize": false,
-									"alpha": -5.1260781535690025,
-									"distance": 44.77722635447622,
+									"alpha": -5.398118584193184,
+									"distance": 28.42534080710379,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDPNTTZnvmQI="
 									},
 									"edgePosition": 2,
 									"underline": false,
-									"text": "Person.id",
+									"text": "ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								},
@@ -1702,19 +1726,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 127,
+									"left": 95,
 									"top": 327,
-									"width": 41,
+									"width": 75,
 									"height": 13,
 									"autoResize": false,
-									"alpha": -1.127348023355926,
-									"distance": 44.28317965096906,
+									"alpha": -1.2381767089776967,
+									"distance": 58.18934610390462,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDPNTTZnvmQI="
 									},
 									"edgePosition": 0,
 									"underline": false,
-									"text": "User.id",
+									"text": "PERSON_ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								}
@@ -1801,9 +1825,9 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 703,
+									"left": 702,
 									"top": 440,
-									"width": 10,
+									"width": 13,
 									"height": 13,
 									"autoResize": false,
 									"alpha": 0.6107261992886164,
@@ -1813,7 +1837,7 @@
 									},
 									"edgePosition": 2,
 									"underline": false,
-									"text": "id",
+									"text": "ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								},
@@ -1834,17 +1858,17 @@
 									"containerExtending": false,
 									"left": 527,
 									"top": 408,
-									"width": 80,
+									"width": 110,
 									"height": 13,
 									"autoResize": false,
-									"alpha": 0.3392925529155939,
-									"distance": 54.08326913195984,
+									"alpha": 0.2662520106893923,
+									"distance": 68.41052550594829,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDPuiFZpmfrk="
 									},
 									"edgePosition": 0,
 									"underline": false,
-									"text": "belong_org_id",
+									"text": "BELONG_ORG_ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								}
@@ -1931,19 +1955,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 247,
+									"left": 240,
 									"top": 416,
-									"width": 10,
+									"width": 75,
 									"height": 13,
 									"autoResize": false,
-									"alpha": 0.8803496113132935,
-									"distance": 29.832867780352597,
+									"alpha": 0.48166358424859007,
+									"distance": 49.64876634922564,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDPvIKZp6tZA="
 									},
 									"edgePosition": 2,
 									"underline": false,
-									"text": "id",
+									"text": "PERSON_ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								},
@@ -1962,19 +1986,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 311,
-									"top": 456,
-									"width": 10,
+									"left": 256,
+									"top": 464,
+									"width": 83,
 									"height": 13,
 									"autoResize": false,
-									"alpha": 0.5456552129613295,
-									"distance": 32.7566787083184,
+									"alpha": 0.4888524425423002,
+									"distance": 53.23532661682466,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDPvIKZp6tZA="
 									},
 									"edgePosition": 0,
 									"underline": false,
-									"text": "id",
+									"text": "POSITION_ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								}
@@ -2031,7 +2055,7 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 860,
+									"left": 926,
 									"top": 373,
 									"width": 0,
 									"height": 13,
@@ -2061,19 +2085,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 727,
-									"top": 360,
-									"width": 87,
+									"left": 767,
+									"top": 359,
+									"width": 13,
 									"height": 13,
 									"autoResize": false,
-									"alpha": -6.253781812839024,
-									"distance": 34.0147027033899,
+									"alpha": -0.058755615819165996,
+									"distance": 34.058772731852805,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDPypkZqY3Oc="
 									},
 									"edgePosition": 2,
 									"underline": false,
-									"text": "Organization.id",
+									"text": "ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								},
@@ -2092,19 +2116,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 842,
+									"left": 888,
 									"top": 471,
-									"width": 113,
+									"width": 109,
 									"height": 13,
 									"autoResize": false,
-									"alpha": -0.1869792452362627,
-									"distance": 75.31268153505093,
+									"alpha": -0.18216828703003368,
+									"distance": 77.27871634544663,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDPypkZqY3Oc="
 									},
 									"edgePosition": 0,
 									"underline": false,
-									"text": "Organization.parent",
+									"text": "PARENT_ORG_ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								}
@@ -2125,7 +2149,7 @@
 								"$ref": "AAAAAAFTDO1RuZm2Ipw="
 							},
 							"lineStyle": 0,
-							"points": "772:400;772:380;846:380;846:464;824:464",
+							"points": "772:400;772:380;912:380;912:464;866:464",
 							"nameLabel": {
 								"$ref": "AAAAAAFTDPypkpqZ+rs="
 							},
@@ -2191,19 +2215,19 @@
 									"showShadow": true,
 									"containerChangeable": false,
 									"containerExtending": false,
-									"left": 383,
+									"left": 384,
 									"top": 496,
-									"width": 10,
+									"width": 13,
 									"height": 13,
 									"autoResize": false,
-									"alpha": -0.674740970678763,
-									"distance": 25.612496949731394,
+									"alpha": -0.6107259621519932,
+									"distance": 24.413111231467404,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDP2eqpq0gJk="
 									},
 									"edgePosition": 2,
 									"underline": false,
-									"text": "id",
+									"text": "ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								},
@@ -2224,17 +2248,17 @@
 									"containerExtending": false,
 									"left": 528,
 									"top": 456,
-									"width": 105,
+									"width": 143,
 									"height": 13,
 									"autoResize": false,
-									"alpha": 0.15499671809172344,
-									"distance": 64.77653896280658,
+									"alpha": 0.119903971056827,
+									"distance": 83.60023923410746,
 									"hostEdge": {
 										"$ref": "AAAAAAFTDP2eqpq0gJk="
 									},
 									"edgePosition": 0,
 									"underline": false,
-									"text": "parent_position_id",
+									"text": "PARENT_POSITION_ID",
 									"horizontalAlignment": 2,
 									"verticalAlignment": 5
 								}
@@ -2396,7 +2420,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDKJVDvhy2ck="
 								},
-								"name": "User.id",
+								"name": "USER_ID",
 								"reference": {
 									"$ref": "AAAAAAFTDJFPrfcvvpA="
 								},
@@ -2408,7 +2432,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDKJVDvhy2ck="
 								},
-								"name": "Role.id",
+								"name": "ROLE_ID",
 								"reference": {
 									"$ref": "AAAAAAFTDJNHifdx5J8="
 								},
@@ -2443,6 +2467,19 @@
 							"foreignKey": false,
 							"nullable": false,
 							"unique": false
+						},
+						{
+							"_type": "ERDColumn",
+							"_id": "AAAAAAFTK+BLBCMT7pQ=",
+							"_parent": {
+								"$ref": "AAAAAAFTDJFPrfcvvpA="
+							},
+							"name": "PERSON_ID",
+							"length": 0,
+							"primaryKey": false,
+							"foreignKey": false,
+							"nullable": false,
+							"unique": false
 						}
 					]
 				},
@@ -2466,7 +2503,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDKLjpPiIvWs="
 								},
-								"name": "Resource.id",
+								"name": "ID",
 								"reference": {
 									"$ref": "AAAAAAFTDJJp2vdMmxw="
 								},
@@ -2478,7 +2515,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDKLjpPiIvWs="
 								},
-								"name": "Resource.parent",
+								"name": "PARENT_RES_ID",
 								"reference": {
 									"$ref": "AAAAAAFTDJJp2vdMmxw="
 								},
@@ -2601,7 +2638,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDJ8P2fff7pk="
 								},
-								"name": "Role.id",
+								"name": "ROLE_ID",
 								"reference": {
 									"$ref": "AAAAAAFTDJNHifdx5J8="
 								},
@@ -2613,7 +2650,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDJ8P2fff7pk="
 								},
-								"name": "Resource.id",
+								"name": "RESOURCE_ID",
 								"reference": {
 									"$ref": "AAAAAAFTDJJp2vdMmxw="
 								},
@@ -2671,7 +2708,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDPNTTJnrwJo="
 								},
-								"name": "Person.id",
+								"name": "ID",
 								"reference": {
 									"$ref": "AAAAAAFTDO0+YZmn9xU="
 								},
@@ -2683,7 +2720,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDPNTTJnrwJo="
 								},
-								"name": "User.id",
+								"name": "PERSON_ID",
 								"reference": {
 									"$ref": "AAAAAAFTDJFPrfcvvpA="
 								},
@@ -2703,7 +2740,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDPvIKZp2pR4="
 								},
-								"name": "id",
+								"name": "PERSON_ID",
 								"reference": {
 									"$ref": "AAAAAAFTDO0+YZmn9xU="
 								},
@@ -2715,7 +2752,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDPvIKZp2pR4="
 								},
-								"name": "id",
+								"name": "POSITION_ID",
 								"reference": {
 									"$ref": "AAAAAAFTDO3OHJnBGp0="
 								},
@@ -2786,7 +2823,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDPuiFJpiRck="
 								},
-								"name": "id",
+								"name": "ID",
 								"reference": {
 									"$ref": "AAAAAAFTDO1RuZm0jqs="
 								},
@@ -2798,7 +2835,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDPuiFJpiRck="
 								},
-								"name": "belong_org_id",
+								"name": "BELONG_ORG_ID",
 								"reference": {
 									"$ref": "AAAAAAFTDO3OHJnBGp0="
 								},
@@ -2818,7 +2855,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDPypkZqU87A="
 								},
-								"name": "Organization.id",
+								"name": "ID",
 								"reference": {
 									"$ref": "AAAAAAFTDO1RuZm0jqs="
 								},
@@ -2830,7 +2867,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDPypkZqU87A="
 								},
-								"name": "Organization.parent",
+								"name": "PARENT_ORG_ID",
 								"reference": {
 									"$ref": "AAAAAAFTDO1RuZm0jqs="
 								},
@@ -2872,7 +2909,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFTDO1RuZm0jqs="
 							},
-							"name": "PARENT",
+							"name": "PARENT_ORG_ID",
 							"length": 0,
 							"primaryKey": false,
 							"foreignKey": false,
@@ -2901,7 +2938,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDP2eqZqw3Q0="
 								},
-								"name": "id",
+								"name": "ID",
 								"reference": {
 									"$ref": "AAAAAAFTDO3OHJnBGp0="
 								},
@@ -2913,7 +2950,7 @@
 								"_parent": {
 									"$ref": "AAAAAAFTDP2eqZqw3Q0="
 								},
-								"name": "parent_position_id",
+								"name": "PARENT_POSITION_ID",
 								"reference": {
 									"$ref": "AAAAAAFTDO3OHJnBGp0="
 								},
