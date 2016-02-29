@@ -1,8 +1,10 @@
 package com.proper.enterprise.platform.integration.auth.common.entity
 
 import com.proper.enterprise.platform.auth.common.entity.PersonEntity
+import com.proper.enterprise.platform.auth.common.entity.PositionEntity
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.repository.PersonRepository
+import com.proper.enterprise.platform.auth.common.repository.PositionRepository
 import com.proper.enterprise.platform.auth.common.repository.UserRepository
 import com.proper.enterprise.platform.test.integration.AbstractIntegTest
 import org.junit.Test
@@ -17,6 +19,9 @@ class RelationshipIntegTest extends AbstractIntegTest {
     @Autowired
     UserRepository userRepository
 
+    @Autowired
+    PositionRepository positionRepository
+
     @Test
     @Sql('/test-data/one-person-multi-users.sql')
     public void onePersonCouldHasMultiUsers() {
@@ -25,6 +30,16 @@ class RelationshipIntegTest extends AbstractIntegTest {
 
         UserEntity user = userRepository.findByUsername('user2')
         assert user.getPersonEntity().getName() == 'person'
+    }
+
+    @Test
+    @Sql('/test-data/many-persons-many-positions.sql')
+    public void manyToManyBetweenPersonAndPosition() {
+        PersonEntity person = personRepository.findByName('person1')
+        assert person.getPositionEntities().size() == 3
+
+        PositionEntity position = positionRepository.findByName('position2')
+        assert position.getPersonEntities().size() == 2
     }
 
 }

@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-@Table(name = "pep_auth_position")
+@Table(name = "pep_auth_positions")
 @CacheEntity
 public class PositionEntity extends BaseEntity implements Position {
 
@@ -27,6 +27,7 @@ public class PositionEntity extends BaseEntity implements Position {
      * 所属机构
      */
     @ManyToOne
+    @JoinColumn(name = "BELONG_ORG_ID")
     private OrganizationEntity belongOrgEntity;
 
     /**
@@ -43,6 +44,7 @@ public class PositionEntity extends BaseEntity implements Position {
      * 上级职位
      */
     @OneToOne
+    @JoinColumn(name = "PARENT_POSITION_ID")
     private PositionEntity parentEntity;
 
     @ManyToMany(mappedBy = "positionEntities")
@@ -96,4 +98,11 @@ public class PositionEntity extends BaseEntity implements Position {
         }
     }
 
+    public Collection<PersonEntity> getPersonEntities() {
+        return personEntities;
+    }
+
+    public void setPersonEntities(Collection<PersonEntity> personEntities) {
+        this.personEntities = personEntities;
+    }
 }

@@ -1,4 +1,4 @@
-INSERT INTO pep_auth_person
+INSERT INTO pep_auth_persons
 (ID, CREATE_TIME, CREATE_USER_ID, LAST_MODIFY_TIME, LAST_MODIFY_USER_ID, GENDER, ID_CARD, NAME)
 VALUES
 ('1', '2016-02-26 20:16:00', 'test', '2016-02-26 20:16:00', 'test', 'MALE', 'x2348092', 'person');

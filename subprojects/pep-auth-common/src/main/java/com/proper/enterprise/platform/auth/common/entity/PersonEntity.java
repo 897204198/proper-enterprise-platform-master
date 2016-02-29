@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-@Table(name = "pep_auth_person")
+@Table(name = "pep_auth_persons")
 @CacheEntity
 public class PersonEntity extends BaseEntity implements Person {
 
@@ -47,6 +47,9 @@ public class PersonEntity extends BaseEntity implements Person {
     private Collection<UserEntity> userEntities;
 
     @ManyToMany
+    @JoinTable(name = "PEP_AUTH_PERSONS_POSITIONS",
+            joinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "POSITION_ID", referencedColumnName = "ID"))
     private Collection<PositionEntity> positionEntities;
 
     @Override
@@ -87,4 +90,11 @@ public class PersonEntity extends BaseEntity implements Person {
         this.userEntities = userEntities;
     }
 
+    public Collection<PositionEntity> getPositionEntities() {
+        return positionEntities;
+    }
+
+    public void setPositionEntities(Collection<PositionEntity> positionEntities) {
+        this.positionEntities = positionEntities;
+    }
 }

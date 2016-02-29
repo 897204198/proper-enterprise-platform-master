@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import java.util.Collection;
 
 @Entity
-@Table(name = "pep_auth_organization")
+@Table(name = "pep_auth_organizations")
 @CacheEntity
 public class OrganizationEntity extends BaseEntity implements Organization {
 
