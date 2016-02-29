@@ -42,4 +42,17 @@ class RelationshipIntegTest extends AbstractIntegTest {
         assert position.getPersonEntities().size() == 2
     }
 
+    @Test
+    @Sql('/test-data/many-persons-many-positions.sql')
+    public void getParentPosition() {
+        PositionEntity position = positionRepository.findByName('position3')
+        PositionEntity parent = position.getParent()
+        assert parent.name == 'position2'
+
+        PositionEntity grand = parent.getParent()
+        assert grand.name == 'position1'
+
+        assert grand.getParent() == null
+    }
+
 }

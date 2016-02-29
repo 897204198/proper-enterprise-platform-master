@@ -19,14 +19,14 @@ VALUES
 ('1', 'test', '2016-02-26 20:16:00', 'test', '2016-02-26 20:16:00', 'pos1', 'position1');
 
 INSERT INTO pep_auth_positions
-(id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name)
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name, parent_position_id)
 VALUES
-('2', 'test', '2016-02-26 20:16:00', 'test', '2016-02-26 20:16:00', 'pos2', 'position2');
+('2', 'test', '2016-02-26 20:16:00', 'test', '2016-02-26 20:16:00', 'pos2', 'position2', '1');
 
 INSERT INTO pep_auth_positions
-(id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name)
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, code, name, parent_position_id)
 VALUES
-('3', 'test', '2016-02-26 20:16:00', 'test', '2016-02-26 20:16:00', 'pos3', 'position3');
+('3', 'test', '2016-02-26 20:16:00', 'test', '2016-02-26 20:16:00', 'pos3', 'position3', '2');
 
 INSERT INTO pep_auth_persons_positions
 (person_id, position_id)
