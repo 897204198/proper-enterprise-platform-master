@@ -1,9 +1,11 @@
 package com.proper.enterprise.platform.integration.auth.common.entity
 
 import com.proper.enterprise.platform.api.auth.model.Position
+import com.proper.enterprise.platform.auth.common.entity.OrganizationEntity
 import com.proper.enterprise.platform.auth.common.entity.PersonEntity
 import com.proper.enterprise.platform.auth.common.entity.PositionEntity
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
+import com.proper.enterprise.platform.auth.common.repository.OrganizationRepository
 import com.proper.enterprise.platform.auth.common.repository.PersonRepository
 import com.proper.enterprise.platform.auth.common.repository.PositionRepository
 import com.proper.enterprise.platform.auth.common.repository.UserRepository
@@ -22,6 +24,9 @@ class RelationshipIntegTest extends AbstractIntegTest {
 
     @Autowired
     PositionRepository positionRepository
+
+    @Autowired
+    OrganizationRepository organizationRepository
 
     @Test
     @Sql('/test-data/one-person-multi-users.sql')
@@ -52,6 +57,29 @@ class RelationshipIntegTest extends AbstractIntegTest {
 
         Position grand = parent.getParent()
         assert grand.name == 'position1'
+
+        assert grand.getParent() == null
+    }
+
+    @Test
+    @Sql('/test-data/positions-belong-to-org.sql')
+    public void positionsBelongToOrg() {
+        OrganizationEntity org = organizationRepository.findByName('org1')
+        assert org.getPositionEntities().size() == 2
+
+        PositionEntity position = positionRepository.findByName('position3')
+        assert position.getBelongOrg().name == 'org2'
+    }
+
+    @Test
+    @Sql('/test-data/positions-belong-to-org.sql')
+    public void getParentOrg() {
+        OrganizationEntity org = organizationRepository.findByName('org3')
+        def parent = org.getParent()
+        assert parent.name == 'org2'
+
+        def grand = parent.getParent()
+        assert grand.name == 'org1'
 
         assert grand.getParent() == null
     }

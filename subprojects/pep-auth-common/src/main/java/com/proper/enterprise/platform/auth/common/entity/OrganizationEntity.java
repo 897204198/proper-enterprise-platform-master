@@ -6,14 +6,11 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-@Table(name = "pep_auth_organizations")
+@Table(name = "PEP_AUTH_ORGANIZATIONS")
 @CacheEntity
 public class OrganizationEntity extends BaseEntity implements Organization {
 
@@ -39,6 +36,7 @@ public class OrganizationEntity extends BaseEntity implements Organization {
      * 上级机构
      */
     @OneToOne
+    @JoinColumn(name = "PARENT_ORG_ID")
     private OrganizationEntity parentEntity;
 
     @OneToMany(mappedBy = "belongOrgEntity")
@@ -76,6 +74,14 @@ public class OrganizationEntity extends BaseEntity implements Organization {
         } else {
             LOGGER.error("Error class type: {}", parent.getClass().getCanonicalName());
         }
+    }
+
+    public Collection<PositionEntity> getPositionEntities() {
+        return positionEntities;
+    }
+
+    public void setPositionEntities(Collection<PositionEntity> positionEntities) {
+        this.positionEntities = positionEntities;
     }
 
 }
