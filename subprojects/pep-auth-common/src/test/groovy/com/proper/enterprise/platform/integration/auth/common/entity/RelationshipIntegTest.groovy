@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.integration.auth.common.entity
 
+import com.proper.enterprise.platform.api.auth.model.Position
 import com.proper.enterprise.platform.auth.common.entity.PersonEntity
 import com.proper.enterprise.platform.auth.common.entity.PositionEntity
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
@@ -46,10 +47,10 @@ class RelationshipIntegTest extends AbstractIntegTest {
     @Sql('/test-data/many-persons-many-positions.sql')
     public void getParentPosition() {
         PositionEntity position = positionRepository.findByName('position3')
-        PositionEntity parent = position.getParent()
+        Position parent = position.getParent()
         assert parent.name == 'position2'
 
-        PositionEntity grand = parent.getParent()
+        Position grand = parent.getParent()
         assert grand.name == 'position1'
 
         assert grand.getParent() == null

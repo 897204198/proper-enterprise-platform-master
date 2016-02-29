@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-@Table(name = "pep_auth_positions")
+@Table(name = "PEP_AUTH_POSITIONS")
 @CacheEntity
 public class PositionEntity extends BaseEntity implements Position {
 
