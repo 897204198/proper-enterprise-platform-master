@@ -1,10 +1,9 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
+import com.proper.enterprise.platform.api.auth.enums.UseStatus;
 import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
-import com.proper.enterprise.platform.api.auth.enums.UseStatus;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -13,10 +12,6 @@ import java.util.Collection;
 @Table(name = "PEP_AUTH_ROLES")
 @CacheEntity
 public class RoleEntity extends BaseEntity implements Role {
-
-    private static final long serialVersionUID = PEPConstants.VERSION;
-
-    public RoleEntity() { }
 
     public RoleEntity(String code) {
         this.code = code;

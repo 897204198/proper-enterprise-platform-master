@@ -16,8 +16,6 @@ public class OrganizationEntity extends BaseEntity implements Organization {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationEntity.class);
 
-    public OrganizationEntity() { }
-
     public OrganizationEntity(String name) {
         this.name = name;
     }

@@ -2,7 +2,6 @@ package com.proper.enterprise.platform.auth.common.entity;
 
 import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.api.auth.model.Resource;
-import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import org.slf4j.Logger;
@@ -22,8 +21,6 @@ public class ResourceEntity extends BaseEntity implements Resource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceEntity.class);
 
-    private static final long serialVersionUID = PEPConstants.VERSION;
-    
     /**
      * 编号
      */

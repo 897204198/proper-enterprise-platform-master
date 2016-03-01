@@ -17,8 +17,6 @@ public class PositionEntity extends BaseEntity implements Position {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PositionEntity.class);
 
-    public PositionEntity() { }
-
     public PositionEntity(String name) {
         this.name = name;
     }
