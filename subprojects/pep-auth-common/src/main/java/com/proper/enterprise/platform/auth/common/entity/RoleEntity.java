@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-@Table(name = "pep_auth_roles")
+@Table(name = "PEP_AUTH_ROLES")
 @CacheEntity
 public class RoleEntity extends BaseEntity implements Role {
 
@@ -33,11 +33,14 @@ public class RoleEntity extends BaseEntity implements Role {
      */
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    private Collection<UserEntity> users;
+    @ManyToMany(mappedBy = "roleEntities")
+    private Collection<UserEntity> userEntities;
 
     @ManyToMany
-    private Collection<ResourceEntity> resources;
+    @JoinTable(name = "PEP_AUTH_ROLES_RESOURCES",
+            joinColumns = @JoinColumn(name = "ROLE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "RESOURCE_ID"))
+    private Collection<ResourceEntity> resourceEntities;
 
     /**
      * 使用状态
@@ -74,20 +77,19 @@ public class RoleEntity extends BaseEntity implements Role {
         this.useStatus = useStatus;
     }
 
-    public Collection<UserEntity> getUsers() {
-        return users;
+    public Collection<UserEntity> getUserEntities() {
+        return userEntities;
     }
 
-    public void setUsers(Collection<UserEntity> users) {
-        this.users = users;
+    public void setUserEntities(Collection<UserEntity> userEntities) {
+        this.userEntities = userEntities;
     }
 
-    public Collection<ResourceEntity> getResources() {
-        return resources;
+    public Collection<ResourceEntity> getResourceEntities() {
+        return resourceEntities;
     }
 
-    public void setResources(Collection<ResourceEntity> resources) {
-        this.resources = resources;
+    public void setResourceEntities(Collection<ResourceEntity> resourceEntities) {
+        this.resourceEntities = resourceEntities;
     }
-
 }

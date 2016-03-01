@@ -45,7 +45,10 @@ public class UserEntity extends BaseEntity implements User {
     private String extendProperties = "";
 
     @ManyToMany
-    private Collection<RoleEntity> roles;
+    @JoinTable(name = "PEP_AUTH_USERS_ROLES",
+            joinColumns = @JoinColumn(name = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+    private Collection<RoleEntity> roleEntities;
 
     @ManyToOne
     @JoinColumn(name = "PERSON_ID")
@@ -80,14 +83,6 @@ public class UserEntity extends BaseEntity implements User {
         this.email = email;
     }
 
-    public Collection<RoleEntity> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Collection<RoleEntity> roles) {
-        this.roles = roles;
-    }
-
     public PersonEntity getPersonEntity() {
         return personEntity;
     }
@@ -96,4 +91,11 @@ public class UserEntity extends BaseEntity implements User {
         this.personEntity = personEntity;
     }
 
+    public Collection<RoleEntity> getRoleEntities() {
+        return roleEntities;
+    }
+
+    public void setRoleEntities(Collection<RoleEntity> roleEntities) {
+        this.roleEntities = roleEntities;
+    }
 }

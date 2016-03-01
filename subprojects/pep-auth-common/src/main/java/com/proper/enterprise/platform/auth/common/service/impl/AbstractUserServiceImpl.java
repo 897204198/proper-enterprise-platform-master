@@ -72,7 +72,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     private  Collection<? extends Resource> getResources(UserEntity userEntity) {
         if (userEntity != null) {
-            return resRepo.findAll(userEntity.getRoles());
+            return resRepo.findAll(userEntity.getRoleEntities());
         } else {
             return new ArrayList<Resource>();
         }

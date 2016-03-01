@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public interface ResourceRepository extends BaseRepository<ResourceEntity, String> {
 
-    @Query("SELECT DISTINCT res FROM ResourceEntity res INNER JOIN res.roles r WHERE r IN (?1)")
-    Collection<ResourceEntity> findAll(Collection<RoleEntity> roles);
+    @Query("SELECT DISTINCT res FROM ResourceEntity res INNER JOIN res.roleEntities r WHERE r IN (?1)")
+    Collection<ResourceEntity> findAll(Collection<RoleEntity> roleEntities);
 
 }

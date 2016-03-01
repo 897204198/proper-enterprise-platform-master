@@ -1,20 +1,20 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
+import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
-import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Collection;
 
 @Entity
 @Table(
-    name = "pep_auth_resources",
+    name = "PEP_AUTH_RESOURCES",
     uniqueConstraints = @UniqueConstraint(columnNames = {"url", "method"})
 )
 @CacheEntity
@@ -38,7 +38,8 @@ public class ResourceEntity extends BaseEntity implements Resource {
      * 父资源
      */
     @OneToOne
-    private ResourceEntity parent;
+    @JoinColumn(name = "PARENT_RES_ID")
+    private ResourceEntity parentEntity;
     
     /**
      * 类型
@@ -66,8 +67,8 @@ public class ResourceEntity extends BaseEntity implements Resource {
      */
     private int sequenceNumber;
 
-    @ManyToMany(mappedBy = "resources")
-    private List<RoleEntity> roles;
+    @ManyToMany(mappedBy = "resourceEntities")
+    private Collection<RoleEntity> roleEntities;
     
     public String getCode() {
         return code;
@@ -109,21 +110,13 @@ public class ResourceEntity extends BaseEntity implements Resource {
         this.sequenceNumber = sequenceNumber;
     }
 
-    public List<RoleEntity> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<RoleEntity> roles) {
-        this.roles = roles;
-    }
-
     public Resource getParent() {
-        return parent;
+        return parentEntity;
     }
 
     public void setParent(Resource parent) {
         if (parent instanceof ResourceEntity) {
-            this.parent = (ResourceEntity)parent;
+            this.parentEntity = (ResourceEntity)parent;
         } else {
             LOGGER.error("Parent of a Resource SHOULD BE  ResourceEntity type, but get {} here.",
                     parent.getClass().getCanonicalName());
@@ -146,4 +139,11 @@ public class ResourceEntity extends BaseEntity implements Resource {
         this.method = method;
     }
 
+    public Collection<RoleEntity> getRoleEntities() {
+        return roleEntities;
+    }
+
+    public void setRoleEntities(Collection<RoleEntity> roleEntities) {
+        this.roleEntities = roleEntities;
+    }
 }
