@@ -48,8 +48,8 @@ public class PersonEntity extends BaseEntity implements Person {
 
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_PERSONS_POSITIONS",
-            joinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "ID"),
-            inverseJoinColumns = @JoinColumn(name = "POSITION_ID", referencedColumnName = "ID"))
+            joinColumns = @JoinColumn(name = "PERSON_ID"),
+            inverseJoinColumns = @JoinColumn(name = "POSITION_ID"))
     private Collection<PositionEntity> positionEntities;
 
     @Override
