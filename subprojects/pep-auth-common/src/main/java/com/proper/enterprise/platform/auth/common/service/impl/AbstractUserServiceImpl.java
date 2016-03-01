@@ -86,9 +86,9 @@ public abstract class AbstractUserServiceImpl implements UserService {
                    + "       res.name AS name "
                    + "  FROM pep_auth_resources res, pep_auth_users u, "
                    + "       pep_auth_users_roles ur, pep_auth_roles_resources rr "
-                   + " WHERE u.id = ur.users "
-                   + "   AND ur.roles = rr.roles "
-                   + "   AND rr.resources = res.id "
+                   + " WHERE u.id = ur.user_id "
+                   + "   AND ur.role_id = rr.role_id "
+                   + "   AND rr.resource_id = res.id "
                    + "   AND u.username = :name "
                    + "   AND res.resource_type = :type";
 
