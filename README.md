@@ -87,14 +87,13 @@ Proper Enterprise Platform
     }
     ```
 
-* 单元测试：与被测试的类相同路径，被测试类名称为测试类名前缀，基于 `Junit` 的测试以 `Test` 为后缀，基于 `Spock` 的测试以 `Spec` 为后缀
-* 集成测试：`com.proper.enterprise.platform.integration.**.*IntegTest`
-    > 集成测试继承 `AbstractIntegTest`，如：
+* 单元测试：与被测试的类相同路径，被测试类名称为测试类名前缀，基于 `Junit` 的测试以 `Test` 为后缀，基于 `Spock` 的测试以 `Spec` 为后缀。需要 Spring Context 的测试需继承 `AbstractTest` 基类，如：
 
     ```
-    class Crud extends AbstractIntegTest
+    class CrudBaseTest extends AbstractTest
     ```
 
+* 集成测试：**暂无**
 * 建表：Hibernate 按照 JPA 的注解自动创建
 * 初始化数据：sql 语句放在对应模块 `src/main/resources/sql/*.sql`，系统运行时自动执行
 
