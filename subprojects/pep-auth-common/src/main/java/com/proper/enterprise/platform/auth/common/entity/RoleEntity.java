@@ -13,6 +13,8 @@ import java.util.Collection;
 @CacheEntity
 public class RoleEntity extends BaseEntity implements Role {
 
+    public RoleEntity() { }
+
     public RoleEntity(String code) {
         this.code = code;
     }

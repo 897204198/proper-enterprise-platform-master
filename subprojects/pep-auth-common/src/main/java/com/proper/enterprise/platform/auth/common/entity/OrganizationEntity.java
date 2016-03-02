@@ -14,6 +14,8 @@ import java.util.Collection;
 @CacheEntity
 public class OrganizationEntity extends BaseEntity implements Organization {
 
+    public OrganizationEntity() { }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationEntity.class);
 
     public OrganizationEntity(String name) {

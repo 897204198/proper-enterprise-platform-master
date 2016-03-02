@@ -13,6 +13,8 @@ import java.util.Collection;
 @CacheEntity
 public class PersonEntity extends BaseEntity implements Person {
 
+    public PersonEntity() { }
+
     public PersonEntity(String name, String idCard, GenderType gender) {
         this.name = name;
         this.idCard = idCard;

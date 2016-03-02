@@ -19,6 +19,8 @@ import java.util.Collection;
 @CacheEntity
 public class ResourceEntity extends BaseEntity implements Resource {
 
+    public ResourceEntity() { }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceEntity.class);
 
     /**

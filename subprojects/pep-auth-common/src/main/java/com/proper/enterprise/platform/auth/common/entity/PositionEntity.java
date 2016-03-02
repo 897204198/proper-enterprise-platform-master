@@ -15,6 +15,8 @@ import java.util.Collection;
 @CacheEntity
 public class PositionEntity extends BaseEntity implements Position {
 
+    public PositionEntity() { }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PositionEntity.class);
 
     public PositionEntity(String name) {

@@ -67,7 +67,7 @@ Proper Enterprise Platform
     ```
 
 * 数据实体：`com.proper.enterprise.platform.[module]..entity.*Entity`
-    > 实体类需继承基类 `BaseEntity`；表名规则为 `PEP_[MODULE]_[NAME]`，表名字段名大写；需缓存的表要添加 `CacheEntity` 注解（`CacheEntity` 注解为实体开启 `JPA` 缓存及 `Hibernate` 二级缓存，可以用作大部分实体的通用配置。如实体有特殊需求，也可自行设置）。如：
+    > 实体类需继承基类 `BaseEntity`，且必须有默认的构造函数；表名规则为 `PEP_[MODULE]_[NAME]`，表名字段名大写；需缓存的表要添加 `CacheEntity` 注解（`CacheEntity` 注解为实体开启 `JPA` 缓存及 `Hibernate` 二级缓存，可以用作大部分实体的通用配置。如实体有特殊需求，也可自行设置）。如：
        
     ```
     @Entity
