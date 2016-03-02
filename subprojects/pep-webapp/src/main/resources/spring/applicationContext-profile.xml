@@ -2,13 +2,23 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
                            http://www.springframework.org/schema/context
-                           http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+                           http://www.springframework.org/schema/context/spring-context-4.1.xsd
+                           http://www.springframework.org/schema/jdbc
+                           http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd">
 
     <beans profile="dev">
         <context:property-placeholder location="classpath:conf/webapp/database/webapp-database-dev.properties" ignore-unresolvable="true" />
+        <jdbc:initialize-database data-source="dataSource">
+            <jdbc:script location="classpath*:sql/users.sql"/>
+            <jdbc:script location="classpath*:sql/roles.sql"/>
+            <jdbc:script location="classpath*:sql/resources.sql"/>
+            <jdbc:script location="classpath*:sql/users-roles.sql"/>
+            <jdbc:script location="classpath*:sql/roles-resources.sql"/>
+        </jdbc:initialize-database>
     </beans>
 
     <beans profile="test">
@@ -17,6 +27,14 @@
 
     <beans profile="production">
         <context:property-placeholder location="classpath:conf/webapp/database/webapp-database-production.properties" ignore-unresolvable="true" />
+        <!-- TODO 产品中数据初始化方式可能需要提供多种形式 -->
+        <jdbc:initialize-database data-source="dataSource">
+            <jdbc:script location="classpath*:sql/users.sql"/>
+            <jdbc:script location="classpath*:sql/roles.sql"/>
+            <jdbc:script location="classpath*:sql/resources.sql"/>
+            <jdbc:script location="classpath*:sql/users-roles.sql"/>
+            <jdbc:script location="classpath*:sql/roles-resources.sql"/>
+        </jdbc:initialize-database>
     </beans>
 
 </beans>
