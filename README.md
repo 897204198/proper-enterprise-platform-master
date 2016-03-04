@@ -52,7 +52,7 @@ Proper Enterprise Platform
 
 * 统一使用 PEPConstants.VERSION 作为 serialVersionUID
 * 配置文件：
-    1. spring 配置文件放置在 `src/main/resources/spring/[module]
+    1. spring 配置文件放置在 `src/main/resources/spring/[module]`。spring 配置文件采用各个模块统一入口的方式来组织，文件名为 `applicationContext-[module].xml`。在入口中将模块内的配置文件关联起来。需注意避免重复 import。
     2. 其他配置文件放置在 `src/main/resources/conf/[module]
 
         > 可参考 `./gradlew init-pep-[module]` 自动生成的配置文件
