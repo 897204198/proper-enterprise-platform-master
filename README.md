@@ -18,7 +18,7 @@ Proper Enterprise Platform
 主要技术选型
 -----------
 
-<iframe src="http://propersoft-cn.github.io/pep-refs/" width="100%" frameborder="0" height="1000"></iframe>
+[所用技术及文档](http://propersoft-cn.github.io/pep-refs)
 
 辅助工具
 ------
