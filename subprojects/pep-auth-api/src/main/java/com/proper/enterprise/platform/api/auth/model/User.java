@@ -12,4 +12,6 @@ public interface User extends IBase {
 
     void setPassword(String password);
 
+    String getTenantId();
+
 }
