@@ -18,13 +18,13 @@ public class UserEntity extends BaseEntity implements User {
         this.username = username;
         this.password = password;
     }
-    
+
     /**
      * 用户名，唯一
      */
     @Column(unique = true, nullable = false)
     private String username;
-    
+
     /**
      * 密码
      */
@@ -47,15 +47,11 @@ public class UserEntity extends BaseEntity implements User {
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     private Collection<RoleEntity> roleEntities;
 
-    @ManyToOne
-    @JoinColumn(name = "PERSON_ID")
-    private PersonEntity personEntity;
-    
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + ", extendProperties=" + extendProperties + "]";
     }
-    
+
     public String getUsername() {
         return username;
     }
@@ -78,14 +74,6 @@ public class UserEntity extends BaseEntity implements User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public PersonEntity getPersonEntity() {
-        return personEntity;
-    }
-
-    public void setPersonEntity(PersonEntity personEntity) {
-        this.personEntity = personEntity;
     }
 
     public Collection<RoleEntity> getRoleEntities() {
