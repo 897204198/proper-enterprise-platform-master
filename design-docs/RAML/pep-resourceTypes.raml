@@ -1,0 +1,61 @@
+#%RAML 1.0
+---
+
+readOnlyCollection:
+  description: Collection of available <<resourcePathName>> in Jukebox.
+  get:
+    description: Get a list of <<resourcePathName>>.
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              <<exampleCollection>>
+collection:
+  description: Collection of available <<resourcePathName>> in Jukebox.
+  get:
+    description: Get a list of <<resourcePathName>>.
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              <<exampleCollection>>
+  post:
+    description: |
+      Add a new <<resourcePathName|!singularize>> to Jukebox.
+    queryParameters:
+      access_token:
+        description: "The access token provided by the authentication application"
+        example: AABBCCDD
+        required: true
+        type: string
+    body:
+      application/json:
+        schema: <<resourcePathName|!singularize>>
+        example: |
+          <<exampleItem>>
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              { "message": "The <<resourcePathName|!singularize>> has been properly entered" }
+collection-item:
+  description: Entity representing a <<resourcePathName|!singularize>>
+  get:
+    description: |
+      Get the <<resourcePathName|!singularize>>
+      with <<resourcePathName|!singularize>>Id =
+      {<<resourcePathName|!singularize>>Id}
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              <<exampleItem>>
+      404:
+        body:
+          application/json:
+            example: |
+              {"message": "<<resourcePathName|!singularize>> not found" }
