@@ -13,3 +13,7 @@ traits: !include ../pep-traits.raml
     collection:
       exampleCollection: !include test.json
       exampleItem: !include test.json
+  /{resourceId}:
+    type:
+      collection-item:
+        exampleItem : !include test.json

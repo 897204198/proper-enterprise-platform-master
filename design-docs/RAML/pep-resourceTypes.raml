@@ -15,6 +15,7 @@ collection:
   description: Collection of available <<resourcePathName>> in Jukebox.
   get:
     description: Get a list of <<resourcePathName>>.
+    is: [searchable, orderable, pageable]
     responses:
       200:
         body:
@@ -23,7 +24,7 @@ collection:
               <<exampleCollection>>
   post:
     description: |
-      Add a new item to <<resourcePathName>>.
+      Add a new item to <<resourcePathName|!singularize>>.
     body:
       application/json:
         example: |
@@ -52,3 +53,15 @@ collection-item:
           application/json:
             example: |
               {"message": "<<resourcePathName|!singularize>> not found" }
+  put:
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              <<exampleItem>>
+  delete:
+    responses:
+      200:
+        description: |
+          删除成功
