@@ -3,6 +3,8 @@
 title: PEP auth API
 baseUri: /sys/auth/security
 
+securedBy: [JWTToken]
+securitySchemes: !include ../pep-securitySchemes.raml
 resourceTypes: !include ../pep-resourceTypes.raml
 traits: !include ../pep-traits.raml
 
