@@ -6,10 +6,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 public interface Resource extends IBase {
 
-    String getCode();
-
-    void setCode(String code);
-
     String getUrl();
 
     void setUrl(String url);

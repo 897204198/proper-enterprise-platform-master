@@ -15,16 +15,6 @@ public class RoleEntity extends BaseEntity implements Role {
 
     public RoleEntity() { }
 
-    public RoleEntity(String code) {
-        this.code = code;
-    }
-
-    /**
-     * code
-     */
-    @Column(nullable = false, unique = true)
-    private String code;
-
     /**
      * 名称
      */
@@ -47,7 +37,7 @@ public class RoleEntity extends BaseEntity implements Role {
 
     @Override
     public String toString() {
-        return "code: " + code;
+        return "name: " + name;
     }
 
     public String getName() {
@@ -56,14 +46,6 @@ public class RoleEntity extends BaseEntity implements Role {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public UseStatus getUseStatus() {

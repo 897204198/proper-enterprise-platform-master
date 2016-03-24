@@ -24,28 +24,23 @@ public class ResourceEntity extends BaseEntity implements Resource {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceEntity.class);
 
     /**
-     * 编号
-     */
-    private String code;
-    
-    /**
      * 名称
      */
     private String name;
-    
+
     /**
      * 父资源
      */
     @OneToOne
     @JoinColumn(name = "PARENT_RES_ID")
     private ResourceEntity parentEntity;
-    
+
     /**
      * 类型
      */
     @Enumerated(EnumType.STRING)
     private ResourceType resourceType;
-    
+
     /**
      * 权限对应的Url地址
      */
@@ -55,12 +50,12 @@ public class ResourceEntity extends BaseEntity implements Resource {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RequestMethod method = RequestMethod.GET;
-    
+
     /**
      * 图标
      */
     private String icon;
-    
+
     /**
      * 显示顺序
      */
@@ -68,14 +63,6 @@ public class ResourceEntity extends BaseEntity implements Resource {
 
     @ManyToMany(mappedBy = "resourceEntities")
     private Collection<RoleEntity> roleEntities;
-    
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public String getName() {
         return name;
