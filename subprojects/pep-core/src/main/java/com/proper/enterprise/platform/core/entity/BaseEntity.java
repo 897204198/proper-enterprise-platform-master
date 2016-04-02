@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.entity;
 
 import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.json.JSONObject;
 import com.proper.enterprise.platform.core.json.JSONUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
@@ -8,12 +9,22 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * 数据模型及实体基类，包含数据表公共字段的 getter 和 setter 方法
+ *
+ * 公共字段包括：
+ *  - id                唯一标识
+ *  - createUserId      创建用户 id
+ *  - createTime        创建时间
+ *  - lastModifyUserId  最后修改用户 id
+ *  - lastModifyTime    最后修改时间
+ *  - tenantId          系统租户 id
+ */
 @MappedSuperclass
-public class BaseEntity implements Serializable {
+public class BaseEntity implements IBase {
 
     private static final long serialVersionUID = PEPConstants.VERSION;
 
@@ -21,25 +32,28 @@ public class BaseEntity implements Serializable {
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     protected String id;
-    
+
     @Column(updatable = false, nullable = false)
     protected String createUserId;
-    
+
     @Column(updatable = false, nullable = false)
     protected String createTime = DateUtil.getCurrentDateString();
-    
+
     @Column(nullable = false)
     protected String lastModifyUserId;
-    
+
     @Column(nullable = false)
     protected String lastModifyTime = DateUtil.getCurrentDateString();
+
+    @Column(updatable = false, nullable = false)
+    protected String tenantId;
 
     /**
      * 扩展属性
      */
     @Transient
     protected String extendProperties;
-    
+
     public String getExtendProperty(String key) {
         if (StringUtil.isNull(extendProperties)) {
             return null;
@@ -60,7 +74,7 @@ public class BaseEntity implements Serializable {
         if (jsonObject.containsKey(key)){
             jsonObject.remove(key);
         }
-        
+
         jsonObject.put(key, value);
 
         this.extendProperties = jsonObject.toString();
@@ -120,4 +134,11 @@ public class BaseEntity implements Serializable {
         this.extendProperties = extendProperties;
     }
 
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 }
