@@ -40,7 +40,7 @@ Proper Enterprise Platform
     2. 其他配置文件放置在 `src/main/resources/conf/[module]
 
         > 可参考 `./gradlew init-pep-[module]` 自动生成的配置文件
-        
+
 * Controller：`com.proper.enterprise.platform.[module]..controller.*Controller`，Controller 放置在各模块中
 * 服务接口：`com.proper.enterprise.platform.api.[module]..service.*Service`
 * 服务实现：`com.proper.enterprise.platform.[module]..service.impl.*ServiceImpl`
@@ -52,7 +52,7 @@ Proper Enterprise Platform
 
 * 数据实体：`com.proper.enterprise.platform.[module]..entity.*Entity`
     > 实体类需继承基类 `BaseEntity`，且必须有默认的构造函数；表名规则为 `PEP_[MODULE]_[NAME]`，表名字段名大写；需缓存的表要添加 `CacheEntity` 注解（`CacheEntity` 注解为实体开启 `JPA` 缓存及 `Hibernate` 二级缓存，可以用作大部分实体的通用配置。如实体有特殊需求，也可自行设置）。如：
-       
+
     ```
     @Entity
 	@Table(name = "PEP_AUTH_USER")
@@ -64,10 +64,10 @@ Proper Enterprise Platform
 
     ```
     public interface UserRepository extends BaseRepository<UserEntity, String> {
-    
+
         @CacheQuery
         UserEntity findByUsername(String username);
-    
+
     }
     ```
 
@@ -118,7 +118,7 @@ Proper Enterprise Platform
 若某子项目依赖的库有变化，需重新生成其 `eclipse` 配置文件时，可单独更新该子项目的配置，以 `pep-core` 子项目为例：
 
     $ ./gradlew pep-core:cleanEclipse pep-core:eclipse
-    
+
 导入后的项目会自动配置好 `java` 项目或 `web` 项目的类别，`web` 项目可以直接发布到 `tomcat` 下进行开发。
 
 ### IntelliJ IDEA
@@ -137,11 +137,19 @@ Proper Enterprise Platform
 
 ### 直接运行
 
-    $ ./gradlew run
+    $ ./gradlew assemble run
+
+> `assemble` 任务的作用是将各个模块均进行编译。当前 web 应用模块 `pep-webapp` 只是将其他模块作为运行时依赖，gradle tomcat 插件在运行时没自动编译这些运行时依赖，故需要手动执行编译，否则会报依赖的包不存在
 
 ### 远程调试
 
-    $ ./gradlew debug
+    $ ./gradlew assemble debug
+
+### 热部署修改
+
+    $ ./gradlew assemble
+
+> assemble 任务会将源码重新编译，class 更新后会被 `spring-loaded` 自动加载，实现热部署效果
 
 IDE 开启远程调试方式可参见：
 
