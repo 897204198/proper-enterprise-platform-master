@@ -24,8 +24,4 @@ public interface IBase extends Serializable {
 
     void setLastModifyTime(String lastModifyTime);
 
-    String getTenantId();
-
-    void setTenantId(String tenantId);
-
 }

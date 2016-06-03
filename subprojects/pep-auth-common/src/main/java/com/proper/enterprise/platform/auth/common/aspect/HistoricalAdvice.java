@@ -17,8 +17,6 @@ public class HistoricalAdvice {
 
     private static final String DEFAULT_USER_ID = ConfManager.getString("auth.common", "historical.defaultUserId", "PEP_SYS");
 
-    private static final String DEFAULT_TENANT_ID = ConfManager.getString("auth.common", "historical.defaultTenantId", "PEP");
-
     @Autowired
     UserService userService;
 
@@ -26,31 +24,28 @@ public class HistoricalAdvice {
         LOGGER.trace("HistoricalAdvice before {} with {} args.", jp.getSignature().getName(), jp.getArgs());
 
         String userId = DEFAULT_USER_ID;
-        String tenantId = DEFAULT_TENANT_ID;
         try {
             User user = userService.getCurrentUser();
             LOGGER.trace("Current user is {}({})", user.getUsername(), user.getId());
             userId = user.getId();
-            tenantId = user.getTenantId();
         } catch (Exception e) {
             LOGGER.debug("Get current user throws exception {}", e.getMessage());
         }
 
         Object obj = jp.getArgs()[0];
         if (obj instanceof BaseEntity) {
-            update((BaseEntity) obj, userId, tenantId);
+            update((BaseEntity) obj, userId);
         } else if (obj instanceof Iterable) {
             for (Object entity : (Iterable) obj) {
-                update((BaseEntity)entity, userId, tenantId);
+                update((BaseEntity)entity, userId);
             }
         }
     }
 
-    private void update(BaseEntity entity, String userId, String tenantId) {
+    private void update(BaseEntity entity, String userId) {
         if (StringUtil.isNull(entity.getId())) {
             entity.setCreateUserId(userId);
             entity.setCreateTime(DateUtil.getCurrentDateString());
-            entity.setTenantId(tenantId);
         }
         entity.setLastModifyUserId(userId);
         entity.setLastModifyTime(DateUtil.getCurrentDateString());
