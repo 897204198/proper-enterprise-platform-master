@@ -21,7 +21,6 @@ import java.util.Map.Entry;
  *  - createTime        创建时间
  *  - lastModifyUserId  最后修改用户 id
  *  - lastModifyTime    最后修改时间
- *  - tenantId          系统租户 id
  */
 @MappedSuperclass
 public class BaseEntity implements IBase {
@@ -44,9 +43,6 @@ public class BaseEntity implements IBase {
 
     @Column(nullable = false)
     protected String lastModifyTime = DateUtil.getCurrentDateString();
-
-    @Column(updatable = false, nullable = false)
-    protected String tenantId;
 
     /**
      * 扩展属性
@@ -134,11 +130,4 @@ public class BaseEntity implements IBase {
         this.extendProperties = extendProperties;
     }
 
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
 }
