@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.workflow.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.proper.enterprise.platform.core.PEPConstants;
-import com.proper.enterprise.platform.core.conf.Constants;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.EditorSource;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
@@ -67,7 +66,7 @@ public class ModelsController {
             Deployment deployment = repositoryService
                     .createDeployment()
                     .name(model.getName())
-                    .addString(processName, new String(getModelXml(modelId), Constants.DEFAULT_CHARSET))
+                    .addString(processName, new String(getModelXml(modelId), PEPConstants.DEFAULT_CHARSET))
                     .deploy();
 
             response.setStatus(HttpStatus.CREATED.value());

@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.auth.jwt.service;
 
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.model.JWTPayload;
-import com.proper.enterprise.platform.core.conf.Constants;
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.json.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -16,11 +16,11 @@ import javax.servlet.http.HttpServletRequest;
  * Utility service for JSON Web Token (http://jwt.io/)
  * Only support JWT type and HS256 algorithm now
  * Use user id as key of apiSecret caches
- * 
+ *
  * @author Hinex
  */
 public class JWTService {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTService.class);
 
     private APISecret secret;
@@ -55,7 +55,7 @@ public class JWTService {
     }
 
     private String base64(String str) {
-        return Base64.encodeBase64URLSafeString(str.getBytes(Constants.DEFAULT_CHARSET));
+        return Base64.encodeBase64URLSafeString(str.getBytes(PEPConstants.DEFAULT_CHARSET));
     }
 
     public boolean verify(String token) {
@@ -63,12 +63,12 @@ public class JWTService {
             LOGGER.debug("Token should NOT NULL!");
             return false;
         }
-        
+
         String[] split = token.split("\\.");
         String headerBase64= split[0];
         String payloadBase64 = split[1];
         String sign = split[2];
-        
+
         JWTHeader header = getHeader(token);
         if (header == null) {
             LOGGER.debug("Want to parse header from token, but get NULL! Maybe token is INVALID!");
@@ -82,7 +82,7 @@ public class JWTService {
 
         return true;
     }
-    
+
     public JWTHeader getHeader(String token) {
         String[] split = token.split("\\.");
         String headerStr = split[0];
@@ -92,5 +92,5 @@ public class JWTService {
     public void clearToken(JWTHeader header) {
         secret.clearAPISecret(header.getId());
     }
-    
+
 }
