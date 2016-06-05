@@ -1,11 +1,13 @@
 package com.proper.enterprise.platform.core.utils
 
 import spock.lang.Specification
+import spock.lang.Unroll
 
 
 class MD5UtilSpec extends Specification {
 
-    def "#input md5 hex is #result"() {
+    @Unroll
+    def "MD5 HEX string of #input is #result"() {
         expect:
         result == MD5Util.md5Hex(input)
 

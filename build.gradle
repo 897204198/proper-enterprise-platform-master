@@ -28,9 +28,10 @@ subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'java'
     apply plugin: 'groovy'
+    apply plugin: 'jacoco'
 
     apply from: "$rootDir/gradle/dependencies.gradle"
-    
+
     apply from: "$rootDir/gradle/codeQuality.gradle"
 
     sourceCompatibility = 1.7
@@ -93,7 +94,7 @@ tasks.addRule('Pattern: init-pep-<ID>') { String initSubProj ->
             file("$subProjRoot/src/main/resources/spring/$confPath/applicationContext-${subProjName - 'pep-'}.xml").createNewFile()
             mkdir("$subProjRoot/src/test/groovy/com/proper/enterprise/platform")
             mkdir("$subProjRoot/src/test/resources")
-            
+
             file("$subProjRoot/${subProjName}.gradle").createNewFile()
             file("$subProjRoot/README.md").withWriter {
                 it.write("""$subProjName
