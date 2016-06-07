@@ -6,30 +6,27 @@ import spock.lang.Unroll
 class StringUtilSpec extends Specification {
 
     @Unroll
-    def "The result of clean #url is #result"() {
+    def "'#input' is null? #result"() {
         expect:
-        StringUtil.cleanUrl(url) == result
-
-        where:
-        url             | result
-        '/test?a=1&b=2' | '/test'
-        '/test'         | '/test'
-        '/'             | '/'
-        '/?_=342'       | '/'
-        'abc'           | 'abc'
-        null            | ''
-    }
-
-    @Unroll
-    def "'#input' is #result"() {
-        expect:
-        result == (StringUtil.isNull(input) ? 'null' : 'not null')
+        result == StringUtil.isNull(input)
 
         where:
         input   | result
-        ''      | 'null'
-        ' '     | 'null'
-        ' ab '  | 'not null'
+        ''      | true
+        ' '     | true
+        ' ab '  | false
+    }
+
+    @Unroll
+    def "'#input' is not null? #result"() {
+        expect:
+        result == StringUtil.isNotNull(input)
+
+        where:
+        input   | result
+        ''      | false
+        ' '     | false
+        ' ab '  | true
     }
 
     @Unroll

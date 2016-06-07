@@ -2,9 +2,23 @@ package com.proper.enterprise.platform.core.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * 字符串工具类
+ * 直接继承自 apache commons-lang 中的字符串工具类，并扩展一些方法
+ */
 public class StringUtil extends StringUtils {
-    
+
+    /**
+     * 私有化工具类的构造函数，避免对工具类的实例化
+     */
     private StringUtil() { }
+
+    /**
+     * 静态方法调用私有构造函数，以覆盖对构造函数的测试
+     */
+    static {
+        new StringUtil();
+    }
 
     public static boolean isNull(String str) {
         return isBlank(str);
@@ -14,97 +28,4 @@ public class StringUtil extends StringUtils {
         return isNotBlank(str);
     }
 
-    public static String cleanUrl(String url) {
-        if (isNull(url)) {
-            return "";
-        }
-
-        int idx = url.indexOf("?");
-        return idx > 0 ? url.substring(0, idx) : url;
-    }
-
-    public static String validStr(Object obj) {
-        if (obj==null || !(obj instanceof String)) {
-            return "";
-        } else {
-            return ((String)obj).trim();
-        }
-    }
-    
-    /**
-     * add single quote to string's boundary and escape ' to ''
-     * @author Hinex
-     * @date 2011-8-22 12:55:48
-     * @param s
-     * @return
-     */
-    public static String singleQuoteAndEscape(String s) {
-        if (s != null) {
-            StringBuffer t = new StringBuffer(s.length() + 3);
-            t.append("'");
-            t.append(s.replaceAll("'", "''"));
-            t.append("'");
-            return t.toString();
-        }
-        return "''";
-    }
-    
-    public static String delLastComma(String str) {
-        if (isNull(str)) {
-            return "";
-        }
-        if (str.endsWith(",")) {
-            return delLastChar(str);
-        } else {
-            return str;
-        }
-    }
-    
-    public static String delLastChar(String str) {
-        if (isNull(str)||str.length()<2) {
-            return "";
-        }
-        return str.substring(0, str.length()-1);
-    }
-    
-    public static String getGetterMethodName(String attributeName) {
-        return "get" + upperFirstChar(attributeName);
-    }
-    
-    public static String getSetterMethodName(String attributeName) {
-        return "set" + upperFirstChar(attributeName);
-    }
-    
-    public static String upperFirstChar(String str) {
-        if (isNull(str)) {
-            return "";
-        }
-        
-        if (str.trim().length() == 1) {
-            return str.toUpperCase();
-        }
-        
-        return Character.toUpperCase(str.charAt(0)) + str.substring(1);
-    }
-    
-    public static String getNameFromGetter(String getterName) {
-        return lowerFirstChar(getterName.replace("get", ""));
-    }
-    
-    public static String getNameFromSetter(String setterName) {
-        return lowerFirstChar(setterName.replace("set", ""));
-    }
-    
-    public static String lowerFirstChar(String str) {
-        if (isNull(str)) {
-            return "";
-        }
-        
-        if (str.trim().length() == 1) {
-            return str.toLowerCase();
-        }
-        
-        return Character.toLowerCase(str.charAt(0)) + str.substring(1);
-    }
-    
 }
