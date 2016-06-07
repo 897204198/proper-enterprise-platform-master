@@ -5,7 +5,6 @@ import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.json.JSONObject;
 import com.proper.enterprise.platform.core.json.JSONUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
-import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -51,15 +50,8 @@ public class BaseEntity implements IBase {
     protected String extendProperties;
 
     public String getExtendProperty(String key) {
-        if (StringUtil.isNull(extendProperties)) {
-            return null;
-        }
-
         JSONObject jsonObject = JSONUtil.parseObject(extendProperties);
-        if (jsonObject.containsKey(key)) {
-            return jsonObject.get(key).toString();
-        }
-        return null;
+        return jsonObject!=null && jsonObject.containsKey(key) ? jsonObject.get(key) : null;
     }
 
     public void putExtendProperty(String key, String value) {

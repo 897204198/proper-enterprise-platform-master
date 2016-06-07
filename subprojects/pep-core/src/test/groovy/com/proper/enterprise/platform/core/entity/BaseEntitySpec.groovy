@@ -6,13 +6,10 @@ import static org.hamcrest.core.IsEqual.equalTo
 
 class BaseEntitySpec extends Specification {
 
-    static BaseEntity entity
-
-    def setup() {
-        entity = new BaseEntity()
-    }
-
     def "Check put and get extend properties in BaseEntity"() {
+        given:
+        def entity = new BaseEntity()
+
         when:
         entity.putExtendProperty('a', '1')
         entity.putExtendProperty('b', '2')
@@ -22,15 +19,23 @@ class BaseEntitySpec extends Specification {
         ['a':'1', 'b':'2', 'c':'3', 'd':'4'].entrySet().each { entry ->
             assertThat entity.getExtendProperty(entry.key), equalTo(entry.value)
         }
+        entity.getExtendProperty('not exist') == null
     }
 
     def "Check get extend properties when it's null"() {
+        given:
+        def entity = new BaseEntity()
+        entity.setExtendProperties(null);
+
         expect:
         entity.getExtendProperty('abc') == null
         entity.getExtendProperties() == null
     }
 
     def "Put extend properties in string and get as object"() {
+        given:
+        def entity = new BaseEntity()
+
         when:
         entity.setExtendProperties('{"abc": "123", "中文": "测试"}')
 
