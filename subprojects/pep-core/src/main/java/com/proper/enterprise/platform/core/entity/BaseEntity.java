@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 public class BaseEntity implements IBase {
 
     private static final long serialVersionUID = PEPConstants.VERSION;
-
+    
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
@@ -58,14 +58,12 @@ public class BaseEntity implements IBase {
         if (this.extendProperties == null) {
             this.extendProperties = "{}";
         }
+
         JSONObject jsonObject = JSONUtil.parseObject(extendProperties);
-        if (jsonObject.containsKey(key)){
-            jsonObject.remove(key);
+        if (jsonObject != null) {
+            jsonObject.put(key, value);
+            this.extendProperties = jsonObject.toString();
         }
-
-        jsonObject.put(key, value);
-
-        this.extendProperties = jsonObject.toString();
     }
 
     public void putExtendProperty(Map<String, String> extendProperties) {
