@@ -3,6 +3,7 @@ proper-enterprise-platform
 
 Proper Enterprise Platform
 
+[![codecov](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform/branch/master/graph/badge.svg?token=uthbnLL68t)](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform)
 
 主要设计目标
 ----------
