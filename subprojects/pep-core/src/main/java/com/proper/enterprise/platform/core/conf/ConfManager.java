@@ -111,7 +111,7 @@ public class ConfManager {
      * @return key's value or default value
      */
     public static int getInt(String path, String key, int defaultVal) {
-        return getInteger(path, key, defaultVal).intValue();
+        return getInteger(path, key, defaultVal);
     }
 
     /**
