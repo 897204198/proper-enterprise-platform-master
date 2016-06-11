@@ -5,9 +5,6 @@
 
 package com.proper.enterprise.platform.core.conf;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -25,8 +22,6 @@ import java.util.Properties;
  * @author Hinex
  */
 public class ConfManager {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfManager.class);
 
     /**
      * 私有化工具类的构造函数，避免对工具类的实例化
@@ -50,13 +45,8 @@ public class ConfManager {
         Properties properties = new Properties();
         String filename = "/conf/" + path.replace(".", "/") + "/" + path.replace(".", "-") + ".properties";
         InputStream is = ConfManager.class.getResourceAsStream(filename);
-        try {
-            properties.load(is);
-        } catch(IOException e) {
-            LOGGER.error("Load properties:{} error.", filename, e);
-        } finally {
-            is.close();
-        }
+        properties.load(is);
+        is.close();
         return new ConfManager(properties);
     }
 
@@ -84,8 +74,6 @@ public class ConfManager {
     /**
      * Load resource, get key's string value or default value in one step.
      *
-     * @author Hinex
-     * @date 2015-6-21 22:44:43
      * @param path         path of configuration resource file
      * @param key          key in resource file
      * @param defaultVal   default value when not setting
@@ -103,8 +91,6 @@ public class ConfManager {
     /**
      * Load resource, get key's int value or default value in one step.
      *
-     * @author Hinex
-     * @date 2015-6-21 22:53:18
      * @param path         path of configuration resource file
      * @param key          key in resource file
      * @param defaultVal   default value when not setting
@@ -117,8 +103,6 @@ public class ConfManager {
     /**
      * Load resource, get key's Integer value or default value in one step.
      *
-     * @author Hinex
-     * @date 2015-6-21 22:52:28
      * @param path         path of configuration resource file
      * @param key          key in resource file
      * @param defaultVal   default value when not setting
