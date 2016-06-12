@@ -5,5 +5,7 @@ dependencies {
             libraries.hibernate_entitymanager,
             libraries.spring_orm
 
+    testCompile project(':pep-test')
+
     testRuntime fileTree(dir: 'libs', include: 'conf-in-jar.jar')
 }

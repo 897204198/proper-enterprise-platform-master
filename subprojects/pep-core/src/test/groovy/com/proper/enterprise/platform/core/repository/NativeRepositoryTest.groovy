@@ -1,6 +1,5 @@
-package com.proper.enterprise.platform.webapp.dal
+package com.proper.enterprise.platform.core.repository
 
-import com.proper.enterprise.platform.core.repository.NativeRepository
 import com.proper.enterprise.platform.test.integration.AbstractTest
 import org.junit.Before
 import org.junit.Test
