@@ -44,9 +44,9 @@ public class ConfManager {
     public static ConfManager getConf(String path) throws IOException {
         Properties properties = new Properties();
         String filename = "/conf/" + path.replace(".", "/") + "/" + path.replace(".", "-") + ".properties";
-        InputStream is = ConfManager.class.getResourceAsStream(filename);
-        properties.load(is);
-        is.close();
+        try (InputStream is = ConfManager.class.getResourceAsStream(filename)) {
+            properties.load(is);
+        }
         return new ConfManager(properties);
     }
 
