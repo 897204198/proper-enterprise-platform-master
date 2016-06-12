@@ -78,7 +78,6 @@ Proper Enterprise Platform
     class CrudBaseTest extends AbstractTest
     ```
 
-* 集成测试：**暂无**
 * 建表：Hibernate 按照 JPA 的注解自动创建
 * 初始化数据：sql 语句放在对应模块 `src/main/resources/sql/*.sql`，系统运行时自动执行
 
@@ -162,7 +161,6 @@ IDE 开启远程调试方式可参见：
 ----
 
 * 单元测试 `$ ./gradlew test`
-* 集成测试 `$ ./gradlew integTest`
 * 测试及代码检查 `$ ./gradlew check`
 
 

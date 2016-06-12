@@ -52,16 +52,8 @@ subprojects {
         from sourceSets.main.allSource
     }
 
-    task integTest(type: Test) {
-        include '**/*IntegTest.*'
-    }
-
-    test {
-        exclude '**/*IntegTest.*'
-    }
-
-    check.dependsOn integTest
-    build.dependsOn integTest
+    check.dependsOn test
+    build.dependsOn test
 
     dependencies {
         compile libraries.slf4j_api,
