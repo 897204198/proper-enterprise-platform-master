@@ -29,8 +29,8 @@ public class SearchCondition {
     public SearchCondition(String field, Operator op) {
         Assert.isTrue(op.equals(Operator.ASC)
                         || op.equals(Operator.DESC)
-                        || op.equals(Operator.NOTNULL)
-                      , "This constructor only supports ASC or DESC or NOTNULL operator!");
+                        || op.equals(Operator.NOTNULL),
+                      "This constructor only supports ASC or DESC or NOTNULL operator!");
         this.field = field;
         this.operator = op;
     }

@@ -16,18 +16,10 @@ Proper Enterprise Platform
 * 平台功能及特性须有对应的功能及性能测试
 
 
-主要技术选型
------------
+主要技术及工具选型
+--------------
 
-[所用技术及文档](http://propersoft-cn.github.io/pep-refs)
-
-辅助工具
-------
-
-|Catalog|Tool|
-|:--|:--|
-|UML|[StarUML](http://staruml.io/)|
-|ERD|[StarUML](http://staruml.io/)|
+[所用技术、工具及文档](http://propersoft-cn.github.io/pep-refs)
 
 
 开发规范
