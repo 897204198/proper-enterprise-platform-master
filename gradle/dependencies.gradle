@@ -106,6 +106,8 @@ libraries.jackson_databind = 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
 //   exclude group: 'com.jhlabs', module: 'imaging'
 //}
 
+libraries.joda_time = 'joda-time:joda-time:2.9.4'
+
 libraries.junit = 'junit:junit:4.12'
 
 //libraries.json_lib = 'net.sf.json-lib:json-lib:2.4:jdk15@jar'

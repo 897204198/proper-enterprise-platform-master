@@ -2,6 +2,7 @@ dependencies {
     compile libraries.commons_codec,
             libraries.commons_lang3,
             libraries.jackson_databind,
+            libraries.joda_time,
             libraries.hibernate_entitymanager,
             libraries.spring_orm
 
