@@ -8,6 +8,8 @@ versions.spring = '4.1.7.RELEASE'
 versions.spring_security = '4.0.1.RELEASE'
 
 configurations.all {
+    resolutionStrategy.force 'xml-apis:xml-apis:1.0.b2'
+    // 强制所有依赖使用相同版本的 Spring Framework
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
         def req = details.requested
         if (req.group == 'org.springframework' && req.name != 'springloaded') {
