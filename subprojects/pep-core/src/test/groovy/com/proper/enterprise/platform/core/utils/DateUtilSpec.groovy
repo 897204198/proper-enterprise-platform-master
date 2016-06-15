@@ -36,7 +36,7 @@ class DateUtilSpec extends Specification {
 
     def "Get #year year #month month last date: #result"() {
         expect:
-        result.equals new LocalDate(year, month, 1).plusMonths(1).minusDays(1).toString(PEPConstants.DEFAULT_DATE_FORMAT)
+        result.equals new LocalDate(year, month, 1).dayOfMonth().withMaximumValue().toString(PEPConstants.DEFAULT_DATE_FORMAT)
 
         where:
         year  | month | result

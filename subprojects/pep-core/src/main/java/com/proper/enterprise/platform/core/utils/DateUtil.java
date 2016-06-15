@@ -103,8 +103,7 @@ public class DateUtil {
      * @return 日期字符串
      */
     public static String toString(Date date, String format) {
-        DateTimeFormatter fmt = DateTimeFormat.forPattern(format);
-        return fmt.print(new DateTime(date));
+        return new DateTime(date.getTime()).toString(format);
     }
 
 }
