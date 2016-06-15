@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.core.json;
+package com.proper.enterprise.platform.core.utils.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,9 +17,9 @@ public class JSONUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JSONUtil.class);
 
     private static ObjectMapper mapper = new ObjectMapper();
-    
+
     private JSONUtil() { }
-    
+
     public static String toJSONString(Object obj) {
         String result = "";
         try {
@@ -29,7 +29,7 @@ public class JSONUtil {
         }
         return result;
     }
-    
+
     public static Object parse(String str) {
         JsonNode root = null;
         try {
@@ -59,7 +59,7 @@ public class JSONUtil {
         }
         return objs;
     }
-    
+
     public static JSONObject parseObject(String str) {
         if (StringUtil.isNull(str)) {
             return null;
@@ -100,7 +100,7 @@ public class JSONUtil {
         }
         return result;
     }
-    
+
     public static JSONObject[] parseArray(String str) {
         if (StringUtil.isNull(str)) {
             return null;

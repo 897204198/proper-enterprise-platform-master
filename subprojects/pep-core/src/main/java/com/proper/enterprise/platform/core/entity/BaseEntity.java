@@ -2,8 +2,8 @@ package com.proper.enterprise.platform.core.entity;
 
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.api.IBase;
-import com.proper.enterprise.platform.core.json.JSONObject;
-import com.proper.enterprise.platform.core.json.JSONUtil;
+import com.proper.enterprise.platform.core.utils.json.JSONObject;
+import com.proper.enterprise.platform.core.utils.json.JSONUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import org.hibernate.annotations.GenericGenerator;
 

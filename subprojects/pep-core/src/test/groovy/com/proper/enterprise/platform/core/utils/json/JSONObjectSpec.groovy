@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.core.json
+package com.proper.enterprise.platform.core.utils.json
 
 import spock.lang.Specification
 

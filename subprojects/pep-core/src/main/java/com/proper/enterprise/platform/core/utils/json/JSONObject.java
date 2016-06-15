@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.core.json;
+package com.proper.enterprise.platform.core.utils.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,9 +18,9 @@ public class JSONObject implements Serializable {
     private static final long serialVersionUID = PEPConstants.VERSION;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JSONObject.class);
-    
+
     private transient ObjectNode obj;
-    
+
     public JSONObject(ObjectNode obj) {
         this.obj = obj;
     }
