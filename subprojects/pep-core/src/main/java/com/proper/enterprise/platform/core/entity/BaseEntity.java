@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 public class BaseEntity implements IBase {
 
     private static final long serialVersionUID = PEPConstants.VERSION;
-    
+
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
@@ -35,13 +35,13 @@ public class BaseEntity implements IBase {
     protected String createUserId;
 
     @Column(updatable = false, nullable = false)
-    protected String createTime = DateUtil.getCurrentDateString();
+    protected String createTime = DateUtil.getTimestamp();
 
     @Column(nullable = false)
     protected String lastModifyUserId;
 
     @Column(nullable = false)
-    protected String lastModifyTime = DateUtil.getCurrentDateString();
+    protected String lastModifyTime = DateUtil.getTimestamp();
 
     /**
      * 扩展属性
