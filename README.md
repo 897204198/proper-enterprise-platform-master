@@ -1,6 +1,9 @@
 Proper Enterprise Platform
 ==========================
 
+<a href="http://202.199.100.174/teamcity/viewType.html?buildTypeId=PEP_PepBuild&guest=1">
+  <img src="http://202.199.100.174/teamcity/guestAuth/app/rest/builds/buildType:(id:PEP_PepBuild)/statusIcon.svg"/>
+</a>
 [![codecov](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform/branch/master/graph/badge.svg?token=uthbnLL68t)](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform)
 
 
