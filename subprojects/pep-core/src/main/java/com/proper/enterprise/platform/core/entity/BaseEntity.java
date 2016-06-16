@@ -2,15 +2,13 @@ package com.proper.enterprise.platform.core.entity;
 
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.api.IBase;
-import com.proper.enterprise.platform.core.utils.json.JSONObject;
-import com.proper.enterprise.platform.core.utils.json.JSONUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
  * 数据模型及实体基类，包含数据表公共字段的 getter 和 setter 方法
@@ -43,35 +41,6 @@ public class BaseEntity implements IBase {
 
     @Column(nullable = false)
     protected String lastModifyTime = DateUtil.getTimestamp();
-
-    /**
-     * 扩展属性
-     */
-    @Transient
-    protected String extendProperties;
-
-    public String getExtendProperty(String key) throws IOException {
-        JSONObject jsonObject = JSONUtil.parseObject(extendProperties);
-        return jsonObject!=null && jsonObject.containsKey(key) ? jsonObject.get(key) : null;
-    }
-
-    public void putExtendProperty(String key, String value) throws IOException {
-        if (this.extendProperties == null) {
-            this.extendProperties = "{}";
-        }
-
-        JSONObject jsonObject = JSONUtil.parseObject(extendProperties);
-        if (jsonObject != null) {
-            jsonObject.put(key, value);
-            this.extendProperties = jsonObject.toString();
-        }
-    }
-
-    public void putExtendProperty(Map<String, String> extendProperties) throws IOException {
-        for (Entry<String, String> entry : extendProperties.entrySet()) {
-            putExtendProperty(entry.getKey(), entry.getValue());
-        }
-    }
 
     public String getId() {
         return id;
@@ -111,14 +80,6 @@ public class BaseEntity implements IBase {
 
     public void setLastModifyTime(String lastModifyTime) {
         this.lastModifyTime = lastModifyTime;
-    }
-
-    public String getExtendProperties() {
-        return extendProperties;
-    }
-
-    public void setExtendProperties(String extendProperties) {
-        this.extendProperties = extendProperties;
     }
 
 }

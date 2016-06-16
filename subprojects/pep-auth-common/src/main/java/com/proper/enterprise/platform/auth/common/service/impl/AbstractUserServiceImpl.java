@@ -35,7 +35,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
     NativeRepository repo;
 
     @Override
-    public abstract User getCurrentUser();
+    public abstract User getCurrentUser() throws Exception;
 
     @Override
     public void addUser(User... users) {
@@ -60,7 +60,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<? extends Resource> getResources() {
+    public Collection<? extends Resource> getResources() throws Exception {
         return getResources(getCurrentUser().getUsername());
     }
 
@@ -79,7 +79,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<? extends Resource> getResources(ResourceType resourceType) {
+    public Collection<? extends Resource> getResources(ResourceType resourceType) throws Exception {
         String sql = "SELECT res.id AS id, "
                    + "       res.url AS url, "
                    + "       res.method AS method, "

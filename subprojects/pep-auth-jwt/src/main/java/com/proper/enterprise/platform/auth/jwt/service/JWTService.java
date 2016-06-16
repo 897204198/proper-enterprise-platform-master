@@ -59,7 +59,7 @@ public class JWTService {
         return Base64.encodeBase64URLSafeString(str.getBytes(PEPConstants.DEFAULT_CHARSET));
     }
 
-    public boolean verify(String token) {
+    public boolean verify(String token) throws IOException {
         if (StringUtil.isNull(token) || !token.contains(".")) {
             LOGGER.debug("Token should NOT NULL!");
             return false;
@@ -84,10 +84,10 @@ public class JWTService {
         return true;
     }
 
-    public JWTHeader getHeader(String token) {
+    public JWTHeader getHeader(String token) throws IOException {
         String[] split = token.split("\\.");
         String headerStr = split[0];
-        return JSONUtil.parseObject(Base64.decodeBase64(headerStr), JWTHeader.class);
+        return JSONUtil.parse(Base64.decodeBase64(headerStr), JWTHeader.class);
     }
 
     public void clearToken(JWTHeader header) {
