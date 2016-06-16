@@ -41,4 +41,14 @@ public final class PEPConstants {
      */
     public static final long VERSION = 0x000100L;
 
+    /**
+     * 是否允许 JSON 字段名称没有引号
+     */
+    public static final boolean ALLOW_UNQUOTED_FIELD_NAMES = true;
+
+    /**
+     * 是否允许 JSON 字段名称使用单引号
+     */
+    public static final boolean ALLOW_SINGLE_QUOTES = true;
+
 }

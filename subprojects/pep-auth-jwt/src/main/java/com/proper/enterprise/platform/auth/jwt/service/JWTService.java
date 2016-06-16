@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.auth.jwt.service;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.model.JWTPayload;
 import com.proper.enterprise.platform.core.PEPConstants;
-import com.proper.enterprise.platform.core.json.JSONUtil;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.HmacUtils;
@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * Utility service for JSON Web Token (http://jwt.io/)
@@ -37,10 +38,10 @@ public class JWTService {
         return token;
     }
 
-    public String generateToken(JWTHeader header, JWTPayload payload) {
+    public String generateToken(JWTHeader header, JWTPayload payload) throws IOException {
         String apiSecret = secret.getAPISecret(header.getId());
-        String headerStr = JSONUtil.toJSONString(header);
-        String payloadStr = JSONUtil.toJSONString(payload);
+        String headerStr = JSONUtil.toJSON(header);
+        String payloadStr = JSONUtil.toJSON(payload);
         LOGGER.debug("apiSecret: {}, header: {}, payload: {}", apiSecret, headerStr, payloadStr);
         String headerBase64 = base64(headerStr);
         String payloadBase64 = base64(payloadStr);
@@ -58,7 +59,7 @@ public class JWTService {
         return Base64.encodeBase64URLSafeString(str.getBytes(PEPConstants.DEFAULT_CHARSET));
     }
 
-    public boolean verify(String token) {
+    public boolean verify(String token) throws IOException {
         if (StringUtil.isNull(token) || !token.contains(".")) {
             LOGGER.debug("Token should NOT NULL!");
             return false;
@@ -83,10 +84,10 @@ public class JWTService {
         return true;
     }
 
-    public JWTHeader getHeader(String token) {
+    public JWTHeader getHeader(String token) throws IOException {
         String[] split = token.split("\\.");
         String headerStr = split[0];
-        return JSONUtil.parseObject(Base64.decodeBase64(headerStr), JWTHeader.class);
+        return JSONUtil.parse(Base64.decodeBase64(headerStr), JWTHeader.class);
     }
 
     public void clearToken(JWTHeader header) {

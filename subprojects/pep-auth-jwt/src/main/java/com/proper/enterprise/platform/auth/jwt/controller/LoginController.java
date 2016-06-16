@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 public class LoginController {
 
@@ -30,7 +32,7 @@ public class LoginController {
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST,
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> login(@RequestBody LoginBean loginBean) {
+    public ResponseEntity<String> login(@RequestBody LoginBean loginBean) throws IOException {
         String username = loginBean.getUsername();
         String pwd = loginBean.getPwd();
 

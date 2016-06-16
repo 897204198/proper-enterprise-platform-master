@@ -45,9 +45,9 @@ public class HistoricalAdvice {
     private void update(BaseEntity entity, String userId) {
         if (StringUtil.isNull(entity.getId())) {
             entity.setCreateUserId(userId);
-            entity.setCreateTime(DateUtil.getCurrentDateString());
+            entity.setCreateTime(DateUtil.getTimestamp());
         }
         entity.setLastModifyUserId(userId);
-        entity.setLastModifyTime(DateUtil.getCurrentDateString());
+        entity.setLastModifyTime(DateUtil.getTimestamp());
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @Primary
 @Service
@@ -23,7 +24,7 @@ public class UserServiceImpl extends AbstractUserServiceImpl {
     @Autowired
     private JWTService jwtService;
 
-    public User getCurrentUser() {
+    public User getCurrentUser() throws IOException {
         HttpServletRequest req =
                 ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                         .getRequest();

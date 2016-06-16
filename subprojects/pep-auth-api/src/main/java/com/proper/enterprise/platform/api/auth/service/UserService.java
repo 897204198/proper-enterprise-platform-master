@@ -22,7 +22,7 @@ public interface UserService {
 
     void addUser(User... users);
 
-    User getCurrentUser();
+    User getCurrentUser() throws Exception;
 
     User getUser(String username);
 
@@ -30,16 +30,18 @@ public interface UserService {
      * 获得当前登录用户权限范围内资源集合
      *
      * @return 资源集合
+     * @throws Exception
      */
-    Collection<? extends Resource> getResources();
+    Collection<? extends Resource> getResources() throws Exception;
 
     /**
      * 根据资源类型获得当前登录用户权限范围内资源集合
      *
      * @param resourceType 资源类型
      * @return 资源集合
+     * @throws Exception
      */
-    Collection<? extends Resource> getResources(ResourceType resourceType);
+    Collection<? extends Resource> getResources(ResourceType resourceType) throws Exception;
 
     Collection<? extends Resource> getResourcesById(String userId);
 
