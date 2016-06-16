@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.auth.jwt.service;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.model.JWTPayload;
 import com.proper.enterprise.platform.core.PEPConstants;
-import com.proper.enterprise.platform.core.utils.json.JSONUtil;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.HmacUtils;

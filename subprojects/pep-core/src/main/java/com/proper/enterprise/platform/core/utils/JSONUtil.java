@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.core.utils.json;
+package com.proper.enterprise.platform.core.utils;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;

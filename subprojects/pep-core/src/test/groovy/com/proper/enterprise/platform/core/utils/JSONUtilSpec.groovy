@@ -1,4 +1,5 @@
-package com.proper.enterprise.platform.core.utils.json
+package com.proper.enterprise.platform.core.utils
+
 import com.proper.enterprise.platform.core.entity.BaseEntity
 import spock.lang.Specification
 import spock.lang.Unroll
