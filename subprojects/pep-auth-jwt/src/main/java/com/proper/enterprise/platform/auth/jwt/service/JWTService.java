@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * Utility service for JSON Web Token (http://jwt.io/)
@@ -37,10 +38,10 @@ public class JWTService {
         return token;
     }
 
-    public String generateToken(JWTHeader header, JWTPayload payload) {
+    public String generateToken(JWTHeader header, JWTPayload payload) throws IOException {
         String apiSecret = secret.getAPISecret(header.getId());
-        String headerStr = JSONUtil.toJSONString(header);
-        String payloadStr = JSONUtil.toJSONString(payload);
+        String headerStr = JSONUtil.toJSON(header);
+        String payloadStr = JSONUtil.toJSON(payload);
         LOGGER.debug("apiSecret: {}, header: {}, payload: {}", apiSecret, headerStr, payloadStr);
         String headerBase64 = base64(headerStr);
         String payloadBase64 = base64(payloadStr);

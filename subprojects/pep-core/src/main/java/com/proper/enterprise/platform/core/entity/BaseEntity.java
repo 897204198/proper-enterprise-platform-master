@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.core.utils.DateUtil;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -49,12 +50,12 @@ public class BaseEntity implements IBase {
     @Transient
     protected String extendProperties;
 
-    public String getExtendProperty(String key) {
+    public String getExtendProperty(String key) throws IOException {
         JSONObject jsonObject = JSONUtil.parseObject(extendProperties);
         return jsonObject!=null && jsonObject.containsKey(key) ? jsonObject.get(key) : null;
     }
 
-    public void putExtendProperty(String key, String value) {
+    public void putExtendProperty(String key, String value) throws IOException {
         if (this.extendProperties == null) {
             this.extendProperties = "{}";
         }
@@ -66,7 +67,7 @@ public class BaseEntity implements IBase {
         }
     }
 
-    public void putExtendProperty(Map<String, String> extendProperties) {
+    public void putExtendProperty(Map<String, String> extendProperties) throws IOException {
         for (Entry<String, String> entry : extendProperties.entrySet()) {
             putExtendProperty(entry.getKey(), entry.getValue());
         }
