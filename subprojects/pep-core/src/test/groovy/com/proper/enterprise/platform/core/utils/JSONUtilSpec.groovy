@@ -57,10 +57,10 @@ class JSONUtilSpec extends Specification {
         'child.id'  | '113000' | """
 {
   id: '100000',
-  text: '廊坊银行总行',
+  text: 'parent',
   child: {
           id: '113000',
-          text: '廊坊银行开发区支行',
+          text: 'child',
           leaf: true
         }
 }
@@ -69,10 +69,12 @@ class JSONUtilSpec extends Specification {
 
     def "Parse JSON string to collection"() {
         given:
-        def result = JSONUtil.parse(str, List.class)
+        def result1 = JSONUtil.parse(str, List.class)
+        def result2 = JSONUtil.parse(str.bytes, List.class)
 
         expect:
-        result[idx][key] == value
+        result1[idx][key] == value
+        result2[idx][key] == value
 
         where:
         idx | key  | value | str
