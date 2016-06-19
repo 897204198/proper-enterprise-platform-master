@@ -16,6 +16,23 @@ class ConfCenterSpec extends Specification {
         'key'                      | "i'm in common.properties"
         'port'                     | '27018'
         'core.default_date_format' | 'yyyy-MM-dd'
+        'notexist'                 | null
+    }
+
+    def "Get '#key' from Config Center is '#value'(default: '#defVal'"() {
+        expect:
+        ConfCenter.get(key, defVal) == value
+
+        where:
+        key         | defVal    | value
+        'mode'      | 'abc'     | 'test'
+        'notexist'  | 'abc'     | 'abc'
+    }
+
+    // TODO
+    def "Load from null will throw an exception"() {
+        expect:
+        ConfCenter.loadProperties(null)
     }
 
 }
