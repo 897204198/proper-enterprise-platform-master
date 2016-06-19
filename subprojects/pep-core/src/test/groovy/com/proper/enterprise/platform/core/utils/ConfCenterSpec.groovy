@@ -29,10 +29,12 @@ class ConfCenterSpec extends Specification {
         'notexist'  | 'abc'     | 'abc'
     }
 
-    // TODO
-    def "Load from null will throw an exception"() {
-        expect:
+    def "Load from null will throw an exception and catch by ConfCenter"() {
+        when:
         ConfCenter.loadProperties(null)
+
+        then:
+        notThrown(Exception)
     }
 
 }
