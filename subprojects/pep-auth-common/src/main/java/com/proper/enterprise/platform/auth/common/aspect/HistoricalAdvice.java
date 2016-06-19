@@ -2,8 +2,8 @@ package com.proper.enterprise.platform.auth.common.aspect;
 
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.core.conf.ConfManager;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.utils.ConfCenter;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.aspectj.lang.JoinPoint;
@@ -15,7 +15,7 @@ public class HistoricalAdvice {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
 
-    private static final String DEFAULT_USER_ID = ConfManager.getString("auth.common", "historical.defaultUserId", "PEP_SYS");
+    private static final String DEFAULT_USER_ID = ConfCenter.get("historical.defaultUserId", "PEP_SYS");
 
     @Autowired
     UserService userService;
