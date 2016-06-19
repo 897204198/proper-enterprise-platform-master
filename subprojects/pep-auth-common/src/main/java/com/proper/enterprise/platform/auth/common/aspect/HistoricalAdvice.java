@@ -15,7 +15,7 @@ public class HistoricalAdvice {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
 
-    private static final String DEFAULT_USER_ID = ConfCenter.get("historical.defaultUserId", "PEP_SYS");
+    private static final String DEFAULT_USER_ID = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS");
 
     @Autowired
     UserService userService;

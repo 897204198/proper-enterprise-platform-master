@@ -1,7 +1,8 @@
 package com.proper.enterprise.platform.core;
 
+import com.proper.enterprise.platform.core.utils.ConfCenter;
+
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 /**
  * 常量表
@@ -23,32 +24,32 @@ public final class PEPConstants {
     /**
      * 默认字符集
      */
-    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    public static final Charset DEFAULT_CHARSET = Charset.forName(ConfCenter.get("core.default_charset", "UTF-8"));
 
     /**
      * 默认日期表示格式
      */
-    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DEFAULT_DATE_FORMAT = ConfCenter.get("core.default_date_format", "yyyy-MM-dd");
 
     /**
      * 默认日期时间表示格式
      */
-    public static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DEFAULT_DATETIME_FORMAT = ConfCenter.get("core.default_datetime_format", "yyyy-MM-dd HH:mm:ss");
 
     /**
-     * 平台版本号
+     * 平台版本号，用 6 位 16 进制数表示，如：
      * version 0.1.0 => 0x 00 01 00
      */
-    public static final long VERSION = 0x000100L;
+    public static final long VERSION = Long.parseLong(ConfCenter.get("core.version", "000000"), 16);
 
     /**
      * 是否允许 JSON 字段名称没有引号
      */
-    public static final boolean ALLOW_UNQUOTED_FIELD_NAMES = true;
+    public static final boolean ALLOW_UNQUOTED_FIELD_NAMES = Boolean.parseBoolean(ConfCenter.get("core.json.allow_unquoted_field_names"));
 
     /**
      * 是否允许 JSON 字段名称使用单引号
      */
-    public static final boolean ALLOW_SINGLE_QUOTES = true;
+    public static final boolean ALLOW_SINGLE_QUOTES = Boolean.parseBoolean(ConfCenter.get("core.json.allow_single_quotes"));
 
 }
