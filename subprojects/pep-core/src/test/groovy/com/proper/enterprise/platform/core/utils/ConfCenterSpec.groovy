@@ -37,4 +37,17 @@ class ConfCenterSpec extends Specification {
         notThrown(Exception)
     }
 
+    def "Check loading parameters in fixed order"() {
+        given:
+        System.setProperty("USER", "value-in-sys")
+        System.setProperty("pep.sys.param", "value-in-sys")
+
+        expect:
+        // Config center should get USER from environment variables
+        ConfCenter.get("USER") != "value-in-sys"
+        ConfCenter.get("USER") != "value-in-properties"
+        // and should get pep.sys.param from system properties
+        ConfCenter.get("pep.sys.param") == "value-in-sys"
+    }
+
 }
