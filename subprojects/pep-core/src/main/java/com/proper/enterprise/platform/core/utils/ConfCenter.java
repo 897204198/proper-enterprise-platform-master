@@ -38,7 +38,13 @@ public class ConfCenter {
     static {
         new ConfCenter();
         properties = new Properties();
+        init();
+    }
 
+    /**
+     * 初始化配置中心，按优先级倒序读取配置文件
+     */
+    private static void init() {
         loadProperties();
         loadEnvVariables();
         loadSysProperties();
@@ -114,6 +120,15 @@ public class ConfCenter {
      */
     public static void loadProperties(String locationPattern) {
         _loadProperties(locationPattern);
+    }
+
+    /**
+     * 重新加载配置中心所有配置
+     * 注意：从非默认路径加载的额外配置文件，重新加载后将丢失！
+     */
+    public static void reload() {
+        properties.clear();
+        init();
     }
 
 }

@@ -41,6 +41,7 @@ class ConfCenterSpec extends Specification {
         given:
         System.setProperty("USER", "value-in-sys")
         System.setProperty("pep.sys.param", "value-in-sys")
+        ConfCenter.reload()
 
         expect:
         // Config center should get USER from environment variables
