@@ -14,10 +14,10 @@ class NativeRepositoryTest extends AbstractTest {
     public void setUp() {
         10.times { idx ->
             def sql = """
-INSERT INTO pep_test_mock
-(id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, attr1)
+INSERT INTO pep_test_b
+(id, name, attr1)
 VALUES
-('$idx', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', 'name$idx', 'attr$idx')
+('$idx', 'name$idx', 'attr$idx')
 """
             repo.executeUpdate(sql)
         }
@@ -27,7 +27,7 @@ VALUES
     public void commonQuery() {
         def sql = """
 SELECT name, attr1
-  FROM pep_test_mock
+  FROM pep_test_b
  WHERE name > 'name5'
 """
         def result = repo.executeQuery(sql)
@@ -42,7 +42,7 @@ SELECT name, attr1
     public void namedQuery() {
         def sql = """
 SELECT name, attr1
-  FROM pep_test_mock
+  FROM pep_test_b
  WHERE name > :name
 """
         def result = repo.executeQuery(sql, ['name': 'name5'])
@@ -55,7 +55,7 @@ SELECT name, attr1
     @Test
     public void namedUpdate() {
         def sql = """
-UPDATE pep_test_mock
+UPDATE pep_test_b
    SET attr1 = :attr
  WHERE id = :id
 """
@@ -63,7 +63,7 @@ UPDATE pep_test_mock
 
         sql = """
 SELECT attr1
-  FROM pep_test_mock
+  FROM pep_test_b
  WHERE id = :id
 """
         def result = repo.executeQuery(sql, ['id': '3'])

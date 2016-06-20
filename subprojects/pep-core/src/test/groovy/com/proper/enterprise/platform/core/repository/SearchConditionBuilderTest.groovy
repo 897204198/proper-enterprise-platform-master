@@ -1,14 +1,11 @@
-package com.proper.enterprise.platform.webapp.dal
+package com.proper.enterprise.platform.core.repository
 
-import com.proper.enterprise.platform.core.repository.NativeRepository
-import com.proper.enterprise.platform.core.repository.SearchCondition
-import com.proper.enterprise.platform.core.repository.SearchConditionBuilder
-import com.proper.enterprise.platform.webapp.dal.entity.AEntity
-import com.proper.enterprise.platform.webapp.dal.entity.BEntity
-import com.proper.enterprise.platform.webapp.dal.entity.CEntity
-import com.proper.enterprise.platform.webapp.dal.repository.ARepository
-import com.proper.enterprise.platform.webapp.dal.repository.BRepository
-import com.proper.enterprise.platform.webapp.dal.repository.CRepository
+import com.proper.enterprise.platform.core.repository.entity.AEntity
+import com.proper.enterprise.platform.core.repository.entity.BEntity
+import com.proper.enterprise.platform.core.repository.entity.CEntity
+import com.proper.enterprise.platform.core.repository.repository.ARepository
+import com.proper.enterprise.platform.core.repository.repository.BRepository
+import com.proper.enterprise.platform.core.repository.repository.CRepository
 import com.proper.enterprise.platform.test.integration.AbstractTest
 import org.junit.Before
 import org.junit.Test
