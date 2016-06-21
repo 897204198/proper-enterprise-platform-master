@@ -39,24 +39,12 @@ public class SearchCondition {
         return value;
     }
 
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
     public String getField() {
         return field;
     }
 
-    public void setField(String field) {
-        this.field = field;
-    }
-
     public Operator getOperator() {
         return operator;
-    }
-
-    public void setOperator(Operator operator) {
-        this.operator = operator;
     }
 
 }
