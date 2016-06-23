@@ -4,7 +4,7 @@ ext {
 }
 
 versions.jcaptcha = '1.0'
-versions.spring = '4.1.7.RELEASE'
+versions.spring = '4.3.0.RELEASE'
 versions.spring_security = '4.0.1.RELEASE'
 
 configurations.all {
@@ -15,6 +15,7 @@ configurations.all {
         if (req.group == 'org.springframework' && req.name != 'springloaded') {
             details.useVersion versions.spring
         } else if (req.group == 'org.springframework.security') {
+            // spring security 被 activiti 直接依赖
             details.useVersion versions.spring_security
         }
     }
@@ -161,11 +162,11 @@ libraries.spring_data_jpa = 'org.springframework.data:spring-data-jpa:1.8.2.RELE
 
 //libraries.spring_security_acl = "org.springframework.security:spring-security-acl:${versions.spring_security}"
 //libraries.spring_security_cas = "org.springframework.security:spring-security-cas:${versions.spring_security}"
-libraries.spring_security_config = "org.springframework.security:spring-security-config:${versions.spring_security}"
+//libraries.spring_security_config = "org.springframework.security:spring-security-config:${versions.spring_security}"
 //libraries.spring_security_core = "org.springframework.security:spring-security-core:${versions.spring_security}"
 //libraries.spring_security_crypto = "org.springframework.security:spring-security-crypto:${versions.spring_security}"
 //libraries.spring_security_taglibs = "org.springframework.security:spring-security-taglibs:${versions.spring_security}"
-libraries.spring_security_test = "org.springframework.security:spring-security-test:${versions.spring_security}"
-libraries.spring_security_web = "org.springframework.security:spring-security-web:${versions.spring_security}"
+//libraries.spring_security_test = "org.springframework.security:spring-security-test:${versions.spring_security}"
+//libraries.spring_security_web = "org.springframework.security:spring-security-web:${versions.spring_security}"
 
 //libraries.urlrewritefilter = 'org.tuckey:urlrewritefilter:4.0.3'
