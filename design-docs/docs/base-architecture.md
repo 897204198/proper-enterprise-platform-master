@@ -11,7 +11,7 @@
 平台基础模型
 ----------
 
-- [基础权限模型](auth-model.md)
+- [基础权限模型](../../subprojects/pep-auth-api/README.md)
 - [基础人事模型](hr-model.md)
 
 
