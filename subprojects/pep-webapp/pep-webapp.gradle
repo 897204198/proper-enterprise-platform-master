@@ -42,7 +42,3 @@ dependencies {
     testCompile libraries.ehcache,
                 project(':pep-test')
 }
-
-task cleanOut(type: Delete) {
-    delete "${rootProject.projectDir}/out"
-}
