@@ -32,4 +32,18 @@ public interface RoleRule {
      */
     Set<User> getUsers();
 
+    /**
+     * 获得定义规则的界面模板 URL
+     *
+     * @return 界面模板 URL
+     */
+    String getTemplateURL();
+
+    /**
+     * 设置定义规则的界面模板 URL
+     *
+     * @param templateURL 界面模板 URL
+     */
+    void setTemplateURL(String templateURL);
+
 }
