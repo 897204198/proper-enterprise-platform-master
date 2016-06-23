@@ -1,21 +1,16 @@
 package org.activiti.explorer.servlet;
 
+import com.proper.enterprise.platform.core.PEPConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class JsonpCallbackFilter implements Filter {
 
@@ -41,9 +36,9 @@ public class JsonpCallbackFilter implements Filter {
 
       //handles the content-size truncation
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-      outputStream.write(new String(parms.get("callback")[0] + "(").getBytes() );
+      outputStream.write((parms.get("callback")[0] + "(").getBytes(PEPConstants.DEFAULT_CHARSET) );
       outputStream.write(wrapper.getData());
-      outputStream.write(new String(");").getBytes());
+      outputStream.write(");".getBytes(PEPConstants.DEFAULT_CHARSET));
       byte jsonpResponse[] = outputStream.toByteArray( );
 
       wrapper.setContentType("text/javascript;charset=UTF-8");
@@ -52,7 +47,7 @@ public class JsonpCallbackFilter implements Filter {
       out.write(jsonpResponse);
 
       out.close();
-    
+
     } else {
       chain.doFilter(request, response);
     }
