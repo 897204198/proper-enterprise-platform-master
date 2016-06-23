@@ -11,6 +11,6 @@ Authentication and Authorization Module Common Implementation
 切面列表
 ------
 
-|Aspect|Function|
-|:--|:--|
+|Aspect          |Function                                  |
+|:---------------|:-----------------------------------------|
 |HistoricalAspect|实体保存时自动添加或更新创建 人/时间 和修改 人/时间|
