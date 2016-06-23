@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
 import com.proper.enterprise.platform.api.auth.enums.ResourceType;
+import com.proper.enterprise.platform.api.auth.model.DataRestrain;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(
@@ -94,6 +96,17 @@ public class ResourceEntity extends BaseEntity implements Resource {
 
     public void setSequenceNumber(int sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
+    }
+
+    @Override
+    public Set<DataRestrain> getDataRestrains() {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public void setDataRestrains(Set<DataRestrain> restrains) {
+        // TODO
     }
 
     public Resource getParent() {

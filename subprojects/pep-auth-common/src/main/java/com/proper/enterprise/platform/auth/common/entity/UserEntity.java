@@ -1,11 +1,13 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "PEP_AUTH_USERS")
@@ -74,6 +76,17 @@ public class UserEntity extends BaseEntity implements User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public Set<Role> getRoles() {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public void setRoles(Set<Role> roles) {
+        // TODO
     }
 
     public Collection<RoleEntity> getRoleEntities() {
