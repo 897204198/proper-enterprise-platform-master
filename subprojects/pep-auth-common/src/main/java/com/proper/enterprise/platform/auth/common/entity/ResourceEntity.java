@@ -72,11 +72,11 @@ public class ResourceEntity extends BaseEntity implements Resource {
         this.name = name;
     }
 
-    public String getUrl() {
+    public String getURL() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setURL(String url) {
         this.url = url;
     }
 

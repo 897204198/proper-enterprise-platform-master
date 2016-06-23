@@ -104,7 +104,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
             objs = (Object[]) obj;
             res = new ResourceEntity();
             res.setId((String) objs[0]);
-            res.setUrl((String) objs[1]);
+            res.setURL((String) objs[1]);
             res.setMethod(RequestMethod.valueOf((String) objs[2]));
             res.setName((String) objs[3]);
             reses.add(res);

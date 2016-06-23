@@ -11,4 +11,4 @@ Authentication and Authorization Module API
 
 具体实现模块（如 `pep-auth-jwt`）需依赖公共实现模块 `pep-auth-common`
 
-平台应用在需要验证及授权模块时，只能选择其中一种实现进行依赖，如 `pep-auth-jwt`
+平台应用需要验证及授权模块时，只能选择其中一种实现进行依赖，如 `pep-auth-jwt`
