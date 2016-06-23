@@ -15,15 +15,32 @@ public class Permission {
 
     private Set<PermissionType> types = new HashSet<>();
 
+    /**
+     * 根据菜单和权限类型构造一个权限
+     *
+     * @param menu  菜单
+     * @param types 权限类型数组
+     */
     public Permission(Menu menu, PermissionType... types) {
         this.menu = menu;
         Collections.addAll(this.types, types);
     }
 
+    /**
+     * 获得该权限所描述的菜单
+     *
+     * @return 菜单
+     */
     public Menu getMenu() {
         return menu;
     }
 
+    /**
+     * 是否拥有某种权限
+     *
+     * @param type 要检测的权限
+     * @return true：拥有；false：没有
+     */
     public boolean could(PermissionType type) {
         return types.contains(type);
     }
