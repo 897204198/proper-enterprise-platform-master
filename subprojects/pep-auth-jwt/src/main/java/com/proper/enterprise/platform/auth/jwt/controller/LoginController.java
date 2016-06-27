@@ -30,7 +30,7 @@ public class LoginController {
     @Autowired private UserService userService;
 
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST,
-                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
                     produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> login(@RequestBody LoginBean loginBean) throws IOException {
         String username = loginBean.getUsername();
@@ -50,4 +50,5 @@ public class LoginController {
             return new ResponseEntity<String>("Failed to authenticate", HttpStatus.UNAUTHORIZED);
         }
     }
+
 }
