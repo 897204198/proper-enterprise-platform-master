@@ -38,11 +38,6 @@ public class UserEntity extends BaseEntity implements User {
      */
     private String email;
 
-    /**
-     * override property in super class
-     */
-    private String extendProperties = "";
-
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
             joinColumns = @JoinColumn(name = "USER_ID"),
@@ -51,7 +46,7 @@ public class UserEntity extends BaseEntity implements User {
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", username=" + username + ", extendProperties=" + extendProperties + "]";
+        return "User [id=" + id + ", username=" + username + "]";
     }
 
     public String getUsername() {
