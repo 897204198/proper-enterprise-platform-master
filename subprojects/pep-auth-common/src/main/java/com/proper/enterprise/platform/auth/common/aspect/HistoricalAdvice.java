@@ -29,25 +29,25 @@ public class HistoricalAdvice {
             LOGGER.trace("Current user is {}({})", user.getUsername(), user.getId());
             userId = user.getId();
         } catch (Exception e) {
-            LOGGER.debug("Get current user throws exception {}", e.getMessage());
+            LOGGER.debug("Get current user throws exception: {}", e);
         }
 
         Object obj = jp.getArgs()[0];
-        if (obj instanceof BaseEntity) {
-            update((BaseEntity) obj, userId);
-        } else if (obj instanceof Iterable) {
+        if (obj instanceof Iterable) {
             for (Object entity : (Iterable) obj) {
                 update((BaseEntity)entity, userId);
             }
+        } else {
+            update((BaseEntity) obj, userId);
         }
     }
 
     private void update(BaseEntity entity, String userId) {
         if (StringUtil.isNull(entity.getId())) {
             entity.setCreateUserId(userId);
-            entity.setCreateTime(DateUtil.getTimestamp());
+            entity.setCreateTime(DateUtil.getTimestamp(true));
         }
         entity.setLastModifyUserId(userId);
-        entity.setLastModifyTime(DateUtil.getTimestamp());
+        entity.setLastModifyTime(DateUtil.getTimestamp(true));
     }
 }

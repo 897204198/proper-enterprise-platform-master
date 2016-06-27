@@ -20,11 +20,13 @@ import java.util.Collection;
  */
 public interface UserService {
 
-    void addUser(User... users);
+    void save(User user);
+
+    void save(User... users);
 
     User getCurrentUser() throws Exception;
 
-    User getUser(String username);
+    User getByUsername(String username);
 
     /**
      * 获得当前登录用户权限范围内资源集合

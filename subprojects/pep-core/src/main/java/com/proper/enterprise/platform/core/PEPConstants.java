@@ -37,6 +37,11 @@ public final class PEPConstants {
     public static final String DEFAULT_DATETIME_FORMAT = ConfCenter.get("core.default_datetime_format", "yyyy-MM-dd HH:mm:ss");
 
     /**
+     * 默认日期时间表示格式，含毫秒
+     */
+    public static final String DEFAULT_TIMESTAMP_FORMAT = ConfCenter.get("core.default_timestamp_format", "yyyy-MM-dd HH:mm:ss.SSS");
+
+    /**
      * 平台版本号，用 6 位 16 进制数表示，如：
      * version 0.1.0 => 0x 00 01 00
      */

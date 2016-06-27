@@ -1,12 +1,13 @@
 package com.proper.enterprise.platform.core.utils;
 
-import com.proper.enterprise.platform.core.PEPConstants;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Date;
+
+import static com.proper.enterprise.platform.core.PEPConstants.*;
 
 /**
  * 日期工具类
@@ -35,12 +36,22 @@ public class DateUtil {
     }
 
     /**
-     * 获得当前时间戳
+     * 获得当前时间戳，不含毫秒
      *
-     * @return 时间戳字符串，使用默认日期格式
+     * @return 时间戳字符串，使用默认时间日期格式
      */
     public static String getTimestamp() {
-        return toTimestamp(new Date());
+        return getTimestamp(false);
+    }
+
+    /**
+     * 获得当前时间戳
+     *
+     * @param millisecond 是否含毫秒
+     * @return 时间戳字符串，传入 true 时可包含毫秒
+     */
+    public static String getTimestamp(boolean millisecond) {
+        return toTimestamp(new Date(), millisecond);
     }
 
     /**
@@ -50,7 +61,7 @@ public class DateUtil {
      * @return 日期对象
      */
     public static Date toDate(String dateStr) {
-        return toDate(dateStr, PEPConstants.DEFAULT_DATE_FORMAT);
+        return toDate(dateStr, DEFAULT_DATE_FORMAT);
     }
 
     /**
@@ -60,7 +71,7 @@ public class DateUtil {
      * @return 日期对象
      */
     public static Date toDateTime(String dateStr) {
-        return toDate(dateStr, PEPConstants.DEFAULT_DATETIME_FORMAT);
+        return toDate(dateStr, DEFAULT_DATETIME_FORMAT);
     }
 
     /**
@@ -82,17 +93,28 @@ public class DateUtil {
      * @return 日期字符串
      */
     public static String toDateString(Date date) {
-        return toString(date, PEPConstants.DEFAULT_DATE_FORMAT);
+        return toString(date, DEFAULT_DATE_FORMAT);
     }
 
     /**
-     * 按默认时间戳格式转换日期为时间戳
+     * 按默认时间戳格式转换日期为时间戳，不含毫秒
      *
      * @param date 日期对象
      * @return 时间戳
      */
     public static String toTimestamp(Date date) {
-        return toString(date, PEPConstants.DEFAULT_DATETIME_FORMAT);
+        return toTimestamp(date, false);
+    }
+
+    /**
+     * 按默认时间戳格式转换日期为时间戳
+     *
+     * @param date          日期对象
+     * @param millisecond   是否包含毫秒
+     * @return 时间戳
+     */
+    public static String toTimestamp(Date date, boolean millisecond) {
+        return toString(date, millisecond ? DEFAULT_TIMESTAMP_FORMAT : DEFAULT_DATETIME_FORMAT);
     }
 
     /**

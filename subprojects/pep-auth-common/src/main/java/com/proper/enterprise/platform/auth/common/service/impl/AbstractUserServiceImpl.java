@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
 import com.proper.enterprise.platform.auth.common.repository.UserRepository;
 import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.core.repository.NativeRepository;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,20 +39,29 @@ public abstract class AbstractUserServiceImpl implements UserService {
     public abstract User getCurrentUser() throws Exception;
 
     @Override
-    public void addUser(User... users) {
-        if (users == null) {
-            LOGGER.debug("Pass in users array SHOULD NOT NULL!");
-            return;
+    public void save(User user) {
+        if (StringUtil.isNotNull(user.getId())) {
+            userRepo.save((UserEntity) user);
+        } else {
+            userRepo.save(new UserEntity(user.getUsername(), user.getPassword()));
         }
-        List<UserEntity> entities = new ArrayList<UserEntity>(users.length);
+    }
+
+    @Override
+    public void save(User... users) {
+        List<UserEntity> entities = new ArrayList<>(users.length);
         for (User user : users) {
-            entities.add(new UserEntity(user.getUsername(), user.getPassword()));
+            if (StringUtil.isNotNull(user.getId())) {
+                entities.add((UserEntity) user);
+            } else {
+                entities.add(new UserEntity(user.getUsername(), user.getPassword()));
+            }
         }
         userRepo.save(entities);
     }
 
     @Override
-    public User getUser(String username) {
+    public User getByUsername(String username) {
         UserEntity entity = userRepo.findByUsername(username);
         if (entity == null) {
             LOGGER.debug("User with username '{}' is not exist!", username);
@@ -74,7 +84,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
         if (userEntity != null) {
             return resRepo.findAll(userEntity.getRoleEntities());
         } else {
-            return new ArrayList<Resource>();
+            return new ArrayList<>();
         }
     }
 
@@ -92,12 +102,12 @@ public abstract class AbstractUserServiceImpl implements UserService {
                    + "   AND u.username = :name "
                    + "   AND res.resource_type = :type";
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("name", getCurrentUser().getUsername());
         params.put("type", resourceType.name());
 
         List result = repo.executeQuery(sql, params);
-        Collection<ResourceEntity> reses = new ArrayList<ResourceEntity>();
+        Collection<ResourceEntity> reses = new ArrayList<>();
         Object[] objs;
         ResourceEntity res;
         for (Object obj : result) {
