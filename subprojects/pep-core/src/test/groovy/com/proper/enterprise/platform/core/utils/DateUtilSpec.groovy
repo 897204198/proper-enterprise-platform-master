@@ -60,8 +60,12 @@ class DateUtilSpec extends Specification {
     }
 
     def "Timestamp with millisecond is unique"() {
+        given:
+        def timestamp = DateUtil.getTimestamp(true)
+        sleep(1)
+
         expect:
-        DateUtil.getTimestamp(true) != DateUtil.getTimestamp(true)
+        timestamp != DateUtil.getTimestamp(true)
     }
 
 }
