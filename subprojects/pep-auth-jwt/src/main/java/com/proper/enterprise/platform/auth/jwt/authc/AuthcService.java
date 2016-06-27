@@ -13,7 +13,7 @@ public class AuthcService {
     private UserService userService;
 
     public boolean authenticate(String username, String pwd) {
-        User user = userService.getUser(username);
+        User user = userService.getByUsername(username);
         return user != null
                 && MD5Util.md5Hex(pwd).equals(user.getPassword());
     }
