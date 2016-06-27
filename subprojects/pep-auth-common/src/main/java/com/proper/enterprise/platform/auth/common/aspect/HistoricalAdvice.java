@@ -10,6 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * 历史属性切面
+ * 实体保存时自动添加或更新 创建人/时间 和 修改人/时间
+ *
+ * 切面配置在 spring/auth/common/applicationContext-auth-common.xml
+ * 作用在 spring-data Repository 的 save 方法前
+ */
 public class HistoricalAdvice {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
@@ -25,6 +32,7 @@ public class HistoricalAdvice {
         String userId = user.getId();
 
         Object obj = jp.getArgs()[0];
+        // Repository.save* 方法的参数只有两类
         if (obj instanceof Iterable) {
             for (Object entity : (Iterable) obj) {
                 update((BaseEntity)entity, userId);

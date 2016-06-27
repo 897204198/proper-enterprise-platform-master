@@ -13,4 +13,4 @@ Authentication and Authorization Module Common Implementation
 
 |Aspect          |Function                                  |
 |:---------------|:-----------------------------------------|
-|HistoricalAspect|实体保存时自动添加或更新创建 人/时间 和修改 人/时间|
+|HistoricalAspect|实体保存时自动添加或更新 创建人/时间 和 修改人/时间|
