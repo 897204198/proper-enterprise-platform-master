@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.aspect;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.utils.ConfCenter;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.aspectj.lang.JoinPoint;
@@ -21,15 +22,22 @@ public class HistoricalAdvice {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
 
+    private static final String DEFAULT_USER_ID = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS");
+
     @Autowired
     UserService userService;
 
     public void beforeSave(JoinPoint jp) throws Exception {
         LOGGER.trace("HistoricalAdvice before {} with {} args.", jp.getSignature().getName(), jp.getArgs());
 
-        User user = userService.getCurrentUser();
-        LOGGER.trace("Current user is {}({})", user.getUsername(), user.getId());
-        String userId = user.getId();
+        String userId = DEFAULT_USER_ID;
+        try {
+            User user = userService.getCurrentUser();
+            LOGGER.trace("Current user is {}({})", user.getUsername(), user.getId());
+            userId = user.getId();
+        } catch (Exception e) {
+            LOGGER.debug("Get current user throws exception: {}, fall back to use default user id.", e.getMessage());
+        }
 
         Object obj = jp.getArgs()[0];
         // Repository.save* 方法的参数只有两类
