@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.auth.common.aspect
+
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
-import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.integration.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -45,14 +45,6 @@ class HistoricalAdviceTest extends AbstractTest {
         user = service.getByUsername 'u1'
 
         assert user.getLastModifyTime() > user.getCreateTime()
-    }
-
-    @Test
-    def void test() {
-        System.setProperty('test.throwEx', 'true')
-        ConfCenter.reload()
-
-        service.save(new UserEntity('abc', 'def'))
     }
 
 }
