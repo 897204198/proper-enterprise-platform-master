@@ -39,7 +39,7 @@ public class LoginController {
         LOGGER.debug("User {} want to login", username);
 
         if (authcService.authenticate(username, pwd)) {
-            User user = userService.getUser(username);
+            User user = userService.getByUsername(username);
             JWTHeader header = new JWTHeader();
             header.setId(user.getId());
             header.setName(user.getUsername());

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
+import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
@@ -7,11 +8,8 @@ import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
 import com.proper.enterprise.platform.auth.common.repository.UserRepository;
-import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.core.repository.NativeRepository;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -23,8 +21,6 @@ import java.util.*;
  * 其中，获得当前用户的方法由于与安全框架具体实现关联，只能提供抽象实现
  */
 public abstract class AbstractUserServiceImpl implements UserService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUserServiceImpl.class);
 
     @Autowired
     UserRepository userRepo;
@@ -62,11 +58,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public User getByUsername(String username) {
-        UserEntity entity = userRepo.findByUsername(username);
-        if (entity == null) {
-            LOGGER.debug("User with username '{}' is not exist!", username);
-        }
-        return entity;
+        return userRepo.findByUsername(username);
     }
 
     @Override
