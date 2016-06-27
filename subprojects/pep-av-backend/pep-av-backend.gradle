@@ -1,0 +1,13 @@
+
+dependencies {
+    compile project(':pep-core'),
+                libraries.mongo_java_driver,
+                libraries.spring_webmvc,
+                libraries.servlet_api 
+                
+                runtime  libraries.jackson_databind,
+                libraries.mongo_java_driver,
+                libraries.spring_webmvc,
+                libraries.servlet_api 
+}
+
