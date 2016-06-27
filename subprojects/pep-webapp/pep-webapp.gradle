@@ -42,3 +42,9 @@ dependencies {
     testCompile libraries.ehcache,
                 project(':pep-test')
 }
+
+task cleanDist(type: Delete) {
+    delete 'build/libs' 
+}
+
+compileJava.dependsOn cleanDist
