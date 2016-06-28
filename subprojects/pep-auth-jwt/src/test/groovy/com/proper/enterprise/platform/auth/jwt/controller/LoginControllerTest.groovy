@@ -2,15 +2,11 @@ package com.proper.enterprise.platform.auth.jwt.controller
 
 import com.proper.enterprise.platform.auth.jwt.service.JWTService
 import com.proper.enterprise.platform.test.integration.AbstractTest
-import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
@@ -19,17 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LoginControllerTest extends AbstractTest {
 
     @Autowired
-    private WebApplicationContext wac
-
-    private MockMvc mockMvc
-
-    @Autowired
     JWTService jwtService
-
-    @Before
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build()
-    }
 
     @Test
     @Sql

@@ -2,6 +2,7 @@ dependencies {
     compile libraries.groovy,
             libraries.groovy_sql,
             libraries.junit,
+            libraries.servlet_api,
             libraries.spring_test
 
     runtime libraries.h2
