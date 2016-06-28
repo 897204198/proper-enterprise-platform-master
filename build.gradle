@@ -1,7 +1,4 @@
 allprojects {
-    group = 'com.proper.enterprise.platform'
-    version = new Date().format('yyyyMMddHHmmss')
-
     repositories {
         maven {
             url 'https://repo.gradle.org/gradle/libs'
