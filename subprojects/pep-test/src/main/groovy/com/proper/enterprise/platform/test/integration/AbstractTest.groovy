@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.test.integration
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -36,15 +37,15 @@ public abstract class AbstractTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build()
     }
 
-    protected MvcResult post(String url, String data, int statusCode) {
+    protected MvcResult post(String url, String data, HttpStatus statusCode) {
         return post(url, MediaType.APPLICATION_JSON_UTF8, null, data, statusCode)
     }
 
-    protected MvcResult post(String url, MediaType produces, String data, int statusCode) {
+    protected MvcResult post(String url, MediaType produces, String data, HttpStatus statusCode) {
         return post(url, MediaType.APPLICATION_JSON_UTF8, produces, data, statusCode)
     }
 
-    protected MvcResult post(String url, MediaType consumes, MediaType produces, String data, int statusCode) {
+    protected MvcResult post(String url, MediaType consumes, MediaType produces, String data, HttpStatus statusCode) {
         MockHttpServletRequestBuilder req = MockMvcRequestBuilders.post(url)
         if (consumes != null) {
             req = req.contentType(consumes)
@@ -56,11 +57,11 @@ public abstract class AbstractTest {
         return perform(req, statusCode)
     }
 
-    private MvcResult perform(MockHttpServletRequestBuilder req, int statusCode) {
+    private MvcResult perform(MockHttpServletRequestBuilder req, HttpStatus statusCode) {
         return mockMvc
             .perform(req)
             .andDo(print())
-            .andExpect(status().is(statusCode))
+            .andExpect(status().is(statusCode.value()))
             .andReturn()
     }
 

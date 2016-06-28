@@ -16,12 +16,12 @@ class LoginControllerTest extends AbstractTest {
     @Test
     @Sql
     public void login() {
-        mockLogin('admin', '123456', HttpStatus.OK.value())
-        mockLogin('admin', '1234567', HttpStatus.UNAUTHORIZED.value())
-        mockLogin('test', '1234567', HttpStatus.UNAUTHORIZED.value())
+        mockLogin('admin', '123456', HttpStatus.OK)
+        mockLogin('admin', '1234567', HttpStatus.UNAUTHORIZED)
+        mockLogin('test', '1234567', HttpStatus.UNAUTHORIZED)
     }
 
-    private void mockLogin(String user, String pwd, int statusCode) {
+    private void mockLogin(String user, String pwd, HttpStatus statusCode) {
         post('/auth/login', MediaType.TEXT_PLAIN, """{"username":"$user","pwd":"$pwd"}""", statusCode)
     }
 
