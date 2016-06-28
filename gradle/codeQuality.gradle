@@ -44,7 +44,7 @@ tasks.withType(Checkstyle) {
 
 tasks.withType(FindBugs) {
     classes = classes.filter {
-        !it.path.contains(excludePattern)
+        !it.path.contains(new File(excludePattern).path)
     }
     reports {
         xml.enabled = false

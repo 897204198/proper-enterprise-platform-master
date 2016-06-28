@@ -1,8 +1,19 @@
 rootProject.name = 'proper-enterprise-platform'
 
-file("${rootProject.projectDir}/subprojects").eachDir { project ->
+file("${rootProject.projectDir}/subprojects").eachDir {project ->
     def buildFile = new File(settingsDir, "subprojects/${project.name}/${project.name}.gradle")
     if (buildFile.isFile()) {
         include project.name
+    }
+}
+
+rootProject.children.each { project ->
+    String fileBaseName = project.name
+    String projectDirName = "subprojects/$fileBaseName"
+    project.projectDir = new File(settingsDir, projectDirName)
+
+    def bf = new File(settingsDir, "subprojects/${project.name}/${project.name}.gradle")
+    if (project.projectDir.isDirectory() && bf.isFile()) {
+        project.buildFileName = "${fileBaseName}.gradle"
     }
 }
