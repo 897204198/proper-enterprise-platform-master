@@ -8,10 +8,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 class LoginControllerTest extends AbstractTest {
 
     @Autowired
@@ -26,15 +22,7 @@ class LoginControllerTest extends AbstractTest {
     }
 
     private void mockLogin(String user, String pwd, int statusCode) {
-        mockMvc
-            .perform(
-                post('/auth/login')
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .accept(MediaType.TEXT_PLAIN)
-                    .content("""{"username":"$user","pwd":"$pwd"}""")
-            )
-            .andDo(print())
-            .andExpect(status().is(statusCode))
+        post('/auth/login', MediaType.TEXT_PLAIN, """{"username":"$user","pwd":"$pwd"}""", statusCode)
     }
 
 }
