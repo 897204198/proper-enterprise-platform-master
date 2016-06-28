@@ -137,7 +137,9 @@ Pull Request 的构建结果会直接在列表页和详细信息页面展现
 
 master 分支的构建结果会在项目首页展现
 
-![](https://blogs.jetbrains.com/teamcity/wp-content/uploads/2012/07/statusIcon-Ok.png)
+<a href="http://202.199.100.174/teamcity/viewType.html?buildTypeId=PEP_Build">
+  <img src="http://202.199.100.174/teamcity/app/rest/builds/buildType:(id:PEP_Build)/statusIcon.svg"/>
+</a>
 
 测试覆盖率结果也会在项目首页展现
 

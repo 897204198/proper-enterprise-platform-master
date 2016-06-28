@@ -1,6 +1,6 @@
 allprojects {
     group = 'com.proper.enterprise.platform'
-    version = '0.1.0'
+    version = new Date().format('yyyyMMddHHmmss')
 
     repositories {
         maven {
