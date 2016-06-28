@@ -1,7 +1,7 @@
 rootProject.name = 'proper-enterprise-platform'
 
 file("${rootProject.projectDir}/subprojects").eachDir { project ->
-    def buildFile = new File(settingsDir, "subprojects/${project.name}.gradle")
+    def buildFile = new File(settingsDir, "subprojects/${project.name}/${project.name}.gradle")
     if (buildFile.isFile()) {
         include project.name
     }
