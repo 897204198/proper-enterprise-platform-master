@@ -30,6 +30,10 @@ public interface UserService {
 
     User getByUsername(String username);
 
+    void delete(String id);
+
+    void delete(User user);
+
     /**
      * 获得当前登录用户权限范围内资源集合
      *

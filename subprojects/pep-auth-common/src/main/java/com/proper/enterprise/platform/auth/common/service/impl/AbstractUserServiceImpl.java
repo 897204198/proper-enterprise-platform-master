@@ -67,6 +67,16 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
+    public void delete(String id) {
+        userRepo.delete(id);
+    }
+
+    @Override
+    public void delete(User user) {
+        userRepo.delete((UserEntity) user);
+    }
+
+    @Override
     public Collection<? extends Resource> getResources() throws Exception {
         return getResources(getCurrentUser().getUsername());
     }
