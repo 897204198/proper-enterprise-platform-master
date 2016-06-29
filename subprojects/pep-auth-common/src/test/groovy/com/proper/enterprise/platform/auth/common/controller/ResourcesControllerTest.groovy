@@ -9,6 +9,7 @@ class ResourcesControllerTest extends AbstractTest {
     @Test
     public void test() {
         post('/auth/resources', '{"url":"/foo/bar", "method": "PUT"}', HttpStatus.OK)
+        // TODO url + method 的联合主键没生效？
         post('/auth/resources', '{"url":"/foo/bar", "method": "PUT"}', HttpStatus.OK)
     }
 

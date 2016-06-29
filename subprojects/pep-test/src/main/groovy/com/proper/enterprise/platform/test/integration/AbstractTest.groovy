@@ -57,6 +57,45 @@ public abstract class AbstractTest {
         return perform(req, statusCode)
     }
 
+    protected MvcResult get(String url, HttpStatus statusCode) {
+        return get(url, null, statusCode)
+    }
+
+    protected MvcResult get(String url, Map<String, String> params, HttpStatus statusCode) {
+        MockHttpServletRequestBuilder req = MockMvcRequestBuilders.get(url)
+        if (!params.isEmpty()) {
+            for(Map.Entry<String, String> entry : params) {
+                req = req.param(entry.key, entry.value)
+            }
+        }
+        return perform(req, statusCode)
+    }
+
+    protected MvcResult put(String url, String data, HttpStatus statusCode) {
+        return put(url, MediaType.APPLICATION_JSON_UTF8, null, data, statusCode)
+    }
+
+    protected MvcResult put(String url, MediaType produces, String data, HttpStatus statusCode) {
+        return put(url, MediaType.APPLICATION_JSON_UTF8, produces, data, statusCode)
+    }
+
+    protected MvcResult put(String url, MediaType consumes, MediaType produces, String data, HttpStatus statusCode) {
+        MockHttpServletRequestBuilder req = MockMvcRequestBuilders.put(url)
+        if (consumes != null) {
+            req = req.contentType(consumes)
+        }
+        if (produces != null) {
+            req = req.accept(produces)
+        }
+        req.content(data)
+        return perform(req, statusCode)
+    }
+
+    protected MvcResult delete(String url, HttpStatus statusCode) {
+        MockHttpServletRequestBuilder req = MockMvcRequestBuilders.delete(url)
+        return perform(req, statusCode)
+    }
+
     private MvcResult perform(MockHttpServletRequestBuilder req, HttpStatus statusCode) {
         return mockMvc
             .perform(req)
