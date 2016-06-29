@@ -20,11 +20,13 @@ import java.util.Collection;
  */
 public interface UserService {
 
-    void save(User user);
+    User save(User user);
 
     void save(User... users);
 
     User getCurrentUser() throws Exception;
+
+    User get(String id);
 
     User getByUsername(String username);
 

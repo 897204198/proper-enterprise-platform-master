@@ -35,11 +35,11 @@ public abstract class AbstractUserServiceImpl implements UserService {
     public abstract User getCurrentUser() throws Exception;
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
         if (StringUtil.isNotNull(user.getId())) {
-            userRepo.save((UserEntity) user);
+            return userRepo.save((UserEntity) user);
         } else {
-            userRepo.save(new UserEntity(user.getUsername(), user.getPassword()));
+            return userRepo.save(new UserEntity(user.getUsername(), user.getPassword()));
         }
     }
 
@@ -54,6 +54,11 @@ public abstract class AbstractUserServiceImpl implements UserService {
             }
         }
         userRepo.save(entities);
+    }
+
+    @Override
+    public User get(String id) {
+        return userRepo.findOne(id);
     }
 
     @Override

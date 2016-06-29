@@ -58,16 +58,7 @@ public abstract class AbstractTest {
     }
 
     protected MvcResult get(String url, HttpStatus statusCode) {
-        return get(url, null, statusCode)
-    }
-
-    protected MvcResult get(String url, Map<String, String> params, HttpStatus statusCode) {
         MockHttpServletRequestBuilder req = MockMvcRequestBuilders.get(url)
-        if (!params.isEmpty()) {
-            for(Map.Entry<String, String> entry : params) {
-                req = req.param(entry.key, entry.value)
-            }
-        }
         return perform(req, statusCode)
     }
 
