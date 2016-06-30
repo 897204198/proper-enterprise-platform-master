@@ -5,20 +5,19 @@ import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping(path = "/auth/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(path = "/auth/users")
 public class UsersController {
 
     @Autowired
     UserService userService;
 
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public User create(@RequestBody UserEntity userEntity) {
         return userService.save(userEntity);
@@ -44,7 +43,7 @@ public class UsersController {
         }
     }
 
-    @RequestMapping(path = "/{userId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(path = "/{userId}", method = RequestMethod.PUT)
     public ResponseEntity<User> update(@PathVariable String userId, @RequestBody UserEntity userEntity) {
         User user = userService.get(userId);
         if (user == null) {

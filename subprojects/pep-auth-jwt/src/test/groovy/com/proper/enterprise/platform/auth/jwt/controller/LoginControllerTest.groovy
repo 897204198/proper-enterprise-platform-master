@@ -5,7 +5,6 @@ import com.proper.enterprise.platform.test.integration.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 
 class LoginControllerTest extends AbstractTest {
@@ -22,7 +21,7 @@ class LoginControllerTest extends AbstractTest {
     }
 
     private void mockLogin(String user, String pwd, HttpStatus statusCode) {
-        post('/auth/login', MediaType.TEXT_PLAIN, """{"username":"$user","pwd":"$pwd"}""", statusCode)
+        post('/auth/login', """{"username":"$user","pwd":"$pwd"}""", statusCode)
     }
 
 }

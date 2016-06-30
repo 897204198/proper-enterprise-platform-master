@@ -1,4 +1,5 @@
 package com.proper.enterprise.platform.auth.common.controller
+
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.core.utils.JSONUtil
