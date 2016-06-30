@@ -39,6 +39,10 @@ class UsersControllerTest extends AbstractTest {
         return str > '' ? JSONUtil.parse(str, UserEntity) : null
     }
 
+    private void doDelete(String id, HttpStatus status) {
+        delete("/auth/users/$id", status)
+    }
+
     @Test
     public void retrieveUser() {
         doGet('?name=user1', HttpStatus.NOT_FOUND)
@@ -51,12 +55,19 @@ class UsersControllerTest extends AbstractTest {
         UserEntity user = doPost()
         user.password = 'user1pwd'
         assert doPut(user.id, user, HttpStatus.OK).password == 'user1pwd'
+
+        doDelete(user.id, HttpStatus.NO_CONTENT)
+        doPut(user.id, user, HttpStatus.NOT_FOUND)
     }
 
     @Test
     public void deleteUser() {
         UserEntity user = doPost()
-        delete("/auth/users/${user.id}", HttpStatus.OK)
+        doGet("/${user.id}", HttpStatus.OK)
+        doDelete(user.id, HttpStatus.NO_CONTENT)
+        doDelete(user.id, HttpStatus.NOT_FOUND)
+
+        doGet("/${user.id}", HttpStatus.NOT_FOUND)
     }
 
 }

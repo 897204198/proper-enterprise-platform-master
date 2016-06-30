@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping(path = "/auth/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class UsersController {
@@ -52,13 +54,14 @@ public class UsersController {
     }
 
     @RequestMapping(path = "/{userId}", method = RequestMethod.DELETE)
-    public HttpStatus delete(@PathVariable String userId) {
+    public void delete(@PathVariable String userId, HttpServletResponse response) {
         User user = userService.get(userId);
         if (user == null) {
-            return HttpStatus.NOT_FOUND;
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+        } else {
+            userService.delete(user);
+            response.setStatus(HttpStatus.NO_CONTENT.value());
         }
-        userService.delete(user);
-        return HttpStatus.NO_CONTENT;
     }
 
 }
