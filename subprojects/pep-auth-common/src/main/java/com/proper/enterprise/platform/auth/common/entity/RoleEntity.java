@@ -44,7 +44,12 @@ public class RoleEntity extends BaseEntity implements Role {
 
     @Override
     public boolean equals(Object obj) {
-        return id.equals(((RoleEntity) obj).id);
+        return obj != null && (obj instanceof RoleEntity) && id.equals(((RoleEntity) obj).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public String getName() {
