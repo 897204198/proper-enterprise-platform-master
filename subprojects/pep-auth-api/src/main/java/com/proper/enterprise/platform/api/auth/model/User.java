@@ -77,10 +77,11 @@ public interface User extends IBase {
     void removeRole(Role role);
 
     /**
-     * 判断用户是否为系统管理员
+     * 判断用户是否为超级用户
+     * 超级用户拥有系统内所有资源的使用和分配权限
      *
-     * @return 返回 true 时代表是系统管理员
+     * @return 返回 true 时代表是超级用户
      */
-    boolean isAdmin();
+    boolean isSuperuser();
 
 }

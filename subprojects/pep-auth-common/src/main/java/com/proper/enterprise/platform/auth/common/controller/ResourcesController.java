@@ -31,10 +31,10 @@ public class ResourcesController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<Collection<Resource>> retrieve(
             @RequestParam(name = "type", required = false) ResourceType type) throws Exception {
-        boolean isAdmin = userService.getCurrentUser().isAdmin();
+        boolean isSuper = userService.getCurrentUser().isSuperuser();
         Collection<Resource> resources;
 
-        if (isAdmin) {
+        if (isSuper) {
             resources = type != null ? resourceService.findByType(type) : resourceService.list();
         } else {
             resources = type != null ? userService.getResources(ResourceType.MENU) : userService.getResources();

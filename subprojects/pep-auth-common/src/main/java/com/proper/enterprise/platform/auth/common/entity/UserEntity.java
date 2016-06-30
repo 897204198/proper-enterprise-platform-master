@@ -40,9 +40,9 @@ public class UserEntity extends BaseEntity implements User {
     private String email;
 
     /**
-     * 是否为系统管理员
+     * 是否为超级用户
      */
-    private boolean admin;
+    private boolean superuser;
 
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
@@ -100,12 +100,12 @@ public class UserEntity extends BaseEntity implements User {
     }
 
     @Override
-    public boolean isAdmin() {
-        return admin;
+    public boolean isSuperuser() {
+        return superuser;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setSuperuser(boolean superuser) {
+        this.superuser = superuser;
     }
 
 }

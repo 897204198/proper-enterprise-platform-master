@@ -16,7 +16,7 @@ class MockUserServiceImpl extends CommonUserServiceImpl {
         } else {
             def mockUser = new UserEntity('MockUserName', 'MockUserPassword')
             mockUser.setId('MockUserId')
-            mockUser.setAdmin(true)
+            mockUser.setSuperuser(true)
             return mockUser
         }
     }
