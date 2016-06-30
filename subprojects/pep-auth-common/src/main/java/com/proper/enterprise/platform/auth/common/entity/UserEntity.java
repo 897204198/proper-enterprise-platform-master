@@ -1,11 +1,14 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Table(name = "PEP_AUTH_USERS")
@@ -37,19 +40,19 @@ public class UserEntity extends BaseEntity implements User {
     private String email;
 
     /**
-     * override property in super class
+     * 是否为超级用户
      */
-    private String extendProperties = "";
+    private boolean superuser;
 
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    private Collection<RoleEntity> roleEntities;
+    private Collection<RoleEntity> roleEntities = Collections.emptySet();
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", username=" + username + ", extendProperties=" + extendProperties + "]";
+        return "User [id=" + id + ", username=" + username + "]";
     }
 
     public String getUsername() {
@@ -76,11 +79,33 @@ public class UserEntity extends BaseEntity implements User {
         this.email = email;
     }
 
+    @Override
+    @JsonIgnore
+    public Collection<? extends Role> getRoles() {
+        return roleEntities;
+    }
+
+    @Override
+    public void addRole(Role role) {
+        roleEntities.add((RoleEntity) role);
+    }
+
+    @Override
+    public void removeRole(Role role) {
+        roleEntities.remove(role);
+    }
+
     public Collection<RoleEntity> getRoleEntities() {
         return roleEntities;
     }
 
-    public void setRoleEntities(Collection<RoleEntity> roleEntities) {
-        this.roleEntities = roleEntities;
+    @Override
+    public boolean isSuperuser() {
+        return superuser;
     }
+
+    public void setSuperuser(boolean superuser) {
+        this.superuser = superuser;
+    }
+
 }

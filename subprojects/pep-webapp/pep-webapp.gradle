@@ -28,7 +28,6 @@ gretty {
 }
 
 dependencies {
-//    compile project(':pep-auth-security')
     compile project(':pep-auth-jwt')
 
     runtime project(':pep-workflow'),

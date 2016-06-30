@@ -34,13 +34,13 @@ public class BaseEntity implements IBase {
     protected String createUserId;
 
     @Column(updatable = false, nullable = false)
-    protected String createTime = DateUtil.getTimestamp();
+    protected String createTime = DateUtil.getTimestamp(true);
 
     @Column(nullable = false)
     protected String lastModifyUserId;
 
     @Column(nullable = false)
-    protected String lastModifyTime = DateUtil.getTimestamp();
+    protected String lastModifyTime = DateUtil.getTimestamp(true);
 
     public String getId() {
         return id;

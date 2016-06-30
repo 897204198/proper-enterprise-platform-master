@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.enums.ResourceType;
+import com.proper.enterprise.platform.api.auth.model.DataRestrain;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(
@@ -72,11 +75,11 @@ public class ResourceEntity extends BaseEntity implements Resource {
         this.name = name;
     }
 
-    public String getUrl() {
+    public String getURL() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setURL(String url) {
         this.url = url;
     }
 
@@ -96,6 +99,18 @@ public class ResourceEntity extends BaseEntity implements Resource {
         this.sequenceNumber = sequenceNumber;
     }
 
+    @Override
+    public Set<DataRestrain> getDataRestrains() {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public void setDataRestrains(Set<DataRestrain> restrains) {
+        // TODO
+    }
+
+    @JsonIgnore
     public Resource getParent() {
         return parentEntity;
     }

@@ -29,6 +29,8 @@ class AntPathMatcherSpec extends Specification {
         true    | '*:/workflow/service/repository/models/*'     | 'PUT:/workflow/service/repository/models/123'
         true    | '*:/workflow/service/repository/models/*'     | 'DELETE:/workflow/service/repository/models/123'
         false   | '*:/workflow/service/repository/models/*'     | 'PUT:/workflow/service/repository/models/test/123'
+        true    | 'GET:/auth/resources*'                        | 'GET:/auth/resources?name=test&type=1'
+        false   | 'GET:/auth/resources*'                        | 'GET:/auth/resources/123'
     }
 
 }

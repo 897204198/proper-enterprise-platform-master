@@ -11,6 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * 历史属性切面
+ * 实体保存时自动添加或更新 创建人/时间 和 修改人/时间
+ *
+ * 切面配置在 spring/auth/common/applicationContext-auth-common.xml
+ * 作用在 spring-data Repository 的 save 方法前
+ */
 public class HistoricalAdvice {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HistoricalAdvice.class);
@@ -20,7 +27,7 @@ public class HistoricalAdvice {
     @Autowired
     UserService userService;
 
-    public void beforeSave(JoinPoint jp) {
+    public void beforeSave(JoinPoint jp) throws Exception {
         LOGGER.trace("HistoricalAdvice before {} with {} args.", jp.getSignature().getName(), jp.getArgs());
 
         String userId = DEFAULT_USER_ID;
@@ -29,25 +36,26 @@ public class HistoricalAdvice {
             LOGGER.trace("Current user is {}({})", user.getUsername(), user.getId());
             userId = user.getId();
         } catch (Exception e) {
-            LOGGER.debug("Get current user throws exception {}", e.getMessage());
+            LOGGER.debug("Get current user throws exception: {}, fall back to use default user id.", e.getMessage());
         }
 
         Object obj = jp.getArgs()[0];
-        if (obj instanceof BaseEntity) {
-            update((BaseEntity) obj, userId);
-        } else if (obj instanceof Iterable) {
+        // Repository.save* 方法的参数只有两类
+        if (obj instanceof Iterable) {
             for (Object entity : (Iterable) obj) {
                 update((BaseEntity)entity, userId);
             }
+        } else {
+            update((BaseEntity) obj, userId);
         }
     }
 
     private void update(BaseEntity entity, String userId) {
         if (StringUtil.isNull(entity.getId())) {
             entity.setCreateUserId(userId);
-            entity.setCreateTime(DateUtil.getTimestamp());
+            entity.setCreateTime(DateUtil.getTimestamp(true));
         }
         entity.setLastModifyUserId(userId);
-        entity.setLastModifyTime(DateUtil.getTimestamp());
+        entity.setLastModifyTime(DateUtil.getTimestamp(true));
     }
 }

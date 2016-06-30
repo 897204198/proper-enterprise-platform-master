@@ -1,6 +1,11 @@
 INSERT INTO pep_auth_resources
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, parent_res_id, resource_type, url, method, sequence_number)
 VALUES
+('BBD7A5193ECC493DB202A7F0DECF386C', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', '默认根资源', null, 'MODULE', '/', 'GET', 0);
+
+INSERT INTO pep_auth_resources
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, parent_res_id, resource_type, url, method, sequence_number)
+VALUES
 ('7E0960C6B1CC44959DCFB5E36D63F3E2', 'sys', '2015-08-18 09:38:00', 'sys', '2015-08-18 09:38:00', '流程模型', 'BBD7A5193ECC493DB202A7F0DECF386C', 'MODULE', '/workflow/service/model/*/json', 'GET', 2);
 
 INSERT INTO pep_auth_resources

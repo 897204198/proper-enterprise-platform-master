@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,9 +28,7 @@ public class LoginController {
     @Autowired private JWTService jwtService;
     @Autowired private UserService userService;
 
-    @RequestMapping(value = "/auth/login", method = RequestMethod.POST,
-                    consumes = MediaType.APPLICATION_JSON_VALUE,
-                    produces = MediaType.TEXT_PLAIN_VALUE)
+    @RequestMapping(value = "/auth/login", method = RequestMethod.POST)
     public ResponseEntity<String> login(@RequestBody LoginBean loginBean) throws IOException {
         String username = loginBean.getUsername();
         String pwd = loginBean.getPwd();
@@ -39,7 +36,7 @@ public class LoginController {
         LOGGER.debug("User {} want to login", username);
 
         if (authcService.authenticate(username, pwd)) {
-            User user = userService.getUser(username);
+            User user = userService.getByUsername(username);
             JWTHeader header = new JWTHeader();
             header.setId(user.getId());
             header.setName(user.getUsername());
@@ -50,4 +47,5 @@ public class LoginController {
             return new ResponseEntity<String>("Failed to authenticate", HttpStatus.UNAUTHORIZED);
         }
     }
+
 }

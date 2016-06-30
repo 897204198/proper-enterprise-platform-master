@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.auth.service.impl;
 
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.auth.common.service.impl.AbstractUserServiceImpl;
+import com.proper.enterprise.platform.auth.common.service.impl.CommonUserServiceImpl;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.service.JWTService;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import java.io.IOException;
 
 @Primary
 @Service
-public class UserServiceImpl extends AbstractUserServiceImpl {
+public class UserServiceImpl extends CommonUserServiceImpl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -37,7 +37,7 @@ public class UserServiceImpl extends AbstractUserServiceImpl {
             return null;
         }
         String username = header.getName();
-        return getUser(username);
+        return getByUsername(username);
     }
 
 }
