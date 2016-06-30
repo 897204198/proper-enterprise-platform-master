@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.api.auth.model.DataRestrain;
 import com.proper.enterprise.platform.api.auth.model.Resource;
@@ -109,6 +110,7 @@ public class ResourceEntity extends BaseEntity implements Resource {
         // TODO
     }
 
+    @JsonIgnore
     public Resource getParent() {
         return parentEntity;
     }

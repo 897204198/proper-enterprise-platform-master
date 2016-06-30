@@ -39,6 +39,11 @@ public class UserEntity extends BaseEntity implements User {
      */
     private String email;
 
+    /**
+     * 是否为系统管理员
+     */
+    private boolean admin;
+
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
             joinColumns = @JoinColumn(name = "USER_ID"),
@@ -92,6 +97,15 @@ public class UserEntity extends BaseEntity implements User {
 
     public Collection<RoleEntity> getRoleEntities() {
         return roleEntities;
+    }
+
+    @Override
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
 }

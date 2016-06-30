@@ -76,4 +76,11 @@ public interface User extends IBase {
      */
     void removeRole(Role role);
 
+    /**
+     * 判断用户是否为系统管理员
+     *
+     * @return 返回 true 时代表是系统管理员
+     */
+    boolean isAdmin();
+
 }

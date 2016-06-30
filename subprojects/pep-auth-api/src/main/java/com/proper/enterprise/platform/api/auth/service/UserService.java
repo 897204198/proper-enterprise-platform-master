@@ -40,7 +40,7 @@ public interface UserService {
      * @return 资源集合
      * @throws Exception
      */
-    Collection<? extends Resource> getResources() throws Exception;
+    Collection<Resource> getResources() throws Exception;
 
     /**
      * 根据资源类型获得当前登录用户权限范围内资源集合
@@ -49,10 +49,10 @@ public interface UserService {
      * @return 资源集合
      * @throws Exception
      */
-    Collection<? extends Resource> getResources(ResourceType resourceType) throws Exception;
+    Collection<Resource> getResources(ResourceType resourceType) throws Exception;
 
-    Collection<? extends Resource> getResourcesById(String userId);
+    Collection<Resource> getResourcesById(String userId);
 
-    Collection<? extends Resource> getResources(String username);
+    Collection<Resource> getResources(String username);
 
 }

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
+import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
@@ -28,9 +29,22 @@ public class ResourcesController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<Collection<? extends Resource>> retrieve() throws Exception {
-//        return userService.getResources(ResourceType.MENU);
-        return null;
+    public ResponseEntity<Collection<Resource>> retrieve(
+            @RequestParam(name = "type", required = false) ResourceType type) throws Exception {
+        boolean isAdmin = userService.getCurrentUser().isAdmin();
+        Collection<Resource> resources;
+
+        if (isAdmin) {
+            resources = type != null ? resourceService.findByType(type) : resourceService.list();
+        } else {
+            resources = type != null ? userService.getResources(ResourceType.MENU) : userService.getResources();
+        }
+
+        if (resources.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(resources, HttpStatus.OK);
+        }
     }
 
 }

@@ -10,6 +10,8 @@ import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
 import com.proper.enterprise.platform.auth.common.repository.UserRepository;
 import com.proper.enterprise.platform.core.repository.NativeRepository;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -21,6 +23,8 @@ import java.util.*;
  * 其中，获得当前用户的方法由于与安全框架具体实现关联，只能提供抽象实现
  */
 public abstract class CommonUserServiceImpl implements UserService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommonUserServiceImpl.class);
 
     @Autowired
     UserRepository userRepo;
@@ -77,17 +81,19 @@ public abstract class CommonUserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<? extends Resource> getResources() throws Exception {
-        return getResources(getCurrentUser().getUsername());
+    public Collection<Resource> getResources() throws Exception {
+        String username = getCurrentUser().getUsername();
+        LOGGER.trace("Get resources of current user: {}", username);
+        return getResources(username);
     }
 
     @Override
-    public Collection<? extends Resource> getResources(String username) {
+    public Collection<Resource> getResources(String username) {
         UserEntity userEntity = userRepo.findByUsername(username);
         return getResources(userEntity);
     }
 
-    private  Collection<? extends Resource> getResources(UserEntity userEntity) {
+    private  Collection<Resource> getResources(UserEntity userEntity) {
         if (userEntity != null) {
             return resRepo.findAll(userEntity.getRoleEntities());
         } else {
@@ -96,7 +102,7 @@ public abstract class CommonUserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<? extends Resource> getResources(ResourceType resourceType) throws Exception {
+    public Collection<Resource> getResources(ResourceType resourceType) throws Exception {
         String sql = "SELECT res.id AS id, "
                    + "       res.url AS url, "
                    + "       res.method AS method, "
@@ -114,7 +120,7 @@ public abstract class CommonUserServiceImpl implements UserService {
         params.put("type", resourceType.name());
 
         List result = repo.executeQuery(sql, params);
-        Collection<ResourceEntity> reses = new ArrayList<>();
+        Collection<Resource> reses = new ArrayList<>();
         Object[] objs;
         ResourceEntity res;
         for (Object obj : result) {
@@ -130,7 +136,7 @@ public abstract class CommonUserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<? extends Resource> getResourcesById(String userId) {
+    public Collection<Resource> getResourcesById(String userId) {
         UserEntity userEntity = userRepo.findOne(userId);
         return getResources(userEntity);
     }
