@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.controller
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.core.utils.JSONUtil
+import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.test.integration.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,14 +33,16 @@ class UsersControllerTest extends AbstractTest {
         )
     }
 
-    private UserEntity doGet(String suffix, HttpStatus status) {
+    private doGet(String suffix, HttpStatus status) {
         def str = get("/auth/users$suffix", status).getResponse().getContentAsString()
-        return str > '' ? JSONUtil.parse(str, UserEntity) : null
+        if (StringUtil.isNotNull(str)) {
+            return str.startsWith('[') ? JSONUtil.parse(str, UserEntity[]) : JSONUtil.parse(str, UserEntity)
+        }
     }
 
     private UserEntity doPut(String id, UserEntity user, HttpStatus status) {
         def str = put("/auth/users/$id", JSONUtil.toJSON(user), status).getResponse().getContentAsString()
-        return str > '' ? JSONUtil.parse(str, UserEntity) : null
+        return StringUtil.isNotNull(str) ? JSONUtil.parse(str, UserEntity) : null
     }
 
     private void doDelete(String id, HttpStatus status) {

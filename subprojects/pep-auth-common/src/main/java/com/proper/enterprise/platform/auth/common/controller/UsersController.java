@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
+import java.util.HashSet;
 
 @RestController
 @RequestMapping(path = "/auth/users")
@@ -34,10 +36,12 @@ public class UsersController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<User> retrieve(@RequestParam(name = "name", required = false) String name) {
+    public ResponseEntity<Collection<User>> retrieve(@RequestParam(name = "name", required = false) String name) {
         User user = userService.getByUsername(name);
+        Collection<User> result = new HashSet<>();
+        result.add(user);
         if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
