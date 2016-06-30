@@ -10,6 +10,14 @@ import java.util.Collection;
 public interface RoleService {
 
     /**
+     * 根据角色 ID 获得角色
+     *
+     * @param id 角色 ID
+     * @return 角色
+     */
+    Role get(String id);
+
+    /**
      * 根据角色名称获得角色集合
      *
      * 系统使用角色 ID 作为角色唯一标识，允许存在同名的角色

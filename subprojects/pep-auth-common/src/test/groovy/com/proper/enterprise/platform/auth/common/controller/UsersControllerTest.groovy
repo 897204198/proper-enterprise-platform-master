@@ -77,16 +77,18 @@ class UsersControllerTest extends AbstractTest {
 
     @Sql
     @Test
-    public void addRoleToUser() {
+    public void addRolesToUserAndThenRemove() {
         UserEntity user = doPost()
         def roles = roleService.getByName('testrole')
-        assert !roles.isEmpty() && roles.size()==1
+        assert !roles.isEmpty() && roles.size()==2
         user.addRole(roles[0])
-        assert doPut(user.id, user, HttpStatus.OK).roles.contains(roles[0])
-    }
+        user.addRole(roles[1])
+        user = doPut(user.id, user, HttpStatus.OK)
+        assert user.roles.containsAll(roles)
 
-    public void removeRoleFromUser() {
-
+        def role = roleService.get('role1')
+        user.removeRole(role)
+        assert doPut(user.id, user, HttpStatus.OK).roles.first().id == 'role2'
     }
 
 }

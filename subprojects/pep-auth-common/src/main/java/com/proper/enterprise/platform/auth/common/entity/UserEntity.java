@@ -82,16 +82,12 @@ public class UserEntity extends BaseEntity implements User {
 
     @Override
     public void addRole(Role role) {
-        if (!roleEntities.contains(role)) {
-            roleEntities.add((RoleEntity) role);
-        }
+        roleEntities.add((RoleEntity) role);
     }
 
     @Override
     public void removeRole(Role role) {
-        if (roleEntities.contains(role)) {
-            roleEntities.remove(role);
-        }
+        roleEntities.remove(role);
     }
 
     public Collection<RoleEntity> getRoleEntities() {

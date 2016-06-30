@@ -15,6 +15,11 @@ public class CommonRoleServiceImpl implements RoleService {
     RoleRepository roleRepository;
 
     @Override
+    public Role get(String id) {
+        return roleRepository.findOne(id);
+    }
+
+    @Override
     public Collection<? extends Role> getByName(String name) {
         return roleRepository.findByName(name);
     }
