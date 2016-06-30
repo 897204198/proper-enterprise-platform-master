@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.api.auth.model;
 
 import com.proper.enterprise.platform.core.api.IBase;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * 用户
@@ -60,13 +60,20 @@ public interface User extends IBase {
      *
      * @return 角色集合
      */
-    Set<Role> getRoles();
+    Collection<? extends Role> getRoles();
 
     /**
-     * 设置用户角色集合
+     * 为用户增加一个角色
      *
-     * @param roles 角色集合
+     * @param role 角色
      */
-    void setRoles(Set<Role> roles);
+    void addRole(Role role);
+
+    /**
+     * 为用户移除一个角色
+     *
+     * @param role 角色
+     */
+    void removeRole(Role role);
 
 }

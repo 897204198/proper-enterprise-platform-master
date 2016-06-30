@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
@@ -7,7 +8,7 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Collections;
 
 @Entity
 @Table(name = "PEP_AUTH_USERS")
@@ -42,7 +43,7 @@ public class UserEntity extends BaseEntity implements User {
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    private Collection<RoleEntity> roleEntities;
+    private Collection<RoleEntity> roleEntities = Collections.emptySet();
 
     @Override
     public String toString() {
@@ -74,21 +75,27 @@ public class UserEntity extends BaseEntity implements User {
     }
 
     @Override
-    public Set<Role> getRoles() {
-        // TODO
-        return null;
+    @JsonIgnore
+    public Collection<? extends Role> getRoles() {
+        return roleEntities;
     }
 
     @Override
-    public void setRoles(Set<Role> roles) {
-        // TODO
+    public void addRole(Role role) {
+        if (!roleEntities.contains(role)) {
+            roleEntities.add((RoleEntity) role);
+        }
+    }
+
+    @Override
+    public void removeRole(Role role) {
+        if (roleEntities.contains(role)) {
+            roleEntities.remove(role);
+        }
     }
 
     public Collection<RoleEntity> getRoleEntities() {
         return roleEntities;
     }
 
-    public void setRoleEntities(Collection<RoleEntity> roleEntities) {
-        this.roleEntities = roleEntities;
-    }
 }

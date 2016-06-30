@@ -1,11 +1,13 @@
 package com.proper.enterprise.platform.auth.common.controller
-
+import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.test.integration.AbstractTest
 import org.junit.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.test.context.jdbc.Sql
 
 class UsersControllerTest extends AbstractTest {
 
@@ -68,6 +70,23 @@ class UsersControllerTest extends AbstractTest {
         doDelete(user.id, HttpStatus.NOT_FOUND)
 
         doGet("/${user.id}", HttpStatus.NOT_FOUND)
+    }
+
+    @Autowired
+    RoleService roleService
+
+    @Sql
+    @Test
+    public void addRoleToUser() {
+        UserEntity user = doPost()
+        def roles = roleService.getByName('testrole')
+        assert !roles.isEmpty() && roles.size()==1
+        user.addRole(roles[0])
+        assert doPut(user.id, user, HttpStatus.OK).roles.contains(roles[0])
+    }
+
+    public void removeRoleFromUser() {
+
     }
 
 }
