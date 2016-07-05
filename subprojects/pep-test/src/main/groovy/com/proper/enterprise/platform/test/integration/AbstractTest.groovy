@@ -87,6 +87,11 @@ public abstract class AbstractTest {
         return perform(req, statusCode)
     }
 
+    protected MvcResult options(String url, HttpStatus statusCode) {
+        MockHttpServletRequestBuilder req = MockMvcRequestBuilders.options(url)
+        return perform(req, statusCode)
+    }
+
     private MvcResult perform(MockHttpServletRequestBuilder req, HttpStatus statusCode) {
         return mockMvc
             .perform(req)
