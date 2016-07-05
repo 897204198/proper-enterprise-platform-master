@@ -9,6 +9,7 @@
     <bean id="authzService" class="com.proper.enterprise.platform.auth.jwt.authz.AuthzService">
         <property name="ignorePatterns">
             <list>
+                <value>OPTIONS:/**</value>
                 <value>POST:/auth/login</value>
                 <value>*:/workflow/**</value>
             </list>
