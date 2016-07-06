@@ -28,6 +28,7 @@ public class InterfaceCollectionConverter {
      * @param <T>           接口类型
      * @return 接口类型元素集合
      */
+    @SuppressWarnings("unchecked")
     public static <F, T> Collection<T> convert(Collection<F> collection) {
         Collection<T> result = new ArrayList<>(collection.size());
         for (F obj : collection) {
