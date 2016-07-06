@@ -50,7 +50,6 @@ subprojects {
 
         testCompile libraries.groovy,
                     libraries.junit,
-                    libraries.mockito,
                     libraries.spock,
                     libraries.spring_test
 
