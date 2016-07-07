@@ -11,7 +11,7 @@ repositories {
     jcenter()
 }
 
-apply plugin: 'org.akhikhl.gretty'
+apply plugin: 'org.akhikhl.gretty' 
 apply plugin: 'eclipse-wtp'
 apply plugin: 'war'
 
@@ -31,6 +31,7 @@ dependencies {
     compile project(':pep-auth-jwt')
 
     runtime project(':pep-workflow'),
+            project(':pep-av-backend'),   
             libraries.commons_fileupload,
             libraries.h2,
             libraries.hibernate_ehcache,

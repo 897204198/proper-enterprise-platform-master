@@ -1,0 +1,11 @@
+dependencies {
+    compile project(':pep-core'),
+            libraries.mongodb_driver,
+            libraries.spring_webmvc,
+            libraries.servlet_api
+
+    runtime libraries.jackson_databind,
+            libraries.mongodb_driver,
+            libraries.spring_webmvc,
+            libraries.servlet_api
+}
