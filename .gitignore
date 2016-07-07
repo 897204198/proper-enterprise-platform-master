@@ -18,7 +18,7 @@ bower_components/
 .project
 .classpath
 
-# ignore build related 
+# ignore build related
 .gradle
 build
 bin
@@ -32,3 +32,6 @@ init_mongo_for_proper_dfs.js
 *.ipr
 *.iws
 out/
+
+# ignore MANIFEST.MF
+MANIFEST.MF

@@ -12,6 +12,8 @@ import java.util.Collections;
 
 @Entity
 @Table(name = "PEP_AUTH_USERS")
+@DiscriminatorColumn(name = "pepDtype")
+@DiscriminatorValue("UserEntity")
 @CacheEntity
 public class UserEntity extends BaseEntity implements User {
 
@@ -49,6 +51,9 @@ public class UserEntity extends BaseEntity implements User {
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     private Collection<RoleEntity> roleEntities = Collections.emptySet();
+
+    @Column(insertable = false, updatable = false)
+    protected String pepDtype;
 
     @Override
     public String toString() {
@@ -108,4 +113,11 @@ public class UserEntity extends BaseEntity implements User {
         this.superuser = superuser;
     }
 
+    public String getPepDtype() {
+        return pepDtype;
+    }
+
+    public void setPepDtype(String pepDtype) {
+        this.pepDtype = pepDtype;
+    }
 }

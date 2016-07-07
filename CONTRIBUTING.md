@@ -29,16 +29,17 @@ Proper Enterprise Platform Developer Guidelines
 
     $ ./gradlew assemble debug
 
-### 热部署修改
-
-    $ ./gradlew assemble
-
-> assemble 任务会将源码重新编译，class 更新后会被 `spring-loaded` 自动加载，实现热部署效果
 
 IDE 开启远程调试方式可参见：
 
 * [IntelliJ Remote Run/Debug Configuration](http://www.jetbrains.com/idea/webhelp/run-debug-configuration-remote.html)
 * [Eclipse Remote Debugging](http://help.eclipse.org/indigo/index.jsp?topic=%2Forg.eclipse.jdt.doc.user%2Fconcepts%2Fcremdbug.htm)
+
+### 热部署修改
+
+    $ ./gradlew assemble
+
+> assemble 任务会将源码重新编译，class 更新后会被 `spring-loaded` 自动加载，实现热部署效果
 
 
 开发规范
@@ -71,6 +72,24 @@ IDE 开启远程调试方式可参见：
 	@CacheEntity
 	public class UserEntity extends BaseEntity implements User
     ```
+
+* 同一张表被多个实体（继承关系）映射：以用户表为例，平台定义的基础用户实体（`UserEntity`）只包含必须的用户属性，当项目需要扩展用户表中的属性时，可以定义一个从 `UserEntity` 继承的新实体，如：`CustomUserEntity`。此时需要在基类中设定 `DiscriminatorColumn` 和 `DiscriminatorValue`（如果原本没有定义过的话），并在新继承出的类中定义 `DiscriminatorValue`。
+    ```
+    @Entity
+  @Table(name = "PEP_AUTH_USERS")
+  @DiscriminatorColumn(name = "pepDtype")
+  @DiscriminatorValue("UserEntity")
+  @CacheEntity
+  public class UserEntity extends BaseEntity implements User
+
+  @Entity
+  @Table(name = "PEP_AUTH_USERS")
+  @DiscriminatorValue("CustomUserEntity")
+  @CacheEntity
+  public class CustomUserEntity extends UserEntity implements User
+    ```
+
+    > `DiscriminatorColumn` 统一使用 `pepDtype`，以免默认字段 `DTYPE` 与数据库关键字冲突
 
 * Repository：`com.proper.enterprise.platform.[module]..repository.*Repository`，需继承 `BaseRepository`；需缓存的方法需添加 `CacheQuery` 注解，且对应 `Entity` 也需要有 `CacheEntity` 注解标识：
 
