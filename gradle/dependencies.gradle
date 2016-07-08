@@ -6,6 +6,7 @@ ext {
 versions.jcaptcha = '1.0'
 versions.spring = '4.3.0.RELEASE'
 versions.spring_security = '4.0.1.RELEASE'
+versions.mongo = '3.2.2'
 
 configurations.all {
     resolutionStrategy.force 'xml-apis:xml-apis:1.0.b2'
@@ -17,6 +18,8 @@ configurations.all {
         } else if (req.group == 'org.springframework.security') {
             // spring security 被 activiti 直接依赖
             details.useVersion versions.spring_security
+        } else if (req.name == 'mongo-java-driver') {
+            details.useTarget "org.mongodb:mongodb-driver:${versions.mongo}"
         }
     }
 }
@@ -128,7 +131,7 @@ libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:
     dependency "ch.qos.logback:logback-core:${versions.logback}"
 }
 
-libraries.mongodb_driver = 'org.mongodb:mongodb-driver:3.2.2'
+libraries.mongodb_driver = "org.mongodb:mongodb-driver:${versions.mongo}"
 
 //libraries.poi = 'org.apache.poi:poi:3.7'
 
@@ -157,6 +160,8 @@ libraries.spring_test = "org.springframework:spring-test:${versions.spring}"
 //libraries.spring_tx = "org.springframework:spring-tx:${versions.spring}"
 //libraries.spring_web = "org.springframework:spring-web:${versions.spring}"
 libraries.spring_webmvc = "org.springframework:spring-webmvc:${versions.spring}"
+
+libraries.spring_data_mongodb = 'org.springframework.data:spring-data-mongodb:1.9.2.RELEASE'
 
 libraries.spring_data_jpa = 'org.springframework.data:spring-data-jpa:1.9.4.RELEASE'
 
