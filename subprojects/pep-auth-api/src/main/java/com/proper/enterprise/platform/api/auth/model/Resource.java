@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.core.api.IBase;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * 资源
@@ -112,13 +112,20 @@ public interface Resource extends IBase {
      *
      * @return 数据约束集合
      */
-    Set<DataRestrain> getDataRestrains();
+    Collection<? extends DataRestrain> getDataRestrains();
 
     /**
-     * 设置数据约束集合
+     * 为资源添加一个数据约束
      *
-     * @param restrains 数据约束集合
+     * @param restrain 数据约束
      */
-    void setDataRestrains(Set<DataRestrain> restrains);
+    void add(DataRestrain restrain);
+
+    /**
+     * 从资源中移除一个数据约束
+     *
+     * @param restrain 要移除的数据约束
+     */
+    void remove(DataRestrain restrain);
 
 }

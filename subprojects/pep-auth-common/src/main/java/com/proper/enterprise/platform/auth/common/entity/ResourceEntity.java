@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Collections;
 
 @Entity
 @Table(
@@ -67,6 +67,9 @@ public class ResourceEntity extends BaseEntity implements Resource {
     @ManyToMany(mappedBy = "resourceEntities")
     private Collection<RoleEntity> roleEntities;
 
+    @OneToMany
+    private Collection<DataRestrainEntity> dataRestrainEntities = Collections.emptySet();;
+
     public String getName() {
         return name;
     }
@@ -100,15 +103,21 @@ public class ResourceEntity extends BaseEntity implements Resource {
     }
 
     @Override
-    public Set<DataRestrain> getDataRestrains() {
-        // TODO
-        return null;
+    @JsonIgnore
+    public Collection<? extends DataRestrain> getDataRestrains() {
+        return dataRestrainEntities;
     }
 
     @Override
-    public void setDataRestrains(Set<DataRestrain> restrains) {
-        // TODO
+    public void add(DataRestrain restrain) {
+        dataRestrainEntities.add((DataRestrainEntity) restrain);
     }
+
+    @Override
+    public void remove(DataRestrain restrain) {
+        dataRestrainEntities.remove(restrain);
+    }
+
 
     @JsonIgnore
     public Resource getParent() {
@@ -140,11 +149,4 @@ public class ResourceEntity extends BaseEntity implements Resource {
         this.method = method;
     }
 
-    public Collection<RoleEntity> getRoleEntities() {
-        return roleEntities;
-    }
-
-    public void setRoleEntities(Collection<RoleEntity> roleEntities) {
-        this.roleEntities = roleEntities;
-    }
 }

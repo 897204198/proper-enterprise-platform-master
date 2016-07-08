@@ -13,6 +13,20 @@ import com.proper.enterprise.platform.core.api.IBase;
 public interface DataRestrain extends IBase {
 
     /**
+     * 获得数据约束名称
+     *
+     * @return 数据约束名称
+     */
+    String getName();
+
+    /**
+     * 设置数据约束名称
+     *
+     * @param name 数据约束名称
+     */
+    void setName(String name);
+
+    /**
      * 获得数据约束作用表名
      *
      * @return 数据库中表名
@@ -31,14 +45,14 @@ public interface DataRestrain extends IBase {
      *
      * @return SQL 片段
      */
-    String getSQL();
+    String getSql();
 
     /**
      * 设置数据约束具体 SQL
      *
      * @param sql SQL 片段
      */
-    void setSQL(String sql);
+    void setSql(String sql);
 
     /**
      * 获得 Entity 中定义的 Filter 名称
