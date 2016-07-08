@@ -91,12 +91,12 @@ public class UserEntity extends BaseEntity implements User {
     }
 
     @Override
-    public void addRole(Role role) {
+    public void add(Role role) {
         roleEntities.add((RoleEntity) role);
     }
 
     @Override
-    public void removeRole(Role role) {
+    public void remove(Role role) {
         roleEntities.remove(role);
     }
 

@@ -85,13 +85,13 @@ class UsersControllerTest extends AbstractTest {
         UserEntity user = doPost()
         def roles = roleService.getByName('testrole')
         assert !roles.isEmpty() && roles.size()==2
-        user.addRole(roles[0])
-        user.addRole(roles[1])
+        user.add(roles[0])
+        user.add(roles[1])
         user = doPut(user.id, user, HttpStatus.OK)
         assert user.roles.containsAll(roles)
 
         def role = roleService.get('role1')
-        user.removeRole(role)
+        user.remove(role)
         assert doPut(user.id, user, HttpStatus.OK).roles.first().id == 'role2'
     }
 

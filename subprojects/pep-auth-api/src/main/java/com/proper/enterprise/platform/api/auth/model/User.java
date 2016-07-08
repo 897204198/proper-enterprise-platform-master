@@ -67,14 +67,14 @@ public interface User extends IBase {
      *
      * @param role 角色
      */
-    void addRole(Role role);
+    void add(Role role);
 
     /**
      * 为用户移除一个角色
      *
      * @param role 角色
      */
-    void removeRole(Role role);
+    void remove(Role role);
 
     /**
      * 判断用户是否为超级用户
