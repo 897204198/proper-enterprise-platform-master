@@ -20,6 +20,8 @@ configurations.all {
             details.useVersion versions.spring_security
         } else if (req.name == 'mongo-java-driver') {
             details.useTarget "org.mongodb:mongodb-driver:${versions.mongo}"
+        } else if (req.name == 'spring-data-commons') {
+            details.useTarget 'org.springframework.data:spring-data-commons:1.11.4.RELEASE'
         }
     }
 }
