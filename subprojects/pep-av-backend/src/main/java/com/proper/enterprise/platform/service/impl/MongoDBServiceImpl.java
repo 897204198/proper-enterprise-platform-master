@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
+import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -38,7 +39,7 @@ public class MongoDBServiceImpl implements IMongoDBService {
 	private String userTable = "user";
 
     @Autowired
-    private MongoClient mongoClient;
+    private Mongo mongo;
 
 
 	public MongoDBServiceImpl() {
@@ -47,7 +48,7 @@ public class MongoDBServiceImpl implements IMongoDBService {
 
 	public Object getConnection() throws Exception {
 		// 连接到数据库
-		MongoDatabase mongoDatabase = mongoClient.getDatabase(ConfCenter.get("mongodb.database"));
+		MongoDatabase mongoDatabase = ((MongoClient)mongo).getDatabase(ConfCenter.get("mongodb.database"));
 		System.out.println("Connect to database successfully");
 		if (mongoDatabase == null) {
 			throw new Exception("数据库连接获取失败，请检查其对应的数据源配置是否正确。");

@@ -12,6 +12,8 @@
                 <value>OPTIONS:/**</value>
                 <value>POST:/auth/login</value>
                 <value>*:/workflow/**</value>
+                <!-- TODO av-core.js 处理好后需要将这个去掉 -->
+                <value>*:/avdemo/**</value>
             </list>
         </property>
     </bean>
