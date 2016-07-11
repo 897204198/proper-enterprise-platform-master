@@ -28,7 +28,8 @@ gretty {
 }
 
 dependencies {
-    runtime project(':pep-av-backend'),
+    runtime project(':pep-auth-jwt'),
+            project(':pep-av-backend'),
             project(':pep-webapp-configs'),
             project(':pep-workflow'),
             libraries.commons_fileupload,
