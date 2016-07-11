@@ -1,4 +1,7 @@
 dependencies {
+    compile libraries.hibernate_hikaricp,
+            libraries.spring_context_support
+
     testCompile libraries.ehcache,
                 project(':pep-core'),
                 project(':pep-test')
