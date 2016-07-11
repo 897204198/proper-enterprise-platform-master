@@ -13,12 +13,12 @@ task syncCtx(type: Copy) {
     file('src/main/resources/spring').deleteDir()
 
     copy {
-        from project(':pep-webapp').file('src/main/resources/conf')
+        from project(':pep-webapp-configs').file('src/main/resources/conf')
         into 'src/main/resources/conf'
     }
 
     copy {
-        from project(':pep-webapp').file('src/main/resources/spring')
+        from project(':pep-webapp-configs').file('src/main/resources/spring')
         into 'src/main/resources/spring'
     }
 }

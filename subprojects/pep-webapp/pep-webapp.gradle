@@ -11,7 +11,7 @@ repositories {
     jcenter()
 }
 
-apply plugin: 'org.akhikhl.gretty' 
+apply plugin: 'org.akhikhl.gretty'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'war'
 
@@ -28,10 +28,9 @@ gretty {
 }
 
 dependencies {
-    compile project(':pep-auth-jwt')
-
-    runtime project(':pep-workflow'),
-            project(':pep-av-backend'),   
+    runtime project(':pep-av-backend'),
+            project(':pep-webapp-configs'),
+            project(':pep-workflow'),
             libraries.commons_fileupload,
             libraries.h2,
             libraries.hibernate_ehcache,
@@ -40,9 +39,6 @@ dependencies {
             libraries.spring_context_support,
             libraries.spring_orm,
             libraries.spring_webmvc
-
-    testCompile libraries.ehcache,
-                project(':pep-test')
 }
 
 task cleanDist(type: Delete) {
