@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-lazy-init="true">
+
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="dataSourceClassName" value="${datasource.driverClassName}" />
+        <property name="minimumIdle" value="${datasource.minIdle}" />
+        <property name="maximumPoolSize" value="${datasource.maxPoolSize}" />
+        <property name="idleTimeout" value="${datasource.idleTimeout}" />
+        <property name="autoCommit" value="${datasource.autoCommit}" />
+        <property name="dataSourceProperties">
+            <value>
+                url      = ${datasource.url}
+                user     = ${datasource.username}
+                password = ${datasource.password}
+            </value>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfig" />
+    </bean>
+
+
+
+</beans>
