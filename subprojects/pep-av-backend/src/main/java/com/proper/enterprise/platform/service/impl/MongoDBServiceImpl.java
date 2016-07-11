@@ -1,27 +1,10 @@
 package com.proper.enterprise.platform.service.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -30,6 +13,20 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import com.proper.enterprise.platform.api.service.IMongoDBService;
+import com.proper.enterprise.platform.core.utils.ConfCenter;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Service
 public class MongoDBServiceImpl implements IMongoDBService {
@@ -40,7 +37,8 @@ public class MongoDBServiceImpl implements IMongoDBService {
 
 	private String userTable = "user";
 
-
+    @Autowired
+    private MongoClient mongoClient;
 
 
 	public MongoDBServiceImpl() {
@@ -48,31 +46,8 @@ public class MongoDBServiceImpl implements IMongoDBService {
 	}
 
 	public Object getConnection() throws Exception {
-
-		InputStream in = this.getClass().getClassLoader().getResourceAsStream("conf/application-avbackend.properties");
-		Properties p = new Properties();
-		p.load(in);
-
-		String username = p.getProperty("mongodb.username");
-		MongoClient mongoClient = null;
-		if (username != null) {
-			ServerAddress serverAddress = new ServerAddress(p.getProperty("mongodb.host"),
-					Integer.parseInt(p.getProperty("mongodb.port")));
-			List<ServerAddress> addrs = new ArrayList<ServerAddress>();
-			addrs.add(serverAddress);
-
-			MongoCredential credential = MongoCredential.createScramSha1Credential(username,
-					p.getProperty("mongodb.database"), p.getProperty("mongodb.password").toCharArray());
-			List<MongoCredential> credentials = new ArrayList<MongoCredential>();
-			credentials.add(credential);
-			mongoClient = new MongoClient(addrs, credentials);
-		} else {
-			mongoClient = new MongoClient(p.getProperty("mongodb.host"),
-					Integer.parseInt(p.getProperty("mongodb.port")));
-		}
-
 		// 连接到数据库
-		MongoDatabase mongoDatabase = mongoClient.getDatabase(p.getProperty("mongodb.database"));
+		MongoDatabase mongoDatabase = mongoClient.getDatabase(ConfCenter.get("mongodb.database"));
 		System.out.println("Connect to database successfully");
 		if (mongoDatabase == null) {
 			throw new Exception("数据库连接获取失败，请检查其对应的数据源配置是否正确。");
