@@ -5,7 +5,8 @@ dependencies {
             libraries.servlet_api,
             libraries.spring_test
 
-    runtime libraries.h2
+    runtime libraries.h2,
+            libraries.spring_data_mongodb
 }
 
 task syncCtx(type: Copy) {

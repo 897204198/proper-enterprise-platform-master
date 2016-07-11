@@ -1,7 +1,6 @@
 dependencies {
     compile project(':pep-core'),
             libraries.mongodb_driver,
-            libraries.spring_data_mongodb,
             libraries.spring_webmvc,
             libraries.servlet_api
 
