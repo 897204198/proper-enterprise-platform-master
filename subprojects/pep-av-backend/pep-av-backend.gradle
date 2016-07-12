@@ -1,9 +1,7 @@
 dependencies {
     compile project(':pep-core'),
-            libraries.spring_webmvc,
-            libraries.servlet_api
+	        project(':pep-auth-common'),
+            libraries.spring_webmvc
 
-    runtime libraries.jackson_databind,
-            libraries.spring_webmvc,
-            libraries.servlet_api
+    runtime libraries.jackson_databind
 }

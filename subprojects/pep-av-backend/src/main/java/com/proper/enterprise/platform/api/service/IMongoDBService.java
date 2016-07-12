@@ -29,6 +29,18 @@ public interface IMongoDBService {
 
 	Document queryById(String id, String collection) throws Exception;
 
+	boolean checkJurisdiction(String userid) throws Exception;
 
+	/**
+	 * 
+	 * @param useid
+	 *            用户id
+	 * @param operation
+	 *            操作符
+	 * @return 组织主键，为空返回null
+	 */
+	String[] getPk_orgsByUseid(String useid, String operation) throws Exception;
+
+	void initializationData();
 
 }
