@@ -1,9 +1,11 @@
 dependencies {
     compile libraries.commons_codec,
             libraries.commons_lang3,
+            libraries.hibernate_entitymanager,
             libraries.jackson_databind,
             libraries.joda_time,
-            libraries.hibernate_entitymanager,
+            libraries.mongodb_driver,
+            libraries.servlet_api,
             libraries.spring_orm
 
     testCompile project(':pep-test')

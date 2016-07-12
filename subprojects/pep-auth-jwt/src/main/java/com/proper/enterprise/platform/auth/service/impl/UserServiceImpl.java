@@ -4,13 +4,12 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.auth.common.service.impl.CommonUserServiceImpl;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.service.JWTService;
+import com.proper.enterprise.platform.core.utils.RequestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -25,9 +24,7 @@ public class UserServiceImpl extends CommonUserServiceImpl {
     private JWTService jwtService;
 
     public User getCurrentUser() throws IOException {
-        HttpServletRequest req =
-                ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                        .getRequest();
+        HttpServletRequest req = RequestUtil.getCurrentRequest();
         LOGGER.debug("Get request from request context holder: {}", req);
         String token = jwtService.getTokenFromHeader(req);
         LOGGER.debug("Get token from request: {}", token);
