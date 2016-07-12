@@ -1,5 +1,19 @@
 package com.proper.enterprise.platform.service.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,19 +29,6 @@ import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import com.proper.enterprise.platform.api.service.IMongoDBService;
 import com.proper.enterprise.platform.core.utils.ConfCenter;
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 @Service
 public class MongoDBServiceImpl implements IMongoDBService {
@@ -36,11 +37,8 @@ public class MongoDBServiceImpl implements IMongoDBService {
 
 	private MongoDatabase database;
 
-	private String userTable = "user";
-
     @Autowired
     private Mongo mongo;
-
 
 	public MongoDBServiceImpl() {
 		// TODO Auto-generated constructor stub
@@ -240,6 +238,29 @@ public class MongoDBServiceImpl implements IMongoDBService {
 		return doc;
 	}
 
+	@Override
+	public boolean checkJurisdiction(String userid) {
+		// TODO Auto-generated method stub
 
+		return false;
+	}
+
+	@Override
+	public String[] getPk_orgsByUseid(String useid, String operation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void initializationData() {
+		// TODO Auto-generated method stub
+		// 1保存资源 包含url和操作（put，get，post,delete）
+
+		// 2 资源组分配表包含（资源，组，可以分配哪些组对该资源）
+
+		// 3完成数据约束初始化（哪张表，字段，）
+		return;
+
+	}
 
 }
