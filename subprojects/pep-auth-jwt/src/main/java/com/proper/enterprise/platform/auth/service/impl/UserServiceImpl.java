@@ -8,13 +8,11 @@ import com.proper.enterprise.platform.core.utils.RequestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@Primary
 @Service
 public class UserServiceImpl extends CommonUserServiceImpl {
 

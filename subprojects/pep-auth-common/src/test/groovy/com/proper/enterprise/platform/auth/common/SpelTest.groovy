@@ -21,10 +21,10 @@ class SpelTest extends AbstractTest {
         StandardEvaluationContext context = new StandardEvaluationContext()
         context.setBeanResolver(new BeanFactoryResolver(wac))
 
-        String tpl = "AND usergroup IN (#{@mockUserService.currentUser.password})"
+        String tpl = '{usergroup: {$in: [#{@mockUserService.currentUser.password}]}}'
         def val = parser.parseExpression(tpl, new TemplateParserContext()).getValue(context)
 
-        assert val == 'AND usergroup IN (MockUserPassword)'
+        assert val == '{usergroup: {$in: [MockUserPassword]}}'
     }
 
 }
