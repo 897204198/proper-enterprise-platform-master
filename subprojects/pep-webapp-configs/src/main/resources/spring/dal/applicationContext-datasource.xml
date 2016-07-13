@@ -28,6 +28,10 @@
     </bean>
 
     <!-- credentials="${mongodb.username}:${mongodb.password}@${mongodb.database}"  -->
-    <mongo:mongo-client host="${mongodb.host}" port="${mongodb.port}" />
+    <mongo:mongo-client id="mongoClient" host="${mongodb.host}" port="${mongodb.port}" />
+
+    <bean id="mongoDatabase" class="com.proper.enterprise.platform.core.utils.MongoDatabaseFactoryBean">
+        <property name="mongoClient" ref="mongoClient" />
+    </bean>
 
 </beans>
