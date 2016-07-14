@@ -5,6 +5,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
@@ -31,6 +32,9 @@ public abstract class AbstractTest {
     private WebApplicationContext wac
 
     protected MockMvc mockMvc
+
+    @Autowired
+    protected MockHttpServletRequest mockRequest
 
     @Before
     public void setup() {

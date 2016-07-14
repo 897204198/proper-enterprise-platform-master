@@ -11,12 +11,15 @@ class MockUserServiceImpl extends CommonUserServiceImpl {
 
     @Override
     User getCurrentUser() {
-        if (ConfCenter.get('test.throwEx') == 'true') {
+        if (ConfCenter.get('test.mockUser.throwEx') == 'true') {
             throw new Exception('Mock to throw exception in getCurrentUser')
         } else {
             def mockUser = new UserEntity('MockUserName', 'MockUserPassword')
             mockUser.setId('MockUserId')
-            mockUser.setSuperuser(true)
+
+            if (ConfCenter.get('test.mockUser.isSuper') == 'true') {
+                mockUser.setSuperuser(true)
+            }
             return mockUser
         }
     }

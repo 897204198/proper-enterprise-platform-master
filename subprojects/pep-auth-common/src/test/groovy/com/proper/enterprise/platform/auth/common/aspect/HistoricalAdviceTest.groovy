@@ -48,7 +48,7 @@ class HistoricalAdviceTest extends AbstractTest {
 
     @Test
     def void test() {
-        System.setProperty('test.throwEx', 'true')
+        System.setProperty('test.mockUser.throwEx', 'true')
         ConfCenter.reload()
 
         service.save(new UserEntity('hinex', 'hinex_password'))
@@ -57,7 +57,7 @@ class HistoricalAdviceTest extends AbstractTest {
         assert result.getCreateUserId() == DEFAULT_USER_ID
         assert result.getLastModifyUserId() == DEFAULT_USER_ID
 
-        System.clearProperty('test.throwEx')
+        System.clearProperty('test.mockUser.throwEx')
         ConfCenter.reload()
     }
 
