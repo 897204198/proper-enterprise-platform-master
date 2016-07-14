@@ -37,7 +37,7 @@ public class ResourcesController {
         if (isSuper) {
             resources = type != null ? resourceService.findByType(type) : resourceService.list();
         } else {
-            resources = type != null ? userService.getResources(ResourceType.MENU) : userService.getResources();
+            resources = type != null ? userService.getResources(type) : userService.getResources();
         }
 
         if (resources.isEmpty()) {

@@ -102,11 +102,13 @@ public abstract class CommonUserServiceImpl implements UserService {
     }
 
     @Override
+    // TODO 能否用数据约束实现？
     public Collection<Resource> getResources(ResourceType resourceType) throws Exception {
         String sql = "SELECT res.id AS id, "
                    + "       res.url AS url, "
                    + "       res.method AS method, "
-                   + "       res.name AS name "
+                   + "       res.name AS name, "
+                   + "       res.resource_type AS resType "
                    + "  FROM pep_auth_resources res, pep_auth_users u, "
                    + "       pep_auth_users_roles ur, pep_auth_roles_resources rr "
                    + " WHERE u.id = ur.user_id "
@@ -130,6 +132,7 @@ public abstract class CommonUserServiceImpl implements UserService {
             res.setURL((String) objs[1]);
             res.setMethod(RequestMethod.valueOf((String) objs[2]));
             res.setName((String) objs[3]);
+            res.setResourceType(ResourceType.valueOf((String) objs[4]));
             reses.add(res);
         }
         return reses;
