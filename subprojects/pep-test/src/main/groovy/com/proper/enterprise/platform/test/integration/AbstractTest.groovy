@@ -36,9 +36,17 @@ public abstract class AbstractTest {
     @Autowired
     protected MockHttpServletRequest mockRequest
 
+    private def mockUser
+
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build()
+        mockUser = null
+    }
+
+    protected void mockUser(String id='id', String username='uname', String password='pwd', boolean isSuper=false) {
+        mockUser = [id: id, username: username, password: password, isSuper: isSuper]
+        mockRequest.setAttribute('mockUser', mockUser)
     }
 
     protected MvcResult post(String url, String data, HttpStatus statusCode) {
@@ -97,6 +105,9 @@ public abstract class AbstractTest {
     }
 
     private MvcResult perform(MockHttpServletRequestBuilder req, HttpStatus statusCode) {
+        if (mockUser != null) {
+            req.requestAttr('mockUser', mockUser)
+        }
         return mockMvc
             .perform(req)
             .andDo(print())

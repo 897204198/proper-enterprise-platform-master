@@ -1,8 +1,10 @@
 package com.proper.enterprise.platform.auth.common.aspect
+
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.integration.AbstractTest
+import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -13,6 +15,11 @@ class HistoricalAdviceTest extends AbstractTest {
 
     @Autowired
     UserService service
+
+    @Before
+    def void mockCurrentUser() {
+        mockUser(MOCK_USER_ID)
+    }
 
     @Test
     def void saveEntity() {
@@ -47,7 +54,7 @@ class HistoricalAdviceTest extends AbstractTest {
     }
 
     @Test
-    def void test() {
+    def void thorwExceptionWhenGettingCurrentUser() {
         System.setProperty('test.mockUser.throwEx', 'true')
         ConfCenter.reload()
 

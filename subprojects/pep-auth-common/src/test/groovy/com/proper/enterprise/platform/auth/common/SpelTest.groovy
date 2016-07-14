@@ -17,6 +17,7 @@ class SpelTest extends AbstractTest {
 
     @Test
     public void getBeanInSpEL() {
+        mockUser('id', 'name', 'pwdInSpEl')
         ExpressionParser parser = new SpelExpressionParser()
         StandardEvaluationContext context = new StandardEvaluationContext()
         context.setBeanResolver(new BeanFactoryResolver(wac))
@@ -24,7 +25,7 @@ class SpelTest extends AbstractTest {
         String tpl = '{usergroup: {$in: [#{@mockUserService.currentUser.password}]}}'
         def val = parser.parseExpression(tpl, new TemplateParserContext()).getValue(context)
 
-        assert val == '{usergroup: {$in: [MockUserPassword]}}'
+        assert val == '{usergroup: {$in: [pwdInSpEl]}}'
     }
 
 }
