@@ -10,12 +10,13 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Filter request to verify JWT with it
  */
 public class JWTVerifyFilter implements Filter {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTVerifyFilter.class);
 
     private JWTService jwtService;
@@ -36,12 +37,16 @@ public class JWTVerifyFilter implements Filter {
                          FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
 
-        if (authzService.shouldIgnore(req.getRequestURI(), req.getMethod(), true)) {
-            LOGGER.info("Not need JWT of this url({}) caused by settings in AuthzService.ignorePatterns.", req.getRequestURI());
-            filterChain.doFilter(request, response);
-            return;
+        try {
+            if (authzService.shouldIgnore(req.getRequestURI(), req.getMethod(), true)) {
+                LOGGER.info("Not need JWT of this url({}) caused by settings in AuthzService.ignorePatterns.", req.getRequestURI());
+                filterChain.doFilter(request, response);
+                return;
+            }
+        } catch (URISyntaxException e) {
+            LOGGER.error("Parse URI error! {}", e);
         }
-        
+
         String token = jwtService.getTokenFromHeader(req);
         LOGGER.info("JSON Web Token: " + token);
         if (StringUtil.isNotNull(token) && jwtService.verify(token)) {

@@ -32,6 +32,7 @@ class AuthzServiceSpec extends Specification {
         false       | true   | 'GET'  | '/workflow/service/model/50/json'
         false       | false  | 'GET'  | '/workflow/service/model/5/0/json'
         false       | true   | 'GET'  | '/auth/resources'
+        false       | true   | 'GET'  | '/auth/resources?name=1&type=2'
         false       | true   | 'GET'  | '/auth/resources/1/2/xml'
         false       | false  | 'GET'  | '/auth/resources/12/xml'
         false       | false  | 'POST' | '/auth/resources/1/2/xml'

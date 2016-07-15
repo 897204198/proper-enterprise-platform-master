@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public class AuthzService {
@@ -19,12 +21,13 @@ public class AuthzService {
         this.ignorePatterns = ignorePatterns;
     }
 
-    public boolean shouldIgnore(String url, String method) {
+    public boolean shouldIgnore(String url, String method) throws URISyntaxException {
         return shouldIgnore(url, method, false);
     }
 
-    public boolean shouldIgnore(String url, String method, boolean hasContext) {
-        String path = method + ":" + (hasContext ? url.substring(url.indexOf("/", 1)) : url);
+    public boolean shouldIgnore(String url, String method, boolean hasContext) throws URISyntaxException {
+        URI uri = new URI(hasContext ? url.substring(url.indexOf("/", 1)) : url);
+        String path = method + ":" + uri.getPath();
         LOGGER.debug("Request is {}", path);
         for (String pattern : ignorePatterns) {
             if (matcher.match(pattern, path)) {
