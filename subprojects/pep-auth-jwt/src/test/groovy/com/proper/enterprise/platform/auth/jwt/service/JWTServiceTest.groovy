@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.auth.jwt.service
 
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
-import com.proper.enterprise.platform.test.integration.AbstractTest
+import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 

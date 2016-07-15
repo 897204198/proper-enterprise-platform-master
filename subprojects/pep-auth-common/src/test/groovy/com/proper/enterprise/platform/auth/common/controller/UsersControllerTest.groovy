@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.auth.common.controller
 
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
-import com.proper.enterprise.platform.test.integration.AbstractTest
+import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

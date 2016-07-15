@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.core.repository
 
-import com.proper.enterprise.platform.test.integration.AbstractTest
+import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired

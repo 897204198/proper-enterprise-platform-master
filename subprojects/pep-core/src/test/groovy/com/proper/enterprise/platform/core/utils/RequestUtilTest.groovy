@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.core.utils
 
-import com.proper.enterprise.platform.test.integration.AbstractTest
+import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 
 class RequestUtilTest extends AbstractTest {

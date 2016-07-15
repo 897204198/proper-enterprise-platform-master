@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.auth.jwt.controller
 
 import com.proper.enterprise.platform.auth.jwt.service.JWTService
-import com.proper.enterprise.platform.test.integration.AbstractTest
+import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

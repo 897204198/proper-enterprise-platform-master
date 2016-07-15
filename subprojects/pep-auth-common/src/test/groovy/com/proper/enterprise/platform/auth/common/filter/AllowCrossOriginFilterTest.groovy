@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.auth.common.filter
 
 import com.proper.enterprise.platform.core.utils.ConfCenter
-import com.proper.enterprise.platform.test.integration.AbstractTest
+import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

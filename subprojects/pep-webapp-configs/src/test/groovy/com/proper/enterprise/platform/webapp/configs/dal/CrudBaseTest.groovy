@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.webapp.configs.dal
 
-import com.proper.enterprise.platform.test.integration.AbstractTest
+import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.webapp.configs.dal.entity.AEntity
 import com.proper.enterprise.platform.webapp.configs.dal.repository.ARepository
 import org.junit.Test

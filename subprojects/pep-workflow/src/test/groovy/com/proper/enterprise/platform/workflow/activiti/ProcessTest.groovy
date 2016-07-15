@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.workflow.activiti
 
-import com.proper.enterprise.platform.test.integration.AbstractTest
+import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.workflow.activiti.service.AssigneeService
 import org.activiti.engine.RepositoryService
 import org.activiti.engine.RuntimeService

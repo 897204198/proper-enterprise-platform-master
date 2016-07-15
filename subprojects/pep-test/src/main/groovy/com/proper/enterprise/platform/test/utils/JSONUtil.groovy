@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.test.integration.utils
+package com.proper.enterprise.platform.test.utils
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper

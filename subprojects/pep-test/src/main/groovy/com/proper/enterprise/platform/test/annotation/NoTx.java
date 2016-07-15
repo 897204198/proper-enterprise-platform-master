@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.test.integration.annotation;
+package com.proper.enterprise.platform.test.annotation;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

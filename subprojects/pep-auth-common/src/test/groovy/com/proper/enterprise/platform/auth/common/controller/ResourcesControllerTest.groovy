@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.api.auth.enums.ResourceType
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
 import com.proper.enterprise.platform.core.utils.JSONUtil
-import com.proper.enterprise.platform.test.integration.AbstractTest
+import com.proper.enterprise.platform.test.AbstractTest
 import org.hibernate.exception.ConstraintViolationException
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired

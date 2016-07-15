@@ -1,6 +1,6 @@
-package com.proper.enterprise.platform.test.integration
+package com.proper.enterprise.platform.test
 
-import com.proper.enterprise.platform.test.integration.utils.JSONUtil
+import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired

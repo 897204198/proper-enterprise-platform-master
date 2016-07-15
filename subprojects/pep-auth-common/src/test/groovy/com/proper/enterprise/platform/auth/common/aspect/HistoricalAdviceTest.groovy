@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.auth.common.aspect
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.core.utils.ConfCenter
-import com.proper.enterprise.platform.test.integration.AbstractTest
+import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
