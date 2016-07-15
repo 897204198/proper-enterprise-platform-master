@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
 
 @RestController
@@ -28,6 +29,16 @@ public class ResourcesController {
         return resourceService.save(res);
     }
 
+    @RequestMapping(path = "/{resourceId}", method = RequestMethod.GET)
+    public ResponseEntity<Resource> get(@PathVariable String resourceId) {
+        Resource resource = resourceService.get(resourceId);
+        if (resource != null) {
+            return new ResponseEntity<>(resource, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<Collection<Resource>> retrieve(
             @RequestParam(name = "type", required = false) ResourceType type) throws Exception {
@@ -35,7 +46,7 @@ public class ResourcesController {
         Collection<Resource> resources;
 
         if (isSuper) {
-            resources = type != null ? resourceService.findByType(type) : resourceService.list();
+            resources = type != null ? resourceService.find(type) : resourceService.find();
         } else {
             resources = type != null ? userService.getResources(type) : userService.getResources();
         }
@@ -44,6 +55,26 @@ public class ResourcesController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(resources, HttpStatus.OK);
+        }
+    }
+
+    @RequestMapping(path = "/{resourceId}", method = RequestMethod.PUT)
+    public ResponseEntity<Resource> update(@PathVariable String resourceId, @RequestBody ResourceEntity resourceEntity) {
+        Resource resource = resourceService.get(resourceId);
+        if (resource == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(resourceService.save(resourceEntity), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/{resourceId}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable String resourceId, HttpServletResponse response) {
+        Resource resource = resourceService.get(resourceId);
+        if (resource == null) {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+        } else {
+            resourceService.delete(resource);
+            response.setStatus(HttpStatus.NO_CONTENT.value());
         }
     }
 

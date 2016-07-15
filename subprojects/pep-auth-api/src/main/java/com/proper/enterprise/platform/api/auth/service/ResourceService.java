@@ -9,8 +9,12 @@ public interface ResourceService {
 
     Resource save(Resource resource);
 
-    Collection<Resource> list();
+    Resource get(String id);
 
-    Collection<Resource> findByType(ResourceType type);
+    void delete(Resource resource);
+
+    Collection<Resource> find();
+
+    Collection<Resource> find(ResourceType type);
 
 }

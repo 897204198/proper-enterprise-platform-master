@@ -23,12 +23,22 @@ public class CommonResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public Collection<Resource> list() {
+    public Resource get(String id) {
+        return resourceRepository.findOne(id);
+    }
+
+    @Override
+    public void delete(Resource resource) {
+        resourceRepository.delete((ResourceEntity) resource);
+    }
+
+    @Override
+    public Collection<Resource> find() {
         return InterfaceCollectionConverter.convert(resourceRepository.findAll());
     }
 
     @Override
-    public Collection<Resource> findByType(ResourceType type) {
+    public Collection<Resource> find(ResourceType type) {
         return resourceRepository.findByResourceType(type);
     }
 

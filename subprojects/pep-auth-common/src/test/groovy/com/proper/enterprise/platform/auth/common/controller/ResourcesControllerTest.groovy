@@ -1,5 +1,4 @@
 package com.proper.enterprise.platform.auth.common.controller
-
 import com.proper.enterprise.platform.api.auth.enums.ResourceType
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
@@ -25,12 +24,8 @@ class ResourcesControllerTest extends AbstractTest {
     public void checkUniqueConstraint() {
         mockUser('id', 'name', 'pwd', true)
 
-        def resource = new ResourceEntity()
-        resource.setURL('/foo/bar')
-        resource.setMethod(RequestMethod.PUT)
-
-        doPost(resource)
-        doPost(resource)
+        doPost()
+        doPost()
 
         try {
             get('/auth/resources', HttpStatus.OK) // 查询一下触发数据插入操作
@@ -40,10 +35,14 @@ class ResourcesControllerTest extends AbstractTest {
         }
     }
 
-    private ResourceEntity doPost(ResourceEntity resourceEntity) {
+    private ResourceEntity doPost() {
+        def resource = new ResourceEntity()
+        resource.setURL('/foo/bar')
+        resource.setMethod(RequestMethod.PUT)
+
         JSONUtil.parse(
             post('/auth/resources',
-                JSONUtil.toJSON(resourceEntity),
+                JSONUtil.toJSON(resource),
                 HttpStatus.CREATED)
                 .getResponse()
                 .getContentAsString(),
@@ -92,6 +91,15 @@ class ResourcesControllerTest extends AbstractTest {
         resources.each {
             assert it.resourceType == ResourceType.MENU
         }
+    }
+
+    @Test
+    public void checkCRUD() {
+        def resource = new ResourceEntity()
+        resource.setURL('/foo/bar')
+        resource.setMethod(RequestMethod.PUT)
+
+        checkBaseCRUD('/auth/resources', resource)
     }
 
 }

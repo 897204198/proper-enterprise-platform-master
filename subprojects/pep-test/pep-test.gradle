@@ -1,6 +1,7 @@
 dependencies {
     compile libraries.groovy,
             libraries.groovy_sql,
+            libraries.jackson_databind,
             libraries.junit,
             libraries.servlet_api,
             libraries.spring_test

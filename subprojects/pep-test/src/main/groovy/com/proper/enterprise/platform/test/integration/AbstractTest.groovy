@@ -1,5 +1,5 @@
 package com.proper.enterprise.platform.test.integration
-
+import com.proper.enterprise.platform.test.integration.utils.JSONUtil
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +22,6 @@ import javax.servlet.Filter
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 /**
  * 基础测试类
  *
@@ -143,9 +142,51 @@ public abstract class AbstractTest {
      *
      * @param filter 要测试的 filter
      */
-    protected void coverFilter(Filter filter) {
+    protected static void coverFilter(Filter filter) {
         filter.init(null)
         filter.destroy()
+    }
+
+    // TODO
+    def checkBaseCRUD(uri, entity) {
+        checkBaseCreate(uri, entity)
+        checkBaseRetrive(uri, entity)
+    }
+
+    private def checkBaseCreate(uri, entity) {
+        def e1 = postAndReturn(uri, entity)
+        def e2 = getAndReturn(uri, e1)
+        assert e1.properties == e2.properties
+    }
+
+    private def postAndReturn(uri, entity) {
+        def createdEntity = post(uri.toString(), JSONUtil.toJSON(entity), HttpStatus.CREATED).response.contentAsString
+        JSONUtil.parse(createdEntity, entity.class)
+    }
+
+    private def getAndReturn(uri, entity, status=HttpStatus.OK) {
+        def str = get(uri + (entity.id > '' ? "/${entity.id}" : ''), status).getResponse().getContentAsString()
+        def clz = entity.class
+        if (str > '') {
+            return str.startsWith('[') ? JSONUtil.parse(str, clz[].class) : JSONUtil.parse(str, clz)
+        }
+    }
+
+    private def checkBaseRetrive(uri, entity) {
+        def notFoundEntity = entity.class.newInstance()
+        notFoundEntity.id = 'NOT_FOUND_ENTITY'
+        getAndReturn(uri, notFoundEntity, HttpStatus.NOT_FOUND)
+
+        def e1 = postAndReturn(uri, entity)
+        getAndReturn(uri, e1)
+    }
+
+    def checkBaseUpdate(uri, entity) {
+        // TODO
+    }
+
+    def checkBaseDelete(uri, entity) {
+        // TODO
     }
 
 }
