@@ -18,7 +18,10 @@ class AllowCrossOriginFilterTest extends AbstractTest {
 
     @Test
     public void allowCrossOriginFilterShouldSetResponseHeaders() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).addFilter(new AllowCrossOriginFilter(), '/*').build()
+        def filter = new AllowCrossOriginFilter()
+        coverFilter(filter)
+
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).addFilter(filter, '/*').build()
         checkResponse get('/test', HttpStatus.NOT_FOUND)
         checkResponse options('/test', HttpStatus.OK)
     }

@@ -18,9 +18,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 
+import javax.servlet.Filter
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+/**
+ * 基础测试类
+ *
+ * 包含测试常用的模拟对象、方法等
+ */
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("/spring/applicationContext.xml")
@@ -44,6 +51,13 @@ public abstract class AbstractTest {
         mockUser = null
     }
 
+    /**
+     * 在模拟请求中，模拟出一个用户
+     * @param id        用户 id
+     * @param username  用户名
+     * @param password  密码
+     * @param isSuper   是否超级用户
+     */
     protected void mockUser(String id='id', String username='uname', String password='pwd', boolean isSuper=false) {
         mockUser = [id: id, username: username, password: password, isSuper: isSuper]
         mockRequest.setAttribute('mockUser', mockUser)
@@ -104,6 +118,14 @@ public abstract class AbstractTest {
         return perform(req, statusCode)
     }
 
+    /**
+     * 模拟请求，并响应状态码
+     * 可用于模拟 RESTFul 请求
+     *
+     * @param req           模拟请求构造器
+     * @param statusCode    期望的响应状态
+     * @return
+     */
     private MvcResult perform(MockHttpServletRequestBuilder req, HttpStatus statusCode) {
         if (mockUser != null) {
             req.requestAttr('mockUser', mockUser)
@@ -113,6 +135,17 @@ public abstract class AbstractTest {
             .andDo(print())
             .andExpect(status().is(statusCode.value()))
             .andReturn()
+    }
+
+    /**
+     * 为了单元测试覆盖到 filter 的 init 和 destory 方法，
+     * 需在单元测试中显示调用一下这个方法，暂未找到更好的方法
+     *
+     * @param filter 要测试的 filter
+     */
+    protected void coverFilter(Filter filter) {
+        filter.init(null)
+        filter.destroy()
     }
 
 }
