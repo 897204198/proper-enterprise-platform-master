@@ -168,12 +168,12 @@ public abstract class AbstractTest {
         assert e1.properties == e2.properties
     }
 
-    private def postAndReturn(uri, entity) {
+    protected def postAndReturn(uri, entity) {
         def createdEntity = post(uri.toString(), JSONUtil.toJSON(entity), HttpStatus.CREATED).response.contentAsString
         JSONUtil.parse(createdEntity, entity.class)
     }
 
-    private def getAndReturn(uri, entity, status) {
+    protected def getAndReturn(uri, entity, status) {
         def str = get(uri + (entity.id > '' ? "/${entity.id}" : ''), status).getResponse().getContentAsString()
         def clz = entity.class
         if (str > '') {
@@ -201,12 +201,12 @@ public abstract class AbstractTest {
         putAndReturn(uri, e1, HttpStatus.NOT_FOUND)
     }
 
-    private def putAndReturn(uri, entity, status) {
+    protected def putAndReturn(uri, entity, status) {
         def str = put("$uri/${entity.id}", JSONUtil.toJSON(entity), status).getResponse().getContentAsString()
         return str > '' ? JSONUtil.parse(str, entity.class) : null
     }
 
-    private def deleteAndReturn(uri, id, status) {
+    protected def deleteAndReturn(uri, id, status) {
         delete("$uri/$id", status)
     }
 
