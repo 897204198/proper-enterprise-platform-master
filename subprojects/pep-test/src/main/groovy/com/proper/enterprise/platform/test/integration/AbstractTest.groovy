@@ -1,4 +1,5 @@
 package com.proper.enterprise.platform.test.integration
+
 import com.proper.enterprise.platform.test.integration.utils.JSONUtil
 import org.junit.Before
 import org.junit.runner.RunWith
@@ -22,6 +23,7 @@ import javax.servlet.Filter
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+
 /**
  * 基础测试类
  *
@@ -147,15 +149,22 @@ public abstract class AbstractTest {
         filter.destroy()
     }
 
-    // TODO
-    def checkBaseCRUD(uri, entity) {
+    /**
+     * 为 RESTFul API 进行基本的增删改查测试
+     *
+     * @param uri       URI
+     * @param entity    URI 代表的资源实体
+     */
+    protected void checkBaseCRUD(uri, entity) {
         checkBaseCreate(uri, entity)
         checkBaseRetrive(uri, entity)
+        checkBaseUpdate(uri, entity)
+        checkBaseDelete(uri, entity)
     }
 
     private def checkBaseCreate(uri, entity) {
         def e1 = postAndReturn(uri, entity)
-        def e2 = getAndReturn(uri, e1)
+        def e2 = getAndReturn(uri, e1, HttpStatus.OK)
         assert e1.properties == e2.properties
     }
 
@@ -164,7 +173,7 @@ public abstract class AbstractTest {
         JSONUtil.parse(createdEntity, entity.class)
     }
 
-    private def getAndReturn(uri, entity, status=HttpStatus.OK) {
+    private def getAndReturn(uri, entity, status) {
         def str = get(uri + (entity.id > '' ? "/${entity.id}" : ''), status).getResponse().getContentAsString()
         def clz = entity.class
         if (str > '') {
@@ -178,15 +187,36 @@ public abstract class AbstractTest {
         getAndReturn(uri, notFoundEntity, HttpStatus.NOT_FOUND)
 
         def e1 = postAndReturn(uri, entity)
-        getAndReturn(uri, e1)
+        getAndReturn(uri, e1, HttpStatus.OK)
     }
 
-    def checkBaseUpdate(uri, entity) {
-        // TODO
+    private def checkBaseUpdate(uri, entity) {
+        def e1 = postAndReturn(uri, entity)
+        def property = entity.class.declaredFields.find { it.type == String.class }.name
+        def newVal = 'new value'
+        e1[property] = newVal
+        assert putAndReturn(uri, e1, HttpStatus.OK)[property] == newVal
+
+        deleteAndReturn(uri, e1.id, HttpStatus.NO_CONTENT)
+        putAndReturn(uri, e1, HttpStatus.NOT_FOUND)
     }
 
-    def checkBaseDelete(uri, entity) {
-        // TODO
+    private def putAndReturn(uri, entity, status) {
+        def str = put("$uri/${entity.id}", JSONUtil.toJSON(entity), status).getResponse().getContentAsString()
+        return str > '' ? JSONUtil.parse(str, entity.class) : null
+    }
+
+    private def deleteAndReturn(uri, id, status) {
+        delete("$uri/$id", status)
+    }
+
+    private def checkBaseDelete(uri, entity) {
+        def e1 = postAndReturn(uri, entity)
+        getAndReturn(uri, e1, HttpStatus.OK)
+        deleteAndReturn(uri, e1.id, HttpStatus.NO_CONTENT)
+        deleteAndReturn(uri, e1.id, HttpStatus.NOT_FOUND)
+
+        getAndReturn(uri, e1, HttpStatus.NOT_FOUND)
     }
 
 }

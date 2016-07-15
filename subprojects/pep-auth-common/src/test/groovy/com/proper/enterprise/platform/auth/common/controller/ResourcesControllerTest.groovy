@@ -1,4 +1,5 @@
 package com.proper.enterprise.platform.auth.common.controller
+
 import com.proper.enterprise.platform.api.auth.enums.ResourceType
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
