@@ -1,7 +1,12 @@
 dependencies {
     compile project(':pep-core'),
-	        project(':pep-auth-common'),
+	    project(':pep-auth-common'),
+        project(':pep-auth-jwt'),
             libraries.spring_webmvc
 
     runtime libraries.jackson_databind
+    
+    testCompile project(':pep-test')
+    
+    
 }

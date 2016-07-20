@@ -1,9 +1,11 @@
 package com.proper.enterprise.platform.api.auth.service;
 
+import java.util.Collection;
+
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.api.auth.model.Resource;
-
-import java.util.Collection;
 
 public interface ResourceService {
 
@@ -16,5 +18,8 @@ public interface ResourceService {
     Collection<Resource> find();
 
     Collection<Resource> find(ResourceType type);
+    
+    Resource get(String url, RequestMethod method);
+
 
 }

@@ -1,13 +1,16 @@
 package com.proper.enterprise.platform.auth.common.service.mock
 
+import org.springframework.context.annotation.Primary
+import org.springframework.stereotype.Service
+
 import com.proper.enterprise.platform.api.auth.model.User
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.service.impl.CommonUserServiceImpl
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.core.utils.RequestUtil
-import org.springframework.stereotype.Service
 
 @Service("mockUserService")
+@Primary
 class MockUserServiceImpl extends CommonUserServiceImpl {
 
     @Override

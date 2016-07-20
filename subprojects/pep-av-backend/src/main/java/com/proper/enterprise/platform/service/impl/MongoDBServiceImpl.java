@@ -1,266 +1,78 @@
 package com.proper.enterprise.platform.service.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.mongodb.client.result.UpdateResult;
+import com.proper.enterprise.platform.api.auth.service.ResourceService;
+import com.proper.enterprise.platform.api.service.IMongoDBService;
+import com.proper.enterprise.platform.auth.common.mongodao.MongoDAO;
+import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
 import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.BasicDBObject;
-import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Sorts;
-import com.mongodb.client.model.Updates;
-import com.mongodb.client.result.UpdateResult;
-import com.proper.enterprise.platform.api.service.IMongoDBService;
-import com.proper.enterprise.platform.core.utils.ConfCenter;
+import java.util.List;
 
 @Service
 public class MongoDBServiceImpl implements IMongoDBService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBServiceImpl.class);
-
-	private MongoDatabase database;
 
     @Autowired
-    private Mongo mongo;
+    ResourceService resourceService;
 
-	public MongoDBServiceImpl() {
-		// TODO Auto-generated constructor stub
-	}
+    @Autowired
+    ResourceRepository resourceRepository;
 
-	public Object getConnection() throws Exception {
-		// 连接到数据库
-		MongoDatabase mongoDatabase = ((MongoClient)mongo).getDatabase(ConfCenter.get("mongodb.database"));
-		System.out.println("Connect to database successfully");
-		if (mongoDatabase == null) {
-			throw new Exception("数据库连接获取失败，请检查其对应的数据源配置是否正确。");
-		}
+    @Autowired
+    MongoDAO basicdmo;
 
-		return mongoDatabase;
+    public MongoDBServiceImpl() {
 
-	}
+    }
 
-	private MongoDatabase getDatabase() {
+    // --------------------------------------增方法--------------------------------------
+    @Override
+    public Document insertOne(JsonNode root, String collection) {
+        // TODO Auto-generated method stub
+        return basicdmo.insertOne(root, collection);
+    }
 
-		try {
-			if (database != null) {
-				return database;
-			}
-			database = (MongoDatabase) getConnection();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return database;
-	}
+    // --------------------------------------删方法--------------------------------------
 
-	// --------------------------------------增方法--------------------------------------
-	@Override
-	public Document insertOne(JsonNode root, String collection) {
-		// TODO Auto-generated method stub
-		MongoCollection<Document> col = getDatabase().getCollection(collection);
-		Document doc = new Document();
-		doc = doc.parse(root.toString());
-		col.insertOne(doc);
-		return doc;
-	}
+    @Override
+    public int delete(String collection, String objectIds) throws Exception {
+        // TODO Auto-generated method stub
+        return basicdmo.deleteByIdAndDataRestrain(collection, objectIds);
 
-	// --------------------------------------删方法--------------------------------------
-	@Override
-	public int delete(String collection, String objectIds) {
-		return delete(collection, objectIds, null);
-	}
+    }
 
-	@Override
-	public int delete(String collection, String objectIds, String url) {
-		// TODO Auto-generated method stub
+    public Document deleteById(String collection, String objectIds) throws Exception {
+        // TODO Auto-generated method stub
+        return basicdmo.deleteById(collection, objectIds);
+    }
 
-		LOGGER.info("In do DELETE method");
-		MongoCollection<Document> col = getDatabase().getCollection(collection);
-		for (String objectId : objectIds.split(",")) {
-			col.findOneAndDelete(Filters.eq("_id", new ObjectId(objectId)));
-		}
-		return objectIds.split(",").length;
-	}
+    // --------------------------------------改方法--------------------------------------
 
-	public Document deleteById(String collection, String objectIds) throws Exception {
-		// TODO Auto-generated method stub
+    @Override
+    public UpdateResult updateById(JsonNode root, String collection, String objectId) throws Exception {
+        return basicdmo.updateByIdAndDataRestrain(root, collection, objectId);
+    }
 
-		LOGGER.info("In do DELETE method");
-		MongoCollection<Document> col = getDatabase().getCollection(collection);
-		Document doc = null;
-		for (String objectId : objectIds.split(",")) {
-			doc = col.findOneAndDelete(Filters.eq("_id", objectId));
-		}
-		return doc;
-	}
+    // --------------------------------------查方法--------------------------------------
 
-	// --------------------------------------改方法--------------------------------------
-	@Override
-	public UpdateResult updateById(JsonNode root, String collection, String objectId) {
-		return updateById(root, collection, objectId, null);
-	}
+    @Override
+    public List<Document> query(JsonNode root, String collection) throws Exception {
+        return basicdmo.queryByDataRestrain(root, collection);
+    }
 
-	@Override
-	public UpdateResult updateById(JsonNode root, String collection, String objectId, String url) {
-		LOGGER.info("In do PUT method");
-		MongoCollection<Document> col = getDatabase().getCollection(collection);
-		Iterator<String> iter = root.fieldNames();
-		List<Bson> list = new ArrayList<Bson>();
-		while (iter.hasNext()) {
-			String field = iter.next();
-			if (field.startsWith("_")) {
-				continue;
-			}
-			if (root.get(field).isTextual()) {
-				LOGGER.info("Set {} to {}", field, root.get(field).textValue());
-				list.add(Updates.set(field, root.get(field).textValue()));
-			} else if (root.get(field).has("__op") && "Delete".equals(root.get(field).get("__op").textValue())) {
-				LOGGER.info("Unset {}", field);
-				list.add(Updates.unset(field));
-			}
-		}
+    @Override
+    public Document queryById(String id, String collection) throws Exception {
+        return basicdmo.queryById(id, collection);
+    }
 
-		return col.updateOne(Filters.eq("_id", new ObjectId(objectId)), Updates.combine(list));
-	}
-
-	@Override
-	public UpdateResult updateByCql(String cql) {
-		// TODO Auto-generated method stub
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode root = mapper.readTree(cql);
-
-			Iterator<String> iter = root.fieldNames();
-			// List<Bson> list = new ArrayList<Bson>();
-			while (iter.hasNext()) {
-				String field = iter.next();
-				root.get(field);
-			}
-			root.fieldNames();
-			root.fields();
-			root.get("cql");
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@Override
-	public List<Document> query(JsonNode root, String collection) {
-		return query(root, collection, null);
-	}
-
-	@Override
-	public List<Document> query(JsonNode root, String collection, String url) {
-		// try {
-		//// User loginuser = userService.getCurrentUser();
-		// } catch (Exception e) {
-		// // TODO Auto-generated catch block
-		// throw new Exception(e.getMessage());
-		// }
-
-		JsonNode whereNode = root.get("where");
-		int limit = root.has("limit") ? root.get("limit").asInt() : -1;
-		String order = root.has("order") ? root.get("order").asText() : "";
-		LOGGER.info("Where node: {}", whereNode);
-		LOGGER.info("limit is {}", limit);
-		LOGGER.info("orders are {}", order);
-
-		MongoCollection<Document> col = getDatabase().getCollection(collection);
-		String wherestr = whereNode.toString();
-		if (wherestr.indexOf("objectId") > 0) {
-			String objectId = whereNode.get("objectId").toString();
-			wherestr = wherestr.replaceAll("objectId", "_id");
-			wherestr = wherestr.replaceAll(objectId, "ObjectId(" + objectId + ")");
-		}
-
-		FindIterable<Document> findIter = col.find(Document.parse(wherestr));
-
-		if (limit > 0) {
-			findIter.limit(limit);
-		}
-		if (!StringUtils.isEmpty(order)) {
-			String[] orders = order.split(",");
-			for (String o : orders) {
-				if (o.startsWith("-")) {
-					findIter.sort(Sorts.descending(o.substring(1)));
-				} else {
-					findIter.sort(Sorts.ascending(o));
-				}
-			}
-		}
-		Iterator<Document> docsIter = findIter.iterator();
-		List<Document> docs = new ArrayList<Document>();
-		Document doc;
-		while (docsIter.hasNext()) {
-			doc = docsIter.next();
-			doc.put("objectId", doc.getObjectId("_id").toHexString());
-			doc.remove("_id");
-			docs.add(doc);
-		}
-		return docs;
-	}
-
-	@Override
-	public Document queryById(String id, String collection) {
-
-		MongoCollection<Document> col = getDatabase().getCollection(collection);
-		// MongoCollection<Document> collection = db.getCollection(table);
-		BasicDBObject query = new BasicDBObject("_id", id);
-		FindIterable<Document> iterable = col.find(query);
-
-		Iterator<Document> docsIter = iterable.iterator();
-		Document doc = null;
-		while (docsIter.hasNext()) {
-			doc = docsIter.next();
-		}
-		return doc;
-	}
-
-	@Override
-	public boolean checkJurisdiction(String userid) {
-		// TODO Auto-generated method stub
-
-		return false;
-	}
-
-	@Override
-	public String[] getPk_orgsByUseid(String useid, String operation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void initializationData() {
-		// TODO Auto-generated method stub
-		// 1保存资源 包含url和操作（put，get，post,delete）
-
-		// 2 资源组分配表包含（资源，组，可以分配哪些组对该资源）
-
-		// 3完成数据约束初始化（哪张表，字段，）
-		return;
-
-	}
+    @Override
+    public void droptable(String collection) throws Exception {
+        // TODO Auto-generated method stub
+        basicdmo.dropTable(collection);
+    }
 
 }

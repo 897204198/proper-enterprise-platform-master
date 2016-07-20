@@ -12,6 +12,7 @@ bower_components/
 # ignore temp files and folders
 .DS_Store
 .zip
+*.bak
 
 # ignore eclipse config files and folders
 .settings

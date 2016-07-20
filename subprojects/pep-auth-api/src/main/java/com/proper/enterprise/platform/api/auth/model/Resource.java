@@ -113,6 +113,14 @@ public interface Resource extends IBase {
      * @return 数据约束集合
      */
     Collection<? extends DataRestrain> getDataRestrains();
+    
+    /**
+     * 按照表名获得资源所受的数据约束集合
+     * 
+     * @param tableName 表名
+     * @return 数据约束集合
+     */
+    Collection<DataRestrain> getDataRestrains(String tableName);
 
     /**
      * 为资源添加一个数据约束
