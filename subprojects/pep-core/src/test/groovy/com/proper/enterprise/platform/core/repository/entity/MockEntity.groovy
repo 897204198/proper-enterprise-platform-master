@@ -21,6 +21,6 @@ public class MockEntity {
 
     String name;
 
-    String attr1;
+    String attr1;   // This attribute used by native sql, do not delete
 
 }
