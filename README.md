@@ -1,8 +1,8 @@
 Proper Enterprise Platform
 ==========================
 
-<a href="http://202.199.100.174/teamcity/viewType.html?buildTypeId=PEP_Build">
-  <img src="http://202.199.100.174/teamcity/app/rest/builds/buildType:(id:PEP_Build)/statusIcon.svg"/>
+<a href="https://server.propersoft.cn/teamcity/viewType.html?buildTypeId=PEP_Build">
+  <img src="https://server.propersoft.cn/teamcity/app/rest/builds/buildType:(id:PEP_Build)/statusIcon.svg"/>
 </a>
 [![codecov](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform/branch/master/graph/badge.svg?token=uthbnLL68t)](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform)
 
