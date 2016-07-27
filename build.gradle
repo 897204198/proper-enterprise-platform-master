@@ -1,7 +1,11 @@
 allprojects {
     repositories {
         maven {
-            url 'https://repo.gradle.org/gradle/libs'
+            url "${nexusUrl}/repository/maven-public"
+            credentials(PasswordCredentials) {
+                username = nexusUsername
+                password = nexusPassword
+            }
         }
     }
 
@@ -25,6 +29,7 @@ subprojects {
     apply plugin: 'eclipse'
     apply plugin: 'java'
     apply plugin: 'groovy'
+    apply plugin: 'maven'
 
     apply from: "$rootDir/gradle/dependencies.gradle"
 
@@ -62,6 +67,18 @@ subprojects {
                     libraries.spring_context_support
     }
 
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: "${nexusUrl}/repository/maven-releases") {
+                    authentication(userName: nexusUsername, password: nexusPassword)
+                }
+                snapshotRepository(url: "${nexusUrl}/repository/maven-snapshots") {
+                    authentication(userName: nexusUsername, password: nexusPassword)
+                }
+            }
+        }
+    }
 }
 
 // could use init-${sub-project-name} task to initial a sub project folder

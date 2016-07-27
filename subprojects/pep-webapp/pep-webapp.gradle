@@ -1,14 +1,16 @@
 buildscript {
     repositories {
-        jcenter()
+        maven {
+            url "${nexusUrl}/repository/maven-public"
+            credentials(PasswordCredentials) {
+                username = nexusUsername
+                password = nexusPassword
+            }
+        }
     }
     dependencies {
         classpath 'org.akhikhl.gretty:gretty:1.2.4'
     }
-}
-
-repositories {
-    jcenter()
 }
 
 apply plugin: 'org.akhikhl.gretty'
