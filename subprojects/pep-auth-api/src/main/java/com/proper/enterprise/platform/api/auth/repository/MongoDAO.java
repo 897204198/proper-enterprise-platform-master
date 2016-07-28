@@ -65,6 +65,38 @@ public interface MongoDAO {
      *
      * @param collection    集合名称
      * @param query         查询条件，语法可参考 mongo shell 语法
+     * @return 查询结果文档集合
+     * @throws Exception
+     */
+    List<Document> query(String collection, String query) throws Exception;
+
+    /**
+     * 根据条件查询文档集合
+     *
+     * @param collection    集合名称
+     * @param query         查询条件，语法可参考 mongo shell 语法
+     * @param limit         最大记录数，0 表示无限制
+     * @return 查询结果文档集合
+     * @throws Exception
+     */
+    List<Document> query(String collection, String query, int limit) throws Exception;
+
+    /**
+     * 根据条件查询文档集合
+     *
+     * @param collection    集合名称
+     * @param query         查询条件，语法可参考 mongo shell 语法
+     * @param sort          排序条件，语法可参考 mongo shell 语法
+     * @return 查询结果文档集合
+     * @throws Exception
+     */
+    List<Document> query(String collection, String query, String sort) throws Exception;
+
+    /**
+     * 根据条件查询文档集合
+     *
+     * @param collection    集合名称
+     * @param query         查询条件，语法可参考 mongo shell 语法
      * @param limit         最大记录数，0 表示无限制
      * @param sort          排序条件，语法可参考 mongo shell 语法
      * @return 查询结果文档集合

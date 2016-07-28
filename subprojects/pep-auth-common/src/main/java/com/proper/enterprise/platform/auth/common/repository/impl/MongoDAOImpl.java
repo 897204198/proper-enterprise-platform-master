@@ -45,15 +45,15 @@ public class MongoDAOImpl implements MongoDAO {
     @Override
     public Document deleteById(String collection, String id) throws URISyntaxException {
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
-        List<Bson> conditions = getDataRestrainConditions(collection);
+        List<Bson> conditions = getDataRestrainConditions(RequestMethod.DELETE, collection);
         return col.findOneAndDelete(
             Filters.and(Filters.and(conditions),
                         Filters.eq("_id", new ObjectId(id))));
     }
 
     // TODO
-    private List<Bson> getDataRestrainConditions(String collection) throws URISyntaxException {
-        List<String> sqls = getDataRestrainSqls(getUrl(), getMethod(), collection);
+    private List<Bson> getDataRestrainConditions(RequestMethod method, String collection) throws URISyntaxException {
+        List<String> sqls = getDataRestrainSqls(getUrl(), method, collection);
         List<Bson> conditions = new ArrayList<>(sqls.size());
         for (String sql : sqls) {
             if (StringUtil.isNotNull(sql)) {
@@ -86,15 +86,11 @@ public class MongoDAOImpl implements MongoDAO {
         return uri.getPath();
     }
 
-    private RequestMethod getMethod() {
-        return RequestMethod.valueOf(RequestUtil.getCurrentRequest().getMethod());
-    }
-
     @Override
     public List<Document> deleteByIds(String collection, String[] ids) throws URISyntaxException {
         List<Document> result = new ArrayList<>(ids.length);
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
-        List<Bson> conditions = getDataRestrainConditions(collection);
+        List<Bson> conditions = getDataRestrainConditions(RequestMethod.DELETE, collection);
         Document document;
         for (String objectId : ids) {
             document = col.findOneAndDelete(
@@ -108,7 +104,7 @@ public class MongoDAOImpl implements MongoDAO {
     @Override
     public Document updateById(String collection, String id, String update) throws URISyntaxException {
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
-        List<Bson> conditions = getDataRestrainConditions(collection);
+        List<Bson> conditions = getDataRestrainConditions(RequestMethod.PUT, collection);
         return col.findOneAndUpdate(
             Filters.and(Filters.and(conditions),
                         Filters.eq("_id", new ObjectId(id))),
@@ -118,16 +114,31 @@ public class MongoDAOImpl implements MongoDAO {
     @Override
     public Document queryById(String collection, String id) throws URISyntaxException {
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
-        List<Bson> conditions = getDataRestrainConditions(collection);
+        List<Bson> conditions = getDataRestrainConditions(RequestMethod.GET, collection);
         return col.find(Filters.and(Filters.and(conditions),
                                     Filters.eq("_id", new ObjectId(id))))
                   .first();
     }
 
     @Override
+    public List<Document> query(String collection, String query) throws Exception {
+        return query(collection, query, 0, null);
+    }
+
+    @Override
+    public List<Document> query(String collection, String query, int limit) throws Exception {
+        return query(collection, query, limit, null);
+    }
+
+    @Override
+    public List<Document> query(String collection, String query, String sort) throws Exception {
+        return query(collection, query, 0, sort);
+    }
+
+    @Override
     public List<Document> query(String collection, String query, int limit, String sort) throws URISyntaxException {
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
-        List<Bson> conditions = getDataRestrainConditions(collection);
+        List<Bson> conditions = getDataRestrainConditions(RequestMethod.GET, collection);
         FindIterable<Document> findIter = col.find(Filters.and(Filters.and(conditions), Document.parse(query)));
 
         if (limit > 0) {
