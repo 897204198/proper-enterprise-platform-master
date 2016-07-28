@@ -10,6 +10,8 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class SpELParser {
 
@@ -20,7 +22,8 @@ public class SpELParser {
     private StandardEvaluationContext context;
     private ParserContext parserContext;
 
-    public SpELParser() {
+    @PostConstruct
+    public void init() {
         parser = new SpelExpressionParser();
         context = new StandardEvaluationContext();
         context.setBeanResolver(new BeanFactoryResolver(wac));

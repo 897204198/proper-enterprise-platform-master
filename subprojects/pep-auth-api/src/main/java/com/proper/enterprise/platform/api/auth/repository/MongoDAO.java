@@ -72,4 +72,11 @@ public interface MongoDAO {
      */
     List<Document> query(String collection, String query, int limit, String sort) throws Exception;
 
+    /**
+     * 删除集合
+     *
+     * @param collection    集合名称
+     */
+    void drop(String collection);
+
 }

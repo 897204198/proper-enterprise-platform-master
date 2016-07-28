@@ -144,4 +144,9 @@ public class MongoDAOImpl implements MongoDAO {
         return result;
     }
 
+    @Override
+    public void drop(String collection) {
+        mongoDatabase.getCollection(collection).drop();
+    }
+
 }
