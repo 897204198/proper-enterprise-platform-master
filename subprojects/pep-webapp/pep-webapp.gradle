@@ -17,8 +17,6 @@ apply plugin: 'org.akhikhl.gretty'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'war'
 
-version = new Date().format('yyyyMMddHHmmss')
-
 gretty {
     servletContainer = 'tomcat7'
     httpPort = 9090
@@ -47,3 +45,4 @@ task cleanDist(type: Delete) {
 }
 
 compileJava.dependsOn cleanDist
+uploadArchives.deleteAllActions()
