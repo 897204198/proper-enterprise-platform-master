@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "PEP_AUTH_DATARESTRAIN")
+@Table(name = "PEP_AUTH_DATARESTRAINS")
 @CacheEntity
 public class DataRestrainEntity extends BaseEntity implements DataRestrain {
 
@@ -24,12 +24,12 @@ public class DataRestrainEntity extends BaseEntity implements DataRestrain {
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
     public void setName(String name) {
-
+        this.name = name;
     }
 
     @Override

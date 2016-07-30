@@ -1,32 +1,19 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.api.auth.model.DataRestrain;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Table(name="PEP_AUTH_RESOURCES", uniqueConstraints = @UniqueConstraint(columnNames ={"url", "method"}))
@@ -35,7 +22,7 @@ public class ResourceEntity extends BaseEntity implements Resource {
 
     public ResourceEntity() {
     }
-    
+
     public ResourceEntity(String url, RequestMethod method) {
         this.url = url;
         this.method = method;
@@ -84,7 +71,10 @@ public class ResourceEntity extends BaseEntity implements Resource {
     @ManyToMany(mappedBy = "resourceEntities")
     private Collection<RoleEntity> roleEntities;
 
-    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @OneToMany
+    @JoinTable(name = "PEP_AUTH_RESOURCES_DATARESTRAINS",
+        joinColumns = @JoinColumn(name = "RESOURCE_ID"),
+        inverseJoinColumns = @JoinColumn(name = "DATARESTRAIN_ID"))
     private Collection<DataRestrainEntity> dataRestrainEntities = Collections.emptySet();
 
     public String getName() {

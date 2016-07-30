@@ -8,6 +8,7 @@ import org.bson.Document
 import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.jdbc.Sql
 
 /**
  * 本测试依赖 mongodb 测试服务
@@ -20,6 +21,11 @@ class MongoDAOImplTest extends AbstractTest {
 
     private static final String COLLECTION_NAME = "mongodao"
 
+    @After
+    public void tearDown() {
+        mongoDAO.drop(COLLECTION_NAME)
+    }
+
     @Test
     public void deleteById() {
         def doc = insertOne()
@@ -28,8 +34,8 @@ class MongoDAOImplTest extends AbstractTest {
         assert query(id) == null
     }
 
-    private Document insertOne() {
-        mongoDAO.insertOne(COLLECTION_NAME, JSONUtil.toJSON([year: DateUtil.currentYear, timestamp: DateUtil.getTimestamp(true)]))
+    private Document insertOne(doc = [year: DateUtil.currentYear, timestamp: DateUtil.getTimestamp(true)]) {
+        mongoDAO.insertOne(COLLECTION_NAME, JSONUtil.toJSON(doc))
     }
 
     private static String getId(Document doc) {
@@ -76,9 +82,17 @@ class MongoDAOImplTest extends AbstractTest {
         assert max > min
     }
 
-    @After
-    public void tearDown() {
-        mongoDAO.drop(COLLECTION_NAME)
+    @Test
+    @Sql
+    public void sqlDataRestrains() {
+        mockRequest.setRequestURI('/platform/auth/security')
+        mockRequest.setMethod('GET')
+
+        int times = 5
+        times.times { idx ->
+            insertOne([a: idx, b: times - idx])
+        }
+        println mongoDAO.query(COLLECTION_NAME, null).size()
     }
 
 }

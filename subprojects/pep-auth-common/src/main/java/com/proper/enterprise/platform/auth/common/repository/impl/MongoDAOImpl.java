@@ -14,6 +14,8 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +26,8 @@ import java.util.*;
 
 @Repository
 public class MongoDAOImpl implements MongoDAO {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MongoDAOImpl.class);
 
     @Autowired
     MongoDatabase mongoDatabase;
@@ -51,9 +55,17 @@ public class MongoDAOImpl implements MongoDAO {
                         Filters.eq("_id", new ObjectId(id))));
     }
 
-    // TODO
+    /**
+     * 根据当前请求的 URL 及操作对应的 HTTP 方法获得对某个集合操作的数据约束
+     * 并将数据约束语句解析为 MongoDB 的查询条件
+     *
+     * @param method        RESTFul 操作对应的 HTTP 方法
+     * @param collection    集合名称
+     * @return 查询条件集合
+     * @throws URISyntaxException
+     */
     private List<Bson> getDataRestrainConditions(RequestMethod method, String collection) throws URISyntaxException {
-        List<String> sqls = getDataRestrainSqls(getUrl(), method, collection);
+        List<String> sqls = getDataRestrainSqls(method, collection);
         List<Bson> conditions = new ArrayList<>(sqls.size());
         for (String sql : sqls) {
             if (StringUtil.isNotNull(sql)) {
@@ -64,8 +76,8 @@ public class MongoDAOImpl implements MongoDAO {
     }
 
     // TODO 可以考虑加个方法缓存
-    private List<String> getDataRestrainSqls(String url, RequestMethod method, String collection) {
-        Resource resource = resourceService.get(url, method);
+    private List<String> getDataRestrainSqls(RequestMethod method, String collection) throws URISyntaxException {
+        Resource resource = resourceService.get(getUrl(), method);
         if (resource == null) {
             return Collections.emptyList();
         }
@@ -74,7 +86,11 @@ public class MongoDAOImpl implements MongoDAO {
         String sql;
         for (DataRestrain dataRestrain : dataRestrains) {
             sql = dataRestrain.getSql();
+            LOGGER.debug("{} restrain on {}:{} with {}",
+                dataRestrain.getName(), resource.getMethod(), resource.getURL(), sql);
             if (StringUtil.isNotNull(sql)) {
+                // 数据约束 sql 中可以使用 SpEL 表达式
+                // 在真正使用前需要将其解析成具体的值
                 sqls.add(parser.parse(sql));
             }
         }
@@ -139,8 +155,14 @@ public class MongoDAOImpl implements MongoDAO {
     public List<Document> query(String collection, String query, int limit, String sort) throws URISyntaxException {
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
         List<Bson> conditions = getDataRestrainConditions(RequestMethod.GET, collection);
-        FindIterable<Document> findIter = col.find(Filters.and(Filters.and(conditions), Document.parse(query)));
+        FindIterable<Document> findIter = col.find();
 
+        if (!conditions.isEmpty()) {
+            findIter.filter(Filters.and(conditions));
+        }
+        if (StringUtil.isNotNull(query)) {
+            findIter.filter(Document.parse(query));
+        }
         if (limit > 0) {
             findIter.limit(limit);
         }
