@@ -31,7 +31,8 @@ public class SpELParser {
     }
 
     public String parse(String spEL) {
-        return parser.parseExpression(spEL, parserContext).getValue(context).toString();
+        Object result = parser.parseExpression(spEL, parserContext).getValue(context);
+        return result == null ? "" : result.toString();
     }
 
 }

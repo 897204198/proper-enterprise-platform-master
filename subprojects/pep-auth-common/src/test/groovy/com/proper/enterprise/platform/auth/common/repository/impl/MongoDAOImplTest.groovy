@@ -92,7 +92,10 @@ class MongoDAOImplTest extends AbstractTest {
         times.times { idx ->
             insertOne([a: idx, b: times - idx])
         }
-        println mongoDAO.query(COLLECTION_NAME, null).size()
+        def result = mongoDAO.query(COLLECTION_NAME, null)
+        assert result.size() == 1
+        assert result[0].get('a') == 4
+        assert result[0].get('b') == 1
     }
 
 }
