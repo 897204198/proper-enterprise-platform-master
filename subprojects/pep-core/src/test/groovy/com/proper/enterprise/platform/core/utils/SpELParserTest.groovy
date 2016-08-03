@@ -15,7 +15,8 @@ class SpELParserTest extends AbstractTest {
         String tpl = '{usergroup: {$in: [#{@hikariConfig.autoCommit}]}}'
         def val = parser.parse(tpl)
 
-        assert val == "{usergroup: {\$in: [${ConfCenter.get('database.autoCommit')}]}}"
+        assert val == "{usergroup: {\$in: [${ConfCenter.get('database.autoCommit')}]}}".toString()
+        assert '' == parser.parse('#{@hikariConfig.catalog}')
     }
 
 }
