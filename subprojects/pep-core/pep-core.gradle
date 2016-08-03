@@ -6,7 +6,8 @@ dependencies {
             libraries.joda_time,
             libraries.mongodb_driver,
             libraries.servlet_api,
-            libraries.spring_orm
+            libraries.spring_orm,
+            libraries.spring_oxm
 
     testCompile project(':pep-test')
 

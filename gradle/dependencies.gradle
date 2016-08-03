@@ -158,6 +158,10 @@ libraries.spring_orm = [
     "org.springframework:spring-orm:${versions.spring}",
     libraries.aspectjweaver
 ]
+libraries.spring_oxm = [
+    "org.springframework:spring-oxm:${versions.spring}",
+    'org.codehaus.castor:castor-xml:1.4.0'
+]
 libraries.spring_test = "org.springframework:spring-test:${versions.spring}"
 //libraries.spring_tx = "org.springframework:spring-tx:${versions.spring}"
 //libraries.spring_web = "org.springframework:spring-web:${versions.spring}"
