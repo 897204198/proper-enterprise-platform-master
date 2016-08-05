@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 @RestController
 @RequestMapping(path = "/auth/users")
 public class UsersController extends BaseController {
@@ -26,17 +23,6 @@ public class UsersController extends BaseController {
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
     public ResponseEntity<User> get(@PathVariable String userId) {
         return responseOfGet(userService.get(userId));
-    }
-
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<Collection<User>> retrieve(@RequestParam(name = "name", required = false) String name) {
-        User user = userService.getByUsername(name);
-        Collection<User> result = null;
-        if (user != null) {
-            result = new HashSet<>();
-            result.add(user);
-        }
-        return responseOfGet(result);
     }
 
     @RequestMapping(path = "/{userId}", method = RequestMethod.PUT)
