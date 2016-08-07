@@ -1,5 +1,7 @@
 package com.proper.enterprise.platform.workflow
 
+import com.proper.enterprise.platform.core.utils.StringUtil
+
 
 class EditorSource {
 
@@ -23,7 +25,7 @@ class EditorSource {
     "properties": {
       "process_id": "$procId",
       "name": "$name",
-      "documentation": "${description ? description.replace('\r', '\\r').replace('\n', '\\n') : ''}"
+      "documentation": "${StringUtil.isNotNull(description) ? description.replace('\r', '\\r').replace('\n', '\\n') : ''}"
     },
     "stencilset": {
       "url": "stencilsets/bpmn2.0/bpmn2.0.json",

@@ -19,7 +19,9 @@ class EditorSourceSpec extends Specification {
         description | doc
         null        | ''
         ''          | ''
+        ' '         | ''
         '中\r文'     | '中\r文'
+        '123'       | '123'
     }
 
 }
