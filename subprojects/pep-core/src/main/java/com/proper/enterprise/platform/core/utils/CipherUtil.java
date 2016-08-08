@@ -42,7 +42,7 @@ public class CipherUtil {
 	private String execute(String content, boolean encrypt) throws Exception {
         LOGGER.debug("{} some content: {} with {}/{}/{}, keySize: {}, key: {}",
             encrypt ? "Encrypt" : "Decrypt",
-            StringUtil.abbreviate(content, 30),
+            StringUtil.abbreviate(content, Integer.parseInt(ConfCenter.get("core.cipher.maxWidth"))),
             algorithm, mode, padding, keySize, key);
 
 		String result;
