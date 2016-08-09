@@ -14,13 +14,13 @@ public enum WhetherType implements IntEnum {
 
     private int code;
 
-    private WhetherType(int code) {
+    WhetherType(int code) {
         this.code = code;
     }
 
     @Override
     public int getCode() {
-        return 0;
+        return code;
     }
 
 }
