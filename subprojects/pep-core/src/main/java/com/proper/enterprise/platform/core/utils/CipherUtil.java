@@ -56,7 +56,8 @@ public class CipherUtil {
             cipher.init(Cipher.DECRYPT_MODE, keySpec);
             result = new String(cipher.doFinal(Base64.decodeBase64(content)), PEPConstants.DEFAULT_CHARSET);
         }
-        LOGGER.debug("After {}: {}", encrypt ? "Encrypt" : "Decrypt", result);
+        LOGGER.debug("After {}: {}", encrypt
+            ? "Encrypt" : "Decrypt", StringUtil.abbreviate(result, Integer.parseInt(ConfCenter.get("core.cipher.maxWidth"))));
 		return result;
 	}
 

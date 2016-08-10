@@ -23,4 +23,13 @@ public enum WhetherType implements IntEnum {
         return code;
     }
 
+    public static WhetherType codeOf(int code) {
+        for (WhetherType whetherType : values()) {
+            if (whetherType.getCode() == code) {
+                return whetherType;
+            }
+        }
+        return null;
+    }
+
 }
