@@ -107,6 +107,8 @@ libraries.hibernate_hikaricp = dependencies.module("org.hibernate:hibernate-hika
 //libraries.jackson_databind = "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
 libraries.jackson_databind = 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
 
+libraries.jaxws_rt = 'com.sun.xml.ws:jaxws-rt:2.1.7'
+
 //libraries.jcaptcha = dependencies.module("com.octo.captcha:jcaptcha:${versions.jcaptcha}") {
 //    dependency "com.octo.captcha:jcaptcha-api:${versions.jcaptcha}"
 //   exclude group: 'com.jhlabs', module: 'imaging'

@@ -36,6 +36,7 @@ dependencies {
             libraries.h2,
             libraries.hibernate_ehcache,
             libraries.jackson_databind,
+            libraries.jaxws_rt,
             libraries.spring_orm,
             libraries.spring_webmvc
 }
