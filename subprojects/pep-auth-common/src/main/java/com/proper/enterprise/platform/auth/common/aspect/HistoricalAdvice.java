@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.auth.common.aspect;
 
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.utils.ConfCenter;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -42,20 +42,20 @@ public class HistoricalAdvice {
         Object obj = jp.getArgs()[0];
         // Repository.save* 方法的参数只有两类
         if (obj instanceof Iterable) {
-            for (Object entity : (Iterable) obj) {
-                update((BaseEntity)entity, userId);
+            for (Object o : (Iterable) obj) {
+                update((IBase) o, userId);
             }
         } else {
-            update((BaseEntity) obj, userId);
+            update((IBase) obj, userId);
         }
     }
 
-    private void update(BaseEntity entity, String userId) {
-        if (StringUtil.isNull(entity.getId())) {
-            entity.setCreateUserId(userId);
-            entity.setCreateTime(DateUtil.getTimestamp(true));
+    private void update(IBase obj, String userId) {
+        if (StringUtil.isNull(obj.getId())) {
+            obj.setCreateUserId(userId);
+            obj.setCreateTime(DateUtil.getTimestamp(true));
         }
-        entity.setLastModifyUserId(userId);
-        entity.setLastModifyTime(DateUtil.getTimestamp(true));
+        obj.setLastModifyUserId(userId);
+        obj.setLastModifyTime(DateUtil.getTimestamp(true));
     }
 }
