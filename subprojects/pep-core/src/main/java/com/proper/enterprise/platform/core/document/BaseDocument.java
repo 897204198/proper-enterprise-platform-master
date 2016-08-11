@@ -1,10 +1,13 @@
 package com.proper.enterprise.platform.core.document;
 
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import org.springframework.data.annotation.Id;
 
 public class BaseDocument implements IBase {
+
+    private static final long serialVersionUID = PEPConstants.VERSION;
 
     @Id
     protected String id;
