@@ -58,13 +58,17 @@ IDE 开启远程调试方式可参见：
 * 服务接口：`com.proper.enterprise.platform.api.<module>..service.*Service`
 * 服务实现：`com.proper.enterprise.platform.<module>..service.impl.*ServiceImpl`
 > 服务里 `get` 用来命名最多得到**一个**结果的查询，`find` 用来命名得到**集合**的查询
-* 数据接口：数据实体以数据接口对外提供服务，以便可以从其他数据来源获得数据。数据接口只提供 getter 和 setter 方法，且当代表的数据实体继承自 `BaseEntity` 时，数据接口需扩展 `IBase` 接口，如：
+* 平台数据来源包括 RDB 和 MongoDB 两类
+* 需操作关系型数据库时，可使用平台提供的 `BaseRepository` 按 `spring-data-jpa` 方式操作数据，也可使用 `NativeRepository` 使用 SQL 操作数据
+* 使用 MongoDB 时，可继承 `spring-data-mongodb` 提供的 `MongoRepository`，也可直接注入平台定义好的 `mongoClient` 或 `mongoDatabase`
+* 数据接口：数据实体以数据接口对外提供服务，以便可以从其他数据来源获得数据。数据接口只提供 getter 和 setter 方法，且当代表的数据实体继承自 `IBase` 时，数据接口需扩展 `IBase` 接口，如：
 
     ```
     public interface User extends IBase
     ```
 
-* 数据实体：`com.proper.enterprise.platform.<module>..entity.*Entity`
+* MongoDB 数据实体：`com.proper.enterprise.platform.<module>..document.*Document`，实体类需继承基类 `BaseDocument`
+* JPA 数据实体：`com.proper.enterprise.platform.<module>..entity.*Entity`
     > 实体类需继承基类 `BaseEntity`，且必须有默认的构造函数（否则 JPA 查询的时候会报错）；表名规则为 `PEP_<module>_<NAME>`，表名字段名大写；需缓存的表要添加 `CacheEntity` 注解（`CacheEntity` 注解为实体开启 `JPA` 缓存及 `Hibernate` 二级缓存，可以用作大部分实体的通用配置。如实体有特殊需求，也可自行设置）。如：
 
     ```
@@ -92,7 +96,7 @@ IDE 开启远程调试方式可参见：
 
     > `DiscriminatorColumn` 统一使用 `pepDtype`，以免默认字段 `DTYPE` 与数据库关键字冲突
 
-* Repository：`com.proper.enterprise.platform.<module>..repository.*Repository`，需继承 `BaseRepository`；需缓存的方法需添加 `CacheQuery` 注解，且对应 `Entity` 也需要有 `CacheEntity` 注解标识：
+* JPA Repository：`com.proper.enterprise.platform.<module>..repository.*Repository`，需继承 `BaseRepository`；需缓存的方法需添加 `CacheQuery` 注解，且对应 `Entity` 也需要有 `CacheEntity` 注解标识：
 
     ```
     public interface UserRepository extends BaseRepository<UserEntity, String> {
