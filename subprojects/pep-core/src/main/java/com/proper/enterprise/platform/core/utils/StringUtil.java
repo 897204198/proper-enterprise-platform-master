@@ -30,7 +30,7 @@ public class StringUtil extends StringUtils {
 
     public static String camelToSnake(String camel) {
         String[] strs = StringUtil.splitByCharacterTypeCamelCase(camel);
-        return StringUtil.join(strs, "_");
+        return StringUtil.join(strs, "_").toLowerCase();
     }
 
 }
