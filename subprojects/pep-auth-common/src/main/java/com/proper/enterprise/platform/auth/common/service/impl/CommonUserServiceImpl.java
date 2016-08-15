@@ -9,7 +9,6 @@ import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
 import com.proper.enterprise.platform.auth.common.repository.UserRepository;
 import com.proper.enterprise.platform.core.repository.NativeRepository;
-import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,22 +39,14 @@ public abstract class CommonUserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        if (StringUtil.isNotNull(user.getId())) {
-            return userRepo.save((UserEntity) user);
-        } else {
-            return userRepo.save(new UserEntity(user.getUsername(), user.getPassword()));
-        }
+        return userRepo.save((UserEntity) user);
     }
 
     @Override
     public void save(User... users) {
         List<UserEntity> entities = new ArrayList<>(users.length);
         for (User user : users) {
-            if (StringUtil.isNotNull(user.getId())) {
-                entities.add((UserEntity) user);
-            } else {
-                entities.add(new UserEntity(user.getUsername(), user.getPassword()));
-            }
+            entities.add((UserEntity) user);
         }
         userRepo.save(entities);
     }
