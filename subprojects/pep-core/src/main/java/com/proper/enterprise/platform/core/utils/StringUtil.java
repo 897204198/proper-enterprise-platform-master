@@ -28,4 +28,9 @@ public class StringUtil extends StringUtils {
         return isNotBlank(str);
     }
 
+    public static String camelToSnake(String camel) {
+        String[] strs = StringUtil.splitByCharacterTypeCamelCase(camel);
+        return StringUtil.join(strs, "_");
+    }
+
 }

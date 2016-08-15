@@ -101,6 +101,10 @@ public class ConfCenter {
         return properties.getProperty(key);
     }
 
+    public static int getInt(String key) {
+        return getInt(key, 0);
+    }
+
     /**
      * 从配置中心按照参数名获得参数值
      * 当参数不存在时，返回默认值
@@ -111,6 +115,10 @@ public class ConfCenter {
      */
     public static String get(String key, String defaultValue) {
         return properties.getProperty(key, defaultValue);
+    }
+
+    public static int getInt(String key, int defaultValue) {
+        return Integer.parseInt(get(key, defaultValue + ""));
     }
 
     /**
