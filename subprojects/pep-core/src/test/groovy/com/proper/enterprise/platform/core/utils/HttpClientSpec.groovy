@@ -5,7 +5,7 @@ import org.springframework.http.MediaType
 import spock.lang.Specification
 
 
-class HttpUtilSpec extends Specification {
+class HttpClientSpec extends Specification {
 
     def static url = 'https://server.propersoft.cn'
 
