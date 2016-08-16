@@ -1,5 +1,4 @@
 package com.proper.enterprise.platform.test
-
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Before
 import org.junit.runner.RunWith
@@ -17,13 +16,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.StringUtils
 import org.springframework.web.context.WebApplicationContext
 
 import javax.servlet.Filter
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 /**
  * 基础测试类
  *
@@ -174,11 +173,13 @@ public abstract class AbstractTest {
     }
 
     protected def getAndReturn(uri, entity, status) {
-        def str = get(uri + (entity.hasProperty('id') ? "/${entity.id}" : ''), status).getResponse().getContentAsString()
+        def str = get(uri + (entity.hasProperty('id') && entity.id > '' ? "/${entity.id}" : ''), status)
+                    .getResponse().getContentAsString()
         def clz = entity.class
-        if (str > '') {
-            return str.startsWith('[') ? JSONUtil.parse(str, clz[].class) : (str.startsWith('{') ? JSONUtil.parse(str, clz) : str)
+        if (StringUtils.isEmpty(str) || clz.equals(String.class)) {
+            return str
         }
+        return str.startsWith('[') ? JSONUtil.parse(str, clz[].class) : (str.startsWith('{') ? JSONUtil.parse(str, clz) : str)
     }
 
     private def checkBaseRetrive(uri, entity) {

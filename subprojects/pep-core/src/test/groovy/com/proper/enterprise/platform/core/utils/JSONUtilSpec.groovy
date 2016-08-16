@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.utils
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.proper.enterprise.platform.core.entity.BaseEntity
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -79,6 +80,24 @@ class JSONUtilSpec extends Specification {
         where:
         idx | key  | value | str
         1   | 'b2' | 'b2'  | '[{"a1":"a1","a2":"a2","a3":"a3"},{"b1":"b1","b2":"b2","b3":"b3"}]'
+    }
+
+    def "Parse JSON string to entity array or collection"() {
+        given:
+        def result1 = JSONUtil.getMapper().readValue(str, new TypeReference<BaseEntity[]>() { })
+        def result2 = JSONUtil.getMapper().readValue(str, new TypeReference<List<BaseEntity>>() { })
+
+        expect:
+        result1[idx] instanceof BaseEntity
+        result2[idx] instanceof BaseEntity
+
+        result1[idx][key] == value
+        result2[idx][key] == value
+
+        where:
+        idx | key  | value | str
+        1   | 'id' | '2'  | '[{"id":"1","createUserId":"a"},{"id":"2","createUserId":"b"}]'
+        0   | 'id' | '1'  | '[{"id":"1","createUserId":"a"},{"id":"2","createUserId":"b"}]'
     }
 
 }

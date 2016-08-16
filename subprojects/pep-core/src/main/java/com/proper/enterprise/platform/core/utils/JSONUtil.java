@@ -68,4 +68,8 @@ public class JSONUtil {
         return mapper.readValue(bytes, clz);
     }
 
+    public static ObjectMapper getMapper() {
+        return mapper;
+    }
+
 }
