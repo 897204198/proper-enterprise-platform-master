@@ -174,10 +174,10 @@ public abstract class AbstractTest {
     }
 
     protected def getAndReturn(uri, entity, status) {
-        def str = get(uri + (entity.id > '' ? "/${entity.id}" : ''), status).getResponse().getContentAsString()
+        def str = get(uri + (entity.hasProperty('id') ? "/${entity.id}" : ''), status).getResponse().getContentAsString()
         def clz = entity.class
         if (str > '') {
-            return str.startsWith('[') ? JSONUtil.parse(str, clz[].class) : JSONUtil.parse(str, clz)
+            return str.startsWith('[') ? JSONUtil.parse(str, clz[].class) : (str.startsWith('{') ? JSONUtil.parse(str, clz) : str)
         }
     }
 

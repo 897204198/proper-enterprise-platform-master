@@ -7,7 +7,7 @@ import spock.lang.Specification
 
 class HttpClientSpec extends Specification {
 
-    def static url = 'https://server.propersoft.cn'
+    def static url = 'https://github.com'
 
     def "Using all http methods"() {
         // TODO clean code
@@ -19,10 +19,10 @@ class HttpClientSpec extends Specification {
 
         expect:
         r1.statusCode == HttpStatus.NOT_FOUND
-        r2.statusCode == HttpStatus.METHOD_NOT_ALLOWED
-        r3.statusCode == HttpStatus.NOT_FOUND
-        r4.statusCode == HttpStatus.METHOD_NOT_ALLOWED
-        r5.statusCode == HttpStatus.METHOD_NOT_ALLOWED
+        r2.statusCode == HttpStatus.NOT_FOUND
+        r3.statusCode == HttpStatus.OK
+        r4.statusCode == HttpStatus.NOT_FOUND
+        r5.statusCode == HttpStatus.NOT_FOUND
     }
 
 }
