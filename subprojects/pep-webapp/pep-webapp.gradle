@@ -19,7 +19,6 @@ apply plugin: 'war'
 
 gretty {
     servletContainer = 'tomcat7'
-    httpPort = 9090
     contextPath = 'pep'
     debugSuspend = false
     fileLogEnabled = false
