@@ -31,6 +31,12 @@ Proper Enterprise Platform
 
 若需使用 `gradle` 的 `eclipse` 插件，可参考 [wiki](https://github.com/proper4git/proper-uip/wiki) 中 [eclipse gradle 插件使用](https://github.com/proper4git/proper-uip/wiki/eclipse-gradle-%E6%8F%92%E4%BB%B6%E4%BD%BF%E7%94%A8)
 
+在构建之前需要配置一下私有仓库，即配置文件`gradle.properties`
+````
+nexusUrl=https://server.propersoft.cn:8081
+nexusUsername=你的用户名
+nexusPassword=你的密码
+````
 ### 整体构建
 
     $ ./gradlew build
