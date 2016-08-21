@@ -29,7 +29,7 @@ Proper Enterprise Platform
 
 项目构建依托 [gradle](http://www.gradle.org) 构建工具，`gradlew` 是 `gradle warpper`，可不依赖本地的 `gradle` 环境进行构建。若本地已有 `gradle` 构建环境，使用本地环境也可。`wrapper` 中使用的 `gradle` 版本参见 [gradle-wrapper.properties](./gradle/wrapper/gradle-wrapper.properties)。
 
-在构建之前需要配置一下私有仓库，即配置文件`gradle.properties`
+在构建之前需要配置一下私有仓库，即配置文件`~/.gradle/gradle.properties`
 ````
 nexusUrl=https://server.propersoft.cn:8081
 nexusUsername=你的用户名
