@@ -42,5 +42,16 @@ class StringUtilSpec extends Specification {
         ''          | ['a', 'b']    | 'ab'
         ','         | ['a']         | 'a'
     }
+    
+    @Unroll
+    def "CamelCase'#input' camelToSnake is #result"(){
+        expect:
+        result == StringUtil.camelToSnake (input)
+        where:
+        input                |           result
+        'likeThis'           |           'like_this'
+        'MyTest'             |           'my_test'
+        'TestTest'           |           'test_test'
+    }
 
 }
