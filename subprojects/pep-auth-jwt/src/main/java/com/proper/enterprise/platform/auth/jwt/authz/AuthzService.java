@@ -7,6 +7,8 @@ import org.springframework.util.PathMatcher;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AuthzService {
@@ -15,10 +17,10 @@ public class AuthzService {
 
     private static PathMatcher matcher = new AntPathMatcher();
 
-    private List<String> ignorePatterns;
+    private List<String> ignorePatterns = new ArrayList<>();
 
-    public void setIgnorePatterns(List<String> ignorePatterns) {
-        this.ignorePatterns = ignorePatterns;
+    public void setIgnorePatterns(String ignorePatterns) {
+        Collections.addAll(this.ignorePatterns, ignorePatterns.split(","));
     }
 
     public boolean shouldIgnore(String url, String method) throws URISyntaxException {

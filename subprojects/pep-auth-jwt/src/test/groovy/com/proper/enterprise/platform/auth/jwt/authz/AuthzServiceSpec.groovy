@@ -10,16 +10,15 @@ class AuthzServiceSpec extends Specification {
     @Shared static AuthzService service = new AuthzService()
 
     def setupSpec() {
-        def list = []
-        list.with {
-            push 'GET:/auth/resources'
-            push 'GET:/workflow/service/model/*/json'
-            push 'GET:/auth/resources/*/*/xml'
-            push 'GET:/workflow/service/model/3*/json'
-            push 'GET:/workflow/*.html'
-            push 'POST:/auth/login'
-        }
-        service.setIgnorePatterns(list)
+        def list = [
+            'GET:/auth/resources',
+            'GET:/workflow/service/model/*/json',
+            'GET:/auth/resources/*/*/xml',
+            'GET:/workflow/service/model/3*/json',
+            'GET:/workflow/*.html',
+            'POST:/auth/login'
+        ]
+        service.setIgnorePatterns(list.join(','))
     }
 
     @Unroll
