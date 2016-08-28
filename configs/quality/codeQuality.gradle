@@ -3,7 +3,7 @@ apply plugin: 'codenarc'
 apply plugin: 'findbugs'
 apply plugin: 'jacoco'
 
-def configDir = new File(buildscript.sourceFile.parentFile.parentFile, 'config')
+def configDir = new File(rootProject.projectDir, 'configs/quality')
 
 ext.checkstyleConfigDir = "$configDir/checkstyle"
 

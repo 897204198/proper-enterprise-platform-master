@@ -23,7 +23,7 @@ gretty {
     debugSuspend = false
     fileLogEnabled = false
     managedClassReload = true
-    serverConfigFile = "$project.projectDir/config/tomcat/server.xml"
+    serverConfigFile = "$project.projectDir/configs/tomcat/server.xml"
 }
 
 dependencies {
