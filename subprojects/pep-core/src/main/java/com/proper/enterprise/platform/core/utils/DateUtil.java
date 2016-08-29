@@ -128,4 +128,8 @@ public class DateUtil {
         return new DateTime(date.getTime()).toString(format);
     }
 
+    public static Date saveClone(Date date) {
+        return date == null ? null : (Date) date.clone();
+    }
+
 }
