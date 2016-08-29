@@ -29,7 +29,7 @@ public class APISecret {
 
     @CacheEvict(value = CACHE_NAME)
     public void clearAPISecret(String key) {
-        // spring evict the cache, no need to do nothing more
+        // spring evict the cache, no need to do anything more
         LOGGER.debug("Clear API secret cache with key: {}", key);
     }
 

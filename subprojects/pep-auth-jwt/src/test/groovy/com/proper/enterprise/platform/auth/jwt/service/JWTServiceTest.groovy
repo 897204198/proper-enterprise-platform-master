@@ -46,4 +46,18 @@ class JWTServiceTest extends AbstractTest {
         assert jwtService.verify(token1)
     }
 
+    @Test
+    public void getTokenFromReq() {
+        def token = 'a.b.c'
+        mockRequest.addHeader("Authorization", token)
+        assert jwtService.getTokenFromHeader(mockRequest) == token
+    }
+
+    @Test
+    public void getTokenFromReqWithBearer() {
+        def token = 'a.b.c'
+        mockRequest.addHeader("Authorization", "Bearer $token")
+        assert jwtService.getTokenFromHeader(mockRequest) == token
+    }
+
 }
