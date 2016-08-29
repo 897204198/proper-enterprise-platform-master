@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 
 class JWTServiceTest extends AbstractTest {
 
@@ -47,17 +48,24 @@ class JWTServiceTest extends AbstractTest {
     }
 
     @Test
-    public void getTokenFromReq() {
+    public void getTokenFromMockReq() {
         def token = 'a.b.c'
         mockRequest.addHeader("Authorization", token)
         assert jwtService.getTokenFromHeader(mockRequest) == token
     }
 
     @Test
-    public void getTokenFromReqWithBearer() {
+    public void getTokenFromMockReqWithBearer() {
         def token = 'a.b.c'
         mockRequest.addHeader("Authorization", "Bearer $token")
         assert jwtService.getTokenFromHeader(mockRequest) == token
+    }
+
+    @Test
+    public void getTokenFromReq() {
+        def token = 'a.b.c'
+        mockRequest.addHeader('Authorization', token)
+        assert getAndReturn('/test/get', '', HttpStatus.OK) == token
     }
 
 }

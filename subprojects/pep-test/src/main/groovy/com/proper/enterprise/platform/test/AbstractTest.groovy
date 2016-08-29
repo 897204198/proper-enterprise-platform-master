@@ -130,6 +130,9 @@ public abstract class AbstractTest {
         if (mockUser != null) {
             req.requestAttr('mockUser', mockUser)
         }
+        for (String header : mockRequest.getHeaderNames()) {
+            req.header(header, mockRequest.getHeader(header))
+        }
         return mockMvc
             .perform(req)
             .andDo(print())
