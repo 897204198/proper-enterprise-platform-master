@@ -32,12 +32,7 @@ public class UserServiceImpl extends CommonUserServiceImpl {
             return null;
         }
         JWTHeader header = jwtService.getHeader(token);
-        if (header == null) {
-            LOGGER.error("JWT Header is NULL!");
-            return null;
-        }
-        String username = header.getName();
-        return getByUsername(username);
+        return getByUsername(header.getName());
     }
 
 }
