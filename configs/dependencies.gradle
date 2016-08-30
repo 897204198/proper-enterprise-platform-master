@@ -137,6 +137,8 @@ libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:
 
 libraries.mongodb_driver = "org.mongodb:mongodb-driver:${versions.mongo}"
 
+libraries.mysql_driver = 'mysql:mysql-connector-java:5.1.39'
+
 libraries.okhttp = 'com.squareup.okhttp3:okhttp:3.4.1'
 
 //libraries.poi = 'org.apache.poi:poi:3.7'

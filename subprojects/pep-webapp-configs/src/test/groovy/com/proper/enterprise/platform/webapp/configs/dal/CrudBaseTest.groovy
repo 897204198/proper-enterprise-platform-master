@@ -15,7 +15,7 @@ class CrudBaseTest extends AbstractTest {
 
     void create() {
         AEntity user = new AEntity()
-        user.setUsername('test')
+        user.setUsername('中文')
         user.setPassword('testpassword')
         repository.save(user)
         id = user.getId()
@@ -27,7 +27,7 @@ class CrudBaseTest extends AbstractTest {
         // check set values
         assert user.createUserId > ''
         assert user.lastModifyUserId > ''
-        assert user.username == 'test'
+        assert user.username == '中文'
         assert user.password == 'testpassword'
 
         // check default values
