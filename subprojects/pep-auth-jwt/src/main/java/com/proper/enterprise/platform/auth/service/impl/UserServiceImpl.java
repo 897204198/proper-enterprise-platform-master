@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.auth.common.service.impl.CommonUserService
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.service.JWTService;
 import com.proper.enterprise.platform.core.utils.RequestUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,13 @@ public class UserServiceImpl extends CommonUserServiceImpl {
         LOGGER.debug("Get request from request context holder: {}", req);
         String token = jwtService.getTokenFromHeader(req);
         LOGGER.debug("Get token from request: {}", token);
+        if (StringUtil.isNull(token)) {
+            LOGGER.error("Could NOT get token from request!");
+            return null;
+        }
         JWTHeader header = jwtService.getHeader(token);
         if (header == null) {
-            LOGGER.debug("JWT Header is NULL!");
+            LOGGER.error("JWT Header is NULL!");
             return null;
         }
         String username = header.getName();

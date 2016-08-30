@@ -9,6 +9,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class JWTService {
 
     public String getTokenFromHeader(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
+        LOGGER.trace("Request {} token header!", StringUtil.isNotNull(token) ? "has" : "DOES NOT HAVE");
         if (StringUtil.isNotNull(token) && token.contains("Bearer")) {
             token = token.replace("Bearer", "").trim();
         }
@@ -85,6 +87,7 @@ public class JWTService {
     }
 
     public JWTHeader getHeader(String token) throws IOException {
+        Assert.notNull(token, "COULD NOT GET JWT HEADER FROM NULL TOKEN!");
         String[] split = token.split("\\.");
         String headerStr = split[0];
         return JSONUtil.parse(Base64.decodeBase64(headerStr), JWTHeader.class);
