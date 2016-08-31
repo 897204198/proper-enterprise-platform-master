@@ -4,12 +4,12 @@ VALUES
 ('pep-auth', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '安全设置', null, 'APP', '/platform/auth/security', 'GET', 0);
 
 INSERT INTO pep_auth_datarestrains
-(id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, table_name, sql)
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, table_name, sql_str)
 VALUES
 ('ds1', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', 'ds1', 'mongodao', '{$where: "this.a > this.b"}');
 
 INSERT INTO pep_auth_datarestrains
-(id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, table_name, sql)
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, table_name, sql_str)
 VALUES
 ('ds2', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', 'ds2', 'mongodao', '{a: {"$ne": 3}}');
 
@@ -19,7 +19,7 @@ VALUES
 ('ds3', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', 'ds3', 'mongodao', 'filter may not has sql');
 
 INSERT INTO pep_auth_datarestrains
-(id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, table_name, sql)
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, table_name, sql_str)
 VALUES
 ('ds4', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', 'ds4', 'mongodao', '#{@mockUserService.get("notExist")}');
 

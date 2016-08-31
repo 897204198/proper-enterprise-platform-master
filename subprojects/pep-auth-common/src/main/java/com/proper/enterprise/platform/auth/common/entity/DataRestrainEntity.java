@@ -15,7 +15,7 @@ public class DataRestrainEntity extends BaseEntity implements DataRestrain {
 
     private String tableName;
 
-    private String sql;
+    private String sqlStr;
 
     private String filterName;
 
@@ -42,12 +42,12 @@ public class DataRestrainEntity extends BaseEntity implements DataRestrain {
         this.tableName = tableName;
     }
 
-    public String getSql() {
-        return sql;
+    public String getSqlStr() {
+        return sqlStr;
     }
 
-    public void setSql(String sql) {
-        this.sql = sql;
+    public void setSqlStr(String sql) {
+        this.sqlStr = sql;
     }
 
     @Override

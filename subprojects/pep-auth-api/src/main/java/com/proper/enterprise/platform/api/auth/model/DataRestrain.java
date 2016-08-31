@@ -49,14 +49,14 @@ public interface DataRestrain extends IBase {
      *
      * @return SQL 片段
      */
-    String getSql();
+    String getSqlStr();
 
     /**
      * 设置数据约束具体 SQL
      *
-     * @param sql SQL 片段
+     * @param sqlStr SQL 片段
      */
-    void setSql(String sql);
+    void setSqlStr(String sqlStr);
 
     /**
      * 获得 Entity 中定义的 Filter 名称

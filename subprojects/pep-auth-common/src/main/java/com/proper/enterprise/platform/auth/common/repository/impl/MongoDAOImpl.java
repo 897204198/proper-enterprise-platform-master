@@ -85,7 +85,7 @@ public class MongoDAOImpl implements MongoDAO {
         List<String> sqls = new ArrayList<>(dataRestrains.size());
         String sql;
         for (DataRestrain dataRestrain : dataRestrains) {
-            sql = dataRestrain.getSql();
+            sql = dataRestrain.getSqlStr();
             LOGGER.debug("{} restrain on {}:{} with {}",
                 dataRestrain.getName(), resource.getMethod(), resource.getURL(), sql);
             if (StringUtil.isNotNull(sql)) {
