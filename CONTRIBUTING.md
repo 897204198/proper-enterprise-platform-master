@@ -57,7 +57,8 @@ IDE 开启远程调试方式可参见：
 * Controller：`com.proper.enterprise.platform.<module>..controller.*Controller`，Controller 放置在各模块中。RESTFul Controller 可以继承 `BaseController`，以方便响应 RESTFul 请求。可参考 `UsersController`
 * 服务接口：`com.proper.enterprise.platform.api.<module>..service.*Service`
 * 服务实现：`com.proper.enterprise.platform.<module>..service.impl.*ServiceImpl`
-> 服务里 `get` 用来命名最多得到**一个**结果的查询，`find` 用来命名得到**集合**的查询
+
+  > 服务里 `get` 用来命名最多得到**一个**结果的查询，`find` 用来命名得到**集合**的查询；尽量使用动词开头命名 service 中的方法，如 `save*`、`delete*` 等，平台也将根据这些动词对 service 层中的方法进行事务控制。仅需要保存或改动数据的方法会得到可写事务，其余方法均只能使用只读事务。具体事务配置请参照 [applicationContext-transaction.xml](subprojects/pep-webapp-configs/src/main/resources/spring/dal/applicationContext-transaction.xml)
 * 平台数据来源包括 RDB 和 MongoDB 两类
 * 需操作关系型数据库时，可使用平台提供的 `BaseRepository` 按 `spring-data-jpa` 方式操作数据，也可使用 `NativeRepository` 使用 SQL 操作数据
 * 使用 MongoDB 时，可继承 `spring-data-mongodb` 提供的 `MongoRepository`，也可直接注入平台定义好的 `mongoClient` 或 `mongoDatabase`
