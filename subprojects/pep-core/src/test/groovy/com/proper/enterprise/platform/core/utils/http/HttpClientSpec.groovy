@@ -1,9 +1,8 @@
-package com.proper.enterprise.platform.core.utils
+package com.proper.enterprise.platform.core.utils.http
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import spock.lang.Specification
-
 
 class HttpClientSpec extends Specification {
 
