@@ -1,7 +1,14 @@
 package com.proper.enterprise.platform.core.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Collection;
 
@@ -11,6 +18,8 @@ import java.util.Collection;
  * 用于响应各类 method 的请求
  */
 public abstract class BaseController {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(BaseController.class);
 
     /**
      * 返回 POST 请求的响应
@@ -70,6 +79,16 @@ public abstract class BaseController {
      */
     protected ResponseEntity responseOfDelete(boolean exist) {
         return new ResponseEntity(exist ? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex, WebRequest request) {
+        LOGGER.error("Controller throws an exception:", ex);
+        ResponseEntityExceptionHandler handler = new ResponseEntityExceptionHandler() { };
+        ResponseEntity res = handler.handleException(ex, request);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.valueOf(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
+        return new ResponseEntity<>(ex.getMessage(), headers, res.getStatusCode());
     }
 
 }
