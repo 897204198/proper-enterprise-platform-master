@@ -5,15 +5,12 @@ import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.test.AbstractTest
-import org.hibernate.exception.ConstraintViolationException
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.web.bind.annotation.RequestMethod
-
-import static org.junit.Assert.fail
 
 @Sql
 class ResourcesControllerTest extends AbstractTest {
@@ -28,12 +25,9 @@ class ResourcesControllerTest extends AbstractTest {
         doPost()
         doPost()
 
-        try {
-            get('/auth/resources', HttpStatus.OK) // 查询一下触发数据插入操作
-            fail() //remember this line, else 'may' false positive
-        } catch (Exception e) {
-            assert e.cause.cause instanceof ConstraintViolationException
-        }
+        // 查询一下触发数据插入操作
+        def result = get('/auth/resources', HttpStatus.INTERNAL_SERVER_ERROR)
+        assert result.getResponse().getContentAsString().contains('ConstraintViolationException')
     }
 
     private ResourceEntity doPost() {
