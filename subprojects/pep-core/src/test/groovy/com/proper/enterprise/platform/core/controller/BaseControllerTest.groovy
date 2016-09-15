@@ -1,5 +1,5 @@
 package com.proper.enterprise.platform.core.controller
-import com.proper.enterprise.platform.core.repository.entity.MockEntity
+import com.proper.enterprise.platform.core.repository.mock.entity.MockEntity
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.http.HttpStatus
