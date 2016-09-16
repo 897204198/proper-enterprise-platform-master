@@ -13,8 +13,14 @@ public class MongoDatabaseFactoryBean extends AbstractFactoryBean<MongoDatabase>
 
     private MongoClient mongoClient;
 
+    private String databaseName;
+
     public void setMongoClient(MongoClient mongoClient) {
         this.mongoClient = mongoClient;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
     }
 
     @Override
@@ -24,7 +30,7 @@ public class MongoDatabaseFactoryBean extends AbstractFactoryBean<MongoDatabase>
 
     @Override
     protected MongoDatabase createInstance() throws Exception {
-        return mongoClient.getDatabase(ConfCenter.get("mongodb.database"));
+        return mongoClient.getDatabase(databaseName);
     }
 
 }

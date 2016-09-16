@@ -32,6 +32,7 @@
 
     <bean id="mongoDatabase" class="com.proper.enterprise.platform.core.utils.MongoDatabaseFactoryBean">
         <property name="mongoClient" ref="mongoClient" />
+        <property name="databaseName" value="${mongodb.database}" />
     </bean>
 
 </beans>
