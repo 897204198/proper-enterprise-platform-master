@@ -5,7 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * 配置中心
@@ -66,7 +68,20 @@ public class ConfCenter {
     private static void _loadProperties(String locationPattern) {
         try {
             Resource[] resources = new PathMatchingResourcePatternResolver().getResources(locationPattern);
+            Set<Resource> fileResources = new HashSet<>();
+            String description;
+            // Load resources in jar first
             for (Resource res : resources) {
+                description = res.getDescription();
+                if (description.startsWith("file")) {
+                    fileResources.add(res);
+                    continue;
+                }
+                LOGGER.trace("Load config file from {}", res.getDescription());
+                properties.load(res.getInputStream());
+            }
+            // and then load resources in file system
+            for (Resource res : fileResources) {
                 LOGGER.trace("Load config file from {}", res.getDescription());
                 properties.load(res.getInputStream());
             }

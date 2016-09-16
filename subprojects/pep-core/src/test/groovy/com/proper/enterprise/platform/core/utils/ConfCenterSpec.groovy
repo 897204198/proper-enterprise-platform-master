@@ -17,6 +17,7 @@ class ConfCenterSpec extends Specification {
         'port'                     | '27018'
         'core.default_date_format' | 'yyyy-MM-dd'
         'notexist'                 | null
+        'host'                     | 'localhost'
     }
 
     def "Get '#key' from Config Center is '#value'(default: '#defVal'"() {
