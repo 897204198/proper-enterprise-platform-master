@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.core.converter
 import com.proper.enterprise.platform.core.repository.NativeRepository
 import com.proper.enterprise.platform.core.repository.mock.entity.MockEntity
 import com.proper.enterprise.platform.core.repository.mock.repository.MockRepository
+import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,6 +33,16 @@ class AESConverterTest extends AbstractTest {
         def converter = new AESConverter()
         converter.convertToDatabaseColumn(plainData) == obj[1]
         converter.convertToEntityAttribute(obj[1]) == plainData
+    }
+
+    @Test()
+    public void errKey() {
+        System.setProperty('core.secret.aes.key', 'err_key_length')
+        ConfCenter.reload()
+
+        def converter = new AESConverter()
+        assert converter.convertToDatabaseColumn('err') == ''
+        assert converter.convertToEntityAttribute('err') == ''
     }
 
 }
