@@ -30,6 +30,18 @@ class ConfCenterSpec extends Specification {
         'notexist'  | 'abc'     | 'abc'
     }
 
+    def "Get int property as expected"() {
+        expect:
+        ConfCenter.getInt('priority') == 16
+        ConfCenter.getInt('not.exist', 23) == 23
+
+        when:
+        ConfCenter.getInt('not.exist')
+
+        then:
+        thrown(NumberFormatException)
+    }
+
     def "Load from null will throw an exception and catch by ConfCenter"() {
         when:
         ConfCenter.loadProperties(null)

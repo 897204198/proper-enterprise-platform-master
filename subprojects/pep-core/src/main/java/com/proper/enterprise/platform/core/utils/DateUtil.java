@@ -128,6 +128,14 @@ public class DateUtil {
         return new DateTime(date.getTime()).toString(format);
     }
 
+    /**
+     * 安全 clone 日期对象
+     * 常用在 Java Bean 中的 Date 类型属性的 getter 和 setter 方法中
+     * 防止将 Bean 中的私有属性直接暴露出来
+     *
+     * @param date  日期对象
+     * @return null 或者克隆出的日期对象
+     */
     public static Date saveClone(Date date) {
         return date == null ? null : (Date) date.clone();
     }

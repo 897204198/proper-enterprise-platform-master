@@ -116,22 +116,38 @@ public class ConfCenter {
         return properties.getProperty(key);
     }
 
-    public static int getInt(String key) {
-        return getInt(key, 0);
-    }
-
     /**
      * 从配置中心按照参数名获得参数值
      * 当参数不存在时，返回默认值
      *
      * @param key           参数名
-     * @param defaultValue  参数值
+     * @param defaultValue  默认值
      * @return 参数值或默认值
      */
     public static String get(String key, String defaultValue) {
         return properties.getProperty(key, defaultValue);
     }
 
+    /**
+     * 从配置中心按照参数名称获得数值型参数值
+     * 当参数不存在时，会抛出运行时异常
+     *
+     * @param     key   参数名
+     * @return    数值型参数值
+     * @exception NumberFormatException 当参数不存在时会抛出此异常
+     */
+    public static int getInt(String key) throws NumberFormatException {
+        return Integer.parseInt(get(key));
+    }
+
+    /**
+     * 从配置中心按照参数名称获得数值型参数值
+     * 当参数不存在时，返回默认值
+     *
+     * @param  key          参数名
+     * @param  defaultValue 默认值
+     * @return 数值型参数值或默认值
+     */
     public static int getInt(String key, int defaultValue) {
         return Integer.parseInt(get(key, defaultValue + ""));
     }

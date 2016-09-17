@@ -21,6 +21,8 @@ class DateUtilSpec extends Specification {
         DateUtil.toDateTime("$ds $ts") == new DateTime(2016, 6, 15, 15, 31, 24).toDate()
         DateUtil.toDateString(d) == ds
         DateUtil.toTimestamp(d) == "$ds $ts".toString()
+        DateUtil.saveClone(d) == d
+        DateUtil.saveClone(null) == null
     }
 
     // 更多对日期的操作可以直接使用 joda time 提供的方法
