@@ -32,6 +32,17 @@
         <persistence strategy="localTempSwap" />
     </cache>
 
+    <!-- Default cache for spring cache annotation using -->
+    <cache name="pep"
+           maxElementsInMemory="10000"
+           timeToIdleSeconds="120"
+           timeToLiveSeconds="120"
+           maxElementsOnDisk="10000000"
+           diskExpiryThreadIntervalSeconds="120"
+           memoryStoreEvictionPolicy="LRU">
+        <persistence strategy="localTempSwap"/>
+    </cache>
+
     <!-- This cache is used by JWT secret,
     elements in this cache have two weeks time to live -->
     <cache name="apiSecrets"
