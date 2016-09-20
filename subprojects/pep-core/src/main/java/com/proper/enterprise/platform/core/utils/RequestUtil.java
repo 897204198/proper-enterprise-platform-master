@@ -26,8 +26,9 @@ public class RequestUtil {
      * 获得当前 Request
      *
      * @return 当前 Request
+     * @throws IllegalStateException 当前线程未绑定 request 时抛出
      */
-    public static HttpServletRequest getCurrentRequest() {
+    public static HttpServletRequest getCurrentRequest() throws IllegalStateException {
         return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
             .getRequest();
     }

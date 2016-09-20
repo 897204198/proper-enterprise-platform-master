@@ -23,16 +23,22 @@ public class UserServiceImpl extends CommonUserServiceImpl {
     private JWTService jwtService;
 
     public User getCurrentUser() throws IOException {
-        HttpServletRequest req = RequestUtil.getCurrentRequest();
-        LOGGER.debug("Get request from request context holder: {}", req);
-        String token = jwtService.getTokenFromHeader(req);
-        LOGGER.debug("Get token from request: {}", token);
-        if (StringUtil.isNull(token)) {
-            LOGGER.error("Could NOT get token from request!");
+        HttpServletRequest req;
+        try {
+            req = RequestUtil.getCurrentRequest();
+            LOGGER.debug("Get request from request context holder: {}", req);
+            String token = jwtService.getTokenFromHeader(req);
+            LOGGER.debug("Get token from request: {}", token);
+            if (StringUtil.isNull(token)) {
+                LOGGER.error("Could NOT get token from request!");
+                return null;
+            }
+            JWTHeader header = jwtService.getHeader(token);
+            return getByUsername(header.getName());
+        } catch (IllegalStateException e) {
+            LOGGER.debug("Could not get current request!", e);
             return null;
         }
-        JWTHeader header = jwtService.getHeader(token);
-        return getByUsername(header.getName());
     }
 
 }
