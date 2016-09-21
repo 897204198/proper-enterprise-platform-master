@@ -31,11 +31,11 @@ class BaseControllerTest extends AbstractTest {
 
         // Get nothing
         result = c.responseOfGet(null)
-        assert result.getStatusCode() == HttpStatus.NOT_FOUND
+        assert result.getStatusCode() == HttpStatus.OK
         assert result.getBody() == null
 
         result = c.responseOfGet([])
-        assert result.getStatusCode() == HttpStatus.NOT_FOUND
+        assert result.getStatusCode() == HttpStatus.OK
         assert result.getBody() == null
     }
 

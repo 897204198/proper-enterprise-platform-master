@@ -65,7 +65,7 @@ public abstract class BaseController {
             notFound = entity instanceof Collection && ((Collection) entity).isEmpty();
         }
         return notFound
-            ? new ResponseEntity<T>(HttpStatus.NOT_FOUND)
+            ? new ResponseEntity<T>(HttpStatus.OK)
             : (new ResponseEntity<>(entity, HttpStatus.OK));
     }
 

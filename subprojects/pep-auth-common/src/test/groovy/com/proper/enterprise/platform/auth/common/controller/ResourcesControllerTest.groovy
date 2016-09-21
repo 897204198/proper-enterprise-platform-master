@@ -47,7 +47,7 @@ class ResourcesControllerTest extends AbstractTest {
 
     @Test
     public void notFoundAnyResources() {
-        get('/auth/resources', HttpStatus.NOT_FOUND)
+        assert get('/auth/resources', HttpStatus.OK).getResponse().getContentLength() == 0
     }
 
     @Test

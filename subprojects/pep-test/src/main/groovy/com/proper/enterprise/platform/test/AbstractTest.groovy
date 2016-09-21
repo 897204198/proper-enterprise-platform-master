@@ -188,7 +188,7 @@ public abstract class AbstractTest {
     private def checkBaseRetrive(uri, entity) {
         def notFoundEntity = entity.class.newInstance()
         notFoundEntity.id = 'NOT_FOUND_ENTITY'
-        getAndReturn(uri, notFoundEntity, HttpStatus.NOT_FOUND)
+        assert getAndReturn(uri, notFoundEntity, HttpStatus.OK) == ''
 
         def e1 = postAndReturn(uri, entity)
         getAndReturn(uri, e1, HttpStatus.OK)
@@ -202,12 +202,12 @@ public abstract class AbstractTest {
         assert putAndReturn(uri, e1, HttpStatus.OK)[property] == newVal
 
         deleteAndReturn(uri, e1.id, HttpStatus.NO_CONTENT)
-        putAndReturn(uri, e1, HttpStatus.NOT_FOUND)
+        assert putAndReturn(uri, e1, HttpStatus.OK) == ''
     }
 
     protected def putAndReturn(uri, entity, status) {
         def str = put("$uri/${entity.id}", JSONUtil.toJSON(entity), status).getResponse().getContentAsString()
-        return str > '' ? JSONUtil.parse(str, entity.class) : null
+        return str > '' ? JSONUtil.parse(str, entity.class) : str
     }
 
     protected def deleteAndReturn(uri, id, status) {
@@ -220,7 +220,7 @@ public abstract class AbstractTest {
         deleteAndReturn(uri, e1.id, HttpStatus.NO_CONTENT)
         deleteAndReturn(uri, e1.id, HttpStatus.NOT_FOUND)
 
-        getAndReturn(uri, e1, HttpStatus.NOT_FOUND)
+        assert getAndReturn(uri, e1, HttpStatus.OK) == ''
     }
 
 }
