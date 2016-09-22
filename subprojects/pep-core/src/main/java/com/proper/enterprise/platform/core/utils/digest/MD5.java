@@ -1,22 +1,22 @@
-package com.proper.enterprise.platform.core.utils;
+package com.proper.enterprise.platform.core.utils.digest;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * MD5 工具类
  */
-public class MD5Util {
+public class MD5 {
 
     /**
      * 私有化工具类的构造函数，避免对工具类的实例化
      */
-    private MD5Util() { }
+    private MD5() { }
 
     /**
      * 静态方法调用私有构造函数，以覆盖对构造函数的测试
      */
     static {
-        new MD5Util();
+        new MD5();
     }
 
     /**
