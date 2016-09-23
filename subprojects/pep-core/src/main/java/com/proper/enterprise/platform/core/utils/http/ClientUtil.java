@@ -21,7 +21,7 @@ public class ClientUtil {
     protected static final String POST = "POST";
     protected static final String DELETE = "DELETE";
 
-    protected static ResponseEntity<String> perform(OkHttpClient client, String url, String method, MediaType type, String data) throws IOException {
+    protected static ResponseEntity<byte[]> perform(OkHttpClient client, String url, String method, MediaType type, String data) throws IOException {
         Request.Builder builder = new Request.Builder();
         builder = builder.url(url);
         RequestBody body = null;
@@ -35,10 +35,10 @@ public class ClientUtil {
         return converter(response);
     }
 
-    protected static ResponseEntity<String> converter(Response response) throws IOException {
+    protected static ResponseEntity<byte[]> converter(Response response) throws IOException {
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.putAll(response.headers().toMultimap());
-        return new ResponseEntity<>(response.body().string(), headers, HttpStatus.valueOf(response.code()));
+        return new ResponseEntity<>(response.body().bytes(), headers, HttpStatus.valueOf(response.code()));
     }
 
 }

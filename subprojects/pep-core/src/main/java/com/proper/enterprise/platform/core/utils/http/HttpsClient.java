@@ -81,23 +81,23 @@ public class HttpsClient extends ClientUtil {
         return hc;
     }
 
-    public ResponseEntity<String> get(String url) throws IOException {
+    public ResponseEntity<byte[]> get(String url) throws IOException {
         return perform(client, url, GET, null, null);
     }
 
-    public ResponseEntity<String> post(String url, MediaType type, String data) throws IOException {
+    public ResponseEntity<byte[]> post(String url, MediaType type, String data) throws IOException {
         return perform(client, url, POST, type, data);
     }
 
-    public ResponseEntity<String> put(String url, MediaType type, String data) throws IOException {
+    public ResponseEntity<byte[]> put(String url, MediaType type, String data) throws IOException {
         return perform(client, url, PUT, type, data);
     }
 
-    public ResponseEntity<String> delete(String url, MediaType type, String data) throws IOException {
+    public ResponseEntity<byte[]> delete(String url, MediaType type, String data) throws IOException {
         return perform(client, url, DELETE, type, data);
     }
 
-    public ResponseEntity<String> delete(String url) throws IOException {
+    public ResponseEntity<byte[]> delete(String url) throws IOException {
         return perform(client, url, DELETE, null, null);
     }
 

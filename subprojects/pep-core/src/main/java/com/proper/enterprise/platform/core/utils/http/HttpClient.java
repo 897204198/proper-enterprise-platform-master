@@ -25,23 +25,23 @@ public class HttpClient extends ClientUtil {
         new HttpClient();
     }
 
-    public static ResponseEntity<String> get(String url) throws IOException {
+    public static ResponseEntity<byte[]> get(String url) throws IOException {
         return perform(client, url, GET, null, null);
     }
 
-    public static ResponseEntity<String> post(String url, MediaType type, String data) throws IOException {
+    public static ResponseEntity<byte[]> post(String url, MediaType type, String data) throws IOException {
         return perform(client, url, POST, type, data);
     }
 
-    public static ResponseEntity<String> put(String url, MediaType type, String data) throws IOException {
+    public static ResponseEntity<byte[]> put(String url, MediaType type, String data) throws IOException {
         return perform(client, url, PUT, type, data);
     }
 
-    public static ResponseEntity<String> delete(String url, MediaType type, String data) throws IOException {
+    public static ResponseEntity<byte[]> delete(String url, MediaType type, String data) throws IOException {
         return perform(client, url, DELETE, type, data);
     }
 
-    public static ResponseEntity<String> delete(String url) throws IOException {
+    public static ResponseEntity<byte[]> delete(String url) throws IOException {
         return perform(client, url, DELETE, null, null);
     }
 

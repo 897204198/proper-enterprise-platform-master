@@ -24,4 +24,12 @@ class HttpClientSpec extends Specification {
         r5.statusCode == HttpStatus.NOT_FOUND
     }
 
+    def "Could get stream"() {
+        def r = HttpClient.get('http://www.qiniu.com/public/v15/img/index/flame.png')
+
+        expect:
+        r.getBody() != null
+        r.getHeaders().get('Content-Type')[0] == 'image/png'
+    }
+
 }
