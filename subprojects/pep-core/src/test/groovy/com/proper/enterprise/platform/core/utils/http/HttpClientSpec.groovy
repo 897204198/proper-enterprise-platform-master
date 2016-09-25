@@ -29,7 +29,7 @@ class HttpClientSpec extends Specification {
 
         expect:
         r.getBody() != null
-        r.getHeaders().get('Content-Type')[0] == 'image/png'
+        r.getHeaders().getContentType() == MediaType.IMAGE_PNG
     }
 
 }

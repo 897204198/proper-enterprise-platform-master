@@ -1,8 +1,6 @@
-package com.proper.enterprise.platform.core.utils.cipher
+package com.proper.enterprise.platform.core.utils.digest
 
-import com.proper.enterprise.platform.core.utils.digest.SHA
 import spock.lang.Specification
-
 
 class SHASpec extends Specification {
 

@@ -1,11 +1,9 @@
-package com.proper.enterprise.platform.core.utils
+package com.proper.enterprise.platform.core.utils.digest
 
-import com.proper.enterprise.platform.core.utils.digest.MD5
 import spock.lang.Specification
 import spock.lang.Unroll
 
-
-class MD5UtilSpec extends Specification {
+class MD5Spec extends Specification {
 
     @Unroll
     def "MD5 HEX string of #input is #result"() {
