@@ -65,7 +65,7 @@ class JWTServiceTest extends AbstractTest {
     public void getTokenFromReq() {
         def token = 'a.b.c'
         mockRequest.addHeader('Authorization', token)
-        assert getAndReturn('/test/get', '', HttpStatus.OK) == token
+        assert getAndReturn('/token/get', '', HttpStatus.OK) == token
     }
 
 }
