@@ -13,6 +13,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 
 public class HttpsClient extends ClientUtil {
 
@@ -82,23 +83,43 @@ public class HttpsClient extends ClientUtil {
     }
 
     public ResponseEntity<byte[]> get(String url) throws IOException {
-        return perform(client, url, GET, null, null);
+        return perform(client, url, GET, null, null, null);
+    }
+
+    public ResponseEntity<byte[]> get(String url, Map<String, String> headers) throws IOException {
+        return perform(client, url, GET, headers, null, null);
     }
 
     public ResponseEntity<byte[]> post(String url, MediaType type, String data) throws IOException {
-        return perform(client, url, POST, type, data);
+        return perform(client, url, POST, null, type, data);
+    }
+
+    public ResponseEntity<byte[]> post(String url, Map<String, String> headers, MediaType type, String data) throws IOException {
+        return perform(client, url, POST, headers, type, data);
     }
 
     public ResponseEntity<byte[]> put(String url, MediaType type, String data) throws IOException {
-        return perform(client, url, PUT, type, data);
+        return perform(client, url, PUT, null, type, data);
     }
 
-    public ResponseEntity<byte[]> delete(String url, MediaType type, String data) throws IOException {
-        return perform(client, url, DELETE, type, data);
+    public ResponseEntity<byte[]> put(String url, Map<String, String> headers, MediaType type, String data) throws IOException {
+        return perform(client, url, PUT, headers, type, data);
     }
 
     public ResponseEntity<byte[]> delete(String url) throws IOException {
-        return perform(client, url, DELETE, null, null);
+        return perform(client, url, DELETE, null, null, null);
+    }
+
+    public ResponseEntity<byte[]> delete(String url, Map<String, String> headers) throws IOException {
+        return perform(client, url, DELETE, headers, null, null);
+    }
+
+    public ResponseEntity<byte[]> delete(String url, MediaType type, String data) throws IOException {
+        return perform(client, url, DELETE, null, type, data);
+    }
+
+    public ResponseEntity<byte[]> delete(String url, Map<String, String> headers, MediaType type, String data) throws IOException {
+        return perform(client, url, DELETE, headers, type, data);
     }
 
 }

@@ -13,6 +13,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class ClientUtil {
 
@@ -21,9 +22,17 @@ public class ClientUtil {
     protected static final String POST = "POST";
     protected static final String DELETE = "DELETE";
 
-    protected static ResponseEntity<byte[]> perform(OkHttpClient client, String url, String method, MediaType type, String data) throws IOException {
+    protected static ResponseEntity<byte[]> perform(OkHttpClient client,
+                                                    String url, String method,
+                                                    Map<String, String> headers, MediaType type,
+                                                    String data) throws IOException {
         Request.Builder builder = new Request.Builder();
         builder = builder.url(url);
+        if (headers != null) {
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                builder = builder.addHeader(header.getKey(), header.getValue());
+            }
+        }
         RequestBody body = null;
         if (StringUtil.isNotNull(data)) {
             Assert.notNull(type);

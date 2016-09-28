@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * HTTP 客户端工具类
@@ -26,23 +27,43 @@ public class HttpClient extends ClientUtil {
     }
 
     public static ResponseEntity<byte[]> get(String url) throws IOException {
-        return perform(client, url, GET, null, null);
+        return perform(client, url, GET, null, null, null);
+    }
+
+    public static ResponseEntity<byte[]> get(String url, Map<String, String> headers) throws IOException {
+        return perform(client, url, GET, headers, null, null);
     }
 
     public static ResponseEntity<byte[]> post(String url, MediaType type, String data) throws IOException {
-        return perform(client, url, POST, type, data);
+        return perform(client, url, POST, null, type, data);
+    }
+
+    public static ResponseEntity<byte[]> post(String url, Map<String, String> headers, MediaType type, String data) throws IOException {
+        return perform(client, url, POST, headers, type, data);
     }
 
     public static ResponseEntity<byte[]> put(String url, MediaType type, String data) throws IOException {
-        return perform(client, url, PUT, type, data);
+        return perform(client, url, PUT, null, type, data);
     }
 
-    public static ResponseEntity<byte[]> delete(String url, MediaType type, String data) throws IOException {
-        return perform(client, url, DELETE, type, data);
+    public static ResponseEntity<byte[]> put(String url, Map<String, String> headers, MediaType type, String data) throws IOException {
+        return perform(client, url, PUT, headers, type, data);
     }
 
     public static ResponseEntity<byte[]> delete(String url) throws IOException {
-        return perform(client, url, DELETE, null, null);
+        return perform(client, url, DELETE, null, null, null);
+    }
+
+    public static ResponseEntity<byte[]> delete(String url, Map<String, String> headers) throws IOException {
+        return perform(client, url, DELETE, headers, null, null);
+    }
+
+    public static ResponseEntity<byte[]> delete(String url, MediaType type, String data) throws IOException {
+        return perform(client, url, DELETE, null, type, data);
+    }
+
+    public static ResponseEntity<byte[]> delete(String url, Map<String, String> headers, MediaType type, String data) throws IOException {
+        return perform(client, url, DELETE, headers, type, data);
     }
 
 }
