@@ -5,7 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/cache
-                           http://www.springframework.org/schema/cache/spring-cache.xsd">
+                           http://www.springframework.org/schema/cache/spring-cache.xsd"
+       default-lazy-init="false">
 
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
         <property name="cacheManager" ref="ehcacheCacheManager" />
