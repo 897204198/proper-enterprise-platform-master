@@ -15,7 +15,7 @@
        default-lazy-init="true">
 
     <import resource="classpath*:spring/**/applicationContext-*.xml" />
-    <context:property-placeholder location="classpath:conf/webapp/configs.properties" ignore-unresolvable="true" />
+    <context:property-placeholder location="classpath:conf/configs/configs.properties" ignore-unresolvable="true" />
 
     <!-- Auto scan beans -->
     <context:component-scan base-package="com.proper" />
