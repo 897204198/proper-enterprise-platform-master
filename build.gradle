@@ -68,7 +68,6 @@ subprojects {
         testRuntime libraries.aspectjweaver,
                     libraries.h2,
                     libraries.hibernate_hikaricp,
-                    libraries.hibernate_ehcache,
                     libraries.hibernate_entitymanager,
                     libraries.servlet_api,
                     libraries.spring_context_support

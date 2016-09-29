@@ -1,0 +1,9 @@
+dependencies {
+    compile libraries.spring_context_support
+
+    runtime libraries.hibernate_ehcache
+
+    testCompile libraries.ehcache,
+                project(':pep-core'),
+                project(':pep-test')
+}

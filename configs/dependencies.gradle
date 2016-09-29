@@ -172,7 +172,10 @@ libraries.spring_webmvc = "org.springframework:spring-webmvc:${versions.spring}"
 
 libraries.spring_data_jpa = 'org.springframework.data:spring-data-jpa:1.9.4.RELEASE'
 libraries.spring_data_mongodb = 'org.springframework.data:spring-data-mongodb:1.8.4.RELEASE'
-libraries.spring_data_redis = 'org.springframework.data:spring-data-redis:1.7.2.RELEASE'
+libraries.spring_data_redis = dependencies.module('org.springframework.data:spring-data-redis:1.7.3.RELEASE') {
+    dependency 'org.apache.commons:commons-pool2:2.2'
+    dependency 'redis.clients:jedis:2.8.1'
+}
 
 //libraries.spring_security_acl = "org.springframework.security:spring-security-acl:${versions.spring_security}"
 //libraries.spring_security_cas = "org.springframework.security:spring-security-cas:${versions.spring_security}"

@@ -1,0 +1,11 @@
+dependencies {
+    compile libraries.hibernate_hikaricp,
+            libraries.spring_context_support,
+            libraries.spring_data_mongodb,
+            project(':pep-core')
+
+    testCompile project(':pep-core'),
+                project(':pep-test')
+
+    testRuntime project(':pep-auth-jwt')
+}
