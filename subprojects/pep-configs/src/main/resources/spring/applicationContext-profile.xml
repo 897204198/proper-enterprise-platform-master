@@ -12,7 +12,7 @@
 
     <beans profile="dev">
         <context:property-placeholder ignore-unresolvable="true"
-                                      location="classpath:conf/webapp/datasource/datasource-dev.properties" />
+                                      location="classpath:conf/configs/datasource/datasource-dev.properties" />
         <jdbc:initialize-database data-source="dataSource">
             <jdbc:script location="classpath*:sql/users.sql" encoding="UTF-8"/>
             <jdbc:script location="classpath*:sql/roles.sql" encoding="UTF-8"/>
@@ -24,12 +24,12 @@
 
     <beans profile="test">
         <context:property-placeholder ignore-unresolvable="true"
-                                      location="classpath:conf/webapp/datasource/datasource-test.properties" />
+                                      location="classpath:conf/configs/datasource/datasource-test.properties" />
     </beans>
 
     <beans profile="production">
         <context:property-placeholder ignore-unresolvable="true"
-                                      location="classpath:conf/webapp/datasource/datasource-production.properties" />
+                                      location="classpath:conf/configs/datasource/datasource-production.properties" />
         <!-- TODO 产品中数据初始化方式可能需要提供多种形式 -->
         <jdbc:initialize-database data-source="dataSource" ignore-failures="ALL">
             <jdbc:script location="classpath*:sql/users.sql" encoding="UTF-8"/>
