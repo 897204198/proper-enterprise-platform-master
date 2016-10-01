@@ -23,7 +23,7 @@ gretty {
     debugSuspend = false
     fileLogEnabled = false
     managedClassReload = true
-    serverConfigFile = "$project.projectDir/configs/tomcat/server.xml"
+    serverConfigFile = "$rootProject.projectDir/configs/docker/tomcat/server.xml"
 }
 
 dependencies {
