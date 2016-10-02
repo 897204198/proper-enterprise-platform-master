@@ -1,0 +1,30 @@
+pep-mysql:
+  image: mysql
+  volumes:
+    - ./mysql/data:/var/lib/mysql
+  environment:
+    - MYSQL_ROOT_PASSWORD=Proper123
+    - MYSQL_DATABASE=pep
+    - MYSQL_USER=pep
+    - MYSQL_PASSWORD=pep
+  command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+pep-mongo:
+  image: mongo
+  volumes:
+    - ./mongo/data:/data/db
+pep:
+  image: propersoft/pep
+  volumes:
+    - ./tomcat/webapps:/usr/local/tomcat/webapps
+    - ./tomcat/logs:/usr/local/tomcat/logs
+  links:
+    - pep-mongo:mongo
+    - pep-mysql:mysql
+pep-nginx:
+  image: nginx
+  volumes:
+    - ./nginx.conf:/etc/nginx/nginx.conf
+  links:
+    - pep:pep
+  ports:
+    - "9090:80"
