@@ -100,6 +100,11 @@ libraries.hibernate_hikaricp = dependencies.module("org.hibernate:hibernate-hika
 }
 //libraries.hibernate_infinispan = "org.hibernate:hibernate-infinispan:${versions.hibernate}"
 //libraries.hibernate_proxool = "org.hibernate:hibernate-proxool:${versions.hibernate}"
+libraries.hibernate_redis = dependencies.module('com.github.debop:hibernate-redis:2.2.0') {
+    dependency 'org.redisson:redisson:2.3.0'
+    dependency 'de.ruedigermoeller:fst:2.48'
+    dependency 'org.xerial.snappy:snappy-java:1.1.2.6'
+}
 
 //versions.jackson = '2.6.3'
 //libraries.jackson_annotations = "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}"

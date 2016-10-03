@@ -1,0 +1,9 @@
+dependencies {
+    compile libraries.spring_data_redis,
+            libraries.hibernate_redis
+
+    testCompile project(':pep-test')
+
+    testRuntime project(':pep-core')
+}
+
