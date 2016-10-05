@@ -1,5 +1,5 @@
 package com.proper.enterprise.platform.configs.redis
-import com.proper.enterprise.platform.configs.redis.mock.CachableService
+import com.proper.enterprise.platform.configs.redis.service.CachableService
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Before
 import org.junit.Test

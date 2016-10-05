@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.configs.redis.mock
+package com.proper.enterprise.platform.configs.redis.service
 
 import org.springframework.cache.annotation.CacheConfig
 import org.springframework.cache.annotation.CacheEvict
