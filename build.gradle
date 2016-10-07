@@ -22,11 +22,9 @@ allprojects {
 }
 
 apply plugin: 'idea'
-apply plugin: 'eclipse'
 
 subprojects {
     apply plugin: 'idea'
-    apply plugin: 'eclipse'
     apply plugin: 'java'
     apply plugin: 'groovy'
     apply plugin: 'maven'
@@ -49,9 +47,6 @@ subprojects {
     artifacts {
         archives sourcesJar
     }
-
-    check.dependsOn test
-    build.dependsOn test
 
     dependencies {
         compile libraries.slf4j_api,
