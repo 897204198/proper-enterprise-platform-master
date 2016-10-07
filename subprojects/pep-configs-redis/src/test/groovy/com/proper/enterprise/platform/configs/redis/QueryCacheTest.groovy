@@ -40,13 +40,13 @@ class QueryCacheTest extends AbstractTest {
         3.times {
             repo.findByUsername('abc')
         }
+
+        println " ===== Method without @CacheQuery will do select each time ===== "
+        3.times {
+            repo.findByUsernameLike('abc')
+        }
         println " ===== THE END ===== "
-        repo.findByUsername('test')
-        println "="*10
-        repo.findByUsername('abc')
-        println "="*15
-        repo.findByUsername('test')
-        println "="*20
+
     }
 
 }
