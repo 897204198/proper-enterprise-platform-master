@@ -19,4 +19,14 @@ class SpELParserTest extends AbstractTest {
         assert '' == parser.parse('#{@hikariConfig.catalog}')
     }
 
+    @Test
+    public void notUseExpressionTemplate() {
+        String spEL = """{
+'M149', //abc
+'0187', // def, ghi
+'0010' // zzz
+}[1] == #id ? 'a' : 'b'"""
+        assert parser.parse(spEL, ["id": '0187'], false) == 'a'
+    }
+
 }

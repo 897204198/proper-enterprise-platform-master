@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.core.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.expression.BeanFactoryResolver;
+import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParserContext;
 import org.springframework.expression.common.TemplateParserContext;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
+import java.util.Map;
 
 @Component
 public class SpELParser {
@@ -31,7 +33,17 @@ public class SpELParser {
     }
 
     public String parse(String spEL) {
-        Object result = parser.parseExpression(spEL, parserContext).getValue(context);
+        return parse(spEL, null, true);
+    }
+
+    public String parse(String spEL, Map<String, Object> vars, boolean isExpTpl) {
+        // 不使用 Expression template 时，过滤掉表达式中的单行注释内容
+        spEL = isExpTpl ? spEL : spEL.replaceAll("//.*", "");
+        if (vars != null) {
+            context.setVariables(vars);
+        }
+        Expression expression = isExpTpl ? parser.parseExpression(spEL, parserContext) : parser.parseExpression(spEL);
+        Object result = expression.getValue(context);
         return result == null ? "" : result.toString();
     }
 
