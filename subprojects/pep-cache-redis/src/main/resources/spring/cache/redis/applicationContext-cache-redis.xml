@@ -13,13 +13,13 @@
                            http://www.springframework.org/schema/context/spring-context.xsd"
        default-lazy-init="false">
 
-    <context:property-placeholder location="classpath:conf/cache/redis/cache-redis.properties" ignore-unresolvable="true" />
+    <context:property-placeholder location="classpath*:conf/cache/redis/cache-redis.properties" ignore-unresolvable="true" />
 
     <cache:annotation-driven />
 
     <bean id="jedisConnFactory"
           class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-          p:hostName="${cache.redis.host}" p:port="${cache.redis.port}" />
+          p:hostName="${cache.redis.host}" p:port="${cache.redis.port}" p:password="${cache.redis.password}" />
 
     <!-- redis template definition -->
     <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
