@@ -25,7 +25,7 @@ class HttpClientSpec extends Specification {
     }
 
     def "Could get stream"() {
-        def r = HttpClient.get('http://www.qiniu.com/public/v15/img/index/flame.png')
+        def r = HttpClient.get('https://server.propersoft.cn/teamcity/img/collapse.png')
 
         expect:
         r.getBody() != null
