@@ -10,10 +10,16 @@
 
     <mongo:repositories base-package="com.proper.**.repository" />
 
-    <mongo:mongo id="mongo" host="${mongodb.host}" port="${mongodb.port}" />
+    <!-- credentials="${mongodb.username}:${mongodb.password}@admin"  -->
+    <mongo:mongo-client id="mongoClient" host="${mongodb.host}" port="${mongodb.port}" />
+
+    <bean id="mongoDatabase" class="com.proper.enterprise.platform.core.utils.MongoDatabaseFactoryBean">
+        <property name="mongoClient" ref="mongoClient" />
+        <property name="databaseName" value="${mongodb.database}" />
+    </bean>
 
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-        <constructor-arg ref="mongo"/>
+        <constructor-arg ref="mongoClient"/>
         <constructor-arg name="databaseName" value="${mongodb.database}"/>
     </bean>
 

@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/data/mongo
-                           http://www.springframework.org/schema/data/mongo/spring-mongo.xsd"
+                           http://www.springframework.org/schema/beans/spring-beans.xsd"
        default-lazy-init="true">
 
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
@@ -25,14 +22,6 @@
 
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
         <constructor-arg ref="hikariConfig" />
-    </bean>
-
-    <!-- credentials="${mongodb.username}:${mongodb.password}@${mongodb.database}"  -->
-    <mongo:mongo-client id="mongoClient" host="${mongodb.host}" port="${mongodb.port}" />
-
-    <bean id="mongoDatabase" class="com.proper.enterprise.platform.core.utils.MongoDatabaseFactoryBean">
-        <property name="mongoClient" ref="mongoClient" />
-        <property name="databaseName" value="${mongodb.database}" />
     </bean>
 
 </beans>
