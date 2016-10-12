@@ -16,7 +16,7 @@ class SpELParserTest extends AbstractTest {
         def val = parser.parse(tpl)
 
         assert val == "{usergroup: {\$in: [${ConfCenter.get('database.autoCommit')}]}}".toString()
-        assert '' == parser.parse('#{@hikariConfig.catalog}')
+        assert null == parser.parse('#{@hikariConfig.catalog}')
     }
 
     @Test
@@ -27,6 +27,16 @@ class SpELParserTest extends AbstractTest {
 '0010' // zzz
 }[1] == #id ? 'a' : 'b'"""
         assert parser.parse(spEL, ["id": '0187'], false) == 'a'
+    }
+
+    @Test
+    public void booleanExp() {
+        String spEL = """{
+'M149', //abc
+'0187', // def, ghi
+'0010' // zzz
+}[1] == #id"""
+        assert parser.parse(spEL, ["id": '0187'], Boolean.class)
     }
 
 }

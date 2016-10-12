@@ -37,14 +37,21 @@ public class SpELParser {
     }
 
     public String parse(String spEL, Map<String, Object> vars, boolean isExpTpl) {
+        return parse(spEL, vars, isExpTpl, String.class);
+    }
+
+    public <T> T parse(String spEL, Map<String, Object> vars, Class<T> clz) {
+        return parse(spEL, vars, false, clz);
+    }
+
+    public <T> T parse(String spEL, Map<String, Object> vars, boolean isExpTpl, Class<T> clz) {
         // 不使用 Expression template 时，过滤掉表达式中的单行注释内容
         spEL = isExpTpl ? spEL : spEL.replaceAll("//.*", "");
         if (vars != null) {
             context.setVariables(vars);
         }
         Expression expression = isExpTpl ? parser.parseExpression(spEL, parserContext) : parser.parseExpression(spEL);
-        Object result = expression.getValue(context);
-        return result == null ? "" : result.toString();
+        return expression.getValue(context, clz);
     }
 
 }
