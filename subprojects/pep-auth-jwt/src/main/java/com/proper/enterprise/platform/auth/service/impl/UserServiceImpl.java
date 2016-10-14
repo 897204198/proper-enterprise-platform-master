@@ -36,7 +36,7 @@ public class UserServiceImpl extends CommonUserServiceImpl {
             JWTHeader header = jwtService.getHeader(token);
             return getByUsername(header.getName());
         } catch (IllegalStateException e) {
-            LOGGER.debug("Could not get current request!", e);
+            LOGGER.debug("Could not get current request! {}", e.getMessage());
             return null;
         }
     }
