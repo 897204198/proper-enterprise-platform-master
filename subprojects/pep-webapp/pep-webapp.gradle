@@ -18,12 +18,13 @@ apply plugin: 'eclipse-wtp'
 apply plugin: 'war'
 
 gretty {
-    servletContainer = 'tomcat7'
     contextPath = 'pep'
     debugSuspend = false
     fileLogEnabled = false
+    jvmArgs = ['-XX:PermSize=256M', '-XX:MaxPermSize=1024m', '-Xms256m', '-Xmx1024m']
     managedClassReload = true
     serverConfigFile = "$rootProject.projectDir/configs/docker/tomcat/server.xml"
+    servletContainer = 'tomcat7'
 }
 
 dependencies {
