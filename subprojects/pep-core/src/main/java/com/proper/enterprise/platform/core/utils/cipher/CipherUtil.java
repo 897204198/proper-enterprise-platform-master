@@ -69,7 +69,7 @@ public class CipherUtil {
         LOGGER.debug("{} {} with {}({})",
             encrypt ? "Encrypt" : "Decrypt",
             StringUtil.abbreviate(content, Integer.parseInt(ConfCenter.get("core.cipher.maxWidth"))),
-            new String(key.getEncoded()), amp(algorithm, mode, padding));
+            new String(key.getEncoded(), PEPConstants.DEFAULT_CHARSET), amp(algorithm, mode, padding));
 
         String result;
         Cipher cipher = Cipher.getInstance(amp(algorithm, mode, padding));
