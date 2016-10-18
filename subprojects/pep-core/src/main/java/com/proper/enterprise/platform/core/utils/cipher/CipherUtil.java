@@ -66,10 +66,10 @@ public class CipherUtil {
 	}
 
     private String execute(String content, Key key, boolean encrypt) throws Exception {
-        LOGGER.debug("{} some content: {} with {}, key: {}",
+        LOGGER.debug("{} {} with {}({})",
             encrypt ? "Encrypt" : "Decrypt",
             StringUtil.abbreviate(content, Integer.parseInt(ConfCenter.get("core.cipher.maxWidth"))),
-            amp(algorithm, mode, padding), key);
+            new String(key.getEncoded()), amp(algorithm, mode, padding));
 
         String result;
         Cipher cipher = Cipher.getInstance(amp(algorithm, mode, padding));
