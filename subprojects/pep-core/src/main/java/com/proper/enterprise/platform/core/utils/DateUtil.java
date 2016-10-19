@@ -136,7 +136,7 @@ public class DateUtil {
      * @param date  日期对象
      * @return null 或者克隆出的日期对象
      */
-    public static Date saveClone(Date date) {
+    public static Date safeClone(Date date) {
         return date == null ? null : (Date) date.clone();
     }
 
