@@ -10,8 +10,7 @@
                            http://www.springframework.org/schema/cache
                            http://www.springframework.org/schema/cache/spring-cache.xsd
                            http://www.springframework.org/schema/context
-                           http://www.springframework.org/schema/context/spring-context.xsd"
-       default-lazy-init="false">
+                           http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:property-placeholder location="classpath*:conf/cache/redis/cache-redis.properties" ignore-unresolvable="true" />
 
@@ -21,11 +20,16 @@
           class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
           p:hostName="${cache.redis.host}" p:port="${cache.redis.port}" p:password="${cache.redis.password}" />
 
-    <!-- redis template definition -->
     <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
-          p:connectionFactory-ref="jedisConnFactory"/>
+          p:connectionFactory-ref="jedisConnFactory" />
 
     <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager"
-          c:redisOperations-ref="redisTemplate"/>
+          c:redisOperations-ref="redisTemplate" p:defaultExpiration="${cache.redis.defaultExpiration}">
+        <property name="expires">
+            <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+                <property name="locations" value="classpath*:conf/cache/redis/redis-expire.properties" />
+            </bean>
+        </property>
+    </bean>
 
 </beans>
