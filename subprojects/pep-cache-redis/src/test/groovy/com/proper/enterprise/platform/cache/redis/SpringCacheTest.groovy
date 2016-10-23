@@ -6,6 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
 import org.springframework.data.redis.core.RedisOperations
 
@@ -49,7 +50,8 @@ class SpringCacheTest extends AbstractTest  {
 
     @Test
     public void checkKeyExpiration() {
-        RedisOperations ro = cacheManager.getCache('apiSecrets').getNativeCache()
+        Cache cache = cacheManager.getCache('apiSecrets')
+        RedisOperations ro = cache.getNativeCache()
         def keys = [], expires = [], i = 0
         5.times { idx ->
             keys[idx] = RandomStringUtils.randomAlphabetic(10)
@@ -64,6 +66,7 @@ class SpringCacheTest extends AbstractTest  {
         4.times { idx ->
             assert expires[idx] < expires[idx + 1]
         }
+        cache.clear()
     }
 
 }
