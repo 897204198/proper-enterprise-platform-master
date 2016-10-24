@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.utils.DateUtil;
@@ -12,12 +13,16 @@ public class BaseDocument implements IBase {
     @Id
     protected String id;
 
+    @JsonIgnore
     protected String createUserId;
 
+    @JsonIgnore
     protected String createTime = DateUtil.getTimestamp(true);
 
+    @JsonIgnore
     protected String lastModifyUserId;
 
+    @JsonIgnore
     protected String lastModifyTime = DateUtil.getTimestamp(true);
 
     @Override

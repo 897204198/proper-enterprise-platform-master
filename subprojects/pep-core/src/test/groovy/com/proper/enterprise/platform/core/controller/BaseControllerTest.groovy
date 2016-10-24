@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.controller
 import com.proper.enterprise.platform.core.repository.mock.entity.MockEntity
+import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.http.HttpStatus
@@ -74,6 +75,26 @@ class BaseControllerTest extends AbstractTest {
         def r3 = get('/test/trouble/2', HttpStatus.INTERNAL_SERVER_ERROR)
         assert '异常啦' == r3.getResponse().getContentAsString()
         assert r3.getResponse().getContentType() == textPlainUtf8
+    }
+
+    @Test
+    public void ignorePropertyInEntity() {
+        def r = get('/test/json/entity', HttpStatus.OK).getResponse().getContentAsString()
+        def m = JSONUtil.parse(r, Map.class)
+        assert m.size() == 3
+        assert m.containsKey('id')
+        assert m.containsKey('lastModifyTime')
+        assert m.containsKey('entityC2')
+    }
+
+    @Test
+    public void ignorePropertyInDocument() {
+        def r = get('/test/json/document', HttpStatus.OK).getResponse().getContentAsString()
+        def m = JSONUtil.parse(r, Map.class)
+        assert m.size() == 3
+        assert m.containsKey('id')
+        assert m.containsKey('createTime')
+        assert m.containsKey('docC2')
     }
 
 }

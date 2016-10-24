@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.utils.DateUtil;
@@ -31,15 +32,19 @@ public class BaseEntity implements IBase {
     protected String id;
 
     @Column(updatable = false, nullable = false)
+    @JsonIgnore
     protected String createUserId;
 
     @Column(updatable = false, nullable = false)
+    @JsonIgnore
     protected String createTime = DateUtil.getTimestamp(true);
 
     @Column(nullable = false)
+    @JsonIgnore
     protected String lastModifyUserId;
 
     @Column(nullable = false)
+    @JsonIgnore
     protected String lastModifyTime = DateUtil.getTimestamp(true);
 
     public String getId() {

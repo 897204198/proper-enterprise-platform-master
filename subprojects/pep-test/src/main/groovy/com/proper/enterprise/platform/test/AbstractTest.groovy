@@ -167,7 +167,11 @@ public abstract class AbstractTest {
     private def checkBaseCreate(uri, entity) {
         def e1 = postAndReturn(uri, entity)
         def e2 = getAndReturn(uri, e1, HttpStatus.OK)
-        assert e1.properties == e2.properties
+        assert e1.properties.findAll(filterMillSecFields) == e2.properties.findAll(filterMillSecFields)
+    }
+
+    private Closure filterMillSecFields = {
+        !it.key.endsWith('Time')
     }
 
     protected def postAndReturn(uri, entity) {
