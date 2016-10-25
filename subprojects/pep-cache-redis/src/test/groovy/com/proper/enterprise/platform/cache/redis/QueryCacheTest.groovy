@@ -47,7 +47,6 @@ class QueryCacheTest extends AbstractTest {
             repo.findByUsernameLike('abc')
         }
         println " ===== THE END ===== "
-
     }
 
 }
