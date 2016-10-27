@@ -1,0 +1,8 @@
+dependencies {
+    compile libraries.spring_data_mongodb,
+            project(':pep-core')
+
+    runtime libraries.mongodb_driver
+
+    testCompile project(':pep-test')
+}

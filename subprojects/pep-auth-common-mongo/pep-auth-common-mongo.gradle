@@ -1,0 +1,9 @@
+dependencies {
+    compile project(':pep-core-mongo'),
+            project(':pep-auth-api')
+
+    testCompile project(':pep-test'),
+                project(':pep-auth-common')
+
+    testRuntime project(':pep-auth-jwt')
+}

@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.client.result.UpdateResult;
-import com.proper.enterprise.platform.api.auth.repository.MongoDAO;
+import com.proper.enterprise.platform.api.auth.common.mongo.DataRestrainMongoDAO;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.service.IMongoDBService;
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
@@ -30,7 +30,7 @@ public class MongoDBServiceImpl implements IMongoDBService {
     ResourceRepository resourceRepository;
 
     @Autowired
-    MongoDAO mongoDAO;
+    DataRestrainMongoDAO mongoDAO;
 
     public MongoDBServiceImpl() {
 

@@ -16,7 +16,7 @@ Profiles
 
 三个版本配置文件中主要区别如下：
 
-1. 数据源相关属性：`database.*`、`mongodb.*`
+1. 数据源相关属性：`database.*`
 1. `hibernate.hbm2ddl.auto`：产品版使用 `update`，其余版本使用 `create-drop`
 1. 暂未用到的属性：
 

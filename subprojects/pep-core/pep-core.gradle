@@ -4,7 +4,6 @@ dependencies {
             libraries.hibernate_entitymanager,
             libraries.jackson_databind,
             libraries.joda_time,
-            libraries.mongodb_driver,
             libraries.okhttp,
             libraries.servlet_api,
             libraries.spring_orm,

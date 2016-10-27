@@ -1,7 +1,6 @@
 dependencies {
     compile libraries.hibernate_hikaricp,
-            libraries.spring_context_support,
-            libraries.spring_data_mongodb,
+            libraries.spring_context_support
             project(':pep-core')
 
     testCompile project(':pep-core'),
