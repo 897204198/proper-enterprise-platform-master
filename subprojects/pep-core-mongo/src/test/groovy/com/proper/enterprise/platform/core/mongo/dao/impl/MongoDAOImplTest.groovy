@@ -1,7 +1,5 @@
-package com.proper.enterprise.platform.auth.common.mongo
-
+package com.proper.enterprise.platform.core.mongo.dao.impl
 import com.proper.enterprise.platform.core.mongo.dao.MongoDAO
-
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.test.AbstractTest
@@ -9,16 +7,13 @@ import org.bson.Document
 import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.test.context.jdbc.Sql
 
-class DataRestrainMongoDAOImplTest extends AbstractTest {
+class MongoDAOImplTest extends AbstractTest {
 
     @Autowired
-    @Qualifier("dataRestrainMongoDAOImpl")
     MongoDAO mongoDAO
 
-    private static final String COLLECTION_NAME = "drmongodao"
+    private static final String COLLECTION_NAME = "mongodao"
 
     @After
     public void tearDown() {
@@ -79,22 +74,6 @@ class DataRestrainMongoDAOImplTest extends AbstractTest {
         def max = mongoDAO.query(COLLECTION_NAME, "{year: ${DateUtil.currentYear} }", "{timestamp: -1}")[0].get('timestamp')
         def min = mongoDAO.query(COLLECTION_NAME, "{year: ${DateUtil.currentYear} }", "{timestamp: 1}")[0].get('timestamp')
         assert max > min
-    }
-
-    @Test
-    @Sql
-    public void sqlDataRestrains() {
-        mockRequest.setRequestURI('/platform/auth/security')
-        mockRequest.setMethod('GET')
-
-        int times = 5
-        times.times { idx ->
-            insertOne([a: idx, b: times - idx])
-        }
-        def result = mongoDAO.query(COLLECTION_NAME, null)
-        assert result.size() == 1
-        assert result[0].get('a') == 4
-        assert result[0].get('b') == 1
     }
 
 }

@@ -4,7 +4,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.proper.enterprise.platform.api.auth.common.mongo.DataRestrainMongoDAO;
+import com.proper.enterprise.platform.core.mongo.dao.MongoDAO;
 import com.proper.enterprise.platform.api.auth.model.DataRestrain;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
@@ -27,8 +27,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 提供一个按照 mongo shell 语法操作 MongoDB 数据库的实现
+ * 本实现中的方法受数据约束限制
+ */
 @Repository
-public class DataRestrainMongoDAOImpl implements DataRestrainMongoDAO {
+public class DataRestrainMongoDAOImpl implements MongoDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataRestrainMongoDAOImpl.class);
 
