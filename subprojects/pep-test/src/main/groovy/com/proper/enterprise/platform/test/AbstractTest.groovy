@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public abstract class AbstractTest {
 
     @Autowired
-    private WebApplicationContext wac
+    protected WebApplicationContext wac
 
     protected MockMvc mockMvc
 

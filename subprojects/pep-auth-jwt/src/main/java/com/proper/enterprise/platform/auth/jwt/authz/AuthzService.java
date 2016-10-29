@@ -23,10 +23,6 @@ public class AuthzService {
         Collections.addAll(this.ignorePatterns, ignorePatterns.split(","));
     }
 
-    public boolean shouldIgnore(String url, String method) throws URISyntaxException {
-        return shouldIgnore(url, method, false);
-    }
-
     public boolean shouldIgnore(String url, String method, boolean hasContext) throws URISyntaxException {
         URI uri = new URI(hasContext ? url.substring(url.indexOf("/", 1)) : url);
         String path = method + ":" + uri.getPath();
