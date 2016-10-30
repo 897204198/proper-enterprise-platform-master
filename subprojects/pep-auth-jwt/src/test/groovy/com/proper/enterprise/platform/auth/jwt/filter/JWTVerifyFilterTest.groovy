@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.auth.jwt.filter
-
 import com.proper.enterprise.platform.auth.jwt.authz.AuthzService
+import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
+import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
+import com.proper.enterprise.platform.auth.jwt.service.JWTService
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Before
 import org.junit.Test
@@ -16,13 +18,16 @@ class JWTVerifyFilterTest extends AbstractTest {
     @Autowired
     AuthzService authzService
 
+    @Autowired
+    JWTService jwtService
+
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).addFilter(jwtVerifyFilter, '/*').build()
     }
 
     @Test
-    public void test() {
+    public void testFilter() {
         coverFilter(jwtVerifyFilter)
     }
 
@@ -50,6 +55,22 @@ class JWTVerifyFilterTest extends AbstractTest {
         authzService.setIgnorePatterns('PUT:/jwt/filter/ignore/method')
         jwtVerifyFilter.setHasContext(false)
         put('/jwt/filter/ignore/method', '', HttpStatus.OK)
+    }
+
+    @Test
+    public void testWithToken() {
+        def header = new JWTHeader()
+        header.setId('1')
+        header.setName('test')
+        def payload = new JWTPayloadImpl()
+        payload.setRoles('a,b,c')
+        def token = jwtService.generateToken(header, payload)
+        mockRequest.addHeader('Authorization', token)
+        assert getAndReturn('/token/get', '', HttpStatus.OK) == token
+
+        // unauthorized after clear token
+        jwtService.clearToken(header)
+        assert get('/token/get', HttpStatus.UNAUTHORIZED)
     }
 
 }

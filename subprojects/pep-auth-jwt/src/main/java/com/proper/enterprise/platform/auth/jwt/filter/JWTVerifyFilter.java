@@ -13,7 +13,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * Filter request to verify JWT with it
@@ -111,15 +110,11 @@ public class JWTVerifyFilter implements Filter {
     }
 
     private boolean inIgnorePatterns(HttpServletRequest req) {
-        try {
-            if (authzService.shouldIgnore(req.getRequestURI(), req.getMethod(), hasContext)) {
-                LOGGER.info("Not need JWT of this url({}) caused by settings of AuthzService.ignorePatterns.", req.getRequestURI());
-                return true;
-            }
-        } catch (URISyntaxException e) {
-            LOGGER.error("Parse URI error! {}", e);
+        boolean ignore = authzService.shouldIgnore(req.getRequestURI(), req.getMethod(), hasContext);
+        if (ignore) {
+            LOGGER.info("Not need JWT of this url({}) caused by settings of AuthzService.ignorePatterns.", req.getRequestURI());
         }
-        return false;
+        return ignore;
     }
 
     public void init(FilterConfig arg0) throws ServletException { }

@@ -23,15 +23,19 @@ public class AuthzService {
         Collections.addAll(this.ignorePatterns, ignorePatterns.split(","));
     }
 
-    public boolean shouldIgnore(String url, String method, boolean hasContext) throws URISyntaxException {
-        URI uri = new URI(hasContext ? url.substring(url.indexOf("/", 1)) : url);
-        String path = method + ":" + uri.getPath();
-        LOGGER.debug("Request is {}", path);
-        for (String pattern : ignorePatterns) {
-            if (matcher.match(pattern, path)) {
-                LOGGER.debug("{} {} is match {}", method, url, pattern);
-                return true;
+    public boolean shouldIgnore(String url, String method, boolean hasContext) {
+        try {
+            URI uri = new URI(hasContext ? url.substring(url.indexOf("/", 1)) : url);
+            String path = method + ":" + uri.getPath();
+            LOGGER.debug("Request is {}", path);
+            for (String pattern : ignorePatterns) {
+                if (matcher.match(pattern, path)) {
+                    LOGGER.debug("{} {} is match {}", method, url, pattern);
+                    return true;
+                }
             }
+        } catch (URISyntaxException e) {
+            LOGGER.error("Parse URI error!", e);
         }
         return false;
     }
