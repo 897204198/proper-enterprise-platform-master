@@ -39,6 +39,7 @@ class AuthzServiceSpec extends Specification {
         false       | true   | 'GET'  | '/workflow/modeler.html'
         true        | true   | 'POST' | '/pep/auth/login'
         true        | false  | 'GET'  | '/pep/auth/login'
+        false       | false  | 'GET'  | '非法://内容'
     }
 
 }

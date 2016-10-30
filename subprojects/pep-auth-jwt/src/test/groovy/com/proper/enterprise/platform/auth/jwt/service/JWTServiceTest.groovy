@@ -68,4 +68,10 @@ class JWTServiceTest extends AbstractTest {
         assert getAndReturn('/token/get', '', HttpStatus.OK) == token
     }
 
+    @Test
+    public void verifyInvalidToken() {
+        assert !jwtService.verify('')
+        assert !jwtService.verify('token')
+    }
+
 }

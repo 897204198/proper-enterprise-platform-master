@@ -64,6 +64,7 @@ class JWTVerifyFilterTest extends AbstractTest {
         header.setName('test')
         def payload = new JWTPayloadImpl()
         payload.setRoles('a,b,c')
+        payload.setEmpName('en')
         def token = jwtService.generateToken(header, payload)
         mockRequest.addHeader('Authorization', token)
         assert getAndReturn('/token/get', '', HttpStatus.OK) == token
