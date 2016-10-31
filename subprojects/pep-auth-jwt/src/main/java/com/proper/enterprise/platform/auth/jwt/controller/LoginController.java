@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.jwt.controller;
 
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.auth.jwt.annotation.JWTIgnore;
 import com.proper.enterprise.platform.auth.jwt.authc.AuthcService;
 import com.proper.enterprise.platform.auth.jwt.bean.LoginBean;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
@@ -29,6 +30,7 @@ public class LoginController {
     @Autowired private JWTService jwtService;
     @Autowired private UserService userService;
 
+    @JWTIgnore
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> login(@RequestBody LoginBean loginBean) throws IOException {
         String username = loginBean.getUsername();
