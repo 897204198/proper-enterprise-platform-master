@@ -4,6 +4,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.internal.platform.Platform;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -22,9 +23,7 @@ public class HttpsClient extends ClientUtil {
     public static HttpsClient withCertificates(InputStream is, String keyStoreType, String password) throws Exception {
         CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
         Collection<? extends Certificate> certificates = certificateFactory.generateCertificates(is);
-        if (certificates.isEmpty()) {
-            throw new IllegalArgumentException("expected non-empty set of trusted certificates");
-        }
+        Assert.notEmpty(certificates, "expected non-empty set of trusted certificates");
 
         KeyStore keyStore = KeyStore.getInstance(keyStoreType);
         keyStore.load(null, password.toCharArray()); // By convention, 'null' creates an empty key store.
@@ -55,10 +54,8 @@ public class HttpsClient extends ClientUtil {
             TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(keyStore);
         TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-        if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-            throw new IllegalStateException("Unexpected default trust managers:"
-                + Arrays.toString(trustManagers));
-        }
+        Assert.isTrue(trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager),
+            "Unexpected default trust managers:" + Arrays.toString(trustManagers));
         return (X509TrustManager) trustManagers[0];
     }
 
