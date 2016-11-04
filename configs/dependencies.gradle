@@ -117,7 +117,7 @@ libraries.hibernate_ehcache = [
 libraries.hibernate_entitymanager = "org.hibernate:hibernate-entitymanager:${versions.hibernate}"
 //libraries.hibernate_envers = "org.hibernate:hibernate-envers:${versions.hibernate}"
 libraries.hibernate_hikaricp = dependencies.module("org.hibernate:hibernate-hikaricp:${versions.hibernate}") {
-    dependency 'com.zaxxer:HikariCP:2.4.0'
+    dependency 'com.zaxxer:HikariCP-java7:2.4.9'
 }
 //libraries.hibernate_infinispan = "org.hibernate:hibernate-infinispan:${versions.hibernate}"
 //libraries.hibernate_proxool = "org.hibernate:hibernate-proxool:${versions.hibernate}"
@@ -162,7 +162,7 @@ libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:
 
 libraries.mongodb_driver = "org.mongodb:mongodb-driver:${versions.mongo}"
 
-libraries.mysql_driver = 'mysql:mysql-connector-java:5.1.39'
+libraries.mysql_driver = 'org.mariadb.jdbc:mariadb-java-client:1.5.4'
 
 libraries.okhttp = 'com.squareup.okhttp3:okhttp:3.4.1'
 
