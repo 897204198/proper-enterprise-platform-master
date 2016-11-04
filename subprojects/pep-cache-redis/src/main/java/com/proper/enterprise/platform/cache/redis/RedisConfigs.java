@@ -10,6 +10,7 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import redis.clients.jedis.JedisPoolConfig;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -33,6 +34,15 @@ public class RedisConfigs {
     @Value("${cache.redis.defaultExpiration}")
     private long defaultExpiration;
 
+    @Value("${cache.redis.jedis.timeout}")
+    private int timeout;
+
+    @Value("${cache.redis.jedis.pool.maxIdle}")
+    private int maxIdle;
+
+    @Value("${cache.redis.jedis.pool.maxTotal}")
+    private int maxTotal;
+
     @Resource(name = "redisExpireProperties")
     private Properties expiresProperties;
 
@@ -42,6 +52,11 @@ public class RedisConfigs {
         factory.setHostName(hostName);
         factory.setPort(port);
         factory.setPassword(password);
+        factory.setTimeout(timeout);
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(maxTotal);
+        poolConfig.setMaxIdle(maxIdle);
+        factory.setPoolConfig(poolConfig);
         return factory;
     }
 
