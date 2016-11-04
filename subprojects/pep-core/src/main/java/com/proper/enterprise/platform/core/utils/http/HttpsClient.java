@@ -23,7 +23,7 @@ public class HttpsClient extends ClientUtil {
     public static HttpsClient withCertificates(InputStream is, String keyStoreType, String password) throws Exception {
         CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
         Collection<? extends Certificate> certificates = certificateFactory.generateCertificates(is);
-        Assert.notEmpty(certificates, "expected non-empty set of trusted certificates");
+        Assert.notEmpty(certificates, "Expected non-empty set of trusted certificates");
 
         KeyStore keyStore = KeyStore.getInstance(keyStoreType);
         keyStore.load(null, password.toCharArray()); // By convention, 'null' creates an empty key store.
@@ -54,7 +54,7 @@ public class HttpsClient extends ClientUtil {
             TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(keyStore);
         TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-        Assert.isTrue(trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager),
+        Assert.isTrue(trustManagers.length == 1 && (trustManagers[0] instanceof X509TrustManager),
             "Unexpected default trust managers:" + Arrays.toString(trustManagers));
         return (X509TrustManager) trustManagers[0];
     }
