@@ -53,7 +53,8 @@ subprojects {
                 libraries.spring_data_jpa,
                 libraries.spring_webmvc
 
-        runtime libraries.logback_classic
+        runtime libraries.hibernate_hikaricp,
+                libraries.logback_classic
 
         testCompile libraries.groovy,
                     libraries.junit,
