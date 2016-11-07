@@ -66,13 +66,13 @@ class BaseControllerTest extends AbstractTest {
         def r = get('/test/trouble/1?div=1', HttpStatus.OK)
         assert r.getResponse().getContentType() == MediaType.APPLICATION_JSON_UTF8_VALUE
 
-        def r1 = get('/test/trouble/1?div=0', HttpStatus.INTERNAL_SERVER_ERROR)
+        def r1 = get('/test/trouble/1?div=0', HttpStatus.BAD_REQUEST)
         assert 'Division by zero' == r1.getResponse().getContentAsString()
         assert r1.getResponse().getContentType() == textPlainUtf8
-        def r2 = get('/test/trouble/1?div=abc', HttpStatus.INTERNAL_SERVER_ERROR)
+        def r2 = get('/test/trouble/1?div=abc', HttpStatus.BAD_REQUEST)
         assert 'For input string: "abc"' == r2.getResponse().getContentAsString()
 
-        def r3 = get('/test/trouble/2', HttpStatus.INTERNAL_SERVER_ERROR)
+        def r3 = get('/test/trouble/2', HttpStatus.BAD_REQUEST)
         assert '异常啦' == r3.getResponse().getContentAsString()
         assert r3.getResponse().getContentType() == textPlainUtf8
     }

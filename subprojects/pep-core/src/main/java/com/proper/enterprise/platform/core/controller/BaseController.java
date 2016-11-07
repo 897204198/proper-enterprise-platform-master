@@ -84,11 +84,15 @@ public abstract class BaseController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex, WebRequest request) {
         LOGGER.error("Controller throws an exception:", ex);
-        ResponseEntityExceptionHandler handler = new ResponseEntityExceptionHandler() { };
-        ResponseEntity res = handler.handleException(ex, request);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
-        return new ResponseEntity<>(ex.getMessage(), headers, res.getStatusCode());
+
+        ResponseEntityExceptionHandler handler = new ResponseEntityExceptionHandler() { };
+        ResponseEntity res = handler.handleException(ex, request);
+        HttpStatus status = res.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR) ? HttpStatus.BAD_REQUEST : res.getStatusCode();
+
+        return new ResponseEntity<>(ex.getMessage(), headers, status);
     }
 
 }
