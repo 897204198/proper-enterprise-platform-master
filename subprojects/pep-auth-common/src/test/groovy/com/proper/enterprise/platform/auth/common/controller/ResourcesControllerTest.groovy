@@ -26,7 +26,7 @@ class ResourcesControllerTest extends AbstractTest {
         doPost()
 
         // 查询一下触发数据插入操作
-        def result = get('/auth/resources', HttpStatus.INTERNAL_SERVER_ERROR)
+        def result = get('/auth/resources', HttpStatus.BAD_REQUEST)
         assert result.getResponse().getContentAsString().contains('ConstraintViolationException')
     }
 
