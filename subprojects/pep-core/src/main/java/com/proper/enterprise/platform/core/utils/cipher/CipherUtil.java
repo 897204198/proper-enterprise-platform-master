@@ -66,7 +66,7 @@ public class CipherUtil {
 	}
 
     private String execute(String content, Key key, boolean encrypt) throws Exception {
-        LOGGER.debug("{} {} with {}({})",
+        LOGGER.trace("{} {} with {}({})",
             encrypt ? "Encrypt" : "Decrypt",
             StringUtil.abbreviate(content, Integer.parseInt(ConfCenter.get("core.cipher.maxWidth"))),
             new String(key.getEncoded(), PEPConstants.DEFAULT_CHARSET), amp(algorithm, mode, padding));
@@ -81,7 +81,7 @@ public class CipherUtil {
             cipher.init(Cipher.DECRYPT_MODE, key);
             result = new String(cipher.doFinal(Base64.decodeBase64(content)), PEPConstants.DEFAULT_CHARSET);
         }
-        LOGGER.debug("After {}: {}", encrypt
+        LOGGER.trace("After {}: {}", encrypt
             ? "Encrypt" : "Decrypt", StringUtil.abbreviate(result, Integer.parseInt(ConfCenter.get("core.cipher.maxWidth"))));
         return result;
     }
