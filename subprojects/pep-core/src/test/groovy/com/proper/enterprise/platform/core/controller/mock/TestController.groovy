@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.NoHandlerFoundException
 
 import javax.servlet.ServletException
 
@@ -24,6 +25,12 @@ class TestController extends BaseController {
     @GetMapping("/trouble/2")
     public ResponseEntity<String> test2() {
         throw new ServletException('异常啦')
+        return new ResponseEntity<String>(HttpStatus.OK);
+    }
+
+    @GetMapping("/trouble/3")
+    public ResponseEntity<String> test3() {
+        throw new NoHandlerFoundException('handle by handler', '', null)
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 

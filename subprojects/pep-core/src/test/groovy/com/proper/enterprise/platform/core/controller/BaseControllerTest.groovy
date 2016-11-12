@@ -75,6 +75,8 @@ class BaseControllerTest extends AbstractTest {
         def r3 = get('/test/trouble/2', HttpStatus.BAD_REQUEST)
         assert '异常啦' == r3.getResponse().getContentAsString()
         assert r3.getResponse().getContentType() == textPlainUtf8
+
+        get('/test/trouble/3', HttpStatus.NOT_FOUND)
     }
 
     @Test
