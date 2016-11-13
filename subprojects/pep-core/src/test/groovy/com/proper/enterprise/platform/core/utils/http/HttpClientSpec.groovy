@@ -6,22 +6,22 @@ import spock.lang.Specification
 
 class HttpClientSpec extends Specification {
 
-    def static url = 'https://server.propersoft.cn/teamcity/login.html'
-
     def "Using all http methods"() {
-        // TODO clean code
-        def r1 = HttpClient.post(url, MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}')
-        def r2 = HttpClient.put(url, MediaType.APPLICATION_JSON, '{"user":"123"}')
-        def r3 = HttpClient.get(url)
-        def r4 = HttpClient.delete(url, MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}')
-        def r5 = HttpClient.delete(url)
+        def url = 'https://server.propersoft.cn/teamcity/login.html'
+        def data = '{"user":"123"}'
+        def headers = ['h1': 'header1', 'h2': 'header2']
 
         expect:
-        r1.statusCode == HttpStatus.OK
-        r2.statusCode == HttpStatus.METHOD_NOT_ALLOWED
-        r3.statusCode == HttpStatus.OK
-        r4.statusCode == HttpStatus.METHOD_NOT_ALLOWED
-        r5.statusCode == HttpStatus.METHOD_NOT_ALLOWED
+        HttpClient.post(url, MediaType.APPLICATION_FORM_URLENCODED, data).statusCode == HttpStatus.OK
+        HttpClient.post(url, headers, MediaType.APPLICATION_FORM_URLENCODED, data).statusCode == HttpStatus.OK
+        HttpClient.put(url, MediaType.APPLICATION_JSON, data).statusCode == HttpStatus.METHOD_NOT_ALLOWED
+        HttpClient.put(url, headers, MediaType.APPLICATION_JSON, data).statusCode == HttpStatus.METHOD_NOT_ALLOWED
+        HttpClient.get(url).statusCode == HttpStatus.OK
+        HttpClient.get(url, headers).statusCode == HttpStatus.OK
+        HttpClient.delete(url, MediaType.APPLICATION_FORM_URLENCODED, data).statusCode == HttpStatus.METHOD_NOT_ALLOWED
+        HttpClient.delete(url, headers, MediaType.APPLICATION_FORM_URLENCODED, data).statusCode == HttpStatus.METHOD_NOT_ALLOWED
+        HttpClient.delete(url).statusCode == HttpStatus.METHOD_NOT_ALLOWED
+        HttpClient.delete(url, headers).statusCode == HttpStatus.METHOD_NOT_ALLOWED
     }
 
     def "Could get stream"() {
