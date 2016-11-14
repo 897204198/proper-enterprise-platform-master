@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.core.utils.http
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
 class HttpClientSpec extends Specification {
@@ -30,6 +31,26 @@ class HttpClientSpec extends Specification {
         expect:
         r.getBody() != null
         r.getHeaders().getContentType() == MediaType.IMAGE_PNG
+    }
+
+    def "Async request with callback"() {
+        def cb = new Callback() {
+            @Override
+            void onSuccess(ResponseEntity<byte[]> responseEntity) {
+                println 'success'
+                println responseEntity
+            }
+
+            @Override
+            void onError(IOException ioe) {
+                println 'error'
+                println ioe
+            }
+        }
+
+        expect:
+        HttpClient.post('https://server.propersoft.cn/teamcity/login.html', MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}', cb)
+        HttpClient.post('https://www.google.com', MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}', cb)
     }
 
 }
