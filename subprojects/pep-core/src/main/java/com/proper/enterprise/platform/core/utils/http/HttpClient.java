@@ -38,7 +38,7 @@ public class HttpClient extends ClientUtil {
         return perform(client, url, POST, null, type, data);
     }
 
-    public static void post(String url, MediaType type, String data, Callback callback) throws IOException {
+    public static void post(String url, MediaType type, String data, Callback callback) {
         perform(client, url, POST, null, type, data, callback);
     }
 
