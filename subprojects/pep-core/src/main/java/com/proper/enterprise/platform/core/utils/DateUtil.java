@@ -83,7 +83,7 @@ public class DateUtil {
      */
     public static Date toDate(String dateStr, String format) {
         DateTimeFormatter fmt = DateTimeFormat.forPattern(format);
-        return fmt.parseDateTime(dateStr).toDate();
+        return fmt.parseLocalDateTime(dateStr).toDate();
     }
 
     /**

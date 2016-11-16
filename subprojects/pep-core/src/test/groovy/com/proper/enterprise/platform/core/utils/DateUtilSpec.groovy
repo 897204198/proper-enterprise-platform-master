@@ -25,6 +25,12 @@ class DateUtilSpec extends Specification {
         DateUtil.safeClone(null) == null
     }
 
+    def "To date"() {
+        expect:
+        DateUtil.toDate('19870412', 'yyyyMMdd') == new Date(87, 3, 12)
+        DateUtil.toDate('19870502', 'yyyyMMdd') == new Date(87, 4, 2)
+    }
+
     // 更多对日期的操作可以直接使用 joda time 提供的方法
 
     def "Get #year year #month month 1st date: #result"() {
