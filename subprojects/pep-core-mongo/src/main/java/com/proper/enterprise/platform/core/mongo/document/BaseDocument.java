@@ -1,10 +1,11 @@
-package com.proper.enterprise.platform.core.document;
+package com.proper.enterprise.platform.core.mongo.document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 public class BaseDocument implements IBase {
 
@@ -14,15 +15,19 @@ public class BaseDocument implements IBase {
     protected String id;
 
     @JsonIgnore
+    @Field("CU")
     protected String createUserId;
 
     @JsonIgnore
+    @Field("CT")
     protected String createTime = DateUtil.getTimestamp(true);
 
     @JsonIgnore
+    @Field("LU")
     protected String lastModifyUserId;
 
     @JsonIgnore
+    @Field("LT")
     protected String lastModifyTime = DateUtil.getTimestamp(true);
 
     @Override

@@ -89,14 +89,4 @@ class BaseControllerTest extends AbstractTest {
         assert m.containsKey('entityC2')
     }
 
-    @Test
-    public void ignorePropertyInDocument() {
-        def r = get('/test/json/document', HttpStatus.OK).getResponse().getContentAsString()
-        def m = JSONUtil.parse(r, Map.class)
-        assert m.size() == 3
-        assert m.containsKey('id')
-        assert m.containsKey('createTime')
-        assert m.containsKey('docC2')
-    }
-
 }

@@ -45,15 +45,4 @@ class TestController extends BaseController {
         responseOfGet(e)
     }
 
-    @GetMapping("/json/document")
-    public ResponseEntity<MockDocument> document() {
-        def d = new MockDocument('D1', 'D2')
-        d.setId('D')
-        d.setCreateUserId('DU')
-        d.setCreateTime(DateUtil.timestamp)
-        d.setLastModifyUserId('DLU')
-        d.setLastModifyTime(DateUtil.timestamp)
-        responseOfGet(d)
-    }
-
 }

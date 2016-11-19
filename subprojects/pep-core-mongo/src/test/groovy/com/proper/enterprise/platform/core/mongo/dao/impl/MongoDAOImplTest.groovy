@@ -74,6 +74,8 @@ class MongoDAOImplTest extends AbstractTest {
         def max = mongoDAO.query(COLLECTION_NAME, "{year: ${DateUtil.currentYear} }", "{timestamp: -1}")[0].get('timestamp')
         def min = mongoDAO.query(COLLECTION_NAME, "{year: ${DateUtil.currentYear} }", "{timestamp: 1}")[0].get('timestamp')
         assert max > min
+
+        assert mongoDAO.query(COLLECTION_NAME, null).size() >= times
     }
 
 }

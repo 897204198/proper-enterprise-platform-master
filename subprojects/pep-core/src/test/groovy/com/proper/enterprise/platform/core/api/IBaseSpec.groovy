@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.core.api
 
-import com.proper.enterprise.platform.core.document.BaseDocument
 import com.proper.enterprise.platform.core.entity.BaseEntity
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -26,7 +25,6 @@ class IBaseSpec extends Specification {
         where:
         clz                 | time                  | user  | id
         BaseEntity.class    | '2016-06-08 10:42:00' | 'a'   | '1'
-        BaseDocument.class  | '2016-06-08 10:42:00' | 'b'   | '2'
     }
 
 }
