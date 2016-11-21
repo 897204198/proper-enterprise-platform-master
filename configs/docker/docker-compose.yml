@@ -2,6 +2,7 @@ pep-mysql:
   image: mysql
   volumes:
     - ./mysql/data:/var/lib/mysql
+    - ./mysql/conf:/etc/mysql/conf.d
   environment:
     - MYSQL_ROOT_PASSWORD=Proper123
     - MYSQL_DATABASE=pep
@@ -10,8 +11,10 @@ pep-mysql:
   command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 pep-mongo:
   image: mongo
+  entrypoint: /code/devops/current/mongoEp.sh
   volumes:
     - ./mongo/data:/data/db
+    - ./mongo/devops/:/code/devops/current/
 pep-redis:
   image: redis
   volumes:
