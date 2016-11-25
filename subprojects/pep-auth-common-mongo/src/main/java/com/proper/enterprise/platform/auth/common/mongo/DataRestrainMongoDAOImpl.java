@@ -111,7 +111,7 @@ public class DataRestrainMongoDAOImpl implements MongoDAO {
 
     @Override
     public List<Document> deleteByIds(String collection, String[] ids) throws URISyntaxException {
-        List<Document> result = new ArrayList<>(ids.length);
+        List<Document> result = new ArrayList<>();
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
         List<Bson> conditions = getDataRestrainConditions(RequestMethod.DELETE, collection);
         Document document;
@@ -119,7 +119,9 @@ public class DataRestrainMongoDAOImpl implements MongoDAO {
             document = col.findOneAndDelete(
                 Filters.and(Filters.and(conditions),
                             Filters.eq("_id", new ObjectId(objectId))));
-            result.add(document);
+            if (document != null) {
+                result.add(document);
+            }
         }
         return result;
     }
