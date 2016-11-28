@@ -176,7 +176,7 @@ public abstract class AbstractTest {
 
     protected def postAndReturn(uri, entity) {
         def createdEntity = post(uri.toString(), JSONUtil.toJSON(entity), HttpStatus.CREATED).response.contentAsString
-        JSONUtil.parse(createdEntity, entity.class)
+        JSONUtil.parse(createdEntity, entity.getClass())
     }
 
     protected def getAndReturn(uri, entity, status) {
