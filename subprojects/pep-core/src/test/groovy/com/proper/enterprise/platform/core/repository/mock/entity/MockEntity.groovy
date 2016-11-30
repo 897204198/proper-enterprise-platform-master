@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.core.repository.mock.entity
 
 import com.proper.enterprise.platform.core.PEPConstants
-import com.proper.enterprise.platform.core.converter.AESConverter
+import com.proper.enterprise.platform.core.converter.AESStringConverter
 import org.hibernate.annotations.GenericGenerator
 
 import javax.persistence.Convert
@@ -27,7 +27,7 @@ public class MockEntity {
 
     String name;
 
-    @Convert(converter = AESConverter.class)
+    @Convert(converter = AESStringConverter.class)
     String attr1;
 
 }

@@ -7,7 +7,7 @@ import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class AESConverterTest extends AbstractTest {
+class AESStringConverterTest extends AbstractTest {
 
     @Autowired
     MockRepository repository
@@ -30,7 +30,7 @@ class AESConverterTest extends AbstractTest {
         assert obj[0] == plainData
         assert obj[1] > '' && obj[1] != plainData
 
-        def converter = new AESConverter()
+        def converter = new AESStringConverter()
         converter.convertToDatabaseColumn(plainData) == obj[1]
         converter.convertToEntityAttribute(obj[1]) == plainData
     }
@@ -40,7 +40,7 @@ class AESConverterTest extends AbstractTest {
         System.setProperty('core.secret.aes.key', 'err_key_length')
         ConfCenter.reload()
 
-        def converter = new AESConverter()
+        def converter = new AESStringConverter()
         assert converter.convertToDatabaseColumn('err') == ''
         assert converter.convertToEntityAttribute('err') == ''
     }
