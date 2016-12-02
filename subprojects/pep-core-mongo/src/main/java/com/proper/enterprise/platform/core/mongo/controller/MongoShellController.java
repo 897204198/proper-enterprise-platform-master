@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.core.mongo.controller;
 
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.core.mongo.dao.MongoDAO;
+import com.proper.enterprise.platform.core.mongo.service.MongoShellService;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +20,16 @@ import java.util.List;
 public class MongoShellController extends BaseController {
 
     @Autowired
-    private MongoDAO dao;
+    private MongoShellService service;
 
     @PostMapping("/{collection}")
     public ResponseEntity<String> create(@PathVariable String collection, @RequestBody String document) {
-        return responseOfPost(dao.insertOne(collection, document).toJson());
+        return responseOfPost(service.insertOne(collection, document).toJson());
     }
 
     @GetMapping("/{collection}/{id}")
     public ResponseEntity<String> get(@PathVariable String collection, @PathVariable String id) throws Exception {
-        Document doc = dao.queryById(collection, id);
+        Document doc = service.queryById(collection, id);
         return responseOfGet(doc != null ? doc.toJson() : null);
     }
 
@@ -39,13 +39,13 @@ public class MongoShellController extends BaseController {
         query = decodeUrl(query);
         List<Document> docs;
         if (StringUtil.isNumeric(limit) && StringUtil.isNotNull(sort)) {
-            docs = dao.query(collection, query, Integer.parseInt(limit), decodeUrl(sort));
+            docs = service.query(collection, query, Integer.parseInt(limit), decodeUrl(sort));
         } else if (StringUtil.isNumeric(limit)) {
-            docs = dao.query(collection, query, Integer.parseInt(limit));
+            docs = service.query(collection, query, Integer.parseInt(limit));
         } else if (StringUtil.isNotNull(sort)) {
-            docs = dao.query(collection, query, decodeUrl(sort));
+            docs = service.query(collection, query, decodeUrl(sort));
         } else {
-            docs = dao.query(collection, query);
+            docs = service.query(collection, query);
         }
         return responseOfGet(documentToJson(docs));
     }
@@ -74,10 +74,10 @@ public class MongoShellController extends BaseController {
     public ResponseEntity deleteByIds(@PathVariable String collection, @PathVariable String ids) throws Exception {
         boolean exist;
         if (ids.contains(",")) {
-            List<Document> docs = dao.deleteByIds(collection, ids.split(","));
+            List<Document> docs = service.deleteByIds(collection, ids.split(","));
             exist = !docs.isEmpty();
         } else {
-            Document doc = dao.deleteById(collection, ids);
+            Document doc = service.deleteById(collection, ids);
             exist = doc != null;
         }
         return responseOfDelete(exist);
@@ -86,7 +86,7 @@ public class MongoShellController extends BaseController {
     @PutMapping("/{collection}/{id}")
     public ResponseEntity<String> update(@PathVariable String collection,
                                          @PathVariable String id, @RequestBody String update) throws Exception {
-        return responseOfPut(dao.updateById(collection, id, update).toJson());
+        return responseOfPut(service.updateById(collection, id, update).toJson());
     }
 
 }

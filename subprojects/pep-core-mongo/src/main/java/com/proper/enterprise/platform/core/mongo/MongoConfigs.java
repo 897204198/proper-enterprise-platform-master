@@ -5,7 +5,12 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
+import com.proper.enterprise.platform.core.mongo.dao.MongoDAO;
+import com.proper.enterprise.platform.core.mongo.service.MongoShellService;
+import com.proper.enterprise.platform.core.mongo.service.impl.MongoShellServiceImpl;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +37,10 @@ public class MongoConfigs extends AbstractMongoConfiguration {
     private String username;
     @Value("${mongodb.password}")
     private String password;
+
+    @Autowired
+    @Qualifier("mongoDAOImpl")
+    private MongoDAO mongoDAO;
 
     @Override
     protected String getDatabaseName() {
@@ -64,6 +73,13 @@ public class MongoConfigs extends AbstractMongoConfiguration {
     @Bean
     public MongoTemplate mongoTemplate() {
         return new MongoTemplate(mongoClient(), databaseName);
+    }
+
+    @Bean
+    public MongoShellService mongoShellService() {
+        MongoShellServiceImpl instance = new MongoShellServiceImpl();
+        instance.setMongoDAO(mongoDAO);
+        return instance;
     }
 
     public void setHost(String host) {

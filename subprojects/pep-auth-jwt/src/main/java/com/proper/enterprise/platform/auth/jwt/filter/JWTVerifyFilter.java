@@ -62,7 +62,7 @@ public class JWTVerifyFilter implements Filter {
             LOGGER.trace("JWT verfiy succeed, invoke next filter in filter chain.");
             filterChain.doFilter(request, response);
         } else {
-            LOGGER.error("JWT verfiy failed.");
+            LOGGER.trace("JWT verfiy failed.");
             HttpServletResponse resp = (HttpServletResponse) response;
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.setHeader("WWW-Authenticate",
@@ -88,7 +88,7 @@ public class JWTVerifyFilter implements Filter {
             HandlerMethod handler = handlerHolder.getHandler(req);
             ignore = hasIgnoreOnMethod(handler) || hasIgnoreOnType(handler) || inIgnorePatterns(req);
         } catch (Exception e) {
-            LOGGER.error("Find controller error! {}", e.getCause());
+            LOGGER.error("Find controller error!", e.getCause());
         }
         return ignore;
     }
@@ -112,7 +112,7 @@ public class JWTVerifyFilter implements Filter {
     private boolean inIgnorePatterns(HttpServletRequest req) {
         boolean ignore = authzService.shouldIgnore(req.getRequestURI(), req.getMethod(), hasContext);
         if (ignore) {
-            LOGGER.trace("Not need JWT of this url({}) caused by settings of AuthzService.ignorePatterns.", req.getRequestURI());
+            LOGGER.debug("Not need JWT of this url({}) caused by settings of AuthzService.ignorePatterns.", req.getRequestURI());
         }
         return ignore;
     }
