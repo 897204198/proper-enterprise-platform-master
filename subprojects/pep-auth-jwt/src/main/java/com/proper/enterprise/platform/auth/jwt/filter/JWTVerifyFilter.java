@@ -88,7 +88,7 @@ public class JWTVerifyFilter implements Filter {
             HandlerMethod handler = handlerHolder.getHandler(req);
             ignore = hasIgnoreOnMethod(handler) || hasIgnoreOnType(handler) || inIgnorePatterns(req);
         } catch (Exception e) {
-            LOGGER.error("Find controller error!", e.getCause());
+            LOGGER.error("Could NOT find controller for {}! {}", req.getRequestURI(), e);
         }
         return ignore;
     }
