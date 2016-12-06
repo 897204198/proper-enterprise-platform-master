@@ -17,7 +17,7 @@ Proper Enterprise Platform Developer Guidelines
 
 平台使用 [gretty](https://github.com/akhikhl/gretty) gradle 插件以支持在内嵌的容器中运行及调试。
 
-默认使用 tomcat7.x，端口 `9090`（在 [server.xml](subprojects/pep-webapp/config/tomcat/server.xml) 中配置），上下文根 `pep`（在 [pep-webapp.gradle](subprojects/pep-webapp/pep-webapp.gradle) 中配置）。
+默认使用 tomcat7.x，端口 `8080`（在 [server.xml](configs/docker/tomcat/conf/server.xml) 中配置），上下文根 `pep`（在 [pep-webapp.gradle](subprojects/pep-webapp/pep-webapp.gradle) 中配置）。
 
 ### 直接运行
 
@@ -30,10 +30,7 @@ Proper Enterprise Platform Developer Guidelines
     $ ./gradlew assemble debug
 
 
-IDE 开启远程调试方式可参见：
-
-* [IntelliJ Remote Run/Debug Configuration](http://www.jetbrains.com/idea/webhelp/run-debug-configuration-remote.html)
-* [Eclipse Remote Debugging](http://help.eclipse.org/indigo/index.jsp?topic=%2Forg.eclipse.jdt.doc.user%2Fconcepts%2Fcremdbug.htm)
+IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration](http://www.jetbrains.com/idea/webhelp/run-debug-configuration-remote.html)
 
 ### 热部署修改
 
@@ -44,8 +41,6 @@ IDE 开启远程调试方式可参见：
 
 开发规范
 -------
-
-**TODO**
 
 * 统一使用 PEPConstants.VERSION 作为 serialVersionUID
 * 配置文件：
@@ -116,6 +111,16 @@ IDE 开启远程调试方式可参见：
 
 * 建表：Hibernate 按照 JPA 的注解自动创建
 * 初始化数据：sql 语句放在对应模块 `src/main/resources/sql/*.sql`，系统运行时自动执行
+
+**TO BE CONTINUED**
+
+
+开放问题
+-------
+
+* HTTP 500 状态码问题：通常系统异常时应该返回 `500` 状态码。但在与 `nginx` 共同部署时，`nginx` 连接上游服务器超时时也会返回 500 状态。当需要故障转移时，就会出现矛盾：因为连接某一台上游服务器超时，其他服务器仍然可能可以处理这个请求；但若请求会导致系统抛异常，其他服务器再处理这个请求应该也会得到同样的结果。当前对这个问题的处理方式是：***`BaseController` 会将所有内部错误的 500 状态码转换为 `400`，`nginx` 仅对 `5xx` 的状态进行故障转移***。
+
+**TO BE CONTINUED**
 
 
 初始化新模块
