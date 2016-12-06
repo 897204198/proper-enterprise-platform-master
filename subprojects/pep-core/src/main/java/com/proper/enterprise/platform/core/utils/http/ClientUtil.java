@@ -1,10 +1,7 @@
 package com.proper.enterprise.platform.core.utils.http;
 
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +23,14 @@ public class ClientUtil {
                                                     String url, String method,
                                                     Map<String, String> headers, MediaType type,
                                                     String data) throws IOException {
+        Response response = createCall(client, url, method, headers, type, data).execute();
+        return converter(response);
+    }
+
+    private static Call createCall(OkHttpClient client,
+                            String url, String method,
+                            Map<String, String> headers, MediaType type,
+                            String data) {
         Request.Builder builder = new Request.Builder();
         builder = builder.url(url);
         if (headers != null) {
@@ -40,14 +45,41 @@ public class ClientUtil {
         }
         builder = builder.method(method, body);
         Request request = builder.build();
-        Response response = client.newCall(request).execute();
-        return converter(response);
+        return client.newCall(request);
     }
 
     protected static ResponseEntity<byte[]> converter(Response response) throws IOException {
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.putAll(response.headers().toMultimap());
         return new ResponseEntity<>(response.body().bytes(), headers, HttpStatus.valueOf(response.code()));
+    }
+
+    /**
+     * 异步发送请求，需要回调方法
+     *
+     * @param client    http 客户端
+     * @param url       请求 url
+     * @param method    请求方法
+     * @param headers   请求头
+     * @param type      media type
+     * @param data      数据
+     * @param callback  回调类
+     */
+    protected static void perform(OkHttpClient client,
+                                  String url, String method,
+                                  Map<String, String> headers, MediaType type,
+                                  String data, final Callback callback) {
+        createCall(client, url, method, headers, type, data).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.onError(e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                callback.onSuccess(converter(response));
+            }
+        });
     }
 
 }

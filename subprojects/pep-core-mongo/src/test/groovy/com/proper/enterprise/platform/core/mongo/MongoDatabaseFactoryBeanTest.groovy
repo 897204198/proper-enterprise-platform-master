@@ -19,4 +19,9 @@ class MongoDatabaseFactoryBeanTest extends AbstractTest {
         assert mongoDatabase.getName() == databaseName
     }
 
+    @Test
+    public void checkObjectType() {
+        assert new MongoDatabaseFactoryBean().getObjectType() == MongoDatabase.class
+    }
+
 }

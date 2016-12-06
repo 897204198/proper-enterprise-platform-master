@@ -1,7 +1,6 @@
 package com.proper.enterprise.platform.core.utils.cipher;
 
 import com.proper.enterprise.platform.core.PEPConstants;
-import com.proper.enterprise.platform.core.utils.ConfCenter;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -61,28 +60,30 @@ public class CipherUtil {
         return instance;
     }
 
+    @Deprecated
     protected String encrypt(String content) throws Exception {
-		return execute(content, getSecretKey(), true);
+		return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getSecretKey(), true), PEPConstants.DEFAULT_CHARSET);
 	}
 
-    private String execute(String content, Key key, boolean encrypt) throws Exception {
-        LOGGER.debug("{} {} with {}({})",
+    protected byte[] encrypt(byte[] data) throws Exception {
+        return execute(data, getSecretKey(), true);
+    }
+
+    private byte[] execute(byte[] data, Key key, boolean encrypt) throws Exception {
+        LOGGER.trace("{} data with {}({})",
             encrypt ? "Encrypt" : "Decrypt",
-            StringUtil.abbreviate(content, Integer.parseInt(ConfCenter.get("core.cipher.maxWidth"))),
             new String(key.getEncoded(), PEPConstants.DEFAULT_CHARSET), amp(algorithm, mode, padding));
 
-        String result;
+        byte[] result;
         Cipher cipher = Cipher.getInstance(amp(algorithm, mode, padding));
 
         if (encrypt) {
             cipher.init(Cipher.ENCRYPT_MODE, key);
-            result = Base64.encodeBase64String(cipher.doFinal(content.getBytes(PEPConstants.DEFAULT_CHARSET)));
+            result = Base64.encodeBase64(cipher.doFinal(data));
         } else {
             cipher.init(Cipher.DECRYPT_MODE, key);
-            result = new String(cipher.doFinal(Base64.decodeBase64(content)), PEPConstants.DEFAULT_CHARSET);
+            result = cipher.doFinal(Base64.decodeBase64(data));
         }
-        LOGGER.debug("After {}: {}", encrypt
-            ? "Encrypt" : "Decrypt", StringUtil.abbreviate(result, Integer.parseInt(ConfCenter.get("core.cipher.maxWidth"))));
         return result;
     }
 
@@ -90,9 +91,14 @@ public class CipherUtil {
         return new SecretKeySpec(secretKey.getBytes(PEPConstants.DEFAULT_CHARSET), algorithm);
     }
 
+    @Deprecated
     protected String decrypt(String content) throws Exception  {
-		return execute(content, getSecretKey(), false);
+		return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getSecretKey(), false), PEPConstants.DEFAULT_CHARSET);
 	}
+
+    protected byte[] decrypt(byte[] data) throws Exception {
+        return execute(data, getSecretKey(), false);
+    }
 
     private String amp(String algorithm, String mode, String padding) {
         return StringUtil.join(new String[]{algorithm, mode, padding}, "/");
@@ -112,8 +118,13 @@ public class CipherUtil {
         return map;
     }
 
+    @Deprecated
     protected String encrypt(String content, String publicKey) throws Exception {
-        return execute(content, getPublicKey(publicKey), true);
+        return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getPublicKey(publicKey), true), PEPConstants.DEFAULT_CHARSET);
+    }
+
+    protected byte[] encrypt(byte[] data, String publicKey) throws Exception {
+        return execute(data, getPublicKey(publicKey), true);
     }
 
     protected PublicKey getPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -121,8 +132,13 @@ public class CipherUtil {
         return keyFactory.generatePublic(new X509EncodedKeySpec(Base64.decodeBase64(publicKey)));
     }
 
+    @Deprecated
     protected String decrypt(String content, String privateKey) throws Exception {
-        return execute(content, getPrivateKey(privateKey), false);
+        return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getPrivateKey(privateKey), false), PEPConstants.DEFAULT_CHARSET);
+    }
+
+    protected byte[] decrypt(byte[] data, String privateKey) throws Exception {
+        return execute(data, getPrivateKey(privateKey), false);
     }
 
     protected PrivateKey getPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {

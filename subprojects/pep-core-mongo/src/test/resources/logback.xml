@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender name="mongo" class="com.proper.enterprise.platform.core.mongo.logback.MongoDBAppender">
+        <connectionSource class="com.proper.enterprise.platform.core.mongo.logback.MongoDBConnectionSource">
+            <host>mongo-pep</host>
+            <port>27017</port>
+            <database>logs</database>
+            <!--<username></username>-->
+            <!--<password></password>-->
+            <collection>logback</collection>
+        </connectionSource>
+	</appender>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%5p [%d{yy-MM-dd-HH:mm:ss}] %40.40c:%4L - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.proper" level="trace">
+        <appender-ref ref="mongo" />
+        <appender-ref ref="console" />
+    </logger>
+
+    <logger name="ROOT" level="debug">
+        <appender-ref ref="console" />
+    </logger>
+
+</configuration>

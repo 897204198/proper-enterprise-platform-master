@@ -38,6 +38,10 @@ public class HttpClient extends ClientUtil {
         return perform(client, url, POST, null, type, data);
     }
 
+    public static void post(String url, MediaType type, String data, Callback callback) {
+        perform(client, url, POST, null, type, data, callback);
+    }
+
     public static ResponseEntity<byte[]> post(String url, Map<String, String> headers, MediaType type, String data) throws IOException {
         return perform(client, url, POST, headers, type, data);
     }

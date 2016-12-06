@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.utils.cipher
 
+import com.proper.enterprise.platform.core.PEPConstants
 import spock.lang.Specification
 
 
@@ -9,7 +10,7 @@ class RSASpec extends Specification {
     def keySize = 1024
     def content = '<REQ><HOS_ID><![CDATA[1001]]></HOS_ID></REQ>'
 
-    def "RSA encrypt and decrypt"() {
+    def "RSA encrypt and decrypt (String)"() {
         def c = new RSA(signAlgo)
         Map<String, String> map = c.generateKeyPair(keySize)
 
@@ -21,6 +22,20 @@ class RSASpec extends Specification {
 
         expect:
         assert content == decrypted
+    }
+
+    def "RSA encrypt and decrypt (byte[])"() {
+        def c = new RSA(signAlgo)
+        Map<String, String> map = c.generateKeyPair(keySize)
+
+        def publicKey = map.publicKey
+        def privateKey = map.privateKey
+
+        def encrypted = c.encrypt(content.getBytes(PEPConstants.DEFAULT_CHARSET), publicKey)
+        def decrypted = c.decrypt(encrypted, privateKey)
+
+        expect:
+        assert content.getBytes(PEPConstants.DEFAULT_CHARSET) == decrypted
     }
 
     def "RSA sign and verify"() {

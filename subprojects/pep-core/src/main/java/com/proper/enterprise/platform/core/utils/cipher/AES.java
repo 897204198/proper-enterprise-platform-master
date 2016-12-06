@@ -20,12 +20,22 @@ public class AES {
         util = CipherUtil.getInstance("AES", mode, padding, key);
     }
 
+    @Deprecated
     public String encrypt(String content) throws Exception {
         return util.encrypt(content);
     }
 
+    public byte[] encrypt(byte[] data) throws Exception {
+        return util.encrypt(data);
+    }
+
+    @Deprecated
     public String decrypt(String content) throws Exception {
         return util.decrypt(content);
+    }
+
+    public byte[] decrypt(byte[] data) throws Exception {
+        return util.decrypt(data);
     }
 
 }

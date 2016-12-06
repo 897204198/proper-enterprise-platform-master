@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.NoHandlerFoundException
 
 import javax.servlet.ServletException
 
@@ -27,6 +28,12 @@ class TestController extends BaseController {
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 
+    @GetMapping("/trouble/3")
+    public ResponseEntity<String> test3() {
+        throw new NoHandlerFoundException('handle by handler', '', null)
+        return new ResponseEntity<String>(HttpStatus.OK);
+    }
+
     @GetMapping("/json/entity")
     public ResponseEntity<MockEntity> entity() {
         def e = new MockEntity('E1', 'E2')
@@ -36,17 +43,6 @@ class TestController extends BaseController {
         e.setLastModifyUserId('ELU')
         e.setLastModifyTime(DateUtil.timestamp)
         responseOfGet(e)
-    }
-
-    @GetMapping("/json/document")
-    public ResponseEntity<MockDocument> document() {
-        def d = new MockDocument('D1', 'D2')
-        d.setId('D')
-        d.setCreateUserId('DU')
-        d.setCreateTime(DateUtil.timestamp)
-        d.setLastModifyUserId('DLU')
-        d.setLastModifyTime(DateUtil.timestamp)
-        responseOfGet(d)
     }
 
 }

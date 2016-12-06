@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * 提供一个按照 mongo shell 语法操作 MongoDB 数据库的接口
- * 本接口中的方法受数据约束限制，实现时需注意
  */
 public interface MongoDAO {
 

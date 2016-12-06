@@ -11,7 +11,6 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,32 +29,34 @@ public class MongoDAOImpl implements MongoDAO {
     }
 
     @Override
-    public Document deleteById(String collection, String id) throws URISyntaxException {
+    public Document deleteById(String collection, String id) throws Exception {
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
         return col.findOneAndDelete(Filters.eq("_id", new ObjectId(id)));
     }
 
     @Override
-    public List<Document> deleteByIds(String collection, String[] ids) throws URISyntaxException {
-        List<Document> result = new ArrayList<>(ids.length);
+    public List<Document> deleteByIds(String collection, String[] ids) throws Exception {
+        List<Document> result = new ArrayList<>();
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
         Document document;
         for (String objectId : ids) {
             document = col.findOneAndDelete(Filters.eq("_id", new ObjectId(objectId)));
-            result.add(document);
+            if (document != null) {
+                result.add(document);
+            }
         }
         return result;
     }
 
     @Override
-    public Document updateById(String collection, String id, String update) throws URISyntaxException {
+    public Document updateById(String collection, String id, String update) throws Exception {
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
         return col.findOneAndUpdate(Filters.eq("_id", new ObjectId(id)),
             Document.parse(update));
     }
 
     @Override
-    public Document queryById(String collection, String id) throws URISyntaxException {
+    public Document queryById(String collection, String id) throws Exception {
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
         return col.find(Filters.eq("_id", new ObjectId(id))).first();
     }
@@ -76,7 +77,7 @@ public class MongoDAOImpl implements MongoDAO {
     }
 
     @Override
-    public List<Document> query(String collection, String query, int limit, String sort) throws URISyntaxException {
+    public List<Document> query(String collection, String query, int limit, String sort) throws Exception {
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
         FindIterable<Document> findIter = col.find();
 

@@ -75,6 +75,8 @@ class BaseControllerTest extends AbstractTest {
         def r3 = get('/test/trouble/2', HttpStatus.BAD_REQUEST)
         assert '异常啦' == r3.getResponse().getContentAsString()
         assert r3.getResponse().getContentType() == textPlainUtf8
+
+        get('/test/trouble/3', HttpStatus.NOT_FOUND)
     }
 
     @Test
@@ -85,16 +87,6 @@ class BaseControllerTest extends AbstractTest {
         assert m.containsKey('id')
         assert m.containsKey('lastModifyTime')
         assert m.containsKey('entityC2')
-    }
-
-    @Test
-    public void ignorePropertyInDocument() {
-        def r = get('/test/json/document', HttpStatus.OK).getResponse().getContentAsString()
-        def m = JSONUtil.parse(r, Map.class)
-        assert m.size() == 3
-        assert m.containsKey('id')
-        assert m.containsKey('createTime')
-        assert m.containsKey('docC2')
     }
 
 }

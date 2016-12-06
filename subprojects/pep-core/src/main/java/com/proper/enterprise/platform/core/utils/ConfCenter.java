@@ -86,7 +86,6 @@ public class ConfCenter {
                 properties.load(res.getInputStream());
             }
         } catch (Exception e) {
-            e.printStackTrace();
             LOGGER.error("Load properties defined in '{}' error!", DEFAULT_CONFIG_PATH, e);
         }
     }

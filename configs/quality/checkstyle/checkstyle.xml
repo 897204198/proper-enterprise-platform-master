@@ -104,6 +104,12 @@
     <module name="RegexpSingleline">
         <property name="format" value="Created with IntelliJ IDEA"/>
     </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="System.out"/>
+    </module>
+    <module name="RegexpSingleline">
+        <property name="format" value=".printStackTrace"/>
+    </module>
 
     <!-- allows suppressing using the //CHECKSTYLE:ON //CHECKSTYLE:OFF -->
     <module name="SuppressionCommentFilter"/>

@@ -36,12 +36,22 @@ public class RSA {
         return map;
     }
 
+    @Deprecated
     public String encrypt(String content, String publicKey) throws Exception {
         return util.encrypt(content, publicKey);
     }
 
+    public byte[] encrypt(byte[] data, String publicKey) throws Exception {
+        return util.encrypt(data, publicKey);
+    }
+
+    @Deprecated
     public String decrypt(String content, String privateKey) throws Exception {
         return util.decrypt(content, privateKey);
+    }
+
+    public byte[] decrypt(byte[] data, String privateKey) throws Exception {
+        return util.decrypt(data, privateKey);
     }
 
     public String sign(String content, String privateKey) throws Exception {

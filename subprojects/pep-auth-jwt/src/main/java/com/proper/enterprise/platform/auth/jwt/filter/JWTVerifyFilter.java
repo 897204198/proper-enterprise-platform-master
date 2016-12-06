@@ -57,12 +57,12 @@ public class JWTVerifyFilter implements Filter {
         }
 
         String token = jwtService.getTokenFromHeader(req);
-        LOGGER.info("JSON Web Token: " + token);
+        LOGGER.trace("JSON Web Token: " + token);
         if (StringUtil.isNotNull(token) && jwtService.verify(token)) {
-            LOGGER.debug("JWT verfiy succeed, invoke next filter in filter chain.");
+            LOGGER.trace("JWT verfiy succeed, invoke next filter in filter chain.");
             filterChain.doFilter(request, response);
         } else {
-            LOGGER.error("JWT verfiy failed.");
+            LOGGER.trace("JWT verfiy failed.");
             HttpServletResponse resp = (HttpServletResponse) response;
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.setHeader("WWW-Authenticate",
@@ -88,7 +88,7 @@ public class JWTVerifyFilter implements Filter {
             HandlerMethod handler = handlerHolder.getHandler(req);
             ignore = hasIgnoreOnMethod(handler) || hasIgnoreOnType(handler) || inIgnorePatterns(req);
         } catch (Exception e) {
-            LOGGER.error("Find controller error! {}", e);
+            LOGGER.error("Could NOT find controller for {}! {}", req.getRequestURI(), e);
         }
         return ignore;
     }
@@ -96,7 +96,7 @@ public class JWTVerifyFilter implements Filter {
     private boolean hasIgnoreOnMethod(HandlerMethod handler) {
         boolean ignore = handler.hasMethodAnnotation(JWTIgnore.class);
         if (ignore) {
-            LOGGER.info("Not need JWT of this url caused by @JWTIgnore on method '{}'.", handler.getMethod().getName());
+            LOGGER.trace("Not need JWT of this url caused by @JWTIgnore on method '{}'.", handler.getMethod().getName());
         }
         return ignore;
     }
@@ -104,7 +104,7 @@ public class JWTVerifyFilter implements Filter {
     private boolean hasIgnoreOnType(HandlerMethod handler) {
         boolean ignore = handler.getBeanType().getAnnotation(JWTIgnore.class) != null;
         if (ignore) {
-            LOGGER.info("Not need JWT of this url caused by @JWTIgnore on type '{}'.", handler.getBeanType().getName());
+            LOGGER.trace("Not need JWT of this url caused by @JWTIgnore on type '{}'.", handler.getBeanType().getName());
         }
         return ignore;
     }
@@ -112,7 +112,7 @@ public class JWTVerifyFilter implements Filter {
     private boolean inIgnorePatterns(HttpServletRequest req) {
         boolean ignore = authzService.shouldIgnore(req.getRequestURI(), req.getMethod(), hasContext);
         if (ignore) {
-            LOGGER.info("Not need JWT of this url({}) caused by settings of AuthzService.ignorePatterns.", req.getRequestURI());
+            LOGGER.debug("Not need JWT of this url({}) caused by settings of AuthzService.ignorePatterns.", req.getRequestURI());
         }
         return ignore;
     }
