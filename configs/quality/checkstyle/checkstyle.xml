@@ -105,7 +105,7 @@
         <property name="format" value="Created with IntelliJ IDEA"/>
     </module>
     <module name="RegexpSingleline">
-        <property name="format" value="System.out"/>
+        <property name="format" value="System.out|System.in|System.err"/>
     </module>
     <module name="RegexpSingleline">
         <property name="format" value=".printStackTrace"/>

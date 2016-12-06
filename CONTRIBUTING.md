@@ -42,10 +42,10 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
 开发规范
 -------
 
-* 统一使用 PEPConstants.VERSION 作为 serialVersionUID
+* 统一使用 `PEPConstants.VERSION` 作为 `serialVersionUID`
 * 配置文件：
     1. spring 配置文件放置在 `src/main/resources/spring/<module>`。spring 配置文件采用各个模块统一入口的方式来组织，文件名为 `applicationContext-<module>.xml`。在入口中将模块内的配置文件关联起来。需注意避免重复 import。
-    2. 其他配置文件放置在 `src/main/resources/conf/<module>
+    2. 其他配置文件放置在 `src/main/resources/conf/<module>`
 
         > 可参考 `./gradlew init-pep-<module>` 自动生成的配置文件
 
@@ -111,6 +111,20 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
 
 * 建表：Hibernate 按照 JPA 的注解自动创建
 * 初始化数据：sql 语句放在对应模块 `src/main/resources/sql/*.sql`，系统运行时自动执行
+* 异常不允许直接 `printStackTrace`，应记录到日志中
+* 记录日志时，应采用 `Slf4j` 推荐的方式，避免日志信息通过 `+` 拼接
+
+    ```
+    LOGGER.debug("{} concat {} is {}", "a", "b", "ab");
+    ```
+
+* 当在日志消息中有非常消耗资源的操作时，可考虑先判断日志级别，如：
+
+    ```
+    if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("hello {} world {}", cheap, veryExpensive());
+    }
+    ```
 
 **TO BE CONTINUED**
 
