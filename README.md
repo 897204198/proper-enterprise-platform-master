@@ -90,16 +90,21 @@ nexusPassword=你的密码
 产品发布
 -------
 
-因为产品可能需要对容器进行一些设定，如 tomcat 对接收到的请求默认使用的编码是 `ISO-8859-1`，若要修改默认编码需在 `[server.xml](subprojects/pep-webapp/config/tomcat/server.xml)` 中进行设定。
-故以 war 包形式发布产品时还需对容器配置进行调整。
+产品默认运行在 tomcat 内，并需要对其进行一定的调整。
+如 tomcat 对接收到的请求默认使用的编码是 `ISO-8859-1`，需调整为平台统一字符集 `UTF-8`。
+针对 tomcat 的调整均在 `[server.xml](configs/docker/tomcat/server.xml)` 中进行设定。
 
-借助 `gretty` 可以生成一个能够直接运行的产品发布包（包含容器、war 包以及启动脚本等），会自动应用配置好的容器设置，**推荐使用此种方式发布产品**。
+**推荐使用** docker 容器 + war 包的形式发布产品，以使产品运行在一个基本相同的环境内，避免因配置原因造成的各种问题。
+tomcat 的 docker 镜像需使用 [Dockerfile](configs/docker/Dockerfile) 构建出的镜像，以包含针产品针对配置的调整。构建方式为：
 
-    # 打包
-    $ ./gradlew buildProduct
-    # 进入发布包路径
-    $ cd subprojects/pep-webapp/build/output/pep-webapp
-    $ ./run.sh
+    # ./configs/docker
+    $ docker build -t propersoft/pep .
+
+**推荐** 通过 `Docker Compose` 编排和运行服务（单节点），可以在 [docker-compose.yml](configs/docker/docker-compose.yml) 中调整所需服务，并运行
+
+    # ./configs/docker
+    $ docker-compose up -d
+
 
 版本号规范
 ---------
