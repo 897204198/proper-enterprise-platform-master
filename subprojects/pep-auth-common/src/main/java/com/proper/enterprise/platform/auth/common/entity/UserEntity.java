@@ -5,7 +5,6 @@ import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -45,7 +44,6 @@ public class UserEntity extends BaseEntity implements User {
     /**
      * 是否为超级用户
      */
-    @Type(type = "yes_no")
     private boolean superuser;
 
     @ManyToMany
