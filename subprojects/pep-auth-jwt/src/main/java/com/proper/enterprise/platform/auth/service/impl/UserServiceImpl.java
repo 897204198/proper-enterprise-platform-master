@@ -26,13 +26,12 @@ public class UserServiceImpl extends CommonUserServiceImpl {
         HttpServletRequest req;
         try {
             req = RequestUtil.getCurrentRequest();
-            LOGGER.debug("Get request from request context holder: {}", req);
             String token = jwtService.getTokenFromHeader(req);
-            LOGGER.debug("Get token from request: {}", token);
             if (StringUtil.isNull(token)) {
-                LOGGER.error("Could NOT get token from request!");
+                LOGGER.error("Could NOT get token from request {}!", req.getRequestURI());
                 return null;
             }
+            LOGGER.debug("Get token '{}' from request '{}'", req.getRequestURI(), token);
             JWTHeader header = jwtService.getHeader(token);
             return getByUsername(header.getName());
         } catch (IllegalStateException e) {
