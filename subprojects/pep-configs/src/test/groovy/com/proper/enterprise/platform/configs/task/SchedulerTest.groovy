@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.configs.scheduler
+package com.proper.enterprise.platform.configs.task
 
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
@@ -14,10 +14,10 @@ class SchedulerTest extends AbstractTest {
     TaskScheduler scheduler
 
     @Test
-    public void scheduleWithTask() {
+    public void useRunnable() {
         def task = new Task()
         def sf = scheduler.scheduleAtFixedRate(task, 50)
-        sleep(90)
+        sleep(60)
         sf.cancel(true)
         assert taskCount == 2
     }
@@ -31,8 +31,10 @@ class SchedulerTest extends AbstractTest {
     }
 
     @Test
-    public void scheduleWithAnnotation() {
+    public void useAnnotation() {
         // method with @Scheduled will auto run
+        // but CI may need to sleep some time
+        sleep(50)
         assert annoCount > 0
     }
 
