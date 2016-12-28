@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.controller;
 
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +12,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * REST Controller 的基类
@@ -44,6 +46,21 @@ public abstract class BaseController {
      */
     protected <T> ResponseEntity<T> responseOfGet(T entity) {
         return responseOKWithOrWithoutContent(entity);
+    }
+
+    /**
+     * 返回 GET 请求的响应
+     * 结果集封装到一个 DataTrunk 对象中
+     * 查询到结果时返回 200 OK 状态及查询结果
+     * 没有查到结果时返回 200 OK 状态
+     *
+     * @param  list  结果集数据集合
+     * @param  total
+     * @param  <T>
+     * @return
+     */
+    protected <T> ResponseEntity<DataTrunk<T>> responseOfGet(List<T> list, long total) {
+        return responseOKWithOrWithoutContent(new DataTrunk<>(list, total));
     }
 
     /**

@@ -187,6 +187,16 @@ public class DataRestrainMongoDAOImpl implements MongoDAO {
     }
 
     @Override
+    public long count(String collection, String query) throws URISyntaxException {
+        MongoCollection<Document> col = mongoDatabase.getCollection(collection);
+        List<Bson> conditions = getDataRestrainConditions(RequestMethod.GET, collection);
+        if (StringUtil.isNotNull(query)) {
+            conditions.add(Document.parse(query));
+        }
+        return col.count(Filters.and(conditions));
+    }
+
+    @Override
     public void drop(String collection) {
         mongoDatabase.getCollection(collection).drop();
     }

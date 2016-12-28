@@ -104,6 +104,16 @@ public interface MongoDAO {
     List<Document> query(String collection, String query, int limit, String sort) throws Exception;
 
     /**
+     * 根据条件查询文档集合总数
+     *
+     * @param  collection 集合名称
+     * @param  query      查询条件，语法可参考 mongo shell 语法
+     * @return 结果集总数
+     * @throws Exception
+     */
+    long count(String collection, String query) throws Exception;
+
+    /**
      * 删除集合
      *
      * @param collection    集合名称

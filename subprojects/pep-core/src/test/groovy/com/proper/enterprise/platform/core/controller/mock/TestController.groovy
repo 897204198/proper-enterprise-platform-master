@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.controller.mock
 
 import com.proper.enterprise.platform.core.controller.BaseController
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.DateUtil
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -43,6 +44,11 @@ class TestController extends BaseController {
         e.setLastModifyUserId('ELU')
         e.setLastModifyTime(DateUtil.timestamp)
         responseOfGet(e)
+    }
+
+    @GetMapping("/datatrunk")
+    public ResponseEntity<DataTrunk<String>> datatrunk() {
+        responseOfGet(['1','2','3'], 10)
     }
 
 }

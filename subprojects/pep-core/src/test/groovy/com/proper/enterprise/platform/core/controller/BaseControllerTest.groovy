@@ -1,4 +1,6 @@
 package com.proper.enterprise.platform.core.controller
+
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.repository.mock.entity.MockEntity
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.test.AbstractTest
@@ -87,6 +89,14 @@ class BaseControllerTest extends AbstractTest {
         assert m.containsKey('id')
         assert m.containsKey('lastModifyTime')
         assert m.containsKey('entityC2')
+    }
+
+    @Test
+    public void getDataTrunk() {
+        def r = get('/test/datatrunk', HttpStatus.OK).response.contentAsString
+        def dt = JSONUtil.parse(r, DataTrunk.class)
+        assert dt.getData().size() == 3
+        assert dt.getTotal() == 10
     }
 
 }

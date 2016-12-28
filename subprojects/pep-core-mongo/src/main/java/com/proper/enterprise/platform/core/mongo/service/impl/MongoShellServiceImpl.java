@@ -60,6 +60,11 @@ public class MongoShellServiceImpl implements MongoShellService {
     }
 
     @Override
+    public long count(String collection, String query) throws Exception {
+        return mongoDAO.count(collection, query);
+    }
+
+    @Override
     public void drop(String collection) {
         mongoDAO.drop(collection);
     }

@@ -99,6 +99,12 @@ public class MongoDAOImpl implements MongoDAO {
     }
 
     @Override
+    public long count(String collection, String query) {
+        MongoCollection<Document> col = mongoDatabase.getCollection(collection);
+        return StringUtil.isNotNull(query) ? col.count(Document.parse(query)) : col.count();
+    }
+
+    @Override
     public void drop(String collection) {
         mongoDatabase.getCollection(collection).drop();
     }

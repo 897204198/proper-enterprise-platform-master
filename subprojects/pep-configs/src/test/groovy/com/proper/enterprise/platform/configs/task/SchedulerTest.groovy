@@ -15,6 +15,7 @@ class SchedulerTest extends AbstractTest {
 
     @Test
     public void useRunnable() {
+        taskCount = 0
         def task = new Task()
         def sf = scheduler.scheduleAtFixedRate(task, 50)
         sleep(60)

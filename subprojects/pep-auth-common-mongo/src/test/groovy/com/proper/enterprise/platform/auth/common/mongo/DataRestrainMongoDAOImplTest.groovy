@@ -50,7 +50,8 @@ class DataRestrainMongoDAOImplTest extends AbstractTest {
         def doc1 = insertOne()
         def doc2 = insertOne()
 
-        mongoDAO.deleteByIds(COLLECTION_NAME, [getId(doc1), getId(doc2)] as String[])
+        def result = mongoDAO.deleteByIds(COLLECTION_NAME, [getId(doc1), getId(doc2), '5823f6b4c9e77c0001ad0b72'] as String[])
+        assert result.size() == 2
         assert query(getId(doc1)) == null
         assert query(getId(doc2)) == null
     }
@@ -92,9 +93,11 @@ class DataRestrainMongoDAOImplTest extends AbstractTest {
             insertOne([a: idx, b: times - idx])
         }
         def result = mongoDAO.query(COLLECTION_NAME, null)
-        assert result.size() == 1
+        assert result.size() == mongoDAO.count(COLLECTION_NAME, null)
         assert result[0].get('a') == 4
         assert result[0].get('b') == 1
+
+        assert mongoDAO.count(COLLECTION_NAME, '{$where: "this.a < this.b"}') == 0
     }
 
 }

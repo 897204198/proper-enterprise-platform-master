@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.core.mongo.controller;
 
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.mongo.service.MongoShellService;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.bson.Document;
@@ -34,20 +35,14 @@ public class MongoShellController extends BaseController {
     }
 
     @GetMapping("/{collection}")
-    public ResponseEntity<List<String>> find(@PathVariable String collection,
+    public ResponseEntity<DataTrunk<String>> find(@PathVariable String collection,
                                              @RequestParam String query, String limit, String sort) throws Exception {
         query = decodeUrl(query);
-        List<Document> docs;
-        if (StringUtil.isNumeric(limit) && StringUtil.isNotNull(sort)) {
-            docs = service.query(collection, query, Integer.parseInt(limit), decodeUrl(sort));
-        } else if (StringUtil.isNumeric(limit)) {
-            docs = service.query(collection, query, Integer.parseInt(limit));
-        } else if (StringUtil.isNotNull(sort)) {
-            docs = service.query(collection, query, decodeUrl(sort));
-        } else {
-            docs = service.query(collection, query);
-        }
-        return responseOfGet(documentToJson(docs));
+        List<Document> docs = service.query(collection, query,
+            StringUtil.isNumeric(limit) ? Integer.parseInt(limit) : -1,
+            StringUtil.isNotNull(sort) ? decodeUrl(sort) : null);
+
+        return responseOfGet(documentToJson(docs), service.count(collection, query));
     }
 
     private String decodeUrl(String str) throws UnsupportedEncodingException {

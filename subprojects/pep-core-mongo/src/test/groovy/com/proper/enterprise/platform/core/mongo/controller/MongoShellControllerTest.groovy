@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.mongo.controller
 import com.proper.enterprise.platform.core.PEPConstants
-import com.proper.enterprise.platform.core.mongo.dao.MongoDAO
+import com.proper.enterprise.platform.core.entity.DataTrunk
+import com.proper.enterprise.platform.core.mongo.service.MongoShellService
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.core.utils.StringUtil
@@ -14,13 +15,13 @@ import org.springframework.http.HttpStatus
 class MongoShellControllerTest extends AbstractTest {
 
     @Autowired
-    MongoDAO mongoDAO
+    MongoShellService service
 
     private static final String COLLECTION_NAME = "MSCDOC"
 
     @After
     public void tearDown() {
-        mongoDAO.drop(COLLECTION_NAME)
+        service.drop(COLLECTION_NAME)
     }
 
     private static final String URL = "/msc/$COLLECTION_NAME"
@@ -76,24 +77,32 @@ class MongoShellControllerTest extends AbstractTest {
             insertOne()
         }
 
+        def query = "{year: ${DateUtil.currentYear} }"
         // 可能有历史数据，所以结果数可能大于 5 条
-        assert toDocumentStrings("$URL?query=${encode("{year: ${DateUtil.currentYear} }")}").size() >= times
-        assert toDocumentStrings("$URL?query=${encode("{year: ${DateUtil.currentYear} }")}&limit=3").size() == 3
+        def total = getDataTrunk("$URL?query=${encode(query)}").total
+        assert total == service.query(COLLECTION_NAME, query).size()
+        assert total >= times
+        def size = getDataTrunk("$URL?query=${encode(query)}&limit=3").data.size()
+        assert size == service.query(COLLECTION_NAME, query, 3).size()
+        assert size == 3
 
-        def max = getFirstTimestamp toDocumentStrings("$URL?query=${encode("{year: ${DateUtil.currentYear} }")}&sort=${encode("{timestamp: -1}")}&limit=3")
-        def min = getFirstTimestamp toDocumentStrings("$URL?query=${encode("{year: ${DateUtil.currentYear} }")}&sort=${encode("{timestamp: 1}")}")
+        def max = getFirstTimestamp getDataTrunk("$URL?query=${encode(query)}&sort=${encode("{timestamp: -1}")}&limit=3").data
+        def min = getFirstTimestamp getDataTrunk("$URL?query=${encode(query)}&sort=${encode("{timestamp: 1}")}").data
         assert max > min
+        assert min == service.query(COLLECTION_NAME, query, "{timestamp: 1}")[0].get('timestamp')
 
-        assert toDocumentStrings("$URL?query=").size() >= times
+        def allData = getDataTrunk("$URL?query=")
+        assert allData.total == allData.total
+        assert allData.total >= times
     }
 
     private static def encode(String url) {
         URLEncoder.encode(url, PEPConstants.DEFAULT_CHARSET.toString())
     }
 
-    private def toDocumentStrings(String url) {
+    private def getDataTrunk(String url) {
         def res = get(url, HttpStatus.OK).response.contentAsString
-        JSONUtil.parse(res, List.class)
+        JSONUtil.parse(res, DataTrunk.class)
     }
 
     private static def getFirstTimestamp(List<String> strings) {
