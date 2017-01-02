@@ -31,6 +31,8 @@ dependencies {
     runtime project(':pep-auth-jwt'),
             project(':pep-av-backend'),
             project(':pep-configs'),
+            // Needs one cache implementation
+            project(':pep-cache-ehcache'),
             project(':pep-workflow'),
             libraries.commons_fileupload,
             libraries.h2,
