@@ -36,13 +36,15 @@ public class MongoShellController extends BaseController {
 
     @GetMapping("/{collection}")
     public ResponseEntity<DataTrunk<String>> find(@PathVariable String collection,
-                                             @RequestParam String query, String limit, String sort) throws Exception {
+                                                  @RequestParam String query, String limit, String sort) throws Exception {
         query = decodeUrl(query);
         List<Document> docs = service.query(collection, query,
             StringUtil.isNumeric(limit) ? Integer.parseInt(limit) : -1,
             StringUtil.isNotNull(sort) ? decodeUrl(sort) : null);
 
-        return responseOfGet(documentToJson(docs), service.count(collection, query));
+        return docs.isEmpty()
+                ? responseOfGet(new ArrayList<String>(), 0)
+                : responseOfGet(documentToJson(docs), service.count(collection, query));
     }
 
     private String decodeUrl(String str) throws UnsupportedEncodingException {

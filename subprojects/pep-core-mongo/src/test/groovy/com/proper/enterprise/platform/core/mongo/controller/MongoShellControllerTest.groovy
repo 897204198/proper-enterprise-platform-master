@@ -71,7 +71,7 @@ class MongoShellControllerTest extends AbstractTest {
     }
 
     @Test
-    public void queryTest() {
+    public void normalQuery() {
         int times = 5
         times.times {
             insertOne()
@@ -94,6 +94,14 @@ class MongoShellControllerTest extends AbstractTest {
         def allData = getDataTrunk("$URL?query=")
         assert allData.total == allData.total
         assert allData.total >= times
+    }
+
+    @Test
+    public void noResultQuery() {
+        def query = "{year: ${DateUtil.currentYear + 10} }"
+        def dt = getDataTrunk("$URL?query=${encode(query)}")
+        assert dt.getData() == []
+        assert dt.total == 0
     }
 
     private static def encode(String url) {
