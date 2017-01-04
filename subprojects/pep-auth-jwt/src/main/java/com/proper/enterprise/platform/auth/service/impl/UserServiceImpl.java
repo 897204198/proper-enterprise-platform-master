@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 @Service
 public class UserServiceImpl extends CommonUserServiceImpl {
@@ -22,7 +21,7 @@ public class UserServiceImpl extends CommonUserServiceImpl {
     @Autowired
     private JWTService jwtService;
 
-    public User getCurrentUser() throws IOException {
+    public User getCurrentUser() {
         HttpServletRequest req;
         try {
             req = RequestUtil.getCurrentRequest();
@@ -34,7 +33,7 @@ public class UserServiceImpl extends CommonUserServiceImpl {
             LOGGER.debug("Get token '{}' from request '{}'", req.getRequestURI(), token);
             JWTHeader header = jwtService.getHeader(token);
             return getByUsername(header.getName());
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             LOGGER.debug("Could not get current request! {}", e.getMessage());
             return null;
         }

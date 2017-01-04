@@ -1,7 +1,7 @@
 INSERT INTO pep_auth_resources
-(id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, parent_res_id, resource_type, url, method, sequence_number)
+(id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method)
 VALUES
-('pep-auth', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '安全设置', null, 'APP', '/platform/auth/security', 'GET', 0);
+('pep-auth', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '安全设置', '/platform/auth/security', 'GET');
 
 INSERT INTO pep_auth_datarestrains
 (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, table_name, sql_str)

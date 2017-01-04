@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.test
 import com.proper.enterprise.platform.test.utils.JSONUtil
+import groovy.json.JsonSlurper
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -183,6 +184,10 @@ public abstract class AbstractTest {
         JSONUtil.parse(createdEntity, entity.getClass())
     }
 
+    /**
+     * @deprecated Try to use resOfGet instead
+     */
+    @Deprecated
     protected def getAndReturn(uri, entity, status) {
         def str = get(uri + (entity.hasProperty('id') && entity.id > '' ? "/${entity.id}" : ''), status)
                     .getResponse().getContentAsString()
@@ -191,6 +196,11 @@ public abstract class AbstractTest {
             return str
         }
         return str.startsWith('[') ? JSONUtil.parse(str, clz[].class) : (str.startsWith('{') ? JSONUtil.parse(str, clz) : str)
+    }
+
+    protected def resOfGet(uri, status) {
+        def str = get(uri, status).response.contentAsString
+        str > '' ? new JsonSlurper().parseText(str) : str
     }
 
     private def checkBaseRetrive(uri, entity) {

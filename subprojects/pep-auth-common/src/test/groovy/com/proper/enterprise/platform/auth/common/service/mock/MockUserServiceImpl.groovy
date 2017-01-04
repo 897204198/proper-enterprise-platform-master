@@ -30,9 +30,12 @@ class MockUserServiceImpl extends CommonUserServiceImpl {
             }
             def user
             if (mockUser != null) {
-                user = new UserEntity(mockUser.username, mockUser.password)
-                user.id = mockUser.id
-                user.superuser = mockUser.isSuper
+                user = this.getByUsername(mockUser.username)
+                if (user == null) {
+                    user = new UserEntity(mockUser.username, mockUser.password)
+                    user.id = mockUser.id
+                    user.superuser = mockUser.isSuper
+                }
             } else {
                 user = new UserEntity('default-mock-user', 'default-mock-user-pwd')
                 user.setId('default-mock-user-id')

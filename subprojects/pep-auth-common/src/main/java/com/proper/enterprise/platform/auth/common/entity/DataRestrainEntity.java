@@ -4,9 +4,9 @@ import com.proper.enterprise.platform.api.auth.model.DataRestrain;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 @Table(name = "PEP_AUTH_DATARESTRAINS")
@@ -21,6 +21,9 @@ public class DataRestrainEntity extends BaseEntity implements DataRestrain {
 
     @Column(unique = true)
     private String name;
+
+    @ManyToMany(mappedBy = "dataRestrainEntities")
+    private Collection<ResourceEntity> resourceEntities = new ArrayList<>();
 
     @Override
     public String getName() {

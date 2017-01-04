@@ -1,12 +1,15 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
 import com.proper.enterprise.platform.api.auth.enums.UseStatus;
+import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Permission;
 import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
@@ -23,13 +26,13 @@ public class RoleEntity extends BaseEntity implements Role {
     private String name;
 
     @ManyToMany(mappedBy = "roleEntities")
-    private Collection<UserEntity> userEntities;
+    private Collection<UserEntity> userEntities = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "PEP_AUTH_ROLES_RESOURCES",
+    @JoinTable(name = "PEP_AUTH_ROLES_MENUS",
             joinColumns = @JoinColumn(name = "ROLE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "RESOURCE_ID"))
-    private Collection<ResourceEntity> resourceEntities;
+            inverseJoinColumns = @JoinColumn(name = "MENU_ID"))
+    private Collection<MenuEntity> menuEntities = new ArrayList<>();
 
     /**
      * 使用状态
@@ -90,19 +93,13 @@ public class RoleEntity extends BaseEntity implements Role {
         this.useStatus = useStatus;
     }
 
-    public Collection<UserEntity> getUserEntities() {
+    public Collection<? extends User> getUsers() {
         return userEntities;
     }
 
-    public void setUserEntities(Collection<UserEntity> userEntities) {
-        this.userEntities = userEntities;
+    @Override
+    public Collection<? extends Menu> getMenus() {
+        return menuEntities;
     }
 
-    public Collection<ResourceEntity> getResourceEntities() {
-        return resourceEntities;
-    }
-
-    public void setResourceEntities(Collection<ResourceEntity> resourceEntities) {
-        this.resourceEntities = resourceEntities;
-    }
 }

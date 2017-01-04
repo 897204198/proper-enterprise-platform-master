@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
-import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
@@ -38,11 +37,6 @@ public class CommonResourceServiceImpl implements ResourceService {
     @Override
     public Collection<Resource> find() {
         return InterfaceCollectionConverter.convert(resourceRepository.findAll());
-    }
-
-    @Override
-    public Collection<Resource> find(ResourceType type) {
-        return resourceRepository.findByResourceType(type);
     }
 
     @Override

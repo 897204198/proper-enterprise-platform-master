@@ -21,7 +21,7 @@ class UsersControllerTest extends AbstractTest {
     @Autowired
     RoleService roleService
 
-    @Sql
+    @Sql("/com/proper/enterprise/platform/auth/common/roles.sql")
     @Test
     public void addRolesToUserAndThenRemove() {
         UserEntity user = postAndReturn(URI, userEntity)

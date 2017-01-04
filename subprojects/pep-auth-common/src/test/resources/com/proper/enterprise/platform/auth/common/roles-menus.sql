@@ -1,0 +1,10 @@
+INSERT INTO pep_auth_roles_menus (role_id, menu_id) VALUES ('role1', 'a2');
+INSERT INTO pep_auth_roles_menus (role_id, menu_id) VALUES ('role1', 'a2-m2');
+INSERT INTO pep_auth_roles_menus (role_id, menu_id) VALUES ('role1', 'a2-m2-2');
+INSERT INTO pep_auth_roles_menus (role_id, menu_id) VALUES ('role1', 'a2-m2-1-1');
+INSERT INTO pep_auth_roles_menus (role_id, menu_id) VALUES ('role1', 'a2-m3');
+INSERT INTO pep_auth_roles_menus (role_id, menu_id) VALUES ('role2', 'a2');
+INSERT INTO pep_auth_roles_menus (role_id, menu_id) VALUES ('role2', 'a2-m1');
+INSERT INTO pep_auth_roles_menus (role_id, menu_id) VALUES ('role2', 'a2-m2');
+INSERT INTO pep_auth_roles_menus (role_id, menu_id) VALUES ('role2', 'a2-m2-1');
+INSERT INTO pep_auth_roles_menus (role_id, menu_id) VALUES ('role2', 'a2-m2-1-2');

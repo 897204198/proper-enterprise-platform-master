@@ -1,8 +1,7 @@
 package com.proper.enterprise.platform.api.auth.service;
 
-import com.proper.enterprise.platform.api.auth.model.Resource;
+import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.enums.ResourceType;
 
 import java.util.Collection;
 
@@ -18,7 +17,7 @@ public interface UserService {
 
     void save(User... users);
 
-    User getCurrentUser() throws Exception;
+    User getCurrentUser();
 
     User get(String id);
 
@@ -29,24 +28,14 @@ public interface UserService {
     void delete(User user);
 
     /**
-     * 获得当前登录用户权限范围内资源集合
+     * 获得当前登录用户权限范围内菜单集合
      *
-     * @return 资源集合
-     * @throws Exception
+     * @return 菜单集合
      */
-    Collection<Resource> getResources() throws Exception;
+    Collection<? extends Menu> getMenus();
 
-    /**
-     * 根据资源类型获得当前登录用户权限范围内资源集合
-     *
-     * @param resourceType 资源类型
-     * @return 资源集合
-     * @throws Exception
-     */
-    Collection<Resource> getResources(ResourceType resourceType) throws Exception;
+    Collection<? extends Menu> getMenus(String userId);
 
-    Collection<Resource> getResourcesById(String userId);
-
-    Collection<Resource> getResources(String username);
+    Collection<? extends Menu> getMenusByUsername(String username);
 
 }

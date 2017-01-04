@@ -2,12 +2,13 @@ package com.proper.enterprise.platform.api.auth.model;
 
 import com.proper.enterprise.platform.core.api.IBase;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
  * 角色
  *
- * 角色定义应用的使用权限，权限控制至菜单下`资源`。
+ * 角色定义应用的使用权限，权限控制至菜单叶子节点表示的`资源`。
  * 角色以树形结构组织，角色`可继承`，子角色权限范围是父角色权限范围的子集。
  *
  * 权限分为两种类型：
@@ -59,5 +60,12 @@ public interface Role extends IBase {
      * @param permissions 权限集合
      */
     void setPermission(Set<Permission> permissions);
+
+    /**
+     * 获得角色拥有的菜单集合
+     *
+     * @return
+     */
+    Collection<? extends Menu> getMenus();
 
 }

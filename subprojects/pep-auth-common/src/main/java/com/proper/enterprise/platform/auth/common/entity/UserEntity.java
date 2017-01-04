@@ -8,8 +8,8 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 @Entity
 @Table(name = "PEP_AUTH_USERS")
@@ -52,7 +52,7 @@ public class UserEntity extends BaseEntity implements User {
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    private Collection<RoleEntity> roleEntities = Collections.emptySet();
+    private Collection<RoleEntity> roleEntities = new ArrayList<>();
 
     @Column(insertable = false, updatable = false)
     protected String pepDtype;

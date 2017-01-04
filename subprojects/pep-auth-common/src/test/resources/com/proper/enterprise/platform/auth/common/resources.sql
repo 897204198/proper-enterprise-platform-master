@@ -1,0 +1,5 @@
+INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method) VALUES ('test-c', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '增', '/auth/test', 'POST');
+INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method) VALUES ('test-r', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '检索', '/auth/test', 'GET');
+INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method) VALUES ('test-g', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '查询', '/auth/test/*', 'GET');
+INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method) VALUES ('test-u', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '改', '/auth/test/*', 'PUT');
+INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method) VALUES ('test-d', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '删', '/auth/test/*', 'DELETE');

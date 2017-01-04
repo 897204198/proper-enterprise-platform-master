@@ -22,7 +22,7 @@ class UserServiceTest extends AbstractTest {
     }
 
     @Test
-    @Sql
+    @Sql("/com/proper/enterprise/platform/auth/common/users.sql")
     public void checkSuperuser() {
         assert userService.getByUsername('t1').isSuperuser()
         assert !userService.getByUsername('t2').isSuperuser()

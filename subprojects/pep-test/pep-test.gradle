@@ -1,5 +1,6 @@
 dependencies {
     compile libraries.groovy,
+            libraries.groovy_json,
             libraries.groovy_sql,
             libraries.jackson_databind,
             libraries.junit,
