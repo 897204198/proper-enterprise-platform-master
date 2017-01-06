@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.service.impl;
+package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
 import com.proper.enterprise.platform.core.utils.digest.MD5;
