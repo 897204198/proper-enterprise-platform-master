@@ -59,17 +59,24 @@ public class JWTVerifyFilter implements Filter {
         String token = jwtService.getTokenFromHeader(req);
         LOGGER.trace("JSON Web Token: " + token);
         if (StringUtil.isNotNull(token) && jwtService.verify(token)) {
-            LOGGER.trace("JWT verfiy succeed, invoke next filter in filter chain.");
-            filterChain.doFilter(request, response);
+            LOGGER.trace("JWT verfiy succeed.");
+            if (authzService.accessible(req.getRequestURI(), req.getMethod(), hasContext)) {
+                LOGGER.trace("Current user with {} could access {}:{}, invoke next filter in filter chain.",
+                    token, req.getMethod(), req.getRequestURI());
+                filterChain.doFilter(request, response);
+                return;
+            } else {
+                LOGGER.trace("Current user with {} could NOT access {}:{}!", token, req.getMethod(), req.getRequestURI());
+            }
         } else {
             LOGGER.trace("JWT verfiy failed.");
-            HttpServletResponse resp = (HttpServletResponse) response;
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            resp.setHeader("WWW-Authenticate",
-                "Bearer realm=\"pep\", "
-                    + "error=\"invalid_token\", "
-                    + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A VALID TOKEN\"");
         }
+        HttpServletResponse resp = (HttpServletResponse) response;
+        resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        resp.setHeader("WWW-Authenticate",
+            "Bearer realm=\"pep\", "
+                + "error=\"invalid_auth\", "
+                + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHENTICATION OR AUTHORIZATION\"");
     }
 
     /**

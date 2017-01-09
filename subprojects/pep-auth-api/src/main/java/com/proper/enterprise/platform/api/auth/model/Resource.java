@@ -87,4 +87,11 @@ public interface Resource extends IBase {
      */
     void remove(DataRestrain restrain);
 
+    /**
+     * 获得资源关联的菜单
+     *
+     * @return 菜单集合
+     */
+    Collection<? extends Menu> getMenus();
+
 }

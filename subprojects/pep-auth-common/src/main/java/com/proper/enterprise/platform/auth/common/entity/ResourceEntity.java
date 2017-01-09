@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.model.DataRestrain;
+import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
@@ -89,6 +90,11 @@ public class ResourceEntity extends BaseEntity implements Resource {
     @Override
     public void remove(DataRestrain restrain) {
         dataRestrainEntities.remove(restrain);
+    }
+
+    @Override
+    public Collection<? extends Menu> getMenus() {
+        return menuEntities;
     }
 
     public RequestMethod getMethod() {

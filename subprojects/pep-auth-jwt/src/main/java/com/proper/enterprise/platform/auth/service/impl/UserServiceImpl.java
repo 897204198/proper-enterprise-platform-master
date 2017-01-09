@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.auth.service.impl;
 
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.auth.common.service.impl.CommonUserServiceImpl;
+import com.proper.enterprise.platform.auth.common.service.impl.AbstractUserServiceImpl;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.service.JWTService;
 import com.proper.enterprise.platform.core.utils.RequestUtil;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 
 @Service
-public class UserServiceImpl extends CommonUserServiceImpl {
+public class UserServiceImpl extends AbstractUserServiceImpl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -30,7 +30,7 @@ public class UserServiceImpl extends CommonUserServiceImpl {
                 LOGGER.error("Could NOT get token from request {}!", req.getRequestURI());
                 return null;
             }
-            LOGGER.debug("Get token '{}' from request '{}'", req.getRequestURI(), token);
+            LOGGER.debug("Get token '{}' from request '{}'", token, req.getRequestURI());
             JWTHeader header = jwtService.getHeader(token);
             return getByUsername(header.getName());
         } catch (Exception e) {

@@ -13,6 +13,8 @@
 
     <bean id="authzService" class="com.proper.enterprise.platform.auth.jwt.authz.AuthzService">
         <property name="ignorePatterns" value="${auth.jwt.ignorePatterns}" />
+        <property name="resourceService" ref="resourceServiceImpl" />
+        <property name="menuService" ref="menuServiceImpl" />
     </bean>
 
     <bean id="jwtService" class="com.proper.enterprise.platform.auth.jwt.service.JWTService">

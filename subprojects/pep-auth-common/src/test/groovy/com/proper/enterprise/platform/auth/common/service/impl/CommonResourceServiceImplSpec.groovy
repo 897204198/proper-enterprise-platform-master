@@ -10,11 +10,11 @@ class CommonResourceServiceImplSpec extends Specification {
 
     @Unroll
     def "Find best matches url pattern to #signature is #result"() {
-        def service = new CommonResourceServiceImpl()
-        
+        def service = new ResourceServiceImpl()
+
         expect:
         result == service.getBestMatch(constructCollection(resources), signature).url
-        
+
         where:
         result                     | signature                              | resources
         '/classes/*/*/group/*'     | 'GET:/classes/Archive/1/group/2'       | ['/classes/**', '/classes/*/*/group/*']
@@ -22,7 +22,7 @@ class CommonResourceServiceImplSpec extends Specification {
         '/classes/Archive/name/**' | 'GET:/classes/Archive/name/11111/1234' | ['/classes/**/name/11111/*', '/classes/Archive/name/**']
         '/classes/Archive/name/'   | 'GET:/classes/Archive/name/'           | ['/classes/Archive/name/', '/classes/Archive/name/**']
     }
-    
+
     def constructCollection(urls) {
         def list = []
         urls.each { url ->

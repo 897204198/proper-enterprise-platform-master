@@ -17,7 +17,7 @@ import java.util.List;
  *
  * 其中，获得当前用户的方法由于与安全框架具体实现关联，只能提供抽象实现
  */
-public abstract class CommonUserServiceImpl implements UserService {
+public abstract class AbstractUserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepo;

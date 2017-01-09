@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 @Service
-public class CommonRoleServiceImpl implements RoleService {
+public class RoleServiceImpl implements RoleService {
 
     @Autowired
     RoleRepository roleRepository;

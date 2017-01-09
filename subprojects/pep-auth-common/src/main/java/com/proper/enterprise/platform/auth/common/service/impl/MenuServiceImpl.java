@@ -1,11 +1,13 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.proper.enterprise.platform.api.auth.model.Menu;
+import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.repository.MenuRepository;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.sort.BeanComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -37,6 +39,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<? extends Menu> getMenus(User user) {
         Assert.notNull(user, "Could NOT get menus WITHOUT a user");
 
@@ -55,6 +58,30 @@ public class MenuServiceImpl implements MenuService {
 
         Collections.sort(menus, new BeanComparator("parent", "sequenceNumber"));
         return menus;
+    }
+
+    @Override
+    public boolean accessible(Resource resource) {
+        if (resource == null) {
+            return true;
+        }
+
+        Collection<? extends Menu> menus = resource.getMenus();
+        if (CollectionUtil.isEmpty(menus)) {
+            return true;
+        }
+
+        Collection<? extends Menu> userMenus = getMenus();
+        if (CollectionUtil.isEmpty(userMenus)) {
+            return false;
+        }
+
+        for (Menu menu : menus) {
+            if (userMenus.contains(menu)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

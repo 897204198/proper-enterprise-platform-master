@@ -1,0 +1,5 @@
+INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method) VALUES ('r1', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', 'test-res-1', '/jwt/filter/res/nomenu', 'GET');
+INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method) VALUES ('r2', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', 'test-res-2', '/jwt/filter/res/menures', 'GET');
+INSERT INTO pep_auth_menus (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, route, icon, parent_id, sequence_number) VALUES ('m1', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', 'test-menu', '/test/menu', null, null, '0');
+INSERT INTO pep_auth_menus_resources (menu_id, res_id) VALUES ('m1', 'r2');
+INSERT INTO pep_auth_users (id, create_user_id, create_time, last_modify_user_id, last_modify_time, username, password, superuser, pep_dtype) VALUES ('art', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', 'art', 'pwd', 'N', 'UserEntity');

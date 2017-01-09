@@ -200,7 +200,10 @@ public abstract class AbstractTest {
 
     protected def resOfGet(uri, status) {
         def str = get(uri, status).response.contentAsString
-        str > '' ? new JsonSlurper().parseText(str) : str
+        try {
+            str = new JsonSlurper().parseText(str)
+        } catch (ex) { }
+        str
     }
 
     private def checkBaseRetrive(uri, entity) {
@@ -246,5 +249,5 @@ public abstract class AbstractTest {
             sleep(5)
         }
     }
-    
+
 }

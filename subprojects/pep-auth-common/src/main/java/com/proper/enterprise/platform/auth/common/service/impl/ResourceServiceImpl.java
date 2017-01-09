@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
-import com.proper.enterprise.platform.core.converter.InterfaceCollectionConverter;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 @Service
-public class CommonResourceServiceImpl implements ResourceService {
+public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
     ResourceRepository resourceRepository;
@@ -36,7 +36,7 @@ public class CommonResourceServiceImpl implements ResourceService {
 
     @Override
     public Collection<Resource> find() {
-        return InterfaceCollectionConverter.convert(resourceRepository.findAll());
+        return CollectionUtil.convert(resourceRepository.findAll());
     }
 
     @Override
