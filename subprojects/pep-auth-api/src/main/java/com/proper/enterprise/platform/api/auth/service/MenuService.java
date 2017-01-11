@@ -28,15 +28,16 @@ public interface MenuService {
     Collection<? extends Menu> getMenus(User user);
 
     /**
-     * 当前用户是否有权限访问某资源
+     * 某资源是否能够被某用户访问
      *
      * 当资源未定义或未定义在任何菜单下时，任何人都有权限访问
      * 当资源定义到某菜单下时，没有角色的用户（即没有任何菜单访问权限）不能访问该资源
      * 用户需拥有菜单的访问权限，才可访问菜单下的资源
      *
      * @param  resource 资源
+     * @param  userId   用户 ID
      * @return true：有权限；false：无权限
      */
-    boolean accessible(Resource resource);
+    boolean accessible(Resource resource, String userId);
 
 }

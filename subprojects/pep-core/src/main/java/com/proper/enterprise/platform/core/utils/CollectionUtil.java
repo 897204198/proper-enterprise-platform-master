@@ -36,4 +36,8 @@ public class CollectionUtil extends CollectionUtils {
         return result;
     }
 
+    public static boolean isNotEmpty(Collection<?> collection) {
+        return !isEmpty(collection);
+    }
+
 }

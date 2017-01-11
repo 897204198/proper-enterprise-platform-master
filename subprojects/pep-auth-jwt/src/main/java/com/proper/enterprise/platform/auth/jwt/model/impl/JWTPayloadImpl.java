@@ -14,6 +14,8 @@ public class JWTPayloadImpl implements JWTPayload {
 
     private String roles;
 
+    private boolean hasRole;
+
     public String getEmpName() {
         return empName;
     }
@@ -29,4 +31,13 @@ public class JWTPayloadImpl implements JWTPayload {
     public void setRoles(String roles) {
         this.roles = roles;
     }
+
+    public boolean isHasRole() {
+        return hasRole;
+    }
+
+    public void setHasRole(boolean hasRole) {
+        this.hasRole = hasRole;
+    }
+
 }

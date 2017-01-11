@@ -61,7 +61,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public boolean accessible(Resource resource) {
+    public boolean accessible(Resource resource, String userId) {
         if (resource == null) {
             return true;
         }
@@ -71,7 +71,8 @@ public class MenuServiceImpl implements MenuService {
             return true;
         }
 
-        Collection<? extends Menu> userMenus = getMenus();
+        User user = userService.get(userId);
+        Collection<? extends Menu> userMenus = getMenus(user);
         if (CollectionUtil.isEmpty(userMenus)) {
             return false;
         }

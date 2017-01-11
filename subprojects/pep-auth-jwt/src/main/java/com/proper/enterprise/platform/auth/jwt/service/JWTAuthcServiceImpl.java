@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class JWTAuthcServiceImpl implements JWTAuthcService {
         header.setId(user.getId());
         header.setName(user.getUsername());
         JWTPayloadImpl payload = new JWTPayloadImpl();
+        payload.setHasRole(user.isSuperuser() || CollectionUtil.isNotEmpty(user.getRoles()));
         jwtService.clearToken(header);
         return jwtService.generateToken(header, payload);
     }

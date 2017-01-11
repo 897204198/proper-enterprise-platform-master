@@ -61,9 +61,9 @@ public class AuthzService {
         return result;
     }
 
-    public boolean accessible(String url, String method, boolean hasContext) {
+    public boolean accessible(String url, String method, boolean hasContext, String userId) {
         Resource resource = resourceService.get(getMappingUrl(url, hasContext), RequestMethod.valueOf(method));
-        return menuService.accessible(resource);
+        return menuService.accessible(resource, userId);
     }
 
 }

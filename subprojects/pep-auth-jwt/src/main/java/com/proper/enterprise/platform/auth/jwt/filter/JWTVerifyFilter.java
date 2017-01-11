@@ -60,7 +60,8 @@ public class JWTVerifyFilter implements Filter {
         LOGGER.trace("JSON Web Token: " + token);
         if (StringUtil.isNotNull(token) && jwtService.verify(token)) {
             LOGGER.trace("JWT verfiy succeed.");
-            if (authzService.accessible(req.getRequestURI(), req.getMethod(), hasContext)) {
+            String userId = jwtService.getHeader(token).getId();
+            if (authzService.accessible(req.getRequestURI(), req.getMethod(), hasContext, userId)) {
                 LOGGER.trace("Current user with {} could access {}:{}, invoke next filter in filter chain.",
                     token, req.getMethod(), req.getRequestURI());
                 filterChain.doFilter(request, response);
