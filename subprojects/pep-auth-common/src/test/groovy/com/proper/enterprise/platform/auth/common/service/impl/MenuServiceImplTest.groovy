@@ -41,27 +41,27 @@ class MenuServiceImplTest extends AbstractTest {
     @Test
     public void accessible() {
         // anyone could access resource not be defined
-        assert service.accessible(null)
+        assert service.accessible(null, null)
         // anyone could access resource without menu
-        assert service.accessible(resourceService.get('test'))
+        assert service.accessible(resourceService.get('test'), null)
 
         mockUser('test3', 't3')
-        assert service.accessible(resourceService.get('test'))
+        assert service.accessible(resourceService.get('test'), 'test3')
         // could not access resource without role
-        assert !service.accessible(resourceService.get('test-d'))
+        assert !service.accessible(resourceService.get('test-d'), 'test3')
 
         mockUser('test2', 't2')
-        assert service.accessible(resourceService.get('test'))
-        assert service.accessible(resourceService.get('test-d'))
+        assert service.accessible(resourceService.get('test'), 'test2')
+        assert service.accessible(resourceService.get('test-d'), 'test2')
         // normal user could not access resource without authorization
-        assert !service.accessible(resourceService.get('test1'))
+        assert !service.accessible(resourceService.get('test1'), 'test2')
 
         // super user could access everything
         mockUser('test1', 't1', 'pwd', true)
-        assert service.accessible(null)
-        assert service.accessible(resourceService.get('test'))
-        assert service.accessible(resourceService.get('test-d'))
-        assert service.accessible(resourceService.get('test1'))
+        assert service.accessible(null, 'test1')
+        assert service.accessible(resourceService.get('test'), 'test1')
+        assert service.accessible(resourceService.get('test-d'), 'test1')
+        assert service.accessible(resourceService.get('test1'), 'test1')
     }
 
 }
