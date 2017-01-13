@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.auth.jwt.filter;
 
-import com.proper.enterprise.platform.auth.jwt.annotation.JWTIgnore;
+import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.auth.jwt.authz.AuthzService;
 import com.proper.enterprise.platform.auth.jwt.service.HandlerHolder;
 import com.proper.enterprise.platform.auth.jwt.service.JWTService;
@@ -83,8 +83,8 @@ public class JWTVerifyFilter implements Filter {
     /**
      * 判断 request 请求的资源是否不需要 JWT 权限约束
      * 可以通过如下方式设置资源不需要权限：
-     * 1. 在 controller 的方法上设置 @JWTIgnore，表示该方法不需要权限
-     * 2. 直接在 controller 上设置 @JWTIgnore，表示该 controller 下的所有方法都不需要权限
+     * 1. 在 controller 的方法上设置 @AuthcIgnore，表示该方法不需要权限
+     * 2. 直接在 controller 上设置 @AuthcIgnore，表示该 controller 下的所有方法都不需要权限
      * 3. 在 properties 的 auth.jwt.ignorePatterns 中配置
      *
      * @param  req 请求对象
@@ -102,17 +102,17 @@ public class JWTVerifyFilter implements Filter {
     }
 
     private boolean hasIgnoreOnMethod(HandlerMethod handler) {
-        boolean ignore = handler.hasMethodAnnotation(JWTIgnore.class);
+        boolean ignore = handler.hasMethodAnnotation(AuthcIgnore.class);
         if (ignore) {
-            LOGGER.trace("Not need JWT of this url caused by @JWTIgnore on method '{}'.", handler.getMethod().getName());
+            LOGGER.trace("Not need JWT of this url caused by @AuthcIgnore on method '{}'.", handler.getMethod().getName());
         }
         return ignore;
     }
 
     private boolean hasIgnoreOnType(HandlerMethod handler) {
-        boolean ignore = handler.getBeanType().getAnnotation(JWTIgnore.class) != null;
+        boolean ignore = handler.getBeanType().getAnnotation(AuthcIgnore.class) != null;
         if (ignore) {
-            LOGGER.trace("Not need JWT of this url caused by @JWTIgnore on type '{}'.", handler.getBeanType().getName());
+            LOGGER.trace("Not need JWT of this url caused by @AuthcIgnore on type '{}'.", handler.getBeanType().getName());
         }
         return ignore;
     }

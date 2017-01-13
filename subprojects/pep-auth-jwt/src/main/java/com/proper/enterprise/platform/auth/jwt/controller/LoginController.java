@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.auth.jwt.controller;
 
+import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.service.AuthcService;
-import com.proper.enterprise.platform.auth.jwt.annotation.JWTIgnore;
 import com.proper.enterprise.platform.auth.jwt.service.JWTAuthcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class LoginController {
     @Autowired
     private JWTAuthcService jwtAuthcService;
 
-    @JWTIgnore
+    @AuthcIgnore
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> login(@RequestBody Map<String, String> loginMap) throws IOException {
         String username = authcService.getUsername(loginMap);

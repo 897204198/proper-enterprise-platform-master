@@ -1,13 +1,12 @@
 package com.proper.enterprise.platform.auth.jwt.filter.mock
-
-import com.proper.enterprise.platform.auth.jwt.annotation.JWTIgnore
+import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore
 import com.proper.enterprise.platform.core.controller.BaseController
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/jwt/filter/ignore/type")
-@JWTIgnore
+@AuthcIgnore
 class IgnoreTypeController extends BaseController {
 
     @GetMapping
