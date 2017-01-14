@@ -24,4 +24,8 @@ public interface IBase extends Serializable {
 
     void setLastModifyTime(String lastModifyTime);
 
+    boolean isValid();
+
+    void setValid(boolean valid);
+
 }

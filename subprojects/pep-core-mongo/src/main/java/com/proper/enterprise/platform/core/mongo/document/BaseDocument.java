@@ -30,6 +30,10 @@ public class BaseDocument implements IBase {
     @Field("LT")
     protected String lastModifyTime = DateUtil.getTimestamp(true);
 
+    @JsonIgnore
+    @Field("V")
+    protected boolean valid = true;
+
     @Override
     public String getId() {
         return id;
@@ -79,4 +83,15 @@ public class BaseDocument implements IBase {
     public void setLastModifyTime(String lastModifyTime) {
         this.lastModifyTime = lastModifyTime;
     }
+
+    @Override
+    public boolean isValid() {
+        return valid;
+    }
+
+    @Override
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+    
 }

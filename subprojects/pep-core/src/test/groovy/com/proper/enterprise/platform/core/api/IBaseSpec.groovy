@@ -14,6 +14,7 @@ class IBaseSpec extends Specification {
         obj.setLastModifyTime(time)
         obj.setCreateUserId(user)
         obj.setLastModifyUserId(user)
+        obj.setValid(false)
 
         expect:
         obj.getId() == id
@@ -21,6 +22,7 @@ class IBaseSpec extends Specification {
         obj.getLastModifyTime() == time
         obj.getCreateUserId() == user
         obj.getLastModifyUserId() == user
+        !obj.isValid()
 
         where:
         clz                 | time                  | user  | id
