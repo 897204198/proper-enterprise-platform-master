@@ -31,7 +31,7 @@ public class AEntity {
     @Column(nullable = false)
     String password;
 
-    String useStatus = 'NO';
+    boolean valid = false;
 
     String description;
 

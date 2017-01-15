@@ -31,8 +31,6 @@ public class AEntity extends BaseEntity {
     @ManyToMany
     Collection<CEntity> cEntities;
 
-    String useStatus = 'NO';
-
     String description;
 
 }

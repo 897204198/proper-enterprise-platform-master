@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
-import com.proper.enterprise.platform.api.auth.enums.UseStatus;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Permission;
 import com.proper.enterprise.platform.api.auth.model.Role;
@@ -33,12 +32,6 @@ public class RoleEntity extends BaseEntity implements Role {
             joinColumns = @JoinColumn(name = "ROLE_ID"),
             inverseJoinColumns = @JoinColumn(name = "MENU_ID"))
     private Collection<MenuEntity> menuEntities = new ArrayList<>();
-
-    /**
-     * 使用状态
-     */
-    @Enumerated(EnumType.STRING)
-    private UseStatus useStatus = UseStatus.STOP;
 
     @Override
     public String toString() {
@@ -83,14 +76,6 @@ public class RoleEntity extends BaseEntity implements Role {
     @Override
     public void setPermission(Set<Permission> permissions) {
         // TODO
-    }
-
-    public UseStatus getUseStatus() {
-        return useStatus;
-    }
-
-    public void setUseStatus(UseStatus useStatus) {
-        this.useStatus = useStatus;
     }
 
     public Collection<? extends User> getUsers() {
