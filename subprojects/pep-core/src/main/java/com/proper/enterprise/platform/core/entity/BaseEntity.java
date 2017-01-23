@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -49,6 +50,7 @@ public class BaseEntity implements IBase {
 
     @Column(nullable = false)
     @JsonIgnore
+    @Type(type = "yes_no")
     protected boolean valid = true;
 
     @Override

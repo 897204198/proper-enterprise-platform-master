@@ -32,6 +32,16 @@ public class PrepayReq implements Serializable {
      */
     private String payIntent;
 
+    /**
+     * 支付时间_格式为:yyyyMMddHHmmss
+     */
+    private String payTime;
+
+    /**
+     * 超时时间_以时间分为单位
+     */
+    private String overMinuteTime;
+
     public String getOutTradeNo() {
         return outTradeNo;
     }
@@ -70,5 +80,21 @@ public class PrepayReq implements Serializable {
 
     public void setPayIntent(String payIntent) {
         this.payIntent = payIntent;
+    }
+
+    public String getPayTime() {
+        return payTime;
+    }
+
+    public void setPayTime(String payTime) {
+        this.payTime = payTime;
+    }
+
+    public String getOverMinuteTime() {
+        return overMinuteTime;
+    }
+
+    public void setOverMinuteTime(String overMinuteTime) {
+        this.overMinuteTime = overMinuteTime;
     }
 }
