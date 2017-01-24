@@ -73,6 +73,7 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
     @CacheEntity
     public class UserEntity extends BaseEntity implements User
     ```
+    > 字段属性采用驼峰式命名，数据库字段名自动转换为蛇形命名。`boolean` 类型的字段需统一设定 `@Type(type = "yes_no")` 注解。
 
 * 实体间关系按照 JPA 规范通过注解指定。为避免关系的初始数据重复插入，需在定义关系时定义唯一性约束，如：
    ```
