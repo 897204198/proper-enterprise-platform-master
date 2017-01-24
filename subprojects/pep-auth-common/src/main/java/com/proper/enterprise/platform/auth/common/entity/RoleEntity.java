@@ -30,7 +30,8 @@ public class RoleEntity extends BaseEntity implements Role {
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_ROLES_MENUS",
             joinColumns = @JoinColumn(name = "ROLE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "MENU_ID"))
+            inverseJoinColumns = @JoinColumn(name = "MENU_ID"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"ROLE_ID", "MENU_ID"}))
     private Collection<MenuEntity> menuEntities = new ArrayList<>();
 
     @Override

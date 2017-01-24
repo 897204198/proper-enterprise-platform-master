@@ -43,7 +43,8 @@ public class ResourceEntity extends BaseEntity implements Resource {
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_RESOURCES_DATARESTRAINS",
         joinColumns = @JoinColumn(name = "RESOURCE_ID"),
-        inverseJoinColumns = @JoinColumn(name = "DATARESTRAIN_ID"))
+        inverseJoinColumns = @JoinColumn(name = "DATARESTRAIN_ID"),
+        uniqueConstraints = @UniqueConstraint(columnNames = {"RESOURCE_ID", "DATARESTRAIN_ID"}))
     private Collection<DataRestrainEntity> dataRestrainEntities = new ArrayList<>();
 
     @ManyToMany(mappedBy = "resourceEntities")

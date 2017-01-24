@@ -69,11 +69,25 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
 
     ```
     @Entity
-	@Table(name = "PEP_AUTH_USER")
-	@CacheEntity
-	public class UserEntity extends BaseEntity implements User
+    @Table(name = "PEP_AUTH_USER")
+    @CacheEntity
+    public class UserEntity extends BaseEntity implements User
     ```
 
+* 实体间关系按照 JPA 规范通过注解指定。为避免关系的初始数据重复插入，需在定义关系时定义唯一性约束，如：
+   ```
+   // UserEntity
+   @ManyToMany
+   @JoinTable(name = "PEP_AUTH_USERS_ROLES",
+              joinColumns = @JoinColumn(name = "USER_ID"),
+              inverseJoinColumns = @JoinColumn(name = "ROLE_ID"),
+              uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "ROLE_ID"}))
+   private Collection<RoleEntity> roleEntities = new ArrayList<>();
+
+   // RoleEntity
+   @ManyToMany(mappedBy = "roleEntities")
+   private Collection<UserEntity> userEntities = new ArrayList<>();
+   ```
 * 同一张表被多个实体（继承关系）映射：以用户表为例，平台定义的基础用户实体（`UserEntity`）只包含必须的用户属性，当项目需要扩展用户表中的属性时，可以定义一个从 `UserEntity` 继承的新实体，如：`CustomUserEntity`。此时需要在基类中设定 `DiscriminatorColumn` 和 `DiscriminatorValue`（如果原本没有定义过的话），并在新继承出的类中定义 `DiscriminatorValue`。
     ```
     @Entity

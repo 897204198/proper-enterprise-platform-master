@@ -51,7 +51,8 @@ public class UserEntity extends BaseEntity implements User {
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
             joinColumns = @JoinColumn(name = "USER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+            inverseJoinColumns = @JoinColumn(name = "ROLE_ID"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "ROLE_ID"}))
     private Collection<RoleEntity> roleEntities = new ArrayList<>();
 
     @Column(insertable = false, updatable = false)

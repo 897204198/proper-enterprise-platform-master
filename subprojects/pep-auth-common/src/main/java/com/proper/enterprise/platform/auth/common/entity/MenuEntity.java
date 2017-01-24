@@ -66,7 +66,8 @@ public class MenuEntity extends BaseEntity implements Menu {
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_MENUS_RESOURCES",
         joinColumns = @JoinColumn(name = "MENU_ID"),
-        inverseJoinColumns = @JoinColumn(name = "RES_ID"))
+        inverseJoinColumns = @JoinColumn(name = "RES_ID"),
+        uniqueConstraints = @UniqueConstraint(columnNames = {"MENU_ID", "RES_ID"}))
     private Collection<ResourceEntity> resourceEntities = new ArrayList<>();
 
     /**
