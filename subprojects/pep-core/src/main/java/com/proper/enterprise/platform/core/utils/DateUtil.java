@@ -140,4 +140,25 @@ public class DateUtil {
         return date == null ? null : (Date) date.clone();
     }
 
+    /**
+     * 日期添加指定天数
+     *
+     * @param date 要添加天数的日期,如果为负数，则为减少的天数
+     * @param day 添加的天数
+     * @return 添加指定分钟数的新的Date对象
+     */
+    public static Date addDay(Date date, int day) {
+        return date == null ? null: new DateTime(date.getTime()).plusDays(day).toDate();
+    }
+    /**
+     * 日期添加指定分钟数
+     *
+     * @param date 要添加天数的日期,如果为负数，则为减少的分钟数
+     * @param minute 添加的天数
+     * @return 添加指定分钟数的新的Date对象
+     */
+    public static Date addMinute(Date date, int minute) {
+        return date == null ? null : new DateTime(date.getTime()).plusMinutes(minute).toDate();
+    }
+
 }

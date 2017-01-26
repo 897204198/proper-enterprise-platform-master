@@ -76,4 +76,28 @@ class DateUtilSpec extends Specification {
         timestamp != DateUtil.getTimestamp(true)
     }
 
+    def "Check addDay in DateUtil"() {
+        given:
+        Date d = new DateTime(2016, 6, 15, 15, 31, 24).toDate()
+
+        expect:
+        DateUtil.addDay(DateUtil.addDay(d, 2),-2)==d
+        DateUtil.addDay(DateUtil.addDay(d, 2),-1)!=d
+        DateUtil.addDay(d,0)==d
+        DateUtil.addDay(null,0)==null
+        DateUtil.addDay(d,5)==new DateTime(2016, 6, 20, 15, 31, 24).toDate()
+    }
+
+    def "Check addMinute in DateUtil"() {
+        given:
+        Date d = new DateTime(2016, 6, 15, 15, 31, 24).toDate()
+
+        expect:
+        DateUtil.addMinute(DateUtil.addMinute(d, 100),-100)==d
+        DateUtil.addMinute(DateUtil.addMinute(d, 100),-99)!=d
+        DateUtil.addMinute(d,0)==d
+        DateUtil.addMinute(null,0)==null
+        DateUtil.addMinute(d,5)==new DateTime(2016, 6, 15, 15, 36, 24).toDate()
+    }
+
 }
