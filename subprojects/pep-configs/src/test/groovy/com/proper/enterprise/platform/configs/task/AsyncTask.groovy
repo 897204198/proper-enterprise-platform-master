@@ -11,6 +11,7 @@ class AsyncTask {
 
     @Async
     public Future<Integer> addOne(int i) {
+        sleep(500)
         new AsyncResult<Integer>(++i)
     }
 
