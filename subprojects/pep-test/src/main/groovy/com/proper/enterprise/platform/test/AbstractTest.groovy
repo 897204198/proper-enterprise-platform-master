@@ -246,6 +246,7 @@ public abstract class AbstractTest {
 
     protected def waitExecutorDone() {
         while (threadPoolTaskExecutor.activeCount > 0) {
+            println "sleep 5 milliseconds to wait, current active count is ${threadPoolTaskExecutor.activeCount}"
             sleep(5)
         }
     }
