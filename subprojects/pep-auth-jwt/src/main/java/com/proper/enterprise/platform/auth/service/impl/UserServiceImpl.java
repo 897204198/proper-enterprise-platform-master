@@ -27,14 +27,14 @@ public class UserServiceImpl extends AbstractUserServiceImpl {
             req = RequestUtil.getCurrentRequest();
             String token = jwtService.getTokenFromHeader(req);
             if (StringUtil.isNull(token)) {
-                LOGGER.error("Could NOT get token from request {}!", req.getRequestURI());
+                LOGGER.debug("Could NOT get current user from {} caused by NO token.", req.getRequestURI());
                 return null;
             }
             LOGGER.debug("Get token '{}' from request '{}'", token, req.getRequestURI());
             JWTHeader header = jwtService.getHeader(token);
             return getByUsername(header.getName());
         } catch (Exception e) {
-            LOGGER.debug("Could not get current request! {}", e.getMessage());
+            LOGGER.debug("Could NOT get current user caused by {}.", e.getMessage());
             return null;
         }
     }
