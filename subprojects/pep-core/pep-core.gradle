@@ -5,6 +5,7 @@ dependencies {
             libraries.jackson_databind,
             libraries.joda_time,
             libraries.okhttp,
+            libraries.pinyin4j,
             libraries.servlet_api,
             libraries.spring_orm,
             libraries.spring_oxm
