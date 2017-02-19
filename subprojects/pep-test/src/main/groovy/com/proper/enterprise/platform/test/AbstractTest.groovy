@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils
 import org.springframework.web.context.WebApplicationContext
 
 import javax.servlet.Filter
+import java.lang.reflect.Modifier
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -154,6 +155,24 @@ public abstract class AbstractTest {
     protected static void coverFilter(Filter filter) {
         filter.init(null)
         filter.destroy()
+    }
+
+    protected static void coverBean(Object bean) {
+        bean.getClass().getDeclaredMethods().each { method ->
+            println method
+            if (shouldCover(method.modifiers)) {
+                def params = []
+                method.getParameterTypes().each { type ->
+                    params << (type.isPrimitive() ? 0 : (type.isInterface() ? [] : type.newInstance()))
+                }
+                params.size() == 0 ? method.invoke(bean) :
+                    (params.size() == 1 ? method.invoke(bean, params[0]) : method.invoke(bean, params))
+            }
+        }
+    }
+
+    private static boolean shouldCover(int modifiers) {
+        !Modifier.isPrivate(modifiers) && !Modifier.isAbstract(modifiers)
     }
 
     /**

@@ -20,7 +20,7 @@ class SchedulerTest extends AbstractTest {
         def sf = scheduler.scheduleAtFixedRate(task, 50)
         sleep(60)
         sf.cancel(true)
-        assert taskCount == 2
+        assert taskCount >= 2
     }
 
     class Task implements Runnable {
