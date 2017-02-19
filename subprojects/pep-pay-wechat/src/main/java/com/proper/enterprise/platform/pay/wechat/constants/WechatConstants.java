@@ -11,7 +11,7 @@ public class WechatConstants {
     public final static String WECHAT_PAY_CERT_PATH = ConfCenter.get("pay.wechat.certPath");
     /**------------服务号相关信息------------------*/
     // 服务号的应用号
-    public final static String WECHAT_PAY_APPID = ConfCenter.get("pay.wechat.appid");
+    public final static String WECHAT_PAY_APPID = ConfCenter.get("pay.wechat.appId");
     // 商户号
     public final static String WECHAT_PAY_MCHID = ConfCenter.get("pay.wechat.mchId");
     // API密钥
