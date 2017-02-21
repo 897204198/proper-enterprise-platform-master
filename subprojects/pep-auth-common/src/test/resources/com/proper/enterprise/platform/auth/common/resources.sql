@@ -1,7 +1,7 @@
-INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method, valid) VALUES ('test-c', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '增', '/auth/test', 'POST', 'Y');
-INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method, valid) VALUES ('test-r', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '检索', '/auth/test', 'GET', 'Y');
-INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method, valid) VALUES ('test-g', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '查询', '/auth/test/*', 'GET', 'Y');
-INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method, valid) VALUES ('test-u', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '改', '/auth/test/*', 'PUT', 'Y');
-INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method, valid) VALUES ('test-d', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '删', '/auth/test/*', 'DELETE', 'Y');
-INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method, valid) VALUES ('test', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '无菜单', '/test', 'GET', 'Y');
-INSERT INTO pep_auth_resources (id, create_user_id, create_time, last_modify_user_id, last_modify_time, name, url, method, valid) VALUES ('test1', 'pep', '2015-08-18 09:38:00', 'pep', '2015-08-18 09:38:00', '无角色', '/test1', 'GET', 'Y');
+INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test-c', '增', '/auth/test', 'POST');
+INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test-r', '检索', '/auth/test', 'GET');
+INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test-g', '查询', '/auth/test/*', 'GET');
+INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test-u', '改', '/auth/test/*', 'PUT');
+INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test-d', '删', '/auth/test/*', 'DELETE');
+INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test', '无菜单', '/test', 'GET');
+INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test1', '无角色', '/test1', 'GET');

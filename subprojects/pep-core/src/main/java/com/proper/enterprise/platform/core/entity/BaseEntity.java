@@ -14,43 +14,54 @@ import javax.persistence.MappedSuperclass;
 
 /**
  * 数据模型及实体基类，包含数据表公共字段的 getter 和 setter 方法
- *
- * 公共字段包括：
- *  - id                唯一标识
- *  - createUserId      创建用户 id
- *  - createTime        创建时间
- *  - lastModifyUserId  最后修改用户 id
- *  - lastModifyTime    最后修改时间
  */
 @MappedSuperclass
 public class BaseEntity implements IBase {
 
     private static final long serialVersionUID = PEPConstants.VERSION;
 
+    /**
+     * 唯一标识
+     */
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     protected String id;
 
-    @Column(updatable = false, nullable = false)
+    /**
+     * 创建用户 id
+     */
     @JsonIgnore
+    @Column(updatable = false, nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'PEP'")
     protected String createUserId;
 
-    @Column(updatable = false, nullable = false)
+    /**
+     * 创建时间
+     */
     @JsonIgnore
+    @Column(updatable = false, nullable = false, columnDefinition = "VARCHAR(255) DEFAULT '2017-02-20 00:00:00'")
     protected String createTime = DateUtil.getTimestamp(true);
 
-    @Column(nullable = false)
+    /**
+     * 最后修改用户 id
+     */
     @JsonIgnore
+    @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'PEP'")
     protected String lastModifyUserId;
 
-    @Column(nullable = false)
+    /**
+     * 最后修改时间
+     */
     @JsonIgnore
+    @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT '2017-02-20 00:00:00'")
     protected String lastModifyTime = DateUtil.getTimestamp(true);
 
-    @Column(nullable = false)
+    /**
+     * 数据是否有效（可表示逻辑删除）
+     */
     @JsonIgnore
     @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
     protected boolean valid = true;
 
     @Override
