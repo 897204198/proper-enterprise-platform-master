@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "PAY_WECHAT_REFUNDINFO")
+@Table(name = "PEP_PAY_WECHAT_REFUNDINFO")
 @CacheEntity
 public class WechatRefundEntity extends BaseEntity {
     /**

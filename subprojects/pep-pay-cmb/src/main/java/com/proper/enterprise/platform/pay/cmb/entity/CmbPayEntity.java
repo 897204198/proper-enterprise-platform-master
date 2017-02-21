@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * 一网通支付结果异步通知结果Entity
  */
 @Entity
-@Table(name = "PAY_CMB_PAY_INFO")
+@Table(name = "PEP_PAY_CMB_PAY_INFO")
 @CacheEntity
 public class CmbPayEntity extends BaseEntity {
 

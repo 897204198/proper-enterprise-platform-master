@@ -10,7 +10,7 @@ import javax.persistence.Table;
  * 退款信息
  */
 @Entity
-@Table(name = "PAY_CMB_REFUND_INFO")
+@Table(name = "PEP_PAY_CMB_REFUND_INFO")
 @CacheEntity
 public class CmbRefundEntity extends BaseEntity {
 

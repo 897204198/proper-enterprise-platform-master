@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * 支付宝支付Entity
  */
 @Entity
-@Table(name = "PAY_ALI_PAYINFO")
+@Table(name = "PEP_PAY_ALI_PAYINFO")
 @CacheEntity
 public class AliEntity extends BaseEntity {
 

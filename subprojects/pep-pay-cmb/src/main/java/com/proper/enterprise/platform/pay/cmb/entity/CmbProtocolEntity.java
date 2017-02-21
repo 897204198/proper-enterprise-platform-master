@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * 一网通用户协议异步通知结果
  */
 @Entity
-@Table(name = "PAY_CMB_PROTOCOL_INFO")
+@Table(name = "PEP_PAY_CMB_PROTOCOL_INFO")
 @CacheEntity
 public class CmbProtocolEntity extends BaseEntity {
 
