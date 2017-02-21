@@ -46,6 +46,7 @@ public class UserEntity extends BaseEntity implements User {
      * 是否为超级用户
      */
     @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
     private boolean superuser;
 
     @ManyToMany
