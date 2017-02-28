@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -36,6 +37,19 @@ public abstract class BaseController {
     }
 
     /**
+     * 返回 POST 请求的响应
+     * 创建实体成功时返回 201 Created 状态及被创建的实体
+     *
+     * @param  entity  被创建的实体
+     * @param  headers 响应头信息
+     * @param  <T>     实体类型
+     * @return POST 请求的响应
+     */
+    protected <T> ResponseEntity<T> responseOfPost(T entity, MultiValueMap<String, String> headers) {
+        return new ResponseEntity<>(entity, headers, HttpStatus.CREATED);
+    }
+
+    /**
      * 返回 GET 请求的响应
      * 查询到结果时返回 200 OK 状态及查询结果
      * 没有查到结果时返回 200 OK 状态
@@ -45,7 +59,21 @@ public abstract class BaseController {
      * @return GET 请求的响应
      */
     protected <T> ResponseEntity<T> responseOfGet(T entity) {
-        return responseOKWithOrWithoutContent(entity);
+        return responseOKWithOrWithoutContent(entity, null);
+    }
+
+    /**
+     * 返回 GET 请求的响应
+     * 查询到结果时返回 200 OK 状态及查询结果
+     * 没有查到结果时返回 200 OK 状态
+     *
+     * @param entity  查询结果
+     * @param headers 响应头信息
+     * @param <T>     结果对象类型
+     * @return GET 请求的响应
+     */
+    protected <T> ResponseEntity<T> responseOfGet(T entity, MultiValueMap<String, String> headers) {
+        return responseOKWithOrWithoutContent(entity, headers);
     }
 
     /**
@@ -55,12 +83,28 @@ public abstract class BaseController {
      * 没有查到结果时返回 200 OK 状态
      *
      * @param  list  结果集数据集合
-     * @param  count
-     * @param  <T>
-     * @return
+     * @param  count 数据总数
+     * @param  <T>   DataTrunk 保存的对象类型
+     * @return GET 请求的响应
      */
     protected <T> ResponseEntity<DataTrunk<T>> responseOfGet(List<T> list, long count) {
-        return responseOKWithOrWithoutContent(new DataTrunk<>(list, count));
+        return responseOKWithOrWithoutContent(new DataTrunk<>(list, count), null);
+    }
+
+    /**
+     * 返回 GET 请求的响应
+     * 结果集封装到一个 DataTrunk 对象中
+     * 查询到结果时返回 200 OK 状态及查询结果
+     * 没有查到结果时返回 200 OK 状态
+     *
+     * @param list    结果集数据集合
+     * @param count   数据总数
+     * @param headers 响应头信息
+     * @param <T>     DataTrunk 保存的对象类型
+     * @return GET 请求的响应
+     */
+    protected <T> ResponseEntity<DataTrunk<T>> responseOfGet(List<T> list, long count, MultiValueMap<String, String> headers) {
+        return responseOKWithOrWithoutContent(new DataTrunk<>(list, count), headers);
     }
 
     /**
@@ -73,17 +117,31 @@ public abstract class BaseController {
      * @return PUT 请求的响应
      */
     protected <T> ResponseEntity<T> responseOfPut(T entity) {
-        return responseOKWithOrWithoutContent(entity);
+        return responseOKWithOrWithoutContent(entity, null);
     }
 
-    private <T> ResponseEntity<T> responseOKWithOrWithoutContent(T entity) {
+    /**
+     * 返回 PUT 请求的响应
+     * 查询到要更新的实体并更新成功时返回 200 OK 状态及更新后的实体
+     * 没有查到结果时返回 200 OK 状态
+     *
+     * @param entity  更新后的实体
+     * @param headers 响应头信息
+     * @param <T>     更新的实体类型
+     * @return PUT 请求的响应
+     */
+    protected <T> ResponseEntity<T> responseOfPut(T entity, MultiValueMap<String, String> headers) {
+        return responseOKWithOrWithoutContent(entity, headers);
+    }
+
+    private <T> ResponseEntity<T> responseOKWithOrWithoutContent(T entity, MultiValueMap<String, String> headers) {
         boolean noContent = true;
         if (entity != null) {
             noContent = entity instanceof Collection && ((Collection) entity).isEmpty();
         }
         return noContent
-            ? new ResponseEntity<T>(HttpStatus.OK)
-            : (new ResponseEntity<>(entity, HttpStatus.OK));
+            ? new ResponseEntity<T>(headers, HttpStatus.OK)
+            : (new ResponseEntity<>(entity, headers, HttpStatus.OK));
     }
 
     /**

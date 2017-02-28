@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.repository.mock.entity.MockEntity
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
@@ -37,9 +38,10 @@ class BaseControllerTest extends AbstractTest {
         assert result.getStatusCode() == HttpStatus.OK
         assert result.getBody() == null
 
-        result = c.responseOfGet([])
+        result = c.responseOfGet([], new HttpHeaders(['Content-Type': [MediaType.TEXT_PLAIN_VALUE]], true))
         assert result.getStatusCode() == HttpStatus.OK
         assert result.getBody() == null
+        assert result.getHeaders().getContentType() == MediaType.TEXT_PLAIN
     }
 
     @Test
