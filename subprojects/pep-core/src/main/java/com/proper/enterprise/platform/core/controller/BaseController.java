@@ -100,15 +100,27 @@ public abstract class BaseController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex, WebRequest request) {
+        HttpHeaders headers = handleHeaders();
+        HttpStatus status = handleStatus(ex, request);
+        String body = handleBody(ex);
+        LOGGER.debug("Handle controller's exception to {}:{}", status, body);
+        return new ResponseEntity<>(body, headers, status);
+    }
+
+    protected HttpHeaders handleHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
+        return headers;
+    }
 
+    protected HttpStatus handleStatus(Exception ex, WebRequest request) {
         ResponseEntityExceptionHandler handler = new ResponseEntityExceptionHandler() { };
         ResponseEntity res = handler.handleException(ex, request);
-        HttpStatus status = res.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR) ? HttpStatus.BAD_REQUEST : res.getStatusCode();
+        return res.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR) ? HttpStatus.BAD_REQUEST : res.getStatusCode();
+    }
 
-        LOGGER.debug("Handle controller's exception to {}:{}", status, ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), headers, status);
+    protected String handleBody(Exception ex) {
+        return ex.getMessage();
     }
 
 }
