@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.core.controller.mock
 
 import com.proper.enterprise.platform.core.controller.BaseController
 import com.proper.enterprise.platform.core.entity.DataTrunk
+import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.core.utils.DateUtil
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -26,13 +27,16 @@ class TestController extends BaseController {
     @GetMapping("/trouble/2")
     public ResponseEntity<String> test2() {
         throw new ServletException('异常啦')
-        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
     @GetMapping("/trouble/3")
     public ResponseEntity<String> test3() {
         throw new NoHandlerFoundException('handle by handler', '', null)
-        return new ResponseEntity<String>(HttpStatus.OK);
+    }
+
+    @GetMapping('/trouble/4')
+    public ResponseEntity test4() {
+        throw new ErrMsgException('empty stack')
     }
 
     @GetMapping("/json/entity")

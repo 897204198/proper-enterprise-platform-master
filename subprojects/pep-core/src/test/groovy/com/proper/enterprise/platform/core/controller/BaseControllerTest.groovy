@@ -79,6 +79,8 @@ class BaseControllerTest extends AbstractTest {
         assert r3.getResponse().getContentType() == textPlainUtf8
 
         get('/test/trouble/3', HttpStatus.NOT_FOUND)
+
+        assert resOfGet('/test/trouble/4', HttpStatus.BAD_REQUEST) == 'empty stack'
     }
 
     @Test
