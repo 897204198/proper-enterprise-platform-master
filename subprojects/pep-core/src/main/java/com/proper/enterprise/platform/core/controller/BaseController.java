@@ -55,12 +55,12 @@ public abstract class BaseController {
      * 没有查到结果时返回 200 OK 状态
      *
      * @param  list  结果集数据集合
-     * @param  total
+     * @param  count
      * @param  <T>
      * @return
      */
-    protected <T> ResponseEntity<DataTrunk<T>> responseOfGet(List<T> list, long total) {
-        return responseOKWithOrWithoutContent(new DataTrunk<>(list, total));
+    protected <T> ResponseEntity<DataTrunk<T>> responseOfGet(List<T> list, long count) {
+        return responseOKWithOrWithoutContent(new DataTrunk<>(list, count));
     }
 
     /**

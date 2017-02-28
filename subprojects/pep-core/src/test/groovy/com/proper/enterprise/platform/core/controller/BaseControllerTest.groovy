@@ -96,7 +96,7 @@ class BaseControllerTest extends AbstractTest {
         def r = get('/test/datatrunk', HttpStatus.OK).response.contentAsString
         def dt = JSONUtil.parse(r, DataTrunk.class)
         assert dt.getData().size() == 3
-        assert dt.getTotal() == 10
+        assert dt.getCount() == 10
     }
 
 }

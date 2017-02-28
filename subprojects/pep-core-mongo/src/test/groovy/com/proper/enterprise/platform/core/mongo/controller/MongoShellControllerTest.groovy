@@ -79,9 +79,9 @@ class MongoShellControllerTest extends AbstractTest {
 
         def query = "{year: ${DateUtil.currentYear} }"
         // 可能有历史数据，所以结果数可能大于 5 条
-        def total = getDataTrunk("$URL?query=${encode(query)}").total
-        assert total == service.query(COLLECTION_NAME, query).size()
-        assert total >= times
+        def count = getDataTrunk("$URL?query=${encode(query)}").count
+        assert count == service.query(COLLECTION_NAME, query).size()
+        assert count >= times
         def size = getDataTrunk("$URL?query=${encode(query)}&limit=3").data.size()
         assert size == service.query(COLLECTION_NAME, query, 3).size()
         assert size == 3
@@ -92,8 +92,8 @@ class MongoShellControllerTest extends AbstractTest {
         assert min == service.query(COLLECTION_NAME, query, "{timestamp: 1}")[0].get('timestamp')
 
         def allData = getDataTrunk("$URL?query=")
-        assert allData.total == allData.total
-        assert allData.total >= times
+        assert allData.count == allData.count
+        assert allData.count >= times
     }
 
     @Test
@@ -101,7 +101,7 @@ class MongoShellControllerTest extends AbstractTest {
         def query = "{year: ${DateUtil.currentYear + 10} }"
         def dt = getDataTrunk("$URL?query=${encode(query)}")
         assert dt.getData() == []
-        assert dt.total == 0
+        assert dt.count == 0
     }
 
     private static def encode(String url) {

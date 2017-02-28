@@ -19,13 +19,13 @@ public class DataTrunk<T> implements Serializable {
     /**
      * 结果集数据总数
      */
-    private long total;
+    private long count;
 
     public DataTrunk() { }
 
-    public DataTrunk(Collection<T> data, long total) {
+    public DataTrunk(Collection<T> data, long count) {
         this.data = data;
-        this.total = total;
+        this.count = count;
     }
 
     public Collection<T> getData() {
@@ -36,12 +36,12 @@ public class DataTrunk<T> implements Serializable {
         this.data = data;
     }
 
-    public long getTotal() {
-        return total;
+    public long getCount() {
+        return count;
     }
 
-    public void setTotal(long total) {
-        this.total = total;
+    public void setCount(long count) {
+        this.count = count;
     }
 
 }
