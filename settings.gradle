@@ -1,19 +1,34 @@
 rootProject.name = 'proper-enterprise-platform'
 
+// Support two levels under subprojects folder
 file("${rootProject.projectDir}/subprojects").eachDir {project ->
     def buildFile = new File(settingsDir, "subprojects/${project.name}/${project.name}.gradle")
     if (buildFile.isFile()) {
         include project.name
+    } else {
+        file("${rootProject.projectDir}/subprojects/${project.name}").eachDir { group ->
+            if (new File(settingsDir, "subprojects/${project.name}/${group.name}/${group.name}.gradle").isFile()) {
+                include group.name
+            }
+        }
     }
 }
 
 rootProject.children.each { project ->
     String fileBaseName = project.name
-    String projectDirName = "subprojects/$fileBaseName"
-    project.projectDir = new File(settingsDir, projectDirName)
 
+    def pd = new File(settingsDir, "subprojects/$fileBaseName")
     def bf = new File(settingsDir, "subprojects/${project.name}/${project.name}.gradle")
-    if (project.projectDir.isDirectory() && bf.isFile()) {
+    if (pd.isDirectory() && bf.isFile()) {
+        project.projectDir = pd
         project.buildFileName = "${fileBaseName}.gradle"
+    } else {
+        def groupName = project.name.split('-')[0..1].join('-')
+        pd = new File(settingsDir, "subprojects/$groupName/$fileBaseName")
+        bf = new File(settingsDir, "subprojects/$groupName/${project.name}/${project.name}.gradle")
+        if (pd.isDirectory() && bf.isFile()) {
+            project.projectDir = pd
+            project.buildFileName = "${fileBaseName}.gradle"
+        }
     }
 }
