@@ -49,6 +49,7 @@ public class UserEntity extends BaseEntity implements User {
     @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
     private boolean superuser;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
             joinColumns = @JoinColumn(name = "USER_ID"),
