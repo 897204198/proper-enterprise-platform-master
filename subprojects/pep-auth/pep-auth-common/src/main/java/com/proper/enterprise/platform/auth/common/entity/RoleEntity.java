@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Permission;
 import com.proper.enterprise.platform.api.auth.model.Role;
@@ -24,6 +25,7 @@ public class RoleEntity extends BaseEntity implements Role {
      */
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roleEntities")
     private Collection<UserEntity> userEntities = new ArrayList<>();
 
