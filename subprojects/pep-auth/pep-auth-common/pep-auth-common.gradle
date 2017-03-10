@@ -4,4 +4,5 @@ dependencies {
             project(':pep-auth-api')
 
     testCompile project(':pep-test')
+    testRuntime project(':pep-cache-ehcache')
 }

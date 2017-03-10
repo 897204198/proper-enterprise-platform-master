@@ -29,4 +29,33 @@ class UserServiceTest extends AbstractTest {
         assert !userService.getByUsername('t3').isSuperuser()
     }
 
+    @Test
+    public void testUserCache() {
+        def u1 = new UserEntity('u1','p1')
+        userService.save(u1)
+        println 'After @CachePut on save method, should not query from DB'
+        assert u1.id != null
+        3.times { idx ->
+            assert userService.get(u1.id) == u1
+        }
+        u1.setEmail('a@b')
+        userService.save(u1)
+        3.times { idx ->
+            assert userService.get(u1.id).email == 'a@b'
+        }
+
+        def u2 = new UserEntity('u2','p2')
+        def u3 = new UserEntity('u3','p3')
+        userService.save(u2, u3)
+        println 'Batch save should evict all caches, trigger query after this'
+        3.times { idx ->
+            assert userService.get(u1.id) == u1
+            println "after batch save $idx query"
+        }
+
+        userService.delete(u1.id)
+        println 'Also need direct query after delete'
+        assert userService.get(u1.id) == null
+    }
+
 }
