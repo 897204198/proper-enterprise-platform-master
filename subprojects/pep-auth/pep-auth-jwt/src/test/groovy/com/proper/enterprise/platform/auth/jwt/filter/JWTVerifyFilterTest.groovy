@@ -54,8 +54,9 @@ class JWTVerifyFilterTest extends AbstractTest {
 
     @Test
     public void testIgnorePattern() {
-        authzService.setIgnorePatterns('PUT:/jwt/filter/ignore/method')
+        authzService.setIgnorePatterns('PUT:/jwt/filter/ignore/method,*/workflow/*')
         put('/jwt/filter/ignore/method', '', HttpStatus.OK)
+        get('/workflow/designer/index.html', HttpStatus.NOT_FOUND)
     }
 
     @Test

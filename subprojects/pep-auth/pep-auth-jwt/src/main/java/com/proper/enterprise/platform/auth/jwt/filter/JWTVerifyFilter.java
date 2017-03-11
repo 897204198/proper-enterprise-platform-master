@@ -91,10 +91,10 @@ public class JWTVerifyFilter implements Filter {
      * @return true：不需要权限约束；false：需要权限约束
      */
     private boolean shouldIgnore(HttpServletRequest req) {
-        boolean ignore = false;
+        boolean ignore = inIgnorePatterns(req);
         try {
             HandlerMethod handler = handlerHolder.getHandler(req);
-            ignore = hasIgnoreOnMethod(handler) || hasIgnoreOnType(handler) || inIgnorePatterns(req);
+            ignore = ignore || hasIgnoreOnMethod(handler) || hasIgnoreOnType(handler);
         } catch (Exception e) {
             LOGGER.debug("Could NOT find controller for {}!", req.getRequestURI(), e);
         }
