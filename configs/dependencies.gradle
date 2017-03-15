@@ -3,7 +3,7 @@ ext {
     libraries = [:]
 }
 
-versions.activiti        = '5.19.0.2'
+versions.activiti        = '5.22.0'
 versions.groovy          = '2.4.3'
 versions.hibernate       = '4.3.10.Final'
 versions.jackson         = '2.8.1'
