@@ -1,0 +1,14 @@
+dependencies {
+    compile libraries.commons_codec,
+            libraries.commons_lang3,
+            libraries.jackson_databind,
+            libraries.joda_time,
+            libraries.okhttp,
+            libraries.pinyin4j,
+            libraries.servlet_api,
+            libraries.spring_oxm
+
+    testCompile project(':pep-test')
+
+    testRuntime fileTree(dir: 'libs', include: 'conf-in-jar.jar')
+}
