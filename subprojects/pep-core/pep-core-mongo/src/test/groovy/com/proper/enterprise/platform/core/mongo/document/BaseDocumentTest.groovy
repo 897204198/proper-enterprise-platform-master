@@ -19,7 +19,7 @@ class BaseDocumentTest extends AbstractTest {
 
     @Test
     public void ignorePropertyInDocument() {
-        def r = get('/test/json/document', HttpStatus.OK).getResponse().getContentAsString()
+        def r = get('/core/mongo/test/json/document', HttpStatus.OK).getResponse().getContentAsString()
         def m = JSONUtil.parse(r, Map.class)
         assert m.size() == 3
         assert m.containsKey('id')

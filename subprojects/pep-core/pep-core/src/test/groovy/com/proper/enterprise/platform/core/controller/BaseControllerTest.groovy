@@ -67,27 +67,27 @@ class BaseControllerTest extends AbstractTest {
     public void handleTrouble() {
         def textPlainUtf8 = MediaType.TEXT_PLAIN_VALUE + ';charset=UTF-8'
 
-        def r = get('/test/trouble/1?div=1', HttpStatus.OK)
+        def r = get('/core/test/trouble/1?div=1', HttpStatus.OK)
         assert r.getResponse().getContentType() == MediaType.APPLICATION_JSON_UTF8_VALUE
 
-        def r1 = get('/test/trouble/1?div=0', HttpStatus.BAD_REQUEST)
+        def r1 = get('/core/test/trouble/1?div=0', HttpStatus.BAD_REQUEST)
         assert 'Division by zero' == r1.getResponse().getContentAsString()
         assert r1.getResponse().getContentType() == textPlainUtf8
-        def r2 = get('/test/trouble/1?div=abc', HttpStatus.BAD_REQUEST)
+        def r2 = get('/core/test/trouble/1?div=abc', HttpStatus.BAD_REQUEST)
         assert 'For input string: "abc"' == r2.getResponse().getContentAsString()
 
-        def r3 = get('/test/trouble/2', HttpStatus.BAD_REQUEST)
+        def r3 = get('/core/test/trouble/2', HttpStatus.BAD_REQUEST)
         assert '异常啦' == r3.getResponse().getContentAsString()
         assert r3.getResponse().getContentType() == textPlainUtf8
 
-        get('/test/trouble/3', HttpStatus.NOT_FOUND)
+        get('/core/test/trouble/3', HttpStatus.NOT_FOUND)
 
-        assert resOfGet('/test/trouble/4', HttpStatus.BAD_REQUEST) == 'empty stack'
+        assert resOfGet('/core/test/trouble/4', HttpStatus.BAD_REQUEST) == 'empty stack'
     }
 
     @Test
     public void ignorePropertyInEntity() {
-        def r = get('/test/json/entity', HttpStatus.OK).getResponse().getContentAsString()
+        def r = get('/core/test/json/entity', HttpStatus.OK).getResponse().getContentAsString()
         def m = JSONUtil.parse(r, Map.class)
         assert m.size() == 3
         assert m.containsKey('id')
@@ -97,7 +97,7 @@ class BaseControllerTest extends AbstractTest {
 
     @Test
     public void getDataTrunk() {
-        def r = get('/test/datatrunk', HttpStatus.OK).response.contentAsString
+        def r = get('/core/test/datatrunk', HttpStatus.OK).response.contentAsString
         def dt = JSONUtil.parse(r, DataTrunk.class)
         assert dt.getData().size() == 3
         assert dt.getCount() == 10

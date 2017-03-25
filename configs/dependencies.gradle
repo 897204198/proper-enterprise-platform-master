@@ -200,6 +200,7 @@ libraries.spring_test = "org.springframework:spring-test:${versions.spring}"
 //libraries.spring_tx = "org.springframework:spring-tx:${versions.spring}"
 //libraries.spring_web = "org.springframework:spring-web:${versions.spring}"
 libraries.spring_webmvc = "org.springframework:spring-webmvc:${versions.spring}"
+libraries.spring_jms = "org.springframework:spring-jms:${versions.spring}"
 
 libraries.spring_data_jpa = 'org.springframework.data:spring-data-jpa:1.9.4.RELEASE'
 libraries.spring_data_mongodb = 'org.springframework.data:spring-data-mongodb:1.8.4.RELEASE'
@@ -219,3 +220,25 @@ libraries.spring_data_redis = [
 //libraries.spring_security_web = "org.springframework.security:spring-security-web:${versions.spring_security}"
 
 //libraries.urlrewritefilter = 'org.tuckey:urlrewritefilter:4.0.3'
+
+libraries.nutz='org.nutz:nutz:1.r.56'
+libraries.activemq_broker='org.apache.activemq:activemq-broker:5.14.3'
+//ios apns push sdk. see: https://github.com/relayrides/pushy/
+libraries.push_vendor_apns=[
+    'com.relayrides:pushy:0.8.1',
+    'io.netty:netty-tcnative-boringssl-static:1.1.33.Fork22'
+]
+//android huawei push sdk
+libraries.push_vendor_huawei=[
+    'com.huawei.pushapi:huaweiPushSdk:0.3.12',
+    'org.apache.httpcomponents:httpclient:4.3.3',
+    'org.apache.httpcomponents:httpclient-cache:4.3.3',
+    'org.apache.httpcomponents:fluent-hc:4.3.3',
+    'org.apache.httpcomponents:httpmime:4.3.3',
+    'com.alibaba:fastjson:1.1.32'
+]
+//android xiaomi push sdk
+libraries.push_vendor_xiaomi=[
+    'com.xiaomi.pushapi:xiaomiPushSdk:2.2.16',
+    'com.googlecode.json-simple:json-simple:1.1.1'
+]

@@ -15,8 +15,8 @@ import org.springframework.web.servlet.NoHandlerFoundException
 
 import javax.servlet.ServletException
 
-@RestController
-@RequestMapping('/test')
+@RestController('coreTestController')
+@RequestMapping('/core/test')
 class TestController extends BaseController {
 
     @GetMapping(path = "/trouble/1", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
