@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.push.common.vendor.android.xiaomi;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
@@ -61,6 +63,17 @@ public class XiaomiPushApp extends BasePushApp {
     public boolean pushOneMsg(PushMsgEntity msg, int notifyId) {
 
         boolean result = false;
+
+        // 有应用角标的
+        Integer badgeNumber = getBadgeNumber(msg);
+        if (badgeNumber != null) {
+            Map<String, Object> newCustomMap = new HashMap<>(msg.getMcustomDatasMap());
+            if (!newCustomMap.containsKey("mpage")) {
+                newCustomMap.put("mpage", "properpush_badge"); // 添加应用角标的标识
+            }
+            newCustomMap.put("_proper_pushtype", "cmd"); // 透传消息
+            msg.setMcustomDatasMap(newCustomMap);
+        }
         Message.Builder msgBuilder = new Message.Builder().title(msg.getMtitle()).description(msg.getMcontent())
                 .payload(msg.getMcustoms()).restrictedPackageName(theAppPackage).notifyType(1) // 使用默认提示音提示
                 .notifyId(notifyId);

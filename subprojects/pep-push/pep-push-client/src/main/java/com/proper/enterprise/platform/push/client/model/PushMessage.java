@@ -28,8 +28,14 @@ public class PushMessage {
         return badgeNumber;
     }
 
+    /**
+     * 设置应用角标
+     * 
+     * @param badgeNumber
+     *            >=0 合法的角标数;=0时，清空手机端对应的角标；>0时，设置对应的角标数
+     */
     public void setBadgeNumber(int badgeNumber) {
-        if (badgeNumber <= 0) {
+        if (badgeNumber < 0) {
             customs.remove("_proper_badge");
         } else {
             customs.put("_proper_badge", badgeNumber);

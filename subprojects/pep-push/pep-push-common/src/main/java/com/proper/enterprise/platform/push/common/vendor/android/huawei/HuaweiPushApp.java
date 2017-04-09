@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.push.common.db.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.common.vendor.BasePushApp;
 
@@ -119,23 +120,12 @@ public class HuaweiPushApp extends BasePushApp {
 
     private boolean doPushMsg(PushMsgEntity msg) throws NSPException {
         boolean result;
-        HashMap<String, Object> hashMap = new HashMap<String, Object>();
+
         String pushToken = msg.getDevice().getPushToken();
         msg.setPushToken(pushToken);
-        String callMethodName;
         if (isCmdMessage(msg)) {
             Map<String, Object> custom = msg.getMcustomDatasMap();
-            String strAndroidMsgBody = Json.toJson(custom, JsonFormat.compact());
-            callMethodName = "openpush.message.single_send"; // 透傳消息
-            hashMap.put("deviceToken", pushToken);
-            hashMap.put("message", strAndroidMsgBody);
-            hashMap.put("priority", 0); // 高优先级
-            hashMap.put("cacheMode", 1); // 进行缓存
-            // 标识消息类型（缓存机制），必选
-            // 由调用端赋值，取值范围（1~100）。当TMID+msgType的值一样时，仅缓存最新的一条消息
-            hashMap.put("msgType", 1);
-            // 接口调用
-            String rsp = getClient().call(callMethodName, hashMap, String.class);
+            String rsp = doPushCmd(pushToken, custom);
             LOGGER.debug("单发接口消息响应:" + rsp);
             result = handleCmdRsp(rsp, msg);
             return result;
@@ -155,7 +145,7 @@ public class HuaweiPushApp extends BasePushApp {
                 msgBody.put("extras", lstCustoms);
             }
             String strAndroidMsgBody = Json.toJson(msgBody, JsonFormat.compact());
-            callMethodName = "openpush.message.psSingleSend"; // 通知欄消息
+            String callMethodName = "openpush.message.psSingleSend"; // 通知欄消息
             // 标识消息类型（缓存机制），必选
             // 由调用端赋值，取值范围（1~100）。当TMID+msgType的值一样时，仅缓存最新的一条消息
             int msgType = 1;
@@ -171,7 +161,7 @@ public class HuaweiPushApp extends BasePushApp {
             // -1: 默认用户
             //
             String userType = "1";
-
+            HashMap<String, Object> hashMap = new HashMap<String, Object>();
             hashMap.put("deviceToken", pushToken);
             hashMap.put("android", strAndroidMsgBody);
             hashMap.put("cacheMode", cacheMode);
@@ -184,6 +174,22 @@ public class HuaweiPushApp extends BasePushApp {
             return result;
         }
 
+    }
+
+    private String doPushCmd(String pushToken, Map<String, Object> custom) throws NSPException {
+        String strAndroidMsgBody = Json.toJson(custom, JsonFormat.compact());
+        String callMethodName = "openpush.message.single_send"; // 透傳消息
+        HashMap<String, Object> hashMap = new HashMap<String, Object>();
+        hashMap.put("deviceToken", pushToken);
+        hashMap.put("message", strAndroidMsgBody);
+        hashMap.put("priority", 0); // 高优先级
+        hashMap.put("cacheMode", 1); // 进行缓存
+        // 标识消息类型（缓存机制），必选
+        // 由调用端赋值，取值范围（1~100）。当TMID+msgType的值一样时，仅缓存最新的一条消息
+        hashMap.put("msgType", 1);
+        // 接口调用
+        String rsp = getClient().call(callMethodName, hashMap, String.class);
+        return rsp;
     }
 
     static class Rsp {
@@ -254,11 +260,12 @@ public class HuaweiPushApp extends BasePushApp {
     final ObjectMapper mapper = new ObjectMapper();
 
     private boolean handleNotificationRsp(String rsp, PushMsgEntity msg) {
+        boolean rtn = false;
         try {
-            msg.setMresponse(rsp);
+
             Rsp result = mapper.readValue(rsp, Rsp.class);
             if (result.getResultcode() != null && result.getResultcode().intValue() == 0) {
-                return true;
+                rtn = true;
             }
             // else {
             // 先不设设备的状态无效，这里有判断失误的情况。
@@ -266,10 +273,23 @@ public class HuaweiPushApp extends BasePushApp {
             // pushService.onPushTokenInvalid(msg);
             // }
             // }
+            Integer badgeNumber = getBadgeNumber(msg);
+            if (badgeNumber != null) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("mpage", "properpush_badge");
+                data.put("_proper_badge", badgeNumber);
+                String badgeResponse = doPushCmd(msg.getPushToken(), data);
+                Map<String, Object> mapResponse = new HashMap<>();
+                mapResponse.put("_proper_badge", badgeResponse);
+                mapResponse.put("_proper_response", rsp);
+                msg.setMresponse(JSONUtil.toJSON(mapResponse));
+            } else {
+                msg.setMresponse(rsp);
+            }
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
-        return false;
+        return rtn;
     }
 
     private boolean handleCmdRsp(String rsp, PushMsgEntity msg) {
