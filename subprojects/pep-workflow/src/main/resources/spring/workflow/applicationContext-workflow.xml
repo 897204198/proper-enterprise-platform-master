@@ -26,6 +26,17 @@
 
     <context:component-scan base-package="org.activiti.rest" />
 
+    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager"/>
+
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="mediaTypes">
+            <value>
+                json=application/json
+                xml=application/xml
+            </value>
+        </property>
+    </bean>
+
     <mvc:resources mapping="/workflow/diagram-viewer/**" location="classpath:/META-INF/resources/diagram-viewer/" />
     <mvc:resources mapping="/workflow/editor-app/**" location="classpath:/META-INF/resources/editor-app/" />
     <mvc:resources mapping="/workflow/*.html" location="classpath:/META-INF/resources/"/>
