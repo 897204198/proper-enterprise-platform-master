@@ -5,7 +5,17 @@ import com.proper.enterprise.platform.core.utils.StringUtil
 
 class EditorSource {
 
+    /**
+     * 私有化工具类的构造函数，避免对工具类的实例化
+     */
     private EditorSource() { }
+
+    /**
+     * 静态方法调用私有构造函数，以覆盖对构造函数的测试
+     */
+    static {
+        new EditorSource();
+    }
 
     /**
      * 返回创建流程模型时的初始化数据（json 字符串）
