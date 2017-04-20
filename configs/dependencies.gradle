@@ -87,7 +87,7 @@ libraries.commons_lang3 = 'org.apache.commons:commons-lang3:3.4'
 
 libraries.ehcache = 'net.sf.ehcache:ehcache-core:2.6.9'
 
-// groovy-all include all below modules, used by code quality
+// groovy-all include all below modules, used by code quality and workflow module
 libraries.groovy_all = "org.codehaus.groovy:groovy-all:${versions.groovy}"
 // sub modules
 libraries.groovy = "org.codehaus.groovy:groovy:${versions.groovy}"

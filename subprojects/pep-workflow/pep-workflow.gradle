@@ -17,7 +17,7 @@ dependencies {
             libraries.activiti_spring,
             // use modeler in compile block only when need to insert demo data
             //libraries.activiti_modeler,
-            libraries.groovy,
+            libraries.groovy_all,
             libraries.servlet_api,
             project(':pep-core')
 

@@ -1,8 +1,7 @@
 package com.proper.enterprise.platform.workflow.activiti
-
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.workflow.activiti.service.AssigneeService
-import org.activiti.engine.RepositoryService
+import com.proper.enterprise.platform.workflow.service.DeployService
 import org.activiti.engine.RuntimeService
 import org.activiti.engine.TaskService
 import org.activiti.engine.runtime.ProcessInstance
@@ -14,18 +13,17 @@ class ProcessTest extends AbstractTest {
 
     private static final String DEPLOY_NAME = 'process-integ-test'
     private static final String PROC_DEF_KEY = 'approve-process'
-    private static final String PROC_DEF_V1 = 'approve-process-v1.bpmn20.xml'
     private static final String PROC_DEF_V2 = 'approve-process-v2.bpmn20.xml'
     private static final String PROC_DEF_V3 = 'approve-process-v3.bpmn20.xml'
 
-    @Autowired RepositoryService repositoryService
     @Autowired RuntimeService runtimeService
     @Autowired TaskService taskService
     @Autowired AssigneeService assigneeService
 
+    @Autowired DeployService deployService
+
     @Test
     public void noNeedMoreDevWhileProcDefChanged() {
-        deployProcess(PROC_DEF_V1)
         assert startProcAndGetApprovePath(['同意', '同意']) == ['一级审批', '二级审批']
         assert startProcAndGetApprovePath(['不同意']) == ['一级审批']
 
@@ -37,7 +35,6 @@ class ProcessTest extends AbstractTest {
 
     @Test
     public void deployNewVerProcDefWhileStillHavingProcInstRunning() {
-        deployProcess(PROC_DEF_V1)
         def procInst1 = startProcess()
 
         deployProcess(PROC_DEF_V2)
@@ -79,11 +76,8 @@ class ProcessTest extends AbstractTest {
         assert isProcInstEnd(procInst.processInstanceId)
     }
 
-    private void deployProcess(String procDefKey) {
-        repositoryService.createDeployment()
-                         .name(DEPLOY_NAME)
-                         .addClasspathResource(procDefKey)
-                         .deploy()
+    private void deployProcess(String resource) {
+        deployService.deploy(DEPLOY_NAME, resource)
     }
 
     private List startProcAndGetApprovePath(List approveOpinions, int examTimes = approveOpinions.size()) {

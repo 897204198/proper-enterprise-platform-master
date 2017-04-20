@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.core.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import java.util.HashSet;
 import java.util.Properties;
@@ -67,7 +66,7 @@ public class ConfCenter {
      */
     private static void _loadProperties(String locationPattern) {
         try {
-            Resource[] resources = new PathMatchingResourcePatternResolver().getResources(locationPattern);
+            Resource[] resources = AntResourceUtil.getResources(locationPattern);
             Set<Resource> fileResources = new HashSet<>();
             String description;
             // Load resources in jar first
