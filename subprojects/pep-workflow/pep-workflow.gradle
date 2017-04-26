@@ -22,10 +22,9 @@ dependencies {
             project(':pep-core')
 
     runtime libraries.activiti_diagram_rest,
-            libraries.activiti_modeler
+            libraries.activiti_modeler,
 //            libraries.activiti_simple_workflow
-
-    runtime files("libs/activiti-web-designer-${versions.activiti}.jar")
+            libraries.activiti_web_designer
 
     testCompile project(':pep-test')
 
