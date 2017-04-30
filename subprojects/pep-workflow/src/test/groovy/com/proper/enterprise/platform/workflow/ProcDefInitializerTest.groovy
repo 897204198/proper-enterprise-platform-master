@@ -14,20 +14,24 @@ class ProcDefInitializerTest extends AbstractTest {
     DeployService deployService
 
     @Test
-    public void checkAutoDeployment() {
-        def list = queryDeployment()
-        assert !list.isEmpty()
+    void checkAutoDeployment() {
+        assert !queryDeployment().isEmpty()
+        assert !queryModel().isEmpty()
     }
 
     private def queryDeployment() {
         deployService.findByName(ProcDefInitializer.DEPLOY_NAME)
     }
 
+    private def queryModel() {
+        repositoryService.createModelQuery().list()
+    }
+
     @Autowired
     ProcDefInitializer pdi
 
     @Test
-    public void checkProcDefUpdate() {
+    void checkProcDefUpdate() {
         // First deploy when initial procDefInitializer bean
 
         pdi.procDefUpdate = 'true'
@@ -57,6 +61,7 @@ class ProcDefInitializerTest extends AbstractTest {
         pdi.init()
         pdi.shutdown()
         assert queryDeployment().size() == 0
+        assert queryModel().size() == 0
     }
 
 }

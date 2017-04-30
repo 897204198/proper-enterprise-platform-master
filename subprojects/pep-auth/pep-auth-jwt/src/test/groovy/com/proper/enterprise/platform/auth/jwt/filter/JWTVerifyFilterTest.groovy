@@ -23,29 +23,29 @@ class JWTVerifyFilterTest extends AbstractTest {
     JWTService jwtService
 
     @Before
-    public void setup() {
+    void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).addFilter(jwtVerifyFilter, '/*').build()
         jwtVerifyFilter.setHasContext(false)
     }
 
     @Test
-    public void testFilter() {
+    void testFilter() {
         coverFilter(jwtVerifyFilter)
     }
 
     @Test
-    public void noHandler() {
+    void noHandler() {
         get('/jwt/filter/nohandler', HttpStatus.UNAUTHORIZED)
     }
 
     @Test
-    public void testAnnotationOnMethod() {
+    void testAnnotationOnMethod() {
         assert resOfGet('/jwt/filter/ignore/method', HttpStatus.OK) == 'success'
         post('/jwt/filter/ignore/method', '', HttpStatus.UNAUTHORIZED)
     }
 
     @Test
-    public void testAnnotationOnType() {
+    void testAnnotationOnType() {
         assert resOfGet('/jwt/filter/ignore/type', HttpStatus.OK) == 'success'
         post('/jwt/filter/ignore/type', '', HttpStatus.CREATED)
         put('/jwt/filter/ignore/type', '', HttpStatus.OK)
@@ -53,14 +53,14 @@ class JWTVerifyFilterTest extends AbstractTest {
     }
 
     @Test
-    public void testIgnorePattern() {
-        authzService.setIgnorePatterns('PUT:/jwt/filter/ignore/method,*/workflow/*')
+    void testIgnorePattern() {
+        authzService.setIgnorePatterns('PUT:/jwt/filter/ignore/method,*/workflow/**')
         put('/jwt/filter/ignore/method', '', HttpStatus.OK)
         get('/workflow/designer/index.html', HttpStatus.NOT_FOUND)
     }
 
     @Test
-    public void testWithToken() {
+    void testWithToken() {
         def token = getToken()
         mockRequest.addHeader('Authorization', token)
         assert resOfGet('/token/get', HttpStatus.OK) == token
@@ -87,7 +87,7 @@ class JWTVerifyFilterTest extends AbstractTest {
 
     @Test
     @Sql
-    public void accessResource() {
+    void accessResource() {
         def token = getToken()
         mockRequest.addHeader('Authorization', token)
 

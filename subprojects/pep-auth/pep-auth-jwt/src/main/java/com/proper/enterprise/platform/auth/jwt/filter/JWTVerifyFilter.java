@@ -57,6 +57,9 @@ public class JWTVerifyFilter implements Filter {
         }
 
         String token = jwtService.getTokenFromHeader(req);
+        if (StringUtil.isNull(token)) {
+            token = jwtService.getTokenFromCookie(req);
+        }
         LOGGER.trace("JSON Web Token: " + token);
         if (StringUtil.isNotNull(token) && jwtService.verify(token)) {
             LOGGER.trace("JWT verfiy succeed.");
@@ -99,7 +102,7 @@ public class JWTVerifyFilter implements Filter {
             HandlerMethod handler = handlerHolder.getHandler(req);
             ignore = hasIgnoreOnMethod(handler) || hasIgnoreOnType(handler);
         } catch (Exception e) {
-            LOGGER.debug("Could NOT find controller for {}!", req.getRequestURI(), e);
+            LOGGER.debug("Could NOT find controller for {}!", req.getRequestURI());
         }
         return ignore;
     }

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -25,6 +26,8 @@ public class JWTService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTService.class);
 
+    private static final String COOKIE_TOKEN_NAME = "token";
+
     private APISecret secret;
 
     public void setSecret(APISecret secret) {
@@ -38,6 +41,20 @@ public class JWTService {
             token = token.replace("Bearer", "").trim();
         }
         return token;
+    }
+
+    public String getTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+        for (Cookie cookie : request.getCookies()) {
+            if (COOKIE_TOKEN_NAME.equals(cookie.getName())) {
+                LOGGER.trace("Found token in cookie! {}", cookie);
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 
     public String generateToken(JWTHeader header, JWTPayload payload) throws IOException {

@@ -2,7 +2,9 @@ package com.proper.enterprise.platform.workflow;
 
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.service.DeployService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,9 @@ public class ProcDefInitializer {
     @Autowired
     private DeployService deployService;
 
+    @Autowired
+    private RepositoryService repositoryService;
+
     public static final String DEPLOY_NAME = "PEP system processes";
 
     @PostConstruct
@@ -47,25 +52,39 @@ public class ProcDefInitializer {
             return;
         }
 
-        cleanDeploymentIfNecessary();
+        cleanIfNecessary();
         deployService.deployFromResourcePattern(DEPLOY_NAME, procDefLocations);
     }
 
-    private void cleanDeploymentIfNecessary() {
+    private void cleanIfNecessary() {
         if ("create-drop".equals(procDefUpdate)) {
             List<Deployment> deploymentList = deployService.findByName(DEPLOY_NAME);
             if (CollectionUtil.isNotEmpty(deploymentList)) {
                 for (Deployment deployment : deploymentList) {
-                    deployService.delete(deployment.getId(), false);
+                    cleanModels(deployment.getId());
+                    cleanDeployment(deployment.getId());
                 }
-                LOGGER.debug("Clean {} deployment.", DEPLOY_NAME);
+                LOGGER.debug("Clean '{}' related deployments and models.", DEPLOY_NAME);
             }
+        }
+    }
+
+    private void cleanDeployment(String deploymentId) {
+        LOGGER.debug("Delete deployment {}", deploymentId);
+        deployService.delete(deploymentId, false);
+    }
+
+    private void cleanModels(String deploymentId) {
+        List<Model> models = repositoryService.createModelQuery().deploymentId(deploymentId).list();
+        for (Model model : models) {
+            LOGGER.debug("Delete model {}", model.getId());
+            repositoryService.deleteModel(model.getId());
         }
     }
 
     @PreDestroy
     public void shutdown() {
-        cleanDeploymentIfNecessary();
+        cleanIfNecessary();
     }
 
 }
