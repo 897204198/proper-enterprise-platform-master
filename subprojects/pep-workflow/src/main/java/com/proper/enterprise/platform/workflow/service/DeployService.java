@@ -16,6 +16,8 @@ import org.activiti.explorer.util.XmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.zip.ZipInputStream;
 
 @Service
 public class DeployService {
@@ -50,13 +53,41 @@ public class DeployService {
     public Deployment deployFromResourcePattern(String name, String locations) throws IOException {
         DeploymentBuilder builder = repositoryService.createDeployment().name(name);
         Resource[] resources = AntResourceUtil.getResources(locations);
+        String resourceName;
         for (Resource resource : resources) {
             LOGGER.debug("Loading {} to deploy", resource.getFilename());
-            builder.addInputStream(resource.getFilename(), resource.getInputStream());
+            resourceName = determineResourceName(resource);
+            if (resourceName.endsWith(".bar") || resourceName.endsWith(".zip") || resourceName.endsWith(".jar")) {
+                builder.addZipInputStream(new ZipInputStream(resource.getInputStream()));
+            } else {
+                builder.addInputStream(resourceName, resource.getInputStream());
+            }
         }
         Deployment deployment = builder.deploy();
         convertToModels(deployment.getId(), resources);
         return deployment;
+    }
+
+    /**
+     * Determines the name to be used for the provided resource.
+     *
+     * @param resource the resource to get the name for
+     * @return the name of the resource
+     */
+    private String determineResourceName(final Resource resource) {
+        String resourceName;
+        if (resource instanceof ContextResource) {
+            resourceName = ((ContextResource) resource).getPathWithinContext();
+        } else if (resource instanceof ByteArrayResource) {
+            resourceName = resource.getDescription();
+        } else {
+            try {
+                resourceName = resource.getFile().getAbsolutePath();
+            } catch (IOException e) {
+                resourceName = resource.getFilename();
+            }
+        }
+        return resourceName;
     }
 
     private void convertToModels(String deploymentId, Resource[] resources) throws IOException {
