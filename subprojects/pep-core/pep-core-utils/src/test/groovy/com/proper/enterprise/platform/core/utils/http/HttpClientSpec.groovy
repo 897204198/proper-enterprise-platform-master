@@ -7,8 +7,10 @@ import spock.lang.Specification
 
 class HttpClientSpec extends Specification {
 
+    def TEAMCITY = 'https://cloud.propersoft.cn/teamcities'
+
     def "Using all http methods"() {
-        def url = 'https://server.propersoft.cn/teamcity/login.html'
+        def url = "$TEAMCITY/login.html"
         def data = '{"user":"123"}'
         def headers = ['h1': 'header1', 'h2': 'header2']
 
@@ -26,7 +28,7 @@ class HttpClientSpec extends Specification {
     }
 
     def "Could get stream"() {
-        def r = HttpClient.get('https://server.propersoft.cn/teamcity/img/collapse.png')
+        def r = HttpClient.get("$TEAMCITY/img/collapse.png")
 
         expect:
         r.getBody() != null
@@ -49,7 +51,7 @@ class HttpClientSpec extends Specification {
         }
 
         expect:
-        HttpClient.post('https://server.propersoft.cn/teamcity/login.html', MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}', cb)
+        HttpClient.post("$TEAMCITY/login.html", MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}', cb)
         HttpClient.post('https://www.google.com', MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}', cb)
     }
 
