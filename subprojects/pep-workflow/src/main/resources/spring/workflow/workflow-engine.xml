@@ -8,8 +8,11 @@
         <property name="dataSource" ref="dataSource" />
         <property name="transactionManager" ref="transactionManager" />
         <property name="databaseSchemaUpdate" value="${workflow.databaseSchemaUpdate}" />
-        <property name="jobExecutorActivate" value="true" />
-        <property name="enableDatabaseEventLogging" value="true" />
+        <property name="asyncExecutorEnabled" value="true"/>
+        <property name="asyncExecutorActivate" value="true" />
+        <property name="asyncExecutorCorePoolSize" value="${workflow.asyncExecutor.corePoolSize}" />
+        <property name="asyncExecutorMaxPoolSize" value="${workflow.asyncExecutor.maxPoolSize}" />
+        <property name="asyncExecutorThreadPoolQueueSize" value="${workflow.asyncExecutor.queueSize}" />
         <property name="customFormTypes">
             <list>
                 <bean class="org.activiti.explorer.form.UserFormType"/>
