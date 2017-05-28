@@ -29,7 +29,10 @@ configurations.all {
             'javassist': '3.19.0-GA',
             'jcl-over-slf4j': versions.slf4j,
             // spring-data-jpa & spring-data-mongodb 依赖不同版本的 spring-data-commons 会有冲突
-            'spring-data-commons': '1.11.4.RELEASE'
+            'spring-data-commons': '1.11.4.RELEASE',
+            // xalan < 2.7.0 的版本会导致与 spring-ws 的冲突
+            // http://stackoverflow.com/questions/12467186/java-spring-ws-org-springframework-ws-soap-saaj-saajsoapenvelopeexception-could/13156775#13156775
+            'xalan': '2.7.2'
         ]
         nameVers.each { name, ver ->
             if (req.name == name) {
