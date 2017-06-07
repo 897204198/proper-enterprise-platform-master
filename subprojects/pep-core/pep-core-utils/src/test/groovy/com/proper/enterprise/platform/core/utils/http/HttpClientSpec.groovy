@@ -7,7 +7,7 @@ import spock.lang.Specification
 
 class HttpClientSpec extends Specification {
 
-    def TEAMCITY = 'https://cloud.propersoft.cn/teamcities'
+    def static final TEAMCITY = 'https://cloud.propersoft.cn/teamcities'
 
     def "Using all http methods"() {
         def url = "$TEAMCITY/login.html"

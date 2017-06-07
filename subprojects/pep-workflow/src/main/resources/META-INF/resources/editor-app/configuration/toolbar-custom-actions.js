@@ -1,7 +1,7 @@
 /*
  * Activiti Modeler component part of the Activiti project
  * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -17,11 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 'use strict';
-
-// Change close editor target location
-var KISBPM = KISBPM || {};
-KISBPM.URL = KISBPM.URL || {};
-KISBPM.URL.afterClose = '../../#/workflow/designer';
 
 /**
  * 为了简化流程设计步骤，合并 activiti 提供的流程设计器中的 “模型”、“部署” 和 “流程定义” 概念
