@@ -14,7 +14,7 @@ class SchedulerTest extends AbstractTest {
     TaskScheduler scheduler
 
     @Test
-    public void useRunnable() {
+    void useRunnable() {
         taskCount = 0
         def task = new Task()
         def sf = scheduler.scheduleAtFixedRate(task, 50)
@@ -32,15 +32,15 @@ class SchedulerTest extends AbstractTest {
     }
 
     @Test
-    public void useAnnotation() {
+    void useAnnotation() {
         // method with @Scheduled will auto run
         // but CI may need to sleep some time
-        sleep(50)
+        sleep(100)
         assert annoCount > 0
     }
 
     @Scheduled(fixedDelay = 50L)
-    public void addOne() {
+    void addOne() {
         annoCount ++
     }
 

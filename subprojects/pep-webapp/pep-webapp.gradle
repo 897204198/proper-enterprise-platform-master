@@ -33,6 +33,7 @@ dependencies {
             project(':pep-configs'),
             // Needs one cache implementation
             project(':pep-cache-ehcache'),
+            project(':pep-page-custom'),
             project(':pep-workflow'),
             libraries.commons_fileupload,
             libraries.h2,

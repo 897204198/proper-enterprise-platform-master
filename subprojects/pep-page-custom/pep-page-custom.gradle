@@ -1,0 +1,9 @@
+dependencies {
+    compile libraries.spring_data_mongodb,
+            project(':pep-core'),
+            project(':pep-core-mongo'),
+            project(':pep-auth-api')
+
+    testCompile project(':pep-test'),
+                project(':pep-auth-jwt')
+}
