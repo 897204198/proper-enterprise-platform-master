@@ -55,7 +55,6 @@ public class WechatController extends BaseController {
     @AuthcIgnore
     @PostMapping(value = "/noticeWechatPayInfo")
     public void receiveWeixinNoticeInfo(HttpServletRequest request, HttpServletResponse resp) throws Exception {
-        LOGGER.debug("-------------微信异步通知---------------");
         boolean ret = false;
 
         request.setCharacterEncoding("UTF-8");
@@ -63,6 +62,8 @@ public class WechatController extends BaseController {
         WechatNoticeRes noticeRes = (WechatNoticeRes) unmarshallerMap.get("unmarshallWechatNoticeRes")
             .unmarshal(new StreamSource(inStream));
         inStream.close();
+
+        LOGGER.info("------------- 微信异步通知 {} : {} : {} ---------------", noticeRes.getOutTradeNo(), noticeRes.getTransactionId(), noticeRes.getTotalFee());
 
         // 进行签名验证操作
         if (wechatPayService.isValid(noticeRes) && "SUCCESS".equalsIgnoreCase(noticeRes.getReturnCode())
