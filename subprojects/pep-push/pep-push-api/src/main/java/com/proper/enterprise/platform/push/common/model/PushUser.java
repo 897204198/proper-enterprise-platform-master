@@ -9,7 +9,7 @@ public interface PushUser extends IBase {
 
     public String getOtherInfo();
 
-    public void setOther_info(String otherInfo);
+    public void setOtherInfo(String otherInfo);
 
     public String getUserid();
 

@@ -1,7 +1,10 @@
 package com.proper.enterprise.platform.core.utils
 
+import com.proper.enterprise.platform.core.PEPConstants
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import java.nio.charset.Charset
 
 class StringUtilSpec extends Specification {
 
@@ -42,7 +45,7 @@ class StringUtilSpec extends Specification {
         ''          | ['a', 'b']    | 'ab'
         ','         | ['a']         | 'a'
     }
-    
+
     @Unroll
     def "CamelCase'#input' camelToSnake is #result"(){
         expect:
@@ -54,4 +57,10 @@ class StringUtilSpec extends Specification {
         'TestTest'           |           'test_test'
     }
 
+    def "test toEncodedString"() {
+        expect:
+        '这个是中文' == StringUtil.toEncodedString('这个是中文'.getBytes(PEPConstants.DEFAULT_CHARSET))
+        '这个是中文' != StringUtil.toEncodedString('这个是中文'.getBytes(Charset.forName("GBK")))
+        '' == StringUtil.toEncodedString(null)
+    }
 }

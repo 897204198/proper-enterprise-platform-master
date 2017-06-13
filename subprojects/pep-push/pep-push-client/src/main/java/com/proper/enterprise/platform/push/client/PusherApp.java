@@ -3,6 +3,8 @@ package com.proper.enterprise.platform.push.client;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,15 +16,15 @@ import com.proper.enterprise.platform.push.client.service.impl.PushApiServiceReq
 
 /**
  * 推送程序
- * 
+ *
  * @author 沈东生
  *
  */
 public class PusherApp {
+    private final ExecutorService executor= Executors.newCachedThreadPool();
     private static final Logger LOGGER = LoggerFactory.getLogger(PusherApp.class);
     public static final String DEVICE_TYPE_ANDROID = "android";
     public static final String DEVICE_TYPE_IOS = "ios";
-    public static final String LOGTAG = "PROPERPUSH";
     private String secureKey = "";
     private String appkey = "";
     private String pushUrl = "";
@@ -63,11 +65,9 @@ public class PusherApp {
 
     /**
      * 新建推送App
-     * 
-     * @param pusherServiceIp
-     *            推送对应的服务IP
-     * @param pusherServicePort
-     *            推送对应的服务端口号
+     *
+     * @param pushUrl
+     *            推送对应的服务url
      * @param appkey
      *            推送的对应的应用编号
      * @param secureKey
@@ -104,7 +104,7 @@ public class PusherApp {
 
     /**
      * 向指定的一组用户推送消息
-     * 
+     *
      * @param msg
      *            推送的消息
      * @param lstUserIds
@@ -136,10 +136,9 @@ public class PusherApp {
 
     /**
      * 向一组设备发送消息
-     * 
+     *
      * @param msg
      *            消息正文
-     * @param lstUserIds
      */
     public void pushMessageToDevices(final PushMessage msg, final String deviceType, final List<String> lstDeviceIds) {
 
@@ -173,7 +172,7 @@ public class PusherApp {
 
     /**
      * 向一个用户推送单条消息
-     * 
+     *
      * @param msg
      *            消息
      * @param userId
@@ -187,7 +186,7 @@ public class PusherApp {
 
     /**
      * 向所有的用户推送消息。
-     * 
+     *
      * @param msg
      * @return
      */
@@ -215,7 +214,7 @@ public class PusherApp {
 
     /**
      * 向所有的设备推送消息，不管设备是否绑定userid
-     * 
+     *
      * @param msg
      * @return
      */
@@ -227,7 +226,7 @@ public class PusherApp {
 
     /**
      * 向指定类型的设备，全推消息
-     * 
+     *
      * @param msg
      * @param deviceType
      */
@@ -258,13 +257,13 @@ public class PusherApp {
 
     /**
      * 执行任务
-     * 
+     *
      * @param r
      * @param isAsync
      */
-    private static void startRunTask(Runnable r, boolean isAsync) {
+    private  void startRunTask(Runnable r, boolean isAsync) {
         if (isAsync) {
-            new Thread(r).start();
+            executor.execute(r);
         } else {
             r.run();
         }

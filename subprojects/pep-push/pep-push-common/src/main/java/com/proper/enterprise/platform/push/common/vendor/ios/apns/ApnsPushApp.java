@@ -1,14 +1,5 @@
 package com.proper.enterprise.platform.push.common.vendor.ios.apns;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.concurrent.ExecutionException;
-
-import javax.activation.UnsupportedDataTypeException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.push.common.db.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.common.vendor.BasePushApp;
@@ -19,8 +10,14 @@ import com.relayrides.pushy.apns.PushNotificationResponse;
 import com.relayrides.pushy.apns.util.ApnsPayloadBuilder;
 import com.relayrides.pushy.apns.util.SimpleApnsPushNotification;
 import com.relayrides.pushy.apns.util.TokenUtil;
-
 import io.netty.util.concurrent.Future;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.activation.UnsupportedDataTypeException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ApnsPushApp extends BasePushApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApnsPushApp.class);
@@ -75,40 +72,14 @@ public class ApnsPushApp extends BasePushApp {
 
     /**
      * 推送一条消息
-     * 
-     * @param msg
-     *            消息正文
-     * @param did
-     *            deviceid
-     * @param uid
-     *            userid
+     *
+     * @param msg 消息正文
      * @return
      */
     public boolean pushOneMsg(PushMsgEntity msg) {
         boolean result = false;
         try {
-            if (apnsClient != null && !apnsClient.isConnected()) {
-                try {
-                    apnsClient.disconnect();
-                } catch (Exception ex) {
-                    LOGGER.error(ex.getMessage(), ex);
-                }
-                apnsClient = null;
-            }
-            if (apnsClient == null) {
-                if (keyStoreMeta instanceof File) {
-                    File p12File = (File) keyStoreMeta;
-                    apnsClient = new ApnsClientBuilder().setClientCredentials(p12File, keyStorePassword).build();
-                } else if (keyStoreMeta instanceof InputStream) {
-                    InputStream inputStream = (InputStream) keyStoreMeta;
-                    apnsClient = new ApnsClientBuilder().setClientCredentials(inputStream, keyStorePassword).build();
-                } else {
-                    throw new UnsupportedDataTypeException("" + keyStoreMeta);
-                }
-                String applePushUrl = envProduct ? ApnsClient.PRODUCTION_APNS_HOST : ApnsClient.DEVELOPMENT_APNS_HOST;
-                final Future<Void> connectFuture = apnsClient.connect(applePushUrl);
-                connectFuture.await();
-            }
+            initApnsClient();
 
             final ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder();
             payloadBuilder.setAlertBody(msg.getMcontent());
@@ -126,41 +97,66 @@ public class ApnsPushApp extends BasePushApp {
             msg.setPushToken(pushToken);
 
             SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, topic, payload);
-
-            final Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = apnsClient
+            if (isReallySendMsg()) {
+                final Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = apnsClient
                     .sendNotification(pushNotification);
 
-            final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse = sendNotificationFuture
+                final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse = sendNotificationFuture
                     .get();
-            msg.setMresponse(JSONUtil.toJSON(pushNotificationResponse));
-            if (pushNotificationResponse.isAccepted()) {
-                LOGGER.info("Push notitification accepted by APNs gateway.");
-                result = true;
-            } else {
-                LOGGER.info(
+                msg.setMresponse(JSONUtil.toJSON(pushNotificationResponse));
+                if (pushNotificationResponse.isAccepted()) {
+                    LOGGER.info("Push notitification accepted by APNs gateway.");
+                    result = true;
+                } else {
+                    LOGGER.info(
                         "Notification rejected by the APNs gateway: " + pushNotificationResponse.getRejectionReason());
-                pushService.onPushTokenInvalid(msg);
-                result = false; // 发送消息失败
-                if (pushNotificationResponse.getTokenInvalidationTimestamp() != null) {
-                    LOGGER.info("\t…and the token is invalid as of "
+                    pushService.onPushTokenInvalid(msg);
+                    result = false; // 发送消息失败
+                    if (pushNotificationResponse.getTokenInvalidationTimestamp() != null) {
+                        LOGGER.info("\t…and the token is invalid as of "
                             + pushNotificationResponse.getTokenInvalidationTimestamp());
-                }
+                    }
 
+                }
+            } else {
+                LOGGER.info("向苹果APNS服务器请求发送一条推送消息 pushToken:{} ", pushToken);
             }
-        } catch (final ExecutionException e) {
+
+        } catch (Exception e) {
             LOGGER.error("Failed to send push notification.", e);
             if (e.getCause() instanceof ClientNotConnectedException) {
                 LOGGER.info("Waiting for client to reconnect…,Reconnected.");
             }
             msg.setMresponse(e + "\t" + e.getMessage());
             result = false;
-        } catch (Exception e) {
-            msg.setMresponse(e + "\t" + e.getMessage());
-            LOGGER.error(e.getMessage(), e);
-            return result;
         }
 
         return result;
 
+    }
+
+    private void initApnsClient() throws IOException, InterruptedException {
+        if (apnsClient != null && !apnsClient.isConnected()) {
+            try {
+                apnsClient.disconnect();
+            } catch (Exception ex) {
+                LOGGER.error(ex.getMessage(), ex);
+            }
+            apnsClient = null;
+        }
+        if (apnsClient == null) {
+            if (keyStoreMeta instanceof File) {
+                File p12File = (File) keyStoreMeta;
+                apnsClient = new ApnsClientBuilder().setClientCredentials(p12File, keyStorePassword).build();
+            } else if (keyStoreMeta instanceof InputStream) {
+                InputStream inputStream = (InputStream) keyStoreMeta;
+                apnsClient = new ApnsClientBuilder().setClientCredentials(inputStream, keyStorePassword).build();
+            } else {
+                throw new UnsupportedDataTypeException("" + keyStoreMeta);
+            }
+            String applePushUrl = envProduct ? ApnsClient.PRODUCTION_APNS_HOST : ApnsClient.DEVELOPMENT_APNS_HOST;
+            final Future<Void> connectFuture = apnsClient.connect(applePushUrl);
+            connectFuture.await();
+        }
     }
 }

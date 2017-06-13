@@ -4,9 +4,8 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 
 /**
  * 推送相关的异常封装
- * 
- * @author shen
  *
+ * @author shen
  */
 public class PushException extends ErrMsgException {
 

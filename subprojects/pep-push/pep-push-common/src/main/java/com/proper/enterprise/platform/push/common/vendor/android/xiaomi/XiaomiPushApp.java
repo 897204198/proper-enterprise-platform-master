@@ -1,23 +1,22 @@
 package com.proper.enterprise.platform.push.common.vendor.android.xiaomi;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.push.common.db.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.common.vendor.BasePushApp;
 import com.xiaomi.push.sdk.ErrorCode;
 import com.xiaomi.xmpush.server.Message;
 import com.xiaomi.xmpush.server.Sender;
+import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 推送服务类
- * 
+ *
  * @author 沈东生
  *
  */
@@ -57,31 +56,37 @@ public class XiaomiPushApp extends BasePushApp {
 
     /**
      * 推送一条消息
-     * 
+     *
      * @return
      */
     public boolean pushOneMsg(PushMsgEntity msg, int notifyId) {
 
         boolean result = false;
 
-        // 有应用角标的
-        Integer badgeNumber = getBadgeNumber(msg);
-        if (badgeNumber != null) {
-            Map<String, Object> newCustomMap = new HashMap<>(msg.getMcustomDatasMap());
-            if (!newCustomMap.containsKey("mpage")) {
-                newCustomMap.put("mpage", "properpush_badge"); // 添加应用角标的标识
-            }
-            newCustomMap.put("_proper_pushtype", "cmd"); // 透传消息
-            msg.setMcustomDatasMap(newCustomMap);
-        }
         Message.Builder msgBuilder = new Message.Builder().title(msg.getMtitle()).description(msg.getMcontent())
-                .payload(msg.getMcustoms()).restrictedPackageName(theAppPackage).notifyType(1) // 使用默认提示音提示
+                .restrictedPackageName(theAppPackage).notifyType(1) // 使用默认提示音提示
                 .notifyId(notifyId);
+
         if (isCmdMessage(msg)) {
             msgBuilder.passThrough(1); // 消息使用透传消息
         } else {
-            msgBuilder.passThrough(0); // 消息使用通知栏
+            Integer badgeNumber = getBadgeNumber(msg);
+            // 通知栏消息且有应用角标
+            if (badgeNumber != null) {
+                Map<String, Object> newCustomMap = new HashMap<>(msg.getMcustomDatasMap());
+                newCustomMap.put("_proper_mpage", "badge"); // 系统消息类型：设置角标
+                // 需要手机端自己生成一个notification通知
+                //因为在小米手机的设置角标接口里，角标接口是与通知栏消息绑定在一起的，需要程序自己发送notification,并带上角标数
+                newCustomMap.put("_proper_badge_type", "notification");
+                msgBuilder.passThrough(1); // 消息使用透传消息
+                msg.setMcustomDatasMap(newCustomMap); // 更新mcustoms
+            } else {
+                msgBuilder.passThrough(0); // 消息使用通知栏
+            }
         }
+
+        String mcustoms = msg.getMcustoms();
+        msgBuilder.payload(mcustoms);
         Message toMsg = msgBuilder.build();
         try {
 
@@ -105,19 +110,25 @@ public class XiaomiPushApp extends BasePushApp {
         String pushToken = msg.getDevice().getPushToken();
         msg.setPushToken(pushToken);
         // 接口调用
-        com.xiaomi.xmpush.server.Result rsp = getClient().send(toMsg, pushToken, 1);
-        // 有错误返回
-        if (rsp.getErrorCode() == ErrorCode.Success) {
-            result = true;
-        } else {
-            // 先不设设备的状态无效，这里有判断失误的情况。
-            // if(rsp.getErrorCode().getValue()==20301){
-            // pushService.onPushTokenInvalid(msg);
-            // }
-            result = false; // 发送消息失败
+        if(isReallySendMsg()){
+            com.xiaomi.xmpush.server.Result rsp = getClient().send(toMsg, pushToken, 1);
+            // 有错误返回
+            if (rsp.getErrorCode() == ErrorCode.Success) {
+                result = true;
+            } else {
+                // 先不设设备的状态无效，这里有判断失误的情况。
+                // if(rsp.getErrorCode().getValue()==20301){
+                // pushService.onPushTokenInvalid(msg);
+                // }
+                result = false; // 发送消息失败
+            }
+            LOGGER.info("通知栏消息接口响应：" + rsp);
+            msg.setMresponse(JSONUtil.toJSON(rsp));
+        }else{
+            LOGGER.info("向小米服务器请求发送一条推送消息 pushToken:{} ", pushToken);
         }
-        LOGGER.info("通知栏消息接口响应：" + rsp);
-        msg.setMresponse(JSONUtil.toJSON(rsp));
+
+
         return result;
     }
 

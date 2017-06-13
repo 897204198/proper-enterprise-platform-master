@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import org.nutz.mapl.Mapl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
         final int dbBatchSize = globalInfo.getDbBatchSize();
         Pageable pageable = new PageRequest(0, dbBatchSize);
         List<String> lstUids = new ArrayList<>(dbBatchSize);
-        boolean hasData = false;
+        boolean hasData;
         do {
             Page<PushUserEntity> page = userRepo.findByAppkey(appkey, pageable);
             pageable = pageable.next();
@@ -74,7 +75,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
     @Override
     public void savePushMessageToAllDevices(String appkey, PushDeviceType deviceType0, PushMessage thePushmsg) {
         Map<String, Object> deviceConf = (Map<String, Object>) Mapl.cell(globalInfo.getPushConfigs(),
-                appkey + ".device");
+            appkey + ".device");
         if (deviceConf == null) {
             throw new PushException("appkey: " + appkey + " is not valid!");
         }
@@ -93,7 +94,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
             Pageable pageable = new PageRequest(0, dbBatchSize);
             do {
                 Page<PushDeviceEntity> page = deviceRepo.findByAppkeyAndDevicetypeAndMstatus(appkey, deviceType,
-                        PushDeviceStatus.VALID, pageable);
+                    PushDeviceStatus.VALID, pageable);
                 pageable = pageable.next();
 
                 hasData = page.hasContent();
@@ -119,7 +120,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
     public void savePushMessageToUsers(String appkey, List<String> lstUids, PushMessage thePushmsg) {
         Map<String, Object> rtn = new LinkedHashMap<>();
         Map<String, Object> deviceConf = (Map<String, Object>) Mapl.cell(globalInfo.getPushConfigs(),
-                appkey + ".device");
+            appkey + ".device");
         if (deviceConf == null) {
             throw new PushException("appkey: " + appkey + " is not valid!");
         }
@@ -131,33 +132,44 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
             for (String strPushMode : mapPushModes.keySet()) {
                 PushMode pushMode = Enum.valueOf(PushMode.class, strPushMode.trim());
                 AbstractPushVendorService pushService = pushVendorFactory.getPushVendorService(appkey, deviceType,
-                        pushMode);
+                    pushMode);
                 final List<PushMsgEntity> lstMsgs = new ArrayList<PushMsgEntity>();
                 List<PushDeviceEntity> lstDevices = null;
                 // 查找存在的用户id对应的有效的设备
-                if (lstUids != null && lstUids.size() > 0) {
+                if (CollectionUtil.isNotEmpty(lstUids)) {
                     lstDevices = deviceRepo.findByAppkeyAndDevicetypeAndPushModeAndMstatusAndUseridIn(appkey,
-                            deviceType, pushMode, PushDeviceStatus.VALID, lstUids);
+                        deviceType, pushMode, PushDeviceStatus.VALID, lstUids);
+                    doSendMsgToDevices(appkey, thePushmsg, rtn, deviceType, pushMode, pushService, lstMsgs, lstDevices);
+                } else {
+                    LOGGER.error("savePushMessageToUsers but the userid is empty!");
                 }
-                if (lstDevices != null && lstDevices.size() > 0) {
-                    // 向数据库中插入数据message。
-                    for (PushDeviceEntity d : lstDevices) {
-                        if (StringUtil.isNotEmpty(d.getPushToken())) {
-                            PushMsgEntity dbMsg = createMsgVO(thePushmsg, appkey, d);
-                            lstMsgs.add(dbMsg);
-                        } else {
-                            LOGGER.info("appkey:" + appkey + " device:" + d.getDeviceid() + " push token is empty!");
-                        }
-                    }
-                    msgRepo.save(lstMsgs);
-                }
-                if (pushService != null && lstMsgs.size() > 0) {
-                    int sendCount = pushService.pushMsg(lstMsgs);
-                    rtn.put(appkey + "_" + deviceType + "_" + pushMode, sendCount);
-                }
+
             }
         }
         LOGGER.trace(rtn.toString());
+    }
+
+    private void doSendMsgToDevices(String appkey, PushMessage thePushmsg, Map<String, Object> rtn, PushDeviceType deviceType, PushMode pushMode, AbstractPushVendorService pushService, List<PushMsgEntity> lstMsgs, List<PushDeviceEntity> lstDevices) {
+        if (CollectionUtil.isNotEmpty(lstDevices)) {
+            // 向数据库中插入数据message。
+            for (PushDeviceEntity d : lstDevices) {
+                if (StringUtil.isNotEmpty(d.getPushToken())) {
+                    PushMsgEntity dbMsg = createMsgVO(thePushmsg, appkey, d);
+                    lstMsgs.add(dbMsg);
+                } else {
+                    LOGGER.info("appkey:" + appkey + " device:" + d.getDeviceid() + " push token is empty!");
+                }
+            }
+            msgRepo.save(lstMsgs);
+        } else {
+            LOGGER.info("doSendMsgToDevices,device is empty,then no need send msg!");
+        }
+        if (CollectionUtil.isNotEmpty(lstMsgs)) {
+            int sendCount = pushService.pushMsg(lstMsgs);
+            rtn.put(appkey + "_" + deviceType + "_" + pushMode, sendCount);
+        } else {
+            LOGGER.info("doSendMsgToDevices,lstMsgs is empty,then no need send!");
+        }
     }
 
     private PushMsgEntity createMsgVO(final PushMessage msg, String appkey, PushDeviceEntity d) {
@@ -183,10 +195,10 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
     @SuppressWarnings("unchecked")
     @Override
     public void savePushMessageToDevices(String appkey, PushDeviceType deviceType, List<String> lstDeviceids,
-            PushMessage thePushmsg) {
+                                         PushMessage thePushmsg) {
         Map<String, Object> rtn = new LinkedHashMap<>();
         Map<String, Object> deviceConf = (Map<String, Object>) Mapl.cell(globalInfo.getPushConfigs(),
-                appkey + ".device");
+            appkey + ".device");
         if (deviceConf == null) {
             throw new PushException("appkey: " + appkey + " is not valid!");
         }
@@ -194,29 +206,16 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
         for (String strPushMode : mapPushModes.keySet()) {
             PushMode pushMode = Enum.valueOf(PushMode.class, strPushMode.trim());
             AbstractPushVendorService pushService = pushVendorFactory.getPushVendorService(appkey, deviceType,
-                    pushMode);
+                pushMode);
             final List<PushMsgEntity> lstMsgs = new ArrayList<PushMsgEntity>();
             List<PushDeviceEntity> lstDevices = null;
             // 查找存在的deviceid对应的有效的设备
-            if (lstDeviceids != null && lstDeviceids.size() > 0) {
+            if (CollectionUtil.isNotEmpty(lstDeviceids)) {
                 lstDevices = deviceRepo.findByAppkeyAndDevicetypeAndPushModeAndMstatusAndDeviceidIn(appkey, deviceType,
-                        pushMode, PushDeviceStatus.VALID, lstDeviceids);
-            }
-            if (lstDevices != null && lstDevices.size() > 0) {
-                // 向数据库中插入数据message。
-                for (PushDeviceEntity d : lstDevices) {
-                    if (StringUtil.isNotEmpty(d.getPushToken())) {
-                        PushMsgEntity dbMsg = createMsgVO(thePushmsg, appkey, d);
-                        lstMsgs.add(dbMsg);
-                    } else {
-                        LOGGER.info("device:" + d.getDeviceid() + " push token is empty!");
-                    }
-                }
-                msgRepo.save(lstMsgs);
-            }
-            if (pushService != null && lstMsgs.size() > 0) {
-                int sendCount = pushService.pushMsg(lstMsgs);
-                rtn.put(appkey + "_" + deviceType + "_" + pushMode, sendCount);
+                    pushMode, PushDeviceStatus.VALID, lstDeviceids);
+                doSendMsgToDevices(appkey, thePushmsg, rtn, deviceType, pushMode, pushService, lstMsgs, lstDevices);
+            } else {
+                LOGGER.error("savePushMessageToDevices but the deviceids is empty!");
             }
         }
         LOGGER.trace(rtn.toString());

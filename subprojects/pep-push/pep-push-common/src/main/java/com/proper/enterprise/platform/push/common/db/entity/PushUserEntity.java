@@ -42,7 +42,7 @@ public class PushUserEntity extends BaseEntity implements PushUser {
         return otherInfo;
     }
 
-    public void setOther_info(String otherInfo) {
+    public void setOtherInfo(String otherInfo) {
         this.otherInfo = otherInfo;
     }
 

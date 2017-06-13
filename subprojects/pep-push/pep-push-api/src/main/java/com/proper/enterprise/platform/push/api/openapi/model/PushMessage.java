@@ -1,8 +1,11 @@
 package com.proper.enterprise.platform.push.api.openapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PushMessage {
     String id;
     String title;

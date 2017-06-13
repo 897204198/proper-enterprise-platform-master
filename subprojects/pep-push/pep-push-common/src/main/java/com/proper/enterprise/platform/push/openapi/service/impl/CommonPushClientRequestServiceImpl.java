@@ -43,9 +43,21 @@ public class CommonPushClientRequestServiceImpl implements CommonPushClientReque
             if (user == null) {
                 user = new PushUserEntity();
                 user.setAppkey(appkey);
-                user.setOther_info(userOtherInfo);
+                user.setOtherInfo(userOtherInfo);
                 user.setUserid(userid);
                 userRepo.save(user);
+            }else{
+                //更新用户信息
+                boolean needSave = false;
+                if (StringUtil.isNotEmpty(userOtherInfo)) {
+                    if (!StringUtil.equals(user.getOtherInfo(), userOtherInfo)) {
+                        user.setOtherInfo(userOtherInfo);
+                        needSave = true;
+                    }
+                }
+                if(needSave){
+                    userRepo.save(user);
+                }
             }
             // 如果解绑其它设备
             if (unbindOtherDevice) {

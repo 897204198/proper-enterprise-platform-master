@@ -2,6 +2,8 @@ package com.proper.enterprise.platform.push.common.vendor;
 
 import java.util.Map;
 
+import com.proper.enterprise.platform.core.utils.ConfCenter;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +13,7 @@ public class BasePushApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(BasePushApp.class);
     /**
      * 判断是否为透传消息
-     * 
+     *
      * @param msg
      * @return
      */
@@ -52,4 +54,11 @@ public class BasePushApp {
         this.pushService = pushService;
     }
 
+    /**
+     *  是否向第三方推送服务器推送消息，在测试环境下，将不请求真实推送服务器
+     * @return
+     */
+    protected boolean isReallySendMsg(){
+       return !StringUtil.equals("test", ConfCenter.get("push_env"));
+    }
 }

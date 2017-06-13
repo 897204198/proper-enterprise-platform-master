@@ -1,26 +1,23 @@
 package com.proper.enterprise.platform.push.openapi.controller;
 
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.proper.enterprise.platform.push.api.openapi.service.PushJmsTemplateService;
+import com.proper.enterprise.platform.push.common.config.PushGlobalInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.proper.enterprise.platform.push.common.config.PushGlobalInfo;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 推送消息
- * 
+ *
  * @author shen
  *
  */
@@ -28,12 +25,11 @@ import com.proper.enterprise.platform.push.common.config.PushGlobalInfo;
 @RequestMapping("/appserver/request")
 public class AppServerRequestController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppServerRequestController.class);
-    @Qualifier("pushAppServerRequestJmsTemplate")
     @Autowired
-    JmsTemplate appServerRequestJmsTemplate;
+    PushJmsTemplateService appServerRequestJmsTemplate;
 
     @RequestMapping(value = "/{requestMethod}", method = RequestMethod.POST)
-    public Map<String, Object> pushMessageToUsers(@PathVariable("requestMethod") String requestMethod,
+    public Map<String, Object> doRequestMethod(@PathVariable("requestMethod") String requestMethod,
             HttpServletRequest request) {
         Map<String, Object> rtn = new LinkedHashMap<String, Object>();
         try {
@@ -44,7 +40,7 @@ public class AppServerRequestController {
                 String value = request.getParameter(key);
                 requestParams.put(key, value);
             }
-            appServerRequestJmsTemplate.convertAndSend(PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/" + requestMethod,
+            appServerRequestJmsTemplate.saveConvertAndSend(PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/" + requestMethod,
                     requestParams);
             rtn.put("result", "0");
         } catch (Exception ex) {

@@ -9,4 +9,7 @@ dependencies {
             libraries.push_vendor_xiaomi,
             project(':pep-push-api')
 
+    testCompile project(':pep-test')
+    testCompile project(':pep-push-client')
+
 }

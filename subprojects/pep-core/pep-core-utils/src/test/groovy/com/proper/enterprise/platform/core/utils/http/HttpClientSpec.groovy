@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.utils.http
 
+import com.proper.enterprise.platform.core.utils.StringUtil
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -53,6 +54,16 @@ class HttpClientSpec extends Specification {
         expect:
         HttpClient.post("$TEAMCITY/login.html", MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}', cb)
         HttpClient.post('https://www.google.com', MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}', cb)
+    }
+
+    def "test getFormUrlEncodedData"() {
+        expect:
+        result.toLowerCase() == HttpClient.getFormUrlEncodedData(input).toLowerCase()
+        where:
+        input                                                    | result
+        ['key1': 'aaa']                                          | 'key1=aaa'
+        ['key1': 'aaa', 'zongwen': '这个是中文']                      | 'key1=aaa&zongwen=%e8%bf%99%e4%b8%aa%e6%98%af%e4%b8%ad%e6%96%87'
+        ['key1': 'aaa', 'url': 'http://www.baidu.com?a1=1&a2=2'] | 'key1=aaa&url=http%3a%2f%2fwww.baidu.com%3fa1%3d1%26a2%3d2'
     }
 
 }

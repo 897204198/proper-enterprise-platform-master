@@ -1,5 +1,7 @@
 package com.proper.enterprise.platform.push.client.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,6 +21,7 @@ public class PushMessage {
     public static final String DEVICETYPE_ANDROID = "android";
     public static final String DEVICETYPE_IOS = "ios";
 
+    @JsonIgnore
     public int getBadgeNumber() {
         int badgeNumber = 0;
         Object badge = customs.get("_proper_badge");
@@ -30,7 +33,7 @@ public class PushMessage {
 
     /**
      * 设置应用角标
-     * 
+     *
      * @param badgeNumber
      *            >=0 合法的角标数;=0时，清空手机端对应的角标；>0时，设置对应的角标数
      */
@@ -43,6 +46,7 @@ public class PushMessage {
 
     }
 
+    @JsonIgnore
     public String getPushType() {
         String pushType = (String) customs.get("_proper_pushtype");
         if (pushType == null || "".equals(pushType)) {
@@ -57,7 +61,7 @@ public class PushMessage {
 
     /**
      * 创建一条要推送的消息
-     * 
+     *
      * @param title
      *            消息标题
      * @param content

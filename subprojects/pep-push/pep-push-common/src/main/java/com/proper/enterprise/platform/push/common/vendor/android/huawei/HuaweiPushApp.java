@@ -1,32 +1,25 @@
 package com.proper.enterprise.platform.push.common.vendor.android.huawei;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.push.common.db.entity.PushMsgEntity;
+import com.proper.enterprise.platform.push.common.vendor.BasePushApp;
+import nsp.NSPClient;
+import nsp.OAuth2Client;
+import nsp.support.common.AccessToken;
+import nsp.support.common.NSPException;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.push.common.db.entity.PushMsgEntity;
-import com.proper.enterprise.platform.push.common.vendor.BasePushApp;
-
-import nsp.NSPClient;
-import nsp.OAuth2Client;
-import nsp.support.common.AccessToken;
-import nsp.support.common.NSPException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * 推送服务类
- * 
+ *
  * @author 沈东生
  *
  */
@@ -98,7 +91,7 @@ public class HuaweiPushApp extends BasePushApp {
 
     /**
      * 推送一条消息
-     * 
+     *
      * @return
      */
     public boolean pushOneMsg(PushMsgEntity msg) {
@@ -167,9 +160,18 @@ public class HuaweiPushApp extends BasePushApp {
             hashMap.put("cacheMode", cacheMode);
             hashMap.put("msgType", msgType);
             hashMap.put("userType", userType);
-            // 接口调用
-            String rsp = getClient().call(callMethodName, hashMap, String.class);
-            LOGGER.info("单发通知栏消息接口响应：" + rsp);
+            String rsp;
+            if(isReallySendMsg()){
+                // 接口调用
+                rsp = getClient().call(callMethodName, hashMap, String.class);
+                LOGGER.info("单发通知栏消息接口响应：" + rsp);
+
+            }else{
+                getClient();
+                LOGGER.info("向华为推送服务器发送一条通知栏消息 pushToken:{}", pushToken);
+                rsp="{\"message\":\"success\",\"requestID\":\"14948813856457737\",\"resultcode\":0}";
+            }
+
             result = handleNotificationRsp(rsp, msg);
             return result;
         }
@@ -188,7 +190,15 @@ public class HuaweiPushApp extends BasePushApp {
         // 由调用端赋值，取值范围（1~100）。当TMID+msgType的值一样时，仅缓存最新的一条消息
         hashMap.put("msgType", 1);
         // 接口调用
-        String rsp = getClient().call(callMethodName, hashMap, String.class);
+        String rsp;
+        if(isReallySendMsg()){
+            rsp=getClient().call(callMethodName, hashMap, String.class);
+        }else{
+            getClient();
+            LOGGER.info("向华为推送服务器发送一条透传消息 pushToken:{}", pushToken);
+            rsp="{\"message\":\"success\",\"requestID\":\"14948199168335342557\",\"resultcode\":0}";
+        }
+
         return rsp;
     }
 
@@ -257,27 +267,21 @@ public class HuaweiPushApp extends BasePushApp {
 
     }
 
-    final ObjectMapper mapper = new ObjectMapper();
 
     private boolean handleNotificationRsp(String rsp, PushMsgEntity msg) {
         boolean rtn = false;
         try {
 
-            Rsp result = mapper.readValue(rsp, Rsp.class);
+            Rsp result = JSONUtil.parse(rsp, Rsp.class);
             if (result.getResultcode() != null && result.getResultcode().intValue() == 0) {
                 rtn = true;
             }
-            // else {
-            // 先不设设备的状态无效，这里有判断失误的情况。
-            // if(result.getResult_code()==80200001){
-            // pushService.onPushTokenInvalid(msg);
-            // }
-            // }
             Integer badgeNumber = getBadgeNumber(msg);
-            if (badgeNumber != null) {
+            //角标不为空，且当前消息为通知栏消息，则发送一条透传消息，设置应用角标
+            if (badgeNumber != null&&!isCmdMessage(msg)) {
                 Map<String, Object> data = new HashMap<>();
-                data.put("mpage", "properpush_badge");
-                data.put("_proper_badge", badgeNumber);
+                data.put("_proper_mpage", "badge"); //系统消息类型：设置角标
+                data.put("_proper_badge", badgeNumber); //应用角标数
                 String badgeResponse = doPushCmd(msg.getPushToken(), data);
                 Map<String, Object> mapResponse = new HashMap<>();
                 mapResponse.put("_proper_badge", badgeResponse);
@@ -295,16 +299,10 @@ public class HuaweiPushApp extends BasePushApp {
     private boolean handleCmdRsp(String rsp, PushMsgEntity msg) {
         try {
             msg.setMresponse(rsp);
-            PushRet result = mapper.readValue(rsp, PushRet.class);
+            PushRet result = JSONUtil.parse(rsp, PushRet.class);
             if (result.getResultcode() == 0) {
                 return true;
             }
-            // else {
-            // 先不设设备的状态无效，这里有判断失误的情况。
-            // if(result.getResult_code()==80200001){
-            // pushService.onPushTokenInvalid(msg);
-            // }
-            // }
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
         }

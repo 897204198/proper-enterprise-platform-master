@@ -1,10 +1,13 @@
 package com.proper.enterprise.platform.push.common.msgqueue.service.impl;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.push.api.openapi.exceptions.PushException;
 import org.nutz.json.Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +47,9 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
                     + " of data: " + requestParams);
         }
         String userids = requestParams.get("userids");
-        String smsg = requestParams.get("msg");
         String appkey = requestParams.get("appkey");
         final List<String> lstUids = Json.fromJsonAsList(String.class, userids);
-        final PushMessage thePushmsg = Json.fromJson(PushMessage.class, smsg);
+        final PushMessage thePushmsg = getPushMessage(requestParams);
         service.savePushMessageToUsers(appkey, lstUids, thePushmsg);
     }
 
@@ -60,11 +62,10 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
                     + " of data: " + requestParams);
         }
         String deviceids = requestParams.get("deviceids");
-        String smsg = requestParams.get("msg");
         String strDeviceType = requestParams.get("device_type");
         String appkey = requestParams.get("appkey");
         final List<String> lstDeviceids = Json.fromJsonAsList(String.class, deviceids);
-        final PushMessage thePushmsg = Json.fromJson(PushMessage.class, smsg);
+        final PushMessage thePushmsg = getPushMessage(requestParams);
         PushDeviceType deviceType = null;
         if (StringUtil.isNotEmpty(strDeviceType)) {
             deviceType = Enum.valueOf(PushDeviceType.class, strDeviceType.trim());
@@ -80,10 +81,21 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
             LOGGER.debug("receive jms " + PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/pushMessageToAllUsers"
                     + " of data: " + requestParams);
         }
-        String smsg = requestParams.get("msg");
         String appkey = requestParams.get("appkey");
-        final PushMessage thePushmsg = Json.fromJson(PushMessage.class, smsg);
+        final PushMessage thePushmsg = getPushMessage(requestParams);
         service.savePushMessageToAllUsers(appkey, thePushmsg);
+    }
+
+    private PushMessage getPushMessage(Map<String, String> requestParams) {
+        String smsg = requestParams.get("msg");
+        final PushMessage thePushmsg;
+        try {
+            thePushmsg = JSONUtil.parse(smsg, PushMessage.class);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw  new PushException(e.getMessage());
+        }
+        return thePushmsg;
     }
 
     @JmsListener(destination = PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST
@@ -94,14 +106,13 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
             LOGGER.debug("receive jms " + PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/pushMessageToAllDevices"
                     + " of data: " + requestParams);
         }
-        String smsg = requestParams.get("msg");
         String appkey = requestParams.get("appkey");
         String strDeviceType = requestParams.get("device_type");
         PushDeviceType deviceType = null;
         if (StringUtil.isNotEmpty(strDeviceType)) {
             deviceType = Enum.valueOf(PushDeviceType.class, strDeviceType.trim());
         }
-        final PushMessage thePushmsg = Json.fromJson(PushMessage.class, smsg);
+        final PushMessage thePushmsg = getPushMessage(requestParams);
         service.savePushMessageToAllDevices(appkey, deviceType, thePushmsg);
     }
 
