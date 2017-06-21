@@ -9,6 +9,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 
 import java.util.Map;
 
@@ -33,7 +34,9 @@ public abstract class BaseBPMController extends BaseController {
      */
     protected Object getVariableAfterProcessDone(String procDefKey, Map<String, Object> inputs, String output) {
         ProcessInstance procInst = startProcess(procDefKey, inputs);
-        return getVariableFromHistory(procInst.getId(), output);
+        Object var = getVariableFromHistory(procInst.getId(), output);
+        cleanHisProcInst(procInst.getId());
+        return var;
     }
 
     private ProcessInstance startProcess(String procDefKey, Map<String, Object> vars) {
@@ -57,6 +60,11 @@ public abstract class BaseBPMController extends BaseController {
                     .variableName(varName)
                     .singleResult()
                     .getValue();
+    }
+
+    @Async
+    private void cleanHisProcInst(String procInstId) {
+        historyService.deleteHistoricProcessInstance(procInstId);
     }
 
 }

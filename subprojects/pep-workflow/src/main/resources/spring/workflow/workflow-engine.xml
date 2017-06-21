@@ -13,6 +13,7 @@
         <property name="asyncExecutorCorePoolSize" value="${workflow.asyncExecutor.corePoolSize}" />
         <property name="asyncExecutorMaxPoolSize" value="${workflow.asyncExecutor.maxPoolSize}" />
         <property name="asyncExecutorThreadPoolQueueSize" value="${workflow.asyncExecutor.queueSize}" />
+        <property name="history" value="${workflow.history}" />
         <property name="customFormTypes">
             <list>
                 <bean class="org.activiti.explorer.form.UserFormType"/>
