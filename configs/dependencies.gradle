@@ -231,9 +231,9 @@ libraries.nutz='org.nutz:nutz:1.r.56'
 libraries.activemq_broker='org.apache.activemq:activemq-broker:5.14.3'
 //ios apns push sdk. see: https://github.com/relayrides/pushy/
 libraries.push_vendor_apns=[
-    'com.relayrides:pushy:0.8.1',
-    'io.netty:netty-tcnative-boringssl-static:1.1.33.Fork22'
+    'com.relayrides:pushy:0.9.3'
 ]
+
 //android huawei push sdk
 libraries.push_vendor_huawei=[
     'com.huawei.pushapi:huaweiPushSdk:0.3.12',
