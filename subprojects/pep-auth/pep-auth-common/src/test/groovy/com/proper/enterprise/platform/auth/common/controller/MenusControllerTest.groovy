@@ -17,7 +17,7 @@ import org.springframework.test.context.jdbc.Sql
 class MenusControllerTest extends AbstractTest {
 
     @Test
-    public void diffUsersGetDiffMenus() {
+    void diffUsersGetDiffMenus() {
         // super user
         mockUser('test1', 't1', 'pwd', true)
         assert resOfGet('/auth/menus', HttpStatus.OK).size() == 14
@@ -28,11 +28,11 @@ class MenusControllerTest extends AbstractTest {
 
         // without role
         mockUser('test3', 't3', 'pwd', false)
-        assert resOfGet('/auth/menus', HttpStatus.OK) == ''
+        assert resOfGet('/auth/menus', HttpStatus.OK) == []
     }
 
     @Test
-    public void getMenusWithOrder() {
+    void getMenusWithOrder() {
         mockUser('test2', 't2', 'pwd', false)
         def res = resOfGet('/auth/menus', HttpStatus.OK)
         assert res[0].root
