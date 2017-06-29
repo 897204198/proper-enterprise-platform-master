@@ -26,7 +26,8 @@ public class JWTService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTService.class);
 
-    private static final String COOKIE_TOKEN_NAME = "token";
+    private static final String AUTH_HEADER = "Authorization";
+    protected static final String TOKEN_FLAG = "X-PEP-TOKEN";
 
     private APISecret secret;
 
@@ -35,7 +36,10 @@ public class JWTService {
     }
 
     public String getTokenFromHeader(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader(AUTH_HEADER);
+        if (StringUtil.isNull(token)) {
+            token = request.getHeader(TOKEN_FLAG);
+        }
         LOGGER.trace("Request {} token header!", StringUtil.isNotNull(token) ? "has" : "DOES NOT HAVE");
         if (StringUtil.isNotNull(token) && token.contains("Bearer")) {
             token = token.replace("Bearer", "").trim();
@@ -49,7 +53,7 @@ public class JWTService {
             return null;
         }
         for (Cookie cookie : request.getCookies()) {
-            if (COOKIE_TOKEN_NAME.equals(cookie.getName())) {
+            if (TOKEN_FLAG.equals(cookie.getName())) {
                 LOGGER.trace("Found token in cookie! {}", cookie);
                 return cookie.getValue();
             }

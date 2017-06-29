@@ -7,6 +7,8 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
+import javax.servlet.http.Cookie
+
 class JWTServiceTest extends AbstractTest {
 
     @Autowired
@@ -16,7 +18,7 @@ class JWTServiceTest extends AbstractTest {
     private APISecret secret
 
     @Test
-    public void testGenerateAndVerifyToken() {
+    void testGenerateAndVerifyToken() {
         def header = new JWTHeader()
         header.setId('1')
         header.setName('test')
@@ -28,7 +30,7 @@ class JWTServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testMultiTokens() {
+    void testMultiTokens() {
         def header1 = new JWTHeader('k1', 't1')
         def payload1 = new JWTPayloadImpl('t1emp')
         def secret1 = secret.getAPISecret(header1.getId())
@@ -48,30 +50,41 @@ class JWTServiceTest extends AbstractTest {
     }
 
     @Test
-    public void getTokenFromMockReq() {
+    void getTokenFromMockReq() {
         def token = 'a.b.c'
         mockRequest.addHeader("Authorization", token)
         assert jwtService.getTokenFromHeader(mockRequest) == token
     }
 
     @Test
-    public void getTokenFromMockReqWithBearer() {
+    void getTokenFromMockReqWithBearer() {
         def token = 'a.b.c'
         mockRequest.addHeader("Authorization", "Bearer $token")
         assert jwtService.getTokenFromHeader(mockRequest) == token
     }
 
     @Test
-    public void getTokenFromReq() {
+    void getTokenFromReq() {
         def token = 'a.b.c'
         mockRequest.addHeader('Authorization', token)
         assert getAndReturn('/token/get', '', HttpStatus.OK) == token
     }
 
     @Test
-    public void verifyInvalidToken() {
+    void verifyInvalidToken() {
         assert !jwtService.verify('')
         assert !jwtService.verify('token')
+    }
+
+    @Test
+    void getTokenFromCookie() {
+        def token = '123456token'
+        Cookie cookie = new Cookie(JWTService.TOKEN_FLAG, token)
+        mockRequest.setCookies(cookie)
+        assert token == jwtService.getTokenFromCookie(mockRequest)
+
+        mockRequest.setCookies(new Cookie('test1', 'test1'), new Cookie('test2', 'test2'))
+        assert jwtService.getTokenFromCookie(mockRequest) == null
     }
 
 }

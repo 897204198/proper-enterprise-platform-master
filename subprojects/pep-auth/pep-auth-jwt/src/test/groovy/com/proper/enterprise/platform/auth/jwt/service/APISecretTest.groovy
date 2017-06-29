@@ -10,7 +10,7 @@ class APISecretTest extends AbstractTest {
     APISecret secret
 
     @Test
-    public void testCache() {
+    void testCache() {
         def key = 'k1'
         def s1 = secret.getAPISecret(key)
         assert s1 == secret.getAPISecret(key)
