@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.core.mongo;
 
 import static java.util.Collections.singletonList;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import com.proper.enterprise.platform.core.mongo.dao.MongoDAO;
 import com.proper.enterprise.platform.core.mongo.service.MongoShellService;
 import com.proper.enterprise.platform.core.mongo.service.impl.MongoShellServiceImpl;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import org.springframework.util.Assert;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "com.proper.**.repository")
@@ -45,6 +47,8 @@ public class MongoConfigs extends AbstractMongoConfiguration {
     private String username;
     @Value("${mongodb.password}")
     private String password;
+    @Value("${mongodb.replicaSet}")
+    private String replicaSet;
 
     @Autowired
     @Qualifier("mongoDAOImpl")
@@ -67,7 +71,18 @@ public class MongoConfigs extends AbstractMongoConfiguration {
         if (StringUtil.isNotNull(username)) {
             credentialList = singletonList(MongoCredential.createCredential(username, "admin", password.toCharArray()));
         }
-        return new MongoClient(singletonList(new ServerAddress(host, port)), credentialList);
+        List<ServerAddress> serverAddresses = new ArrayList<>();
+        if (StringUtil.isNotNull(replicaSet)) {
+            String[] address;
+            for (String pair : replicaSet.split(",")) {
+                address = pair.split(":");
+                Assert.isTrue(address[1].matches("^\\d*$"), "Port part is invalid: " + pair);
+                serverAddresses.add(new ServerAddress(address[0], Integer.parseInt(address[1])));
+            }
+        } else {
+            serverAddresses = singletonList(new ServerAddress(host, port));
+        }
+        return new MongoClient(serverAddresses, credentialList);
     }
 
     @Bean
@@ -118,5 +133,9 @@ public class MongoConfigs extends AbstractMongoConfiguration {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setReplicaSet(String replicaSet) {
+        this.replicaSet = replicaSet;
     }
 }

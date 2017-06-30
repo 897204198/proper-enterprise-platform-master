@@ -8,6 +8,7 @@
             <database>logs</database>
             <!--<username></username>-->
             <!--<password></password>-->
+            <!--<replica>mongo-pep:27017</replica>-->
             <collection>logback</collection>
         </connectionSource>
 	</appender>

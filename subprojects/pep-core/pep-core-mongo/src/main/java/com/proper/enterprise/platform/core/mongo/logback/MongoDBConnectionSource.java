@@ -4,6 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.proper.enterprise.platform.core.mongo.MongoConfigs;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.bson.Document;
 
 public class MongoDBConnectionSource {
@@ -20,6 +21,8 @@ public class MongoDBConnectionSource {
 
     private volatile String collection;
 
+    private volatile String replica;
+
     private volatile MongoCollection<Document> mongoCollection;
 
     public MongoCollection<Document> getMongoCollection() {
@@ -28,8 +31,12 @@ public class MongoDBConnectionSource {
                 // DCL
                 if (mongoCollection == null) {
                     MongoConfigs configs = new MongoConfigs();
-                    configs.setHost(host);
-                    configs.setPort(port);
+                    if (StringUtil.isNotNull(replica)) {
+                        configs.setReplicaSet(replica);
+                    } else {
+                        configs.setHost(host);
+                        configs.setPort(port);
+                    }
                     configs.setDatabaseName(database);
                     configs.setUsername(username);
                     configs.setPassword(password);
@@ -37,12 +44,7 @@ public class MongoDBConnectionSource {
                     final MongoClient mongoClient = configs.mongoClient();
                     MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
                     mongoCollection = mongoDatabase.getCollection(collection);
-                    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mongoClient.close();
-                        }
-                    }, "MongoDBConnectionSource shutdown"));
+                    Runtime.getRuntime().addShutdownHook(new Thread(mongoClient::close, "MongoDBConnectionSource shutdown"));
                 }
             }
         }
@@ -72,4 +74,9 @@ public class MongoDBConnectionSource {
     public void setCollection(String collection) {
         this.collection = collection;
     }
+
+    public void setReplica(String replica) {
+        this.replica = replica;
+    }
+
 }
