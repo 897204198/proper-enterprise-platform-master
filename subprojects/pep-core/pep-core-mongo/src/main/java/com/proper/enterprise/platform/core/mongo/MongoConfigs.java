@@ -1,11 +1,16 @@
 package com.proper.enterprise.platform.core.mongo;
 
-import static java.util.Collections.singletonList;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoDatabase;
+import com.proper.enterprise.platform.core.mongo.dao.MongoDAO;
+import com.proper.enterprise.platform.core.mongo.service.MongoShellService;
+import com.proper.enterprise.platform.core.mongo.service.impl.MongoShellServiceImpl;
+import com.proper.enterprise.platform.core.utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,20 +27,17 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.client.MongoDatabase;
-import com.proper.enterprise.platform.core.mongo.dao.MongoDAO;
-import com.proper.enterprise.platform.core.mongo.service.MongoShellService;
-import com.proper.enterprise.platform.core.mongo.service.impl.MongoShellServiceImpl;
-import com.proper.enterprise.platform.core.utils.StringUtil;
-import org.springframework.util.Assert;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "com.proper.**.repository")
 public class MongoConfigs extends AbstractMongoConfiguration {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MongoConfigs.class);
 
     @Value("${mongodb.host}")
     private String host;
@@ -72,14 +74,14 @@ public class MongoConfigs extends AbstractMongoConfiguration {
             credentialList = singletonList(MongoCredential.createCredential(username, "admin", password.toCharArray()));
         }
         List<ServerAddress> serverAddresses = new ArrayList<>();
-        if (StringUtil.isNotNull(replicaSet)) {
+        if (StringUtil.isNotNull(replicaSet) && replicaSet.matches("^.+:\\d+(,.+:\\d+)*")) {
             String[] address;
             for (String pair : replicaSet.split(",")) {
                 address = pair.split(":");
-                Assert.isTrue(address[1].matches("^\\d*$"), "Port part is invalid: " + pair);
                 serverAddresses.add(new ServerAddress(address[0], Integer.parseInt(address[1])));
             }
         } else {
+            LOGGER.debug("Replica set not setting or invalid, use direct connection.");
             serverAddresses = singletonList(new ServerAddress(host, port));
         }
         return new MongoClient(serverAddresses, credentialList);
