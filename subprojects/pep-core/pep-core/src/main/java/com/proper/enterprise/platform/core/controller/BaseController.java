@@ -163,6 +163,7 @@ public abstract class BaseController {
         HttpHeaders headers = handleHeaders();
         HttpStatus status = handleStatus(ex, request);
         String body = handleBody(ex);
+        LOGGER.trace("Controller throws exception", ex);
         LOGGER.debug("Handle controller's exception to {}:{}", status, body);
         return new ResponseEntity<>(body, headers, status);
     }

@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.core.converter;
 
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.utils.ConfCenter;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.cipher.AES;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,9 @@ public class AESStringConverter implements AttributeConverter<String, String> {
 
     @Override
     public String convertToDatabaseColumn(String attribute) {
+        if (StringUtil.isNull(attribute)) {
+            return attribute;
+        }
         String result = "";
         try {
             result = new String(aes.encrypt(attribute.getBytes(PEPConstants.DEFAULT_CHARSET)), PEPConstants.DEFAULT_CHARSET);
@@ -36,6 +40,9 @@ public class AESStringConverter implements AttributeConverter<String, String> {
 
     @Override
     public String convertToEntityAttribute(String dbData) {
+        if (StringUtil.isNull(dbData)) {
+            return dbData;
+        }
         String result = "";
         try {
             result = new String(aes.decrypt(dbData.getBytes(PEPConstants.DEFAULT_CHARSET)), PEPConstants.DEFAULT_CHARSET);

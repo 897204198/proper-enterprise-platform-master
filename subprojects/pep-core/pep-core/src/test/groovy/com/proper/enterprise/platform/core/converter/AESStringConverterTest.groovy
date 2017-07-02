@@ -16,7 +16,7 @@ class AESStringConverterTest extends AbstractTest {
     NativeRepository nativeRepository
 
     @Test
-    public void secretData() {
+    void secretData() {
         def plainData = 'plain text data'
 
         def entity = new MockEntity(plainData)
@@ -35,14 +35,23 @@ class AESStringConverterTest extends AbstractTest {
         converter.convertToEntityAttribute(obj[1]) == plainData
     }
 
-    @Test()
-    public void errKey() {
+    @Test
+    void errKey() {
         System.setProperty('core.secret.aes.key', 'err_key_length')
         ConfCenter.reload()
 
         def converter = new AESStringConverter()
         assert converter.convertToDatabaseColumn('err') == ''
         assert converter.convertToEntityAttribute('err') == ''
+    }
+
+    @Test
+    void handleNull() {
+        def converter = new AESStringConverter()
+        assert converter.convertToDatabaseColumn(null) == null
+        assert converter.convertToDatabaseColumn('') == ''
+        assert converter.convertToEntityAttribute(null) == null
+        assert converter.convertToEntityAttribute('') == ''
     }
 
 }
