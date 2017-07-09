@@ -1,11 +1,13 @@
 package com.proper.enterprise.platform.sys.datadic;
 
+import java.io.Serializable;
+
 /**
  * 数据字典
  * 表示系统内编码和名称的对应关系
  * 数据字典按照类别进行归类，通常是 key-value 的扁平结构
  */
-public interface DataDic {
+public interface DataDic extends Serializable {
 
     /**
      * 获得数据字典类别
