@@ -1,10 +1,18 @@
 package com.proper.enterprise.platform.sys.datadic.service;
 
+import com.proper.enterprise.platform.core.utils.ConfCenter;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 
 import java.util.Collection;
 
 public interface DataDicService {
+
+    /**
+     * 数据字典类型属性在持久化时，按照如下格式保存：
+     * catalog + DD_CATALOG_CODE_SEPARATOR + code
+     * 默认分隔符为分号
+     */
+    String DD_CATALOG_CODE_SEPARATOR = ConfCenter.get("sys.datadic.separator", ";");
 
     /**
      * 获得某分类下的数据字典集合
