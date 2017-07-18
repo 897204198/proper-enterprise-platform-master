@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.sys.datadic.service.impl;
 
 import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity;
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,11 @@ public class DataDicServiceImpl implements DataDicService {
     @Override
     public DataDic get(String id) {
         return repository.getOne(id);
+    }
+
+    @Override
+    public DataDic save(DataDic dataDic) {
+        return repository.save((DataDicEntity) dataDic);
     }
 
 }

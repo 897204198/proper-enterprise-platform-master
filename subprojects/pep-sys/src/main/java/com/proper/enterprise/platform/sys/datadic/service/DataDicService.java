@@ -36,4 +36,6 @@ public interface DataDicService {
      */
     DataDic get(String id);
 
+    DataDic save(DataDic dataDic);
+
 }
