@@ -24,4 +24,9 @@ public class DataDicServiceImpl implements DataDicService {
         return repository.findByCatalogAndCode(catalog, code);
     }
 
+    @Override
+    public DataDic get(String id) {
+        return repository.getOne(id);
+    }
+
 }
