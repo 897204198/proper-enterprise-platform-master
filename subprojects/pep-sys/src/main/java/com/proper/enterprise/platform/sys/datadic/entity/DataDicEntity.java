@@ -22,6 +22,8 @@ public class DataDicEntity extends BaseEntity implements DataDic {
     @Column(name = "DD_ORDER")
     private int order;
 
+    public UserEntity() { }
+
     public DataDicEntity(String catalog, String code, String name, int order) {
         this.catalog = catalog;
         this.code = code;
