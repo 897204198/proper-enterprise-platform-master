@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.sys.datadic.converter;
 
+import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
@@ -13,7 +14,7 @@ import static com.proper.enterprise.platform.sys.datadic.service.DataDicService.
 @Converter
 public class DataDicConverter implements AttributeConverter<DataDic, String> {
 
-    private DataDicService service = new DataDicServiceImpl();
+    private DataDicService service = PEPApplicationContext.getBean(DataDicService.class);
 
     @Override
     public String convertToDatabaseColumn(DataDic attribute) {
