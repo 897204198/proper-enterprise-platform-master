@@ -10,23 +10,25 @@ import org.springframework.stereotype.Component;
 @Lazy(false)
 public class PEPApplicationContext implements ApplicationContextAware {
 
-    private static ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
+
+    private static final PEPApplicationContext HOLDER = new PEPApplicationContext();
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        PEPApplicationContext.applicationContext = applicationContext;
+        HOLDER.applicationContext = applicationContext;
     }
 
     public static ApplicationContext getApplicationContext() {
-        return applicationContext;
+        return HOLDER.applicationContext;
     }
 
     public static Object getBean(String name) {
-        return applicationContext.getBean(name);
+        return HOLDER.applicationContext.getBean(name);
     }
 
     public static <T> T getBean(Class<T> requiredType) {
-        return applicationContext.getBean(requiredType);
+        return HOLDER.applicationContext.getBean(requiredType);
     }
 
 }
