@@ -57,4 +57,16 @@ public interface DataDic extends Serializable {
      */
     void setOrder(int order);
 
+    /**
+     * 是否为默认项目
+     * @return 是或否
+     */
+    boolean isDefault();
+
+    /**
+     * 设置是否为默认项目
+     * @param dft 是或否
+     */
+    void setDefault(boolean dft);
+
 }

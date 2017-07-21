@@ -22,12 +22,17 @@ public class DataDicServiceImpl implements DataDicService {
 
     @Override
     public DataDic get(String catalog, String code) {
-        return repository.findByCatalogAndCode(catalog, code);
+        return repository.getByCatalogAndCode(catalog, code);
     }
 
     @Override
     public DataDic get(String id) {
         return repository.getOne(id);
+    }
+
+    @Override
+    public DataDic getDefault(String catalog) {
+        return repository.getDefault(catalog);
     }
 
     @Override

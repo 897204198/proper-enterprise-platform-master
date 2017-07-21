@@ -12,6 +12,9 @@ public interface DataDicRepository extends BaseRepository<DataDicEntity, String>
     Collection<DataDicEntity> findByCatalogOrderByOrder(String catalog);
 
     @CacheQuery
-    DataDicEntity findByCatalogAndCode(String catalog, String code);
+    DataDicEntity getByCatalogAndCode(String catalog, String code);
+
+    @CacheQuery
+    DataDicEntity getDefault(String catalog);
 
 }

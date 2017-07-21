@@ -20,4 +20,8 @@ public abstract class AbstractConcreteDataDic {
         return dataDicService.findByCatalog(getCatalog());
     }
 
+    public DataDic getDefault() {
+        return dataDicService.getDefault(getCatalog());
+    }
+
 }

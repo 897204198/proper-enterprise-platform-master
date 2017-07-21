@@ -36,6 +36,18 @@ public interface DataDicService {
      */
     DataDic get(String id);
 
+    /**
+     * 获得某分类下的默认数据字典项
+     * @param  catalog 分类
+     * @return 默认项，或 null
+     */
+    DataDic getDefault(String catalog);
+
+    /**
+     * 保存数据字典
+     * @param  dataDic 数据字典
+     * @return 保存后的数据字典
+     */
     DataDic save(DataDic dataDic);
 
 }

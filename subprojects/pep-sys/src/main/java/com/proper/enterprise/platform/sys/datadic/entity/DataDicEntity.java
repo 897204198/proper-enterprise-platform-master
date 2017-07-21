@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.sys.datadic.entity;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +22,13 @@ public class DataDicEntity extends BaseEntity implements DataDic {
     private String name;
     @Column(name = "DD_ORDER")
     private int order;
+
+    /**
+     * 是否为默认项
+     */
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+    protected boolean isDefault = false;
 
     public DataDicEntity() { }
 
@@ -69,6 +77,16 @@ public class DataDicEntity extends BaseEntity implements DataDic {
     @Override
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    @Override
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    @Override
+    public void setDefault(boolean dft) {
+        this.isDefault = dft;
     }
 
 }
