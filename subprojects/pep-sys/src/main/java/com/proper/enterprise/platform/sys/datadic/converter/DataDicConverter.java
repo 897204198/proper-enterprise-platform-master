@@ -4,7 +4,6 @@ import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
-import com.proper.enterprise.platform.sys.datadic.service.impl.DataDicServiceImpl;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

@@ -28,7 +28,7 @@ public class DataDicEntity extends BaseEntity implements DataDic {
      */
     @Type(type = "yes_no")
     @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
-    protected boolean isDefault = false;
+    protected boolean isDefault;
 
     public DataDicEntity() { }
 
