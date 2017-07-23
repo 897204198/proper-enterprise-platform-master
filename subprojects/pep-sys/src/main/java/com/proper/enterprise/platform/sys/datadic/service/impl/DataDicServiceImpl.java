@@ -32,7 +32,7 @@ public class DataDicServiceImpl implements DataDicService {
 
     @Override
     public DataDic getDefault(String catalog) {
-        return repository.getDefault(catalog);
+        return repository.getByCatalogAndIsDefaultIsTrue(catalog);
     }
 
     @Override

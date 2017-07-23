@@ -15,6 +15,6 @@ public interface DataDicRepository extends BaseRepository<DataDicEntity, String>
     DataDicEntity getByCatalogAndCode(String catalog, String code);
 
     @CacheQuery
-    DataDicEntity getDefault(String catalog);
+    DataDicEntity getByCatalogAndIsDefaultIsTrue(String catalog);
 
 }
