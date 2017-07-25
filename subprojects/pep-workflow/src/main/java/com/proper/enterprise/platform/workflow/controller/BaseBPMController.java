@@ -2,10 +2,7 @@ package com.proper.enterprise.platform.workflow.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.*;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +62,16 @@ public abstract class BaseBPMController extends BaseController {
     @Async
     private void cleanHisProcInst(String procInstId) {
         historyService.deleteHistoricProcessInstance(procInstId);
+    }
+
+    @Override
+    protected String handleBody(Exception ex) {
+        return ex instanceof ActivitiException ? findPlainMessage(ex) : super.handleBody(ex);
+    }
+
+    private String findPlainMessage(Throwable t) {
+        return !t.getClass().getName().contains("activiti") || t.getCause() == null
+                ? t.getMessage() : findPlainMessage(t.getCause());
     }
 
 }
