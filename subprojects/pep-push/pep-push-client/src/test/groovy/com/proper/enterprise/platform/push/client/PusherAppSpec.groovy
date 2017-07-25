@@ -1,11 +1,12 @@
 package com.proper.enterprise.platform.push.client
 
-import spock.lang.Specification
-
 import com.proper.enterprise.platform.push.client.model.PushMessage
 import com.proper.enterprise.platform.push.client.service.IPushApiServiceRequest
+import spock.lang.Specification
+import spock.lang.Unroll
 
 class PusherAppSpec extends Specification{
+    
     def "Using all push methods"() {
         String appkey = "ShengjingOA"
         String pushUrl="http://localhost:8080/properpush"
@@ -24,6 +25,22 @@ class PusherAppSpec extends Specification{
         app.pushMessageToAllUsers()
         app.pushMessageToAllDevices(msg)
         app.pushMessageToAllDevices(msg,PusherApp.DEVICE_TYPE_ANDROID)
-
     }
+
+    @Unroll
+    def "Direct msg must with userId"() {
+        PusherApp app = new PusherApp('', '', '')
+
+        when:
+        app.pushMessageToOneUser(new PushMessage('', msg), userId)
+
+        then:
+        thrown(IllegalArgumentException)
+
+        where:
+        userId | msg
+        '' | ''
+        null | ''
+    }
+
 }
