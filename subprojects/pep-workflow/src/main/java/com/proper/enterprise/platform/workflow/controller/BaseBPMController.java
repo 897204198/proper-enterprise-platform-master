@@ -66,12 +66,11 @@ public abstract class BaseBPMController extends BaseController {
 
     @Override
     protected String handleBody(Exception ex) {
-        return ex instanceof ActivitiException ? findPlainMessage(ex) : super.handleBody(ex);
+        return ex instanceof ActivitiException ? findOriginalMessage(ex) : super.handleBody(ex);
     }
 
-    private String findPlainMessage(Throwable t) {
-        return !t.getClass().getName().contains("activiti") || t.getCause() == null
-                ? t.getMessage() : findPlainMessage(t.getCause());
+    private String findOriginalMessage(Throwable t) {
+        return t.getCause() == null ? t.getMessage() : findOriginalMessage(t.getCause());
     }
 
 }
