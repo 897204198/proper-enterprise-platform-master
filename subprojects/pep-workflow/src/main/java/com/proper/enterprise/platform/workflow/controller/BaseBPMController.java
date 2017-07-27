@@ -66,7 +66,7 @@ public abstract class BaseBPMController extends BaseController {
 
     @Override
     protected String handleBody(Exception ex) {
-        return ex instanceof ActivitiException ? findOriginalMessage(ex) : super.handleBody(ex);
+        return findOriginalMessage(ex);
     }
 
     private String findOriginalMessage(Throwable t) {
