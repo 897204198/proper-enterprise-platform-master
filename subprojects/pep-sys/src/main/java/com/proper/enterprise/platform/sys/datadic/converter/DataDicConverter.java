@@ -10,7 +10,7 @@ import javax.persistence.Converter;
 
 import static com.proper.enterprise.platform.sys.datadic.service.DataDicService.DD_CATALOG_CODE_SEPARATOR;
 
-@Converter
+@Converter(autoApply = true)
 public class DataDicConverter implements AttributeConverter<DataDic, String> {
 
     private DataDicService service = PEPApplicationContext.getBean(DataDicService.class);
