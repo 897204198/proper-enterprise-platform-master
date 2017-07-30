@@ -82,10 +82,6 @@ subprojects {
             }
         }
     }
-
-    test {
-        jvmArgs '-XX:MaxPermSize=1024m'
-    }
 }
 
 // could use init-${sub-project-name} task to initial a sub project folder
