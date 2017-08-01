@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.sys.datadic.converter;
 
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
-import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity;
+import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -38,7 +38,7 @@ public class DataDicLiteConverter implements AttributeConverter<DataDicLite, Str
             return null;
         }
         String[] args = dbData.split(DD_CATALOG_CODE_SEPARATOR);
-        return new DataDicEntity(args[0], args[1], null, -1);
+        return new DataDicLiteBean(args[0], args[1]);
     }
 
 }
