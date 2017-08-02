@@ -43,6 +43,7 @@ configurations.all {
         def groupVers = [
             'com.fasterxml.jackson.core': versions.jackson,
             'com.fasterxml.jackson.dataformat': versions.jackson,
+            'org.codehaus.groovy': versions.groovy,
             // spring security 被 activiti 直接依赖
             'org.springframework.security': versions.spring_security
         ]
