@@ -19,7 +19,7 @@ class CommonPushClientRequestControllerTest extends PushAbstractTest {
     @Autowired
     PushDeviceRepository deviceRepo
 
-    final String URL_STARTPUSH = "/push/request/startpush"
+    private static final String URL_STARTPUSH = "/push/request/startpush"
 
     @Test
     void startpushTest() {

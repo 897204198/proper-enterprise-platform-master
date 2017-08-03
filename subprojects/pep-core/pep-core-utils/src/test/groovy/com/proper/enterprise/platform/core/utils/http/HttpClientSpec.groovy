@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.core.utils.http
 
-import com.proper.enterprise.platform.core.utils.StringUtil
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity

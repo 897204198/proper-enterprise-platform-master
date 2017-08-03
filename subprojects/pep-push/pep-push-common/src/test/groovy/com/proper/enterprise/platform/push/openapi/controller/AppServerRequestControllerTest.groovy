@@ -9,7 +9,6 @@ import com.proper.enterprise.platform.push.common.db.entity.PushDeviceEntity
 import com.proper.enterprise.platform.push.common.db.repository.PushDeviceRepository
 import com.proper.enterprise.platform.push.common.db.repository.PushMsgRepository
 import com.proper.enterprise.platform.push.common.db.repository.PushUserRepository
-import com.proper.enterprise.platform.push.common.model.enums.PushMode
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus
 import com.proper.enterprise.platform.push.test.PushAbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
@@ -17,8 +16,6 @@ import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
-
-import javax.annotation.PostConstruct
 
 @Sql([
     "/com/proper/enterprise/platform/push/common/push-users.sql",

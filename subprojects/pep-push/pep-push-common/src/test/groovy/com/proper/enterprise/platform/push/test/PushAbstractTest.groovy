@@ -13,15 +13,15 @@ import org.springframework.http.MediaType
  */
 abstract class PushAbstractTest extends AbstractTest {
 
-    final String VALID_APPKEY="test"
-    final String TEST_USERID1="testuser1"
-    final String TEST_USERID2="testuser2"
-    final String TEST_DEVICEID1="testdevice1"
-    final String TEST_DEVICEID2="testdevice2"
-    final String TEST_DEVICEID3="testdevice3"
+    protected static final String VALID_APPKEY="test"
+    protected static final String TEST_USERID1="testuser1"
+    protected static final String TEST_USERID2="testuser2"
+    protected static final String TEST_DEVICEID1="testdevice1"
+    protected static final String TEST_DEVICEID2="testdevice2"
+    protected static final String TEST_DEVICEID3="testdevice3"
 
-    final String TEST_PUSHTOKEN1="testpushtoken1"
-    final String TEST_PUSHTOKEN2="testpushtoken2"
+    protected static final String TEST_PUSHTOKEN1="testpushtoken1"
+    protected static final String TEST_PUSHTOKEN2="testpushtoken2"
 
 
     Map<String, Object> pushRequest(String url, Map<String, Object> param) {
