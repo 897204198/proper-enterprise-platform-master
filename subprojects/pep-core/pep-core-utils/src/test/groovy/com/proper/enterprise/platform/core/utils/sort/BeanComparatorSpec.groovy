@@ -11,7 +11,7 @@ class BeanComparatorSpec extends Specification {
 
         Bean bean
 
-        public Bean(int a=0, String b='', double c=0.0, Bean bean=null) {
+        Bean(int a=0, String b='', double c=0.0, Bean bean=null) {
             this.a = a
             this.b = b
             this.c = c
@@ -25,7 +25,7 @@ class BeanComparatorSpec extends Specification {
 
         @Override
         int compareTo(Bean o) {
-            c.compareTo(o.c)
+            c <=> o.c
         }
     }
 
@@ -100,14 +100,14 @@ class BeanComparatorSpec extends Specification {
         Collections.sort(nested, new BeanComparator('c', 'bean.c'))
 
         expect:
-        nested[2].bean.c == 2.3
+        nested[2].bean.c == 2.3d
     }
 
     def "Order by comparable bean"() {
         Collections.sort(nested, new BeanComparator('c', 'bean'))
 
         expect:
-        nested[2].bean.c == 2.3
+        nested[2].bean.c == 2.3d
     }
 
     def "Do nothing when attribute is not a string or a number"() {

@@ -19,8 +19,8 @@ public class BeanComparator implements Comparator, Serializable {
 
     private Map<String, Order> pair = new LinkedHashMap<>();
 
-    public BeanComparator(String... attrs) {
-        for (String attr : attrs) {
+    public BeanComparator(String... attributes) {
+        for (String attr : attributes) {
             pair.put(attr, Order.ASC);
         }
     }
@@ -31,6 +31,7 @@ public class BeanComparator implements Comparator, Serializable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public int compare(Object o1, Object o2) {
         Assert.isTrue(o1.getClass().equals(o2.getClass()), "Should use SAME type objects to compare!");
 
