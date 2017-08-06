@@ -18,7 +18,7 @@ public class APISecret {
         LOGGER.debug("Generate new API secret for key: {}", key);
         String apiSecret = key;
         for (int i = 0; i < 3; i++) {
-            apiSecret = md5Base64(apiSecret + System.currentTimeMillis());
+            apiSecret = md5Base64(apiSecret + System.nanoTime());
         }
         return apiSecret;
     }
