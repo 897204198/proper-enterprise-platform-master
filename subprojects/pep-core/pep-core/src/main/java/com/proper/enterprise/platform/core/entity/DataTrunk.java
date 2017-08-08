@@ -1,10 +1,15 @@
 package com.proper.enterprise.platform.core.entity;
 
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import org.springframework.util.Assert;
+
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
- * 数据仓库
+ * 数据仓库实体
  * 用来存放结果集数据及集合相关基本信息
  *
  * @param <T> 存放的数据类型
@@ -26,6 +31,28 @@ public class DataTrunk<T> implements Serializable {
     public DataTrunk(Collection<T> data, long count) {
         this.data = data;
         this.count = count;
+    }
+
+    @SuppressWarnings("unchecked")
+    public DataTrunk(Collection<T> allData, int pageNo, int pageSize) {
+        if (CollectionUtil.isEmpty(allData)) {
+            this.data = Collections.EMPTY_LIST;
+            this.count = 0;
+        } else {
+            Assert.isTrue(pageNo > 0, "Page Number SHOULD FROM 1!");
+            int from = (pageNo - 1) * pageSize;
+            int to = from + pageSize;
+            if (to > allData.size()) {
+                to = allData.size();
+            }
+            if (from > to) {
+                this.data = Collections.EMPTY_LIST;
+                this.count = allData.size();
+            } else {
+                this.data = Arrays.asList((T[]) Arrays.copyOfRange(allData.toArray(), from, to));
+                this.count = allData.size();
+            }
+        }
     }
 
     public Collection<T> getData() {
