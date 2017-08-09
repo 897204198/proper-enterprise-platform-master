@@ -6,4 +6,6 @@ public interface JWTAuthcService {
 
     String getUserToken(String username) throws IOException;
 
+    void clearUserToken(String username);
+
 }

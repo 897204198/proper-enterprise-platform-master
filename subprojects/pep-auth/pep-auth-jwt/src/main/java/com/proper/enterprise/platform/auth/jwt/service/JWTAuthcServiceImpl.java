@@ -22,13 +22,24 @@ public class JWTAuthcServiceImpl implements JWTAuthcService {
     @Override
     public String getUserToken(String username) throws IOException {
         User user = userService.getByUsername(username);
-        JWTHeader header = new JWTHeader();
-        header.setId(user.getId());
-        header.setName(user.getUsername());
+        JWTHeader header = composeJWTHeader(user.getId(), user.getUsername());
         JWTPayloadImpl payload = new JWTPayloadImpl();
         payload.setHasRole(user.isSuperuser() || CollectionUtil.isNotEmpty(user.getRoles()));
         jwtService.clearToken(header);
         return jwtService.generateToken(header, payload);
+    }
+
+    private JWTHeader composeJWTHeader(String userId, String username) {
+        JWTHeader header = new JWTHeader();
+        header.setId(userId);
+        header.setName(username);
+        return header;
+    }
+
+    @Override
+    public void clearUserToken(String username) {
+        User user = userService.getByUsername(username);
+        jwtService.clearToken(composeJWTHeader(user.getId(), user.getUsername()));
     }
 
 }
