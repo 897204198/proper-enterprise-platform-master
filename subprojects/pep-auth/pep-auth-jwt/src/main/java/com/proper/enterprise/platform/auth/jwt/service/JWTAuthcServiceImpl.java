@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.jwt.service;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
+import com.proper.enterprise.platform.auth.jwt.model.JWTPayload;
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,24 +23,31 @@ public class JWTAuthcServiceImpl implements JWTAuthcService {
     @Override
     public String getUserToken(String username) throws IOException {
         User user = userService.getByUsername(username);
-        JWTHeader header = composeJWTHeader(user.getId(), user.getUsername());
-        JWTPayloadImpl payload = new JWTPayloadImpl();
-        payload.setHasRole(user.isSuperuser() || CollectionUtil.isNotEmpty(user.getRoles()));
+        JWTHeader header = composeJWTHeader(user);
+        JWTPayload payload = composeJWTPayload(user);
         jwtService.clearToken(header);
         return jwtService.generateToken(header, payload);
     }
 
-    private JWTHeader composeJWTHeader(String userId, String username) {
+    @Override
+    public JWTHeader composeJWTHeader(User user) {
         JWTHeader header = new JWTHeader();
-        header.setId(userId);
-        header.setName(username);
+        header.setId(user.getId());
+        header.setName(user.getUsername());
         return header;
+    }
+
+    @Override
+    public JWTPayload composeJWTPayload(User user) {
+        JWTPayloadImpl payload = new JWTPayloadImpl();
+        payload.setHasRole(user.isSuperuser() || CollectionUtil.isNotEmpty(user.getRoles()));
+        return payload;
     }
 
     @Override
     public void clearUserToken(String username) {
         User user = userService.getByUsername(username);
-        jwtService.clearToken(composeJWTHeader(user.getId(), user.getUsername()));
+        jwtService.clearToken(composeJWTHeader(user));
     }
 
 }
