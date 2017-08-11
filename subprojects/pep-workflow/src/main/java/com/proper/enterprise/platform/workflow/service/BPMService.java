@@ -6,7 +6,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -29,9 +28,7 @@ public class BPMService {
      */
     public Object getVariableAfterProcessDone(String procDefKey, Map<String, Object> inputs, String output) {
         ProcessInstance procInst = startProcess(procDefKey, inputs);
-        Object var = getVariableFromHistory(procInst.getId(), output);
-        cleanHisProcInst(procInst.getId());
-        return var;
+        return getVariableFromHistory(procInst.getId(), output);
     }
 
     private ProcessInstance startProcess(String procDefKey, Map<String, Object> vars) {
@@ -51,11 +48,6 @@ public class BPMService {
             .variableName(varName)
             .singleResult()
             .getValue();
-    }
-
-    @Async
-    private void cleanHisProcInst(String procInstId) {
-        historyService.deleteHistoricProcessInstance(procInstId);
     }
 
 }
