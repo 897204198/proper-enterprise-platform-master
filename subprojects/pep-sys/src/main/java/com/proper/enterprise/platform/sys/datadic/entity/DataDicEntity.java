@@ -40,6 +40,11 @@ public class DataDicEntity extends BaseEntity implements DataDic {
     }
 
     @Override
+    public String toString() {
+        return catalog + DD_CATALOG_CODE_SEPARATOR + code + DD_CATALOG_CODE_SEPARATOR + name;
+    }
+
+    @Override
     public String getCatalog() {
         return catalog;
     }
