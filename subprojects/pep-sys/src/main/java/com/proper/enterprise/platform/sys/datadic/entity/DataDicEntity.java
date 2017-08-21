@@ -2,7 +2,9 @@ package com.proper.enterprise.platform.sys.datadic.entity;
 
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -42,6 +44,27 @@ public class DataDicEntity extends BaseEntity implements DataDic {
     @Override
     public String toString() {
         return catalog + DD_CATALOG_CODE_SEPARATOR + code + DD_CATALOG_CODE_SEPARATOR + name;
+    }
+
+    @Override
+    public int hashCode() {
+        return StringUtil.defaultString(catalog).hashCode() + StringUtil.defaultString(code).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof DataDic) {
+            DataDic dd = (DataDic) obj;
+            return StringUtil.equals(catalog, dd.getCatalog()) && StringUtil.equals(code, dd.getCode()) && StringUtil.equals(name, dd.getName());
+        }
+        if (obj instanceof DataDicLite) {
+            DataDicLite lite = (DataDicLite) obj;
+            return StringUtil.equals(catalog, lite.getCatalog()) && StringUtil.equals(code, lite.getCode());
+        }
+        return false;
     }
 
     @Override
