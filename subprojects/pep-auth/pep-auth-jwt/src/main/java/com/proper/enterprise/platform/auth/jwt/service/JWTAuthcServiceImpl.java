@@ -25,7 +25,10 @@ public class JWTAuthcServiceImpl implements JWTAuthcService {
         User user = userService.getByUsername(username);
         JWTHeader header = composeJWTHeader(user);
         JWTPayload payload = composeJWTPayload(user);
-        jwtService.clearToken(header);
+        // Allow superuser to login on multi endpoint
+        if (!user.isSuperuser()) {
+            jwtService.clearToken(header);
+        }
         return jwtService.generateToken(header, payload);
     }
 
