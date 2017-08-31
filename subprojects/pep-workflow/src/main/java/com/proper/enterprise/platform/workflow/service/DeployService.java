@@ -26,7 +26,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipInputStream;
 
 @Service
@@ -54,9 +56,16 @@ public class DeployService {
         DeploymentBuilder builder = repositoryService.createDeployment().name(name);
         Resource[] resources = AntResourceUtil.getResources(locations);
         String resourceName;
+        Set<String> fileNameSet = new HashSet<>(resources.length);
         for (Resource resource : resources) {
-            LOGGER.debug("Loading {} to deploy", resource.getFilename());
             resourceName = determineResourceName(resource);
+            if (fileNameSet.contains(resource.getFilename())) {
+                LOGGER.debug("Ignore duplicated resource {}", resourceName);
+                continue;
+            } else {
+                LOGGER.debug("Loading {} to deploy", resourceName);
+                fileNameSet.add(resource.getFilename());
+            }
             if (resourceName.endsWith(".bar") || resourceName.endsWith(".zip") || resourceName.endsWith(".jar")) {
                 builder.addZipInputStream(new ZipInputStream(resource.getInputStream()));
             } else {
