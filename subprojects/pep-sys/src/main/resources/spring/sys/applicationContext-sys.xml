@@ -1,18 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/jdbc
-                           http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
-
-    <beans profile="dev,production">
-        <jdbc:initialize-database data-source="dataSource" ignore-failures="ALL">
-            <jdbc:script location="classpath*:sql/datadics.sql" encoding="UTF-8"/>
-        </jdbc:initialize-database>
-    </beans>
-
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
     <beans>
         <bean id="messageSource"
               class="com.proper.enterprise.platform.sys.i18n.AntPatternReloadableResourceBundleMessageSource">
