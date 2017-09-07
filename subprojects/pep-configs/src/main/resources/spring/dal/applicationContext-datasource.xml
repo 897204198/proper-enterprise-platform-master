@@ -10,6 +10,7 @@
         <property name="maximumPoolSize" value="${database.maxPoolSize}" />
         <property name="autoCommit" value="${database.autoCommit}" />
         <property name="maxLifetime" value="${database.maxLifetime}" />
+        <property name="leakDetectionThreshold" value="${database.leakDetectionThreshold}" />
         <property name="dataSourceProperties">
             <value>
                 url      = ${database.url}
