@@ -33,7 +33,7 @@
         </jdbc:initialize-database>
     </beans>
     <beans profile="dev">
-        <jdbc:initialize-database>
+        <jdbc:initialize-database ignore-failures="ALL">
             <jdbc:script location="classpath*:sql/**/???-*.sql" encoding="UTF-8"/>
         </jdbc:initialize-database>
     </beans>
