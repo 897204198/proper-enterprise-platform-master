@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.cache.redis;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
-import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -25,7 +24,7 @@ public class RedisConfigs {
 
     @Bean
     CacheManager cacheManager(RedissonClient redissonClient) throws IOException {
-        return new RedissonSpringCacheManager(redissonClient, "classpath:conf/cache/redis/redisson-config.yaml");
+        return new RedisCacheManager(redissonClient, "classpath:conf/cache/redis/redisson-config.yaml");
     }
 
 }

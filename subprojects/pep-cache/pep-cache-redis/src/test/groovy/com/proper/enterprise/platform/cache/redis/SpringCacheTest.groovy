@@ -1,5 +1,5 @@
 package com.proper.enterprise.platform.cache.redis
-import com.proper.enterprise.platform.cache.redis.service.CachableService
+import com.proper.enterprise.platform.cache.redis.service.CacheableService
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Before
 import org.junit.Test
@@ -9,7 +9,7 @@ import org.springframework.cache.CacheManager
 class SpringCacheTest extends AbstractTest  {
 
     @Autowired
-    CachableService service
+    CacheableService service
 
     @Autowired
     CacheManager cacheManager
@@ -53,6 +53,14 @@ class SpringCacheTest extends AbstractTest  {
         assert ro.remainTimeToLive() == -1
         sleep(1000)
         assert ro.get('count') == null
+    }
+
+    @Test
+    void testCacheDuration() {
+        def t1 = service.testCacheDuration()
+        assert t1 == service.testCacheDuration()
+        sleep(300)
+        assert t1 != service.testCacheDuration()
     }
 
 }

@@ -180,6 +180,8 @@ libraries.pinyin4j = 'com.belerweb:pinyin4j:2.5.0'
 
 libraries.redisson = 'org.redisson:redisson:3.4.3'
 
+libraries.reflections = 'org.reflections:reflections:0.9.11'
+
 libraries.servlet_api = 'javax.servlet:javax.servlet-api:3.0.1'
 
 libraries.slf4j_api = "org.slf4j:slf4j-api:${versions.slf4j}"

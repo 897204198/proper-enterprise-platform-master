@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.cache.redis.service
 
+import com.proper.enterprise.platform.cache.CacheDuration
 import org.springframework.cache.annotation.CacheConfig
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 @CacheConfig(cacheNames = "test")
-class CachableService {
+class CacheableService {
 
     private int count = 5
 
@@ -43,6 +44,12 @@ class CachableService {
     @CacheEvict(cacheNames = "anotherCacheName", key = "'dupKey'")
     void clearAnotherKey() {
 
+    }
+
+    @Cacheable(cacheNames = 'com.proper.enterprise.platform.cache.redis.service.CacheableService#testCacheDuration')
+    @CacheDuration(ttl = 100L, maxIdleTime = 200L)
+    def testCacheDuration() {
+        System.nanoTime()
     }
 
 }
