@@ -131,12 +131,7 @@ libraries.hibernate_hikaricp = dependencies.module("org.hibernate:hibernate-hika
 }
 //libraries.hibernate_infinispan = "org.hibernate:hibernate-infinispan:${versions.hibernate}"
 //libraries.hibernate_proxool = "org.hibernate:hibernate-proxool:${versions.hibernate}"
-libraries.hibernate_redis = [
-    'com.github.debop:hibernate-redis:2.3.1',
-    'org.redisson:redisson:2.3.0',
-    'de.ruedigermoeller:fst:2.48',
-    'org.xerial.snappy:snappy-java:1.1.2.6'
-]
+libraries.hibernate_redis = 'com.github.debop:hibernate-redis:2.3.1'
 
 //libraries.jackson_annotations = "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}"
 //libraries.jackson_core = "com.fasterxml.jackson.core:jackson-core:${versions.jackson}"
@@ -183,6 +178,8 @@ libraries.pinyin4j = 'com.belerweb:pinyin4j:2.5.0'
 
 //libraries.quartz = 'org.quartz-scheduler:quartz:2.2.1'
 
+libraries.redisson = 'org.redisson:redisson:3.4.3'
+
 libraries.servlet_api = 'javax.servlet:javax.servlet-api:3.0.1'
 
 libraries.slf4j_api = "org.slf4j:slf4j-api:${versions.slf4j}"
@@ -211,11 +208,12 @@ libraries.spring_jms = "org.springframework:spring-jms:${versions.spring}"
 
 libraries.spring_data_jpa = 'org.springframework.data:spring-data-jpa:1.9.4.RELEASE'
 libraries.spring_data_mongodb = 'org.springframework.data:spring-data-mongodb:1.8.4.RELEASE'
-libraries.spring_data_redis = [
-    'org.springframework.data:spring-data-redis:1.7.3.RELEASE',
-    'org.apache.commons:commons-pool2:2.2',
-    'redis.clients:jedis:2.8.1'
-]
+
+//libraries.spring_data_redis = [
+//    'org.springframework.data:spring-data-redis:1.7.5.RELEASE',
+//    'org.apache.commons:commons-pool2:2.2',
+//    'redis.clients:jedis:2.9.0'
+//]
 
 //libraries.spring_security_acl = "org.springframework.security:spring-security-acl:${versions.spring_security}"
 //libraries.spring_security_cas = "org.springframework.security:spring-security-cas:${versions.spring_security}"

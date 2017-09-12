@@ -1,5 +1,5 @@
 dependencies {
-    compile libraries.spring_data_redis,
+    compile libraries.redisson,
             libraries.hibernate_redis
 
     testCompile project(':pep-test'),

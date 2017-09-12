@@ -17,12 +17,12 @@ class QueryCacheTest extends AbstractTest {
     ARepository repo
 
     @Before
-    public void setUp() {
+    void setUp() {
         repo.save(new AEntity('abc', '123'))
     }
 
     @Test
-    public void checkQueryCache() {
+    void checkQueryCache() {
         println " ===== Should print insert and select ===== "
         AEntity entity = repo.findByUsername('abc')
         println " ===== print insert and select done ======= "

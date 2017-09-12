@@ -1,0 +1,11 @@
+# https://github.com/redisson/redisson/wiki/14.-Integration-with-frameworks#142-spring-cache
+# Each Cache instance has two important parameters: ttl and maxIdleTime and stores data infinitely if they are not defined or equal to 0.
+pep:
+  ttl: 120000
+  maxIdleTime: 120000
+apiSecrets:
+  ttl: 1209600000
+  maxIdleTime: 1209600000
+test:
+  ttl: 1000
+  maxIdleTime: 1000

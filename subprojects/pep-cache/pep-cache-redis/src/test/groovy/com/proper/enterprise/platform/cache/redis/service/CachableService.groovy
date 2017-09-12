@@ -10,24 +10,39 @@ import org.springframework.stereotype.Service
 @CacheConfig(cacheNames = "test")
 class CachableService {
 
-    private int count = 5;
+    private int count = 5
 
     @Cacheable(key = "'count'")
-    public int addCount() {
-        return ++count;
+    int addCount() {
+        ++count
     }
 
     @CacheEvict(key = "'count'")
-    public void clear() { }
+    void clear() { }
 
     @CachePut(key = "'count'")
-    public int newKey() {
-        return 10;
+    int newKey() {
+        10
     }
 
-    @Cacheable(cacheNames = "apiSecrets")
-    public String setKey(String key) {
-        return key;
+    @Cacheable(cacheNames = "apiSecrets", key = "'dupKey'")
+    String setKey(String key) {
+        key
+    }
+
+    @CacheEvict(cacheNames = "apiSecrets", key = "'dupKey'")
+    void clearKey() {
+
+    }
+
+    @Cacheable(cacheNames = "anotherCacheName", key = "'dupKey'")
+    def setKeyInOtherCacheName(key) {
+        key
+    }
+
+    @CacheEvict(cacheNames = "anotherCacheName", key = "'dupKey'")
+    void clearAnotherKey() {
+
     }
 
 }
