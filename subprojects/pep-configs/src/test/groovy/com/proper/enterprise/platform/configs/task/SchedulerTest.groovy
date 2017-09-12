@@ -18,7 +18,7 @@ class SchedulerTest extends AbstractTest {
         taskCount = 0
         def task = new Task()
         def sf = scheduler.scheduleAtFixedRate(task, 50)
-        sleep(60)
+        sleep(500)
         sf.cancel(true)
         assert taskCount >= 2
     }
@@ -35,7 +35,7 @@ class SchedulerTest extends AbstractTest {
     void useAnnotation() {
         // method with @Scheduled will auto run
         // but CI may need to sleep some time
-        sleep(100)
+        sleep(500)
         assert annoCount > 0
     }
 

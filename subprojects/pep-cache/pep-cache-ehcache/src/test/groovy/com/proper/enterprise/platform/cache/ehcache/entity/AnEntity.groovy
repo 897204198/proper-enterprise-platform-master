@@ -10,15 +10,11 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "pep_test_a")
+@Table(name = "pep_test_an")
 @CacheEntity
-public class AEntity {
+class AnEntity {
 
-    private static final long serialVersionUID = PEPConstants.VERSION;
-
-    public AEntity() { }
-
-    public AEntity(String username, String password) {
+    AnEntity(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -26,16 +22,14 @@ public class AEntity {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    String id;
+    String id
 
     @Column(unique = true, nullable = false)
-    String username;
+    String username
 
     @Column(nullable = false)
-    String password;
+    String password
 
-    boolean valid = false;
-
-    String description;
+    String description
 
 }

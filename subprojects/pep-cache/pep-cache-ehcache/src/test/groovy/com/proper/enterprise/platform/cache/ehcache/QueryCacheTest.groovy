@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.cache.ehcache
 
-import com.proper.enterprise.platform.cache.ehcache.entity.AEntity
-import com.proper.enterprise.platform.cache.ehcache.repository.ARepository
+import com.proper.enterprise.platform.cache.ehcache.entity.AnEntity
+import com.proper.enterprise.platform.cache.ehcache.repository.AnRepository
 import com.proper.enterprise.platform.test.AbstractTest
 import net.sf.ehcache.Cache
 import org.junit.Before
@@ -15,15 +15,15 @@ class QueryCacheTest extends AbstractTest {
     CacheManager cacheManager
 
     @Autowired
-    ARepository repo
+    AnRepository repo
 
     @Before
-    public void setUp() {
-        repo.save(new AEntity('abc', '123'))
+    void setUp() {
+        repo.save(new AnEntity('abc', '123'))
     }
 
     @Test
-    public void checkQueryCache() {
+    void checkQueryCache() {
         // query cache and second level cache use these two cache keys
         Cache sqc = cacheManager.getCache('org.hibernate.cache.internal.StandardQueryCache').nativeCache
         Cache utc = cacheManager.getCache('org.hibernate.cache.spi.UpdateTimestampsCache').nativeCache
@@ -33,7 +33,7 @@ class QueryCacheTest extends AbstractTest {
         assert sqc.size == 0
         assert utc.size == 0
 
-        AEntity entity = repo.findByUsername('abc')
+        AnEntity entity = repo.findByUsername('abc')
         // cache entity after first load
         assert sqc.size == 1
         assert utc.size == 1
