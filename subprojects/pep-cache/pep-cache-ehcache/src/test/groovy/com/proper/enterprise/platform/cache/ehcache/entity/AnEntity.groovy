@@ -1,13 +1,9 @@
 package com.proper.enterprise.platform.cache.ehcache.entity
-import com.proper.enterprise.platform.core.PEPConstants
+
 import com.proper.enterprise.platform.core.annotation.CacheEntity
 import org.hibernate.annotations.GenericGenerator
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "pep_test_an")
