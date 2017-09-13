@@ -21,6 +21,8 @@ class SpringCacheTest extends AbstractTest {
         assert t2 == service.testWithoutCacheName()
         sleep(1000)
         assert t2 != service.testWithoutCacheName()
+
+        service.evit()
     }
 
 }

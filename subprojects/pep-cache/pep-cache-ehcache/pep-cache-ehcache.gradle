@@ -3,6 +3,8 @@ dependencies {
             libraries.reflections,
             libraries.spring_context_support
 
+    compile project(':pep-cache-api')
+
     testCompile libraries.ehcache
 
     testCompile project(':pep-core'),

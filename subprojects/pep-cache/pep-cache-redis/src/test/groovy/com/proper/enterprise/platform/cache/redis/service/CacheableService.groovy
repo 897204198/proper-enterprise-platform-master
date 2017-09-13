@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 @CacheConfig(cacheNames = "test")
+@CacheDuration(ttl = 10L, maxIdleTime = 10L, cacheName = 'com.proper.enterprise.platform.cache.redis.service.CacheableService#testWithoutCacheName')
 class CacheableService {
 
     private int count = 5
@@ -46,9 +47,21 @@ class CacheableService {
 
     }
 
-    @Cacheable(cacheNames = 'com.proper.enterprise.platform.cache.redis.service.CacheableService#testCacheDuration')
+    @Cacheable(cacheNames = 'testCacheDuration')
+    @CacheDuration(ttl = 100L, maxIdleTime = 200L, cacheName = 'testCacheDuration')
+    def testWithCacheName() {
+        System.nanoTime()
+    }
+
+    @CacheEvict(cacheNames = 'testCacheDuration')
+    @CacheDuration(ttl = 100L, maxIdleTime = 200L, cacheName = 'testCacheDuration')
+    def evit() {
+
+    }
+
     @CacheDuration(ttl = 100L, maxIdleTime = 200L)
-    def testCacheDuration() {
+    @Cacheable(cacheNames = 'com.proper.enterprise.platform.cache.redis.service.CacheableService#testWithoutCacheName')
+    def testWithoutCacheName() {
         System.nanoTime()
     }
 

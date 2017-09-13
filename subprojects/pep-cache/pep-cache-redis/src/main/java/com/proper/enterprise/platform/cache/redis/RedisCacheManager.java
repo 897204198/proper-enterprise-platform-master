@@ -277,12 +277,20 @@ public class RedisCacheManager implements CacheManager, ResourceLoaderAware, Ini
     }
 
     private Map<String, CacheConfig> configsFormCacheDuration() {
-        Map<String, CacheConfig> result = new HashMap<>();
-        Reflections reflections = new Reflections("com.proper", new MethodAnnotationsScanner());
-        Set<Method> namedMethods = reflections.getMethodsAnnotatedWith(CacheDuration.class);
         CacheDuration cd;
         String cacheName;
-        for (Method method : namedMethods) {
+
+        Set<Class<?>> cdTypes = new Reflections("com.proper").getTypesAnnotatedWith(CacheDuration.class);
+        Set<Method> cdMethods = new Reflections("com.proper", new MethodAnnotationsScanner()).getMethodsAnnotatedWith(CacheDuration.class);
+
+        Map<String, CacheConfig> result = new HashMap<>(cdTypes.size() + cdMethods.size());
+        for (Class clz : cdTypes) {
+            cd = (CacheDuration) clz.getAnnotation(CacheDuration.class);
+            cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : clz.getCanonicalName();
+            result.put(cacheName, new CacheConfig(cd.ttl(), cd.maxIdleTime()));
+        }
+        // Method annotation has higher priority with same cache name
+        for (Method method : cdMethods) {
             cd = method.getAnnotation(CacheDuration.class);
             cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : method.getDeclaringClass().getCanonicalName() + "#" + method.getName();
             result.put(cacheName, new CacheConfig(cd.ttl(), cd.maxIdleTime()));

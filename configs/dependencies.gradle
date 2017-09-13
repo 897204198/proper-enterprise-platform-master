@@ -3,16 +3,17 @@ ext {
     libraries = [:]
 }
 
-versions.activiti        = '5.22.0'
-versions.groovy          = '2.4.3'
-versions.hibernate       = '4.3.10.Final'
-versions.jackson         = '2.8.1'
-//versions.jcaptcha      = '1.0'
-versions.logback         = '1.1.3'
-versions.mongo           = '3.2.2'
-versions.slf4j           = '1.7.21'
-versions.spring          = '4.3.0.RELEASE'
-versions.spring_security = '4.0.1.RELEASE'
+versions.activiti           = '5.22.0'
+versions.groovy             = '2.4.3'
+versions.hibernate          = '4.3.10.Final'
+versions.jackson            = '2.8.1'
+//versions.jcaptcha         = '1.0'
+versions.logback            = '1.1.3'
+versions.mongo              = '3.2.2'
+versions.slf4j              = '1.7.21'
+versions.spring             = '4.3.0.RELEASE'
+versions.spring_integration = '4.3.9.RELEASE'
+versions.spring_security    = '4.0.1.RELEASE'
 
 configurations.all {
     resolutionStrategy.force 'xml-apis:xml-apis:1.0.b2'
@@ -216,6 +217,12 @@ libraries.spring_data_mongodb = 'org.springframework.data:spring-data-mongodb:1.
 //    'org.apache.commons:commons-pool2:2.2',
 //    'redis.clients:jedis:2.9.0'
 //]
+
+libraries.spring_integration = "org.springframework.integration:spring-integration-core:${versions.spring_integration}"
+libraries.spring_integration_stream = "org.springframework.integration:spring-integration-stream:${versions.spring_integration}"
+libraries.spring_integration_ws = "org.springframework.integration:spring-integration-ws:${versions.spring_integration}"
+libraries.spring_integration_xml = "org.springframework.integration:spring-integration-xml:${versions.spring_integration}"
+libraries.spring_integration_jdbc = "org.springframework.integration:spring-integration-jdbc:${versions.spring_integration}"
 
 //libraries.spring_security_acl = "org.springframework.security:spring-security-acl:${versions.spring_security}"
 //libraries.spring_security_cas = "org.springframework.security:spring-security-cas:${versions.spring_security}"

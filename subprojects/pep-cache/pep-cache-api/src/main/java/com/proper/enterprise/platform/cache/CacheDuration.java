@@ -8,12 +8,12 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface CacheDuration {
 
     /**
      * Cache name.
-     * Defaults to full name of the method using this annotation,
+     * Defaults to full name of the method or type using this annotation,
      * such as: com.proper.enterprise.platform.cache.redis.service.CacheableService#testCacheDuration
      *
      * @return cache name

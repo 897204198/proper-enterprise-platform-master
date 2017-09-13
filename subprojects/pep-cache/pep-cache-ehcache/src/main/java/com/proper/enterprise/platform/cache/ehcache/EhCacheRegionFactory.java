@@ -23,26 +23,26 @@
  */
 package com.proper.enterprise.platform.cache.ehcache;
 
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.Properties;
-import java.util.Set;
-
 import com.proper.enterprise.platform.cache.CacheDuration;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
 import net.sf.ehcache.config.ConfigurationFactory;
-
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.ehcache.EhCacheMessageLogger;
 import org.hibernate.cache.ehcache.internal.util.HibernateEhcacheUtils;
 import org.hibernate.cfg.Settings;
-
 import org.jboss.logging.Logger;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * A non-singleton EhCacheRegionFactory implementation.
@@ -138,22 +138,35 @@ public class EhCacheRegionFactory extends AbstractEhcacheRegionFactory {
         }
     }
 
+    //CHECKSTYLE:ON
+
     private void supplementConfigurationWithCacheDuration(Configuration configuration) {
-        Reflections reflections = new Reflections("com.proper", new MethodAnnotationsScanner());
-        Set<Method> namedMethods = reflections.getMethodsAnnotatedWith(CacheDuration.class);
         CacheDuration cd;
         String cacheName;
         CacheConfiguration config;
-        for (Method method : namedMethods) {
+
+        Set<Class<?>> cdTypes = new Reflections("com.proper").getTypesAnnotatedWith(CacheDuration.class);
+        Set<Method> cdMethods = new Reflections("com.proper", new MethodAnnotationsScanner()).getMethodsAnnotatedWith(CacheDuration.class);
+
+        Map<String, CacheDuration> cds = new HashMap<>(cdTypes.size() + cdMethods.size());
+        for (Class clz : cdTypes) {
+            cd = (CacheDuration) clz.getAnnotation(CacheDuration.class);
+            cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : clz.getCanonicalName();
+            cds.put(cacheName, cd);
+        }
+        // Method annotation has higher priority with same cache name
+        for (Method method : cdMethods) {
             cd = method.getAnnotation(CacheDuration.class);
             cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : method.getDeclaringClass().getCanonicalName() + "#" + method.getName();
-            config = new CacheConfiguration(cacheName, 10000);
-            config.setName(cacheName);
-            config.setTimeToIdleSeconds(cd.maxIdleTime() / 1000);
-            config.setTimeToLiveSeconds(cd.ttl() / 1000);
+            cds.put(cacheName, cd);
+        }
+        for (Map.Entry<String, CacheDuration> entry : cds.entrySet()) {
+            config = new CacheConfiguration(entry.getKey(), 10000);
+            config.setName(entry.getKey());
+            config.setTimeToIdleSeconds(entry.getValue().maxIdleTime() / 1000);
+            config.setTimeToLiveSeconds(entry.getValue().ttl() / 1000);
             configuration.addCache(config);
         }
     }
 
-    //CHECKSTYLE:ON
 }

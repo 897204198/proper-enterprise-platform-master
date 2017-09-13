@@ -57,10 +57,17 @@ class SpringCacheTest extends AbstractTest  {
 
     @Test
     void testCacheDuration() {
-        def t1 = service.testCacheDuration()
-        assert t1 == service.testCacheDuration()
+        def t1 = service.testWithCacheName()
+        assert t1 == service.testWithCacheName()
         sleep(300)
-        assert t1 != service.testCacheDuration()
+        assert t1 != service.testWithCacheName()
+
+        def t2 = service.testWithoutCacheName()
+        assert t2 == service.testWithoutCacheName()
+        sleep(300)
+        assert t2 != service.testWithoutCacheName()
+
+        service.evit()
     }
 
 }

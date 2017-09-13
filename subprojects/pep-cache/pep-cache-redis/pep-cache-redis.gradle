@@ -3,6 +3,8 @@ dependencies {
             libraries.reflections,
             libraries.hibernate_redis
 
+    compile project(':pep-cache-api')
+
     testCompile project(':pep-test'),
                 project(':pep-core')
 }
