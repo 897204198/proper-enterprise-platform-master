@@ -11,7 +11,7 @@ public class APISecret {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APISecret.class);
 
-    public static final String CACHE_NAME = "apiSecrets";
+    private static final String CACHE_NAME = "apiSecrets";
 
     @Cacheable(value = CACHE_NAME)
     public String getAPISecret(String key) {
