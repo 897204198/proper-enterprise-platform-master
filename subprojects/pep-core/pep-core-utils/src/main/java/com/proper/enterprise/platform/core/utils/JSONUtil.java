@@ -1,7 +1,6 @@
 package com.proper.enterprise.platform.core.utils;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proper.enterprise.platform.core.PEPConstants;
 import org.slf4j.Logger;
