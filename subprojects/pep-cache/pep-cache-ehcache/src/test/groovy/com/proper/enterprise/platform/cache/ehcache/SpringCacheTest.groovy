@@ -25,4 +25,11 @@ class SpringCacheTest extends AbstractTest {
         service.evit()
     }
 
+    @Test
+    void testListCache() {
+        def list = service.getList()
+        list.add('c')
+        assert !service.getList().contains('c')
+    }
+
 }

@@ -26,4 +26,10 @@ class CacheableService {
         System.nanoTime()
     }
 
+    @Cacheable(cacheNames = 'listCache')
+    @CacheDuration(cacheName = 'listCache')
+    def getList() {
+        ['a', 'b']
+    }
+
 }
