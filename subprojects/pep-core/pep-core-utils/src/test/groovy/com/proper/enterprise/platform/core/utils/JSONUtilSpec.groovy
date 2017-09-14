@@ -17,6 +17,7 @@ class JSONUtilSpec extends Specification {
     def "Object #obj to JSON string is #result"() {
         expect:
         result == JSONUtil.toJSON(obj)
+        result == JSONUtil.toJSONIgnoreException(obj)
 
         where:
         obj                                             | result
