@@ -10,6 +10,8 @@ import org.redisson.spring.cache.RedissonCache;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cache.Cache;
@@ -276,6 +278,8 @@ public class RedisCacheManager implements CacheManager, ResourceLoaderAware, Ini
         this.configMap.putAll(configsFormCacheDuration());
     }
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RedisCacheManager.class);
+
     private Map<String, CacheConfig> configsFormCacheDuration() {
         CacheDuration cd;
         String cacheName;
@@ -286,13 +290,23 @@ public class RedisCacheManager implements CacheManager, ResourceLoaderAware, Ini
         Map<String, CacheConfig> result = new HashMap<>(cdTypes.size() + cdMethods.size());
         for (Class clz : cdTypes) {
             cd = (CacheDuration) clz.getAnnotation(CacheDuration.class);
+            if (cd == null) {
+                LOGGER.debug("Could NOT find CacheDuration on {}", clz.getCanonicalName());
+                continue;
+            }
             cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : clz.getCanonicalName();
             result.put(cacheName, new CacheConfig(cd.ttl(), cd.maxIdleTime()));
         }
         // Method annotation has higher priority with same cache name
+        String canonicalName;
         for (Method method : cdMethods) {
             cd = method.getAnnotation(CacheDuration.class);
-            cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : method.getDeclaringClass().getCanonicalName() + "#" + method.getName();
+            canonicalName = method.getDeclaringClass().getCanonicalName() + "#" + method.getName();
+            if (cd == null) {
+                LOGGER.debug("Could NOT find CacheDuration on {}", canonicalName);
+                continue;
+            }
+            cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : canonicalName;
             result.put(cacheName, new CacheConfig(cd.ttl(), cd.maxIdleTime()));
         }
         return result;

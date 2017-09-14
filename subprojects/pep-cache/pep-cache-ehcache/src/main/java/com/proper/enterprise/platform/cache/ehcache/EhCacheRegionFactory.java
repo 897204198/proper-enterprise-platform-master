@@ -35,6 +35,7 @@ import org.hibernate.cfg.Settings;
 import org.jboss.logging.Logger;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
@@ -140,6 +141,8 @@ public class EhCacheRegionFactory extends AbstractEhcacheRegionFactory {
 
     //CHECKSTYLE:ON
 
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EhCacheRegionFactory.class);
+
     private void supplementConfigurationWithCacheDuration(Configuration configuration) {
         CacheDuration cd;
         String cacheName;
@@ -151,13 +154,23 @@ public class EhCacheRegionFactory extends AbstractEhcacheRegionFactory {
         Map<String, CacheDuration> cds = new HashMap<>(cdTypes.size() + cdMethods.size());
         for (Class clz : cdTypes) {
             cd = (CacheDuration) clz.getAnnotation(CacheDuration.class);
+            if (cd == null) {
+                LOGGER.debug("Could NOT find CacheDuration on {}", clz.getCanonicalName());
+                continue;
+            }
             cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : clz.getCanonicalName();
             cds.put(cacheName, cd);
         }
         // Method annotation has higher priority with same cache name
+        String canonicalName;
         for (Method method : cdMethods) {
             cd = method.getAnnotation(CacheDuration.class);
-            cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : method.getDeclaringClass().getCanonicalName() + "#" + method.getName();
+            canonicalName = method.getDeclaringClass().getCanonicalName() + "#" + method.getName();
+            if (cd == null) {
+                LOGGER.debug("Could NOT find CacheDuration on {}", canonicalName);
+                continue;
+            }
+            cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : canonicalName;
             cds.put(cacheName, cd);
         }
         for (Map.Entry<String, CacheDuration> entry : cds.entrySet()) {
