@@ -179,6 +179,7 @@ public class EhCacheRegionFactory extends AbstractEhcacheRegionFactory {
             config.setTimeToIdleSeconds(entry.getValue().maxIdleTime() / 1000);
             config.setTimeToLiveSeconds(entry.getValue().ttl() / 1000);
             config.setCopyOnWrite(true);
+            config.setCopyOnRead(true);
             configuration.addCache(config);
         }
     }
