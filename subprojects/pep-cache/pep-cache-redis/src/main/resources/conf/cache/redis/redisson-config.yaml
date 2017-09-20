@@ -9,6 +9,3 @@ pep:
 test:
   ttl: 1000
   maxIdleTime: 1000
-users:
-  ttl: 0
-  maxIdleTime: 0

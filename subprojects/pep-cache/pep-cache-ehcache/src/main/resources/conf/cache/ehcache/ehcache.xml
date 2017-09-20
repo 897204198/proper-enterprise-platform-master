@@ -52,13 +52,4 @@
         <persistence strategy="localTempSwap" />
     </cache>
 
-    <!-- Cache region for platform users, eternal storage -->
-    <cache name="users"
-           maxElementsInMemory="10000"
-           eternal="true"
-           overflowToDisk="true"
-           diskPersistent="true"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
-
 </ehcache>

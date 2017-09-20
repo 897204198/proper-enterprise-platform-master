@@ -1,4 +1,5 @@
 package com.proper.enterprise.platform.auth.common.service.impl
+
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.test.AbstractTest
@@ -24,7 +25,7 @@ class MenuServiceImplTest extends AbstractTest {
     ResourceService resourceService
 
     @Test
-    public void getMenuTree() {
+    void getMenuTree() {
         def menu = service.get('a2-m2-1')
         assert menu.getParent().getRoute() == '/a2/m2'
         assert menu.getApplication().getRoute() == '/a2'
@@ -39,7 +40,7 @@ class MenuServiceImplTest extends AbstractTest {
     }
 
     @Test
-    public void accessible() {
+    void accessible() {
         // anyone could access resource not be defined
         assert service.accessible(null, null)
         // anyone could access resource without menu

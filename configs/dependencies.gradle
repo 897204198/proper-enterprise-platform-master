@@ -179,7 +179,7 @@ libraries.pinyin4j = 'com.belerweb:pinyin4j:2.5.0'
 
 //libraries.quartz = 'org.quartz-scheduler:quartz:2.2.1'
 
-libraries.redisson = 'org.redisson:redisson:3.4.3'
+libraries.redisson = 'org.redisson:redisson:3.5.3'
 
 libraries.reflections = 'org.reflections:reflections:0.9.11'
 
