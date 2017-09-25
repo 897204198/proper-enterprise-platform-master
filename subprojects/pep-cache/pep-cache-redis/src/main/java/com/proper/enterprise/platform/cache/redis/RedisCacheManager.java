@@ -299,7 +299,7 @@ public class RedisCacheManager implements CacheManager, ResourceLoaderAware, Ini
         for (Class clz : cdTypes) {
             cd = (CacheDuration) clz.getAnnotation(CacheDuration.class);
             if (cd == null) {
-                LOGGER.debug("Could NOT find CacheDuration on {}", clz.getCanonicalName());
+                LOGGER.debug("Could NOT find CacheDuration on {}, it maybe on its super class.", clz.getCanonicalName());
                 continue;
             }
             cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : clz.getCanonicalName();
