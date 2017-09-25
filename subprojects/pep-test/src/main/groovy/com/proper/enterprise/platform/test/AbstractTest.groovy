@@ -10,6 +10,7 @@ import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -26,17 +27,19 @@ import java.lang.reflect.Modifier
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+
 /**
  * 基础测试类
  *
  * 包含测试常用的模拟对象、方法等
  */
-@RunWith(SpringRunner.class)
-@WebAppConfiguration
-@ContextConfiguration("/spring/applicationContext.xml")
 @Transactional
+@WebAppConfiguration
 @ActiveProfiles("test")
-public abstract class AbstractTest {
+@RunWith(SpringRunner.class)
+@SqlConfig(encoding = "UTF-8")
+@ContextConfiguration("/spring/applicationContext.xml")
+abstract class AbstractTest {
 
     @Autowired
     protected WebApplicationContext wac
@@ -52,7 +55,7 @@ public abstract class AbstractTest {
     private def mockUser
 
     @Before
-    public void setup() {
+    void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build()
         mockUser = null
     }
