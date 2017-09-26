@@ -248,6 +248,16 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
     }
 
     /**
+     * 通过订支付宝订单号查询支付宝信息
+     *
+     * @param tradeNo 支付宝订单号
+     * @return Ali
+     */
+    public AliEntity getByTradeNo(String tradeNo) {
+        return aliRepo.getByTradeNo(tradeNo);
+    }
+
+    /**
      * 通过退款单号查询支付宝退款信息
      *
      * @param refundNo 退款单号

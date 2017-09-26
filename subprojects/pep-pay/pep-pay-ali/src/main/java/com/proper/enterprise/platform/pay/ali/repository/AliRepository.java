@@ -12,4 +12,6 @@ public interface AliRepository extends BaseRepository<AliEntity, String> {
 
     AliEntity findByOutTradeNo(String outTradeNo);
 
+    AliEntity getByTradeNo(String tadeNo);
+
 }

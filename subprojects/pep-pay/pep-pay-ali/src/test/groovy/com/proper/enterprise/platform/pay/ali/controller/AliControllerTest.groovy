@@ -24,10 +24,15 @@ class AliControllerTest extends AbstractTest {
         waitExecutorDone()
         AliEntity noticeInfo = aliPayService.findByOutTradeNo("201512191483583349219")
         AliEntity businessInfo = aliPayService.findByOutTradeNo("001")
+        AliEntity info = aliPayService.getByTradeNo("2017010521001004090235281478")
 
         assert noticeInfo.getBody().equals("test")
         assert noticeInfo.getTotalFee().equals("0.05")
         assert noticeInfo.getBuyerId().equals("2088902928162096")
+
+        assert info.getBody() == "test"
+        assert info.getTotalFee() == "0.05"
+        assert info.getBuyerId() == "2088902928162096"
 
         assert businessInfo.getBody().equals("异步通知相关业务处理")
         assert businessInfo.getBuyerId().equals("testNoticeBuyerId")

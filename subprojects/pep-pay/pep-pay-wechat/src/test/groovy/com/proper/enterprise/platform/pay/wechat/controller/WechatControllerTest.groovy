@@ -44,10 +44,15 @@ class WechatControllerTest extends AbstractTest{
         waitExecutorDone()
         WechatEntity wechatInfo = wechatPayService.findByOutTradeNo("2016112214104819158269")
         WechatEntity businessInfo = wechatPayService.findByOutTradeNo("001")
+        WechatEntity info = wechatPayService.getByTradeNo("4001922001201609113720112951")
 
         assert wechatInfo.getResultCode().equals("SUCCESS")
         assert wechatInfo.getOutTradeNo().equals("2016112214104819158269")
         assert wechatInfo.getAppid().equals("wxc7825f86d99f3d90")
+
+        assert info.getResultCode() == "SUCCESS"
+        assert info.getOutTradeNo() == "2016112214104819158269"
+        assert info.getAppid() == "wxc7825f86d99f3d90"
 
         assert businessInfo.getAttach().equals("异步通知相关业务处理")
         assert businessInfo.getDeviceInfo().equals("test")

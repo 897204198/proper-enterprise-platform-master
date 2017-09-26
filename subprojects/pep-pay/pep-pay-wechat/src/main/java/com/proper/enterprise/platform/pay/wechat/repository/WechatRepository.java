@@ -9,4 +9,6 @@ import com.proper.enterprise.platform.pay.wechat.entity.WechatEntity;
 public interface WechatRepository extends BaseRepository<WechatEntity, String> {
 
     WechatEntity findByOutTradeNo(String outTradeNo);
+
+    WechatEntity getByTransactionId(String transactionId);
 }

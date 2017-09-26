@@ -801,6 +801,18 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
     }
 
     /**
+     * 通过银行流水号获取一网通支付结果异步通知信息
+     *
+     * @param tradeNo 位银行流水号
+     * @return 支付结果异步通知信息
+     * @throws Exception
+     */
+    @Override
+    public CmbPayEntity getByTradeNo(String tradeNo) throws Exception {
+        return cmbPayNoticeRepo.getByMsgLike("%".concat(tradeNo).concat("%"));
+    }
+
+    /**
      * 通过退款单号查询一网通退款信息
      *
      * @param refundNo 退款单号

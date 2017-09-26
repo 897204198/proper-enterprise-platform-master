@@ -13,4 +13,6 @@ public interface CmbPayNoticeRepository extends BaseRepository<CmbPayEntity, Str
 
     CmbPayEntity findByBillNoAndDate(String billNo, String date);
 
+    CmbPayEntity getByMsgLike(String msg);
+
 }

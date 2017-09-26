@@ -53,11 +53,17 @@ class CmbControllerTest extends AbstractTest {
         waitExecutorDone()
         CmbPayEntity cmbPayInfo = cmbPayService.getPayNoticeInfoByMsg("00240000622016120116320165000000000020")
         CmbPayEntity businessInfo = cmbPayService.findByOutTradeNo("201701011234567890")
+        CmbPayEntity info = cmbPayService.getByTradeNo("16320165000000000020")
 
         assert cmbPayInfo.getUserId().equals("57ee2736ae65e2531aad70fa")
         assert cmbPayInfo.getMerchantPara().contains("intent=yuyueguahaojiaofei")
         assert cmbPayInfo.getIntent().equals("yuyueguahaojiaofei")
         assert cmbPayInfo.getAmount().equals("0.01")
+
+        assert info.getUserId() == "57ee2736ae65e2531aad70fa"
+        assert info.getMerchantPara().contains("intent=yuyueguahaojiaofei")
+        assert info.getIntent() == "yuyueguahaojiaofei"
+        assert info.getAmount() == "0.01"
 
         assert businessInfo.getUserId().equals("testUserId")
         assert businessInfo.getIntent().equals("yuyueguahaojiaofei")

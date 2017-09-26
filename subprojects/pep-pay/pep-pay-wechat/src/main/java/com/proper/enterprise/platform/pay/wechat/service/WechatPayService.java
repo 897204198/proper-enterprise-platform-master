@@ -34,6 +34,14 @@ public interface WechatPayService {
     WechatEntity findByOutTradeNo(String outTradeNo);
 
     /**
+     * 通过微信订单号查询微信支付信息
+     *
+     * @param tradeNo 微信订单号
+     * @return WechatInfo
+     */
+    WechatEntity getByTradeNo(String tradeNo);
+
+    /**
      * 通过退款单号查询微信退款信息
      *
      * @param refundNo 退款单号
