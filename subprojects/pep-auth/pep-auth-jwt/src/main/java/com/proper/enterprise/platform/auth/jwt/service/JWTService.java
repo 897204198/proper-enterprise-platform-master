@@ -83,7 +83,6 @@ public class JWTService {
     }
 
     public boolean verify(String token) throws IOException {
-        long start = System.currentTimeMillis();
         if (StringUtil.isNull(token) || !token.contains(".")) {
             LOGGER.debug("Token should NOT NULL!");
             return false;
@@ -94,15 +93,9 @@ public class JWTService {
         String payloadBase64 = split[1];
         String sign = split[2];
 
-        LOGGER.debug("Split token {} use {} ms", token, System.currentTimeMillis() - start);
-
         JWTHeader header = getHeader(token);
-        LOGGER.debug("Get header from token {} use {} ms", token, System.currentTimeMillis() - start);
         String apiSecret = secret.getAPISecret(header.getId());
-        LOGGER.debug("Get API secret from token {} use {} ms", token, System.currentTimeMillis() - start);
-        String selfSign = hmacSha256Base64(apiSecret, headerBase64 + "." + payloadBase64);
-        LOGGER.debug("Self sign token {} use {} ms", token, System.currentTimeMillis() - start);
-        if (!sign.equals(selfSign)) {
+        if (!sign.equals(hmacSha256Base64(apiSecret, headerBase64 + "." + payloadBase64))) {
             LOGGER.debug("Token is INVALID or EXPIRED! Sign is {}", sign);
             return false;
         }
