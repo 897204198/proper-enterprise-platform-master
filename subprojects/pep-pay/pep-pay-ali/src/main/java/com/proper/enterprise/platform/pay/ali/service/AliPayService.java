@@ -36,6 +36,14 @@ public interface AliPayService {
     AliEntity findByOutTradeNo(String outTradeNo);
 
     /**
+     * 通过订支付宝订单号查询支付宝信息
+     *
+     * @param tradeNo 支付宝订单号
+     * @return Ali
+     */
+    AliEntity getByTradeNo(String tradeNo);
+
+    /**
      * 通过退款单号查询支付宝退款信息
      *
      * @param refundNo 退款单号

@@ -104,6 +104,15 @@ public interface CmbPayService {
     CmbPayEntity findByOutTradeNo(String orderNo) throws Exception;
 
     /**
+     * 通过银行流水号获取一网通支付结果异步通知信息
+     *
+     * @param tradeNo 位银行流水号
+     * @return 支付结果异步通知信息
+     * @throws Exception
+     */
+    CmbPayEntity getByTradeNo(String tradeNo) throws Exception;
+
+    /**
      * 通过退款单号查询一网通退款信息
      *
      * @param refundNo 退款单号

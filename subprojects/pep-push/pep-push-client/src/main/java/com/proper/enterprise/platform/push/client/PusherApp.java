@@ -119,15 +119,25 @@ public class PusherApp {
 
             @Override
             public void run() {
+                String msgStr = null;
+                String userids = null;
                 try {
+                    msgStr = (JSONUtil.toJSON(msg)).toString();
+                    userids = (JSONUtil.toJSON(lstUserIds)).toString();
                     LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
-                    params.put("msg", (JSONUtil.toJSON(msg)).toString());
-                    params.put("userids", (JSONUtil.toJSON(lstUserIds)).toString());
+                    params.put("msg", msgStr);
+                    params.put("userids", userids);
                     params.put("appkey", appkey);
                     String rtn = pushApiRequest.requestServiceServer(pushUrl, "pushMessageToUsers", params,
-                            connTimeout);
+                        connTimeout);
                     LOGGER.info("{pushMessageToUsers:}" + rtn);
                 } catch (Exception ex) {
+                    LOGGER.error("Error Push: msg is {}, userids is {}", msgStr, userids);
+                    LOGGER.error("Push Url is {}, appkey is {}, isAsync is {}, connTimeout is {}", pushUrl, appkey, isAsync, connTimeout);
+                    long freeMemory=Runtime.getRuntime().freeMemory() / 1024 / 1024;
+                    long totalMemory=Runtime.getRuntime().totalMemory() / 1024 / 1024;
+                    long maxMemory = Runtime.getRuntime().maxMemory() / 1024 / 1024;
+                    LOGGER.error("Memory: totalMemory is {}, freeMemory is {}, maxMemory is {}", totalMemory, freeMemory, maxMemory);
                     LOGGER.error("Exception:" + ex.getMessage(), ex);
                 }
             }
