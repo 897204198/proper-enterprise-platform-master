@@ -289,6 +289,7 @@ public class RedisCacheManager implements CacheManager, ResourceLoaderAware, Ini
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisCacheManager.class);
 
     private Map<String, CacheConfig> configsFormCacheDuration() {
+        LOGGER.info("Start to load configs from @CacheDuration");
         CacheDuration cd;
         String cacheName;
 
@@ -303,6 +304,7 @@ public class RedisCacheManager implements CacheManager, ResourceLoaderAware, Ini
                 continue;
             }
             cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : clz.getCanonicalName();
+            LOGGER.debug("Load {} with {} ttl and {} max idle time.", cacheName, cd.ttl(), cd.maxIdleTime());
             result.put(cacheName, new CacheConfig(cd.ttl(), cd.maxIdleTime()));
         }
         // Method annotation has higher priority with same cache name
@@ -315,6 +317,7 @@ public class RedisCacheManager implements CacheManager, ResourceLoaderAware, Ini
                 continue;
             }
             cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : canonicalName;
+            LOGGER.debug("Load {} with {} ttl and {} max idle time.", cacheName, cd.ttl(), cd.maxIdleTime());
             result.put(cacheName, new CacheConfig(cd.ttl(), cd.maxIdleTime()));
         }
         return result;
