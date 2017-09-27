@@ -1,0 +1,6 @@
+dependencies {
+    compile project(':pep-core'),
+            project(':pep-refund-api')
+
+    testCompile project(':pep-test')
+}
