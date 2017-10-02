@@ -1,4 +1,4 @@
-FROM tomcat:7.0.77-jre8
+FROM tomcat:7.0.81-jre8
 MAINTAINER Alpha Hinex <AlphaHinex@gmail.com>
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales fonts-wqy-zenhei
