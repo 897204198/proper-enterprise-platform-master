@@ -28,7 +28,17 @@ gretty {
 }
 
 dependencies {
+    compile libraries.groovy
+
     compile project(':pep-auth-api')
+
+    runtime libraries.commons_fileupload,
+            libraries.h2,
+            libraries.jackson_databind,
+            libraries.jaxws_rt,
+            libraries.mysql_driver,
+            libraries.spring_orm,
+            libraries.spring_webmvc
 
     runtime project(':pep-auth-jwt'),
             project(':pep-av-backend'),
@@ -36,14 +46,7 @@ dependencies {
             // Needs one cache implementation
             project(':pep-cache-ehcache'),
             project(':pep-page-custom'),
-            project(':pep-workflow'),
-            libraries.commons_fileupload,
-            libraries.h2,
-            libraries.jackson_databind,
-            libraries.jaxws_rt,
-            libraries.mysql_driver,
-            libraries.spring_orm,
-            libraries.spring_webmvc
+            project(':pep-workflow')
 }
 
 task cleanDist(type: Delete) {
