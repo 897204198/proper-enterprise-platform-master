@@ -1,11 +1,16 @@
 package com.proper.enterprise.platform.workflow.service;
 
+import com.proper.enterprise.platform.cache.CacheDuration;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -13,10 +18,17 @@ import java.util.Map;
 @Component("bpmService")
 public class BPMService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BPMService.class);
+
+    @Autowired
+    private BPMService self;
+
     @Autowired
     private RuntimeService runtimeService;
     @Autowired
     private HistoryService historyService;
+    @Autowired
+    private RepositoryService repositoryService;
 
     /**
      * 根据流程定义 key，发起流程，并将流程运行结束后的流程变量返回
@@ -27,6 +39,17 @@ public class BPMService {
      * @return 流程变量值
      */
     public Object getVariableAfterProcessDone(String procDefKey, Map<String, Object> inputs, String output) {
+        int version = repositoryService.createProcessDefinitionQuery()
+           .processDefinitionKey(procDefKey).latestVersion().singleResult()
+           .getVersion();
+        return self.getVariableAfterProcessDone(procDefKey, version, inputs, output);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    @Cacheable(cacheNames = "PEP.BPM.auto")
+    @CacheDuration(cacheName = "PEP.BPM.auto", ttl = 30 * 60 * 1000, maxIdleTime = 30 * 60 * 1000)
+    public Object getVariableAfterProcessDone(String procDefKey, int version, Map<String, Object> inputs, String output) {
+        LOGGER.debug("Cache for {} v{}", procDefKey, version);
         ProcessInstance procInst = startProcess(procDefKey, inputs);
         return getVariableFromHistory(procInst.getId(), output);
     }
@@ -44,9 +67,7 @@ public class BPMService {
 
     private Object getVariableFromHistory(String procInstId, String varName) {
         return historyService.createHistoricVariableInstanceQuery()
-            .processInstanceId(procInstId)
-            .variableName(varName)
-            .singleResult()
+            .processInstanceId(procInstId).variableName(varName).singleResult()
             .getValue();
     }
 

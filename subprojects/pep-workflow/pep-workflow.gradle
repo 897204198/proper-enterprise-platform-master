@@ -18,7 +18,9 @@ dependencies {
             // use modeler in compile block only when need to insert demo data
             //libraries.activiti_modeler,
             libraries.groovy_all,
-            libraries.servlet_api,
+            libraries.servlet_api
+
+    compile project(':pep-cache-api'),
             project(':pep-core')
 
     runtime libraries.activiti_diagram_rest,
@@ -29,4 +31,6 @@ dependencies {
     testCompile project(':pep-test')
 
     testRuntime libraries.commons_fileupload
+
+    testRuntime project(':pep-cache-ehcache')
 }

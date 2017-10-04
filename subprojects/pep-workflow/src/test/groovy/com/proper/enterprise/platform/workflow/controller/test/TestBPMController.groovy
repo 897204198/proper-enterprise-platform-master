@@ -12,7 +12,7 @@ class TestBPMController extends BaseBPMController {
     private static final String PROC_DEF_KEY = 'aib'
 
     @GetMapping("/script")
-    public ResponseEntity<Integer> scriptTask(Integer initVal) {
+    ResponseEntity<Integer> scriptTask(Integer initVal) {
         responseOfGet((Integer) getVariableAfterProcessDone(PROC_DEF_KEY, ['myVar': initVal], 'myVar'))
     }
 
