@@ -45,7 +45,7 @@ public class BPMService {
 
     /**
      * 根据流程定义 key，发起流程，并将流程运行结束后的流程变量返回
-     * 使用缓存，流程定义 key、流程定义版本及出入参作为缓存的 key
+     * 使用缓存，流程定义 key、最新流程定义版本及出入参作为缓存的 key
      *
      * @param  procDefKey 流程定义 key
      * @param  inputs     输入流程变量 map

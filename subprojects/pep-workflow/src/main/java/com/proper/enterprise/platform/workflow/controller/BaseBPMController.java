@@ -13,14 +13,28 @@ public abstract class BaseBPMController extends BaseController {
 
     /**
      * 根据流程定义 key，发起流程，并将流程运行结束后的流程变量返回
+     * 使用缓存，流程定义 key、最新流程定义版本及出入参作为缓存的 key
      *
-     * @param procDefKey 流程定义 key
-     * @param inputs     输入流程变量 map
-     * @param output     输出流程变量名
+     * @param  procDefKey 流程定义 key
+     * @param  inputs     输入流程变量 map
+     * @param  output     输出流程变量名
      * @return 流程变量值
      */
     protected Object getVariableAfterProcessDone(String procDefKey, Map<String, Object> inputs, String output) {
         return bpmService.getVariableAfterProcessDone(procDefKey, inputs, output);
+    }
+
+    /**
+     * 根据流程定义 key，发起流程，并将流程运行结束后的流程变量返回
+     * 不使用缓存
+     *
+     * @param  procDefKey 流程定义 key
+     * @param  inputs     输入流程变量 map
+     * @param  output     输出流程变量名
+     * @return 流程变量值
+     */
+    protected Object getVariableAfterProcessDoneWithoutCache(String procDefKey, Map<String, Object> inputs, String output) {
+        return bpmService.getVariableAfterProcessDoneWithoutCache(procDefKey, inputs, output);
     }
 
     @Override
