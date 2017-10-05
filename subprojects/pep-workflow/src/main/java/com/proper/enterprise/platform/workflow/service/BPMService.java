@@ -32,10 +32,24 @@ public class BPMService {
 
     /**
      * 根据流程定义 key，发起流程，并将流程运行结束后的流程变量返回
+     * 不使用缓存
      *
-     * @param procDefKey 流程定义 key
-     * @param inputs     输入流程变量 map
-     * @param output     输出流程变量名
+     * @param  procDefKey 流程定义 key
+     * @param  inputs     输入流程变量 map
+     * @param  output     输出流程变量名
+     * @return 流程变量值
+     */
+    public Object getVariableAfterProcessDoneWithoutCache(String procDefKey, Map<String, Object> inputs, String output) {
+        return getVariableAfterProcessDone(procDefKey, -1, inputs, output);
+    }
+
+    /**
+     * 根据流程定义 key，发起流程，并将流程运行结束后的流程变量返回
+     * 使用缓存，流程定义 key、流程定义版本及出入参作为缓存的 key
+     *
+     * @param  procDefKey 流程定义 key
+     * @param  inputs     输入流程变量 map
+     * @param  output     输出流程变量名
      * @return 流程变量值
      */
     public Object getVariableAfterProcessDone(String procDefKey, Map<String, Object> inputs, String output) {
