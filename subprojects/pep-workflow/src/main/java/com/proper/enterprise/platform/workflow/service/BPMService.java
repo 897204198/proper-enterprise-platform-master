@@ -2,6 +2,8 @@ package com.proper.enterprise.platform.workflow.service;
 
 import com.proper.enterprise.platform.cache.CacheDuration;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -63,9 +65,13 @@ public class BPMService {
     @Cacheable(cacheNames = "PEP.BPM.auto")
     @CacheDuration(cacheName = "PEP.BPM.auto", ttl = 30 * 60 * 1000, maxIdleTime = 30 * 60 * 1000)
     public Object getVariableAfterProcessDone(String procDefKey, int version, Map<String, Object> inputs, String output) {
-        LOGGER.debug("Cache for {} v{}", procDefKey, version);
+        long start = System.currentTimeMillis();
         ProcessInstance procInst = startProcess(procDefKey, inputs);
-        return getVariableFromHistory(procInst.getId(), output);
+        Object result = getVariableFromHistory(procInst.getId(), output);
+        LOGGER.debug("Running {} v{}({}) with {} and get {}({}) in {} ms.",
+            procDefKey, version, procInst.getId(), JSONUtil.toJSONIgnoreException(inputs), output,
+            StringUtil.left(JSONUtil.toJSONIgnoreException(result), 200), System.currentTimeMillis() - start);
+        return result;
     }
 
     private ProcessInstance startProcess(String procDefKey, Map<String, Object> vars) {
