@@ -173,13 +173,18 @@ public class EhCacheRegionFactory extends AbstractEhcacheRegionFactory {
             cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : canonicalName;
             cds.put(cacheName, cd);
         }
+        long tti, ttl;
         for (Map.Entry<String, CacheDuration> entry : cds.entrySet()) {
-            config = new CacheConfiguration(entry.getKey(), 10000);
-            config.setName(entry.getKey());
-            config.setTimeToIdleSeconds(entry.getValue().maxIdleTime() / 1000);
-            config.setTimeToLiveSeconds(entry.getValue().ttl() / 1000);
+            cacheName = entry.getKey();
+            config = new CacheConfiguration(cacheName, 10000);
+            config.setName(cacheName);
+            tti = entry.getValue().maxIdleTime() / 1000;
+            ttl = entry.getValue().ttl() / 1000;
+            config.setTimeToIdleSeconds(tti);
+            config.setTimeToLiveSeconds(ttl);
             config.setCopyOnWrite(true);
-            config.setCopyOnRead(true);
+//            config.setCopyOnRead(true);
+            LOGGER.debug("Load {} with {}s ttl and {}s max idle time.", cacheName, ttl, tti);
             configuration.addCache(config);
         }
     }

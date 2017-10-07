@@ -21,16 +21,18 @@ public @interface CacheDuration {
     String cacheName() default "";
 
     /**
-     * Time to live in milliseconds.
-     * 0 means infinite.
+     * The maximum number of milliseconds an element can exist in the cache regardless of use.
+     * The element expires at this limit and will no longer be returned from the cache.
+     * The default value is 0, which means no timeToLive (TTL) eviction takes place (infinite lifetime).
      *
      * @return time to live
      */
     long ttl() default 0;
 
     /**
-     * Max idle time in milliseconds.
-     * 0 means infinite.
+     * The maximum number of milliseconds an element can exist in the cache without being accessed.
+     * The element expires at this limit and will no longer be returned from the cache.
+     * The default value is 0, which means no timeToIdle (TTI) eviction takes place (infinite lifetime).
      *
      * @return max idle time
      */

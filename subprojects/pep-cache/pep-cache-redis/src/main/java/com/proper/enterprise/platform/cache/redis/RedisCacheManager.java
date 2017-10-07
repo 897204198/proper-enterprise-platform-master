@@ -317,7 +317,7 @@ public class RedisCacheManager implements CacheManager, ResourceLoaderAware, Ini
                 continue;
             }
             cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : canonicalName;
-            LOGGER.debug("Load {} with {} ttl and {} max idle time.", cacheName, cd.ttl(), cd.maxIdleTime());
+            LOGGER.debug("Load {} with {}ms ttl and {}ms max idle time.", cacheName, cd.ttl(), cd.maxIdleTime());
             result.put(cacheName, new CacheConfig(cd.ttl(), cd.maxIdleTime()));
         }
         return result;
