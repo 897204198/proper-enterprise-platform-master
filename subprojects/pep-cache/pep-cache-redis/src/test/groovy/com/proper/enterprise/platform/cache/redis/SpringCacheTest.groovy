@@ -1,4 +1,5 @@
 package com.proper.enterprise.platform.cache.redis
+
 import com.proper.enterprise.platform.cache.redis.service.CacheableService
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Before

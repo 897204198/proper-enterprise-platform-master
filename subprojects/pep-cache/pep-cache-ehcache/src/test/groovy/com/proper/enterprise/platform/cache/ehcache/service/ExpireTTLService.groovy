@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.cache.ehcache.service
 
-import com.proper.enterprise.platform.cache.CacheDuration
+import com.proper.enterprise.platform.api.cache.CacheDuration
 import org.springframework.cache.annotation.CacheConfig
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable

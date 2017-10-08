@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.cache;
+package com.proper.enterprise.platform.api.cache;
 
 import java.lang.annotation.*;
 

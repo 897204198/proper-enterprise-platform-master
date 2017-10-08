@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.workflow.service;
 
-import com.proper.enterprise.platform.cache.CacheDuration;
+import com.proper.enterprise.platform.api.cache.CacheDuration;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;

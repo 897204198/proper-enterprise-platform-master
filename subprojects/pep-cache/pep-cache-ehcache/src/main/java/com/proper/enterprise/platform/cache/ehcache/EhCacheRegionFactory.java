@@ -23,7 +23,7 @@
  */
 package com.proper.enterprise.platform.cache.ehcache;
 
-import com.proper.enterprise.platform.cache.CacheDuration;
+import com.proper.enterprise.platform.api.cache.CacheDuration;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;

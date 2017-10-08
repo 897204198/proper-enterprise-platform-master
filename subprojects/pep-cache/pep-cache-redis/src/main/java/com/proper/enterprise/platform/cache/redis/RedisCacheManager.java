@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.cache.redis;
 
-import com.proper.enterprise.platform.cache.CacheDuration;
+import com.proper.enterprise.platform.api.cache.CacheDuration;
 import org.redisson.api.RMap;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
