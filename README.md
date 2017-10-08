@@ -97,10 +97,7 @@ nexusPassword=你的密码
 针对 tomcat 的调整均在 `[server.xml](configs/docker/tomcat/conf/server.xml)` 中进行设定。
 
 **推荐使用** docker 容器 + war 包的形式发布产品，以使产品运行在一个基本相同的环境内，避免因配置原因造成的各种问题。
-tomcat 的 docker 镜像需使用 [Dockerfile](configs/docker/Dockerfile) 构建出的镜像，以包含针产品针对配置的调整。构建方式为：
-
-    # ./configs/docker
-    $ docker build -t propersoft/pep .
+tomcat 的 docker 镜像需使用 [docker-tomcat](https://github.com/propersoft-cn/docker-tomcat) 构建出的镜像，以包含针产品针对配置的调整。
 
 **推荐** 通过 `Docker Compose` 编排和运行服务（单节点），可以在 [docker-compose.yml](configs/docker/docker-compose.yml) 中调整所需服务，并运行
 
