@@ -63,7 +63,7 @@ public class BPMService {
 
     @SuppressWarnings("WeakerAccess")
     @Cacheable(cacheNames = "PEP.BPM.auto")
-    @CacheDuration(cacheName = "PEP.BPM.auto", ttl = 30 * 60 * 1000, maxIdleTime = 30 * 60 * 1000)
+    @CacheDuration(cacheName = "PEP.BPM.auto", maxIdleTime = 30 * 60 * 1000)
     public Object getVariableAfterProcessDone(String procDefKey, int version, Map<String, Object> inputs, String output) {
         long start = System.currentTimeMillis();
         ProcessInstance procInst = startProcess(procDefKey, inputs);
