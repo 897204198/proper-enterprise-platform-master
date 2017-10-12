@@ -32,4 +32,14 @@ class CacheableService {
         ['a', 'b']
     }
 
+    @Cacheable(cacheNames = "apiSecrets", key = "'dupKey'")
+    String setKey(String key) {
+        key
+    }
+
+    @CacheEvict(cacheNames = "apiSecrets", key = "'dupKey'")
+    void clearKey() {
+
+    }
+
 }
