@@ -148,10 +148,10 @@ public abstract class BaseController {
 
     /**
      * 返回 DELETE 请求的响应
-     * 查询到要删除的对象并删除成功时返回 200 OK 状态
+     * 查询到要删除的对象并删除成功时返回 204 NO_CONTENT 状态
      * 没有查到结果时返回 404 Not found 状态
      *
-     * @param  exist 是否成功删除对象
+     * @param  exist  是否成功删除对象
      * @return DELETE 请求的响应
      */
     protected ResponseEntity responseOfDelete(boolean exist) {
