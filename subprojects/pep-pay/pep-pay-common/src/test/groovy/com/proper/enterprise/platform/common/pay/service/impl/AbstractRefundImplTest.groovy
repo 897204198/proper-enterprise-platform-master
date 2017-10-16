@@ -1,8 +1,8 @@
-package com.proper.enterprise.platform.common.refund.service.impl
+package com.proper.enterprise.platform.common.pay.service.impl
 
-import com.proper.enterprise.platform.api.refund.factory.RefundFactory
-import com.proper.enterprise.platform.api.refund.service.RefundService
-import com.proper.enterprise.platform.common.refund.MockRefundInfoReq
+import com.proper.enterprise.platform.api.pay.factory.RefundFactory
+import com.proper.enterprise.platform.api.pay.service.RefundService
+import com.proper.enterprise.platform.common.pay.MockRefundInfoReq
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired

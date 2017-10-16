@@ -1,8 +1,8 @@
-package com.proper.enterprise.platform.common.refund.service.impl;
+package com.proper.enterprise.platform.common.pay.service.impl;
 
-import com.proper.enterprise.platform.api.refund.model.RefundInfoReq;
-import com.proper.enterprise.platform.api.refund.model.RefundInfoRes;
-import com.proper.enterprise.platform.api.refund.service.RefundService;
+import com.proper.enterprise.platform.api.pay.model.RefundInfoReq;
+import com.proper.enterprise.platform.api.pay.model.RefundInfoRes;
+import com.proper.enterprise.platform.api.pay.service.RefundService;
 
 import java.util.List;
 

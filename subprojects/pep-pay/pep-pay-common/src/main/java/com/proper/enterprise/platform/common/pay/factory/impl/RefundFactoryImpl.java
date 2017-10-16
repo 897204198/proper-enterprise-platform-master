@@ -1,7 +1,7 @@
-package com.proper.enterprise.platform.common.refund.factory.impl;
+package com.proper.enterprise.platform.common.pay.factory.impl;
 
-import com.proper.enterprise.platform.api.refund.factory.RefundFactory;
-import com.proper.enterprise.platform.api.refund.service.RefundService;
+import com.proper.enterprise.platform.api.pay.factory.RefundFactory;
+import com.proper.enterprise.platform.api.pay.service.RefundService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;

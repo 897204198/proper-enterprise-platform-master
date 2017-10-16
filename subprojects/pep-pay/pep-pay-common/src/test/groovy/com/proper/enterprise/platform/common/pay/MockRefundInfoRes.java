@@ -1,6 +1,6 @@
-package com.proper.enterprise.platform.common.refund;
+package com.proper.enterprise.platform.common.pay;
 
-import com.proper.enterprise.platform.api.refund.model.RefundInfoRes;
+import com.proper.enterprise.platform.api.pay.model.RefundInfoRes;
 
 public class MockRefundInfoRes implements RefundInfoRes {
 

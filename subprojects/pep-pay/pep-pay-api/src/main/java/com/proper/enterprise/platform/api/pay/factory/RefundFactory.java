@@ -1,6 +1,6 @@
-package com.proper.enterprise.platform.api.refund.factory;
+package com.proper.enterprise.platform.api.pay.factory;
 
-import com.proper.enterprise.platform.api.refund.service.RefundService;
+import com.proper.enterprise.platform.api.pay.service.RefundService;
 
 /**
  * 退款工厂接口.
