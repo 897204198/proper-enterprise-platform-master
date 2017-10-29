@@ -1,0 +1,6 @@
+dependencies {
+    compile libraries.quartz,
+            libraries.spring_context_support
+
+    testCompile project(':pep-test')
+}

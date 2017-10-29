@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/jdbc
+                           http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+    <beans profile="dev, test">
+        <jdbc:initialize-database ignore-failures="ALL">
+            <jdbc:script location="classpath*:sql/schedule/cluster/quartz_tables_h2.sql" encoding="UTF-8"/>
+        </jdbc:initialize-database>
+
+        <import resource="classpath*:spring/schedule/cluster/cluster-*.xml" />
+    </beans>
+
+    <beans profile="production">
+        <jdbc:initialize-database ignore-failures="ALL">
+            <jdbc:script location="classpath*:sql/schedule/cluster/quartz_tables_mysql_innodb.sql" encoding="UTF-8"/>
+        </jdbc:initialize-database>
+
+        <import resource="classpath*:spring/schedule/cluster/cluster-*.xml" />
+    </beans>
+
+</beans>
