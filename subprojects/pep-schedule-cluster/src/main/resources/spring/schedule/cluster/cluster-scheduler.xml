@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
+    <bean id="pepSchedulerFactory" name="pepSchedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
         <property name="applicationContextSchedulerContextKey" value="applicationContext"/>
         <property name="dataSource" ref="dataSource" />
         <property name="overwriteExistingJobs" value="true" />
