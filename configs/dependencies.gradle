@@ -173,6 +173,7 @@ libraries.mysql_driver = 'org.mariadb.jdbc:mariadb-java-client:1.5.4'
 //libraries.mysql_driver = 'mysql:mysql-connector-java:5.1.38'
 
 libraries.okhttp = 'com.squareup.okhttp3:okhttp:3.4.1'
+libraries.oracle_driver = 'com.oracle:ojdbc6:1.0'
 
 libraries.pinyin4j = 'com.belerweb:pinyin4j:2.5.0'
 
