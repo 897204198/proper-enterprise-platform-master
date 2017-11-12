@@ -1,11 +1,13 @@
 package com.proper.enterprise.platform.push.common.msgqueue.service.impl;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.push.api.openapi.exceptions.PushException;
 import org.nutz.json.Json;
@@ -44,7 +46,7 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
     public void savePushMessageToUsers(Map<String, String> requestParams) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("receive jms " + PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/pushMessageToUsers"
-                    + " of data: " + requestParams);
+                    + " of data: " + requestParams + " ,time is " + DateUtil.toString(new Date(), "yyyyMMddHHmmss"));
         }
         String userids = requestParams.get("userids");
         String appkey = requestParams.get("appkey");
