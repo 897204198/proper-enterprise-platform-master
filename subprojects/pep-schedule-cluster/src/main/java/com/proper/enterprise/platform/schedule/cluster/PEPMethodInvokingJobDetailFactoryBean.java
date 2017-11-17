@@ -44,6 +44,7 @@ public class PEPMethodInvokingJobDetailFactoryBean extends ArgumentConvertingMet
 
     private String targetMethod;
 
+    private Object[] arguments = new Object[0];
 
     /**
      * Set the name of the job.
@@ -85,6 +86,13 @@ public class PEPMethodInvokingJobDetailFactoryBean extends ArgumentConvertingMet
      */
     public void setTargetBeanName(String targetBeanName) {
         this.targetBeanName = targetBeanName;
+    }
+
+    /**
+     * Set the parameters of the target mehod, using the object array format.
+     */
+    public void setArguments(Object[] arguments) {
+        this.arguments = arguments;
     }
 
     @Override
@@ -177,6 +185,11 @@ public class PEPMethodInvokingJobDetailFactoryBean extends ArgumentConvertingMet
     }
 
     @Override
+    public Object[] getArguments() {
+        return arguments;
+    }
+
+    @Override
     public void setTargetMethod(String targetMethod) {
         this.targetMethod = targetMethod;
     }
@@ -207,9 +220,11 @@ public class PEPMethodInvokingJobDetailFactoryBean extends ArgumentConvertingMet
 
                 Object targetBean = applicationContext.getBean(mTargetBean);
 
+                Object[] arguments = factoryBean.arguments;
                 MethodInvoker methodInvoker = new MethodInvoker();
                 methodInvoker.setTargetObject(targetBean);
                 methodInvoker.setTargetMethod(mTargetMethod);
+                methodInvoker.setArguments(arguments);
                 methodInvoker.prepare();
 
                 methodInvoker.invoke();
