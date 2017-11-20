@@ -30,7 +30,7 @@ public class PusherApp {
     private String secureKey = "";
     private String appkey = "";
     private String pushUrl = "";
-    private int connTimeout = 3000; // 超时时间
+    private int connTimeout = 30000; // 超时时间
 
     private boolean isAsync = true; // 是否异步调用
 
@@ -132,12 +132,7 @@ public class PusherApp {
                         connTimeout);
                     LOGGER.info("{pushMessageToUsers:}" + rtn);
                 } catch (Exception ex) {
-                    LOGGER.error("Error Push: msg is {}, userids is {}", msgStr, userids);
-                    LOGGER.error("Push Url is {}, appkey is {}, isAsync is {}, connTimeout is {}", pushUrl, appkey, isAsync, connTimeout);
-                    long freeMemory=Runtime.getRuntime().freeMemory() / 1024 / 1024;
-                    long totalMemory=Runtime.getRuntime().totalMemory() / 1024 / 1024;
-                    long maxMemory = Runtime.getRuntime().maxMemory() / 1024 / 1024;
-                    LOGGER.error("Memory: totalMemory is {}, freeMemory is {}, maxMemory is {}", totalMemory, freeMemory, maxMemory);
+                    LOGGER.error("Error Push: msg is {}, userids is {}, connTimeout is {}.", msgStr, userids, connTimeout);
                     LOGGER.error("Exception:" + ex.getMessage(), ex);
                 }
             }

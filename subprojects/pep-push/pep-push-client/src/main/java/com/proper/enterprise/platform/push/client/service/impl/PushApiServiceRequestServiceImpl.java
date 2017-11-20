@@ -21,7 +21,7 @@ public class PushApiServiceRequestServiceImpl implements IPushApiServiceRequest 
             Map<String, Object> params, int timeout) throws Exception {
         String url = baseUrl + "/appserver/request/" + methodName;
         String data = HttpClient.getFormUrlEncodedData(params);
-        ResponseEntity<byte[]> response = HttpClient.post(url, MediaType.APPLICATION_FORM_URLENCODED, data);
+        ResponseEntity<byte[]> response = HttpClient.post(url, MediaType.APPLICATION_FORM_URLENCODED, data, timeout);
         return StringUtil.toEncodedString(response.getBody());
     }
 

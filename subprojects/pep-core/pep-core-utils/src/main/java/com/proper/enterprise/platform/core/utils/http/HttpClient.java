@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * HTTP 客户端工具类
@@ -37,11 +38,21 @@ public class HttpClient extends ClientUtil {
         return perform(client, url, GET, null, null, null);
     }
 
+    public static ResponseEntity<byte[]> get(String url, int timeout) throws IOException {
+        client = new OkHttpClient.Builder().readTimeout(timeout, TimeUnit.MILLISECONDS).build();
+        return perform(client, url, GET, null, null, null);
+    }
+
     public static ResponseEntity<byte[]> get(String url, Map<String, String> headers) throws IOException {
         return perform(client, url, GET, headers, null, null);
     }
 
     public static ResponseEntity<byte[]> post(String url, MediaType type, String data) throws IOException {
+        return perform(client, url, POST, null, type, data);
+    }
+
+    public static ResponseEntity<byte[]> post(String url, MediaType type, String data, int timeout) throws IOException {
+        client = new OkHttpClient.Builder().readTimeout(timeout, TimeUnit.MILLISECONDS).build();
         return perform(client, url, POST, null, type, data);
     }
 
