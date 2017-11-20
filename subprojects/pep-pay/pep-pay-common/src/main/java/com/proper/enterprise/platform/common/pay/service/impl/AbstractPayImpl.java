@@ -2,10 +2,7 @@ package com.proper.enterprise.platform.common.pay.service.impl;
 
 import com.proper.enterprise.platform.api.pay.constants.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
-import com.proper.enterprise.platform.api.pay.model.OrderReq;
-import com.proper.enterprise.platform.api.pay.model.PayResultRes;
-import com.proper.enterprise.platform.api.pay.model.PrepayReq;
-import com.proper.enterprise.platform.api.pay.model.RefundReq;
+import com.proper.enterprise.platform.api.pay.model.*;
 import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
@@ -191,4 +188,25 @@ public abstract class AbstractPayImpl implements PayService {
         }
         return (T)resObj;
     }
+
+    /**
+     * 获取对账单
+     * @param billReq
+     * @param <T>
+     * @return
+     */
+    @Override
+    public <T> T getBill(BillReq billReq) {
+        try {
+            return this.getBillProcess(billReq);
+        } catch (Exception e) {
+            LOGGER.info("AbstractPayImpl.getBill[Exception]:{}", e);
+            return null;
+        }
+    }
+
+    /**
+     * 获取对账单
+     */
+    protected abstract <T> T getBillProcess(BillReq billBodyReq) throws Exception;
 }

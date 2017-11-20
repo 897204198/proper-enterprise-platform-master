@@ -25,5 +25,8 @@
     <oxm:jaxb2-marshaller id="unmarshallCmbQueryRefundRes">
         <oxm:class-to-be-bound name="com.proper.enterprise.platform.pay.cmb.model.CmbQueryRefundRes"/>
     </oxm:jaxb2-marshaller>
+    <oxm:jaxb2-marshaller id="unmarshallCmbBillRes">
+        <oxm:class-to-be-bound name="com.proper.enterprise.platform.pay.cmb.model.CmbBillRes"/>
+    </oxm:jaxb2-marshaller>
 
 </beans>

@@ -27,6 +27,8 @@ public class WechatConstants {
     public final static String WECHAT_PAY_URL_ORDER_QUERY = ConfCenter.get("pay.wechat.url.orderQuery");
     // 退款查询接口(POST)
     public final static String WECHAT_PAY_URL_REFUND_QUERY = ConfCenter.get("pay.wechat.url.refundQuery");
+    //微信对账单接口（POST）
+    public final static String WECHAT_PAY_URL_BILL = ConfCenter.get("pay.wechat.url.bill");
     /**------------时间信息------------------*/
     // 微信随机字符串
     public final static int WECHAT_PAY_RANDOM_LEN = ConfCenter.getInt("pay.wechat.randomLen", 32);

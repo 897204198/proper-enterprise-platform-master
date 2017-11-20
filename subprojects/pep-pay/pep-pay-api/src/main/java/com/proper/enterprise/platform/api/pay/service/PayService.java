@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.api.pay.service;
 
+import com.proper.enterprise.platform.api.pay.model.BillReq;
 import com.proper.enterprise.platform.api.pay.model.PayResultRes;
 import com.proper.enterprise.platform.api.pay.model.PrepayReq;
 import com.proper.enterprise.platform.api.pay.model.RefundReq;
@@ -41,4 +42,13 @@ public interface PayService {
      * @return 查询结果
      */
     <T> T  queryRefund(String orderNo, String refundNo);
+
+    /**
+     * 获取对账单
+     * @param billReq
+     * @param <T>
+     * @return
+     */
+    <T> T getBill(BillReq billReq);
+
 }

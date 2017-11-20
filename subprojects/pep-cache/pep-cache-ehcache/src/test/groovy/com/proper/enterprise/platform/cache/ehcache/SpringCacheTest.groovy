@@ -19,9 +19,8 @@ class SpringCacheTest extends AbstractTest {
 
         def t2 = service.testWithoutCacheName()
         assert t2 == service.testWithoutCacheName()
-        sleep(1000)
+        sleep(1010)
         assert t2 != service.testWithoutCacheName()
-
         service.evit()
     }
 

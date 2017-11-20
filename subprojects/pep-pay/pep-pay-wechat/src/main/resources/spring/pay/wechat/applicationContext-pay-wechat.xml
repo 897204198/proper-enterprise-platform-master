@@ -28,5 +28,8 @@
     <oxm:jaxb2-marshaller id="unmarshallWechatRefundQueryRes">
         <oxm:class-to-be-bound name="com.proper.enterprise.platform.pay.wechat.model.WechatRefundQueryRes"/>
     </oxm:jaxb2-marshaller>
+    <oxm:jaxb2-marshaller id="unmarshallWechatBillRes">
+        <oxm:class-to-be-bound name="com.proper.enterprise.platform.pay.wechat.model.WechatBillRes"/>
+    </oxm:jaxb2-marshaller>
 
 </beans>

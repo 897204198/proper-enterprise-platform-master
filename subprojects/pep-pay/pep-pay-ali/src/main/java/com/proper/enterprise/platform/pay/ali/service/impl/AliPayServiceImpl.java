@@ -34,6 +34,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -497,5 +499,38 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
             }
         }
         return prestr.toString();
+    }
+
+    @Override
+    protected <T> T getBillProcess(BillReq billReq) throws Exception {
+        DateFormat dft = new SimpleDateFormat("yyyy-MM-dd");
+        try{
+            String method = "alipay.data.dataservice.bill.downloadurl.query";
+            String responseKey = "alipay_data_dataservice_bill_downloadurl_query_response";
+
+            AliBillRes aliBillRes = new AliBillRes();
+            Map<String, String> bizContentMap = new HashMap<String, String>();
+            if(StringUtil.isEmpty(billReq.getBillType())){
+                bizContentMap.put("bill_type", "trade");
+            }else{
+                bizContentMap.put("bill_type", billReq.getBillType());
+            }
+            bizContentMap.put("bill_date", dft.format(billReq.getDate()));
+
+            Object result = getAliRequestRes(aliBillRes, bizContentMap, method, responseKey);
+            if(result != null){
+                aliBillRes = (AliBillRes) result;
+                if("10000".equals(aliBillRes.getCode())){
+                    LOGGER.info("{}支付宝账单下载地址：{}", dft.format(billReq.getDate()), ((AliBillRes) result).getBillDownloadUrl());
+                    return (T) aliBillRes;
+                }else{
+                    LOGGER.error("支付宝获取对账单地址失败!");
+                }
+            }
+            return null;
+        }catch (Exception e){
+            LOGGER.error("支付宝 对账单下载失败：{}", dft.format(billReq.getDate()));
+            throw e;
+        }
     }
 }

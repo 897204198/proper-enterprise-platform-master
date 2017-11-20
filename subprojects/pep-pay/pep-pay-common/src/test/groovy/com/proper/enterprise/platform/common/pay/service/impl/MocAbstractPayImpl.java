@@ -1,10 +1,7 @@
 package com.proper.enterprise.platform.common.pay.service.impl;
 
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
-import com.proper.enterprise.platform.api.pay.model.OrderReq;
-import com.proper.enterprise.platform.api.pay.model.PayResultRes;
-import com.proper.enterprise.platform.api.pay.model.PrepayReq;
-import com.proper.enterprise.platform.api.pay.model.RefundReq;
+import com.proper.enterprise.platform.api.pay.model.*;
 import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.common.pay.OrderReqTest;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -100,5 +97,9 @@ public class MocAbstractPayImpl extends AbstractPayImpl implements PayService {
             throw new Exception();
         }
         return (T)res;
+    }
+    @Override
+    protected <T> T getBillProcess(BillReq billBodyReq) throws Exception {
+        return null;
     }
 }

@@ -2,10 +2,7 @@ package com.proper.enterprise.platform.pay.wechat.service.impl;
 
 import com.proper.enterprise.platform.api.pay.constants.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
-import com.proper.enterprise.platform.api.pay.model.OrderReq;
-import com.proper.enterprise.platform.api.pay.model.PayResultRes;
-import com.proper.enterprise.platform.api.pay.model.PrepayReq;
-import com.proper.enterprise.platform.api.pay.model.RefundReq;
+import com.proper.enterprise.platform.api.pay.model.*;
 import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.common.pay.service.impl.AbstractPayImpl;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
@@ -30,6 +27,8 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -378,4 +377,25 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
             return (T)wechatPayResService.getWechatApiRes(url, beanId, requestXML, false);
         }
     }
+
+    @Override
+    protected <T> T getBillProcess(BillReq billReq) throws Exception {
+        DateFormat dft = new SimpleDateFormat("yyyyMMdd");
+        try{
+            WechatBillReq wechatBillReq = new WechatBillReq();
+            wechatBillReq.setBillDate(dft.format(billReq.getDate()));
+            // 随机字符串
+            wechatBillReq.setNonceStr(RandomStringUtils.randomAlphabetic(WechatConstants.WECHAT_PAY_RANDOM_LEN));
+            // 签名
+            SignAdapter signAdapter = new SignAdapter();
+            String sign = signAdapter.marshalObject(wechatBillReq, WechatBillReq.class);
+            wechatBillReq.setSign(sign);
+            // 使用httsClient通过证书请求微信退款
+            return (T) getWechatRes(wechatBillReq, WechatConstants.WECHAT_PAY_URL_BILL, "unmarshallWechatBillRes", true);
+        }catch (Exception e){
+            LOGGER.error("微信对账单导出失败：{},{}", dft.format(billReq.getDate()), e);
+            throw e;
+        }
+    }
+
 }

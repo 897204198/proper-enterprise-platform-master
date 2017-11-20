@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Service;
-
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -48,8 +47,13 @@ public class WechatPayResServiceImpl implements WechatPayResService {
         } else {
             response = HttpClient.post(url, MediaType.APPLICATION_FORM_URLENCODED, requestXML);
         }
-        Object res = unmarshallerMap.get(beanId).unmarshal(
-            new StreamSource(new ByteArrayInputStream(response.getBody())));
-        return (T)res;
+        //对账单 获取成功 返回为 文本表格 格式
+        if("unmarshallWechatBillRes".equals(beanId) && 200== response.getStatusCode().value()){
+            return (T)response;
+        }else{
+            Object res = unmarshallerMap.get(beanId).unmarshal(
+                new StreamSource(new ByteArrayInputStream(response.getBody())));
+            return (T)res;
+        }
     }
 }

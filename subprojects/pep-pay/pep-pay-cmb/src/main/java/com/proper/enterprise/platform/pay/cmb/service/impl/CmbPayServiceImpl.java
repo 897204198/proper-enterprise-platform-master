@@ -6,10 +6,7 @@ import com.cmb.b2b.Base64;
 import com.cmb.b2b.FirmbankCert;
 import com.proper.enterprise.platform.api.pay.constants.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
-import com.proper.enterprise.platform.api.pay.model.OrderReq;
-import com.proper.enterprise.platform.api.pay.model.PayResultRes;
-import com.proper.enterprise.platform.api.pay.model.PrepayReq;
-import com.proper.enterprise.platform.api.pay.model.RefundReq;
+import com.proper.enterprise.platform.api.pay.model.*;
 import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.common.pay.service.impl.AbstractPayImpl;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
@@ -37,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -46,6 +42,8 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -821,5 +819,37 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
     @Override
     public CmbRefundEntity findByRefundNo(String refundNo) {
         return cmbRefundRepo.findByRefundNo(refundNo);
+    }
+
+    /**
+     * 一网通对账单获取（已结和 退款）
+     * @param billReq
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
+    @Override
+    protected <T> T getBillProcess(BillReq billReq) throws Exception {
+        CmbBillRes cmbBillRes = null;
+        CmbBillReq cmbBillReq = new CmbBillReq();
+        CmbBillHeadReq cmbBillHeadReq = new CmbBillHeadReq();
+        CmbBillBodyReq cmbBillBodyReq = new CmbBillBodyReq();
+
+        DateFormat dft = new SimpleDateFormat("yyyyMMdd");
+        cmbBillReq.setHead(cmbBillHeadReq);
+        cmbBillBodyReq.setBeginDate(dft.format(billReq.getDate()));
+        cmbBillBodyReq.setEndDate(dft.format(billReq.getDate()));
+        cmbBillReq.setBody(cmbBillBodyReq);
+
+        do{
+            if(cmbBillRes != null){
+                cmbBillReq.getBody().setPos(cmbBillRes.getBody().getQryLopBlk());
+            }
+            cmbBillReq.getHead().setTimeStamp(CmbUtils.getCmbReqTime());
+            cmbBillReq.setHash(this.getCmbHash(cmbBillReq));
+            cmbBillRes = getCmbtRes(cmbBillReq, CmbConstants.CMB_PAY_DIRECT_REQUEST_X, "unmarshallCmbBillRes");
+        }while ("Y".equals(cmbBillRes.getBody().getQryLopFlg()));
+
+        return (T) cmbBillRes;
     }
 }

@@ -14,10 +14,7 @@ import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.proper.enterprise.platform.api.pay.constants.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
-import com.proper.enterprise.platform.api.pay.model.OrderReq;
-import com.proper.enterprise.platform.api.pay.model.PayResultRes;
-import com.proper.enterprise.platform.api.pay.model.PrepayReq;
-import com.proper.enterprise.platform.api.pay.model.RefundReq;
+import com.proper.enterprise.platform.api.pay.model.*;
 import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.common.pay.service.impl.AbstractPayImpl;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
@@ -136,6 +133,11 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
             resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
         }
         return (T)resObj;
+    }
+
+    @Override
+    protected <T> T getBillProcess(BillReq billBodyReq) throws Exception {
+        return null;
     }
 
     /**
