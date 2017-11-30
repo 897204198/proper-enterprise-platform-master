@@ -4,9 +4,11 @@ import com.proper.enterprise.platform.api.pay.constants.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.model.*;
 import com.proper.enterprise.platform.api.pay.service.PayService;
+import com.proper.enterprise.platform.common.pay.service.PayBusinessService;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.regex.Matcher;
@@ -19,6 +21,9 @@ public abstract class AbstractPayImpl implements PayService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPayImpl.class);
 
+    @Autowired
+    private PayBusinessService payBusinessService;
+
     /**
      * 预支付业务处理
      *
@@ -27,7 +32,7 @@ public abstract class AbstractPayImpl implements PayService {
      */
     @Override
     public PayResultRes savePrepayBusiness(String payWay, PrepayReq prepayReq, OrderReq orderReq) throws Exception {
-        return new PayResultRes();
+        return payBusinessService.savePrepayBusiness(payWay, prepayReq, orderReq);
     }
 
     /**
