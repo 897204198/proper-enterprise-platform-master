@@ -1,14 +1,19 @@
 package com.proper.enterprise.platform.api.pay.service;
 
-import com.proper.enterprise.platform.api.pay.model.BillReq;
-import com.proper.enterprise.platform.api.pay.model.PayResultRes;
-import com.proper.enterprise.platform.api.pay.model.PrepayReq;
-import com.proper.enterprise.platform.api.pay.model.RefundReq;
+import com.proper.enterprise.platform.api.pay.model.*;
 
 /**
  * 支付Service
  */
 public interface PayService {
+
+    /**
+     * 预支付业务处理
+     *
+     * @return 业务处理结果
+     * @throws Exception 异常
+     */
+    PayResultRes savePrepayBusiness(String payWay, PrepayReq prepayReq, OrderReq orderReq) throws Exception;
 
     /**
      * 预支付请求

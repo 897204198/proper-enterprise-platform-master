@@ -1,19 +1,32 @@
 package com.proper.enterprise.platform.pay.wechat.controller;
 
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
+import com.proper.enterprise.platform.api.pay.constants.PayConstants;
+import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
+import com.proper.enterprise.platform.api.pay.model.PayResultRes;
+import com.proper.enterprise.platform.api.pay.model.PrepayReq;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
+import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.common.pay.task.PayNotice2BusinessTask;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.utils.ConfCenter;
+import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.pay.wechat.entity.WechatEntity;
 import com.proper.enterprise.platform.pay.wechat.model.WechatNoticeRes;
+import com.proper.enterprise.platform.pay.wechat.model.WechatOrderReq;
+import com.proper.enterprise.platform.pay.wechat.model.WechatPayResultRes;
 import com.proper.enterprise.platform.pay.wechat.service.WechatPayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,6 +57,54 @@ public class WechatController extends BaseController {
 
     @Autowired
     PayNotice2BusinessTask payNoticeTask;
+
+    /**
+     * 微信预支付处理.
+     *
+     * @param wechatReq 微信预支付请求对象.
+     * @return 处理结果.
+     * @throws Exception 异常.
+     */
+    @PostMapping(value = "/prepay", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<WechatPayResultRes> prepayWechat(@RequestBody WechatOrderReq wechatReq) throws Exception {
+        LOGGER.debug(DateUtil.getTimestamp(true) + "------------- 微信支付 预支付业务--------开始------------");
+        WechatPayResultRes resObj = new WechatPayResultRes();
+        try {
+            // 预支付
+            PrepayReq prepayReq = new PrepayReq();
+            PayService payService = (PayService) wechatPayService;
+            // 预支付业务处理
+            PayResultRes checkRes = payService.savePrepayBusiness(ConfCenter.get("pay.way.ali"), prepayReq, wechatReq);
+            if (checkRes.getResultCode() != null && checkRes.getResultCode().equals(PayResType.SYSERROR)) {
+                BeanUtils.copyProperties(checkRes, resObj);
+                return responseOfPost(resObj);
+            }
+            // 订单号
+            prepayReq.setOutTradeNo(wechatReq.getOutTradeNo());
+            // 订单金额
+            prepayReq.setTotalFee(String.valueOf(wechatReq.getTotalFee()));
+            // 支付用途
+            prepayReq.setPayIntent(wechatReq.getBody());
+            // 支付方式
+            prepayReq.setPayWay(ConfCenter.get("pay.way.wechat"));
+            // 获取预支付信息
+            PayResultRes res = payService.savePrepay(prepayReq);
+            // 判断预支付结果
+            if (PayResType.SUCCESS.equals(res.getResultCode())) {
+                resObj = (WechatPayResultRes) res;
+            } else {
+                resObj.setResultCode(res.getResultCode());
+                resObj.setResultMsg(res.getResultMsg());
+            }
+        } catch (Exception e) {
+            LOGGER.error("WechatController.prepayWechat[Exception]:{}", e);
+            resObj.setResultCode(PayResType.SYSERROR);
+            resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
+        }
+        // 返回结果
+        LOGGER.debug(DateUtil.getTimestamp(true) + "------------- 微信支付 预支付业务--------结束------------");
+        return responseOfPost(resObj);
+    }
 
     /**
      * 接收微信异步通知结果

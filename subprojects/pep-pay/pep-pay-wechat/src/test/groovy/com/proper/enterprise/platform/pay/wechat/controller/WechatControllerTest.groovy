@@ -1,13 +1,18 @@
 package com.proper.enterprise.platform.pay.wechat.controller
 
+import com.proper.enterprise.platform.core.utils.DateUtil
+import com.proper.enterprise.platform.core.utils.JSONUtil
+import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.pay.wechat.entity.WechatEntity
 import com.proper.enterprise.platform.pay.wechat.service.WechatPayResService
 import com.proper.enterprise.platform.pay.wechat.service.WechatPayService
 import com.proper.enterprise.platform.test.AbstractTest
+import org.apache.commons.lang3.RandomStringUtils
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.MvcResult
 
 class WechatControllerTest extends AbstractTest{
 
@@ -57,5 +62,23 @@ class WechatControllerTest extends AbstractTest{
         assert businessInfo.getAttach().equals("异步通知相关业务处理")
         assert businessInfo.getDeviceInfo().equals("test")
         assert businessInfo.getTotalFee().equals("123")
+    }
+
+    @Test
+    void testWechatPrepay() {
+        String outTradeNo = DateUtil.toString(new Date(), "yyyyMMddHHmmssSSS").concat(RandomStringUtils.randomNumeric(15))
+        MvcResult result = post('/pay/wechat/prepay', '{"outTradeNo": ' + outTradeNo + ', "body": "测试预支付",  "totalFee": 1}', HttpStatus.CREATED)
+        String obj = result.getResponse().getContentAsString()
+        Map<String, Object> doc = (Map<String, Object>)JSONUtil.parse(obj, Object.class)
+
+        assert doc.get("resultCode") == "SUCCESS"
+        assert StringUtil.isNotNull(String.valueOf(doc.get("prepayid")))
+
+        MvcResult resultErr = post('/pay/wechat/prepay', '{"outTradeNo": ' + outTradeNo + ', "body": "测试预支付",  "totalFee": 0}', HttpStatus.CREATED)
+        String objErr = resultErr.getResponse().getContentAsString()
+        Map<String, Object> docErr = (Map<String, Object>)JSONUtil.parse(objErr, Object.class)
+
+        assert docErr.get("resultCode") == "MONEYERROR"
+
     }
 }

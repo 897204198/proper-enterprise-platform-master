@@ -20,6 +20,17 @@ public abstract class AbstractPayImpl implements PayService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPayImpl.class);
 
     /**
+     * 预支付业务处理
+     *
+     * @return 业务处理结果
+     * @throws Exception 异常
+     */
+    @Override
+    public PayResultRes savePrepayBusiness(String payWay, PrepayReq prepayReq, OrderReq orderReq) throws Exception {
+        return new PayResultRes();
+    }
+
+    /**
      * 生成支付信息
      *
      * @param req 预支付请求对象

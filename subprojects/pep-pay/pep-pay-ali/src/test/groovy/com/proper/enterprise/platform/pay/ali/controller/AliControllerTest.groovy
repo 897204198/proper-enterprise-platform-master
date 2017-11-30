@@ -1,12 +1,17 @@
 package com.proper.enterprise.platform.pay.ali.controller
 
+import com.proper.enterprise.platform.core.utils.DateUtil
+import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.pay.ali.entity.AliEntity
+import com.proper.enterprise.platform.pay.ali.model.AliOrderReq
 import com.proper.enterprise.platform.pay.ali.repository.AliRepository
 import com.proper.enterprise.platform.pay.ali.service.AliPayService
 import com.proper.enterprise.platform.test.AbstractTest
+import org.apache.commons.lang3.RandomStringUtils
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.test.web.servlet.MvcResult
 
 class AliControllerTest extends AbstractTest {
 
@@ -36,5 +41,29 @@ class AliControllerTest extends AbstractTest {
 
         assert businessInfo.getBody().equals("异步通知相关业务处理")
         assert businessInfo.getBuyerId().equals("testNoticeBuyerId")
+    }
+
+    @Test
+    void prepay() {
+        String outTradeNo = DateUtil.toString(new Date(), "yyyyMMddHHmmssSSS").concat(RandomStringUtils.randomNumeric(15))
+        AliOrderReq aliReq = new AliOrderReq()
+
+        aliReq.setOutTradeNo(outTradeNo)
+        aliReq.setTotalFee("1")
+        aliReq.setBody("测试预支付")
+        MvcResult result = post('/pay/ali/prepay', JSONUtil.toJSON(aliReq), HttpStatus.CREATED)
+
+        String obj = result.getResponse().getContentAsString()
+        Map<String, Object> doc = (Map<String, Object>)JSONUtil.parse(obj, Object.class)
+
+        assert doc.get("resultCode") == "SUCCESS"
+
+        aliReq.setTotalFee("-0.01")
+        MvcResult resultErr = post('/pay/ali/prepay', JSONUtil.toJSON(aliReq), HttpStatus.CREATED)
+
+        String objErr = resultErr.getResponse().getContentAsString()
+        Map<String, Object> docErr = (Map<String, Object>)JSONUtil.parse(objErr, Object.class)
+
+        assert docErr.get("resultCode") == "MONEYERROR"
     }
 }
