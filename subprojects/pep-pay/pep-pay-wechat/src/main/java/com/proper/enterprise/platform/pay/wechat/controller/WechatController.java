@@ -74,7 +74,7 @@ public class WechatController extends BaseController {
             PrepayReq prepayReq = new PrepayReq();
             PayService payService = (PayService) wechatPayService;
             // 预支付业务处理
-            PayResultRes checkRes = payService.savePrepayBusiness(ConfCenter.get("pay.way.ali"), prepayReq, wechatReq);
+            PayResultRes checkRes = payService.savePrepayBusiness(ConfCenter.get("pay.way.wechat"), prepayReq, wechatReq);
             if (checkRes.getResultCode() != null && checkRes.getResultCode().equals(PayResType.SYSERROR)) {
                 BeanUtils.copyProperties(checkRes, resObj);
                 return responseOfPost(resObj);
