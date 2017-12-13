@@ -3,7 +3,7 @@ apply plugin: 'codenarc'
 apply plugin: 'findbugs'
 apply plugin: 'jacoco'
 
-def configDir = new File(rootProject.projectDir, 'configs/quality')
+def configDir = new File(pepDevConfRoot, 'configs/quality')
 
 ext.checkstyleConfigDir = "$configDir/checkstyle"
 

@@ -23,6 +23,10 @@ allprojects {
 
 apply plugin: 'idea'
 
+ext {
+    pepDevConfRoot = "$rootDir/subprojects/pep-dev-configs/src/main/resources/META-INF"
+}
+
 subprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
@@ -30,9 +34,9 @@ subprojects {
     apply plugin: 'groovy'
     apply plugin: 'maven'
 
-    apply from: "$rootDir/configs/dependencies.gradle"
+    apply from: "$pepDevConfRoot/configs/dependencies.gradle"
 
-    apply from: "$rootDir/configs/quality/codeQuality.gradle"
+    apply from: "$pepDevConfRoot/configs/quality/codeQuality.gradle"
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8

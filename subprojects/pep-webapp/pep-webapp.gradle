@@ -23,7 +23,7 @@ gretty {
     fileLogEnabled = false
     jvmArgs = ['-XX:PermSize=256M', '-Xms256m', '-Xmx1024m']
     managedClassReload = true
-    serverConfigFile = "$rootProject.projectDir/configs/docker/tomcat/conf/server.xml"
+    serverConfigFile = "$pepDevConfRoot/configs/docker/tomcat/conf/server.xml"
     servletContainer = 'tomcat7'
 }
 
