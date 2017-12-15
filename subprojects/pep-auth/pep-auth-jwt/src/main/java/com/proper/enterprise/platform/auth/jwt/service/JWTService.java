@@ -35,6 +35,14 @@ public class JWTService {
         this.secret = secret;
     }
 
+    public String getToken(HttpServletRequest request) {
+        String token = getTokenFromHeader(request);
+        if (StringUtil.isNull(token)) {
+            token = getTokenFromCookie(request);
+        }
+        return token;
+    }
+
     public String getTokenFromHeader(HttpServletRequest request) {
         String token = request.getHeader(AUTH_HEADER);
         if (StringUtil.isNull(token)) {

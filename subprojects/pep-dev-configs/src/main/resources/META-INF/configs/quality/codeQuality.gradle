@@ -35,16 +35,23 @@ jacocoTestReport {
 
 configurations.codenarc.resolutionStrategy.force(libraries.groovy_all)
 
-def excludePattern = 'org/activiti'
-def excludePatternAnt = "**/$excludePattern/**"
+def excludeActiviti = 'org/activiti'
+def excludeGzipFromJetty = 'com/proper/enterprise/platform/core/utils/gzip'
 
 tasks.withType(Checkstyle) {
-    exclude excludePatternAnt
+    exclude "**/$excludeActiviti/**"
+    exclude "**/$excludeGzipFromJetty/**"
 }
 
 tasks.withType(FindBugs) {
+    def excludeFolders = [new File(excludeActiviti).path, new File(excludeGzipFromJetty).path]
     classes = classes.filter {
-        !it.path.contains(new File(excludePattern).path)
+        for (String excludePattern : excludeFolders) {
+            if (it.path.contains(new File(excludePattern).path)) {
+                return false
+            }
+        }
+        return true
     }
     reports {
         xml.enabled = false

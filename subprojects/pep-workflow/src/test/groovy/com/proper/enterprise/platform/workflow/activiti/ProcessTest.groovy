@@ -1,4 +1,5 @@
 package com.proper.enterprise.platform.workflow.activiti
+
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.workflow.activiti.service.AssigneeService
 import com.proper.enterprise.platform.workflow.service.DeployService
@@ -23,7 +24,7 @@ class ProcessTest extends AbstractTest {
     @Autowired DeployService deployService
 
     @Test
-    public void noNeedMoreDevWhileProcDefChanged() {
+    void noNeedMoreDevWhileProcDefChanged() {
         assert startProcAndGetApprovePath(['同意', '同意']) == ['一级审批', '二级审批']
         assert startProcAndGetApprovePath(['不同意']) == ['一级审批']
 
@@ -34,7 +35,7 @@ class ProcessTest extends AbstractTest {
     }
 
     @Test
-    public void deployNewVerProcDefWhileStillHavingProcInstRunning() {
+    void deployNewVerProcDefWhileStillHavingProcInstRunning() {
         def procInst1 = startProcess()
 
         deployProcess(PROC_DEF_V2)
@@ -45,7 +46,7 @@ class ProcessTest extends AbstractTest {
     }
 
     @Test
-    public void testCountersign() {
+    void testCountersign() {
         def csAgree = '会签同意', csDeny = '会签不同意'
 
         deployProcess(PROC_DEF_V3)
@@ -88,8 +89,8 @@ class ProcessTest extends AbstractTest {
     private ProcessInstance startProcess() {
         runtimeService.createProcessInstanceBuilder()
                       .processDefinitionKey(PROC_DEF_KEY)
-                      .addVariable('approveResult', '')
-                      .addVariable('applicant', 'hinex')
+                      .variable('approveResult', '')
+                      .variable('applicant', 'hinex')
                       .start()
     }
 

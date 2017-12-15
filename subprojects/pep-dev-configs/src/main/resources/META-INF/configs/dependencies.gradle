@@ -3,7 +3,7 @@ ext {
     libraries = [:]
 }
 
-versions.activiti           = '5.22.0'
+versions.activiti           = '6.0.0'
 versions.groovy             = '2.4.3'
 versions.hibernate          = '4.3.10.Final'
 versions.jackson            = '2.8.1'
@@ -55,22 +55,26 @@ configurations.all {
             }
         }
     }
+    exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    exclude group: 'org.apache.commons.logging'
+    exclude group: 'org.apache.log4j'
+    exclude group: 'log4j'
 }
 
-libraries.activiti_diagram_rest = "org.activiti:activiti-diagram-rest:${versions.activiti}"
+libraries.activiti_app_logic = "org.activiti:activiti-app-logic:${versions.activiti}"
+libraries.activiti_app_rest = "org.activiti:activiti-app-rest:${versions.activiti}"
+libraries.activiti_common_rest = "org.activiti:activiti-common-rest:${versions.activiti}"
+libraries.activiti_content_storage = "org.activiti:content-storage-fs:${versions.activiti}"
+//libraries.activiti_diagram_rest = "org.activiti:activiti-diagram-rest:${versions.activiti}"
 libraries.activiti_engine = "org.activiti:activiti-engine:${versions.activiti}"
-libraries.activiti_explorer = dependencies.module("org.activiti:activiti-explorer:${versions.activiti}") {
-    exclude group: 'org.vaadin.addons', module: 'dcharts-widget'
-    exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-}
+//libraries.activiti_explorer = "org.activiti:activiti-explorer:${versions.activiti}"
+libraries.activiti_form_engine = "org.activiti:activiti-form-engine:${versions.activiti}"
 libraries.activiti_json_converter = "org.activiti:activiti-json-converter:${versions.activiti}"
-libraries.activiti_modeler = "org.activiti:activiti-modeler:${versions.activiti}"
-libraries.activiti_rest = dependencies.module("org.activiti:activiti-rest:${versions.activiti}") {
-    exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-}
-libraries.activiti_simple_workflow = "org.activiti:activiti-simple-workflow:${versions.activiti}"
+//libraries.activiti_modeler = "org.activiti:activiti-modeler:${versions.activiti}"
+libraries.activiti_rest = "org.activiti:activiti-rest:${versions.activiti}"
+//libraries.activiti_simple_workflow = "org.activiti:activiti-simple-workflow:${versions.activiti}"
 libraries.activiti_spring = "org.activiti:activiti-spring:${versions.activiti}"
-libraries.activiti_web_designer = "com.proper.enterprise.platform:activiti-web-designer:${versions.activiti}"
+libraries.activiti_web_designer = "com.proper.enterprise.platform:activiti-web-designer:6.0.0-SNAPSHOT"
 
 //libraries.aspectjrt = "org.aspectj:aspectjrt:${versions.aspectj}"
 libraries.aspectjweaver = "org.aspectj:aspectjweaver:1.8.6"
@@ -156,12 +160,6 @@ libraries.junit = 'junit:junit:4.12'
 //libraries.jsp_api = 'javax.servlet.jsp:jsp-api:2.2'
 
 //libraries.jstl = 'jstl:jstl:1.2'
-
-//libraries.log4j = dependencies.module('log4j:log4j:1.2.15') {
-//    exclude group: 'com.sun.jdmk', module: 'jmxtools'
-//    exclude group: 'javax.jms', module: 'jms'
-//    exclude group: 'com.sun.jmx', module: 'jmxri'
-//}
 
 libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:${versions.logback}") {
     dependency "ch.qos.logback:logback-core:${versions.logback}"

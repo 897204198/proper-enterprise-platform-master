@@ -56,10 +56,7 @@ public class JWTVerifyFilter implements Filter {
             return;
         }
 
-        String token = jwtService.getTokenFromHeader(req);
-        if (StringUtil.isNull(token)) {
-            token = jwtService.getTokenFromCookie(req);
-        }
+        String token = jwtService.getToken(req);
         LOGGER.trace("JSON Web Token: " + token);
         if (StringUtil.isNotNull(token) && jwtService.verify(token)) {
             LOGGER.trace("JWT verfiy succeed.");

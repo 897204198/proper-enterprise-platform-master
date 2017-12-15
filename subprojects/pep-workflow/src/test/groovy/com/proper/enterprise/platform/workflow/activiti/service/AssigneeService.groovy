@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.workflow.activiti.service
 
 import org.activiti.engine.HistoryService
+import org.activiti.engine.delegate.DelegateExecution
 import org.activiti.engine.delegate.DelegateTask
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,24 +15,24 @@ class AssigneeService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeService.class)
 
-    public String getDeptMaster(String applicant) {
+    String getDeptMaster(String applicant) {
         LOGGER.info("Invoke into getDeptMaster method with param: ${applicant}")
         return 'Alpha Hinex'
     }
 
-    public String getDeptMasters(String dept) {
+    String getDeptMasters(String dept) {
         LOGGER.info("Invoke into getDeptMasters method with param: ${dept}")
         return ['hinex1', 'hinex2', 'hinex3']
     }
 
-    public List getCountersignAssigneeList() {
+    List getCountersignAssigneeList() {
         LOGGER.info("Invoke into getCountersignAssigneeList method")
         return (0..9).collect { idx ->
             "cs-hinex$idx"
         }
     }
 
-    public void executionEnd(ExecutionListenerExecution execution) {
+    void executionEnd(DelegateExecution execution) {
         def nrOfInstances = execution.getVariable('nrOfInstances')
         def loopCounter = execution.getVariable('loopCounter')
         if (loopCounter != null && nrOfInstances == loopCounter + 1) {
@@ -47,7 +47,7 @@ class AssigneeService {
         }
     }
 
-    public void taskEnd(DelegateTask task) {
+    void taskEnd(DelegateTask task) {
         LOGGER.info("Invoke into taskEnd method and task is ${task.getVariables()} ${task.getAssignee()}")
     }
 

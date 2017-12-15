@@ -11,7 +11,10 @@ sourceSets {
 
 dependencies {
     compile libraries.activiti_engine,
-            libraries.activiti_explorer,
+//            libraries.activiti_explorer,
+            libraries.activiti_app_logic,
+            libraries.activiti_app_rest,
+            libraries.activiti_common_rest,
             libraries.activiti_json_converter,
             libraries.activiti_rest,
             libraries.activiti_spring,
@@ -20,13 +23,15 @@ dependencies {
             libraries.groovy_all,
             libraries.servlet_api
 
-    compile project(':pep-cache-api'),
+    compile project(':pep-auth-api'),
+            project(':pep-cache-api'),
             project(':pep-core')
 
-    runtime libraries.activiti_diagram_rest,
-            libraries.activiti_modeler,
-//            libraries.activiti_simple_workflow
+    runtime libraries.activiti_content_storage,
+            libraries.activiti_form_engine,
             libraries.activiti_web_designer
+
+    runtime project(':pep-auth-jwt')
 
     testCompile project(':pep-test')
 

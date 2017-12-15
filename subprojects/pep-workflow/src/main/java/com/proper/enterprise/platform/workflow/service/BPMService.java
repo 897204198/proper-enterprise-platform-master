@@ -79,7 +79,7 @@ public class BPMService {
         builder.processDefinitionKey(procDefKey);
         if (!CollectionUtil.isEmpty(vars)) {
             for (Map.Entry<String, Object> entry : vars.entrySet()) {
-                builder.addVariable(entry.getKey(), entry.getValue());
+                builder.variable(entry.getKey(), entry.getValue());
             }
         }
         return builder.start();

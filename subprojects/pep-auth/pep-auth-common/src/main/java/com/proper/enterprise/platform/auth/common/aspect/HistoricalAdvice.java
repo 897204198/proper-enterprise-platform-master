@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.utils.ConfCenter;
 import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.aspectj.lang.JoinPoint;
 import org.slf4j.Logger;
@@ -43,19 +44,24 @@ public class HistoricalAdvice {
         // Repository.save* 方法的参数只有两类
         if (obj instanceof Iterable) {
             for (Object o : (Iterable) obj) {
-                update((IBase) o, userId);
+                update(o, userId);
             }
         } else {
-            update((IBase) obj, userId);
+            update(obj, userId);
         }
     }
 
-    private void update(IBase obj, String userId) {
-        if (StringUtil.isNull(obj.getId())) {
-            obj.setCreateUserId(userId);
-            obj.setCreateTime(DateUtil.getTimestamp(true));
+    private void update(Object obj, String userId) {
+        if (obj instanceof IBase) {
+            IBase iBase = (IBase) obj;
+            if (StringUtil.isNull(iBase.getId())) {
+                iBase.setCreateUserId(userId);
+                iBase.setCreateTime(DateUtil.getTimestamp(true));
+            }
+            iBase.setLastModifyUserId(userId);
+            iBase.setLastModifyTime(DateUtil.getTimestamp(true));
+        } else {
+            LOGGER.debug("{} is not IBase, no need to add historical info.", JSONUtil.toJSONIgnoreException(obj));
         }
-        obj.setLastModifyUserId(userId);
-        obj.setLastModifyTime(DateUtil.getTimestamp(true));
     }
 }

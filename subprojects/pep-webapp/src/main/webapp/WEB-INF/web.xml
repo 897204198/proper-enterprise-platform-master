@@ -61,11 +61,6 @@
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <!-- Mapping servlets provided by activiti-rest -->
-        <servlet-name>dispatcher</servlet-name>
-        <url-pattern>/workflow/service/*</url-pattern>
-    </servlet-mapping>
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

@@ -12,19 +12,7 @@
 
     <import resource="classpath*:spring/workflow/workflow-*.xml" />
 
-    <!-- Activiti use jackson to handle json resources -->
-    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
-
-    <!-- These two beans are necessary for using RESTFul API -->
-    <bean id="restResponseFactory" class="org.activiti.rest.service.api.RestResponseFactory" />
-    <bean id="contentTypeResolver" class="org.activiti.rest.common.application.DefaultContentTypeResolver" />
-
-    <!-- This resolver allows PUT multipart form data -->
-    <bean id="multipartResolver" class="org.activiti.rest.service.api.PutAwareCommonsMultipartResolver">
-        <property name="maxUploadSize" value="50000000"/>
-    </bean>
-
-    <context:component-scan base-package="org.activiti.rest" />
+    <context:component-scan base-package="org.activiti.app.conf, org.activiti.app.repository, org.activiti.app.service, org.activiti.app.model.component" />
 
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager"/>
 
@@ -37,8 +25,13 @@
         </property>
     </bean>
 
-    <mvc:resources mapping="/workflow/diagram-viewer/**" location="classpath:/META-INF/resources/diagram-viewer/" />
-    <mvc:resources mapping="/workflow/editor-app/**" location="classpath:/META-INF/resources/editor-app/" />
-    <mvc:resources mapping="/workflow/*.html" location="classpath:/META-INF/resources/"/>
+    <mvc:resources mapping="/workflow/*.html"     location="classpath:/META-INF/resources/"/>
+    <mvc:resources mapping="/workflow/editor/**"  location="classpath:/META-INF/resources/editor/"/>
+    <mvc:resources mapping="/workflow/fonts/**"   location="classpath:/META-INF/resources/fonts/"/>
+    <mvc:resources mapping="/workflow/i18n/**"    location="classpath:/META-INF/resources/i18n/"/>
+    <mvc:resources mapping="/workflow/libs/**"    location="classpath:/META-INF/resources/libs/"/>
+    <mvc:resources mapping="/workflow/scripts/**" location="classpath:/META-INF/resources/scripts/"/>
+    <mvc:resources mapping="/workflow/styles/**"  location="classpath:/META-INF/resources/styles/"/>
+    <mvc:resources mapping="/workflow/views/**"   location="classpath:/META-INF/resources/views/"/>
 
 </beans>

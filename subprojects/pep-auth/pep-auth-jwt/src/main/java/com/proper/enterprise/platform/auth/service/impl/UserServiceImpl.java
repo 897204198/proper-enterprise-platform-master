@@ -25,7 +25,7 @@ public class UserServiceImpl extends AbstractUserServiceImpl {
         HttpServletRequest req;
         try {
             req = RequestUtil.getCurrentRequest();
-            String token = jwtService.getTokenFromHeader(req);
+            String token = jwtService.getToken(req);
             if (StringUtil.isNull(token)) {
                 LOGGER.debug("Could NOT get current user from {} caused by NO token.", req.getRequestURI());
                 return null;

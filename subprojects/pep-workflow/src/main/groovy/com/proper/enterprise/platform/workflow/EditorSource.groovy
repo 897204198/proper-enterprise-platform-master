@@ -2,7 +2,6 @@ package com.proper.enterprise.platform.workflow
 
 import com.proper.enterprise.platform.core.utils.StringUtil
 
-
 class EditorSource {
 
     /**

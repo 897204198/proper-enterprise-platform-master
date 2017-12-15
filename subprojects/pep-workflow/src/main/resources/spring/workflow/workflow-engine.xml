@@ -8,19 +8,13 @@
         <property name="dataSource" ref="dataSource" />
         <property name="transactionManager" ref="transactionManager" />
         <property name="databaseSchemaUpdate" value="${workflow.databaseSchemaUpdate}" />
-        <property name="asyncExecutorEnabled" value="true"/>
         <property name="asyncExecutorActivate" value="true" />
         <property name="asyncExecutorCorePoolSize" value="${workflow.asyncExecutor.corePoolSize}" />
         <property name="asyncExecutorMaxPoolSize" value="${workflow.asyncExecutor.maxPoolSize}" />
         <property name="asyncExecutorThreadPoolQueueSize" value="${workflow.asyncExecutor.queueSize}" />
         <property name="history" value="${workflow.history}" />
-        <property name="customFormTypes">
-            <list>
-                <bean class="org.activiti.explorer.form.UserFormType"/>
-                <bean class="org.activiti.explorer.form.ProcessDefinitionFormType"/>
-                <bean class="org.activiti.explorer.form.MonthFormType"/>
-            </list>
-        </property>
+        <property name="processDefinitionCacheLimit" value="500"/>
+        <property name="enableSafeBpmnXml" value="true"/>
     </bean>
 
     <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean" destroy-method="destroy">
@@ -31,8 +25,12 @@
     <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
     <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
     <bean id="formService" factory-bean="processEngine" factory-method="getFormService" />
+    <bean id="formEngineFormService" factory-bean="processEngine" factory-method="getFormEngineFormService" />
+    <bean id="formEngineRepositoryService" factory-bean="processEngine" factory-method="getFormEngineRepositoryService" />
     <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
     <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
     <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
+
+    <bean id="clock" depends-on="processEngine" factory-bean="processEngineConfiguration" factory-method="getClock"/>
 
 </beans>

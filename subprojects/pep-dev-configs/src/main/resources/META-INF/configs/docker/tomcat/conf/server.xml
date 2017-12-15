@@ -68,9 +68,7 @@
     <Connector executor="tomcatThreadPool"
                port="8080" protocol="org.apache.coyote.http11.Http11NioProtocol"
                connectionTimeout="20000"
-               URIEncoding="UTF-8"
-               compression="on"
-               compressableMimeType="text/html,text/xml,text/plain,text/css,text/javascript,text/json,application/x-javascript,application/javascript,application/json"/>
+               URIEncoding="UTF-8"/>
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
