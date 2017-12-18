@@ -40,15 +40,17 @@ dependencies {
             libraries.spring_orm,
             libraries.spring_webmvc
 
+    // Mandatory for PEP
+    runtime project(':pep-configs')
+
+    // Select on demand
     runtime project(':pep-auth-jwt'),
-            project(':pep-av-backend'),
-            project(':pep-configs'),
-            // Needs one cache implementation
+            // Needs one cache implementation if use cache API
             project(':pep-cache-ehcache'),
             project(':pep-page-custom'),
+            project(':pep-push'),
             project(':pep-workflow')
 }
-
 task cleanDist(type: Delete) {
     delete 'build/libs'
 }

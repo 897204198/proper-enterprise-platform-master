@@ -6,23 +6,21 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 class PusherAppSpec extends Specification{
-    
+
     def "Using all push methods"() {
-        String appkey = "ShengjingOA"
-        String pushUrl="http://localhost:8080/properpush"
+        String appkey = "test"
+        String pushUrl="http://localhost:8080/pep"
         String secureKey = "wanchina"
-        IPushApiServiceRequest pushApiRequestMock=new PushApiServiceRequestMockService();
-        PusherApp app = new PusherApp(pushUrl, appkey, secureKey);
+        PusherApp app = new PusherApp(pushUrl, appkey, secureKey)
+        IPushApiServiceRequest pushApiRequestMock=new PushApiServiceRequestMockService()
         app.setPushApiRequest(pushApiRequestMock)
         app.setAsync(false)
-        PushMessage msg = null
-        msg = new PushMessage()
-        msg.setTitle("titletest")
-        msg.setContent("titlecontent")
+        PushMessage msg = new PushMessage("titletest", "titlecontent")
+
         expect:
         app.pushMessageToOneUser(msg,"sdsyw")
         app.pushMessageToOneDevice(msg,PusherApp.DEVICE_TYPE_ANDROID,"deviceid111")
-        app.pushMessageToAllUsers()
+        app.pushMessageToAllUsers(msg)
         app.pushMessageToAllDevices(msg)
         app.pushMessageToAllDevices(msg,PusherApp.DEVICE_TYPE_ANDROID)
     }

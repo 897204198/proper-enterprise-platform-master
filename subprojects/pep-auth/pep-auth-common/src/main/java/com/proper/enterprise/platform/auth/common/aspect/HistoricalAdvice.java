@@ -24,7 +24,7 @@ public class HistoricalAdvice {
 
     private static final String DEFAULT_USER_ID = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS");
 
-    @Autowired
+    @Autowired(required = false)
     UserService userService;
 
     public void beforeSave(JoinPoint jp) throws Exception {
