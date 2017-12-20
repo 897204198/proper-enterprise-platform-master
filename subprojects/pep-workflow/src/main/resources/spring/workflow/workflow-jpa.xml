@@ -1,17 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
                            http://www.springframework.org/schema/data/jpa
-                           http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
+                           http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd"
        default-lazy-init="true">
 
     <bean id="actTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="actEntityManagerFactory"/>
     </bean>
 
-    <jpa:repositories base-package="org.activiti.app.repository" transaction-manager-ref="actTransactionManager" entity-manager-factory-ref="actEntityManagerFactory"/>
+    <jpa:repositories base-package="org.activiti.app.repository"
+                      transaction-manager-ref="actTransactionManager"
+                      entity-manager-factory-ref="actEntityManagerFactory"/>
+
+    <tx:advice id="actTxAdvice" transaction-manager="actTransactionManager">
+        <tx:attributes>
+            <tx:method name="save*" rollback-for="RuntimeException" />
+            <tx:method name="delete*" rollback-for="RuntimeException" />
+            <tx:method name="update*" rollback-for="RuntimeException" />
+            <tx:method name="add*" rollback-for="RuntimeException" />
+            <tx:method name="create*" rollback-for="RuntimeException" />
+            <!-- other methods are read-only -->
+            <tx:method name="*" read-only="true" />
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="actTxEntryPoint" expression="execution(* org.activiti.app.service..*.*(..))" />
+        <aop:advisor pointcut-ref="actTxEntryPoint" advice-ref="actTxAdvice" />
+    </aop:config>
 
 </beans>
