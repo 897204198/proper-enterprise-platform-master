@@ -1,4 +1,5 @@
 package com.proper.enterprise.platform.pay.ali.service.impl
+
 import com.proper.enterprise.platform.api.pay.enums.PayResType
 import com.proper.enterprise.platform.api.pay.factory.PayFactory
 import com.proper.enterprise.platform.api.pay.model.PrepayReq
