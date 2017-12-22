@@ -125,7 +125,7 @@ public class ProperPayController extends BaseController {
 
         Map<String, String> params = new HashMap<>();
         params.put("orderNo", orderNo);
-        params.put("subject", subject);
+        params.put("tradeNo", properInfo.getTradeNo());
         params.put("notifyTime", properInfo.getNotifyTime());
 
         NoticeService noticeService = payFactory.newNoticeService("proper");
