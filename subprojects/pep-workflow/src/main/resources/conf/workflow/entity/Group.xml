@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.GroupEntityImpl">
+
+  <!-- GROUP RESULTMAP -->
+  <resultMap id="groupResultMap" type="org.activiti.engine.impl.persistence.entity.GroupEntityImpl">
+    <id property="id" column="id" jdbcType="VARCHAR" />
+    <result property="name" column="name" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- GROUP SELECT -->
+  <select id="selectGroup" parameterType="string" resultMap="groupResultMap">
+    select * from ${prefix}pep_auth_roles where id = #{id, jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectGroupsByUserId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="groupResultMap">
+    select r.*
+    from ${prefix}pep_auth_roles r, ${prefix}pep_auth_users_roles ur
+    where r.id = ur.role_id
+      and ur.user_id = #{parameter}
+      and r.valid = 'Y'
+  </select>
+
+  <select id="selectGroupsByUserIdAndGroupType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="groupResultMap">
+    select r.*
+    from ${prefix}pep_auth_roles r, ${prefix}pep_auth_users_roles ur
+    where r.id = ur.role_id
+      and ur.user_id = #{parameter.userId}
+      and r.valid = 'Y'
+    <!--  <if test="groupType != null">
+         and g.TYPE_ = #{parameter.groupType}
+      </if>-->
+  </select>
+
+  <select id="selectGroupByQueryCriteria" parameterType="org.activiti.engine.impl.GroupQueryImpl" resultMap="groupResultMap">
+  	${limitBefore}
+    select RES.* ${limitBetween}
+    <include refid="selectGroupByQueryCriteriaSql" />
+    order by RES.name
+    ${limitAfter}
+  </select>
+
+   <select id="selectGroupCountByQueryCriteria" parameterType="org.activiti.engine.impl.GroupQueryImpl" resultType="long">
+    select count(RES.id)
+    <include refid="selectGroupByQueryCriteriaSql" />
+  </select>
+
+  <sql id="selectGroupByQueryCriteriaSql">
+    from ${prefix}pep_auth_roles RES
+    <if test="userId != null">
+      inner join ${prefix}pep_auth_users_roles ur on RES.id = ur.role_id
+      inner join ${prefix}pep_auth_users u on ur.user_id = u.id
+    </if>
+    <where>
+      <if test="id != null">
+        RES.id = #{id}
+      </if>
+      <if test="name != null">
+        and RES.name = #{name}
+      </if>
+      <if test="nameLike != null">
+        and RES.name like #{nameLike}${wildcardEscapeClause}
+      </if>
+<!--      <if test="type != null">
+        and RES.TYPE_ = #{type}
+      </if>-->
+      <if test="userId != null">
+        and u.id = #{userId}
+      </if>
+      <if test="procDefId != null">
+        and exists (select ID_ from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and GROUP_ID_=RES.ID_ )
+      </if>
+        and RES.valid = 'Y'
+    </where>
+  </sql>
+
+  <select id="selectGroupByNativeQuery" parameterType="java.util.Map" resultMap="groupResultMap">
+    <include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
+  </select>
+
+  <select id="selectGroupCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    ${sql}
+  </select>
+
+</mapper>
