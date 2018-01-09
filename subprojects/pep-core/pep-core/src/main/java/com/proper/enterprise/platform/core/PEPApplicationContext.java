@@ -31,4 +31,8 @@ public class PEPApplicationContext implements ApplicationContextAware {
         return HOLDER.applicationContext.getBean(requiredType);
     }
 
+    public static <T> T getBean(String name, Class<T> requiredType) {
+        return HOLDER.applicationContext.getBean(name, requiredType);
+    }
+
 }

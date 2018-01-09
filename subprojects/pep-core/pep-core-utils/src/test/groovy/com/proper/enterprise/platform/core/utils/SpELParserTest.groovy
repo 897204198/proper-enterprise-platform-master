@@ -9,7 +9,7 @@ class SpELParserTest extends AbstractTest {
     SpELParser parser
 
     @Test
-    public void getBeanInSpEL() {
+    void getBeanInSpEL() {
         mockUser('id', 'name', 'pwdInSpEl')
 
         String tpl = '{usergroup: {$in: [#{@hikariConfig.autoCommit}]}}'
@@ -20,7 +20,7 @@ class SpELParserTest extends AbstractTest {
     }
 
     @Test
-    public void notUseExpressionTemplate() {
+    void notUseExpressionTemplate() {
         String spEL = """{
 'M149', //abc
 '0187', // def, ghi
@@ -30,7 +30,7 @@ class SpELParserTest extends AbstractTest {
     }
 
     @Test
-    public void booleanExp() {
+    void booleanExp() {
         String spEL = """{
 'M149', //abc
 '0187', // def, ghi
