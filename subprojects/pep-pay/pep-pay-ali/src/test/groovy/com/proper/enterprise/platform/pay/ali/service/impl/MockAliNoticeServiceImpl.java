@@ -53,4 +53,10 @@ public class MockAliNoticeServiceImpl implements NoticeService<Map<String, Strin
 
         aliPayService.save(ali);
     }
+
+    @Override
+    public boolean isDuplicate(String orderNo) {
+        return true;
+    }
+
 }

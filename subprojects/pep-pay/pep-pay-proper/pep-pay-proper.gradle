@@ -1,0 +1,11 @@
+dependencies {
+    compile project(':pep-core'),
+        project(':pep-pay-api'),
+        project(':pep-pay-common')
+
+    runtime project(':pep-auth-common')
+
+    testCompile project(':pep-test')
+
+    testRuntime project(':pep-auth-jwt')
+}
