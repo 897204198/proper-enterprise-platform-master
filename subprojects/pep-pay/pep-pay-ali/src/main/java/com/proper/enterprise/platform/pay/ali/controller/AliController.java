@@ -8,7 +8,6 @@ import com.proper.enterprise.platform.api.pay.model.PrepayReq;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
 import com.proper.enterprise.platform.api.pay.service.PayService;
-import com.proper.enterprise.platform.common.pay.task.PayNotice2BusinessTask;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.ConfCenter;
@@ -47,9 +46,6 @@ public class AliController extends BaseController {
 
     @Autowired
     PayFactory payFactory;
-
-    @Autowired
-    PayNotice2BusinessTask payNoticeTask;
 
     /**
      * 支付宝预支付处理.
@@ -158,7 +154,7 @@ public class AliController extends BaseController {
                 if(saveNoticeFlag) {
                     LOGGER.debug("支付宝异步通知业务相关Notice,异步通知结果已经保存并新起线程进行业务处理");
                     NoticeService noticeService = payFactory.newNoticeService("ali");
-                    payNoticeTask.run(params, noticeService);
+                    noticeService.saveNoticeProcessAsync(params);
                     ret = true;
                 }
             } else {

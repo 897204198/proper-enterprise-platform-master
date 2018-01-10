@@ -31,7 +31,7 @@ public class MockAliwebNoticeServiceImpl implements NoticeService<Map<String, St
      * @param params 支付宝异步通知处理参数
      */
     @Override
-    public void saveNoticeProcess(Map<String, String>  params) {
+    public void saveNoticeProcessAsync(Map<String, String> params) {
         LOGGER.debug("-------------支付宝网页支付异步通知相关业务处理-----------------");
         AliwebEntity aliweb = new AliwebEntity();
 

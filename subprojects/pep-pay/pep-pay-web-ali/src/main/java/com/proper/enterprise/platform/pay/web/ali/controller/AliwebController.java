@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.pay.web.ali.controller;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
-import com.proper.enterprise.platform.common.pay.task.PayNotice2BusinessTask;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -40,9 +39,6 @@ public class AliwebController extends BaseController {
 
     @Autowired
     PayFactory payFactory;
-
-    @Autowired
-    PayNotice2BusinessTask payNoticeTask;
 
     /**
      * 支付宝网页支付结果异步通知
@@ -110,7 +106,7 @@ public class AliwebController extends BaseController {
                 if(saveNoticeFlag) {
                     LOGGER.debug("支付宝网页支付异步通知业务相关Notice,异步通知结果已经保存并新起线程进行业务处理");
                     NoticeService noticeService = payFactory.newNoticeService("aliweb");
-                    payNoticeTask.run(params, noticeService);
+                    noticeService.saveNoticeProcessAsync(params);
                     ret = true;
                 }
             } else {

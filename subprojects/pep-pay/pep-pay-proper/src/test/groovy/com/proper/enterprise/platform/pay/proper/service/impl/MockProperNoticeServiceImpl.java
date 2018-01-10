@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.pay.proper.service.ProperPayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -30,8 +31,9 @@ public class MockProperNoticeServiceImpl implements NoticeService<Map<String, St
      *
      * @param params 支付宝异步通知处理参数
      */
+    @Async
     @Override
-    public void saveNoticeProcess(Map<String, String>  params) {
+    public void saveNoticeProcessAsync(Map<String, String> params) {
         LOGGER.debug("-------------异步通知相关业务处理-----------------");
         ProperEntity proper = new ProperEntity();
 

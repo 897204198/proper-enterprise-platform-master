@@ -7,7 +7,6 @@ import com.proper.enterprise.platform.api.pay.factory.PayFactory;
 import com.proper.enterprise.platform.api.pay.model.RefundReq;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
 import com.proper.enterprise.platform.api.pay.service.PayService;
-import com.proper.enterprise.platform.common.pay.task.PayNotice2BusinessTask;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.pay.cmb.entity.CmbPayEntity;
@@ -49,9 +48,6 @@ public class CmbController extends BaseController {
 
     @Autowired
     PayFactory payFactory;
-
-    @Autowired
-    PayNotice2BusinessTask payNoticeTask;
 
     private String payWay = "cmb";
 
@@ -120,7 +116,7 @@ public class CmbController extends BaseController {
             // 启用线程处理业务相关
             LOGGER.debug("一网通异步通知业务相关Notice,异步通知结果已经保存并新起线程进行业务处理");
             NoticeService noticeService = payFactory.newNoticeService("cmb");
-            payNoticeTask.run(cmbInfo, noticeService);
+            noticeService.saveNoticeProcessAsync(cmbInfo);
             LOGGER.debug("-----------一网通支付结果异步通知------正常结束---------------");
             return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
         } catch (Exception e) {

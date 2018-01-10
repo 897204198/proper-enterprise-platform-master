@@ -7,7 +7,6 @@ import com.proper.enterprise.platform.api.pay.model.PayResultRes;
 import com.proper.enterprise.platform.api.pay.model.PrepayReq;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
 import com.proper.enterprise.platform.api.pay.service.PayService;
-import com.proper.enterprise.platform.common.pay.task.PayNotice2BusinessTask;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.ConfCenter;
 import com.proper.enterprise.platform.core.utils.DateUtil;
@@ -48,9 +47,6 @@ public class ProperPayController extends BaseController {
 
     @Autowired
     PayFactory payFactory;
-
-    @Autowired
-    PayNotice2BusinessTask payNoticeTask;
 
     /**
      * 模拟支付预支付处理.
@@ -129,7 +125,7 @@ public class ProperPayController extends BaseController {
         params.put("notifyTime", properInfo.getNotifyTime());
 
         NoticeService noticeService = payFactory.newNoticeService("proper");
-        payNoticeTask.run(params, noticeService);
+        noticeService.saveNoticeProcessAsync(params);
 
         Map<String, Object> res = new HashMap<>();
         res.put("resultCode", "SUCCESS");

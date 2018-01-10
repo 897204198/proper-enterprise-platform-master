@@ -8,7 +8,6 @@ import com.proper.enterprise.platform.api.pay.model.PrepayReq
 import com.proper.enterprise.platform.api.pay.model.RefundReq
 import com.proper.enterprise.platform.api.pay.service.NoticeService
 import com.proper.enterprise.platform.api.pay.service.PayService
-import com.proper.enterprise.platform.common.pay.task.PayNotice2BusinessTask
 import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
@@ -20,9 +19,6 @@ class AbstractPayImplTest extends AbstractTest {
     PayFactory payFactory
 
     private String payWay = "ali"
-
-    @Autowired
-    PayNotice2BusinessTask noticeTask
 
     @Test
     public void testPrepay() {
@@ -129,14 +125,14 @@ class AbstractPayImplTest extends AbstractTest {
         NoticeService payService = payFactory.newNoticeService(payWay)
         PayResultRes res = new PayResultRes()
         res.setResultCode(PayResType.SUCCESS)
-        noticeTask.run(res, payService)
+        payService.saveNoticeProcessAsync(res)
     }
 
     @Test
     public void testNoticeException() {
         NoticeService payService = payFactory.newNoticeService(payWay)
         PayResultRes res = new PayResultRes()
-        noticeTask.run(res, payService)
+        payService.saveNoticeProcessAsync(res)
     }
 
     private PrepayReq getReq() {

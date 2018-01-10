@@ -8,7 +8,6 @@ import com.proper.enterprise.platform.api.pay.model.PayResultRes;
 import com.proper.enterprise.platform.api.pay.model.PrepayReq;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
 import com.proper.enterprise.platform.api.pay.service.PayService;
-import com.proper.enterprise.platform.common.pay.task.PayNotice2BusinessTask;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.ConfCenter;
@@ -54,9 +53,6 @@ public class WechatController extends BaseController {
 
     @Autowired
     PayFactory payFactory;
-
-    @Autowired
-    PayNotice2BusinessTask payNoticeTask;
 
     /**
      * 微信预支付处理.
@@ -152,7 +148,7 @@ public class WechatController extends BaseController {
             if(saveNoticeFlag) {
                 LOGGER.debug("微信异步通知业务相关Notice,异步通知结果已经保存并新起线程进行业务处理");
                 NoticeService noticeService = payFactory.newNoticeService("wechat");
-                payNoticeTask.run(noticeRes, noticeService);
+                noticeService.saveNoticeProcessAsync(noticeRes);
                 ret = true;
             }
         }
