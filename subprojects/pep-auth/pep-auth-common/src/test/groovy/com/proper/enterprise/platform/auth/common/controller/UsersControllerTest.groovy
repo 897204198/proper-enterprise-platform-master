@@ -14,7 +14,7 @@ class UsersControllerTest extends AbstractTest {
     private static UserEntity userEntity = new UserEntity('user1', 'pwd1')
 
     @Test
-    public void checkCRUD() {
+    void checkCRUD() {
         checkBaseCRUD(URI, userEntity)
     }
 
@@ -23,7 +23,7 @@ class UsersControllerTest extends AbstractTest {
 
     @Sql("/com/proper/enterprise/platform/auth/common/roles.sql")
     @Test
-    public void addRolesToUserAndThenRemove() {
+    void addRolesToUserAndThenRemove() {
         UserEntity user = postAndReturn(URI, userEntity)
         def roles = roleService.getByName('testrole')
         assert !roles.isEmpty() && roles.size()==2

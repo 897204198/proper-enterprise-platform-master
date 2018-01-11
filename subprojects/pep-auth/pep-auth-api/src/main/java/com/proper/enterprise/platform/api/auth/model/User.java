@@ -84,4 +84,11 @@ public interface User extends IBase {
      */
     boolean isSuperuser();
 
+    /**
+     * 获得用户所属的用户组
+     *
+     * @return 用户组集合
+     */
+    Collection<? extends UserGroup> getUserGroups();
+
 }
