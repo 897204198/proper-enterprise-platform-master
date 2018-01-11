@@ -80,7 +80,7 @@ public abstract class AbstractPushVendorService {
     /**
      * 发送消息时，如果pushToken无效，需要调用这个方法将设备的状态设为无效
      *
-     * @param msg
+     * @param msg 消息
      */
     public void onPushTokenInvalid(PushMsgEntity msg) {
         // msg.getDevice().setMstatus(DeviceStatus.INVALID);

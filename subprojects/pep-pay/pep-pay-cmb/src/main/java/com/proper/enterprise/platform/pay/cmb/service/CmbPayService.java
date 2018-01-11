@@ -18,7 +18,7 @@ public interface CmbPayService {
      * @param userId
      *        用户ID
      * @return 用户协议信息
-     * @throws Exception
+     * @throws Exception 获取协议异常
      */
     CmbProtocolDocument getUserProtocolInfo(String userId) throws Exception;
 
@@ -27,7 +27,7 @@ public interface CmbPayService {
      *
      * @param userProtocolInfo
      *        用户协议信息
-     * @throws Exception
+     * @throws Exception 保存协议异常
      */
     void saveUserProtocolInfo(CmbProtocolDocument userProtocolInfo) throws Exception;
 
@@ -36,7 +36,7 @@ public interface CmbPayService {
      *
      * @param payInfo
      *        支付结果异步通知
-     * @throws Exception
+     * @throws Exception 保存异步通知异常
      */
     void saveCmbPayNoticeInfo(CmbPayEntity payInfo) throws Exception;
 
@@ -45,7 +45,7 @@ public interface CmbPayService {
      *
      * @param msg
      *        支付结果
-     * @throws Exception
+     * @throws Exception 获取异步通知异常
      */
     CmbPayEntity getPayNoticeInfoByMsg(String msg) throws Exception;
 
@@ -54,7 +54,7 @@ public interface CmbPayService {
      *
      * @param orderNo 订单号
      * @return 一网通对象
-     * @throws Exception
+     * @throws Exception 查询异常
      */
     CmbPayEntity getQueryInfo(String orderNo) throws Exception;
 
@@ -63,7 +63,7 @@ public interface CmbPayService {
      *
      * @param reqData 请求数据
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 保存异常
      */
     boolean saveNoticeProtocol(String reqData) throws Exception;
 
@@ -81,7 +81,7 @@ public interface CmbPayService {
      * @param request
      *        请求
      * @return 支付结果异步通知对象
-     * @throws Exception
+     * @throws Exception 获取异常
      */
     CmbPayEntity getCmbPayNoticeInfo(HttpServletRequest request) throws Exception;
 
@@ -90,7 +90,7 @@ public interface CmbPayService {
      *
      * @param orderNo 订单号
      * @return 查询结果
-     * @throws Exception
+     * @throws Exception 查询异常
      */
     CmbPayResultRes querySingleOrder(String orderNo) throws Exception;
 
@@ -99,7 +99,7 @@ public interface CmbPayService {
      *
      * @param orderNo 订单号
      * @return 支付结果异步通知信息
-     * @throws Exception
+     * @throws Exception 查询异常
      */
     CmbPayEntity findByOutTradeNo(String orderNo) throws Exception;
 
@@ -108,7 +108,7 @@ public interface CmbPayService {
      *
      * @param tradeNo 位银行流水号
      * @return 支付结果异步通知信息
-     * @throws Exception
+     * @throws Exception 查询异常
      */
     CmbPayEntity getByTradeNo(String tradeNo) throws Exception;
 

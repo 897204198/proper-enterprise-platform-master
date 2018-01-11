@@ -9,10 +9,11 @@ public interface NoticeService<T> {
 
     /**
      * 异步通知业务处理
+     * 为了使异步通知能够尽快得到响应,请各个异步通知实现Service各自加上@Async注解
      *
      * @param t 处理对象
      */
-    void saveNoticeProcess(T t) throws Exception;
+    void saveNoticeProcessAsync(T t) throws Exception;
 
     /**
      * 判断该订单是否接到了重复的异步通知

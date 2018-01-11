@@ -119,7 +119,7 @@ public class ApnsPushApp extends BasePushApp {
 
                 }
             } else {
-                LOGGER.info("向苹果APNS服务器请求发送一条推送消息 pushToken:{} ", pushToken);
+                LOGGER.info("Push a notice to APNS server with pushToken:{} ", pushToken);
             }
 
         } catch (Exception e) {

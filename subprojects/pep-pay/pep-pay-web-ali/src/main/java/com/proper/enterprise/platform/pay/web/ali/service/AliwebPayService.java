@@ -47,7 +47,7 @@ public interface AliwebPayService {
      *
      * @param params 参数
      * @return alipayinfo 支付信息
-     * @throws Exception
+     * @throws Exception 创建异常
      */
     AliwebEntity getAliwebNoticeInfo(Map<String, String> params) throws Exception;
 }

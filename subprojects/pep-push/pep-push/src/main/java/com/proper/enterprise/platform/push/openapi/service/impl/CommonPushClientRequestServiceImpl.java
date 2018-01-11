@@ -46,7 +46,7 @@ public class CommonPushClientRequestServiceImpl implements CommonPushClientReque
                 user.setOtherInfo(userOtherInfo);
                 user.setUserid(userid);
                 userRepo.save(user);
-            }else{
+            } else {
                 //更新用户信息
                 boolean needSave = false;
                 if (StringUtil.isNotEmpty(userOtherInfo)) {
@@ -55,7 +55,7 @@ public class CommonPushClientRequestServiceImpl implements CommonPushClientReque
                         needSave = true;
                     }
                 }
-                if(needSave){
+                if (needSave) {
                     userRepo.save(user);
                 }
             }

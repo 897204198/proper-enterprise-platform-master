@@ -48,18 +48,18 @@ public class PushCheckUnsendMsgsServiceImpl implements PushCheckUnsendMsgsServic
         Map<String, Map<String, Object>> config = globalInfo.getPushConfigs();
         Set<String> appkeys = config.keySet();
         Map<String, Object> rtn = new LinkedHashMap<>();
-        final int dbBatchSize=globalInfo.getDbBatchSize();
+        final int dbBatchSize = globalInfo.getDbBatchSize();
         try {
             for (String appkey : appkeys) {
                 Map<String, Object> deviceConf = (Map<String, Object>) Mapl.cell(config, appkey + ".device");
                 // 最大发送次数，超过最大发送次数的消息，将不会再进行重发操作
                 Integer maxSendCount = Integer.valueOf(Mapl.cell(config, appkey + ".max_send_count").toString());
                 for (Entry<String, Object> entry : deviceConf.entrySet()) {
-                    String strDeviceType=entry.getKey();
+                    String strDeviceType = entry.getKey();
                     PushDeviceType deviceType = Enum.valueOf(PushDeviceType.class, strDeviceType.trim());
                     Map<String, Object> mapPushModes = (Map<String, Object>) entry.getValue();
                     for (Entry<String, Object> pushModeEntry : mapPushModes.entrySet()) {
-                        String strPushMode=pushModeEntry.getKey();
+                        String strPushMode = pushModeEntry.getKey();
                         PushMode pushMode = Enum.valueOf(PushMode.class, strPushMode.trim());
                         AbstractPushVendorService pushService = pushVendorFactory.getPushVendorService(appkey,
                                 deviceType, pushMode);

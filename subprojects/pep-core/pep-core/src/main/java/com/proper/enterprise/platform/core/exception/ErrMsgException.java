@@ -10,6 +10,7 @@ public class ErrMsgException extends RuntimeException {
     public ErrMsgException(String message) {
         super(message);
     }
+
     @Override
     public synchronized Throwable fillInStackTrace() {
         return null;

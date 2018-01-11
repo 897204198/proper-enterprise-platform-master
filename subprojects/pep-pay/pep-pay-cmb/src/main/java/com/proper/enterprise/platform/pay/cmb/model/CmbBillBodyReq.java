@@ -14,7 +14,7 @@ import java.io.Serializable;
 @XmlRootElement(name = "Body")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CmbBillBodyReq implements Serializable {
-    private static final long serialVersionUID = -1l;
+    private static final long serialVersionUID = -1L;
     /**
      * 查询开始时间
      */

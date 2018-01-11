@@ -11,11 +11,12 @@ import com.proper.enterprise.platform.push.common.model.PushMsg;
 
 public class BasePushApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(BasePushApp.class);
+
     /**
      * 判断是否为透传消息
      *
-     * @param msg
-     * @return
+     * @param msg 消息
+     * @return 结果
      */
     public boolean isCmdMessage(PushMsg msg) {
         Map<String, Object> customs = msg.getMcustomDatasMap();
@@ -55,10 +56,10 @@ public class BasePushApp {
     }
 
     /**
-     *  是否向第三方推送服务器推送消息，在测试环境下，将不请求真实推送服务器
-     * @return
+     * 是否向第三方推送服务器推送消息，在测试环境下，将不请求真实推送服务器
+     * @return 结果
      */
-    protected boolean isReallySendMsg(){
-       return !StringUtil.equals("test", ConfCenter.get("push_env"));
+    protected boolean isReallySendMsg() {
+        return !StringUtil.equals("test", ConfCenter.get("push_env"));
     }
 }

@@ -31,12 +31,12 @@ public class MockAliwebNoticeServiceImpl implements NoticeService<Map<String, St
      * @param params 支付宝异步通知处理参数
      */
     @Override
-    public void saveNoticeProcess(Map<String, String>  params) {
-        LOGGER.debug("-------------支付宝网页支付异步通知相关业务处理-----------------");
+    public void saveNoticeProcessAsync(Map<String, String> params) {
+        LOGGER.debug("-------------Ali web async notice business-----------------");
         AliwebEntity aliweb = new AliwebEntity();
 
         aliweb.setOutTradeNo("001");
-        aliweb.setBody("异步通知相关业务处理");
+        aliweb.setBody("Ali web async notice business");
         aliweb.setBuyerId("testNoticeBuyerId");
 
         aliweb.setNotifyTime("notifyTime");

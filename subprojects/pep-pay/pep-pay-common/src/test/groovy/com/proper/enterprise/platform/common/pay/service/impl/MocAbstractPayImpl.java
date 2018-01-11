@@ -21,7 +21,7 @@ public class MocAbstractPayImpl extends AbstractPayImpl implements PayService {
      * @return 查询各种支付方式退款结果
      */
     @Override
-    protected  <T> T getRefundQueryRes(String orderNo, String refundNo){
+    protected  <T> T getRefundQueryRes(String orderNo, String refundNo) {
         return (T)"queryRefundSuccess";
     }
 
@@ -36,7 +36,7 @@ public class MocAbstractPayImpl extends AbstractPayImpl implements PayService {
     protected  <T> T saveRefundProcess(T refundBody) throws Exception {
         String ret = "";
         RefundReq refundReq = (RefundReq)refundBody;
-        if(StringUtil.isNotEmpty(refundReq.getOutRequestNo())) {
+        if (StringUtil.isNotEmpty(refundReq.getOutRequestNo())) {
             ret = "refundPaySuccess";
         } else {
             throw new Exception();
@@ -51,7 +51,7 @@ public class MocAbstractPayImpl extends AbstractPayImpl implements PayService {
      * @param <T> 转换后的各种支付方式退款请求对象
      * @return 各种支付方式退款请求对象
      */
-    protected  <T> T getRefundReq(RefundReq refundReq){
+    protected  <T> T getRefundReq(RefundReq refundReq) {
         return (T)refundReq;
     }
 
@@ -62,7 +62,7 @@ public class MocAbstractPayImpl extends AbstractPayImpl implements PayService {
      * @param <T> 返回对象泛型
      * @return 查询结果
      */
-    protected  <T> T getPayQueryRes(String outTradeNo){
+    protected  <T> T getPayQueryRes(String outTradeNo) {
         return (T)"queryPaySuccess";
     }
 
@@ -71,7 +71,7 @@ public class MocAbstractPayImpl extends AbstractPayImpl implements PayService {
      *
      * @param req 请求对象
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 转换异常
      */
     protected  OrderReq reqPrepay(PrepayReq req) throws Exception {
         OrderReqTest orderReq = new OrderReqTest();
@@ -84,13 +84,13 @@ public class MocAbstractPayImpl extends AbstractPayImpl implements PayService {
      *
      * @param req 请求对象
      * @return resObj 处理结果
-     * @throws Exception
+     * @throws Exception 保存异常
      */
     @Override
-    protected  <T extends PayResultRes, R extends OrderReq> T savePrepayImpl(R req) throws Exception{
+    protected  <T extends PayResultRes, R extends OrderReq> T savePrepayImpl(R req) throws Exception {
         PayResultRes res = new PayResultRes();
         OrderReqTest reqTest = (OrderReqTest)req;
-        if(reqTest.getValue().equals("12345678901234567890")) {
+        if (reqTest.getValue().equals("12345678901234567890")) {
             res.setResultCode(PayResType.SUCCESS);
             res.setResultMsg("success");
         } else {
@@ -98,6 +98,7 @@ public class MocAbstractPayImpl extends AbstractPayImpl implements PayService {
         }
         return (T)res;
     }
+
     @Override
     protected <T> T getBillProcess(BillReq billBodyReq) throws Exception {
         return null;

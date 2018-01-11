@@ -40,8 +40,10 @@ public class BeanComparator implements Comparator, Serializable {
 
         String attr;
         Order order;
-        Object v1, v2;
-        BigDecimal d1, d2;
+        Object v1;
+        Object v2;
+        BigDecimal d1;
+        BigDecimal d2;
         int result = 0;
         Comparator<String> cnComparator = new CNStrComparator();
         for (Map.Entry<String, Order> entry : pair.entrySet()) {

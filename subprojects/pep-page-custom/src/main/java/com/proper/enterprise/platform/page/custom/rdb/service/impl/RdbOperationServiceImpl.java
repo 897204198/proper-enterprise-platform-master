@@ -31,7 +31,6 @@ public class RdbOperationServiceImpl implements RdbOperationService {
 
     @Override
     public List<Map<String, Object>> getDataForList(String tableName, String condition, String order) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         StringBuilder sql = new StringBuilder("");
         sql.append("select * from ").append(tableName);
         if (StringUtil.isNotEmpty(condition)) {
@@ -40,6 +39,7 @@ public class RdbOperationServiceImpl implements RdbOperationService {
         if (StringUtil.isNotEmpty(order)) {
             sql.append(" order by ").append(order);
         }
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate.queryForList(sql.toString());
     }
 
@@ -52,7 +52,10 @@ public class RdbOperationServiceImpl implements RdbOperationService {
         if (StringUtil.isNotEmpty(condition)) {
             sql.append(" where ").append(condition);
         }
+        DataTrunk dataTrunk = new DataTrunk();
         long count = jdbcTemplate.queryForObject(sql.toString(), Long.class);
+        dataTrunk.setCount(count);
+
         sql = new StringBuilder("");
         sql.append("select * from ").append(tableName);
         if (StringUtil.isNotEmpty(condition)) {
@@ -62,9 +65,7 @@ public class RdbOperationServiceImpl implements RdbOperationService {
             sql.append(" order by ").append(order);
         }
         sql.append(" limit ?,?");
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql.toString(), (pageNo-1)*pageSize, pageSize);
-        DataTrunk dataTrunk = new DataTrunk();
-        dataTrunk.setCount(count);
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql.toString(), (pageNo - 1) * pageSize, pageSize);
         dataTrunk.setData(list);
         return dataTrunk;
     }
@@ -72,7 +73,6 @@ public class RdbOperationServiceImpl implements RdbOperationService {
     @Override
     public String addData(String tableName, String userId, Map<String, String> dataMap) {
         String id = UUID.randomUUID().toString();
-        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         Map<String, Object> paramMap = new HashMap<String, Object>();
         StringBuilder sqlN = new StringBuilder("");
         StringBuilder sqlV = new StringBuilder("");
@@ -105,14 +105,14 @@ public class RdbOperationServiceImpl implements RdbOperationService {
         paramMap.put("create_time", time);
         paramMap.put("last_modify_user_id", userId);
         paramMap.put("last_modify_time", time);
-        jdbcTemplate.update(sqlN.toString()+sqlV.toString(), paramMap);
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        jdbcTemplate.update(sqlN.toString() + sqlV.toString(), paramMap);
         return id;
     }
 
     @Override
     public void updateDataById(String tableName, String id, String userId, Map<String, String> dataMap) {
-        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        Map<String, Object> paramMap = new HashMap<String, Object>();
+        Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("id", id);
         StringBuilder sql = new StringBuilder("");
         sql.append("update ").append(tableName).append(" set ");
@@ -126,6 +126,7 @@ public class RdbOperationServiceImpl implements RdbOperationService {
         paramMap.put("last_modify_user_id", userId);
         paramMap.put("last_modify_time", DateUtil.getTimestamp(true));
         sql.append(" where id=:id");
+        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         jdbcTemplate.update(sql.toString(), paramMap);
     }
 
@@ -157,7 +158,7 @@ public class RdbOperationServiceImpl implements RdbOperationService {
             conn = dataSource.getConnection();
             DatabaseMetaData metaData = conn.getMetaData();
             rs = metaData.getTables(conn.getCatalog(), null, null, new String[]{"TABLE"});
-            while(rs.next()) {
+            while (rs.next()) {
                 map = new HashMap<String, Object>();
                 map.put("TABLE_NAME", rs.getString("TABLE_NAME"));
                 map.put("REMARKS", rs.getString("REMARKS"));
@@ -176,16 +177,16 @@ public class RdbOperationServiceImpl implements RdbOperationService {
 
     @Override
     public List<Map<String, Object>> getTableInfo(String tableName) throws Exception {
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        Map<String, Object> map = null;
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map;
         Connection conn = null;
         ResultSet rs = null;
         try {
             conn = dataSource.getConnection();
             DatabaseMetaData metaData = conn.getMetaData();
             rs = metaData.getColumns(conn.getCatalog(), null, tableName.toUpperCase(), null);
-            while(rs.next()) {
-                map = new HashMap<String, Object>();
+            while (rs.next()) {
+                map = new HashMap<>();
                 map.put("COLUMN_NAME", rs.getString("COLUMN_NAME"));
                 map.put("TYPE_NAME", rs.getString("TYPE_NAME"));
                 map.put("COLUMN_SIZE", rs.getString("COLUMN_SIZE"));

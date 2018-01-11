@@ -41,11 +41,10 @@ public class PayUtils {
      *
      * @param t 泛型对象
      * @param <T> 泛型
-     * @throws Exception
      */
-    public static <T> void logEntity(T t) throws Exception {
-        if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug(JSONUtil.toJSON(t));
+    public static <T> void logEntity(T t) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(JSONUtil.toJSONIgnoreException(t));
         }
     }
 }

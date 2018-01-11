@@ -26,7 +26,7 @@ public class SampleController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SampleController.class);
 
     @Autowired
-    private IMongoDBService iMongoDBService;
+    private IMongoDBService mongoDBService;
 
     public SampleController() {
         LOGGER.info("------------load SampleController-----------------");
@@ -78,19 +78,19 @@ public class SampleController {
 
     private Map<String, Object> doDelete(String collection, String objectIds, String url) throws Exception {
 
-        iMongoDBService.delete(collection, objectIds);
+        mongoDBService.delete(collection, objectIds);
         return new HashMap<String, Object>();
 
     }
 
     private Map<String, Object> doPut(JsonNode root, String collection, String objectId, String url) throws Exception {
         // TODO delete 返回个空 map 能说通，put 也返回空 map？
-        iMongoDBService.updateById(root, collection, objectId);
+        mongoDBService.updateById(root, collection, objectId);
         return new HashMap<String, Object>();
     }
 
     private Map<String, Object> doCreate(JsonNode root, String collection) throws Exception {
-        Document doc = iMongoDBService.insertOne(root, collection);
+        Document doc = mongoDBService.insertOne(root, collection);
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("objectId", doc.getObjectId("_id").toHexString());
         result.put("createdAt", ISO8601Utils.format(new Date(), true));
@@ -98,7 +98,7 @@ public class SampleController {
     }
 
     private Map<String, Object> doQuery(JsonNode root, String collection, String url) throws Exception {
-        List<Document> docs = iMongoDBService.query(root, collection);
+        List<Document> docs = mongoDBService.query(root, collection);
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("results", docs);
         return result;

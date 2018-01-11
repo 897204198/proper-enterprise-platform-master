@@ -47,7 +47,7 @@ public abstract class AbstractPayImpl implements PayService {
         try {
             resObj = getPrepayRes(req);
             // 校验预支付请求参数
-            if(resObj.getResultCode().getCode() != PayResType.SUCCESS.getCode()) {
+            if (resObj.getResultCode().getCode() != PayResType.SUCCESS.getCode()) {
                 return (T)resObj;
             } else {
                 // 预支付处理
@@ -144,7 +144,7 @@ public abstract class AbstractPayImpl implements PayService {
      *
      * @param req 请求对象
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 转换异常
      */
     protected abstract OrderReq reqPrepay(PrepayReq req) throws Exception;
 
@@ -153,7 +153,7 @@ public abstract class AbstractPayImpl implements PayService {
      *
      * @param req 请求对象
      * @return resObj 处理结果
-     * @throws Exception
+     * @throws Exception 保存异常
      */
     protected abstract <T extends PayResultRes, R extends OrderReq> T savePrepayImpl(R req) throws Exception;
 
@@ -162,13 +162,13 @@ public abstract class AbstractPayImpl implements PayService {
      *
      * @param req 请求对象
      * @return ret 校验结果
-     * @throws Exception
+     * @throws Exception 校验异常
      */
-    protected <T extends PayResultRes> T getPrepayRes(PrepayReq req) throws Exception{
+    protected <T extends PayResultRes> T getPrepayRes(PrepayReq req) throws Exception {
         // 返回值
         PayResultRes resObj = new PayResultRes();
         // 请求对象为空
-        if(req == null) {
+        if (req == null) {
             resObj.setResultCode(PayResType.REQERROR);
             resObj.setResultMsg(PayConstants.APP_PAY_REQ_ERR);
             // 请求对象订单号为空
@@ -176,15 +176,15 @@ public abstract class AbstractPayImpl implements PayService {
             resObj.setResultCode(PayResType.ORDERNUMERROR);
             resObj.setResultMsg(PayConstants.APP_PAY_ORDERNO_ERR);
             // 支付方式不正确
-        } else if(StringUtil.isEmpty(req.getPayWay())) {
+        } else if (StringUtil.isEmpty(req.getPayWay())) {
             resObj.setResultCode(PayResType.PAYWAYERROR);
             resObj.setResultMsg(PayConstants.APP_PAY_PAYWAY_ERR);
             // 支付金额为空
-        } else if(StringUtil.isEmpty(req.getTotalFee())) {
+        } else if (StringUtil.isEmpty(req.getTotalFee())) {
             resObj.setResultCode(PayResType.MONEYERROR);
             resObj.setResultMsg(PayConstants.APP_PAY_MONEY_ERR);
             // 支付用途为空
-        } else if(StringUtil.isEmpty(req.getPayIntent())) {
+        } else if (StringUtil.isEmpty(req.getPayIntent())) {
             resObj.setResultCode(PayResType.PAYINTENTERROR);
             resObj.setResultMsg(PayConstants.APP_PAY_PAYINTENT_ERR);
             // 校验金额
@@ -194,7 +194,7 @@ public abstract class AbstractPayImpl implements PayService {
             Pattern pattern = Pattern.compile("^([1-9]\\d*)?$");
             Matcher matcher = pattern.matcher(String.valueOf(bigDecimal));
             // 校验金额小于0 或 不满足小数点后最多两位并且大于零
-            if(bigDecimal.compareTo(new BigDecimal("0")) <= 0 || !matcher.matches()) {
+            if (bigDecimal.compareTo(new BigDecimal("0")) <= 0 || !matcher.matches()) {
                 resObj.setResultCode(PayResType.MONEYERROR);
                 resObj.setResultMsg(PayConstants.APP_PAY_MONEY_ERR);
             } else {
@@ -207,9 +207,9 @@ public abstract class AbstractPayImpl implements PayService {
 
     /**
      * 获取对账单
-     * @param billReq
-     * @param <T>
-     * @return
+     * @param billReq 请求参数
+     * @param <T> 对账单类型
+     * @return 对账单
      */
     @Override
     public <T> T getBill(BillReq billReq) {

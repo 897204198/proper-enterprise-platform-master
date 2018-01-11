@@ -91,7 +91,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
             cmbPrepay.setAmount(PayUtils.convertMoneyFen2Yuan(req.getTotalFee()));
             cmbPrepay.setPayUserId(req.getUserId());
             // 设置超时时间
-            if(StringUtil.isNumeric(req.getOverMinuteTime())) {
+            if (StringUtil.isNumeric(req.getOverMinuteTime())) {
                 cmbPrepay.setExpireTimeSpan(req.getOverMinuteTime());
             }
             return cmbPrepay;
@@ -106,7 +106,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *
      * @param req 请求对象
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 保存异常
      */
     @Override
     protected <T extends PayResultRes, R extends OrderReq> T savePrepayImpl(R req)  throws Exception {
@@ -121,7 +121,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
                 resObj.setResultCode(PayResType.SYSERROR);
                 resObj.setResultMsg(CmbConstants.CMB_PAY_ERROR_USERID);
                 // 订单号不足18位
-            } else if(!checkBillNo(uoReq.getBillNo())) {
+            } else if (!checkBillNo(uoReq.getBillNo())) {
                 resObj.setResultCode(PayResType.SYSERROR);
                 resObj.setResultMsg(CmbConstants.CMB_PAY_ERROR_BILLNO_ERROR);
             } else {
@@ -187,7 +187,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
                 // 输出请求地址全上下文
                 LOGGER.debug("requestURL:{}", resObj.getPayInfo());
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.debug("CmbPayServiceImpl.savePrepayImpl[Exception]:{}", e);
             resObj.setResultCode(PayResType.SYSERROR);
             resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
@@ -251,7 +251,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
             cmbRefundReq.setAmount(PayUtils.convertMoneyFen2Yuan(refundReq.getRefundAmount()));
             cmbRefundReq.setRefundNo(refundReq.getOutRequestNo());
             return (T)cmbRefundReq;
-        }catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
@@ -298,7 +298,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
             res = getCmbtRes(refundReq, CmbConstants.CMB_PAY_DIRECT_REQUEST_X, "unmarshallCmbRefundNoDupRes");
 
             // 保存一网通退款信息
-            if(StringUtil.isNull(res.getHead().getCode())) {
+            if (StringUtil.isNull(res.getHead().getCode())) {
                 CmbRefundEntity refund = new CmbRefundEntity();
                 // 退款状态: 0 : 成功
                 refund.setRefundCode("0");
@@ -382,9 +382,9 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *
      * @param object 待签名对象
      * @return hash签名
-     * @throws Exception
+     * @throws Exception 获取异常
      */
-    private String getCmbHash(Object object) throws Exception{
+    private String getCmbHash(Object object) throws Exception {
         StringWriter writer = new StringWriter();
         marshaller.marshal(object, new StreamResult(writer));
         String preXML = CmbUtils.getOriginSign(writer.toString());
@@ -400,9 +400,9 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      * @param beanId 实例Bean
      * @param <T> 泛型
      * @return 请求结果
-     * @throws Exception
+     * @throws Exception 获取异常
      */
-    private <T> T getCmbtRes(Object obj, String url, String beanId) throws Exception{
+    private <T> T getCmbtRes(Object obj, String url, String beanId) throws Exception {
         StringWriter writer = new StringWriter();
         marshaller.marshal(obj, new StreamResult(writer));
         String requestXML = writer.toString();
@@ -423,7 +423,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
             return billNo.length() >= 18 && StringUtil.isNumeric(cmbPayTempInfo.getDate())
                 && StringUtil.isNumeric(cmbPayTempInfo.getBillNo()) && cmbPayTempInfo.getBillNo().length() == 10;
         } catch (Exception e) {
-            LOGGER.debug("解析订单号获取支付日期以及订单号异常{}", e);
+            LOGGER.debug("Analyze orderNo to get pay date error!{}", e);
             return false;
         }
     }
@@ -434,7 +434,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      * @param userId
      *        用户ID
      * @return 用户协议信息
-     * @throws Exception
+     * @throws Exception 获取异常
      */
     @Override
     public CmbProtocolDocument getUserProtocolInfo(String userId) throws Exception {
@@ -446,7 +446,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *
      * @param userProtocolInfo
      *        用户协议信息
-     * @throws Exception
+     * @throws Exception 保存异常
      */
     @Override
     public void saveUserProtocolInfo(CmbProtocolDocument userProtocolInfo) throws Exception {
@@ -458,7 +458,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *
      * @param payInfo
      *        支付结果异步通知
-     * @throws Exception
+     * @throws Exception 保存异常
      */
     @Override
     public void saveCmbPayNoticeInfo(CmbPayEntity payInfo) throws Exception {
@@ -470,7 +470,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *
      * @param msg
      *        支付结果
-     * @throws Exception
+     * @throws Exception 获取异常
      */
     @Override
     public CmbPayEntity getPayNoticeInfoByMsg(String msg) throws Exception {
@@ -485,19 +485,19 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      * @return 用户协议号
      */
     private String savePNo(String userId, CmbProtocolDocument protocolInfo) {
-        String pNo = CmbUtils.getTimeNo();
-        if(protocolInfo != null) {
-            protocolInfo.setProtocolNo(pNo);
+        String protocolNo = CmbUtils.getTimeNo();
+        if (protocolInfo != null) {
+            protocolInfo.setProtocolNo(protocolNo);
             protocolInfo.setSign(CmbConstants.CMB_PAY_PROTOCOL_UNSIGNED);
             cmbRepo.save(protocolInfo);
         } else {
             CmbProtocolDocument newProtocolInfo = new CmbProtocolDocument();
             newProtocolInfo.setUserId(userId);
-            newProtocolInfo.setProtocolNo(pNo);
+            newProtocolInfo.setProtocolNo(protocolNo);
             newProtocolInfo.setSign(CmbConstants.CMB_PAY_PROTOCOL_UNSIGNED);
             cmbRepo.save(newProtocolInfo);
         }
-        return pNo;
+        return protocolNo;
     }
 
     /**
@@ -505,7 +505,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *
      * @param orderNo 订单号
      * @return 一网通对象
-     * @throws Exception
+     * @throws Exception 查询异常
      */
     @Override
     public CmbPayEntity getQueryInfo(String orderNo) throws Exception {
@@ -525,25 +525,25 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      * @param userId 用户ID
      * @param businessReq 协议对象
      * @return true 需要签约并支付 | false 不需要签约,可以直接支付
-     * @throws Exception
+     * @throws Exception 保存异常
      */
     private boolean saveProtocolNeedSign(String userId, CmbBusinessProReq businessReq) throws Exception {
         boolean retValue = false;
-        String pNo = "";
+        String protocolNo = "";
         CmbProtocolDocument protocolInfo = cmbRepo.findByUserId(userId);
-        if(protocolInfo != null) {
-            if(StringUtil.isNotNull(protocolInfo.getProtocolNo())
+        if (protocolInfo != null) {
+            if (StringUtil.isNotNull(protocolInfo.getProtocolNo())
                 && protocolInfo.getSign().equals(CmbConstants.CMB_PAY_PROTOCOL_SIGNED)) {
-                pNo = protocolInfo.getProtocolNo();
+                protocolNo = protocolInfo.getProtocolNo();
             } else {
-                pNo = savePNo(userId, protocolInfo);
+                protocolNo = savePNo(userId, protocolInfo);
                 retValue = true;
             }
         } else {
-            pNo = savePNo(userId, null);
+            protocolNo = savePNo(userId, null);
             retValue = true;
         }
-        businessReq.setPno(pNo);
+        businessReq.setPno(protocolNo);
         return retValue;
     }
 
@@ -552,7 +552,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *
      * @param reqData 请求数据
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 保存异常
      */
     @Override
     public boolean saveNoticeProtocol(String reqData) throws Exception {
@@ -562,9 +562,9 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
         LOGGER.debug("cmb_reqData:{}", reqData);
         Map<String, String> reqObject = JSONUtil.parse(reqData, Map.class);
         // 初始化公钥,验证签名
-        B2BResult bRet = FirmbankCert.initPublicKey(CmbConstants.CMB_PAY_PUBLICKEY);
-        if (!bRet.isError()) {
-            LOGGER.debug("验签成功!");
+        B2BResult b2bRet = FirmbankCert.initPublicKey(CmbConstants.CMB_PAY_PUBLICKEY);
+        if (!b2bRet.isError()) {
+            LOGGER.debug("Verify sing successful!");
             // 业务数据包：报文数据必须经过base64编码。
             String busdat = reqObject.get("BUSDAT");
             byte[] bt = Base64.decode(busdat);
@@ -629,7 +629,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *        通知数据
      * @param businessInfo
      *        业务数据
-     * @throws Exception
+     * @throws Exception 保存异常
      */
     protected void saveBusinessInfo(String userId, Map<String, String> reqObject, CmbBusinessRes businessInfo) throws Exception {
         CmbProtocolEntity cmbBusinessInfo = new CmbProtocolEntity();
@@ -659,7 +659,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *
      * @param request 请求
      * @return 支付结果异步通知对象
-     * @throws Exception
+     * @throws Exception 获取异常
      */
     @Override
     public CmbPayEntity getCmbPayNoticeInfo(HttpServletRequest request) throws Exception {
@@ -702,13 +702,13 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *
      * @param orderNo 订单号
      * @return 查询结果
-     * @throws Exception
+     * @throws Exception 查询异常
      */
     @Override
     public CmbPayResultRes querySingleOrder(String orderNo) throws Exception {
         CmbPayResultRes resObj = new CmbPayResultRes();
         CmbQuerySingleOrderRes res = getPayQueryRes(orderNo);
-        if(StringUtil.isNull(res.getHead().getCode())) {
+        if (StringUtil.isNull(res.getHead().getCode())) {
             String orderStatus = res.getBody().getStatus();
             // 订单状态
             // 0－已结帐，1－已撤销，2－部分结帐，4－未结帐，7-冻结交易-已经冻结金额已经全部结账 8-冻结交易，冻结金额只结帐了一部分
@@ -729,7 +729,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      * @param uoReq 一网通订单请求对象
      * @param strXml xml参数
      * @return 创建订单后的一网通对象
-     * @throws Exception
+     * @throws Exception 创建异常
      */
     private CmbOrderReq createOrderInfo(CmbOrderReq uoReq, String strXml) throws Exception {
 
@@ -742,9 +742,9 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
         // 异步通知地址
         uoReq.setMerchantUrl(URLEncoder.encode(CmbConstants.CMB_PAY_NOTICE_URL, "UTF-8"));
         // 商户密钥 测试环境为空， 生产环境见《一网通支付商户服务指南.doc》
-        String sKey = CmbConstants.CMB_PAY_CMBKEY;
+        String key = CmbConstants.CMB_PAY_CMBKEY;
         // 生成请求校验码
-        String strMerchantCode = cmb.MerchantCode.genMerchantCode(sKey, uoReq.getDate(), uoReq.getBranchID(),
+        String strMerchantCode = cmb.MerchantCode.genMerchantCode(key, uoReq.getDate(), uoReq.getBranchID(),
             uoReq.getCono(), uoReq.getBillNo(), uoReq.getAmount(), uoReq.getMerchantPara(),
             CmbConstants.CMB_PAY_NOTICE_URL, "", "", "", "", strXml);
         uoReq.setMerchantCode(strMerchantCode);
@@ -759,7 +759,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      * @param clz 对象类
      * @param <T> 对象泛型
      * @return 返回对象
-     * @throws Exception
+     * @throws Exception 获取订单异常
      */
     private <T> String getOrderInfo(T t, Class<T> clz) throws Exception {
         Field[] fields = clz.getDeclaredFields();
@@ -786,12 +786,12 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *
      * @param orderNo 订单号
      * @return 支付结果异步通知信息
-     * @throws Exception
+     * @throws Exception 查询异常
      */
     @Override
     public CmbPayEntity findByOutTradeNo(String orderNo) throws Exception {
         CmbPayEntity retCmbPayInfo = null;
-        if(StringUtil.isNotEmpty(orderNo)) {
+        if (StringUtil.isNotEmpty(orderNo)) {
             CmbPayEntity cmbPayInfo = getQueryInfo(orderNo);
             retCmbPayInfo = cmbPayNoticeRepo.findByBillNoAndDate(cmbPayInfo.getBillNo(), cmbPayInfo.getDate());
         }
@@ -803,7 +803,7 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
      *
      * @param tradeNo 位银行流水号
      * @return 支付结果异步通知信息
-     * @throws Exception
+     * @throws Exception 获取异常
      */
     @Override
     public CmbPayEntity getByTradeNo(String tradeNo) throws Exception {
@@ -823,14 +823,14 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
 
     /**
      * 一网通对账单获取（已结和 退款）
-     * @param billReq
-     * @param <T>
-     * @return
-     * @throws Exception
+     *
+     * @param billReq 请求参数
+     * @param <T> 对账单类型
+     * @return 对账单
+     * @throws Exception 获取订单异常
      */
     @Override
     protected <T> T getBillProcess(BillReq billReq) throws Exception {
-        CmbBillRes cmbBillRes = null;
         CmbBillReq cmbBillReq = new CmbBillReq();
         CmbBillHeadReq cmbBillHeadReq = new CmbBillHeadReq();
         CmbBillBodyReq cmbBillBodyReq = new CmbBillBodyReq();
@@ -841,14 +841,15 @@ public class CmbPayServiceImpl extends AbstractPayImpl implements PayService, Cm
         cmbBillBodyReq.setEndDate(dft.format(billReq.getDate()));
         cmbBillReq.setBody(cmbBillBodyReq);
 
-        do{
-            if(cmbBillRes != null){
+        CmbBillRes cmbBillRes = null;
+        do {
+            if (cmbBillRes != null) {
                 cmbBillReq.getBody().setPos(cmbBillRes.getBody().getQryLopBlk());
             }
             cmbBillReq.getHead().setTimeStamp(CmbUtils.getCmbReqTime());
             cmbBillReq.setHash(this.getCmbHash(cmbBillReq));
             cmbBillRes = getCmbtRes(cmbBillReq, CmbConstants.CMB_PAY_DIRECT_REQUEST_X, "unmarshallCmbBillRes");
-        }while ("Y".equals(cmbBillRes.getBody().getQryLopFlg()));
+        } while ("Y".equals(cmbBillRes.getBody().getQryLopFlg()));
 
         return (T) cmbBillRes;
     }

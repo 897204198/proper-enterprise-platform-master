@@ -56,8 +56,8 @@ public class BPMService {
      */
     public Object getVariableAfterProcessDone(String procDefKey, Map<String, Object> inputs, String output) {
         int version = repositoryService.createProcessDefinitionQuery()
-           .processDefinitionKey(procDefKey).latestVersion().singleResult()
-           .getVersion();
+            .processDefinitionKey(procDefKey).latestVersion().singleResult()
+            .getVersion();
         return self.getVariableAfterProcessDone(procDefKey, version, inputs, output);
     }
 

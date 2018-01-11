@@ -31,7 +31,8 @@ public class PushJmsTemplateServiceImpl implements PushJmsTemplateService {
             LOGGER.info(destinationName, message);
             try {
                 //采用反射的方法，调用targetService上对应的方法
-                String methodName = "save" + StringUtil.capitalize(StringUtil.substring(destinationName, PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST.length() + 1));
+                String methodName = "save" + StringUtil.capitalize(StringUtil
+                    .substring(destinationName, PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST.length() + 1));
                 Class clazz = targetService.getClass();
                 Method m1 = clazz.getDeclaredMethod(methodName, Map.class);
                 m1.invoke(targetService, message);

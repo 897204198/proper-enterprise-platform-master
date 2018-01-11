@@ -76,17 +76,17 @@ public class PushMsgEntity extends BaseEntity implements PushMsg {
         this.device = device;
     }
 
-    public PushDevice getDevice() {
-        return device;
-    }
-
     public void setDevice(PushDevice device) {
         if (device instanceof PushDeviceEntity) {
             this.device = (PushDeviceEntity) device;
         } else {
             LOGGER.error("setDevice() SHOULD BE  DeviceEntity type, but get {} here.",
-                    device.getClass().getCanonicalName());
+                device.getClass().getCanonicalName());
         }
+    }
+
+    public PushDevice getDevice() {
+        return device;
     }
 
     public String getAppkey() {

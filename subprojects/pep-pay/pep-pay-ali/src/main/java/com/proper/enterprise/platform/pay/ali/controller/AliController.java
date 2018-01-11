@@ -8,7 +8,6 @@ import com.proper.enterprise.platform.api.pay.model.PrepayReq;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
 import com.proper.enterprise.platform.api.pay.service.PayService;
-import com.proper.enterprise.platform.common.pay.task.PayNotice2BusinessTask;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.ConfCenter;
@@ -48,9 +47,6 @@ public class AliController extends BaseController {
     @Autowired
     PayFactory payFactory;
 
-    @Autowired
-    PayNotice2BusinessTask payNoticeTask;
-
     /**
      * 支付宝预支付处理.
      *
@@ -60,7 +56,7 @@ public class AliController extends BaseController {
      */
     @PostMapping(value = "/prepay", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AliPayResultRes> prepayAli(@RequestBody AliOrderReq aliReq) throws Exception {
-        LOGGER.debug("------------- 支付宝支付 预支付业务--------开始------------");
+        LOGGER.debug("------------- Ali prepay business--------begin------------");
         AliPayResultRes resObj = new AliPayResultRes();
         try {
             // 预支付
@@ -95,7 +91,7 @@ public class AliController extends BaseController {
             resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
         }
         // 返回结果
-        LOGGER.debug("------------- 支付宝支付 预支付业务--------结束------------");
+        LOGGER.debug("------------- Ali prepay business--------end------------");
         return responseOfPost(resObj);
     }
 
@@ -104,12 +100,12 @@ public class AliController extends BaseController {
      *
      * @param request 请求
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 抛出验证通知参数异常
      */
     @AuthcIgnore
     @PostMapping(value = "/noticeAliPayInfo")
     public ResponseEntity<String> dealAliNoticePay(HttpServletRequest request) throws Exception {
-        LOGGER.debug("-----------支付宝异步通知---------------------");
+        LOGGER.debug("-----------Ali async notice--------begin-------------");
 
         // 返回给支付宝服务器的异步通知结果
         boolean ret = false;
@@ -130,7 +126,7 @@ public class AliController extends BaseController {
         // 退款状态
         String refundStatus = request.getParameter("refund_status");
         // 获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
-        if (aliService.verify(params) && StringUtil.isNotNull(outTradeNo)) {// 验证成功
+        if (aliService.verify(params) && StringUtil.isNotNull(outTradeNo)) { // 验证成功
             // 取得交易状态
             if (StringUtil.isNull(refundStatus)
                 && tradeStatus.equals(AliConstants.ALI_PAY_NOTICE_TARDESTATUS_TRADE_SUCCESS)) {
@@ -150,22 +146,23 @@ public class AliController extends BaseController {
                     }
                     saveNoticeFlag = true;
                 } catch (Exception e) {
-                    LOGGER.debug("支付宝异步通知业务逻辑处理异常", e);
+                    LOGGER.debug("Ali async notice error!", e);
                     saveNoticeFlag = false;
                 }
 
                 // 启用线程处理业务相关
-                if(saveNoticeFlag) {
-                    LOGGER.debug("支付宝异步通知业务相关Notice,异步通知结果已经保存并新起线程进行业务处理");
+                if (saveNoticeFlag) {
+                    LOGGER.debug("Ali async notice result has bean saved and start a new thread to deal with business!");
                     NoticeService noticeService = payFactory.newNoticeService("ali");
-                    payNoticeTask.run(params, noticeService);
+                    noticeService.saveNoticeProcessAsync(params);
                     ret = true;
                 }
             } else {
-                LOGGER.debug("支付宝异步通知业务无关Notice,直接返回SUCCESS");
+                LOGGER.debug("Useless Ali async notice info!Return SUCCESS directly!");
                 ret = true;
             }
         }
+        LOGGER.debug("-----------Ali async notice--------end-------------");
         return responseOfPost(ret ? "SUCCESS" : "FAIL");
     }
 }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-@Table(name="PEP_AUTH_RESOURCES", uniqueConstraints = @UniqueConstraint(columnNames ={"url", "method"}))
+@Table(name = "PEP_AUTH_RESOURCES", uniqueConstraints = @UniqueConstraint(columnNames = {"url", "method"}))
 @CacheEntity
 public class ResourceEntity extends BaseEntity implements Resource {
 

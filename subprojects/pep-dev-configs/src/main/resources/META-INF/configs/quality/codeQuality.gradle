@@ -10,7 +10,7 @@ ext.checkstyleConfigDir = "$configDir/checkstyle"
 checkstyle {
     configFile = new File(checkstyleConfigDir, "checkstyle.xml")
     configProperties.checkstyleConfigDir = checkstyleConfigDir
-    toolVersion = '6.19'
+    toolVersion = '8.7'
 }
 
 codenarc {

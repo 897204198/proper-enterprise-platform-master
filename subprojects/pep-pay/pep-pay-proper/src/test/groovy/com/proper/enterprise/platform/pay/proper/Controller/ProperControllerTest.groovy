@@ -60,7 +60,7 @@ class ProperControllerTest extends AbstractTest {
         assert noticeInfo.getSubject().equals("testProperPay")
         assert noticeInfo.getTotalFee().equals("9.11")
 
-        assert businessInfo.getSubject().equals("异步通知相关业务处理")
+        assert businessInfo.getSubject().equals("Async notice business")
         assert businessInfo.getTotalFee().equals("0.01")
     }
 }

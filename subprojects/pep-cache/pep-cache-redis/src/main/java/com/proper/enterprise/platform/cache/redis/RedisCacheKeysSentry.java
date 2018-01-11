@@ -20,10 +20,10 @@ public class RedisCacheKeysSentry implements CacheKeysSentry {
     @Override
     @SuppressWarnings("unchecked")
     public Collection<Object> keySet(Cache cache) {
-        RMap rMap = (RMap) cache.getNativeCache();
+        RMap rmap = (RMap) cache.getNativeCache();
         Set result = Collections.EMPTY_SET;
         try {
-            result = rMap.readAllKeySet();
+            result = rmap.readAllKeySet();
         } catch (RedisException ex) {
             LOGGER.debug("Could not serialize key from {}", cache.getName());
         }

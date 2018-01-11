@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.pay.ali.service;
 
-
 import com.proper.enterprise.platform.pay.ali.entity.AliEntity;
 import com.proper.enterprise.platform.pay.ali.entity.AliRefundEntity;
 
@@ -64,7 +63,7 @@ public interface AliPayService {
      *
      * @param params 参数
      * @return alipayinfo 支付信息
-     * @throws Exception
+     * @throws Exception 参数获取异常
      */
     AliEntity getAliNoticeInfo(Map<String, String> params) throws Exception;
 

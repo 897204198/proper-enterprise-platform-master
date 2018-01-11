@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.pay.web.ali.controller;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
-import com.proper.enterprise.platform.common.pay.task.PayNotice2BusinessTask;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -41,20 +40,17 @@ public class AliwebController extends BaseController {
     @Autowired
     PayFactory payFactory;
 
-    @Autowired
-    PayNotice2BusinessTask payNoticeTask;
-
     /**
      * 支付宝网页支付结果异步通知
      *
      * @param request 请求
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 处理异常
      */
     @AuthcIgnore
     @PostMapping(value = "/noticeAliwebPayInfo")
     public ResponseEntity<String> dealAliwebNoticePay(HttpServletRequest request) throws Exception {
-        LOGGER.debug("-----------支付宝网页支付异步通知---------------------");
+        LOGGER.debug("-----------Ali web async notice--------begin-------------");
 
         // 返回给支付宝服务器的异步通知结果
         boolean ret = false;
@@ -82,12 +78,12 @@ public class AliwebController extends BaseController {
                     // 保存异步通知结果
                     AliwebEntity aliwebInfo = aliwebService.getAliwebNoticeInfo(params);
                     if (aliwebInfo != null) {
-                        if(StringUtil.isEmpty(requestParams.get("sign")[0])) {
+                        if (StringUtil.isEmpty(requestParams.get("sign")[0])) {
                             aliwebInfo.setSign("unknow_sign");
                         } else {
                             aliwebInfo.setSign(requestParams.get("sign")[0]);
                         }
-                        if(StringUtil.isEmpty(requestParams.get("sign_type")[0])) {
+                        if (StringUtil.isEmpty(requestParams.get("sign_type")[0])) {
                             aliwebInfo.setSign("unknow_sign_type");
                         } else {
                             aliwebInfo.setSignType(requestParams.get("sign_type")[0]);
@@ -102,22 +98,23 @@ public class AliwebController extends BaseController {
                     }
                     saveNoticeFlag = true;
                 } catch (Exception e) {
-                    LOGGER.debug("支付宝网页支付异步通知业务逻辑处理异常", e);
+                    LOGGER.debug("Ali async notice error!", e);
                     saveNoticeFlag = false;
                 }
 
                 // 启用线程处理业务相关
-                if(saveNoticeFlag) {
-                    LOGGER.debug("支付宝网页支付异步通知业务相关Notice,异步通知结果已经保存并新起线程进行业务处理");
+                if (saveNoticeFlag) {
+                    LOGGER.debug("Ali web async notice result has bean saved and start a new thread to deal with business!");
                     NoticeService noticeService = payFactory.newNoticeService("aliweb");
-                    payNoticeTask.run(params, noticeService);
+                    noticeService.saveNoticeProcessAsync(params);
                     ret = true;
                 }
             } else {
-                LOGGER.debug("支付宝网页支付异步通知业务无关Notice,直接返回SUCCESS");
+                LOGGER.debug("Useless Ali web async notice info!Return SUCCESS directly!");
                 ret = true;
             }
         }
+        LOGGER.debug("-----------Ali web async notice--------end-------------");
         return responseOfPost(ret ? "SUCCESS" : "FAIL");
     }
 

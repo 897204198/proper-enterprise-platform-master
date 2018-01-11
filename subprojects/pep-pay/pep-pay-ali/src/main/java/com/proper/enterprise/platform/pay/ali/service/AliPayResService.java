@@ -13,7 +13,7 @@ public interface AliPayResService {
      * @param strRes 返回结果
      * @param responseKey 返回结果键值
      * @param res 对象
-     * @throws Exception
+     * @throws Exception 转换异常
      */
     Object convertMap2AliPayRes(String strRes, String responseKey, Object res) throws Exception;
 

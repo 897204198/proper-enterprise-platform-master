@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class AliPayTradeQueryRes implements Serializable {
 
-    private static final long serialVersionUID = -1l;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 网关返回码

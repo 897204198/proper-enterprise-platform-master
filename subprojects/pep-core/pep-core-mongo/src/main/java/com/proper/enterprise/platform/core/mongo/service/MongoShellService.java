@@ -21,7 +21,7 @@ public interface MongoShellService {
      * @param collection    集合名称
      * @param id            object id
      * @return 删除的记录
-     * @throws Exception
+     * @throws Exception 删除发生异常
      */
     Document deleteById(String collection, String id) throws Exception;
 
@@ -31,7 +31,7 @@ public interface MongoShellService {
      * @param collection    集合名称
      * @param ids           id 数组
      * @return 所有被删除的文档记录
-     * @throws Exception
+     * @throws Exception 删除发生异常
      */
     List<Document> deleteByIds(String collection, String[] ids) throws Exception;
 
@@ -42,7 +42,7 @@ public interface MongoShellService {
      * @param id            object id
      * @param update        update 方法参数，语法可参考 mongo shell 语法
      * @return 被更新的文档
-     * @throws Exception
+     * @throws Exception 更新发生异常
      */
     Document updateById(String collection, String id, String update) throws Exception;
 
@@ -52,7 +52,7 @@ public interface MongoShellService {
      * @param collection    集合名称
      * @param id            object id
      * @return 查询结果文档
-     * @throws Exception
+     * @throws Exception 查询发生异常
      */
     Document queryById(String collection, String id) throws Exception;
 
@@ -62,7 +62,7 @@ public interface MongoShellService {
      * @param collection    集合名称
      * @param query         查询条件，语法可参考 mongo shell 语法
      * @return 查询结果文档集合
-     * @throws Exception
+     * @throws Exception 查询发生异常
      */
     List<Document> query(String collection, String query) throws Exception;
 
@@ -73,7 +73,7 @@ public interface MongoShellService {
      * @param query         查询条件，语法可参考 mongo shell 语法
      * @param limit         最大记录数，0 表示无限制
      * @return 查询结果文档集合
-     * @throws Exception
+     * @throws Exception 查询发生异常
      */
     List<Document> query(String collection, String query, int limit) throws Exception;
 
@@ -84,7 +84,7 @@ public interface MongoShellService {
      * @param query         查询条件，语法可参考 mongo shell 语法
      * @param sort          排序条件，语法可参考 mongo shell 语法
      * @return 查询结果文档集合
-     * @throws Exception
+     * @throws Exception 查询发生异常
      */
     List<Document> query(String collection, String query, String sort) throws Exception;
 
@@ -96,7 +96,7 @@ public interface MongoShellService {
      * @param limit         最大记录数，0 表示无限制
      * @param sort          排序条件，语法可参考 mongo shell 语法
      * @return 查询结果文档集合
-     * @throws Exception
+     * @throws Exception 查询发生异常
      */
     List<Document> query(String collection, String query, int limit, String sort) throws Exception;
 
@@ -106,7 +106,7 @@ public interface MongoShellService {
      * @param  collection 集合名称
      * @param  query      查询条件，语法可参考 mongo shell 语法
      * @return 结果集总数
-     * @throws Exception
+     * @throws Exception 计数发生异常
      */
     long count(String collection, String query) throws Exception;
 

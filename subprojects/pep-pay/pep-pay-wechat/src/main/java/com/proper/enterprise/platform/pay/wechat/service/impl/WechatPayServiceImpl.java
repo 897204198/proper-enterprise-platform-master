@@ -68,7 +68,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
             wechatPrepay.setBody(req.getPayIntent());
             wechatPrepay.setAttach(req.getPayIntent());
             wechatPrepay.setTotalFee(Integer.parseInt(req.getTotalFee()));
-            if(StringUtil.isNotNull(req.getPayTime()) && StringUtil.isNotNull(req.getOverMinuteTime())) {
+            if (StringUtil.isNotNull(req.getPayTime()) && StringUtil.isNotNull(req.getOverMinuteTime())) {
                 wechatPrepay.setTimeStart(req.getPayTime());
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(new Date());
@@ -87,7 +87,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
      *
      * @param req 请求对象
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 保存异常
      */
     @Override
     protected <T extends PayResultRes, R extends OrderReq> T savePrepayImpl(R req)  throws Exception {
@@ -145,7 +145,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
                 // 返回给请求客户端处理结果消息
                 resObj.setResultMsg(res.getErrCode().concat("|").concat(res.getErrCodeDes()));
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.debug("WechatPayServiceImpl.savePrepayImpl[Exception]:{}", e);
             resObj.setResultCode(PayResType.SYSERROR);
             resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
@@ -172,7 +172,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
             req.setSign(sign);
             queryRes = getWechatRes(req, WechatConstants.WECHAT_PAY_URL_ORDER_QUERY, "unmarshallWechatPayQueryRes", false);
         } catch (Exception e) {
-            LOGGER.debug("微信订单查询接口返回接口异常", e);
+            LOGGER.debug("Wechat query error!", e);
             return null;
         }
         return (T)queryRes;
@@ -232,7 +232,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
                 }
             }
         } catch (Exception e) {
-            LOGGER.debug("微信退款接口异常", e);
+            LOGGER.debug("Wechat refund Error!", e);
             return null;
         }
         return (T)res;
@@ -261,7 +261,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
             req.setSign(sign);
             queryRes = getWechatRes(req, WechatConstants.WECHAT_PAY_URL_REFUND_QUERY, "unmarshallWechatRefundQueryRes", false);
         } catch (Exception e) {
-            LOGGER.debug("微信退款查询接口返回接口异常", e);
+            LOGGER.debug("Wechat refund query error!", e);
             return null;
         }
         return (T)queryRes;
@@ -364,14 +364,14 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
      * @param isHttpsRequest true : http请求 ; false : https请求
      * @param <T> 泛型
      * @return 请求结果
-     * @throws Exception
+     * @throws Exception 获取异常
      */
-    private <T> T getWechatRes(Object obj, String url, String beanId, boolean isHttpsRequest) throws Exception{
+    private <T> T getWechatRes(Object obj, String url, String beanId, boolean isHttpsRequest) throws Exception {
         StringWriter writer = new StringWriter();
         marshaller.marshal(obj, new StreamResult(writer));
         String requestXML = writer.toString();
         LOGGER.debug("{}_requestXML:{}", beanId, requestXML);
-        if(isHttpsRequest) {
+        if (isHttpsRequest) {
             return (T)wechatPayResService.getWechatApiRes(url, beanId, requestXML, true);
         } else {
             return (T)wechatPayResService.getWechatApiRes(url, beanId, requestXML, false);
@@ -381,7 +381,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
     @Override
     protected <T> T getBillProcess(BillReq billReq) throws Exception {
         DateFormat dft = new SimpleDateFormat("yyyyMMdd");
-        try{
+        try {
             WechatBillReq wechatBillReq = new WechatBillReq();
             wechatBillReq.setBillDate(dft.format(billReq.getDate()));
             // 随机字符串
@@ -392,8 +392,8 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
             wechatBillReq.setSign(sign);
             // 使用httsClient通过证书请求微信退款
             return (T) getWechatRes(wechatBillReq, WechatConstants.WECHAT_PAY_URL_BILL, "unmarshallWechatBillRes", true);
-        }catch (Exception e){
-            LOGGER.error("微信对账单导出失败：{},{}", dft.format(billReq.getDate()), e);
+        } catch (Exception e) {
+            LOGGER.error("Export wechat bill failed! {},{}", dft.format(billReq.getDate()), e);
             throw e;
         }
     }

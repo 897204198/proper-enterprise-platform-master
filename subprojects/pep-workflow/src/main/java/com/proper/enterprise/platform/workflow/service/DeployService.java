@@ -113,17 +113,19 @@ public class DeployService {
                 if (bpmnModel.getLocationMap().isEmpty()) {
                     throw new ErrMsgException("Make sure that the file contains BPMN DI information");
                 }
-                ObjectNode modelNode = converter.convertToJson(bpmnModel);
-                Model modelData = repositoryService.newModel();
 
                 ObjectNode modelObjectNode = objectMapper.createObjectNode();
                 modelObjectNode.put(MODEL_NAME, resource.getFilename());
                 modelObjectNode.put(MODEL_REVISION, 1);
                 modelObjectNode.put(MODEL_DESCRIPTION, resource.getDescription());
+
+                Model modelData = repositoryService.newModel();
                 modelData.setMetaInfo(modelObjectNode.toString());
                 modelData.setName(resource.getFilename());
                 modelData.setDeploymentId(deploymentId);
                 repositoryService.saveModel(modelData);
+
+                ObjectNode modelNode = converter.convertToJson(bpmnModel);
                 repositoryService.addModelEditorSource(modelData.getId(), modelNode.toString().getBytes(PEPConstants.DEFAULT_CHARSET));
             }
         } catch (XMLStreamException xse) {

@@ -16,7 +16,7 @@ import java.io.IOException;
 @EnableCaching
 public class RedisConfigs {
 
-    @Bean(destroyMethod="shutdown")
+    @Bean(destroyMethod = "shutdown")
     RedissonClient redisson(@Value("classpath:conf/cache/redis/redisson.yaml") Resource configFile) throws IOException {
         Config config = Config.fromYAML(configFile.getInputStream());
         return Redisson.create(config);

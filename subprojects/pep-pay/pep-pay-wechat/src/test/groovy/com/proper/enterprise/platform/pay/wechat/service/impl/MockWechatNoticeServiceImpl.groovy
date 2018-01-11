@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.pay.wechat.service.WechatPayService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 
 /**
@@ -25,8 +26,9 @@ class MockWechatNoticeServiceImpl implements NoticeService <WechatNoticeRes> {
      *
      * @param noticeRes 微信异步通知处理参数
      */
+    @Async
     @Override
-    public void saveNoticeProcess(WechatNoticeRes  noticeRes) {
+    public void saveNoticeProcessAsync(WechatNoticeRes  noticeRes) {
         LOGGER.debug("-------------异步通知相关业务处理-----------------");
 
         WechatEntity wechatinfo = new WechatEntity();

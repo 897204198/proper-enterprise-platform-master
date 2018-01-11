@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
  *
  */
 public class PusherApp {
-    private final ExecutorService executor= Executors.newCachedThreadPool();
+    private final ExecutorService executor = Executors.newCachedThreadPool();
     private static final Logger LOGGER = LoggerFactory.getLogger(PusherApp.class);
     public static final String DEVICE_TYPE_ANDROID = "android";
     public static final String DEVICE_TYPE_IOS = "ios";
@@ -182,7 +182,7 @@ public class PusherApp {
      *
      * @param msg
      *            消息
-     * @param userId
+     * @param userId 用户 id
      * @return
      */
     public void pushMessageToOneUser(PushMessage msg, String userId) {
@@ -195,7 +195,7 @@ public class PusherApp {
     /**
      * 向所有的用户推送消息。
      *
-     * @param msg
+     * @param msg 消息
      * @return
      */
     public void pushMessageToAllUsers(final PushMessage msg) {
@@ -223,7 +223,7 @@ public class PusherApp {
     /**
      * 向所有的设备推送消息，不管设备是否绑定userid
      *
-     * @param msg
+     * @param msg 消息
      * @return
      */
     public void pushMessageToAllDevices(final PushMessage msg) {
@@ -235,8 +235,8 @@ public class PusherApp {
     /**
      * 向指定类型的设备，全推消息
      *
-     * @param msg
-     * @param deviceType
+     * @param msg 消息
+     * @param deviceType 设备类型
      */
     public void pushMessageToAllDevices(final PushMessage msg, final String deviceType) {
 
@@ -263,11 +263,8 @@ public class PusherApp {
 
     }
 
-    /**
+    /*
      * 执行任务
-     *
-     * @param r
-     * @param isAsync
      */
     private  void startRunTask(Runnable r, boolean isAsync) {
         if (isAsync) {

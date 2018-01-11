@@ -28,7 +28,7 @@ public class CmbPayResServiceImpl implements CmbPayResService {
      * @param requestXML 请求报文
      * @param <T> 泛型
      * @return 请求结果
-     * @throws Exception
+     * @throws Exception 查询异常
      */
     @Override
     public <T> T getCmbApiRes(String url, String beanId, String requestXML) throws Exception {

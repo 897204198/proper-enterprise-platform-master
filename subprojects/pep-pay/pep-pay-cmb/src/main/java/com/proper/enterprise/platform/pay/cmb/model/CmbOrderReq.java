@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.pay.cmb.model;
 
-
 import com.proper.enterprise.platform.api.pay.model.OrderReq;
 import com.proper.enterprise.platform.pay.cmb.constants.CmbConstants;
 
@@ -42,8 +41,8 @@ public class CmbOrderReq implements OrderReq, Serializable {
      * (选填)_必须为大于零的整数，单位为分钟。该参数指定当前支付请求必须在指定时间跨度内完成（从系统收到支付请求开始计时），
      * 否则按过期处理。该参数适用于航空客票等对交易完成时间敏感的支付请求；
      * 注意：
-     * 1、	由于系统有会话超时保护机制，因此实际订单有效时间受该参数和会话有效时间（目前是30分钟）约束，取值较小者有效。
-     * 2、	如果客户在商户端对同一笔订单重新发起支付请求，则以商户在后一次发起时指定的参数为准。
+     * 1、由于系统有会话超时保护机制，因此实际订单有效时间受该参数和会话有效时间（目前是30分钟）约束，取值较小者有效。
+     * 2、如果客户在商户端对同一笔订单重新发起支付请求，则以商户在后一次发起时指定的参数为准。
      */
     private String expireTimeSpan;
 

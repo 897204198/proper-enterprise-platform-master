@@ -36,7 +36,7 @@ public class PayFactoryImpl implements PayFactory {
      * @return 各个支付方式异步通知实例service
      */
     @Override
-    public <T extends NoticeService> T newNoticeService(String payWay){
+    public <T extends NoticeService> T newNoticeService(String payWay) {
         return (T)wac.getBean("pay_notice_" + payWay);
     }
 }

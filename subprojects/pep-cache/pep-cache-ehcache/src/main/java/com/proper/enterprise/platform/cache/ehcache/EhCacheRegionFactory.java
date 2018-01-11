@@ -21,6 +21,7 @@
  * 51 Franklin Street, Fifth Floor
  * Boston, MA  02110-1301  USA
  */
+
 package com.proper.enterprise.platform.cache.ehcache;
 
 import com.proper.enterprise.platform.api.cache.CacheDuration;
@@ -173,7 +174,8 @@ public class EhCacheRegionFactory extends AbstractEhcacheRegionFactory {
             cacheName = StringUtils.hasText(cd.cacheName()) ? cd.cacheName() : canonicalName;
             cds.put(cacheName, cd);
         }
-        long tti, ttl;
+        long tti;
+        long ttl;
         for (Map.Entry<String, CacheDuration> entry : cds.entrySet()) {
             cacheName = entry.getKey();
             config = new CacheConfiguration(cacheName, 10000);
@@ -183,7 +185,7 @@ public class EhCacheRegionFactory extends AbstractEhcacheRegionFactory {
             config.setTimeToIdleSeconds(tti);
             config.setTimeToLiveSeconds(ttl);
             config.setCopyOnWrite(true);
-//            config.setCopyOnRead(true);
+            //config.setCopyOnRead(true);
             LOGGER.debug("Load {} with {}s ttl and {}s max idle time.", cacheName, ttl, tti);
             configuration.addCache(config);
         }

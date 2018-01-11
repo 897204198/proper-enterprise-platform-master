@@ -149,7 +149,9 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
         LOGGER.trace(rtn.toString());
     }
 
-    private void doSendMsgToDevices(String appkey, PushMessage thePushmsg, Map<String, Object> rtn, PushDeviceType deviceType, PushMode pushMode, AbstractPushVendorService pushService, List<PushMsgEntity> lstMsgs, List<PushDeviceEntity> lstDevices) {
+    private void doSendMsgToDevices(String appkey, PushMessage thePushmsg, Map<String, Object> rtn,
+                                    PushDeviceType deviceType, PushMode pushMode, AbstractPushVendorService pushService,
+                                    List<PushMsgEntity> lstMsgs, List<PushDeviceEntity> lstDevices) {
         if (CollectionUtil.isNotEmpty(lstDevices)) {
             // 向数据库中插入数据message。
             for (PushDeviceEntity d : lstDevices) {

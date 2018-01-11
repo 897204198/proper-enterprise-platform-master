@@ -110,7 +110,7 @@ public class XiaomiPushApp extends BasePushApp {
         String pushToken = msg.getDevice().getPushToken();
         msg.setPushToken(pushToken);
         // 接口调用
-        if(isReallySendMsg()){
+        if (isReallySendMsg()) {
             com.xiaomi.xmpush.server.Result rsp = getClient().send(toMsg, pushToken, 1);
             // 有错误返回
             if (rsp.getErrorCode() == ErrorCode.Success) {
@@ -122,10 +122,10 @@ public class XiaomiPushApp extends BasePushApp {
                 // }
                 result = false; // 发送消息失败
             }
-            LOGGER.info("通知栏消息接口响应：" + rsp);
+            LOGGER.info("Response：{}", rsp);
             msg.setMresponse(JSONUtil.toJSON(rsp));
-        }else{
-            LOGGER.info("向小米服务器请求发送一条推送消息 pushToken:{} ", pushToken);
+        } else {
+            LOGGER.info("Push a notice to Xiaomi push server with pushToken:{} ", pushToken);
         }
 
 

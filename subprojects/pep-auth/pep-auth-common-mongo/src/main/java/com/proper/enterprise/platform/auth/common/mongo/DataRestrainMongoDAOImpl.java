@@ -69,7 +69,7 @@ public class DataRestrainMongoDAOImpl implements MongoDAO {
      * @param method        RESTFul 操作对应的 HTTP 方法
      * @param collection    集合名称
      * @return 查询条件集合
-     * @throws URISyntaxException
+     * @throws URISyntaxException 解析请求中的 URL 发生异常
      */
     private List<Bson> getDataRestrainConditions(RequestMethod method, String collection) throws URISyntaxException {
         List<String> sqls = getDataRestrainSqls(method, collection);

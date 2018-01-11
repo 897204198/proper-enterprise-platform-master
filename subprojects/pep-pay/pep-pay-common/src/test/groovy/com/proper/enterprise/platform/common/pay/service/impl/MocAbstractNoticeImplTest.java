@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.pay.model.PayResultRes;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service("pay_notice_ali")
@@ -17,12 +18,13 @@ public class MocAbstractNoticeImplTest implements NoticeService<PayResultRes> {
      * @param payResultRes payResultRes
      */
     @Override
-    public void saveNoticeProcess(PayResultRes payResultRes) throws Exception {
-        if(payResultRes.getResultCode() == PayResType.SUCCESS) {
-            LOGGER.debug("正常执行异步通知实现类");
+    @Async
+    public void saveNoticeProcessAsync(PayResultRes payResultRes) throws Exception {
+        if (payResultRes.getResultCode() == PayResType.SUCCESS) {
+            LOGGER.debug("execute async notice normally!");
         } else {
             throw new Exception();
         }
-
     }
+
 }
