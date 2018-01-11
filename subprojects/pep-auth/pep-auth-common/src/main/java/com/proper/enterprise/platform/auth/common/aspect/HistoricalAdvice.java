@@ -53,13 +53,13 @@ public class HistoricalAdvice {
 
     private void update(Object obj, String userId) {
         if (obj instanceof IBase) {
-            IBase iBase = (IBase) obj;
-            if (StringUtil.isNull(iBase.getId())) {
-                iBase.setCreateUserId(userId);
-                iBase.setCreateTime(DateUtil.getTimestamp(true));
+            IBase ibase = (IBase) obj;
+            if (StringUtil.isNull(ibase.getId())) {
+                ibase.setCreateUserId(userId);
+                ibase.setCreateTime(DateUtil.getTimestamp(true));
             }
-            iBase.setLastModifyUserId(userId);
-            iBase.setLastModifyTime(DateUtil.getTimestamp(true));
+            ibase.setLastModifyUserId(userId);
+            ibase.setLastModifyTime(DateUtil.getTimestamp(true));
         } else {
             LOGGER.debug("{} is not IBase, no need to add historical info.", JSONUtil.toJSONIgnoreException(obj));
         }
