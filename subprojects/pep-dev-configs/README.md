@@ -27,6 +27,8 @@ buildscript {
 }
 ```
 
+> 注意更换上面代码中 `$PEP_VERSION` 为需要使用的平台配置版本
+
 之后可以在需要引用本模块配置时，通过 `pepDevConfRoot` 路径引入，如：
 
 ```
