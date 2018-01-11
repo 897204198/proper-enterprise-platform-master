@@ -57,7 +57,7 @@ public class ProperPayController extends BaseController {
      */
     @PostMapping(value = "/prepay", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<ProperPayResultRes> prepayProper(@RequestBody ProperOrderReq properReq) throws Exception {
-        LOGGER.debug("------------- 模拟支付 预支付业务--------开始------------");
+        LOGGER.debug("------------- proper prepay business--------begin------------");
         ProperPayResultRes resObj = new ProperPayResultRes();
         try {
             // 预支付
@@ -92,7 +92,7 @@ public class ProperPayController extends BaseController {
             resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
         }
         // 返回结果
-        LOGGER.debug("------------- 模拟支付 预支付业务--------结束------------");
+        LOGGER.debug("------------- proper prepay business--------end------------");
         return responseOfPost(resObj);
     }
 
@@ -101,11 +101,11 @@ public class ProperPayController extends BaseController {
      *
      * @param reqMap 请求
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 处理异步通知异常
      */
     @PostMapping(value = "/query")
     public ResponseEntity<Map<String, Object>> queryProperPay(@RequestBody Map<String, Object> reqMap) throws Exception {
-        LOGGER.debug("-----------模拟支付结果查询并进行异步通知处理--------开始------------");
+        LOGGER.debug("-----------Ali async notice--------begin------------");
 
         String orderNo = (String)reqMap.get("orderNo");
         String subject = (String)reqMap.get("subject");
@@ -129,6 +129,7 @@ public class ProperPayController extends BaseController {
 
         Map<String, Object> res = new HashMap<>();
         res.put("resultCode", "SUCCESS");
+        LOGGER.debug("-----------Ali async notice--------end------------");
         return responseOfPost(res);
     }
 

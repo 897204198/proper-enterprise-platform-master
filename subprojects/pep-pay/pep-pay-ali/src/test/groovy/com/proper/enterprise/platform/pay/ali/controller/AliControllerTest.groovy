@@ -41,7 +41,7 @@ class AliControllerTest extends AbstractTest {
         assert info.getTotalFee() == "0.05"
         assert info.getBuyerId() == "2088902928162096"
 
-        assert businessInfo.getBody().equals("异步通知相关业务处理")
+        assert businessInfo.getBody().equals("Async notice business")
         assert businessInfo.getBuyerId().equals("testNoticeBuyerId")
     }
 

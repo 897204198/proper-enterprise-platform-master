@@ -30,7 +30,7 @@ public class AllowCrossOriginFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res=(HttpServletResponse) response;
+        HttpServletResponse res = (HttpServletResponse) response;
         // 此处不能将 if..else 合并，否则同样会引起使用 gretty 插件发布时的问题（OPTIONS 请求直接返回 403 状态码）
         if (HttpMethod.OPTIONS.matches(req.getMethod())) {
             LOGGER.trace("Received OPTIONS request {} from {}", req.getRequestURI(), req.getRemoteAddr());

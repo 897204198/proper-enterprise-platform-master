@@ -72,13 +72,13 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<? extends Menu> getMenusByUsername(String username) {
-        return menuService.getMenus(getByUsername(username));
+    public Collection<? extends Menu> getMenus(String userId) {
+        return menuService.getMenus(get(userId));
     }
 
     @Override
-    public Collection<? extends Menu> getMenus(String userId) {
-        return menuService.getMenus(get(userId));
+    public Collection<? extends Menu> getMenusByUsername(String username) {
+        return menuService.getMenus(getByUsername(username));
     }
 
 }

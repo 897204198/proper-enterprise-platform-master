@@ -26,12 +26,12 @@ public class CustomGridServiceImpl implements CustomGridService {
     @Override
     public DataTrunk<CustomGridDocument> getCustomGridForPage(String title, int pageNo, int pageSize) {
         Query query = new Query();
-        if(StringUtil.isNotEmpty(title)) {
+        if (StringUtil.isNotEmpty(title)) {
             query.addCriteria(Criteria.where("title").regex(title, "i"));
         }
         query.with(new Sort(Sort.Direction.ASC, "code"));
         long count = this.mongoTemplate.count(query, CustomGridDocument.class);
-        query.skip((pageNo-1)*pageSize);
+        query.skip((pageNo - 1) * pageSize);
         query.limit(pageSize);
         List<CustomGridDocument> list = mongoTemplate.find(query, CustomGridDocument.class);
         DataTrunk<CustomGridDocument> page = new DataTrunk<CustomGridDocument>();

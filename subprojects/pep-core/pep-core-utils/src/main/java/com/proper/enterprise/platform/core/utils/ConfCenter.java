@@ -55,16 +55,16 @@ public class ConfCenter {
      * 从默认配置文件加载路径加载配置文件中的参数至配置中心
      */
     private static void loadProperties() {
-        _loadProperties(DEFAULT_CONFIG_PATH);
+        loadProperties(DEFAULT_CONFIG_PATH);
     }
 
     /**
-     * 从指定路径样式加载配置文件
+     * 从非默认路径加载额外的配置文件
      * 支持 Ant 风格的路径样式，由 Spring 负责实际的加载工作
      *
-     * @param locationPattern Ant 风格的路径样式
+     * @param locationPattern Ant 风格路径样式
      */
-    private static void _loadProperties(String locationPattern) {
+    public static void loadProperties(String locationPattern) {
         try {
             Resource[] resources = AntResourceUtil.getResources(locationPattern);
             Set<Resource> fileResources = new HashSet<>();
@@ -148,15 +148,6 @@ public class ConfCenter {
      */
     public static int getInt(String key, int defaultValue) {
         return Integer.parseInt(get(key, defaultValue + ""));
-    }
-
-    /**
-     * 从非默认路径加载额外的配置文件
-     *
-     * @param locationPattern Ant 风格路径样式
-     */
-    public static void loadProperties(String locationPattern) {
-        _loadProperties(locationPattern);
     }
 
     /**

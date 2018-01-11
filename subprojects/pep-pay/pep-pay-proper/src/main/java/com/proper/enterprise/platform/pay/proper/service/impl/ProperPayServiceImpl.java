@@ -60,15 +60,8 @@ public class ProperPayServiceImpl extends AbstractPayImpl implements PayService,
         }
     }
 
-    /**
-     * 模拟支付预支付
-     *
-     * @param req 请求对象
-     * @return 处理结果
-     * @throws Exception
-     */
     @Override
-    protected <T extends PayResultRes, R extends OrderReq> T savePrepayImpl(R req)  throws Exception {
+    protected <T extends PayResultRes, R extends OrderReq> T savePrepayImpl(R req) {
         // 返回给请求客户端处理结果
         ProperPayResultRes resObj = new ProperPayResultRes();
         ProperOrderReq uoReq = (ProperOrderReq)req;
@@ -129,18 +122,18 @@ public class ProperPayServiceImpl extends AbstractPayImpl implements PayService,
     @Override
     protected <T> T saveRefundProcess(T refundBody) throws Exception {
         ProperRefundRes res = new ProperRefundRes();
-        ProperRefundReq properRefundReq = (ProperRefundReq) refundBody;
         ProperRefundEntity refund = new ProperRefundEntity();
         res.setCode("10000");
         res.setMsg("SUCCESS");
         refund.setCode("10000");
         refund.setMsg("SUCCESS");
+        ProperRefundReq properRefundReq = (ProperRefundReq) refundBody;
         refund.setOutTradeNo(properRefundReq.getOutTradeNo());
         refund.setRefundFee(properRefundReq.getAmount());
         refund.setRefundNo(properRefundReq.getRefundNo());
         refund.setRefundTime(DateUtil.getTimestamp(false));
         ProperEntity properInfo = properRepo.findByOutTradeNo(properRefundReq.getOutTradeNo());
-        if(properInfo != null) {
+        if (properInfo != null) {
             refund.setTradeNo(properRepo.findByOutTradeNo(properRefundReq.getOutTradeNo()).getTradeNo());
         }
         properRefundRepo.save(refund);

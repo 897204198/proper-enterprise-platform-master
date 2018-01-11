@@ -36,9 +36,9 @@ public class PinyinUtil {
         }
         StringBuilder sb = new StringBuilder();
         String tempPinyin;
-        for(int i = 0; i < str.length(); ++i) {
+        for (int i = 0; i < str.length(); ++i) {
             tempPinyin = getCharacterPinYin(str.charAt(i));
-            if(tempPinyin == null) {
+            if (tempPinyin == null) {
                 // 如果str.charAt(i)非汉字，则保持原样
                 sb.append(str.charAt(i));
             } else {
@@ -53,11 +53,11 @@ public class PinyinUtil {
         String[] pinyin = null;
         try {
             pinyin = PinyinHelper.toHanyuPinyinStringArray(c, format);
-        } catch(BadHanyuPinyinOutputFormatCombination e) {
+        } catch (BadHanyuPinyinOutputFormatCombination e) {
             LOGGER.debug("PinyinUtil.getCharacterPinYin[Exception]", e);
         }
         // 如果c不是汉字，toHanyuPinyinStringArray会返回null
-        if(pinyin == null) {
+        if (pinyin == null) {
             return null;
         }
         // 只取一个发音，如果是多音字，仅取第一个发音

@@ -32,13 +32,13 @@ public class WechatPayResServiceImpl implements WechatPayResService {
      * @param isHttpsRequest true : http请求 ; false : https请求
      * @param <T> 泛型
      * @return 请求结果
-     * @throws Exception
+     * @throws Exception 请求异常
      */
     @Override
     public <T> T getWechatApiRes(String url, String beanId, String requestXML, boolean isHttpsRequest) throws Exception {
         ResponseEntity<byte[]> response = null;
         // https请求
-        if(isHttpsRequest) {
+        if (isHttpsRequest) {
             // 读取证书
             InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(WechatConstants.WECHAT_PAY_CERT_PATH);
             // httpsClient
@@ -48,9 +48,9 @@ public class WechatPayResServiceImpl implements WechatPayResService {
             response = HttpClient.post(url, MediaType.APPLICATION_FORM_URLENCODED, requestXML);
         }
         //对账单 获取成功 返回为 文本表格 格式
-        if("unmarshallWechatBillRes".equals(beanId) && 200== response.getStatusCode().value()){
+        if ("unmarshallWechatBillRes".equals(beanId) && 200 == response.getStatusCode().value()) {
             return (T)response;
-        }else{
+        } else {
             Object res = unmarshallerMap.get(beanId).unmarshal(
                 new StreamSource(new ByteArrayInputStream(response.getBody())));
             return (T)res;

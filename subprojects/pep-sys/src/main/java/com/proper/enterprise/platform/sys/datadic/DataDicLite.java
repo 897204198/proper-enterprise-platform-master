@@ -25,7 +25,7 @@ public interface DataDicLite extends Serializable {
 
     /**
      * 设置数据字典类别
-     * @param catalog
+     * @param catalog 类别
      */
     void setCatalog(String catalog);
 

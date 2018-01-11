@@ -34,11 +34,11 @@ public class MockProperNoticeServiceImpl implements NoticeService<Map<String, St
     @Async
     @Override
     public void saveNoticeProcessAsync(Map<String, String> params) {
-        LOGGER.debug("-------------异步通知相关业务处理-----------------");
+        LOGGER.debug("-------------Async notice business-----------------");
         ProperEntity proper = new ProperEntity();
 
         proper.setOutTradeNo("001");
-        proper.setSubject("异步通知相关业务处理");
+        proper.setSubject("Async notice business");
         proper.setNotifyTime("notifyTime");
         proper.setTradeNo("tradeNo");
         proper.setTotalFee("0.01");

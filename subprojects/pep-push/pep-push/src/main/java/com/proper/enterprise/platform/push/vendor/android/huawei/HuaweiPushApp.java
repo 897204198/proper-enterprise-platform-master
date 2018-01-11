@@ -58,7 +58,7 @@ public class HuaweiPushApp extends BasePushApp {
 
                 AccessToken accessToken = oauth2Client.getAccessToken("client_credentials", theAppid, theAppSecret);
 
-                LOGGER.error("access token :" + accessToken.getAccess_token() + ",expires time[access token 过期时间]:"
+                LOGGER.error("access token :" + accessToken.getAccess_token() + ",expires time:"
                         + accessToken.getExpires_in());
                 client = new NSPClient(accessToken.getAccess_token());
                 client.initHttpConnections(30, 50); // 设置每个路由的连接数和最大连接数
@@ -119,7 +119,7 @@ public class HuaweiPushApp extends BasePushApp {
         if (isCmdMessage(msg)) {
             Map<String, Object> custom = msg.getMcustomDatasMap();
             String rsp = doPushCmd(pushToken, custom);
-            LOGGER.debug("单发接口消息响应:" + rsp);
+            LOGGER.debug("Response: {}", rsp);
             result = handleCmdRsp(rsp, msg);
             return result;
         } else {
@@ -161,15 +161,15 @@ public class HuaweiPushApp extends BasePushApp {
             hashMap.put("msgType", msgType);
             hashMap.put("userType", userType);
             String rsp;
-            if(isReallySendMsg()){
+            if (isReallySendMsg()) {
                 // 接口调用
                 rsp = getClient().call(callMethodName, hashMap, String.class);
-                LOGGER.info("单发通知栏消息接口响应：" + rsp);
+                LOGGER.info("Response: {}", rsp);
 
-            }else{
+            } else {
                 getClient();
-                LOGGER.info("向华为推送服务器发送一条通知栏消息 pushToken:{}", pushToken);
-                rsp="{\"message\":\"success\",\"requestID\":\"14948813856457737\",\"resultcode\":0}";
+                LOGGER.info("Push a notice msg to Huawei push server with pushToken:{}", pushToken);
+                rsp = "{\"message\":\"success\",\"requestID\":\"14948813856457737\",\"resultcode\":0}";
             }
 
             result = handleNotificationRsp(rsp, msg);
@@ -191,12 +191,12 @@ public class HuaweiPushApp extends BasePushApp {
         hashMap.put("msgType", 1);
         // 接口调用
         String rsp;
-        if(isReallySendMsg()){
-            rsp=getClient().call(callMethodName, hashMap, String.class);
-        }else{
+        if (isReallySendMsg()) {
+            rsp = getClient().call(callMethodName, hashMap, String.class);
+        } else {
             getClient();
-            LOGGER.info("向华为推送服务器发送一条透传消息 pushToken:{}", pushToken);
-            rsp="{\"message\":\"success\",\"requestID\":\"14948199168335342557\",\"resultcode\":0}";
+            LOGGER.info("Push a cmd msg to Huawei push server with pushToken:{}", pushToken);
+            rsp = "{\"message\":\"success\",\"requestID\":\"14948199168335342557\",\"resultcode\":0}";
         }
 
         return rsp;
@@ -278,7 +278,7 @@ public class HuaweiPushApp extends BasePushApp {
             }
             Integer badgeNumber = getBadgeNumber(msg);
             //角标不为空，且当前消息为通知栏消息，则发送一条透传消息，设置应用角标
-            if (badgeNumber != null&&!isCmdMessage(msg)) {
+            if (badgeNumber != null && !isCmdMessage(msg)) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("_proper_mpage", "badge"); //系统消息类型：设置角标
                 data.put("_proper_badge", badgeNumber); //应用角标数

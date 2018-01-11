@@ -29,7 +29,7 @@ class AliwebControllerTest extends AbstractTest {
         assert noticeInfo.getTotalAmount().equals("0.03")
         assert noticeInfo.getBuyerId().equals("2088902928162096")
 
-        assert businessInfo.getBody().equals("异步通知相关业务处理")
+        assert businessInfo.getBody().equals("Ali web async notice business")
         assert businessInfo.getBuyerId().equals("testNoticeBuyerId")
     }
 }

@@ -30,6 +30,13 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    public Resource get(String url, RequestMethod method) {
+        StringBuffer strbuf = new StringBuffer();
+        strbuf = strbuf.append(method.toString()).append(":").append(url);
+        return getBestMatch(find(), strbuf.toString());
+    }
+
+    @Override
     public void delete(Resource resource) {
         resourceRepository.delete((ResourceEntity) resource);
     }
@@ -39,21 +46,14 @@ public class ResourceServiceImpl implements ResourceService {
         return CollectionUtil.convert(resourceRepository.findAll());
     }
 
-    @Override
-    public Resource get(String url, RequestMethod method) {
-        StringBuffer strbuf = new StringBuffer();
-        strbuf = strbuf.append(method.toString()).append(":").append(url);
-        return getBestMatch(find(), strbuf.toString());
-    }
-
     /**
      * 思路：传参数signature与所有resources.method+resources.url
      * 字符进行 ANT 风格的路径匹配，匹配原则：符合条件的如果完全匹配直接return,无完全匹配的比较*号位置，*号越靠后越符合匹配规则，当*
      * 号位置相同时再比较整个字符长度，长度长的更符合条件。
      *
-     * @param resources
+     * @param resources 资源集合
      * @param signature resources.method+":"+resources.url
-     * @return
+     * @return 最佳匹配资源
      */
     public Resource getBestMatch(Collection<Resource> resources, String signature) {
 

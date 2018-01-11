@@ -11,10 +11,10 @@ public interface ResourceService {
 
     Resource get(String id);
 
-    void delete(Resource resource);
+    Resource get(String url, RequestMethod method);
 
     Collection<Resource> find();
 
-    Resource get(String url, RequestMethod method);
+    void delete(Resource resource);
 
 }

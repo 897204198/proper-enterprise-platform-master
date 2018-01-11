@@ -19,11 +19,11 @@ public class BillReq implements Serializable {
     private String billType;
 
     public Date getDate() {
-        return date==null?null:(Date) date.clone();
+        return date == null ? null : (Date) date.clone();
     }
 
     public void setDate(Date date) {
-        this.date = date==null?null:(Date) date.clone();
+        this.date = date == null ? null : (Date) date.clone();
     }
 
     public String getBillType() {

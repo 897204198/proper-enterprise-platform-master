@@ -65,16 +65,6 @@ public class DateUtil {
     }
 
     /**
-     * 按照默认时间戳格式转换字符串为日期对象
-     *
-     * @param dateStr 日期时间字符串
-     * @return 日期对象
-     */
-    public static Date toDateTime(String dateStr) {
-        return toDate(dateStr, DEFAULT_DATETIME_FORMAT);
-    }
-
-    /**
      * 按照提供的日期格式转换字符串为日期对象
      *
      * @param dateStr 日期字符串
@@ -84,6 +74,16 @@ public class DateUtil {
     public static Date toDate(String dateStr, String format) {
         DateTimeFormatter fmt = DateTimeFormat.forPattern(format);
         return fmt.parseLocalDateTime(dateStr).toDate();
+    }
+
+    /**
+     * 按照默认时间戳格式转换字符串为日期对象
+     *
+     * @param dateStr 日期时间字符串
+     * @return 日期对象
+     */
+    public static Date toDateTime(String dateStr) {
+        return toDate(dateStr, DEFAULT_DATETIME_FORMAT);
     }
 
     /**
@@ -148,8 +148,9 @@ public class DateUtil {
      * @return 添加指定分钟数的新的Date对象
      */
     public static Date addDay(Date date, int day) {
-        return date == null ? null: new DateTime(date.getTime()).plusDays(day).toDate();
+        return date == null ? null : new DateTime(date.getTime()).plusDays(day).toDate();
     }
+
     /**
      * 日期添加指定分钟数
      *

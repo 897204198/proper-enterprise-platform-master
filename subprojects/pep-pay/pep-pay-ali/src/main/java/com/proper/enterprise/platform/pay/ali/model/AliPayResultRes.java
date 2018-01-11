@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.pay.ali.model;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.proper.enterprise.platform.api.pay.model.PayResultRes;
 
 /**

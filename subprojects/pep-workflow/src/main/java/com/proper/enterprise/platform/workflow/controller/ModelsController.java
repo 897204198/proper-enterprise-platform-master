@@ -51,14 +51,14 @@ public class ModelsController {
      * model, and that API is not easy to call in front-end. This class supply a POST
      * API with nothing else to initial the editor source for an existing model.
      */
-    @RequestMapping(value="/{modelId}/source", method = RequestMethod.POST)
+    @RequestMapping(value = "/{modelId}/source", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public void postInitEditorSource(@PathVariable String modelId, @RequestParam String name, @RequestParam(required = false) String description) {
         repositoryService.addModelEditorSource(modelId,
                 EditorSource.initialSource(modelId, name, description).getBytes(PEPConstants.DEFAULT_CHARSET));
     }
 
-    @RequestMapping(value="/{modelId}/deployment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{modelId}/deployment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public DeploymentResponse deployModel(@PathVariable String modelId, HttpServletResponse response) {
         Model model = repositoryService.getModel(modelId);
         try {

@@ -34,11 +34,11 @@ public class MockAliNoticeServiceImpl implements NoticeService<Map<String, Strin
     @Async
     @Override
     public void saveNoticeProcessAsync(Map<String, String> params) {
-        LOGGER.debug("-------------异步通知相关业务处理-----------------");
+        LOGGER.debug("-------------Async notice business-----------------");
         AliEntity ali = new AliEntity();
 
         ali.setOutTradeNo("001");
-        ali.setBody("异步通知相关业务处理");
+        ali.setBody("Async notice business");
         ali.setBuyerId("testNoticeBuyerId");
 
         ali.setNotifyTime("notifyTime");

@@ -9,36 +9,36 @@ public class AliConstants {
 
     /**------------------------- 支付宝APP支付信息相关参数 ------------------------------------*/
     // 商户PID
-    public final static String ALI_PAY_PARTNER_ID = ConfCenter.get("pay.ali.partnerId");
+    public static final String ALI_PAY_PARTNER_ID = ConfCenter.get("pay.ali.partnerId");
     // 商户收款账号
-    public final static String ALI_PAY_SELLER_ID = ConfCenter.get("pay.ali.sellerId");
+    public static final String ALI_PAY_SELLER_ID = ConfCenter.get("pay.ali.sellerId");
     // 商户私钥，pkcs8格式
-    public final static String ALI_PAY_RSA_PRIVATE = ConfCenter.get("pay.ali.privateKey");
+    public static final String ALI_PAY_RSA_PRIVATE = ConfCenter.get("pay.ali.privateKey");
     // 支付宝公钥
-    public final static String ALI_PAY_RSA_PUBLIC = ConfCenter.get("pay.ali.aliPublicKey");
+    public static final String ALI_PAY_RSA_PUBLIC = ConfCenter.get("pay.ali.aliPublicKey");
     // 支付宝异步通知地址
-    public final static String ALI_PAY_NOTICE_URL = ConfCenter.get("pay.ali.notifyurl");
+    public static final String ALI_PAY_NOTICE_URL = ConfCenter.get("pay.ali.notifyurl");
     // 支付宝消息验证地址
-    public final static String ALI_PAY_NOTICE_HTTPS_VERIFY_URL = ConfCenter.get("pay.ali.httpsVerifyUrl");
+    public static final String ALI_PAY_NOTICE_HTTPS_VERIFY_URL = ConfCenter.get("pay.ali.httpsVerifyUrl");
     // 支付宝签名方式
-    public final static String ALI_PAY_SIGN_TYPE = ConfCenter.get("pay.ali.signType");
+    public static final String ALI_PAY_SIGN_TYPE = ConfCenter.get("pay.ali.signType");
     // 服务接口名称， 固定值
-    public final static String ALI_PAY_MOBILE_SECURITYPAY_PAY=ConfCenter.get("pay.ali.sucuritypay");
+    public static final String ALI_PAY_MOBILE_SECURITYPAY_PAY = ConfCenter.get("pay.ali.sucuritypay");
     // 支付类型， 固定值
-    public final static String ALI_PAY_PAYMENT_TYPE = ConfCenter.get("pay.ali.paymentType");
+    public static final String ALI_PAY_PAYMENT_TYPE = ConfCenter.get("pay.ali.paymentType");
     // 参数编码
-    public final static String ALI_PAY_INPUT_CHARSET = ConfCenter.get("pay.ali.inputCharset");
+    public static final String ALI_PAY_INPUT_CHARSET = ConfCenter.get("pay.ali.inputCharset");
     // 设置未付款交易的超时时间
-    public final static String ALI_PAY_IT_B_PAY = ConfCenter.get("pay.ali.itBPay");
+    public static final String ALI_PAY_IT_B_PAY = ConfCenter.get("pay.ali.itBPay");
     // 支付宝应用窗APPID
-    public final static String ALI_PAY_APPID = ConfCenter.get("pay.ali.appId");
+    public static final String ALI_PAY_APPID = ConfCenter.get("pay.ali.appId");
 
     /**------------通知交易状态------------------*/
     // 未知交易状态
-    public final static String ALI_PAY_NOTICE_TARDESTATUS_UNKONWN = ConfCenter.get("pay.ali.notice.trade.status.unknown");
+    public static final String ALI_PAY_NOTICE_TARDESTATUS_UNKONWN = ConfCenter.get("pay.ali.notice.trade.status.unknown");
     // 交易成功，且可对该交易做操作，如：多级分润、退款等。
-    public final static String ALI_PAY_NOTICE_TARDESTATUS_TRADE_SUCCESS = ConfCenter.get("pay.ali.notice.trade.status.tradeSuccess");
+    public static final String ALI_PAY_NOTICE_TARDESTATUS_TRADE_SUCCESS = ConfCenter.get("pay.ali.notice.trade.status.tradeSuccess");
     // 交易成功且结束，即不可再做任何操作。
-    public final static String ALI_PAY_NOTICE_TARDESTATUS_TRADE_FINISHED = ConfCenter.get("pay.ali.notice.trade.status.tradeFinished");
+    public static final String ALI_PAY_NOTICE_TARDESTATUS_TRADE_FINISHED = ConfCenter.get("pay.ali.notice.trade.status.tradeFinished");
 
 }

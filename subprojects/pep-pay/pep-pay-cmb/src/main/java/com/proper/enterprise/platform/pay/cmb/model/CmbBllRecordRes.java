@@ -79,8 +79,8 @@ public class CmbBllRecordRes {
     private String merchantPara;
 
     /**
-     *  订单类型：A二维码支付订单，空字符则为普通订单（含一网通支付订单）</BillType>
-     （如果订单类型为A，下述字段才存在）
+     * 订单类型：A二维码支付订单，空字符则为普通订单（含一网通支付订单）
+     *（如果订单类型为A，下述字段才存在）
      */
     @XmlElement(name = "BillType")
     private String billType;

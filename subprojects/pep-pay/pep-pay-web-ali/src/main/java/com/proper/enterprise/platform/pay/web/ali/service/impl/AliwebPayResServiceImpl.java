@@ -37,19 +37,19 @@ public class AliwebPayResServiceImpl implements AliwebPayResService {
             AliwebConstants.ALI_WEBPAY_PRIVATEKEY, AliwebConstants.ALI_WEBPAY_FORMAT, AliwebConstants.ALI_WEBPAY_CHARSET,
             AliwebConstants.ALI_WEBPAY_PUBLICKEY, AliwebConstants.ALI_WEBPAY_SIGNTYPE);
 
-        if(req instanceof AlipayTradeWapPayRequest) {
+        if (req instanceof AlipayTradeWapPayRequest) {
             AlipayTradeWapPayRequest alipayRequest = (AlipayTradeWapPayRequest)req;
             // 调用SDK生成表单
             res = client.pageExecute(alipayRequest).getBody();
-        } else if(req instanceof AlipayTradeQueryRequest) {
+        } else if (req instanceof AlipayTradeQueryRequest) {
             AlipayTradeQueryRequest alipayRequest = (AlipayTradeQueryRequest)req;
             // 调用SDK生成表单
             res = client.execute(alipayRequest);
-        } else if(req instanceof AlipayTradeRefundRequest) {
+        } else if (req instanceof AlipayTradeRefundRequest) {
             AlipayTradeRefundRequest alipayRequest = (AlipayTradeRefundRequest)req;
             // 调用SDK生成表单
-            res =client.execute(alipayRequest);
-        } else if(req instanceof AlipayTradeFastpayRefundQueryRequest) {
+            res = client.execute(alipayRequest);
+        } else if (req instanceof AlipayTradeFastpayRefundQueryRequest) {
             AlipayTradeFastpayRefundQueryRequest alipayRequest = (AlipayTradeFastpayRefundQueryRequest)req;
             // 调用SDK生成表单
             res = client.execute(alipayRequest);

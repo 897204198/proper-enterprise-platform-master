@@ -15,8 +15,8 @@ public class DataDicLiteConverter implements AttributeConverter<DataDicLite, Str
     /**
      * 将简化数据字典类型转换为关系型数据库中的形式
      * 具体形式为：类比 + 分割符 + 编码
-     * @param attribute
-     * @return
+     * @param attribute 数据字典属性
+     * @return 字符串表示
      */
     @Override
     public String convertToDatabaseColumn(DataDicLite attribute) {

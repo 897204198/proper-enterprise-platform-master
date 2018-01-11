@@ -25,7 +25,7 @@ public class CmbUtils {
      * 获取请求发起时间
      *
      * @return 生成的请求发起时间
-     * @throws Exception
+     * @throws Exception 获取异常
      */
     public static String getCmbReqTime() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -55,7 +55,7 @@ public class CmbUtils {
      * @param strSrc 需要加密的摘要
      * @param encName 算法
      * @return SHA1 加密的密文
-     * @throws Exception
+     * @throws Exception 加密异常
      */
     public static String encrypt(String strSrc, String encName) throws Exception {
         MessageDigest md = null;
@@ -102,13 +102,13 @@ public class CmbUtils {
      */
     public static String getOriginSign(String originSign) {
         StringBuilder sb = new StringBuilder();
-        String sKey = CmbConstants.CMB_PAY_CMBKEY;
+        String key = CmbConstants.CMB_PAY_CMBKEY;
         String origin =  originSign.replace(CmbConstants.CMB_PAY_XML_HEADER, "")
             .replace("<Request>", "").replace("</Request>", "")
             .replace("<Head>", "").replace("</Head>", "")
             .replace("<Body>", "").replace("</Body>", "")
             .replace("<Hash>", "").replace("</Hash>", "");
-        return sb.append(sKey).append(origin).toString();
+        return sb.append(key).append(origin).toString();
     }
 
     /**
@@ -116,7 +116,7 @@ public class CmbUtils {
      *
      * @param inStream 输入流
      * @return 字节数组
-     * @throws Exception
+     * @throws Exception 读取异常
      */
     public static byte[] readStream(InputStream inStream) throws Exception {
         ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
@@ -139,10 +139,10 @@ public class CmbUtils {
     public static Map<String, String> getParamObj(String param) throws Exception {
         Map<String, String> paramObj = new HashMap<>();
         String[] reqParams = param.split("\\|");
-        for(String reqParam : reqParams) {
+        for (String reqParam : reqParams) {
             String[] deatilParam = reqParam.split("=");
-            String value1 = StringUtil.isEmpty(deatilParam[0])? "":deatilParam[0];
-            String value2 = StringUtil.isEmpty(deatilParam[1])? "":deatilParam[1];
+            String value1 = StringUtil.isEmpty(deatilParam[0]) ? "" : deatilParam[0];
+            String value2 = StringUtil.isEmpty(deatilParam[1]) ? "" : deatilParam[1];
             paramObj.put(value1, value2);
         }
         return paramObj;

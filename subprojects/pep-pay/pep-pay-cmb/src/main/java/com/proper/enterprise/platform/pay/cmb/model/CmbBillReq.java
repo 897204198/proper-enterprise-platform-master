@@ -12,7 +12,7 @@ import java.io.Serializable;
 @XmlRootElement(name = "Request")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CmbBillReq implements Serializable {
-    private static final long serialVersionUID = -1l;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 请求head

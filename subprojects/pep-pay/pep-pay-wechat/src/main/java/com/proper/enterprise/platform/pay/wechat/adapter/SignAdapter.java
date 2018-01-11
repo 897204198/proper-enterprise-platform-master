@@ -41,7 +41,7 @@ public class SignAdapter extends XmlAdapter<String, WechatOrderReq> {
         for (String fieldName : set) {
             value = clz.getMethod("get" + StringUtil.capitalize(fieldName)).invoke(t);
             if (value != null) {
-                if(fieldName.equals("papackage")) {
+                if (fieldName.equals("papackage")) {
                     sb.append("package").append("=").append(value).append("&");
                 } else {
                     sb.append(StringUtil.camelToSnake(fieldName)).append("=").append(value).append("&");

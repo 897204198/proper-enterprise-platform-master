@@ -89,7 +89,7 @@ public class JWTService {
         }
 
         String[] split = token.split("\\.");
-        String headerBase64= split[0];
+        String headerBase64 = split[0];
         String payloadBase64 = split[1];
         String sign = split[2];
 

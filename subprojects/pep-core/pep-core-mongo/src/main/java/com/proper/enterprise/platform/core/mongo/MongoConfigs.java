@@ -102,7 +102,7 @@ public class MongoConfigs extends AbstractMongoConfiguration {
 
     @Bean
     public MongoTemplate mongoTemplate() throws Exception {
-        MongoDbFactory mongoDbFactory=mongoDbFactory();
+        MongoDbFactory mongoDbFactory = mongoDbFactory();
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDbFactory);
         MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, new MongoMappingContext());
         //设置mongodb不生成_class 字段

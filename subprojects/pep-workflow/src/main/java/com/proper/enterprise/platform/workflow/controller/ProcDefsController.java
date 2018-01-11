@@ -62,7 +62,7 @@ public class ProcDefsController {
                 size.put("height", maxY + 300);
             }
             return size;
-        } catch (XMLStreamException ex){
+        } catch (XMLStreamException ex) {
             LOGGER.error("Create XML stream reader error! ", ex);
             return size;
         }

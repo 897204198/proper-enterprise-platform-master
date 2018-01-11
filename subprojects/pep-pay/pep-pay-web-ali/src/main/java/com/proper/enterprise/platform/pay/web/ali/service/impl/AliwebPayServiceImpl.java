@@ -81,7 +81,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
             aliPrepay.setBody(req.getPayIntent());
             aliPrepay.setTotalFee(PayUtils.convertMoneyFen2Yuan(req.getTotalFee()));
             // 设置超时时间
-            if(StringUtil.isNumeric(req.getOverMinuteTime())) {
+            if (StringUtil.isNumeric(req.getOverMinuteTime())) {
                 aliPrepay.setTimeoutExpress(req.getOverMinuteTime().concat("m"));
             }
             return aliPrepay;
@@ -96,7 +96,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
      *
      * @param req 请求对象
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 保存异常
      */
     @Override
     protected <T extends PayResultRes, R extends OrderReq> T savePrepayImpl(R req)  throws Exception {
@@ -106,15 +106,15 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
         // form表单生产
         String form = "";
         try {
-            AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();
             // 封装请求支付信息
-            AlipayTradeWapPayModel model=new AlipayTradeWapPayModel();
+            AlipayTradeWapPayModel model = new AlipayTradeWapPayModel();
             model.setOutTradeNo(webReq.getOutTradeNo());
             model.setSubject(webReq.getSubject());
             model.setTotalAmount(webReq.getTotalFee());
             model.setBody(webReq.getBody());
             model.setTimeoutExpress(webReq.getTimeoutExpress());
             model.setProductCode(AliwebConstants.ALI_WEBPAY_PRODUCT_CODE);
+            AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();
             alipayRequest.setBizModel(model);
             // 设置异步通知地址
             alipayRequest.setNotifyUrl(AliwebConstants.ALI_WEBPAY_NOTIFY_URL);
@@ -195,13 +195,13 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
         AliwebRefundReq aliRefundReq = (AliwebRefundReq) refundBody;
         AliwebRefundEntity refund = new AliwebRefundEntity();
         try {
-            // 请求参数
-            AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
             AlipayTradeRefundModel model = new AlipayTradeRefundModel();
             model.setOutTradeNo(aliRefundReq.getOutTradeNo());
             model.setOutRequestNo(aliRefundReq.getRefundNo());
             model.setRefundReason(aliRefundReq.getRefundReason());
             model.setRefundAmount(aliRefundReq.getAmount());
+            // 请求参数
+            AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
             alipayRequest.setBizModel(model);
             // 获取结果
             res = (AlipayTradeRefundResponse)aliwebResService.getAliInterfaceRes(alipayRequest, res);
@@ -215,7 +215,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
             refund.setRefundNo(refundNo);
 
             AliwebRefundEntity oldRefund = findByRefundNo(refundNo);
-            if(refund.getCode().equals("10000") && oldRefund == null) {
+            if (refund.getCode().equals("10000") && oldRefund == null) {
                 save(refund);
             }
         } catch (Exception e) {
@@ -241,7 +241,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
         try {
             AlipayTradeFastpayRefundQueryRequest alipayRequest = new AlipayTradeFastpayRefundQueryRequest();
             // 请求参数
-            AlipayTradeFastpayRefundQueryModel model=new AlipayTradeFastpayRefundQueryModel();
+            AlipayTradeFastpayRefundQueryModel model = new AlipayTradeFastpayRefundQueryModel();
             model.setOutTradeNo(orderNo);
             model.setOutRequestNo(refundNo);
             alipayRequest.setBizModel(model);
@@ -303,7 +303,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
      * @param params
      *            参数
      * @return alipayinfo 支付信息
-     * @throws Exception
+     * @throws Exception 获取异常
      */
     @Override
     public AliwebEntity getAliwebNoticeInfo(Map<String, String> params) throws Exception {

@@ -24,7 +24,7 @@ public class MockAbstractRefundImpl extends AbstractRefundImpl implements Refund
     protected  <T extends List<RefundInfoRes>> T getRefundInfo(RefundInfoReq req) {
         List<RefundInfoRes> refundList = new ArrayList<>();
         MockRefundInfoRes refundInfo = new MockRefundInfoRes();
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             refundInfo.setOrderNum("test".concat(String.valueOf(i)));
             refundInfo.setAmout(String.valueOf(i));
             refundList.add(refundInfo);

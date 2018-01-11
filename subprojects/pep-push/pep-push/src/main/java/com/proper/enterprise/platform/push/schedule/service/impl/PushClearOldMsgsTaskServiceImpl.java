@@ -33,7 +33,7 @@ public class PushClearOldMsgsTaskServiceImpl implements PushClearOldMsgsTaskServ
         Map<String, Map<String, Object>> config = globalInfo.getPushConfigs();
         try {
             for (Map.Entry<String, Map<String, Object>> entry : config.entrySet()) {
-                String appkey=entry.getKey();
+                String appkey = entry.getKey();
                 int msgSaveDays = Integer.parseInt(Mapl.cell(entry.getValue(), "msg_save_days").toString());
                 Date date2 = DateUtil.addDay(new Date(), -1 * msgSaveDays);
                 String strTimeStamp = DateUtil.toTimestamp(date2);

@@ -90,13 +90,13 @@ public class HttpClient extends ClientUtil {
 
     /**
      * 使用平台默认的字符编码，将请求参数map转换成form表单APPLICATION_FORM_URLENCODED字符串
-     * @param params
-     * @return
+     * @param params 参数 map
+     * @return 字符串表示
      */
-    public static String getFormUrlEncodedData(Map<String, Object> params){
-        try{
+    public static String getFormUrlEncodedData(Map<String, Object> params) {
+        try {
             return getFormUrlEncodedData(params, PEPConstants.DEFAULT_CHARSET.name());
-        }catch(UnsupportedEncodingException ex){
+        } catch (UnsupportedEncodingException ex) {
             LOGGER.error(ex.getMessage(), ex);
             return "";
         }
@@ -110,7 +110,7 @@ public class HttpClient extends ClientUtil {
      * @param encode
      *            字符串编码格式
      * @return 存储APPLICATION_FORM_URLENCODED的字符串
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException 不支持的字符集
      */
     public static String getFormUrlEncodedData(Map<String, Object> params, String encode) throws UnsupportedEncodingException {
         StringBuffer stringBuffer = new StringBuffer(); // 存储封装好的请求体信息

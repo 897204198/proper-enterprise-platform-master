@@ -20,11 +20,11 @@ public class MocAbstractNoticeImplTest implements NoticeService<PayResultRes> {
     @Override
     @Async
     public void saveNoticeProcessAsync(PayResultRes payResultRes) throws Exception {
-        if(payResultRes.getResultCode() == PayResType.SUCCESS) {
-            LOGGER.debug("正常执行异步通知实现类");
+        if (payResultRes.getResultCode() == PayResType.SUCCESS) {
+            LOGGER.debug("execute async notice normally!");
         } else {
             throw new Exception();
         }
-
     }
+
 }

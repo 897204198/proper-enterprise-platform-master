@@ -27,33 +27,6 @@ public class ClientUtil {
         return converter(response);
     }
 
-    private static Call createCall(OkHttpClient client,
-                            String url, String method,
-                            Map<String, String> headers, MediaType type,
-                            String data) {
-        Request.Builder builder = new Request.Builder();
-        builder = builder.url(url);
-        if (headers != null) {
-            for (Map.Entry<String, String> header : headers.entrySet()) {
-                builder = builder.addHeader(header.getKey(), header.getValue());
-            }
-        }
-        RequestBody body = null;
-        if (StringUtil.isNotNull(data)) {
-            Assert.notNull(type);
-            body = RequestBody.create(okhttp3.MediaType.parse(type.toString()), data);
-        }
-        builder = builder.method(method, body);
-        Request request = builder.build();
-        return client.newCall(request);
-    }
-
-    protected static ResponseEntity<byte[]> converter(Response response) throws IOException {
-        MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.putAll(response.headers().toMultimap());
-        return new ResponseEntity<>(response.body().bytes(), headers, HttpStatus.valueOf(response.code()));
-    }
-
     /**
      * 异步发送请求，需要回调方法
      *
@@ -80,6 +53,33 @@ public class ClientUtil {
                 callback.onSuccess(converter(response));
             }
         });
+    }
+
+    private static Call createCall(OkHttpClient client,
+                            String url, String method,
+                            Map<String, String> headers, MediaType type,
+                            String data) {
+        Request.Builder builder = new Request.Builder();
+        builder = builder.url(url);
+        if (headers != null) {
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                builder = builder.addHeader(header.getKey(), header.getValue());
+            }
+        }
+        RequestBody body = null;
+        if (StringUtil.isNotNull(data)) {
+            Assert.notNull(type);
+            body = RequestBody.create(okhttp3.MediaType.parse(type.toString()), data);
+        }
+        builder = builder.method(method, body);
+        Request request = builder.build();
+        return client.newCall(request);
+    }
+
+    protected static ResponseEntity<byte[]> converter(Response response) throws IOException {
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.putAll(response.headers().toMultimap());
+        return new ResponseEntity<>(response.body().bytes(), headers, HttpStatus.valueOf(response.code()));
     }
 
 }

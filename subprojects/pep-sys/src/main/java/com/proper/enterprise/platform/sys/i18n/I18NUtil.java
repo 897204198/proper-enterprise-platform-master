@@ -32,6 +32,10 @@ public class I18NUtil {
         return transCode(ResourceBundle.getBundle(baseName).getString(key));
     }
 
+    public String getString(String key) {
+        return getString(this.baseName, key);
+    }
+
     private static String transCode(String str) {
         String result = null;
         try {
@@ -40,10 +44,6 @@ public class I18NUtil {
             LOGGER.warn("Should NOT throw this exception!", uee);
         }
         return result;
-    }
-
-    public String getString(String key) {
-        return getString(this.baseName, key);
     }
 
 }

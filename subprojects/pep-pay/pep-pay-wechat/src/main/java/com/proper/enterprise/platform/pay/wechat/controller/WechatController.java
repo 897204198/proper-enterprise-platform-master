@@ -63,7 +63,7 @@ public class WechatController extends BaseController {
      */
     @PostMapping(value = "/prepay", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<WechatPayResultRes> prepayWechat(@RequestBody WechatOrderReq wechatReq) throws Exception {
-        LOGGER.debug(DateUtil.getTimestamp(true) + "------------- 微信支付 预支付业务--------开始------------");
+        LOGGER.debug(DateUtil.getTimestamp(true) + "------------- Wechat prepay business--------begin------------");
         WechatPayResultRes resObj = new WechatPayResultRes();
         try {
             // 预支付
@@ -98,7 +98,7 @@ public class WechatController extends BaseController {
             resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
         }
         // 返回结果
-        LOGGER.debug(DateUtil.getTimestamp(true) + "------------- 微信支付 预支付业务--------结束------------");
+        LOGGER.debug(DateUtil.getTimestamp(true) + "------------- Wechat prepay business--------end------------");
         return responseOfPost(resObj);
     }
 
@@ -107,7 +107,7 @@ public class WechatController extends BaseController {
      *
      * @param request 异步通知请求
      * @param resp 异步响应
-     * @throws Exception
+     * @throws Exception 处理异常
      */
     @AuthcIgnore
     @PostMapping(value = "/noticeWechatPayInfo")
@@ -120,7 +120,8 @@ public class WechatController extends BaseController {
             .unmarshal(new StreamSource(inStream));
         inStream.close();
 
-        LOGGER.info("------------- 微信异步通知 {} : {} : {} ---------------", noticeRes.getOutTradeNo(), noticeRes.getTransactionId(), noticeRes.getTotalFee());
+        LOGGER.info("--------- wechat async notice {} : {} : {} -----------", noticeRes.getOutTradeNo(),
+            noticeRes.getTransactionId(), noticeRes.getTotalFee());
 
         // 进行签名验证操作
         if (wechatPayService.isValid(noticeRes) && "SUCCESS".equalsIgnoreCase(noticeRes.getReturnCode())
@@ -130,23 +131,23 @@ public class WechatController extends BaseController {
             boolean saveNoticeFlag = false;
             try {
                 WechatEntity wechatInfo = wechatPayService.getWechatNoticeInfo(noticeRes);
-                if(wechatInfo != null) {
+                if (wechatInfo != null) {
                     // 输出异步通知结果到log
                     PayUtils.logEntity(wechatInfo);
                     // 保存微信异步通知信息
                     WechatEntity wechat = wechatPayService.findByOutTradeNo(wechatInfo.getOutTradeNo());
-                    if(wechat == null) {
+                    if (wechat == null) {
                         wechatPayService.save(wechatInfo);
                     }
                     saveNoticeFlag = true;
                 }
             } catch (Exception e) {
-                LOGGER.debug("微信异步通知信息保存异常", e);
+                LOGGER.debug("Wechat async notice error!", e);
                 saveNoticeFlag = false;
             }
             // 启用线程处理业务相关
-            if(saveNoticeFlag) {
-                LOGGER.debug("微信异步通知业务相关Notice,异步通知结果已经保存并新起线程进行业务处理");
+            if (saveNoticeFlag) {
+                LOGGER.debug("Wechat async notice result has bean saved and start a new thread to deal with business!");
                 NoticeService noticeService = payFactory.newNoticeService("wechat");
                 noticeService.saveNoticeProcessAsync(noticeRes);
                 ret = true;

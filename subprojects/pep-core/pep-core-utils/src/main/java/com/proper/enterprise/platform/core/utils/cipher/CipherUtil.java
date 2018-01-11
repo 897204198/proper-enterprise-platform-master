@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class CipherUtil {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(CipherUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CipherUtil.class);
 
     private String algorithm;
     private String signAlgorithm;
@@ -25,8 +25,8 @@ public class CipherUtil {
     private String secretKey;
     private String padding;
 
-	private CipherUtil() {
-	}
+    private CipherUtil() {
+    }
 
     /**
      * 获得对称加密算法实例
@@ -62,11 +62,20 @@ public class CipherUtil {
 
     @Deprecated
     protected String encrypt(String content) throws Exception {
-		return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getSecretKey(), true), PEPConstants.DEFAULT_CHARSET);
-	}
+        return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getSecretKey(), true), PEPConstants.DEFAULT_CHARSET);
+    }
 
     protected byte[] encrypt(byte[] data) throws Exception {
         return execute(data, getSecretKey(), true);
+    }
+
+    @Deprecated
+    protected String encrypt(String content, String publicKey) throws Exception {
+        return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getPublicKey(publicKey), true), PEPConstants.DEFAULT_CHARSET);
+    }
+
+    protected byte[] encrypt(byte[] data, String publicKey) throws Exception {
+        return execute(data, getPublicKey(publicKey), true);
     }
 
     private byte[] execute(byte[] data, Key key, boolean encrypt) throws Exception {
@@ -93,11 +102,20 @@ public class CipherUtil {
 
     @Deprecated
     protected String decrypt(String content) throws Exception  {
-		return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getSecretKey(), false), PEPConstants.DEFAULT_CHARSET);
-	}
+        return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getSecretKey(), false), PEPConstants.DEFAULT_CHARSET);
+    }
 
     protected byte[] decrypt(byte[] data) throws Exception {
         return execute(data, getSecretKey(), false);
+    }
+
+    @Deprecated
+    protected String decrypt(String content, String privateKey) throws Exception {
+        return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getPrivateKey(privateKey), false), PEPConstants.DEFAULT_CHARSET);
+    }
+
+    protected byte[] decrypt(byte[] data, String privateKey) throws Exception {
+        return execute(data, getPrivateKey(privateKey), false);
     }
 
     private String amp(String algorithm, String mode, String padding) {
@@ -118,27 +136,9 @@ public class CipherUtil {
         return map;
     }
 
-    @Deprecated
-    protected String encrypt(String content, String publicKey) throws Exception {
-        return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getPublicKey(publicKey), true), PEPConstants.DEFAULT_CHARSET);
-    }
-
-    protected byte[] encrypt(byte[] data, String publicKey) throws Exception {
-        return execute(data, getPublicKey(publicKey), true);
-    }
-
     protected PublicKey getPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
         return keyFactory.generatePublic(new X509EncodedKeySpec(Base64.decodeBase64(publicKey)));
-    }
-
-    @Deprecated
-    protected String decrypt(String content, String privateKey) throws Exception {
-        return new String(execute(content.getBytes(PEPConstants.DEFAULT_CHARSET), getPrivateKey(privateKey), false), PEPConstants.DEFAULT_CHARSET);
-    }
-
-    protected byte[] decrypt(byte[] data, String privateKey) throws Exception {
-        return execute(data, getPrivateKey(privateKey), false);
     }
 
     protected PrivateKey getPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {

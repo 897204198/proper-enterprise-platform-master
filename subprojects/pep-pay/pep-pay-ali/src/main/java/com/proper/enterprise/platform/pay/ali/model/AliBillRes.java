@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class AliBillRes implements Serializable {
 
-    private static final long serialVersionUID = -1l;
+    private static final long serialVersionUID = -1L;
 
     /**
      *  账单下载路径

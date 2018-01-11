@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.pay.wechat.model;
 
-
 import com.proper.enterprise.platform.pay.wechat.constants.WechatConstants;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -85,15 +84,6 @@ public class WechatRefundReq {
      */
     @XmlElement(name = "op_user_id")
     private String opUserId = WechatConstants.WECHAT_PAY_MCHID;
-
-    /**
-     * 退款资金来源
-     *
-     * REFUND_SOURCE_RECHARGE_FUNDS---可用余额退款/基本账户
-     * REFUND_SOURCE_UNSETTLED_FUNDS---未结算资金退款
-     */
-//    @XmlElement(name = "refund_account")
-//    private String refundAccount = WechatConstants.REFUND_SOURCE_RECHARGE_FUNDS;
 
     public String getAppid() {
         return appid;
@@ -182,14 +172,6 @@ public class WechatRefundReq {
     public void setRefundFeeType(String refundFeeType) {
         this.refundFeeType = refundFeeType;
     }
-
-//    public String getRefundAccount() {
-//        return refundAccount;
-//    }
-//
-//    public void setRefundAccount(String refundAccount) {
-//        this.refundAccount = refundAccount;
-//    }
 
     public String getOpUserId() {
         return opUserId;

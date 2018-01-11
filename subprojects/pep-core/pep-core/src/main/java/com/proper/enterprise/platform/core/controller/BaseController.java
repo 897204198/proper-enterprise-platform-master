@@ -22,7 +22,7 @@ import java.util.List;
  */
 public abstract class BaseController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(BaseController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseController.class);
 
     /**
      * 返回 POST 请求的响应

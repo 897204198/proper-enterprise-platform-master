@@ -56,12 +56,12 @@ public class CmbController extends BaseController {
      *
      * @param request 请求
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 异步通知异常
      */
     @AuthcIgnore
     @PostMapping(value = "/noticeCmbProtocolInfo")
     public ResponseEntity<String> dealCmbNoticeProtocolInfo(HttpServletRequest request) throws Exception {
-        LOGGER.debug("-----------一网通签约异步通知------开始---------------");
+        LOGGER.debug("------------- Cmb protocol async notice--------begin------------");
         // 返回给一网通服务器的异步通知结果
         boolean ret = false;
         try {
@@ -75,10 +75,10 @@ public class CmbController extends BaseController {
             throw e;
         }
         if (ret) {
-            LOGGER.debug("-----------一网通签约异步通知------正常结束---------------");
+            LOGGER.debug("----------- Cmb protocol async notice--------end---------------");
             return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
         } else {
-            LOGGER.debug("-----------一网通签约异步通知:处理过或者无效的协议信息------结束-------------------");
+            LOGGER.debug("----------- Cmb protocol async notice: handled or invalid protocol info------end-------------------");
             return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -88,40 +88,40 @@ public class CmbController extends BaseController {
      *
      * @param request 请求
      * @return 处理结果
-     * @throws Exception
+     * @throws Exception 异步通知异常
      */
     @AuthcIgnore
     @GetMapping(value = "/noticeCmbPayInfo")
     public ResponseEntity<String> dealCmbNoticePay(HttpServletRequest request) throws Exception {
-        LOGGER.debug("-----------一网通支付结果异步通知------开始---------------");
+        LOGGER.debug("-----------Cmb async notice--------begin---------------");
         // 获取从银行返回的信息
         String queryStr = request.getQueryString();
         // 检验数字签名
         if (!cmbPayService.isValid(queryStr)) {
-            LOGGER.debug("验签失败！{}", queryStr);
+            LOGGER.debug("Verify sign failed!{}", queryStr);
             return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
         }
         try {
             // 保存异步通知信息flag
-            LOGGER.debug("验签成功！{}", queryStr);
+            LOGGER.debug("Verify sign successful！{}", queryStr);
             // 取得一网通支付结果异步通知对象
             CmbPayEntity cmbInfo = cmbPayService.getCmbPayNoticeInfo(request);
             // 输出异步通知结果到log
             PayUtils.logEntity(cmbInfo);
             CmbPayEntity queryPayInfo = cmbPayService.getPayNoticeInfoByMsg(cmbInfo.getMsg());
-            if(queryPayInfo == null) {
+            if (queryPayInfo == null) {
                 // 保存异步通知结果
                 cmbPayService.saveCmbPayNoticeInfo(cmbInfo);
             }
             // 启用线程处理业务相关
-            LOGGER.debug("一网通异步通知业务相关Notice,异步通知结果已经保存并新起线程进行业务处理");
+            LOGGER.debug("Cmb async notice result has bean saved and start a new thread to deal with business!");
             NoticeService noticeService = payFactory.newNoticeService("cmb");
             noticeService.saveNoticeProcessAsync(cmbInfo);
-            LOGGER.debug("-----------一网通支付结果异步通知------正常结束---------------");
+            LOGGER.debug("-----------Cmb async notice--------end normal---------------");
             return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
         } catch (Exception e) {
-            LOGGER.debug("一网通异步通知信息保存异常", e);
-            LOGGER.debug("-----------一网通支付结果异步通知:保存信息异常------异常结束-----------------");
+            LOGGER.debug("Error occurred while saving cmb async notice", e);
+            LOGGER.debug("-----------Cmb async notice:save message error------end error-----------------");
             return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
         }
     }
@@ -131,11 +131,10 @@ public class CmbController extends BaseController {
      *
      * @param payInfo 支付信息
      * @return 处理结果
-     * @throws Exception
      */
     @AuthcIgnore
     @PostMapping(value = "/queryCmbPay", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<CmbPayResultRes> queryCmbPay(@RequestBody CmbPayEntity payInfo) throws Exception {
+    public ResponseEntity<CmbPayResultRes> queryCmbPay(@RequestBody CmbPayEntity payInfo) {
         CmbPayResultRes resObj = new CmbPayResultRes();
         try {
             StringBuilder sb = new StringBuilder();
@@ -154,25 +153,24 @@ public class CmbController extends BaseController {
      *
      * @param refundInfo 退款
      * @return 处理结果
-     * @throws Exception
      */
     @AuthcIgnore
     @PostMapping(value = "/refundCmbPay", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<CmbRefundNoDupRes> refundPayInfo(@RequestBody CmbRefundNoDupBodyReq refundInfo) throws Exception {
+    public ResponseEntity<CmbRefundNoDupRes> refundPayInfo(@RequestBody CmbRefundNoDupBodyReq refundInfo) {
         CmbRefundNoDupRes resObj = new CmbRefundNoDupRes();
         try {
-            // 调用退款接口
-            PayService payService = payFactory.newPayService(payWay);
             RefundReq refundReq = new RefundReq();
             refundReq.setOutTradeNo(refundInfo.getBillNo());
             // 设定退款流水号(随机生成20位退款流水号)
             refundReq.setOutRequestNo(RandomStringUtils.randomNumeric(20));
             refundReq.setTotalFee(refundInfo.getAmount());
             refundReq.setRefundAmount(refundInfo.getAmount());
+            // 调用退款接口
+            PayService payService = payFactory.newPayService(payWay);
             resObj = payService.refundPay(refundReq);
         } catch (Exception e) {
             LOGGER.debug("PayController.refundCmbPay[Exception]:", e);
-            LOGGER.debug("---------  一网通退款结果异常  --------------");
+            LOGGER.debug("---------  Cmb refund error  --------------");
         }
         return responseOfPost(resObj);
     }

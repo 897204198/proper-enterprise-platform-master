@@ -13,7 +13,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CmbBillBodyRes {
     /**
-     * 续传标记(采用多次通讯方式续传时使用)	默认值为’N’，表示没有后续数据包，’Y’表示仍有后续的通讯包
+     * 续传标记(采用多次通讯方式续传时使用) 默认值为’N’，表示没有后续数据包，’Y’表示仍有后续的通讯包
      */
     @XmlElement(name = "QryLopFlg")
     private String qryLopFlg;

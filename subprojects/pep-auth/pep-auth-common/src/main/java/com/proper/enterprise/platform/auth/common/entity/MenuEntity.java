@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-@Table(name="PEP_AUTH_MENUS")
+@Table(name = "PEP_AUTH_MENUS")
 @CacheEntity
 public class MenuEntity extends BaseEntity implements Menu {
 

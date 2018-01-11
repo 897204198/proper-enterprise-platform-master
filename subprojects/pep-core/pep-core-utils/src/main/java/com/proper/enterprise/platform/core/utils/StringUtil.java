@@ -37,20 +37,20 @@ public class StringUtil extends StringUtils {
 
     /**
      * 按平台的默认编码，将byte[]转成String
-     * @param bytes
+     * @param bytes 输入字节数组
      * @return 如果byte为null,则返回空串 ""
      */
-    public static String toEncodedString(byte[] bytes){
+    public static String toEncodedString(byte[] bytes) {
         return toEncodedString(bytes, PEPConstants.DEFAULT_CHARSET);
     }
 
     /**
      * 按指定的charset将bytes转换成String
-     * @param bytes
-     * @param charset
+     * @param bytes 输入字节数组
+     * @param charset 字符集
      * @return 如果byte为null,则返回空串 ""
      */
-    public static String toEncodedString(final byte[] bytes, final Charset charset){
+    public static String toEncodedString(final byte[] bytes, final Charset charset) {
         if (bytes != null) {
             return new String(bytes, charset);
         }

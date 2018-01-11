@@ -31,7 +31,7 @@ public class AliPayResServiceImpl implements AliPayResService {
      * @param strRes 返回结果
      * @param responseKey 返回结果键值
      * @param res 对象
-     * @throws Exception
+     * @throws Exception 参数获取异常
      */
     public Object convertMap2AliPayRes(String strRes, String responseKey, Object res) throws Exception {
         LOGGER.debug("strRes:{}", strRes);

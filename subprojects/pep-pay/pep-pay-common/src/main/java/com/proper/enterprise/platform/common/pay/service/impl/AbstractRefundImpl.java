@@ -20,9 +20,9 @@ public abstract class AbstractRefundImpl implements RefundService {
     public void saveRefundInfoProcess(RefundInfoReq req) {
         // step1 获取退款列表信息
         List<RefundInfoRes> refundInfoList = getRefundInfo(req);
-        for(RefundInfoRes refundInfo : refundInfoList) {
+        for (RefundInfoRes refundInfo : refundInfoList) {
             // step2 校验是否需要退款
-            if(isNeedRefund(refundInfo)) {
+            if (isNeedRefund(refundInfo)) {
                 // step3 退款并更新业务信息
                 saveRefund(refundInfo);
             }
