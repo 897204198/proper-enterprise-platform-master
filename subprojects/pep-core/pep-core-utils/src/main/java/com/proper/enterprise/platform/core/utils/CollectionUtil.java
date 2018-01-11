@@ -22,9 +22,9 @@ public class CollectionUtil extends CollectionUtils {
     /**
      * 将具体类型元素集合抽象为接口类型元素集合
      *
-     * @param collection    具体类型元素集合
-     * @param <F>           具体类型
-     * @param <T>           接口类型
+     * @param  collection    具体类型元素集合
+     * @param  <F>           具体类型
+     * @param  <T>           接口类型
      * @return 接口类型元素集合
      */
     @SuppressWarnings("unchecked")

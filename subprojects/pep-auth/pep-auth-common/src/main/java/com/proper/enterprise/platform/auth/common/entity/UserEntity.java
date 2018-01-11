@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import org.hibernate.annotations.Type;
@@ -49,6 +50,9 @@ public class UserEntity extends BaseEntity implements User {
     @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
     private boolean superuser;
 
+    @Column(insertable = false, updatable = false)
+    protected String pepDtype;
+
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
             joinColumns = @JoinColumn(name = "USER_ID"),
@@ -56,8 +60,18 @@ public class UserEntity extends BaseEntity implements User {
             uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "ROLE_ID"}))
     private Collection<RoleEntity> roleEntities = new ArrayList<>();
 
-    @Column(insertable = false, updatable = false)
-    protected String pepDtype;
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj != null && (obj instanceof UserEntity) && id.equals(((UserEntity) obj).id);
+    }
+
+    @ManyToMany(mappedBy = "userEntities")
+    private Collection<UserGroupEntity> userGroupEntities = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -124,4 +138,10 @@ public class UserEntity extends BaseEntity implements User {
     public void setPepDtype(String pepDtype) {
         this.pepDtype = pepDtype;
     }
+
+    @Override
+    public Collection<? extends UserGroup> getUserGroups() {
+        return userGroupEntities;
+    }
+
 }
