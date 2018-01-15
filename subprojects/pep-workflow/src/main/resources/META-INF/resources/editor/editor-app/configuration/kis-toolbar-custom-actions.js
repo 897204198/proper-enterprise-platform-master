@@ -34,6 +34,6 @@ KISBPM.TOOLBAR_CONFIG.secondaryItems.push(
     }
 );
 
-KISBPM.TOOLBAR.ACTIONS.customClose =  function(loc) {
-    window.location.href = '/#/workflow/designer'
+KISBPM.TOOLBAR.ACTIONS.customClose =  function() {
+    window.location.href = '/home/workflow/designer'
 };
