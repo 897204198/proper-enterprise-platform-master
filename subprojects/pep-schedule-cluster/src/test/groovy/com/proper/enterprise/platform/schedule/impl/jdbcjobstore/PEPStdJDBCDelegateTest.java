@@ -1,7 +1,6 @@
 package com.proper.enterprise.platform.schedule.impl.jdbcjobstore;
 
 import com.proper.enterprise.platform.test.AbstractTest;
-import org.junit.Assert;
 import org.junit.Test;
 import org.quartz.*;
 import org.slf4j.Logger;
@@ -10,7 +9,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 
 public class PEPStdJDBCDelegateTest extends AbstractTest {
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(PEPStdJDBCDelegateTest.class);
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PEPStdJDBCDelegateTest.class);
     private static final String JOB_NAME = "testJob";
     private static final String JOB_CRON = "0 0/1 * * * ?";
     @Autowired
@@ -22,7 +21,7 @@ public class PEPStdJDBCDelegateTest extends AbstractTest {
             pepSchedulerFactory.start();
             return;
         }
-        logger.error("=====PEPStdJDBCDelegateTest test error========");
+        LOGGER.error("=====PEPStdJDBCDelegateTest test error========");
     }
 
 
@@ -38,7 +37,7 @@ public class PEPStdJDBCDelegateTest extends AbstractTest {
         try {
             pepSchedulerFactory.getScheduler().scheduleJob(jobDetail, trigger);
         } catch (Exception e) {
-            logger.error("======test Scheduler Exception======", e);
+            LOGGER.error("======test Scheduler Exception======", e);
             return false;
         }
         return true;
