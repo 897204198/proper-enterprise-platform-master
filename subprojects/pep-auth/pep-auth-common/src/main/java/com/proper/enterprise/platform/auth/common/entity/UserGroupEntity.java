@@ -9,7 +9,6 @@ import com.proper.enterprise.platform.core.utils.CollectionUtil;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 

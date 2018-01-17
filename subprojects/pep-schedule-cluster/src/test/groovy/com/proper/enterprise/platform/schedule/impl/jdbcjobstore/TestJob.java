@@ -5,10 +5,10 @@ import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 
 public class TestJob implements Job {
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(TestJob.class);
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(TestJob.class);
 
     @Override
     public void execute(JobExecutionContext context) {
-        logger.info("Schedule Success");
+        LOGGER.info("Schedule Success");
     }
 }
