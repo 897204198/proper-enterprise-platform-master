@@ -4,14 +4,16 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
@@ -19,9 +21,31 @@ public class ResourceServiceImpl implements ResourceService {
     @Autowired
     ResourceRepository resourceRepository;
 
+    @Autowired
+    DataDicService dataDicService;
+
     @Override
     public Resource save(Resource resource) {
         return resourceRepository.save((ResourceEntity) resource);
+    }
+
+    @Override
+    public Resource save(Map<String, Object> map) {
+        String id = String.valueOf(map.get("id"));
+        Resource resource = new ResourceEntity();
+        // 更新
+        if (map.get("id") != null && StringUtil.isNotNull(id)) {
+            resource = this.get(id);
+        }
+        resource.setName(String.valueOf(map.get("name")));
+        resource.setURL(String.valueOf(map.get("url")));
+        resource.setEnable((boolean) map.get("enable"));
+        resource.setMethod(RequestMethod.valueOf(String.valueOf(map.get("method"))));
+        String resourceCode = String.valueOf(map.get("resourceCode"));
+        if (map.get("resourceCode") != null && StringUtil.isNotNull(resourceCode)) {
+            resource.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
+        }
+        return this.save(resource);
     }
 
     @Override
@@ -97,5 +121,33 @@ public class ResourceServiceImpl implements ResourceService {
         return returnres;
     }
 
+    @Override
+    public boolean deleteByIds(String ids) {
+        boolean ret = false;
+        if (StringUtil.isNotNull(ids)) {
+            String[] idArr = ids.split(",");
+            List<String> idList = new ArrayList<>();
+            Collections.addAll(idList, idArr);
+            // TODO 对删除业务进行逻辑判断
+            try {
+                resourceRepository.delete(resourceRepository.findAll(idList));
+                ret = true;
+            } catch (Exception e) {
+                throw new ErrMsgException("Delete error!");
+            }
+        } else {
+            throw new ErrMsgException("Param Error!");
+        }
+        return ret;
+    }
 
+    @Override
+    public Collection<? extends Resource> updateEanble(Collection<String> idList, boolean enable) {
+        // TODO 具体实现
+        Collection<ResourceEntity> resourceList = resourceRepository.findAll(idList);
+        for (ResourceEntity resource : resourceList) {
+            resource.setEnable(enable);
+        }
+        return resourceRepository.save(resourceList);
+    }
 }

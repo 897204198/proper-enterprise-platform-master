@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.api.auth.model;
 
 import com.proper.enterprise.platform.core.api.IBase;
+import com.proper.enterprise.platform.sys.datadic.DataDic;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
@@ -93,5 +94,47 @@ public interface Resource extends IBase {
      * @return 菜单集合
      */
     Collection<? extends Menu> getMenus();
+
+    /**
+     * 获得资源类别
+     *
+     * @return 资源类别
+     */
+    DataDic getResourceType();
+
+    /**
+     * 设置资源类别
+     *
+     * @param resourceType 资源类别
+     */
+    void setResourceType(DataDic resourceType);
+
+    /**
+     * 获得资源状态是否可用
+     *
+     * @return 资源类别
+     */
+    boolean isEnable();
+
+    /**
+     * 设置资源是否可用
+     *
+     * @param enable 资源是否可用
+     */
+    void setEnable(boolean enable);
+
+    /**
+     * 获得资源标识
+     *
+     * @return 资源标识
+     */
+    String getIdentifier();
+
+    /**
+     * 设置资源标识
+     *
+     * @param identifier 资源标识
+     */
+    void setIdentifier(String identifier);
 
 }

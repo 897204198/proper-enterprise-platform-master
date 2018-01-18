@@ -56,6 +56,48 @@ public interface User extends IBase {
     void setEmail(String email);
 
     /**
+     * 获得显示名称
+     *
+     * @return 显示名称
+     */
+    String getName();
+
+    /**
+     * 设置显示名称
+     *
+     * @param name 显示名称
+     */
+    void setName(String name);
+
+    /**
+     * 获得手机号
+     *
+     * @return 手机号
+     */
+    String getPhone();
+
+    /**
+     * 设置手机号
+     *
+     * @param phone 手机号
+     */
+    void setPhone(String phone);
+
+    /**
+     * 获取用户状态是否可用
+     *
+     * @return 用户状态是否可用
+     */
+    boolean isEnable();
+
+    /**
+     * 设置用户状态是否可用
+     *
+     * @param enable 用户状态是否可用
+     */
+    void setEnable(boolean enable);
+
+    /**
      * 获得用户拥有的角色集合
      *
      * @return 角色集合

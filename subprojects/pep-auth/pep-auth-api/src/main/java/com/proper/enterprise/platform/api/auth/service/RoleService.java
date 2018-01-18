@@ -27,4 +27,21 @@ public interface RoleService {
      */
     Collection<? extends Role> getByName(String name);
 
+    /**
+     * 保存或更新角色信息
+     *
+     * @param role 角色
+     * @return 更新后的角色信息
+     */
+    Role save(Role role);
+
+    /**
+     * 删除角色
+     * 删除前需判断角色引用状态
+     * 已经使用的角色不能删除
+     *
+     * @param role 角色
+     */
+    void delete(Role role);
+
 }

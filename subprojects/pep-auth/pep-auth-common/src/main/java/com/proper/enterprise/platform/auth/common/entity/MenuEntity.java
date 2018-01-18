@@ -6,6 +6,10 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +45,34 @@ public class MenuEntity extends BaseEntity implements Menu {
      * 菜单图标样式名称
      */
     private String icon;
+
+    /**
+     * 描述说明
+     */
+    private String description;
+
+    @Transient
+    private boolean boot;
+
+    /**
+     * 菜单类别数据字典
+     */
+    @Convert(converter = DataDicLiteConverter.class)
+    private DataDic menuType;
+
+    /**
+     * 菜单状态
+     */
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    private boolean enable = true;
+
+    /**
+     * 标识
+     */
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    private String identifier;
 
     /**
      * 父菜单
@@ -214,4 +246,35 @@ public class MenuEntity extends BaseEntity implements Menu {
         return (id + sequenceNumber).hashCode();
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public DataDic getMenuType() {
+        return menuType;
+    }
+
+    public void setMenuType(DataDic menuType) {
+        this.menuType = menuType;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
 }

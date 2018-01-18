@@ -41,6 +41,7 @@ public class UserEntity extends BaseEntity implements User {
     /**
      * 邮箱，用于找回密码
      */
+    @Column
     private String email;
 
     /**
@@ -49,6 +50,25 @@ public class UserEntity extends BaseEntity implements User {
     @Type(type = "yes_no")
     @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
     private boolean superuser;
+
+    /**
+     * 用户手机号
+     */
+    @Column
+    private String phone;
+
+    /**
+     * 用户显示名称
+     */
+    @Column
+    private String name = " ";
+
+    /**
+     * 用户状态
+     */
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    private boolean enable = true;
 
     @Column(insertable = false, updatable = false)
     protected String pepDtype;
@@ -100,6 +120,30 @@ public class UserEntity extends BaseEntity implements User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     @Override

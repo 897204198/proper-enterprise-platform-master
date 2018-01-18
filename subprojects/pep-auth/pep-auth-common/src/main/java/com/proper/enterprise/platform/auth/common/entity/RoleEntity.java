@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,6 +25,18 @@ public class RoleEntity extends BaseEntity implements Role {
      * 名称
      */
     private String name;
+
+    /**
+     * 权限描述
+     */
+    private String description;
+
+    /**
+     * 用户状态
+     */
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    private boolean enable = true;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "roleEntities")
@@ -57,6 +70,22 @@ public class RoleEntity extends BaseEntity implements Role {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     @Override

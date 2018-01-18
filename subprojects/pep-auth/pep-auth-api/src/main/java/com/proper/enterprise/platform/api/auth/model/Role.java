@@ -35,6 +35,34 @@ public interface Role extends IBase {
     void setName(String name);
 
     /**
+     * 获得角色描述
+     *
+     * @return 角色描述
+     */
+    String getDescription();
+
+    /**
+     * 设置角色描述
+     *
+     * @param description 角色描述
+     */
+    void setDescription(String description);
+
+    /**
+     * 获得角色状态是否可用
+     *
+     * @return 角色状态是否可用
+     */
+    boolean isEnable();
+
+    /**
+     * 设置角色状态是否可用
+     *
+     * @param enable 角色状态是否可用
+     */
+    void setEnable(boolean enable);
+
+    /**
      * 获得上级角色
      *
      * @return 上级角色

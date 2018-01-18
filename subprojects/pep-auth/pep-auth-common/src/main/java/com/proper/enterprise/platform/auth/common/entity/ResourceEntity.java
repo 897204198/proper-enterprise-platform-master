@@ -6,6 +6,10 @@ import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.*;
@@ -39,6 +43,26 @@ public class ResourceEntity extends BaseEntity implements Resource {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RequestMethod method = RequestMethod.GET;
+
+    /**
+     * 菜单类别数据字典
+     */
+    @Convert(converter = DataDicLiteConverter.class)
+    private DataDic resourceType;
+
+    /**
+     * 菜单状态
+     */
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    private boolean enable = true;
+
+    /**
+     * 标识
+     */
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    private String identifier;
 
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_RESOURCES_DATARESTRAINS",
@@ -106,4 +130,27 @@ public class ResourceEntity extends BaseEntity implements Resource {
         this.method = method;
     }
 
+    public DataDic getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(DataDic resourceType) {
+        this.resourceType = resourceType;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 }
