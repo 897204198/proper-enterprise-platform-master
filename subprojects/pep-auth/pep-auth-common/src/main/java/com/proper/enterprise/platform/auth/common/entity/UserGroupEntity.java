@@ -46,6 +46,13 @@ public class UserGroupEntity extends BaseEntity implements UserGroup {
             uniqueConstraints = @UniqueConstraint(columnNames = {"USER_GROUP_ID", "USER_ID"}))
     private Collection<UserEntity> userEntities = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "PEP_AUTH_GROUPS_ROLES",
+        joinColumns = @JoinColumn(name = "GROUP_ID"),
+        inverseJoinColumns = @JoinColumn(name = "ROLE_ID"),
+        uniqueConstraints = @UniqueConstraint(columnNames = {"GROUP_ID", "ROLE_ID"}))
+    private Collection<RoleEntity> roleGroupEntities = new ArrayList<>();
+
     @Override
     public String getName() {
         return name;

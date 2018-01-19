@@ -8,6 +8,8 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import org.hibernate.annotations.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import java.util.Set;
 @Table(name = "PEP_AUTH_ROLES")
 @CacheEntity
 public class RoleEntity extends BaseEntity implements Role {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoleEntity.class);
 
     public RoleEntity() { }
 
@@ -30,6 +34,17 @@ public class RoleEntity extends BaseEntity implements Role {
      * 权限描述
      */
     private String description;
+
+    /**
+     * 父菜单
+     */
+    @ManyToOne
+    @JoinColumn(name = "PARENT_ID")
+    @JsonIgnore
+    private RoleEntity parent;
+
+    @Transient
+    private String parentId;
 
     /**
      * 用户状态
@@ -90,13 +105,14 @@ public class RoleEntity extends BaseEntity implements Role {
 
     @Override
     public Role getParent() {
-        // TODO
-        return null;
+        return parent;
     }
 
     @Override
-    public void setParent(Role role) {
-        // TODO
+    public void setParent(Role parent) {
+        if (parent instanceof RoleEntity) {
+            this.parent = (RoleEntity) parent;
+        }
     }
 
     @Override
