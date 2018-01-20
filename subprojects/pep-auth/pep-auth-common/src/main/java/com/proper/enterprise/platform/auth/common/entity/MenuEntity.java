@@ -85,6 +85,12 @@ public class MenuEntity extends BaseEntity implements Menu {
     @Transient
     private String parentId;
 
+    @Transient
+    private Collection<? extends Resource> resources = new ArrayList<>();
+
+    @Transient
+    private Collection<? extends Role> roles = new ArrayList<>();
+
     /**
      * 子菜单集合
      */
@@ -195,12 +201,6 @@ public class MenuEntity extends BaseEntity implements Menu {
     }
 
     @Override
-    @JsonIgnore
-    public Collection<? extends Resource> getResources() {
-        return resourceEntities;
-    }
-
-    @Override
     public void add(Resource resource) {
         resourceEntities.add((ResourceEntity) resource);
     }
@@ -208,12 +208,6 @@ public class MenuEntity extends BaseEntity implements Menu {
     @Override
     public void remove(Resource resource) {
         resourceEntities.remove(resource);
-    }
-
-    @Override
-    @JsonIgnore
-    public Collection<? extends Role> getRoles() {
-        return roleEntities;
     }
 
     @Override
@@ -276,5 +270,16 @@ public class MenuEntity extends BaseEntity implements Menu {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends Role> getRoles() {
+        return roleEntities;
+    }
+
+    @Override
+    public Collection<? extends Resource> getResources() {
+        return resourceEntities;
     }
 }

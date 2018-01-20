@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.api.auth.model;
 import com.proper.enterprise.platform.core.api.IBase;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * 角色
@@ -77,24 +76,38 @@ public interface Role extends IBase {
     void setParent(Role role);
 
     /**
-     * 获得角色权限集合
+     * 获得角色拥有的用户集合
      *
-     * @return 权限集合
+     * @return 用户集合
      */
-    Set<Permission> getPermissions();
+    Collection<? extends User> getUsers();
 
     /**
-     * 设置角色权限集合
+     * 获得角色拥有的用户组集合
      *
-     * @param permissions 权限集合
+     * @return 用户组集合
      */
-    void setPermission(Set<Permission> permissions);
+    Collection<? extends UserGroup> getUserGroups();
 
     /**
      * 获得角色拥有的菜单集合
      *
-     * @return
+     * @return 菜单集合
      */
     Collection<? extends Menu> getMenus();
+
+    /**
+     * 角色添加菜单集合
+     *
+     * @param menus 菜单集合
+     */
+    void add(Collection<? extends Menu>  menus);
+
+    /**
+     * 角色删除菜单集合
+     *
+     * @param menus 菜单集合
+     */
+    void remove(Collection<? extends Menu>  menus);
 
 }

@@ -3,12 +3,10 @@ package com.proper.enterprise.platform.auth.common.service.impl;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserGroupService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.repository.UserRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
@@ -26,10 +24,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 通用的/抽象的用户服务接口实现
@@ -66,6 +61,18 @@ public abstract class AbstractUserServiceImpl implements UserService {
             entities.add((UserEntity) user);
         }
         userRepo.save(entities);
+    }
+
+    @Override
+    public User save(String userId, Map<String, Object> map) {
+        // TODO 具体业务逻辑
+        UserEntity user = (UserEntity)this.get(userId);
+        user.setName(String.valueOf(map.get("name")));
+        user.setEmail(String.valueOf(map.get("email")));
+        user.setPhone(String.valueOf(map.get("phone")));
+        user.setPassword(String.valueOf(map.get("password")));
+        user.setEnable((boolean)map.get("enable"));
+        return this.save(user);
     }
 
     @Override
@@ -110,7 +117,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
                                                           Integer pageNo, Integer pageSize) {
         DataTrunk<UserEntity> userDataTrunk = new DataTrunk<>();
         PageRequest pageReq = new PageRequest(pageNo - 1, pageSize, new Sort(Sort.Direction.ASC, "name"));
-        Specification specification = new Specification<RoleEntity>() {
+        Specification specification = new Specification<UserEntity>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>();
@@ -190,28 +197,4 @@ public abstract class AbstractUserServiceImpl implements UserService {
         }
         return user;
     }
-
-    @Override
-    public User addGroupUser(String userId, String groupId) {
-        User user = this.get(userId);
-        UserGroup userGroup = userGroupService.get(groupId);
-        if (userGroup != null) {
-            userGroup.add(user);
-            userGroupService.save(userGroup);
-            user = this.get(userId);
-        }
-        return user;
-    }
-
-    @Override
-    public User deleteGroupUser(String userId, String groupId) {
-        User user = this.get(userId);
-        UserGroup userGroup = userGroupService.get(groupId);
-        if (userGroup != null) {
-            userGroup.remove(user);
-            userGroupService.save(userGroup);
-        }
-        return this.get(userId);
-    }
-
 }

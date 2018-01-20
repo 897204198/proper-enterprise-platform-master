@@ -60,6 +60,18 @@ public class MenusController extends BaseController {
         return responseOfPut(menu);
     }
 
+    @PostMapping(path = "/{menuId}/resource/{resourceId}")
+    public ResponseEntity<Menu> addMenuResource(@PathVariable String menuId, @PathVariable String resourceId) {
+        // TODO 具体实现
+        return responseOfPost(service.addMenuResource(menuId, resourceId));
+    }
+
+    @DeleteMapping(path = "/{menuId}/resource/{resourceId}")
+    public ResponseEntity deleteMenuResource(@PathVariable String menuId, @PathVariable String resourceId) {
+        // TODO 具体实现
+        return  responseOfDelete(service.deleteMenuResource(menuId, resourceId) != null);
+    }
+
     @GetMapping(path = "/parents")
     public ResponseEntity<Collection<? extends Menu>> getMenuParents() {
         // TODO 具体实现 获取父节点菜单列表

@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
+import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.common.repository.RoleRepository;
@@ -20,7 +22,10 @@ import java.util.*;
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private MenuService menuService;
 
     @Override
     public Role get(String id) {
@@ -115,4 +120,35 @@ public class RoleServiceImpl implements RoleService {
         }
         return roleRepository.save(roleList);
     }
+
+    @Override
+    public Role addRoleMenus(String roleId, String ids) {
+        // TODO 具体实现
+        Role role = this.get(roleId);
+        Collection<? extends Menu> menuList = new ArrayList<>();
+        if (StringUtil.isNotNull(ids)) {
+            String[] idArr = ids.split(",");
+            List<String> idList = new ArrayList<>();
+            Collections.addAll(idList, idArr);
+            menuList = menuService.getByIds(idList);
+        }
+        role.add(menuList);
+        return save(role);
+    }
+
+    @Override
+    public Role deleteRoleMenus(String roleId, String ids) {
+        // TODO 具体实现
+        Role role = this.get(roleId);
+        Collection<? extends Menu> menuList = new ArrayList<>();
+        if (StringUtil.isNotNull(ids)) {
+            String[] idArr = ids.split(",");
+            List<String> idList = new ArrayList<>();
+            Collections.addAll(idList, idArr);
+            menuList = menuService.getByIds(idList);
+        }
+        role.remove(menuList);
+        return save(role);
+    }
+
 }

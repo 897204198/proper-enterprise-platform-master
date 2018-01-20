@@ -98,13 +98,6 @@ public interface User extends IBase {
     void setEnable(boolean enable);
 
     /**
-     * 获得用户拥有的角色集合
-     *
-     * @return 角色集合
-     */
-    Collection<? extends Role> getRoles();
-
-    /**
      * 为用户增加一个角色
      *
      * @param role 角色
@@ -132,5 +125,12 @@ public interface User extends IBase {
      * @return 用户组集合
      */
     Collection<? extends UserGroup> getUserGroups();
+
+    /**
+     * 获得用户拥有的角色集合
+     *
+     * @return 角色集合
+     */
+    Collection<? extends Role> getRoles();
 
 }

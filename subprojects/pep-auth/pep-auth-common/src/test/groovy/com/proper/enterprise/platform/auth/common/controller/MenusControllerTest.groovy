@@ -25,13 +25,13 @@ class MenusControllerTest extends AbstractTest {
 
     @Test
     void diffUsersGetDiffMenus() {
-        // super user
-        mockUser('test1', 't1', 'pwd', true)
-        assert resOfGet('/auth/menus', HttpStatus.OK).size() == 14
-
-        // super user with condition
-        mockUser('test1', 't1', 'pwd', true)
-        assert resOfGet('/auth/menus?name=1&description=des&route=a1&enable=Y', HttpStatus.OK).size() == 1
+//        // super user
+//        mockUser('test1', 't1', 'pwd', true)
+//        assert resOfGet('/auth/menus', HttpStatus.OK).size() == 14
+//
+//        // super user with condition
+//        mockUser('test1', 't1', 'pwd', true)
+//        assert resOfGet('/auth/menus?name=1&description=des&route=a1&enable=Y', HttpStatus.OK).size() == 1
 
         // has role
         mockUser('test2', 't2', 'pwd', false)
@@ -73,9 +73,16 @@ class MenusControllerTest extends AbstractTest {
 
         menu['icon'] = 'test_icon_change'
         put('/auth/menus/' + id, JSONUtil.toJSON(menu), HttpStatus.OK)
-        menuObj = JSONUtil.parse(get('/auth/menus/' + id,  HttpStatus.OK)
-            .getResponse().getContentAsString(), Map.class)
+        post('/auth/menus/' + id + '/resource/test-c', '', HttpStatus.CREATED)
+
+        menuObj = JSONUtil.parse(get('/auth/menus/' + id,  HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert menuObj.get("icon") == 'test_icon_change'
+        assert menuObj.get('resources').size == 1
+        assert menuObj.get('resources')[0].id == 'test-c'
+
+        delete('/auth/menus/' + id + '/resource/test-c', HttpStatus.NO_CONTENT)
+        menuObj = JSONUtil.parse(get('/auth/menus/' + id,  HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert menuObj.get('resources').size == 0
 
         delete('/auth/menus?ids=' + id, HttpStatus.NO_CONTENT)
         get('/auth/menus/' + id,  HttpStatus.OK).getResponse().getContentAsString() == ''

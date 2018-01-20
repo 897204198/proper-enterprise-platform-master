@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
@@ -73,6 +72,12 @@ public class UserEntity extends BaseEntity implements User {
     @Column(insertable = false, updatable = false)
     protected String pepDtype;
 
+    @Transient
+    private Collection<? extends Role> roles = new ArrayList<>();
+
+    @Transient
+    private Collection<? extends UserGroup> userGroups = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
             joinColumns = @JoinColumn(name = "USER_ID"),
@@ -98,58 +103,64 @@ public class UserEntity extends BaseEntity implements User {
         return "User [id=" + id + ", username=" + username + "]";
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
 
+    @Override
     public void setUsername(String username) {
         this.username = username;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
     public void setPassword(String password) {
         this.password = password;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public void setEmail(String email) {
         this.email = email;
     }
 
+    @Override
     public String getPhone() {
         return phone;
     }
 
+    @Override
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public boolean isEnable() {
         return enable;
     }
 
+    @Override
     public void setEnable(boolean enable) {
         this.enable = enable;
-    }
-
-    @Override
-    @JsonIgnore
-    public Collection<? extends Role> getRoles() {
-        return roleEntities;
     }
 
     @Override
@@ -160,10 +171,6 @@ public class UserEntity extends BaseEntity implements User {
     @Override
     public void remove(Role role) {
         roleEntities.remove(role);
-    }
-
-    public Collection<RoleEntity> getRoleEntities() {
-        return roleEntities;
     }
 
     @Override
@@ -188,4 +195,8 @@ public class UserEntity extends BaseEntity implements User {
         return userGroupEntities;
     }
 
+    @Override
+    public Collection<? extends Role> getRoles() {
+        return roleEntities;
+    }
 }

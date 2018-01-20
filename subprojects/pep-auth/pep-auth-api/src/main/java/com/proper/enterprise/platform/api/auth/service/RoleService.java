@@ -87,4 +87,21 @@ public interface RoleService {
      */
     Collection<? extends Role> updateEanble(Collection<String> idList, boolean enable);
 
+    /**
+     * 角色添加菜单列表
+     *
+     * @param roleId 角色ID
+     * @param ids 以 , 分隔的菜单ID列表
+     * @return 角色
+     */
+    Role addRoleMenus(String roleId, String ids);
+
+    /**
+     * 角色删除菜单列表
+     *
+     * @param roleId 角色ID
+     * @param ids 以 , 分隔的菜单ID列表
+     * @return 角色
+     */
+    Role deleteRoleMenus(String roleId, String ids);
 }

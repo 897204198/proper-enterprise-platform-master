@@ -6,7 +6,9 @@ import org.junit.Test
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 
-@Sql("/com/proper/enterprise/platform/auth/common/roles.sql")
+@Sql(["/com/proper/enterprise/platform/auth/common/roles.sql",
+      "/com/proper/enterprise/platform/auth/common/menus.sql"
+    ])
 class RolesControllerTest extends AbstractTest {
 
     @Test
@@ -50,11 +52,21 @@ class RolesControllerTest extends AbstractTest {
         updateReq['enable'] = false
 //        req['parentId'] = 'updateReq_test_parentId' TODO
         put('/auth/roles/' + id, JSONUtil.toJSON(updateReq), HttpStatus.OK)
+        def addReq = [:]
+        addReq['ids'] = 'a1,a2'
+        post('/auth/roles/' + id + '/menu', JSONUtil.toJSON(addReq), HttpStatus.CREATED)
 
         role = JSONUtil.parse(get('/auth/roles/' + id, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert role.get('description') == 'updateReq_test_description'
         assert !role.get('enable')
         assert role.get('name') == 'updateReq_test_name'
+        assert role.get('menus').size == 2
+        assert role.get('menus')[0].id == 'a1'
+        assert role.get('menus')[1].id == 'a2'
+
+        delete('/auth/roles/' + id + '/menu?ids=a1,a2', HttpStatus.NO_CONTENT)
+        role = JSONUtil.parse(get('/auth/roles/' + id, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert role.get('menus').size == 0
 
         delete('/auth/roles?ids=' + id, HttpStatus.NO_CONTENT)
         get('/auth/roles/' + id,  HttpStatus.OK).getResponse().getContentAsString() == ''

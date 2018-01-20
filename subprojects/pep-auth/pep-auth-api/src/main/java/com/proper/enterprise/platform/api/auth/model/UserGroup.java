@@ -55,11 +55,18 @@ public interface UserGroup extends IBase {
     void setSeq(int seq);
 
     /**
-     * 获得用户组下用户集合
+     * 获取用户组状态
      *
-     * @return 用户集合
+     * @return 用户组状态
      */
-    Collection<? extends User> getUsers();
+    boolean isEnable();
+
+    /**
+     * 设定用户组状态
+     *
+     * @param enable 用户组状态
+     */
+    void setEnable(boolean enable);
 
     /**
      * 向用户组中添加一个用户
@@ -76,10 +83,38 @@ public interface UserGroup extends IBase {
     void add(User... users);
 
     /**
+     * 向用户组中添加一个角色
+     *
+     * @param role 角色
+     */
+    void add(Role role);
+
+    /**
      * 从组中移除一个用户
      *
      * @param user 用户
      */
     void remove(User user);
+
+    /**
+     * 从组中移除一个角色
+     *
+     * @param role 角色
+     */
+    void remove(Role role);
+
+    /**
+     * 获得用户组下用户集合
+     *
+     * @return 用户集合
+     */
+    Collection<? extends User> getUsers();
+
+    /**
+     * 获得用户组下角色集合
+     *
+     * @return 角色集合
+     */
+    Collection<? extends Role> getRoles();
 
 }

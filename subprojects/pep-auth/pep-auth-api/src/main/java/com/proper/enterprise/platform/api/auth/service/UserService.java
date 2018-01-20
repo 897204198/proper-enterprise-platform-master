@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * 用户服务接口
@@ -17,6 +18,8 @@ public interface UserService {
     User save(User user);
 
     void save(User... users);
+
+    User save(String userId, Map<String, Object> user);
 
     User getCurrentUser();
 
@@ -87,23 +90,5 @@ public interface UserService {
      * @return 用户信息
      */
     User deleteUserRole(String userId, String roleId);
-
-    /**
-     * 添加用户到用户组
-     *
-     * @param userId 用户ID
-     * @param groupId 用户组ID
-     * @return 用户信息
-     */
-    User addGroupUser(String userId, String groupId);
-
-    /**
-     * 用户组中移除用户
-     *
-     * @param userId 用户ID
-     * @param groupId 用户组ID
-     * @return 用户信息
-     */
-    User deleteGroupUser(String userId, String groupId);
 
 }

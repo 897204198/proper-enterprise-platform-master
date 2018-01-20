@@ -59,6 +59,20 @@ public class RolesController extends BaseController {
         return responseOfPut(role);
     }
 
+    @SuppressWarnings("unchecked")
+    @PostMapping(path = "/{roleId}/menu")
+    public ResponseEntity<Role> addRoleMenus(@PathVariable String roleId, @RequestBody Map<String, Object> reqMap) {
+        // TODO 具体业务实现
+        String ids = (String)reqMap.get("ids");
+        return responseOfPost(roleService.addRoleMenus(roleId, ids));
+    }
+
+    @DeleteMapping("/{roleId}/menu")
+    public ResponseEntity deleteRoleMenus(@PathVariable String roleId, @RequestParam String ids) {
+        // TODO 具体业务实现
+        return responseOfDelete(roleService.deleteRoleMenus(roleId, ids) != null);
+    }
+
     @GetMapping(path = "/parents")
     public ResponseEntity<Collection<? extends Role>> getMenuParents() {
         // TODO 具体实现 获取父节点菜单列表

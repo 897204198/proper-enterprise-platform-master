@@ -5,9 +5,9 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
+import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.entity.MenuEntity;
-import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.common.repository.MenuRepository;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
@@ -38,9 +38,18 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     private DataDicService dataDicService;
 
+    @Autowired
+    private ResourceService resourceService;
+
     @Override
     public Menu get(String id) {
         return repository.findOne(id);
+    }
+
+    @Override
+    public Collection<? extends Menu> getByIds(Collection<String> ids) {
+        // TODO 查询有效菜单
+        return repository.findAll(ids);
     }
 
     @Override
@@ -145,7 +154,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @SuppressWarnings("unchecked")
     public Collection<? extends Menu> getMenuByCondiction(String name, String description, String route, String enable) {
-        Specification specification = new Specification<RoleEntity>() {
+        Specification specification = new Specification<MenuEntity>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>();
@@ -202,5 +211,33 @@ public class MenuServiceImpl implements MenuService {
             menu.setEnable(enable);
         }
         return repository.save(menuList);
+    }
+
+    @Override
+    public Menu addMenuResource(String menuId, String resourceId) {
+        // TODO 具体业务实现
+        Menu menu = this.get(menuId);
+        if (menu != null) {
+            Resource resource = resourceService.get(resourceId);
+            if (resource != null) {
+                menu.add(resource);
+                menu = save(menu);
+            }
+        }
+        return menu;
+    }
+
+    @Override
+    public Menu deleteMenuResource(String menuId, String resourceId) {
+        // TODO 具体业务实现
+        Menu menu = this.get(menuId);
+        if (menu != null) {
+            Resource resource = resourceService.get(resourceId);
+            if (resource != null) {
+                menu.remove(resource);
+                menu = save(menu);
+            }
+        }
+        return menu;
     }
 }

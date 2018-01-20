@@ -47,6 +47,14 @@ public interface MenuService {
     Collection<? extends Menu> getMenus(String name, String description, String route, String enable);
 
     /**
+     * 根据菜单ID列表获取菜单列表
+     *
+     * @param ids 菜单ID列表
+     * @return 菜单列表
+     */
+    Collection<? extends Menu> getByIds(Collection<String> ids);
+
+    /**
      * 某资源是否能够被某用户访问
      *
      * 当资源未定义或未定义在任何菜单下时，任何人都有权限访问
@@ -92,5 +100,23 @@ public interface MenuService {
      * @return 结果
      */
     Collection<? extends Menu> updateEanble(Collection<String> idList, boolean enable);
+
+    /**
+     * 菜单添加资源
+     *
+     * @param menuId 菜单ID
+     * @param resourceId 资源ID
+     * @return 菜单
+     */
+    Menu addMenuResource(String menuId, String resourceId);
+
+    /**
+     * 菜单删除资源
+     *
+     * @param menuId 菜单ID
+     * @param resourceId 资源ID
+     * @return 菜单
+     */
+    Menu deleteMenuResource(String menuId, String resourceId);
 
 }

@@ -14,12 +14,6 @@ import org.springframework.test.context.jdbc.Sql
 class UsersControllerTest extends AbstractTest {
 
     private static final String URI = '/auth/users'
-    private static UserEntity userEntity = new UserEntity('user1', 'pwd1')
-
-    @Test
-    void checkCRUD() {
-        checkBaseCRUD(URI, userEntity)
-    }
 
     @Autowired
     RoleService roleService
@@ -27,20 +21,47 @@ class UsersControllerTest extends AbstractTest {
     @Autowired
     UserGroupService userGroupService
 
-    @Sql("/com/proper/enterprise/platform/auth/common/roles.sql")
+    @Sql("/com/proper/enterprise/platform/auth/common/users.sql")
     @Test
-    void addRolesToUserAndThenRemove() {
-        UserEntity user = postAndReturn(URI, userEntity)
-        def roles = roleService.getByName('testrole')
-        assert !roles.isEmpty() && roles.size()==2
-        user.add(roles[0])
-        user.add(roles[1])
-        user = putAndReturn(URI, user, HttpStatus.OK)
-        assert user.roles.containsAll(roles)
+    void userDetailTest() {
+        mockUser('td_id', 'td_username', 'td_password', true)
+        def userReq = [:]
+        userReq['username'] = 'td_username'
+        userReq['name'] = 'td_name'
+        userReq['password'] = 'td_password'
+        userReq['email'] = 'td_email'
+        userReq['phone'] = '12345678901'
+        userReq['enable'] = true
+        userReq['superuser'] = true
 
-        def role = roleService.get('role1')
-        user.remove(role)
-        assert putAndReturn(URI, user, HttpStatus.OK).roles.first().id == 'role2'
+        post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED)
+
+        def res = JSONUtil.parse(get('/auth/users?userNametd_username=&name=td_name&phone=12345678901&email=&enable=&pageNo=1&pageSize=2',
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+
+        assert res.count == 1
+        assert res.data[0].get('username') == 'td_username'
+
+        def id = res.data[0].get('id')
+
+        def user = JSONUtil.parse(get(URI + '/' + id, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert user.get('phone') == '12345678901'
+        assert user.get('name') == 'td_name'
+
+        def upUser = [:]
+        upUser['name'] = 'up_name'
+        upUser['password'] = 'up_password'
+        upUser['email'] = 'up_email'
+        upUser['phone'] = '12345678902'
+        upUser['enable'] = false
+        put(URI + '/' + id, JSONUtil.toJSON(upUser), HttpStatus.OK)
+
+        user = JSONUtil.parse(get(URI + '/' + id, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert user.get('phone') == '12345678902'
+        assert user.get('email') == 'up_email'
+
+        delete(URI + '/' + id, HttpStatus.NO_CONTENT)
+        get(URI + '/' + id, HttpStatus.OK).getResponse().getContentAsString() == ''
     }
 
     @Sql("/com/proper/enterprise/platform/auth/common/users.sql")
@@ -106,39 +127,15 @@ class UsersControllerTest extends AbstractTest {
     ])
     @Test
     void userRoleTest() {
-        def user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
-        assert user.roleEntities.size() == 0
+        def user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert user.get('roles').size() == 0
         post('/auth/users/' + user.id + '/role/' + 'role1', '', HttpStatus.CREATED)
-        user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
-        assert user.roleEntities.size() == 1
-        assert user.roleEntities[0].id == 'role1'
+        user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert user.get('roles').size() == 1
+        assert user.get('roles')[0].id == 'role1'
         delete('/auth/users/' + user.id + '/role/' + 'role1', HttpStatus.NO_CONTENT)
-        user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
-        assert user.roleEntities.size() == 0
-    }
-
-    @Sql([
-        "/com/proper/enterprise/platform/auth/common/usergroups.sql",
-        "/com/proper/enterprise/platform/auth/common/users.sql"
-    ])
-    @Test
-    void userGroupTest() {
-        def user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
-        assert user.userGroups.size() == 0
-        def userGroup = userGroupService.get('group1')
-        assert userGroup.users.size() == 0
-        post('/auth/users/' + user.id + '/group/' + 'group1', '', HttpStatus.CREATED)
-        user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
-//        assert user.userGroups.size() == 1 TODO 被控表字段未被更新
-//        assert user.userGroups[0].id == 'group1'
-        userGroup = userGroupService.get('group1')
-        assert userGroup.users.size() == 1
-        assert userGroup.users[0].id == 'test1'
-        delete('/auth/users/' + user.id + '/group/' + 'group1', HttpStatus.NO_CONTENT)
-        user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
-        assert user.userGroups.size() == 0
-        userGroup = userGroupService.get('group1')
-        assert userGroup.users.size() == 0
+        user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert user.get('roles').size() == 0
     }
 
 }

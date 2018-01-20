@@ -46,21 +46,18 @@ public class UsersController extends BaseController {
         return responseOfDelete(userService.deleteByIds(ids));
     }
 
-    @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
+    @GetMapping(path = "/{userId}")
     public ResponseEntity<User> get(@PathVariable String userId) {
         return responseOfGet(userService.get(userId));
     }
 
-    @RequestMapping(path = "/{userId}", method = RequestMethod.PUT)
-    public ResponseEntity<User> update(@PathVariable String userId, @RequestBody UserEntity userEntity) {
-        User user = userService.get(userId);
-        if (user != null) {
-            user = userService.save(userEntity);
-        }
-        return responseOfPut(user);
+    @PutMapping(path = "/{userId}")
+    public ResponseEntity<User> update(@PathVariable String userId, @RequestBody Map<String, Object> reqMap) {
+        // TODO 具体实现
+        return responseOfPut(userService.save(userId, reqMap));
     }
 
-    @RequestMapping(path = "/{userId}", method = RequestMethod.DELETE)
+    @DeleteMapping(path = "/{userId}")
     public ResponseEntity delete(@PathVariable String userId) {
         User user = userService.get(userId);
         if (user != null) {
@@ -76,7 +73,7 @@ public class UsersController extends BaseController {
      * @param roleId 权限ID
      * @return 结果
      */
-    @RequestMapping(path = "/{userId}/role/{roleId}", method = RequestMethod.POST)
+    @PostMapping(path = "/{userId}/role/{roleId}")
     public ResponseEntity<User> addUserRole(@PathVariable String userId, @PathVariable String roleId) {
         // TODO 具体业务实现
         return responseOfPost(userService.addUserRole(userId, roleId));
@@ -89,36 +86,9 @@ public class UsersController extends BaseController {
      * @param roleId 权限ID
      * @return 结果
      */
-    @RequestMapping(path = "/{userId}/role/{roleId}", method = RequestMethod.DELETE)
+    @DeleteMapping(path = "/{userId}/role/{roleId}")
     public ResponseEntity deleteUserRole(@PathVariable String userId, @PathVariable String roleId) {
         // TODO 具体业务实现
         return responseOfDelete(userService.deleteUserRole(userId, roleId) != null);
     }
-
-    /**
-     * 添加用户到用户组
-     *
-     * @param userId 用户ID
-     * @param groupId 用户组ID
-     * @return 结果
-     */
-    @RequestMapping(path = "/{userId}/group/{groupId}", method = RequestMethod.POST)
-    public ResponseEntity<User> addUserGroup(@PathVariable String userId, @PathVariable String groupId) {
-        // TODO 具体业务实现
-        return responseOfPost(userService.addGroupUser(userId, groupId));
-    }
-
-    /**
-     * 从用户组中删除用户
-     *
-     * @param userId 用户ID
-     * @param groupId 用户组ID
-     * @return 结果
-     */
-    @RequestMapping(path = "/{userId}/group/{groupId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteUserGroup(@PathVariable String userId, @PathVariable String groupId) {
-        // TODO 具体业务实现
-        return responseOfDelete(userService.deleteGroupUser(userId, groupId) != null);
-    }
-
 }

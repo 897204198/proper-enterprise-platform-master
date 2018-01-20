@@ -57,6 +57,9 @@ public class ResourceEntity extends BaseEntity implements Resource {
     @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
     private boolean enable = true;
 
+    @Transient
+    private Collection<? extends Menu> menus = new ArrayList<>();
+
     /**
      * 标识
      */
@@ -117,11 +120,6 @@ public class ResourceEntity extends BaseEntity implements Resource {
         dataRestrainEntities.remove(restrain);
     }
 
-    @Override
-    public Collection<? extends Menu> getMenus() {
-        return menuEntities;
-    }
-
     public RequestMethod getMethod() {
         return method;
     }
@@ -152,5 +150,11 @@ public class ResourceEntity extends BaseEntity implements Resource {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends Menu> getMenus() {
+        return menuEntities;
     }
 }
