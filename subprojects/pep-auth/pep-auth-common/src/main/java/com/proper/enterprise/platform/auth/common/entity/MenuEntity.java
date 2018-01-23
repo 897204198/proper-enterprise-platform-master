@@ -94,7 +94,7 @@ public class MenuEntity extends BaseEntity implements Menu {
     /**
      * 子菜单集合
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parent")
+    @OneToMany(mappedBy = "parent")
     @JsonIgnore
     private Collection<MenuEntity> children = new ArrayList<>();
 

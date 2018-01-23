@@ -164,6 +164,11 @@ public class UserEntity extends BaseEntity implements User {
     }
 
     @Override
+    public Collection<RoleEntity> getRoles() {
+        return roleEntities;
+    }
+
+    @Override
     public void add(Role role) {
         roleEntities.add((RoleEntity) role);
     }
@@ -195,8 +200,4 @@ public class UserEntity extends BaseEntity implements User {
         return userGroupEntities;
     }
 
-    @Override
-    public Collection<? extends Role> getRoles() {
-        return roleEntities;
-    }
 }
