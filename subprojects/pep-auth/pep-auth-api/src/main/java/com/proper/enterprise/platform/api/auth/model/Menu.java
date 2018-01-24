@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.api.auth.model;
 
 import com.proper.enterprise.platform.core.api.IBase;
-import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 
 import java.util.Collection;
 
@@ -197,14 +197,14 @@ public interface Menu extends IBase, Comparable<Menu> {
      *
      * @return 菜单类型
      */
-    DataDic getMenuType();
+    DataDicLite getMenuType();
 
     /**
      * 设置菜单类型
      *
      * @param menuType 菜单类型
      */
-    void setMenuType(DataDic menuType);
+    void setMenuType(DataDicLite menuType);
 
     /**
      * 获取菜单状态是否可用

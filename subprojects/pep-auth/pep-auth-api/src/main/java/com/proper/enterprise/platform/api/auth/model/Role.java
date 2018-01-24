@@ -97,6 +97,13 @@ public interface Role extends IBase {
     Collection<? extends Menu> getMenus();
 
     /**
+     * 获得角色拥有的资源集合
+     *
+     * @return 资源集合
+     */
+    Collection<? extends Resource> getResources();
+
+    /**
      * 角色添加菜单集合
      *
      * @param menus 菜单集合
@@ -109,5 +116,19 @@ public interface Role extends IBase {
      * @param menus 菜单集合
      */
     void remove(Collection<? extends Menu>  menus);
+
+    /**
+     * 角色添加资源集合
+     *
+     * @param resources 资源集合
+     */
+    void addResources(Collection<? extends Resource> resources);
+
+    /**
+     * 角色删除资源集合
+     *
+     * @param resources 资源集合
+     */
+    void removeResources(Collection<? extends Resource> resources);
 
 }

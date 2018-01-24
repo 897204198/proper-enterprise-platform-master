@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
-import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,18 +59,57 @@ public class RolesController extends BaseController {
         return responseOfPut(role);
     }
 
+    @GetMapping(path = "/{roleId}/menus")
+    public ResponseEntity<Collection<? extends Menu>> getRoleMenus(@PathVariable String roleId) {
+        // TODO 具体业务实现
+        return responseOfGet(roleService.getRoleMenus(roleId));
+    }
+
+
     @SuppressWarnings("unchecked")
-    @PostMapping(path = "/{roleId}/menu")
+    @PostMapping(path = "/{roleId}/menus")
     public ResponseEntity<Role> addRoleMenus(@PathVariable String roleId, @RequestBody Map<String, Object> reqMap) {
         // TODO 具体业务实现
         String ids = (String)reqMap.get("ids");
         return responseOfPost(roleService.addRoleMenus(roleId, ids));
     }
 
-    @DeleteMapping("/{roleId}/menu")
+    @DeleteMapping("/{roleId}/menus")
     public ResponseEntity deleteRoleMenus(@PathVariable String roleId, @RequestParam String ids) {
         // TODO 具体业务实现
         return responseOfDelete(roleService.deleteRoleMenus(roleId, ids) != null);
+    }
+
+    @GetMapping(path = "/{roleId}/resources")
+    public ResponseEntity<Collection<? extends Resource>> getRoleResources(@PathVariable String roleId) {
+        // TODO 具体业务实现
+        return responseOfGet(roleService.getRoleResources(roleId));
+    }
+
+    @SuppressWarnings("unchecked")
+    @PostMapping(path = "/{roleId}/resources")
+    public ResponseEntity<Role> addRoleResources(@PathVariable String roleId, @RequestBody Map<String, Object> reqMap) {
+        // TODO 具体业务实现
+        String ids = (String)reqMap.get("ids");
+        return responseOfPost(roleService.addRoleResources(roleId, ids));
+    }
+
+    @DeleteMapping("/{roleId}/resources")
+    public ResponseEntity deleteRoleResources(@PathVariable String roleId, @RequestParam String ids) {
+        // TODO 具体业务实现
+        return responseOfDelete(roleService.deleteRoleResources(roleId, ids) != null);
+    }
+
+    @GetMapping(path = "/{roleId}/users")
+    public ResponseEntity<Collection<? extends User>> getRoleUsers(@PathVariable String roleId) {
+        // TODO 具体业务实现
+        return responseOfGet(roleService.getRoleUsers(roleId));
+    }
+
+    @GetMapping(path = "/{roleId}/user-groups")
+    public ResponseEntity<Collection<? extends UserGroup>> getRoleUserGroups(@PathVariable String roleId) {
+        // TODO 具体业务实现
+        return responseOfGet(roleService.getRoleUserGroups(roleId));
     }
 
     @GetMapping(path = "/parents")

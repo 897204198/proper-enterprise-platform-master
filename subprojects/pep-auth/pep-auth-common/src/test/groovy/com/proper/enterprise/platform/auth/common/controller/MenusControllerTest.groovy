@@ -1,8 +1,16 @@
 package com.proper.enterprise.platform.auth.common.controller
 
 import com.proper.enterprise.platform.auth.common.dictionary.MenuType
+import com.proper.enterprise.platform.auth.common.repository.MenuRepository
+import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
+import com.proper.enterprise.platform.auth.common.repository.RoleRepository
+import com.proper.enterprise.platform.auth.common.repository.UserGroupRepository
+import com.proper.enterprise.platform.auth.common.repository.UserRepository
 import com.proper.enterprise.platform.core.utils.JSONUtil
+import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.annotation.NoTx
+import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -25,13 +33,13 @@ class MenusControllerTest extends AbstractTest {
 
     @Test
     void diffUsersGetDiffMenus() {
-//        // super user
-//        mockUser('test1', 't1', 'pwd', true)
-//        assert resOfGet('/auth/menus', HttpStatus.OK).size() == 14
-//
-//        // super user with condition
-//        mockUser('test1', 't1', 'pwd', true)
-//        assert resOfGet('/auth/menus?name=1&description=des&route=a1&enable=Y', HttpStatus.OK).size() == 1
+        // super user
+        mockUser('test1', 't1', 'pwd', true)
+        assert resOfGet('/auth/menus', HttpStatus.OK).size() == 14
+
+        // super user with condition
+        mockUser('test1', 't1', 'pwd', true)
+        assert resOfGet('/auth/menus?name=1&description=des&route=a1&enable=Y', HttpStatus.OK).size() == 1
 
         // has role
         mockUser('test2', 't2', 'pwd', false)
@@ -56,6 +64,7 @@ class MenusControllerTest extends AbstractTest {
     }
 
     @Test
+    @NoTx
     void menuUnionTest() {
         def menu = [:]
         menu['icon'] = 'test_icon'
@@ -73,16 +82,29 @@ class MenusControllerTest extends AbstractTest {
 
         menu['icon'] = 'test_icon_change'
         put('/auth/menus/' + id, JSONUtil.toJSON(menu), HttpStatus.OK)
+        // menu add resources
         post('/auth/menus/' + id + '/resource/test-c', '', HttpStatus.CREATED)
-
         menuObj = JSONUtil.parse(get('/auth/menus/' + id,  HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert menuObj.get("icon") == 'test_icon_change'
-        assert menuObj.get('resources').size == 1
-        assert menuObj.get('resources')[0].id == 'test-c'
-
+        def resList = JSONUtil.parse(get('/auth/menus/' + id + '/resources',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 1
+        assert resList.get(0).id == 'test-c'
+        // delete menu's role
         delete('/auth/menus/' + id + '/resource/test-c', HttpStatus.NO_CONTENT)
-        menuObj = JSONUtil.parse(get('/auth/menus/' + id,  HttpStatus.OK).getResponse().getContentAsString(), Map.class)
-        assert menuObj.get('resources').size == 0
+        resList = JSONUtil.parse(get('/auth/menus/' + id + '/resources',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 0
+
+        // role add menu
+        def addReq = [:]
+        addReq['ids'] = id
+        post('/auth/roles/role1/menus', JSONUtil.toJSON(addReq), HttpStatus.CREATED)
+        resList = JSONUtil.parse(get('/auth/menus/' + id + '/roles',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 1
+        assert resList.get(0).id == 'role1'
+        // delete role's menu
+        delete('/auth/roles/role1/menus?ids=' + id, HttpStatus.NO_CONTENT)
+        resList = JSONUtil.parse(get('/auth/menus/' + id + '/roles',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 0
 
         delete('/auth/menus?ids=' + id, HttpStatus.NO_CONTENT)
         get('/auth/menus/' + id,  HttpStatus.OK).getResponse().getContentAsString() == ''
@@ -101,4 +123,26 @@ class MenusControllerTest extends AbstractTest {
         menuType.function().getCode()
     }
 
+    @Autowired
+    UserRepository userRepository
+    @Autowired
+    MenuRepository menuRepository
+    @Autowired
+    RoleRepository roleRepository
+    @Autowired
+    ResourceRepository resourceRepository
+    @Autowired
+    UserGroupRepository userGroupRepository
+    @Autowired
+    DataDicRepository dataDicRepository
+
+    @After
+    void tearDown() {
+        userGroupRepository.deleteAll()
+        userRepository.deleteAll()
+        roleRepository.deleteAll()
+        menuRepository.deleteAll()
+        resourceRepository.deleteAll()
+        dataDicRepository.deleteAll()
+    }
 }

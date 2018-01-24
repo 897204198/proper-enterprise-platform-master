@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
+import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
@@ -58,6 +60,12 @@ public class ResourceServiceImpl implements ResourceService {
         StringBuffer strbuf = new StringBuffer();
         strbuf = strbuf.append(method.toString()).append(":").append(url);
         return getBestMatch(find(), strbuf.toString());
+    }
+
+    @Override
+    public Collection<? extends Resource> getByIds(Collection<String> ids) {
+        // TODO 查询有效菜单
+        return resourceRepository.findAll(ids);
     }
 
     @Override
@@ -149,5 +157,29 @@ public class ResourceServiceImpl implements ResourceService {
             resource.setEnable(enable);
         }
         return resourceRepository.save(resourceList);
+    }
+
+    @Override
+    public Collection<? extends Menu> getResourceMenus(String resourceId) {
+        Collection<Menu> filterMenus = new ArrayList<>();
+        Resource resource = this.get(resourceId); // TODO 过滤invalid以及enable
+        if (resource != null) {
+            Collection<? extends Menu> menus = resource.getMenus();
+            // TODO 具体过滤
+            filterMenus.addAll(menus);
+        }
+        return filterMenus;
+    }
+
+    @Override
+    public Collection<? extends Role> getResourceRoles(String resourceId) {
+        Collection<Role> filterRoles = new ArrayList<>();
+        Resource resource = this.get(resourceId); // TODO 过滤invalid以及enable
+        if (resource != null) {
+            Collection<? extends Role> roles = resource.getRoles();
+            // TODO 具体过滤
+            filterRoles.addAll(roles);
+        }
+        return filterRoles;
     }
 }

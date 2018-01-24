@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.api.auth.service;
 
-import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.api.auth.model.*;
 
 import java.util.Collection;
 import java.util.Map;
@@ -88,6 +88,14 @@ public interface RoleService {
     Collection<? extends Role> updateEanble(Collection<String> idList, boolean enable);
 
     /**
+     * 获取指定角色菜单集合
+     *
+     * @param roleId 角色ID
+     * @return 菜单集合
+     */
+    Collection<? extends Menu> getRoleMenus(String roleId);
+
+    /**
      * 角色添加菜单列表
      *
      * @param roleId 角色ID
@@ -104,4 +112,46 @@ public interface RoleService {
      * @return 角色
      */
     Role deleteRoleMenus(String roleId, String ids);
+
+    /**
+     * 获取指定角色资源集合
+     *
+     * @param roleId 角色ID
+     * @return 资源集合
+     */
+    Collection<? extends Resource> getRoleResources(String roleId);
+
+    /**
+     * 角色添加资源列表
+     *
+     * @param roleId 角色ID
+     * @param ids 以 , 分隔的资源ID列表
+     * @return 角色
+     */
+    Role addRoleResources(String roleId, String ids);
+
+    /**
+     * 角色删除资源列表
+     *
+     * @param roleId 角色ID
+     * @param ids 以 , 分隔的资源ID列表
+     * @return 角色
+     */
+    Role deleteRoleResources(String roleId, String ids);
+
+    /**
+     * 获取指定角色用户集合
+     *
+     * @param roleId 角色ID
+     * @return 用户集合
+     */
+    Collection<? extends User> getRoleUsers(String roleId);
+
+    /**
+     * 获取指定角色用户组集合
+     *
+     * @param roleId 角色ID
+     * @return 用户组集合
+     */
+    Collection<? extends UserGroup> getRoleUserGroups(String roleId);
 }

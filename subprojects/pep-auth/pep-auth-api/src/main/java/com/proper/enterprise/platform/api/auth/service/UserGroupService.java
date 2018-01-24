@@ -1,5 +1,7 @@
 package com.proper.enterprise.platform.api.auth.service;
 
+import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 
 import java.util.Collection;
@@ -85,6 +87,14 @@ public interface UserGroupService {
     UserGroup deleteUserGroupRole(String groupId, String roleId);
 
     /**
+     * 获取指定用户组角色集合
+     *
+     * @param groupId 用户组ID
+     * @return 角色集合
+     */
+    Collection<? extends Role> getGroupRoles(String groupId);
+
+    /**
      * 用户组添加用户
      *
      * @param groupId 用户组ID
@@ -101,5 +111,13 @@ public interface UserGroupService {
      * @return 用户组
      */
     UserGroup deleteGroupUser(String groupId, String userId);
+
+    /**
+     * 获取指定用户组的用户集合
+     *
+     * @param groupId 用户组ID
+     * @return 用户集合
+     */
+    Collection<? extends User> getGroupUsers(String groupId);
 
 }

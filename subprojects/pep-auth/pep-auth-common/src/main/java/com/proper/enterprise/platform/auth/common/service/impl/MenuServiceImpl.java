@@ -240,4 +240,28 @@ public class MenuServiceImpl implements MenuService {
         }
         return menu;
     }
+
+    @Override
+    public Collection<? extends Resource> getMenuResources(String menuId) {
+        Collection<Resource> filterResources = new ArrayList<>();
+        Menu menu = this.get(menuId); // TODO 过滤invalid以及enable
+        if (menu != null) {
+            Collection<? extends Resource> resources = menu.getResources();
+            // TODO 具体过滤
+            filterResources.addAll(resources);
+        }
+        return filterResources;
+    }
+
+    @Override
+    public Collection<? extends Role> getMenuRoles(String menuId) {
+        Collection<Role> filterRoles = new ArrayList<>();
+        Menu menu = this.get(menuId); // TODO 过滤invalid以及enable
+        if (menu != null) {
+            Collection<? extends Role> roles = menu.getRoles();
+            // TODO 具体过滤
+            filterRoles.addAll(roles);
+        }
+        return filterRoles;
+    }
 }

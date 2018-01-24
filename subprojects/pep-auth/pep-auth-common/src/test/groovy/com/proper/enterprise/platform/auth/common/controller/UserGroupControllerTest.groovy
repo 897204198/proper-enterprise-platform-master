@@ -3,11 +3,15 @@ package com.proper.enterprise.platform.auth.common.controller
 import com.proper.enterprise.platform.api.auth.model.UserGroup
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity
+import com.proper.enterprise.platform.auth.common.repository.MenuRepository
+import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
 import com.proper.enterprise.platform.auth.common.repository.RoleRepository
 import com.proper.enterprise.platform.auth.common.repository.UserGroupRepository
 import com.proper.enterprise.platform.auth.common.repository.UserRepository
 import com.proper.enterprise.platform.core.utils.JSONUtil
+import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.test.AbstractTest
+import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -29,11 +33,6 @@ class UserGroupControllerTest extends AbstractTest {
 
     @Autowired
     private RoleRepository roleRepo
-
-    @Test
-    void checkCRUD() {
-        checkBaseCRUD(URI, group)
-    }
 
     @Test
     @Sql(["/com/proper/enterprise/platform/auth/common/users.sql",
@@ -100,25 +99,53 @@ class UserGroupControllerTest extends AbstractTest {
         def u1 = userService.getByUsername('t1')
         def u2 = userService.getByUsername('t2')
 
+        // group add user
         post(URI + '/' + id1 + '/user/' + u1.id, '', HttpStatus.CREATED)
         post(URI + '/' + id1 + '/user/' + u2.id, '', HttpStatus.CREATED)
-        post(URI + '/' + id1 + '/role/role1', '', HttpStatus.CREATED)
-
-        single = JSONUtil.parse(get(URI + '/' + id1, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
-        assert single.get('users').size == 2
-        assert single.get('users')[0].id == 'test1'
-        assert single.get('users')[1].id == 'test2'
-
-        assert single.get('roles').size == 1
-        assert single.get('roles')[0].id == 'role1'
-
+        def resList = JSONUtil.parse(get(URI + '/' + id1 + '/users', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 2
+        assert resList.get(0).id == 'test1'
+        assert resList.get(1).id == 'test2'
+        // delete group's user
         delete(URI + '/' + id1 + '/user/' + u1.id, HttpStatus.NO_CONTENT)
+        resList = JSONUtil.parse(get(URI + '/' + id1 + '/users', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 1
+        assert resList.get(0).id == 'test2'
+
+        // group add role
+        post(URI + '/' + id1 + '/role/role1', '', HttpStatus.CREATED)
+        resList = JSONUtil.parse(get(URI + '/' + id1 + '/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 1
+        assert resList.get(0).id == 'role1'
+        // delete group's role
         delete(URI + '/' + id1 + '/role/role1', HttpStatus.NO_CONTENT)
+        resList = JSONUtil.parse(get(URI + '/' + id1 + '/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 0
 
-        single = JSONUtil.parse(get(URI + '/' + id1, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
-        assert single.get('users').size == 1
-        assert single.get('users')[0].id == 'test2'
+        delete(URI + '/' + id1, HttpStatus.NO_CONTENT)
+        delete(URI + '?ids=' + id2, HttpStatus.NO_CONTENT)
+    }
 
-        assert single.get('roles').size == 0
+    @Autowired
+    UserRepository userRepository
+    @Autowired
+    MenuRepository menuRepository
+    @Autowired
+    RoleRepository roleRepository
+    @Autowired
+    ResourceRepository resourceRepository
+    @Autowired
+    UserGroupRepository userGroupRepository
+    @Autowired
+    DataDicRepository dataDicRepository
+
+    @After
+    void tearDown() {
+        userGroupRepository.deleteAll()
+        userRepository.deleteAll()
+        roleRepository.deleteAll()
+        menuRepository.deleteAll()
+        resourceRepository.deleteAll()
+        dataDicRepository.deleteAll()
     }
 }

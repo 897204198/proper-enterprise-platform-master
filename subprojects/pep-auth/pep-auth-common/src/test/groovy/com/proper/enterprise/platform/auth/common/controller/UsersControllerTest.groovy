@@ -3,9 +3,17 @@ package com.proper.enterprise.platform.auth.common.controller
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserGroupService
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
+import com.proper.enterprise.platform.auth.common.repository.MenuRepository
+import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
+import com.proper.enterprise.platform.auth.common.repository.RoleRepository
+import com.proper.enterprise.platform.auth.common.repository.UserGroupRepository
+import com.proper.enterprise.platform.auth.common.repository.UserRepository
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
+import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.annotation.NoTx
+import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -126,16 +134,79 @@ class UsersControllerTest extends AbstractTest {
         "/com/proper/enterprise/platform/auth/common/users.sql"
     ])
     @Test
+    @NoTx
     void userRoleTest() {
-        def user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
-        assert user.get('roles').size() == 0
-        post('/auth/users/' + user.id + '/role/' + 'role1', '', HttpStatus.CREATED)
-        user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
-        assert user.get('roles').size() == 1
-        assert user.get('roles')[0].id == 'role1'
-        delete('/auth/users/' + user.id + '/role/' + 'role1', HttpStatus.NO_CONTENT)
-        user = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
-        assert user.get('roles').size() == 0
+        def resList = JSONUtil.parse(get('/auth/users/test1/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 0
+        post('/auth/users/test2/role/role1', '', HttpStatus.CREATED)
+        resList = JSONUtil.parse(get('/auth/users/test2/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 1
+        assert resList.get(0).id == 'role1'
+        delete('/auth/users/test2/role/role1', HttpStatus.NO_CONTENT)
+        resList = JSONUtil.parse(get('/auth/users/test2/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 0
+        tearDown()
     }
 
+    @Sql([
+        "/com/proper/enterprise/platform/auth/common/usergroups.sql",
+        "/com/proper/enterprise/platform/auth/common/users.sql"
+    ])
+    @Test
+    @NoTx
+    void userGroupTest() {
+        post('/auth/user-groups/group1/user/test3', '', HttpStatus.CREATED)
+        def resList = JSONUtil.parse(get('/auth/users/test3/user-groups', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 1
+        assert resList.get(0).id == 'group1'
+        delete('/auth/user-groups/group1/user/test3', HttpStatus.NO_CONTENT)
+        resList = JSONUtil.parse(get('/auth/users/test3/user-groups', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert resList.size() == 0
+    }
+
+    @Sql("/com/proper/enterprise/platform/auth/common/users.sql")
+    @Test
+    void userQueryTest() {
+        // certain query
+        def list = JSONUtil.parse(get('/auth/users/query?condition=t2', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert list.size() == 1
+        assert list.get(0).username == 't2'
+        assert list.get(0).name == 'b'
+        assert list.get(0).phone == '12345678902'
+        // part query
+        list = JSONUtil.parse(get('/auth/users/query?condition=8901', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert list.size() == 1
+        assert list.get(0).username == 't1'
+        assert list.get(0).name == 'c'
+        assert list.get(0).phone == '12345678901'
+        // all query
+        list = JSONUtil.parse(get('/auth/users/query?condition=', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert list.size() == 3
+        assert list.get(0).username == 't3'
+        assert list.get(1).username == 't2'
+        assert list.get(2).username == 't1'
+    }
+
+    @Autowired
+    UserRepository userRepository
+    @Autowired
+    MenuRepository menuRepository
+    @Autowired
+    RoleRepository roleRepository
+    @Autowired
+    ResourceRepository resourceRepository
+    @Autowired
+    UserGroupRepository userGroupRepository
+    @Autowired
+    DataDicRepository dataDicRepository
+
+    @After
+    void tearDown() {
+        userGroupRepository.deleteAll()
+        userRepository.deleteAll()
+        roleRepository.deleteAll()
+        menuRepository.deleteAll()
+        resourceRepository.deleteAll()
+        dataDicRepository.deleteAll()
+    }
 }

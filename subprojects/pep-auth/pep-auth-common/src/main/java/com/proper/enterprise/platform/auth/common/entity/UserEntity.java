@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
@@ -164,11 +165,6 @@ public class UserEntity extends BaseEntity implements User {
     }
 
     @Override
-    public Collection<RoleEntity> getRoles() {
-        return roleEntities;
-    }
-
-    @Override
     public void add(Role role) {
         roleEntities.add((RoleEntity) role);
     }
@@ -196,8 +192,14 @@ public class UserEntity extends BaseEntity implements User {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends UserGroup> getUserGroups() {
         return userGroupEntities;
     }
 
+    @Override
+    @JsonIgnore
+    public Collection<? extends Role> getRoles() {
+        return roleEntities;
+    }
 }

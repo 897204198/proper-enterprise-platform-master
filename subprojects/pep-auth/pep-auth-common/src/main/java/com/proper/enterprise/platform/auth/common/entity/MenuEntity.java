@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
-import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -58,7 +58,7 @@ public class MenuEntity extends BaseEntity implements Menu {
      * 菜单类别数据字典
      */
     @Convert(converter = DataDicLiteConverter.class)
-    private DataDic menuType;
+    private DataDicLite menuType;
 
     /**
      * 菜单状态
@@ -240,34 +240,42 @@ public class MenuEntity extends BaseEntity implements Menu {
         return (id + sequenceNumber).hashCode();
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
     public String getIdentifier() {
         return identifier;
     }
 
+    @Override
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
-    public DataDic getMenuType() {
+    @Override
+    public DataDicLite getMenuType() {
         return menuType;
     }
 
-    public void setMenuType(DataDic menuType) {
+    @Override
+    public void setMenuType(DataDicLite menuType) {
         this.menuType = menuType;
     }
 
+    @Override
     public boolean isEnable() {
         return enable;
     }
 
+    @Override
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
@@ -279,6 +287,7 @@ public class MenuEntity extends BaseEntity implements Menu {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends Resource> getResources() {
         return resourceEntities;
     }

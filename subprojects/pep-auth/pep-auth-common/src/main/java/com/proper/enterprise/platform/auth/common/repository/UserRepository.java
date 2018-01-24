@@ -7,11 +7,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Collection;
+
 public interface UserRepository extends BaseRepository<UserEntity, String> {
 
     @CacheQuery
     UserEntity findByUsername(String username);
 
     Page<UserEntity> findAll(Specification<UserEntity> spec, Pageable pageable);
+
+    Collection<UserEntity> findByUsernameLikeOrNameLikeOrPhoneLikeAndEnableTrueAndValidTrueOrderByName(String username, String name, String phone);
 
 }
