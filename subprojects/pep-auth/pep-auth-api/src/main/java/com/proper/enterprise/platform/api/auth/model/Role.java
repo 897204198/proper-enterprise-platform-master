@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.api.auth.model;
 import com.proper.enterprise.platform.core.api.IBase;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * 角色
@@ -35,6 +34,34 @@ public interface Role extends IBase {
     void setName(String name);
 
     /**
+     * 获得角色描述
+     *
+     * @return 角色描述
+     */
+    String getDescription();
+
+    /**
+     * 设置角色描述
+     *
+     * @param description 角色描述
+     */
+    void setDescription(String description);
+
+    /**
+     * 获得角色状态是否可用
+     *
+     * @return 角色状态是否可用
+     */
+    boolean isEnable();
+
+    /**
+     * 设置角色状态是否可用
+     *
+     * @param enable 角色状态是否可用
+     */
+    void setEnable(boolean enable);
+
+    /**
      * 获得上级角色
      *
      * @return 上级角色
@@ -49,24 +76,59 @@ public interface Role extends IBase {
     void setParent(Role role);
 
     /**
-     * 获得角色权限集合
+     * 获得角色拥有的用户集合
      *
-     * @return 权限集合
+     * @return 用户集合
      */
-    Set<Permission> getPermissions();
+    Collection<? extends User> getUsers();
 
     /**
-     * 设置角色权限集合
+     * 获得角色拥有的用户组集合
      *
-     * @param permissions 权限集合
+     * @return 用户组集合
      */
-    void setPermission(Set<Permission> permissions);
+    Collection<? extends UserGroup> getUserGroups();
 
     /**
      * 获得角色拥有的菜单集合
      *
-     * @return
+     * @return 菜单集合
      */
     Collection<? extends Menu> getMenus();
+
+    /**
+     * 获得角色拥有的资源集合
+     *
+     * @return 资源集合
+     */
+    Collection<? extends Resource> getResources();
+
+    /**
+     * 角色添加菜单集合
+     *
+     * @param menus 菜单集合
+     */
+    void add(Collection<? extends Menu>  menus);
+
+    /**
+     * 角色删除菜单集合
+     *
+     * @param menus 菜单集合
+     */
+    void remove(Collection<? extends Menu>  menus);
+
+    /**
+     * 角色添加资源集合
+     *
+     * @param resources 资源集合
+     */
+    void addResources(Collection<? extends Resource> resources);
+
+    /**
+     * 角色删除资源集合
+     *
+     * @param resources 资源集合
+     */
+    void removeResources(Collection<? extends Resource> resources);
 
 }

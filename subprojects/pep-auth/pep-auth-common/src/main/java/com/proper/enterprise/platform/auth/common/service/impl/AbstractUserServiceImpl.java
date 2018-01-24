@@ -1,18 +1,31 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.proper.enterprise.platform.api.auth.model.Menu;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
+import com.proper.enterprise.platform.api.auth.service.RoleService;
+import com.proper.enterprise.platform.api.auth.service.UserGroupService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.repository.UserRepository;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.*;
 
 /**
  * 通用的/抽象的用户服务接口实现
@@ -24,6 +37,12 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private UserGroupService userGroupService;
 
     @Autowired
     private MenuService menuService;
@@ -43,6 +62,18 @@ public abstract class AbstractUserServiceImpl implements UserService {
             entities.add((UserEntity) user);
         }
         userRepo.save(entities);
+    }
+
+    @Override
+    public User save(String userId, Map<String, Object> map) {
+        // TODO 具体业务逻辑
+        UserEntity user = (UserEntity)this.get(userId);
+        user.setName(String.valueOf(map.get("name")));
+        user.setEmail(String.valueOf(map.get("email")));
+        user.setPhone(String.valueOf(map.get("phone")));
+        user.setPassword(String.valueOf(map.get("password")));
+        user.setEnable((boolean) map.get("enable"));
+        return this.save(user);
     }
 
     @Override
@@ -81,4 +112,121 @@ public abstract class AbstractUserServiceImpl implements UserService {
         return menuService.getMenus(getByUsername(username));
     }
 
+
+    @Override
+    public Collection<? extends User> getUsersByCondiction(String condiction) {
+        condiction = "%".concat(condiction).concat("%");
+        return userRepo.findByUsernameLikeOrNameLikeOrPhoneLikeAndEnableTrueAndValidTrueOrderByName(condiction, condiction, condiction);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public DataTrunk<? extends User> getUsersByCondiction(String userName, String name, String email, String phone, String enable,
+                                                          Integer pageNo, Integer pageSize) {
+        DataTrunk<UserEntity> userDataTrunk = new DataTrunk<>();
+        PageRequest pageReq = new PageRequest(pageNo - 1, pageSize, new Sort(Sort.Direction.ASC, "name"));
+        Specification specification = new Specification<UserEntity>() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
+                List<Predicate> predicates = new ArrayList<>();
+                if (StringUtil.isNotNull(userName)) {
+                    predicates.add(cb.like(root.get("username"), "%".concat(userName).concat("%")));
+                }
+                if (StringUtil.isNotNull(name)) {
+                    predicates.add(cb.like(root.get("name"), "%".concat(name).concat("%")));
+                }
+                if (StringUtil.isNotNull(email)) {
+                    predicates.add(cb.like(root.get("email"), "%".concat(email).concat("%")));
+                }
+                if (StringUtil.isNotNull(phone)) {
+                    predicates.add(cb.like(root.get("phone"), "%".concat(phone).concat("%")));
+                }
+                if (StringUtil.isNotNull(enable)) {
+                    predicates.add(cb.equal(root.get("enable"), enable.equals("Y")));
+                }
+                predicates.add(cb.equal(root.get("valid"), true));
+                return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        };
+        Page<UserEntity> usersPage = userRepo.findAll(specification, pageReq);
+        userDataTrunk.setCount(usersPage.getTotalElements());
+        userDataTrunk.setData(usersPage.getContent());
+        return userDataTrunk;
+    }
+
+    @Override
+    public boolean deleteByIds(String ids) {
+        boolean ret = false;
+        if (StringUtil.isNotNull(ids)) {
+            String[] idArr = ids.split(",");
+            List<String> idList = new ArrayList<>();
+            Collections.addAll(idList, idArr);
+            // TODO 对删除业务进行逻辑判断
+            try {
+                userRepo.delete(userRepo.findAll(idList));
+                ret = true;
+            } catch (Exception e) {
+                throw new ErrMsgException("Delete error!");
+            }
+        } else {
+            throw new ErrMsgException("Param Error!");
+        }
+        return ret;
+    }
+
+    @Override
+    public Collection<? extends User> updateEanble(Collection<String> idList, boolean enable) {
+        // TODO 具体实现
+        Collection<UserEntity> resourceList = userRepo.findAll(idList);
+        for (UserEntity resource : resourceList) {
+            resource.setEnable(enable);
+        }
+        return userRepo.save(resourceList);
+    }
+
+    @Override
+    public User addUserRole(String userId, String roleId) {
+        User user = this.get(userId);
+        Role role = roleService.get(roleId);
+        if (role != null) {
+            user.add(role);
+            user = this.save(user);
+        }
+        return user;
+    }
+
+    @Override
+    public User deleteUserRole(String userId, String roleId) {
+        User user = this.get(userId);
+        Role role = roleService.get(roleId);
+        if (role != null) {
+            user.remove(role);
+            user = this.save(user);
+        }
+        return user;
+    }
+
+    @Override
+    public Collection<? extends UserGroup> getUserGroups(String userId) {
+        Collection<UserGroup> filterUserGroups = new ArrayList<>();
+        User user = this.get(userId); // TODO 过滤invalid以及enable
+        if (user != null) {
+            Collection<? extends UserGroup> userGroups = user.getUserGroups();
+            // TODO 具体过滤
+            filterUserGroups.addAll(userGroups);
+        }
+        return filterUserGroups;
+    }
+
+    @Override
+    public Collection<? extends Role> getUserRoles(String userId) {
+        Collection<Role> filterRoles = new ArrayList<>();
+        User user = this.get(userId); // TODO 过滤invalid以及enable
+        if (user != null) {
+            Collection<? extends Role> roles = user.getRoles();
+            // TODO 具体过滤
+            filterRoles.addAll(roles);
+        }
+        return filterRoles;
+    }
 }

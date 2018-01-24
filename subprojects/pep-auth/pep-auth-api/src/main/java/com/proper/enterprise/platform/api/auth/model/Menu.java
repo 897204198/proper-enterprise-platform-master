@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.api.auth.model;
 
 import com.proper.enterprise.platform.core.api.IBase;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 
 import java.util.Collection;
 
@@ -162,5 +163,61 @@ public interface Menu extends IBase, Comparable<Menu> {
      * @return 角色集合
      */
     Collection<? extends Role> getRoles();
+
+    /**
+     * 获得菜单内容描述
+     *
+     * @return 菜单内容描述
+     */
+    String getDescription();
+
+    /**
+     * 设置菜单内容描述
+     *
+     * @param description 菜单内容描述
+     */
+    void setDescription(String description);
+
+    /**
+     * 获得菜单标识
+     *
+     * @return 菜单标识
+     */
+    String getIdentifier();
+
+    /**
+     * 设置菜单标识
+     *
+     * @param identifier 菜单标识
+     */
+    void setIdentifier(String identifier);
+
+    /**
+     * 获得菜单类型
+     *
+     * @return 菜单类型
+     */
+    DataDicLite getMenuType();
+
+    /**
+     * 设置菜单类型
+     *
+     * @param menuType 菜单类型
+     */
+    void setMenuType(DataDicLite menuType);
+
+    /**
+     * 获取菜单状态是否可用
+     *
+     * @return 用户菜单是否可用
+     */
+    boolean isEnable();
+
+    /**
+     * 设置菜单状态是否可用
+     *
+     * @param enable 用户菜单是否可用
+     */
+    void setEnable(boolean enable);
 
 }

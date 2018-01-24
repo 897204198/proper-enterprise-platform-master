@@ -6,6 +6,10 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
+import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +47,34 @@ public class MenuEntity extends BaseEntity implements Menu {
     private String icon;
 
     /**
+     * 描述说明
+     */
+    private String description;
+
+    @Transient
+    private boolean boot;
+
+    /**
+     * 菜单类别数据字典
+     */
+    @Convert(converter = DataDicLiteConverter.class)
+    private DataDicLite menuType;
+
+    /**
+     * 菜单状态
+     */
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    private boolean enable = true;
+
+    /**
+     * 标识
+     */
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    private String identifier;
+
+    /**
      * 父菜单
      */
     @ManyToOne
@@ -53,10 +85,16 @@ public class MenuEntity extends BaseEntity implements Menu {
     @Transient
     private String parentId;
 
+    @Transient
+    private Collection<? extends Resource> resources = new ArrayList<>();
+
+    @Transient
+    private Collection<? extends Role> roles = new ArrayList<>();
+
     /**
      * 子菜单集合
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parent")
+    @OneToMany(mappedBy = "parent")
     @JsonIgnore
     private Collection<MenuEntity> children = new ArrayList<>();
 
@@ -163,12 +201,6 @@ public class MenuEntity extends BaseEntity implements Menu {
     }
 
     @Override
-    @JsonIgnore
-    public Collection<? extends Resource> getResources() {
-        return resourceEntities;
-    }
-
-    @Override
     public void add(Resource resource) {
         resourceEntities.add((ResourceEntity) resource);
     }
@@ -176,12 +208,6 @@ public class MenuEntity extends BaseEntity implements Menu {
     @Override
     public void remove(Resource resource) {
         resourceEntities.remove(resource);
-    }
-
-    @Override
-    @JsonIgnore
-    public Collection<? extends Role> getRoles() {
-        return roleEntities;
     }
 
     @Override
@@ -214,4 +240,55 @@ public class MenuEntity extends BaseEntity implements Menu {
         return (id + sequenceNumber).hashCode();
     }
 
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    @Override
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    @Override
+    public DataDicLite getMenuType() {
+        return menuType;
+    }
+
+    @Override
+    public void setMenuType(DataDicLite menuType) {
+        this.menuType = menuType;
+    }
+
+    @Override
+    public boolean isEnable() {
+        return enable;
+    }
+
+    @Override
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends Role> getRoles() {
+        return roleEntities;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends Resource> getResources() {
+        return resourceEntities;
+    }
 }

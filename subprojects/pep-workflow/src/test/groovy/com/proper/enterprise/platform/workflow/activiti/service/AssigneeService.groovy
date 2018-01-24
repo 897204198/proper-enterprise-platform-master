@@ -34,8 +34,8 @@ class AssigneeService {
 
     void executionEnd(DelegateExecution execution) {
         def nrOfInstances = execution.getVariable('nrOfInstances')
-        def loopCounter = execution.getVariable('loopCounter')
-        if (loopCounter != null && nrOfInstances == loopCounter + 1) {
+        def nrOfCompletedInstances = execution.getVariable('nrOfCompletedInstances')
+        if (nrOfCompletedInstances != null && nrOfInstances == nrOfCompletedInstances) {
             def vars = historyService.createHistoricVariableInstanceQuery()
                                      .processInstanceId(execution.getProcessInstanceId())
                                      .variableName('csApproveResult')

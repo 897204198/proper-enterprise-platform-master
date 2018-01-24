@@ -4,8 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.model.DataRestrain;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
+import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.*;
@@ -40,6 +45,32 @@ public class ResourceEntity extends BaseEntity implements Resource {
     @Column(nullable = false)
     private RequestMethod method = RequestMethod.GET;
 
+    /**
+     * 菜单类别数据字典
+     */
+    @Convert(converter = DataDicLiteConverter.class)
+    private DataDicLite resourceType;
+
+    /**
+     * 菜单状态
+     */
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    private boolean enable = true;
+
+    @Transient
+    private Collection<? extends Menu> menus = new ArrayList<>();
+
+    @Transient
+    private Collection<? extends Role> roles = new ArrayList<>();
+
+    /**
+     * 标识
+     */
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    private String identifier;
+
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_RESOURCES_DATARESTRAINS",
         joinColumns = @JoinColumn(name = "RESOURCE_ID"),
@@ -49,6 +80,9 @@ public class ResourceEntity extends BaseEntity implements Resource {
 
     @ManyToMany(mappedBy = "resourceEntities")
     private Collection<MenuEntity> menuEntities = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "resourcesEntities")
+    private Collection<RoleEntity> roleEntities = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -93,11 +127,6 @@ public class ResourceEntity extends BaseEntity implements Resource {
         dataRestrainEntities.remove(restrain);
     }
 
-    @Override
-    public Collection<? extends Menu> getMenus() {
-        return menuEntities;
-    }
-
     public RequestMethod getMethod() {
         return method;
     }
@@ -106,4 +135,39 @@ public class ResourceEntity extends BaseEntity implements Resource {
         this.method = method;
     }
 
+    public DataDicLite getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(DataDicLite resourceType) {
+        this.resourceType = resourceType;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends Menu> getMenus() {
+        return menuEntities;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends Role> getRoles() {
+        return roleEntities;
+    }
 }
