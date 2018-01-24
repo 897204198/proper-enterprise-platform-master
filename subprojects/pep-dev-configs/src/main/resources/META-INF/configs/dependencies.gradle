@@ -28,6 +28,7 @@ configurations.all {
         }
 
         def nameVers = [
+            'guava': '20.0',
             'javassist': '3.19.0-GA',
             'jcl-over-slf4j': versions.slf4j,
             // spring-data-jpa & spring-data-mongodb 依赖不同版本的 spring-data-commons 会有冲突
