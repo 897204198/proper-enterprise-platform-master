@@ -138,6 +138,18 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
+    public Collection<? extends Role> getGroupRoles(String groupId) {
+        Collection<Role> filterRoles = new ArrayList<>();
+        UserGroup userGroup = this.get(groupId); // TODO 过滤invalid以及enable
+        if (userGroup != null) {
+            Collection<? extends Role> roles = userGroup.getRoles();
+            // TODO 具体过滤
+            filterRoles.addAll(roles);
+        }
+        return filterRoles;
+    }
+
+    @Override
     public UserGroup addGroupUser(String groupId, String userId) {
         UserGroup userGroup = this.get(groupId);
         if (userGroup != null) {
@@ -161,6 +173,18 @@ public class UserGroupServiceImpl implements UserGroupService {
             }
         }
         return userGroup;
+    }
+
+    @Override
+    public Collection<? extends User> getGroupUsers(String groupId) {
+        Collection<User> filterUsers = new ArrayList<>();
+        UserGroup userGroup = this.get(groupId); // TODO 过滤invalid以及enable
+        if (userGroup != null) {
+            Collection<? extends User> users = userGroup.getUsers();
+            // TODO 具体过滤
+            filterUsers.addAll(users);
+        }
+        return filterUsers;
     }
 
 }

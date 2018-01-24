@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.api.auth.service;
 
+import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
@@ -22,6 +24,8 @@ public interface ResourceService {
 
     Resource get(String url, RequestMethod method);
 
+    Collection<? extends Resource> getByIds(Collection<String> ids);
+
     Collection<Resource> find();
 
     void delete(Resource resource);
@@ -41,4 +45,20 @@ public interface ResourceService {
      * @return 结果
      */
     Collection<? extends Resource> updateEanble(Collection<String> idList, boolean enable);
+
+    /**
+     * 获取指定资源菜单集合
+     *
+     * @param resourceId 资源ID
+     * @return 菜单集合
+     */
+    Collection<? extends Menu> getResourceMenus(String resourceId);
+
+    /**
+     * 获取指定资源角色集合
+     *
+     * @param resourceId 资源ID
+     * @return 角色集合
+     */
+    Collection<? extends Role> getResourceRoles(String resourceId);
 }

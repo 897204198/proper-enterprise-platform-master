@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
-import com.proper.enterprise.platform.api.auth.model.Menu;
-import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
+import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.common.repository.RoleRepository;
@@ -26,6 +26,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private ResourceService resourceService;
 
     @Override
     public Role get(String id) {
@@ -122,6 +125,18 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Collection<? extends Menu> getRoleMenus(String roleId) {
+        Collection<Menu> filterMenus = new ArrayList<>();
+        Role role = this.get(roleId); // TODO 过滤invalid以及enable
+        if (role != null) {
+            Collection<? extends Menu> menus = role.getMenus();
+            // TODO 具体过滤
+            filterMenus.addAll(menus);
+        }
+        return filterMenus;
+    }
+
+    @Override
     public Role addRoleMenus(String roleId, String ids) {
         // TODO 具体实现
         Role role = this.get(roleId);
@@ -151,4 +166,69 @@ public class RoleServiceImpl implements RoleService {
         return save(role);
     }
 
+    @Override
+    public Collection<? extends Resource> getRoleResources(String roleId) {
+        Collection<Resource> filterResources = new ArrayList<>();
+        Role role = this.get(roleId); // TODO 过滤invalid以及enable
+        if (role != null) {
+            Collection<? extends Resource> resources = role.getResources();
+            // TODO 具体过滤
+            filterResources.addAll(resources);
+        }
+        return filterResources;
+    }
+
+    @Override
+    public Role addRoleResources(String roleId, String ids) {
+        // TODO 具体实现
+        Role role = this.get(roleId);
+        Collection<? extends Resource> resourceList = new ArrayList<>();
+        if (StringUtil.isNotNull(ids)) {
+            String[] idArr = ids.split(",");
+            List<String> idList = new ArrayList<>();
+            Collections.addAll(idList, idArr);
+            resourceList = resourceService.getByIds(idList);
+        }
+        role.addResources(resourceList);
+        return save(role);
+    }
+
+    @Override
+    public Role deleteRoleResources(String roleId, String ids) {
+        // TODO 具体实现
+        Role role = this.get(roleId);
+        Collection<? extends Resource> resourceList = new ArrayList<>();
+        if (StringUtil.isNotNull(ids)) {
+            String[] idArr = ids.split(",");
+            List<String> idList = new ArrayList<>();
+            Collections.addAll(idList, idArr);
+            resourceList = resourceService.getByIds(idList);
+        }
+        role.removeResources(resourceList);
+        return save(role);
+    }
+
+    @Override
+    public Collection<? extends User> getRoleUsers(String roleId) {
+        Collection<User> filterUsers = new ArrayList<>();
+        Role role = this.get(roleId); // TODO 过滤invalid以及enable
+        if (role != null) {
+            Collection<? extends User> users = role.getUsers();
+            // TODO 具体过滤
+            filterUsers.addAll(users);
+        }
+        return filterUsers;
+    }
+
+    @Override
+    public Collection<? extends UserGroup> getRoleUserGroups(String roleId) {
+        Collection<UserGroup> filterUserGroups = new ArrayList<>();
+        Role role = this.get(roleId); // TODO 过滤invalid以及enable
+        if (role != null) {
+            Collection<? extends UserGroup> userGroups = role.getUserGroups();
+            // TODO 具体过滤
+            filterUserGroups.addAll(userGroups);
+        }
+        return filterUserGroups;
+    }
 }

@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
 import com.proper.enterprise.platform.api.auth.model.Menu;
+import com.proper.enterprise.platform.api.auth.model.Resource;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,18 @@ public class MenusController extends BaseController {
             menu = service.save(reqMap);
         }
         return responseOfPut(menu);
+    }
+
+    @GetMapping(path = "/{menuId}/resources")
+    public ResponseEntity<Collection<? extends Resource>> getMenuResources(@PathVariable String menuId) {
+        // TODO 具体业务实现
+        return responseOfGet(service.getMenuResources(menuId));
+    }
+
+    @GetMapping(path = "/{menuId}/roles")
+    public ResponseEntity<Collection<? extends Role>> getMenuRoles(@PathVariable String menuId) {
+        // TODO 具体业务实现
+        return responseOfGet(service.getMenuRoles(menuId));
     }
 
     @PostMapping(path = "/{menuId}/resource/{resourceId}")

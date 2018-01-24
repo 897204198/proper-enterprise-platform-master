@@ -147,6 +147,8 @@ libraries.jaxws_rt = 'com.sun.xml.ws:jaxws-rt:2.1.7'
 //   exclude group: 'com.jhlabs', module: 'imaging'
 //}
 
+libraries.jpa_api = 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
+
 libraries.joda_time = 'joda-time:joda-time:2.9.4'
 
 libraries.junit = 'junit:junit:4.12'

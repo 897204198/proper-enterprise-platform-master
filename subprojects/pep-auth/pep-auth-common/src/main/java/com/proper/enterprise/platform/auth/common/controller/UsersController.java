@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.core.controller.BaseController;
@@ -90,5 +92,23 @@ public class UsersController extends BaseController {
     public ResponseEntity deleteUserRole(@PathVariable String userId, @PathVariable String roleId) {
         // TODO 具体业务实现
         return responseOfDelete(userService.deleteUserRole(userId, roleId) != null);
+    }
+
+    @GetMapping(path = "/{userId}/user-groups")
+    public ResponseEntity<Collection<? extends UserGroup>> getUserGroups(@PathVariable String userId) {
+        // TODO 具体业务实现
+        return responseOfGet(userService.getUserGroups(userId));
+    }
+
+    @GetMapping(path = "/{userId}/roles")
+    public ResponseEntity<Collection<? extends Role>> getUserRoles(@PathVariable String userId) {
+        // TODO 具体业务实现
+        return responseOfGet(userService.getUserRoles(userId));
+    }
+
+    @GetMapping(path = "/query")
+    public ResponseEntity<Collection<? extends User>> queryUser(@RequestParam String condition) {
+        // TODO 具体业务实现
+        return responseOfGet(userService.getUsersByCondiction(condition));
     }
 }

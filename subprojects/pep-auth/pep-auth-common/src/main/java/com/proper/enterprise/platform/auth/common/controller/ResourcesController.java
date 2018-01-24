@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
+import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,4 +63,15 @@ public class ResourcesController extends BaseController {
         return responseOfDelete(resource != null);
     }
 
+    @GetMapping(path = "/{resourceId}/menus")
+    public ResponseEntity<Collection<? extends Menu>> getResourceMenus(@PathVariable String resourceId) {
+        // TODO 具体业务实现
+        return responseOfGet(resourceService.getResourceMenus(resourceId));
+    }
+
+    @GetMapping(path = "/{resourceId}/roles")
+    public ResponseEntity<Collection<? extends Role>> getResourceRoles(@PathVariable String resourceId) {
+        // TODO 具体业务实现
+        return responseOfGet(resourceService.getResourceRoles(resourceId));
+    }
 }

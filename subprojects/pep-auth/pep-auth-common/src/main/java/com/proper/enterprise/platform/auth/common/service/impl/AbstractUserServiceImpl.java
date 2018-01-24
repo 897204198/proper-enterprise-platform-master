@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.service.impl;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserGroupService;
@@ -71,7 +72,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
         user.setEmail(String.valueOf(map.get("email")));
         user.setPhone(String.valueOf(map.get("phone")));
         user.setPassword(String.valueOf(map.get("password")));
-        user.setEnable((boolean)map.get("enable"));
+        user.setEnable((boolean) map.get("enable"));
         return this.save(user);
     }
 
@@ -109,6 +110,13 @@ public abstract class AbstractUserServiceImpl implements UserService {
     @Override
     public Collection<? extends Menu> getMenusByUsername(String username) {
         return menuService.getMenus(getByUsername(username));
+    }
+
+
+    @Override
+    public Collection<? extends User> getUsersByCondiction(String condiction) {
+        condiction = "%".concat(condiction).concat("%");
+        return userRepo.findByUsernameLikeOrNameLikeOrPhoneLikeAndEnableTrueAndValidTrueOrderByName(condiction, condiction, condiction);
     }
 
     @Override
@@ -196,5 +204,29 @@ public abstract class AbstractUserServiceImpl implements UserService {
             user = this.save(user);
         }
         return user;
+    }
+
+    @Override
+    public Collection<? extends UserGroup> getUserGroups(String userId) {
+        Collection<UserGroup> filterUserGroups = new ArrayList<>();
+        User user = this.get(userId); // TODO 过滤invalid以及enable
+        if (user != null) {
+            Collection<? extends UserGroup> userGroups = user.getUserGroups();
+            // TODO 具体过滤
+            filterUserGroups.addAll(userGroups);
+        }
+        return filterUserGroups;
+    }
+
+    @Override
+    public Collection<? extends Role> getUserRoles(String userId) {
+        Collection<Role> filterRoles = new ArrayList<>();
+        User user = this.get(userId); // TODO 过滤invalid以及enable
+        if (user != null) {
+            Collection<? extends Role> roles = user.getRoles();
+            // TODO 具体过滤
+            filterRoles.addAll(roles);
+        }
+        return filterRoles;
     }
 }

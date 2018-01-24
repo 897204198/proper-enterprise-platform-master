@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletRequest
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -56,7 +57,9 @@ abstract class AbstractTest {
 
     @Before
     void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build()
+        OpenEntityManagerInViewFilter openEntityManagerInViewFilter = new OpenEntityManagerInViewFilter()
+        openEntityManagerInViewFilter.setServletContext(wac.servletContext)
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).addFilter(openEntityManagerInViewFilter, '/*').build()
         mockUser = null
     }
 

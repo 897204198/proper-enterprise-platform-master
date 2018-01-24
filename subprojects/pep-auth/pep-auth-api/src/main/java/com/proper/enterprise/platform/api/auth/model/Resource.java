@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.api.auth.model;
 
 import com.proper.enterprise.platform.core.api.IBase;
-import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
@@ -89,25 +89,32 @@ public interface Resource extends IBase {
     void remove(DataRestrain restrain);
 
     /**
-     * 获得资源关联的菜单
+     * 获得资源关联的菜单集合
      *
      * @return 菜单集合
      */
     Collection<? extends Menu> getMenus();
 
     /**
+     * 获得资源关联的角色集合
+     *
+     * @return 角色集合
+     */
+    Collection<? extends Role> getRoles();
+
+    /**
      * 获得资源类别
      *
      * @return 资源类别
      */
-    DataDic getResourceType();
+    DataDicLite getResourceType();
 
     /**
      * 设置资源类别
      *
      * @param resourceType 资源类别
      */
-    void setResourceType(DataDic resourceType);
+    void setResourceType(DataDicLite resourceType);
 
     /**
      * 获得资源状态是否可用

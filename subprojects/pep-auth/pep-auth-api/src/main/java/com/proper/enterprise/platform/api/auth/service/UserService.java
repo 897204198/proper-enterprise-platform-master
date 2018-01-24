@@ -1,7 +1,9 @@
 package com.proper.enterprise.platform.api.auth.service;
 
 import com.proper.enterprise.platform.api.auth.model.Menu;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 
 import java.util.Collection;
@@ -41,6 +43,15 @@ public interface UserService {
     Collection<? extends Menu> getMenus(String userId);
 
     Collection<? extends Menu> getMenusByUsername(String username);
+
+
+    /**
+     * 通过用户名,显示名,手机号模糊查询用户列表
+     *
+     * @param condiction 输入信息
+     * @return 用户列表
+     */
+    Collection<? extends User> getUsersByCondiction(String condiction);
 
     /**
      * 按照查询条件获取用户信息列表
@@ -90,5 +101,21 @@ public interface UserService {
      * @return 用户信息
      */
     User deleteUserRole(String userId, String roleId);
+
+    /**
+     * 获取指定用户的用户组集合
+     *
+     * @param userId 用户ID
+     * @return 用户组集合
+     */
+    Collection<? extends UserGroup> getUserGroups(String userId);
+
+    /**
+     * 获取指定用户角色集合
+     *
+     * @param userId 用户ID
+     * @return 角色集合
+     */
+    Collection<? extends Role> getUserRoles(String userId);
 
 }

@@ -50,6 +50,9 @@ public class RoleEntity extends BaseEntity implements Role {
     @Transient
     private Collection<? extends UserGroup> userGroups = new ArrayList<>();
 
+    @Transient
+    private Collection<? extends Resource> resources = new ArrayList<>();
+
     /**
      * 用户状态
      */
@@ -57,11 +60,9 @@ public class RoleEntity extends BaseEntity implements Role {
     @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
     private boolean enable = true;
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "roleEntities")
     private Collection<UserEntity> userEntities = new ArrayList<>();
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "roleGroupEntities")
     private Collection<UserGroupEntity> userGroupEntities = new ArrayList<>();
 
@@ -71,6 +72,13 @@ public class RoleEntity extends BaseEntity implements Role {
             inverseJoinColumns = @JoinColumn(name = "MENU_ID"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"ROLE_ID", "MENU_ID"}))
     private Collection<MenuEntity> menuEntities = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "PEP_AUTH_ROLES_RESOURCES",
+        joinColumns = @JoinColumn(name = "ROLE_ID"),
+        inverseJoinColumns = @JoinColumn(name = "RESOURCE_ID"),
+        uniqueConstraints = @UniqueConstraint(columnNames = {"ROLE_ID", "RESOURCE_ID"}))
+    private Collection<ResourceEntity> resourcesEntities = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -130,17 +138,27 @@ public class RoleEntity extends BaseEntity implements Role {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends User> getUsers() {
         return userEntities;
     }
 
+    @Override
+    @JsonIgnore
     public Collection<? extends UserGroup> getUserGroups() {
-        return userGroups;
+        return userGroupEntities;
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends Menu> getMenus() {
         return menuEntities;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends Resource> getResources() {
+        return resourcesEntities;
     }
 
     @Override
@@ -149,7 +167,19 @@ public class RoleEntity extends BaseEntity implements Role {
     }
 
     @Override
+    @SuppressWarnings({"SuspiciousMethodCalls"})
     public void remove(Collection<? extends Menu> menus) {
         menuEntities.removeAll(CollectionUtil.convert(menus));
+    }
+
+    @Override
+    public void addResources(Collection<? extends Resource> resources) {
+        resourcesEntities.addAll(CollectionUtil.convert(resources));
+    }
+
+    @Override
+    @SuppressWarnings({"SuspiciousMethodCalls"})
+    public void removeResources(Collection<? extends Resource> resources) {
+        resourcesEntities.removeAll(CollectionUtil.convert(resources));
     }
 }

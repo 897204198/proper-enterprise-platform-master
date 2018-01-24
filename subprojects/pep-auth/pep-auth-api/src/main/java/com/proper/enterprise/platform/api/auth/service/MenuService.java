@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.api.auth.service;
 
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 
 import java.util.Collection;
@@ -118,5 +119,21 @@ public interface MenuService {
      * @return 菜单
      */
     Menu deleteMenuResource(String menuId, String resourceId);
+
+    /**
+     * 获取指定菜单资源集合
+     *
+     * @param menuId 菜单ID
+     * @return 资源集合
+     */
+    Collection<? extends Resource> getMenuResources(String menuId);
+
+    /**
+     * 获取指定菜单角色集合
+     *
+     * @param menuId 菜单ID
+     * @return 角色集合
+     */
+    Collection<? extends Role> getMenuRoles(String menuId);
 
 }

@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.model.DataRestrain;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
-import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -48,7 +49,7 @@ public class ResourceEntity extends BaseEntity implements Resource {
      * 菜单类别数据字典
      */
     @Convert(converter = DataDicLiteConverter.class)
-    private DataDic resourceType;
+    private DataDicLite resourceType;
 
     /**
      * 菜单状态
@@ -59,6 +60,9 @@ public class ResourceEntity extends BaseEntity implements Resource {
 
     @Transient
     private Collection<? extends Menu> menus = new ArrayList<>();
+
+    @Transient
+    private Collection<? extends Role> roles = new ArrayList<>();
 
     /**
      * 标识
@@ -76,6 +80,9 @@ public class ResourceEntity extends BaseEntity implements Resource {
 
     @ManyToMany(mappedBy = "resourceEntities")
     private Collection<MenuEntity> menuEntities = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "resourcesEntities")
+    private Collection<RoleEntity> roleEntities = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -128,11 +135,11 @@ public class ResourceEntity extends BaseEntity implements Resource {
         this.method = method;
     }
 
-    public DataDic getResourceType() {
+    public DataDicLite getResourceType() {
         return resourceType;
     }
 
-    public void setResourceType(DataDic resourceType) {
+    public void setResourceType(DataDicLite resourceType) {
         this.resourceType = resourceType;
     }
 
@@ -156,5 +163,11 @@ public class ResourceEntity extends BaseEntity implements Resource {
     @JsonIgnore
     public Collection<? extends Menu> getMenus() {
         return menuEntities;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends Role> getRoles() {
+        return roleEntities;
     }
 }
