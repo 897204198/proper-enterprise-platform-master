@@ -12,9 +12,12 @@ import java.util.Collection;
 public interface UserRepository extends BaseRepository<UserEntity, String> {
 
     @CacheQuery
-    UserEntity findByUsername(String username);
+    UserEntity findByUsernameAndValidTrueAndEnableTrue(String username);
 
+    @Override
     Page<UserEntity> findAll(Specification<UserEntity> spec, Pageable pageable);
+
+    UserEntity findByValidTrueAndId(String id);
 
     Collection<UserEntity> findByUsernameLikeOrNameLikeOrPhoneLikeAndEnableTrueAndValidTrueOrderByName(String username, String name, String phone);
 

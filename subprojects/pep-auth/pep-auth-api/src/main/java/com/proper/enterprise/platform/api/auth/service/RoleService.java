@@ -154,4 +154,20 @@ public interface RoleService {
      * @return 用户组集合
      */
     Collection<? extends UserGroup> getRoleUserGroups(String roleId);
+
+    /**
+     * 检测用户(user),是否有此角色
+     *
+     * @param user   待检测用户
+     * @param roleId 待检测角色ID
+     * @return 有则返回那个role对象, 没有则返回null
+     */
+    Role userHasTheRole(User user, String roleId);
+
+    /**
+     * 通过用户ID，获取对应的用户组，拥有的角色
+     * @return 返回map类型，key为角色ID，value为角色对象
+     */
+    Map<String, Object> getUserGroupRolesByUserId(String userId);
+
 }

@@ -26,6 +26,7 @@ class RolesControllerTest extends AbstractTest {
     @Test
     @NoTx
     void rolesUnionTest() {
+        mockUser('test1','t1', 'pwd')
         def roles = JSONUtil.parse(get('/auth/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert roles.size() == 2
         assert roles.get(0).enable

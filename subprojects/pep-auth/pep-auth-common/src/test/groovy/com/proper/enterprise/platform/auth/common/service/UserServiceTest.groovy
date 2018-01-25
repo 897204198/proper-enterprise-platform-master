@@ -2,7 +2,9 @@ package com.proper.enterprise.platform.auth.common.service
 
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
+import com.proper.enterprise.platform.auth.common.repository.UserRepository
 import com.proper.enterprise.platform.test.AbstractTest
+import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
@@ -11,6 +13,9 @@ class UserServiceTest extends AbstractTest {
 
     @Autowired
     UserService userService
+
+    @Autowired
+    UserRepository userRepository
 
     @Test
     public void setEmail() {
@@ -56,6 +61,11 @@ class UserServiceTest extends AbstractTest {
         userService.delete(u1.id)
         println 'Also need direct query after delete'
         assert userService.get(u1.id) == null
+    }
+
+    @After
+    void clearAll(){
+        userRepository.deleteAll()
     }
 
 }

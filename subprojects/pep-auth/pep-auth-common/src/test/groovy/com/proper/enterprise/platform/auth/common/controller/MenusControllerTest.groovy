@@ -30,8 +30,21 @@ class MenusControllerTest extends AbstractTest {
 
     @Autowired
     MenuType menuType
+    @Autowired
+    UserRepository userRepository
+    @Autowired
+    MenuRepository menuRepository
+    @Autowired
+    RoleRepository roleRepository
+    @Autowired
+    ResourceRepository resourceRepository
+    @Autowired
+    UserGroupRepository userGroupRepository
+    @Autowired
+    DataDicRepository dataDicRepository
 
     @Test
+    @NoTx
     void diffUsersGetDiffMenus() {
         // super user
         mockUser('test1', 't1', 'pwd', true)
@@ -122,19 +135,6 @@ class MenusControllerTest extends AbstractTest {
         menuType.app().getCode()
         menuType.function().getCode()
     }
-
-    @Autowired
-    UserRepository userRepository
-    @Autowired
-    MenuRepository menuRepository
-    @Autowired
-    RoleRepository roleRepository
-    @Autowired
-    ResourceRepository resourceRepository
-    @Autowired
-    UserGroupRepository userGroupRepository
-    @Autowired
-    DataDicRepository dataDicRepository
 
     @After
     void tearDown() {

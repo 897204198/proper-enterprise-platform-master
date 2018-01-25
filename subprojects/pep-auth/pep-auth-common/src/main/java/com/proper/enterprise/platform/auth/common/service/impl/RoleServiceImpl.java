@@ -4,7 +4,9 @@ import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
+import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
+import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity;
 import com.proper.enterprise.platform.auth.common.repository.RoleRepository;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private ResourceService resourceService;
@@ -230,5 +235,42 @@ public class RoleServiceImpl implements RoleService {
             filterUserGroups.addAll(userGroups);
         }
         return filterUserGroups;
+    }
+
+    @Override
+    public Role userHasTheRole(User user, String  roleId) {
+        Collection roles = null;
+        if (user != null) {
+            roles = user.getRoles();
+        }
+        if (roles != null && roles.size() > 0 && StringUtil.isNotBlank(roleId)) {
+            Iterator iterator = roles.iterator();
+            while (iterator.hasNext()) {
+                RoleEntity roleEntity = (RoleEntity) iterator.next();
+                if (roleId.equals(roleEntity.getId())) {
+                    return roleEntity;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getUserGroupRolesByUserId(String userId) {
+        Map<String, Object> result = new HashMap<>();
+        User user = userService.get(userId);
+        Collection groups = user.getUserGroups();
+        Iterator iterator = groups.iterator();
+        while (iterator.hasNext()) {
+            Object object = iterator.next();
+            UserGroupEntity userGroupEntity = (UserGroupEntity) object;
+            Collection<RoleEntity> roles = (Collection<RoleEntity>) userGroupEntity.getRoles();
+            for (RoleEntity roleEntity : roles) {
+                if (!result.containsKey(roleEntity.getId())) {
+                    result.put(roleEntity.getId(), roleEntity);
+                }
+            }
+        }
+        return result;
     }
 }

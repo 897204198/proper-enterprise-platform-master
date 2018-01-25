@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.common.controller
 
 import com.proper.enterprise.platform.api.auth.model.UserGroup
 import com.proper.enterprise.platform.api.auth.service.UserService
+import com.proper.enterprise.platform.auth.common.entity.DataRestrainEntity
 import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity
 import com.proper.enterprise.platform.auth.common.repository.MenuRepository
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
@@ -124,6 +125,40 @@ class UserGroupControllerTest extends AbstractTest {
 
         delete(URI + '/' + id1, HttpStatus.NO_CONTENT)
         delete(URI + '?ids=' + id2, HttpStatus.NO_CONTENT)
+    }
+
+    @Test
+    void testPut(){
+        def group1 = [:]
+        group1['name'] = 'group-1'
+        group1['description'] = 'group-1-des'
+        group1['enable'] = true
+        group1['seq'] = 1
+
+        def g1 = JSONUtil.parse(post(URI,
+            JSONUtil.toJSON(group1), HttpStatus.CREATED).getResponse().getContentAsString(), Map.class)
+        assert g1.get('id') != null
+
+        Map<String, Object> reqMap = new HashMap<>()
+        reqMap.put("name",'name1')
+        reqMap.put("enable", true)
+        reqMap.put("description", 'description1')
+        reqMap.put("seq",1)
+
+        put('/auth/user-groups/'+g1.get('id'), JSONUtil.toJSON(reqMap), HttpStatus.OK)
+        def single = JSONUtil.parse(get(URI + '/' + g1.get('id'), HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert single.get("id") == g1.get('id')
+        assert single.get('name') == 'name1'
+
+        DataRestrainEntity dataRestrainEntity = new DataRestrainEntity()
+        dataRestrainEntity.setName('name1')
+        dataRestrainEntity.setTableName('tablename')
+        dataRestrainEntity.setSqlStr('select * from a')
+        dataRestrainEntity.setFilterName('filter')
+        assert dataRestrainEntity.getName() == 'name1'
+        assert dataRestrainEntity.getTableName() == 'tablename'
+        assert dataRestrainEntity.getSqlStr() == 'select * from a'
+        assert dataRestrainEntity.getFilterName() == 'filter'
     }
 
     @Autowired

@@ -1,18 +1,14 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
-import com.proper.enterprise.platform.api.auth.model.Menu;
-import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.model.UserGroup;
-import com.proper.enterprise.platform.api.auth.service.MenuService;
-import com.proper.enterprise.platform.api.auth.service.RoleService;
-import com.proper.enterprise.platform.api.auth.service.UserGroupService;
-import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.api.auth.model.*;
+import com.proper.enterprise.platform.api.auth.service.*;
+import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.repository.UserRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -45,7 +42,13 @@ public abstract class AbstractUserServiceImpl implements UserService {
     private UserGroupService userGroupService;
 
     @Autowired
+    private ResourceService resourceService;
+
+    @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private I18NService i18NService;
 
     @Override
     public abstract User getCurrentUser();
@@ -79,22 +82,53 @@ public abstract class AbstractUserServiceImpl implements UserService {
     @Override
     public User get(String id) {
         LOGGER.debug("Get user with {} from DB", id);
-        return userRepo.findOne(id);
+        User user = userRepo.findOne(id);
+        if (user == null || !user.isValid() || !user.isEnable()) {
+            LOGGER.debug("Get user is null");
+            return null;
+        }
+        return user;
     }
 
     @Override
     public User getByUsername(String username) {
-        return userRepo.findByUsername(username);
+        LOGGER.debug("GetByUsername with username {} from DB", username);
+        return userRepo.findByUsernameAndValidTrueAndEnableTrue(username);
     }
 
     @Override
-    public void delete(String id) {
-        userRepo.delete(id);
+    public User updateByUser(Map<String, Object> userMap) throws Exception {
+        User user1 = this.get(userMap.get("id").toString());
+        if (user1 == null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
+        }
+        user1.setName(userMap.get("name") == null ? user1.getName() : userMap.get("name").toString());
+        user1.setEmail(userMap.get("email") == null ? user1.getEmail() : userMap.get("email").toString());
+        user1.setPhone(userMap.get("phone") == null ? user1.getPhone() : userMap.get("phone").toString());
+        user1.setPassword(userMap.get("password") == null ? user1.getPassword() : userMap.get("password").toString());
+        return this.save(user1);
+    }
+
+    @Override
+    public boolean delete(String id) throws Exception {
+        return this.deleteByIds(id);
     }
 
     @Override
     public void delete(User user) {
-        userRepo.delete((UserEntity) user);
+        UserEntity userEntity = userRepo.findOne(user.getId());
+        if (userEntity == null || !userEntity.isValid() || !userEntity.isEnable()) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
+        }
+        if (userEntity.isSuperuser()) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.delete.role.super.failed"));
+        }
+        if (userEntity.getRoles().size() > 0 || userEntity.getUserGroups().size() > 0) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.delete.role.relation.failed"));
+        }
+        userEntity.setValid(false);
+        userEntity.setEnable(false);
+        userRepo.save(userEntity);
     }
 
     @Override
@@ -155,19 +189,28 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteByIds(String ids) {
+    public boolean deleteByIds(String ids) throws Exception {
         boolean ret = false;
         if (StringUtil.isNotNull(ids)) {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            // TODO 对删除业务进行逻辑判断
-            try {
-                userRepo.delete(userRepo.findAll(idList));
-                ret = true;
-            } catch (Exception e) {
-                throw new ErrMsgException("Delete error!");
+            List<UserEntity> list = userRepo.findAll(idList);
+            for (UserEntity userEntity : list) {
+                if (userEntity == null || !userEntity.isValid() || !userEntity.isEnable()) {
+                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
+                }
+                if (userEntity.isSuperuser()) {
+                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.delete.role.super.failed"));
+                }
+                if (userEntity.getRoles().size() > 0 || userEntity.getUserGroups().size() > 0) {
+                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.delete.role.relation.failed"));
+                }
+                userEntity.setValid(false);
+                userEntity.setEnable(false);
             }
+            userRepo.save(list);
+            ret = true;
         } else {
             throw new ErrMsgException("Param Error!");
         }
@@ -176,8 +219,10 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends User> updateEanble(Collection<String> idList, boolean enable) {
-        // TODO 具体实现
-        Collection<UserEntity> resourceList = userRepo.findAll(idList);
+        Collection<UserEntity> resourceList = new HashSet<>();
+        for (String id : idList) {
+            resourceList.add(userRepo.findByValidTrueAndId(id));
+        }
         for (UserEntity resource : resourceList) {
             resource.setEnable(enable);
         }
@@ -187,10 +232,12 @@ public abstract class AbstractUserServiceImpl implements UserService {
     @Override
     public User addUserRole(String userId, String roleId) {
         User user = this.get(userId);
-        Role role = roleService.get(roleId);
-        if (role != null) {
-            user.add(role);
-            user = this.save(user);
+        if (roleService.userHasTheRole(user, roleId) == null) {
+            Role role = roleService.get(roleId);
+            if (role != null) {
+                user.add(role);
+                user = this.save(user);
+            }
         }
         return user;
     }
@@ -198,12 +245,65 @@ public abstract class AbstractUserServiceImpl implements UserService {
     @Override
     public User deleteUserRole(String userId, String roleId) {
         User user = this.get(userId);
-        Role role = roleService.get(roleId);
+        Role role = roleService.userHasTheRole(user, roleId);
         if (role != null) {
             user.remove(role);
             user = this.save(user);
+            return user;
         }
-        return user;
+        return null;
+    }
+
+    @Override
+    public User groupHasTheUser(UserGroup userGroup, String userId) {
+        Collection users = null;
+        if (userGroup != null) {
+            users = userGroup.getUsers();
+        }
+        if (users != null && StringUtil.isNotBlank(userId) && users.size() > 0) {
+            Iterator iterator = users.iterator();
+            while (iterator.hasNext()) {
+                User user = (User) iterator.next();
+                if (userId.equals(user.getId())) {
+                    return user;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean hasPerimissionOfUser(User user, String reqUrl, RequestMethod requestMethod) {
+        if (StringUtil.isBlank(reqUrl) || requestMethod == null) {
+            return false;
+        }
+        if (user.isSuperuser()) {
+            return true;
+        }
+        Resource localResource = resourceService.get(reqUrl, requestMethod);
+        Collection roles = user.getRoles();
+        Iterator iterator = roles.iterator();
+        while (iterator.hasNext()) {
+            RoleEntity roleEntity = (RoleEntity) iterator.next();
+            Iterator iterator1 = roleEntity.getResources().iterator();
+            while (iterator1.hasNext()) {
+                Resource resource = (Resource) iterator1.next();
+                if (!resource.isValid() || !resource.isEnable()) {
+                    continue;
+                }
+                if (localResource.getId().equals(resource.getId())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void checkPermission(String reqUrl, RequestMethod requestMethod) throws Exception {
+        if (!this.hasPerimissionOfUser(this.getCurrentUser(), reqUrl, requestMethod)) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.permission.failed"));
+        }
     }
 
     @Override
