@@ -23,14 +23,14 @@ public class UsersController extends BaseController {
 
     @GetMapping
     public ResponseEntity<DataTrunk<? extends User>> getUser(String username, String name, String email, String phone, String enable,
-                                                             Integer pageNo, Integer pageSize) throws Exception {
+                                                             Integer pageNo, Integer pageSize) {
         userService.checkPermission("/auth/users", RequestMethod.GET);
         return responseOfGet(userService.getUsersByCondiction(username, name, email, phone, enable, pageNo, pageSize));
     }
 
     @SuppressWarnings("unchecked")
     @PutMapping
-    public ResponseEntity<Collection<? extends User>> updateEnable(@RequestBody Map<String, Object> reqMap) throws Exception {
+    public ResponseEntity<Collection<? extends User>> updateEnable(@RequestBody Map<String, Object> reqMap) {
         userService.checkPermission("/auth/users", RequestMethod.PUT);
         Collection<String> idList = (Collection<String>) reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
@@ -38,13 +38,13 @@ public class UsersController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody UserEntity userEntity) throws Exception {
+    public ResponseEntity<User> create(@RequestBody UserEntity userEntity) {
         userService.checkPermission("/auth/users", RequestMethod.POST);
         return responseOfPost(userService.save(userEntity));
     }
 
     @DeleteMapping
-    public ResponseEntity deleteByIds(@RequestParam String ids) throws Exception {
+    public ResponseEntity deleteByIds(@RequestParam String ids) {
         userService.checkPermission("/auth/users", RequestMethod.DELETE);
         return responseOfDelete(userService.deleteByIds(ids));
     }
@@ -53,8 +53,8 @@ public class UsersController extends BaseController {
      * 取得指定用户ID的用户信息
      */
     @GetMapping(path = "/{userId}")
-    public ResponseEntity<User> get(@PathVariable String userId) throws Exception {
-        userService.checkPermission("/auth/users/{userId}", RequestMethod.GET);
+    public ResponseEntity<User> get(@PathVariable String userId) {
+        userService.checkPermission("/auth/users/" + userId, RequestMethod.GET);
         return responseOfGet(userService.get(userId));
     }
 
@@ -62,8 +62,8 @@ public class UsersController extends BaseController {
      * 更新指定用户ID的用户信息
      */
     @PutMapping(path = "/{userId}")
-    public ResponseEntity<String> update(@PathVariable String userId, @RequestBody Map<String, Object> userMap) throws Exception {
-        userService.checkPermission("/auth/users/{userId}", RequestMethod.PUT);
+    public ResponseEntity<String> update(@PathVariable String userId, @RequestBody Map<String, Object> userMap) {
+        userService.checkPermission("/auth/users/" + userId, RequestMethod.PUT);
         userMap.put("id", userId);
         userService.updateByUser(userMap);
         return responseOfPut("");
@@ -73,8 +73,8 @@ public class UsersController extends BaseController {
      * 删除指定用户ID的用户信息
      */
     @DeleteMapping(path = "/{userId}")
-    public ResponseEntity delete(@PathVariable String userId) throws Exception {
-        userService.checkPermission("/auth/users/{userId}", RequestMethod.DELETE);
+    public ResponseEntity delete(@PathVariable String userId) {
+        userService.checkPermission("/auth/users/" + userId, RequestMethod.DELETE);
         return responseOfDelete(userService.delete(userId));
     }
 
@@ -86,8 +86,8 @@ public class UsersController extends BaseController {
      * @return 结果
      */
     @PostMapping(path = "/{userId}/role/{roleId}")
-    public ResponseEntity<String> addUserRole(@PathVariable String userId, @PathVariable String roleId) throws Exception {
-        userService.checkPermission("/auth/users/{userId}/role/{roleId}", RequestMethod.POST);
+    public ResponseEntity<String> addUserRole(@PathVariable String userId, @PathVariable String roleId) {
+        userService.checkPermission("/auth/users/" + userId + "/role/" + roleId, RequestMethod.POST);
         userService.addUserRole(userId, roleId);
         return responseOfPost("");
     }
@@ -100,8 +100,8 @@ public class UsersController extends BaseController {
      * @return 结果
      */
     @DeleteMapping(path = "/{userId}/role/{roleId}")
-    public ResponseEntity deleteUserRole(@PathVariable String userId, @PathVariable String roleId) throws Exception {
-        userService.checkPermission("/auth/users/{userId}/role/{roleId}", RequestMethod.DELETE);
+    public ResponseEntity deleteUserRole(@PathVariable String userId, @PathVariable String roleId) {
+        userService.checkPermission("/auth/users/" + userId + "/role/" + roleId, RequestMethod.DELETE);
         return responseOfDelete(userService.deleteUserRole(userId, roleId) != null);
     }
 

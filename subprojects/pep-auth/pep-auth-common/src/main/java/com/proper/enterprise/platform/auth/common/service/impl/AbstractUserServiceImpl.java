@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.*;
 import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
+import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity;
 import com.proper.enterprise.platform.auth.common.repository.UserRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
@@ -97,7 +98,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateByUser(Map<String, Object> userMap) throws Exception {
+    public User updateByUser(Map<String, Object> userMap) {
         User user1 = this.get(userMap.get("id").toString());
         if (user1 == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
@@ -110,7 +111,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean delete(String id) throws Exception {
+    public boolean delete(String id) {
         return this.deleteByIds(id);
     }
 
@@ -189,7 +190,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteByIds(String ids) throws Exception {
+    public boolean deleteByIds(String ids) {
         boolean ret = false;
         if (StringUtil.isNotNull(ids)) {
             String[] idArr = ids.split(",");
@@ -211,8 +212,6 @@ public abstract class AbstractUserServiceImpl implements UserService {
             }
             userRepo.save(list);
             ret = true;
-        } else {
-            throw new ErrMsgException("Param Error!");
         }
         return ret;
     }
@@ -280,27 +279,27 @@ public abstract class AbstractUserServiceImpl implements UserService {
         if (user.isSuperuser()) {
             return true;
         }
-        Resource localResource = resourceService.get(reqUrl, requestMethod);
-        Collection roles = user.getRoles();
-        Iterator iterator = roles.iterator();
+        Collection usergroups = user.getUserGroups();
+        Iterator iterator = usergroups.iterator();
         while (iterator.hasNext()) {
-            RoleEntity roleEntity = (RoleEntity) iterator.next();
-            Iterator iterator1 = roleEntity.getResources().iterator();
-            while (iterator1.hasNext()) {
-                Resource resource = (Resource) iterator1.next();
-                if (!resource.isValid() || !resource.isEnable()) {
-                    continue;
-                }
-                if (localResource.getId().equals(resource.getId())) {
-                    return true;
-                }
+            UserGroupEntity userGroupEntity = (UserGroupEntity) iterator.next();
+            if (userGroupService.hasPerimissionOfUserGroup(userGroupEntity, reqUrl, requestMethod)) {
+                return true;
+            }
+        }
+        Collection roles = user.getRoles();
+        Iterator iterator1 = roles.iterator();
+        while (iterator1.hasNext()) {
+            RoleEntity roleEntity = (RoleEntity) iterator1.next();
+            if (roleService.hasPerimissionOfRole(roleEntity, reqUrl, requestMethod)) {
+                return true;
             }
         }
         return false;
     }
 
     @Override
-    public void checkPermission(String reqUrl, RequestMethod requestMethod) throws Exception {
+    public void checkPermission(String reqUrl, RequestMethod requestMethod) {
         if (!this.hasPerimissionOfUser(this.getCurrentUser(), reqUrl, requestMethod)) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.permission.failed"));
         }

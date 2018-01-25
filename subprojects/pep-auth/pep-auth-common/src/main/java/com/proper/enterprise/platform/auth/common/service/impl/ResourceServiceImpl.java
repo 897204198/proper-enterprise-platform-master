@@ -182,4 +182,16 @@ public class ResourceServiceImpl implements ResourceService {
         }
         return filterRoles;
     }
+
+    @Override
+    public boolean hasPerimissionOfResource(Resource resource, String reqUrl, RequestMethod requestMethod) {
+        Resource localResource = this.get(reqUrl, requestMethod);
+        if (localResource == null || resource == null || !resource.isValid() || !resource.isEnable()) {
+            return false;
+        }
+        if (localResource.getId().equals(resource.getId())) {
+            return true;
+        }
+        return false;
+    }
 }

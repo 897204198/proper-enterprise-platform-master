@@ -122,6 +122,7 @@ class AbstractUserServiceImplTest extends AbstractTest {
     }
 
     @Test
+    @NoTx
     void testHasPerimissionByUrl(){
         ResourceEntity resourceEntity = new ResourceEntity()
         resourceEntity.setName('res1')
@@ -148,9 +149,36 @@ class AbstractUserServiceImplTest extends AbstractTest {
         userEntity.add(roleEntity1)
         userEntity = userRepository.save(userEntity)
 
+        //------------------------------------------------------------------------------------
+
+        ResourceEntity resourceEntity2 = new ResourceEntity()
+        resourceEntity2.setName('res2')
+        resourceEntity2.setURL('/auth/users/{userId}/role/{roleId}')
+        resourceEntity2.setMethod(RequestMethod.GET)
+        resourceEntity2 = resourceRepository.save(resourceEntity2)
+        Collection<ResourceEntity> resourceEntities1 = new HashSet<>()
+        resourceEntities1.add(resourceEntity2)
+
+        RoleEntity roleEntity2 = new RoleEntity()
+        roleEntity2.setName('role2')
+        roleEntity2.addResources(resourceEntities1)
+        roleEntity2 = roleRepository.save(roleEntity2)
+
+        UserGroupEntity userGroupEntity = new UserGroupEntity()
+        userGroupEntity.setName('group1')
+        userGroupEntity.setSeq(1)
+        userGroupEntity.add(userEntity)
+        userGroupEntity.add(roleEntity2)
+        userGroupRepository.save(userGroupEntity)
+
         mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
 
         assert userService.checkPermission('/auth/users/{userId}/role/{roleId}',RequestMethod.POST) == null
+        assert userService.checkPermission('/auth/users/{userId}/role/{roleId}',RequestMethod.GET) == null
+
+        User user = userService.groupHasTheUser(userGroupEntity, userEntity.getId())
+        assert user.getId() == userEntity.getId()
+
     }
 
     @Test

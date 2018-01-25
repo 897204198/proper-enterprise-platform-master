@@ -1,12 +1,15 @@
 package com.proper.enterprise.platform.auth.common.controller
 
+import com.proper.enterprise.platform.api.auth.service.RoleService
+import com.proper.enterprise.platform.auth.common.entity.RoleEntity
+import com.proper.enterprise.platform.auth.common.repository.RoleRepository
 import com.proper.enterprise.platform.auth.common.repository.MenuRepository
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.common.repository.RoleRepository
 import com.proper.enterprise.platform.auth.common.repository.UserGroupRepository
 import com.proper.enterprise.platform.auth.common.repository.UserRepository
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
+import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.After
@@ -22,6 +25,23 @@ import org.springframework.test.context.jdbc.Sql
       "/com/proper/enterprise/platform/auth/common/resources.sql"
     ])
 class RolesControllerTest extends AbstractTest {
+
+    @Autowired
+    RoleService roleService
+    @Autowired
+    RoleRepository roleRepository
+    @Autowired
+    UserRepository userRepository
+    @Autowired
+    MenuRepository menuRepository
+    @Autowired
+    ResourceRepository resourceRepository
+    @Autowired
+    UserGroupRepository userGroupRepository
+    @Autowired
+    DataDicRepository dataDicRepository
+    @Autowired
+    I18NService i18NService
 
     @Test
     @NoTx
@@ -63,12 +83,11 @@ class RolesControllerTest extends AbstractTest {
         def updateReq = [:]
         updateReq['name'] = 'updateReq_test_name'
         updateReq['description'] = 'updateReq_test_description'
-        updateReq['enable'] = false
+        updateReq['enable'] = true
 //        req['parentId'] = 'updateReq_test_parentId' TODO
         put('/auth/roles/' + id, JSONUtil.toJSON(updateReq), HttpStatus.OK)
         role = JSONUtil.parse(get('/auth/roles/' + id, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert role.get('description') == 'updateReq_test_description'
-        assert !role.get('enable')
         assert role.get('name') == 'updateReq_test_name'
 
         // role add menu
@@ -126,18 +145,64 @@ class RolesControllerTest extends AbstractTest {
 
     }
 
-    @Autowired
-    UserRepository userRepository
-    @Autowired
-    MenuRepository menuRepository
-    @Autowired
-    RoleRepository roleRepository
-    @Autowired
-    ResourceRepository resourceRepository
-    @Autowired
-    UserGroupRepository userGroupRepository
-    @Autowired
-    DataDicRepository dataDicRepository
+    @Test
+    void testGetMenuParents(){
+        mockUser('test1', 't1', 'pwd')
+
+        RoleEntity roleEntity1 = new RoleEntity()
+        roleEntity1.setName("role1")
+        roleEntity1 = roleService.save(roleEntity1)
+
+        RoleEntity roleEntity2 = new RoleEntity()
+        roleEntity2.setName("role2")
+        roleEntity2.setParent(roleEntity1)
+        roleEntity2 = roleService.save(roleEntity2)
+
+        RoleEntity roleEntity3 = new RoleEntity()
+        roleEntity3.setName("role3")
+        roleEntity3.setParent(roleEntity2)
+        roleService.save(roleEntity3)
+
+        def parents = JSONUtil.parse(get('/auth/roles/parents',  HttpStatus.OK)
+            .getResponse().getContentAsString(), List.class)
+        assert parents.size() == 2
+
+    }
+
+
+    @Test
+    void testNoPermission() {
+        def str = i18NService.getMessage("pep.auth.common.user.permission.failed")
+        def result = get('/auth/roles', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
+        assert result == str
+
+        Map<String, Object> map = new HashMap<>()
+        result = put('/auth/roles', JSONUtil.toJSON(map), HttpStatus.BAD_REQUEST).getResponse()
+            .getContentAsString()
+        assert result == str
+
+        result = post('/auth/roles', JSONUtil.toJSON(map), HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
+        assert result == str
+
+        result = delete('/auth/roles?ids=', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
+        assert result == str
+
+        result = get('/auth/roles/1', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
+        assert result == str
+
+        result = put('/auth/roles/1', JSONUtil.toJSON(map), HttpStatus.BAD_REQUEST).getResponse()
+            .getContentAsString()
+        assert result == str
+
+        result = post('/auth/roles/1/menus', JSONUtil.toJSON(map), HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
+        assert result == str
+
+        result = delete('/auth/roles/1/menus?ids=', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
+        assert result == str
+
+        result = get('/auth/roles/parents', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
+        assert result == str
+    }
 
     @After
     void tearDown() {

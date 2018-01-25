@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserGroupService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity;
 import com.proper.enterprise.platform.auth.common.repository.UserGroupRepository;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -187,4 +189,17 @@ public class UserGroupServiceImpl implements UserGroupService {
         return filterUsers;
     }
 
+    @Override
+    public boolean hasPerimissionOfUserGroup(UserGroup userGroup, String reqUrl, RequestMethod requestMethod) {
+        if (userGroup == null || !userGroup.isEnable() || !userGroup.isValid()) {
+            return false;
+        }
+        Collection<RoleEntity> roleEntities = (Collection<RoleEntity>) userGroup.getRoles();
+        for (RoleEntity roleEntity : roleEntities) {
+            if (roleService.hasPerimissionOfRole(roleEntity, reqUrl, requestMethod)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

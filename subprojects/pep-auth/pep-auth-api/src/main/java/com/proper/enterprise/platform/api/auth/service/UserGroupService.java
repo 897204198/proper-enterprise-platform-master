@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.api.auth.service;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
 import java.util.Map;
@@ -119,5 +120,14 @@ public interface UserGroupService {
      * @return 用户集合
      */
     Collection<? extends User> getGroupUsers(String groupId);
+
+    /**
+     * 检测用户组是否有此权限
+     * @param userGroup 待检测用户组
+     * @param reqUrl 资源请求路径
+     * @param requestMethod  资源请求方法
+     * @return 如果有则返回真
+     */
+    boolean hasPerimissionOfUserGroup(UserGroup userGroup, String reqUrl, RequestMethod requestMethod);
 
 }

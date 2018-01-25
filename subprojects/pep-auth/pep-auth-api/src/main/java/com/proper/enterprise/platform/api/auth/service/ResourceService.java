@@ -61,4 +61,14 @@ public interface ResourceService {
      * @return 角色集合
      */
     Collection<? extends Role> getResourceRoles(String resourceId);
+
+    /**
+     * 判断这个资源是否有此权限
+     * @param resource 带检测资源
+     * @param reqUrl 指定的资源路径
+     * @param requestMethod 指定的资源请求方法
+     * @return 有则返回真
+     */
+    boolean hasPerimissionOfResource(Resource resource, String reqUrl, RequestMethod requestMethod);
+
 }

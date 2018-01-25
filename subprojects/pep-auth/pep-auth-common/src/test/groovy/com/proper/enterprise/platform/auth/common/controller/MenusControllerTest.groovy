@@ -79,6 +79,9 @@ class MenusControllerTest extends AbstractTest {
     @Test
     @NoTx
     void menuUnionTest() {
+
+        mockUser('test1', 't1', 'pwd')
+
         def menu = [:]
         menu['icon'] = 'test_icon'
         menu['name'] = 'test_name1'

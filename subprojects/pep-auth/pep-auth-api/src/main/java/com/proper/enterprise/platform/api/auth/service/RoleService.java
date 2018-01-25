@@ -1,8 +1,10 @@
 package com.proper.enterprise.platform.api.auth.service;
 
 import com.proper.enterprise.platform.api.auth.model.*;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +22,7 @@ public interface RoleService {
 
     /**
      * 根据角色名称获得角色集合
-     *
+     * <p>
      * 系统使用角色 ID 作为角色唯一标识，允许存在同名的角色
      *
      * @param name 角色名称
@@ -56,10 +58,10 @@ public interface RoleService {
     /**
      * 按照查询条件搜索权限列表
      *
-     * @param name 名称
+     * @param name        名称
      * @param description 描述
-     * @param parentId 父ID
-     * @param enable 是否可用
+     * @param parentId    父ID
+     * @param enable      是否可用
      * @return 权限列表
      */
     Collection<? extends Role> getByCondiction(String name, String description, String parentId, String enable);
@@ -99,7 +101,7 @@ public interface RoleService {
      * 角色添加菜单列表
      *
      * @param roleId 角色ID
-     * @param ids 以 , 分隔的菜单ID列表
+     * @param ids    以 , 分隔的菜单ID列表
      * @return 角色
      */
     Role addRoleMenus(String roleId, String ids);
@@ -108,7 +110,7 @@ public interface RoleService {
      * 角色删除菜单列表
      *
      * @param roleId 角色ID
-     * @param ids 以 , 分隔的菜单ID列表
+     * @param ids    以 , 分隔的菜单ID列表
      * @return 角色
      */
     Role deleteRoleMenus(String roleId, String ids);
@@ -125,7 +127,7 @@ public interface RoleService {
      * 角色添加资源列表
      *
      * @param roleId 角色ID
-     * @param ids 以 , 分隔的资源ID列表
+     * @param ids    以 , 分隔的资源ID列表
      * @return 角色
      */
     Role addRoleResources(String roleId, String ids);
@@ -134,7 +136,7 @@ public interface RoleService {
      * 角色删除资源列表
      *
      * @param roleId 角色ID
-     * @param ids 以 , 分隔的资源ID列表
+     * @param ids    以 , 分隔的资源ID列表
      * @return 角色
      */
     Role deleteRoleResources(String roleId, String ids);
@@ -166,8 +168,36 @@ public interface RoleService {
 
     /**
      * 通过用户ID，获取对应的用户组，拥有的角色
+     *
      * @return 返回map类型，key为角色ID，value为角色对象
      */
     Map<String, Object> getUserGroupRolesByUserId(String userId);
+
+
+    /**
+     * 检测是否有循环继承
+     *
+     * @param roles 待检测角色列表
+     * @return 有则返回真，没有返回假
+     */
+    boolean hasCircleInherit(List<? extends Role> roles);
+
+    /**
+     * 检测是否有经过当前角色的循环继承
+     *
+     * @param currentRole 当前用户
+     * @return 有则返回真，没有返回假
+     */
+    boolean hasCircleInheritForCurrentRole(Role currentRole);
+
+    /**
+     * 检测指定的角色，有没有指定的资源权限
+     *
+     * @param role          指定的角色
+     * @param reqUrl        指定的资源路径
+     * @param requestMethod 指定的资源请求方法
+     * @return 如果有，则返回真
+     */
+    boolean hasPerimissionOfRole(Role role, String reqUrl, RequestMethod requestMethod);
 
 }

@@ -30,9 +30,9 @@ public interface UserService {
 
     User getByUsername(String username);
 
-    User updateByUser(Map<String, Object> userMap) throws Exception;
+    User updateByUser(Map<String, Object> userMap);
 
-    boolean delete(String id) throws Exception;
+    boolean delete(String id);
 
     void delete(User user);
 
@@ -76,7 +76,7 @@ public interface UserService {
      *
      * @param ids 以 , 分隔的待删除用户ID列表
      */
-    boolean deleteByIds(String ids) throws Exception;
+    boolean deleteByIds(String ids);
 
     /**
      * 更新资源状态
@@ -131,6 +131,7 @@ public interface UserService {
 
     /**
      * 根据请求的url、请求的方法，判断当前用户是否有此权限
+     * 用户组也有资源，某个人的用户组有此资源，也视为这个人有此资源
      * @param user 待检测用户
      * @param reqUrl 请求的url
      * @param requestMethod 请求的方法
@@ -143,6 +144,6 @@ public interface UserService {
      * @param requestMethod 请求方法
      * @param reqUrl 请求路径
      */
-    void checkPermission(String reqUrl, RequestMethod requestMethod) throws Exception;
+    void checkPermission(String reqUrl, RequestMethod requestMethod);
 
 }
