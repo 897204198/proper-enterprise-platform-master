@@ -45,7 +45,7 @@ public interface MenuService {
      *
      * @return 菜单集合
      */
-    Collection<? extends Menu> getMenus(String name, String description, String route, String enable);
+    Collection<? extends Menu> getMenus(String name, String description, String route, String enable, String parentId);
 
     /**
      * 根据菜单ID列表获取菜单列表
@@ -75,9 +75,10 @@ public interface MenuService {
      * @param description 菜单描述
      * @param route 前端路径
      * @param enable 菜单状态
+     * @param parentId 父菜单ID
      * @return 获取菜单信息列表
      */
-    Collection<? extends Menu> getMenuByCondiction(String name, String description, String route, String enable);
+    Collection<? extends Menu> getMenuByCondiction(String name, String description, String route, String enable, String parentId);
 
     /**
      * 删除多条菜单数据

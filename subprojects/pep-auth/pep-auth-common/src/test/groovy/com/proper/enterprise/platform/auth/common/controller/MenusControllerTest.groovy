@@ -1,11 +1,10 @@
 package com.proper.enterprise.platform.auth.common.controller
 
+import com.proper.enterprise.platform.api.auth.service.MenuService
+import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.dictionary.MenuType
-import com.proper.enterprise.platform.auth.common.repository.MenuRepository
-import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.common.repository.RoleRepository
-import com.proper.enterprise.platform.auth.common.repository.UserGroupRepository
-import com.proper.enterprise.platform.auth.common.repository.UserRepository
+import com.proper.enterprise.platform.auth.common.entity.MenuEntity
+import com.proper.enterprise.platform.auth.common.repository.*
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.test.AbstractTest
@@ -43,6 +42,14 @@ class MenusControllerTest extends AbstractTest {
     @Autowired
     DataDicRepository dataDicRepository
 
+    @Autowired
+    UserService userService
+
+    @Autowired
+    MenuService menusService
+
+    def str = 'Current user has no permissions'
+
     @Test
     @NoTx
     void diffUsersGetDiffMenus() {
@@ -56,37 +63,32 @@ class MenusControllerTest extends AbstractTest {
 
         // has role
         mockUser('test2', 't2', 'pwd', false)
-        assert resOfGet('/auth/menus', HttpStatus.OK).size() == 8
+        assert resOfGet('/auth/menus', HttpStatus.BAD_REQUEST)
+        assert str
 
         // without role
         mockUser('test3', 't3', 'pwd', false)
-        assert resOfGet('/auth/menus', HttpStatus.OK) == []
+        assert resOfGet('/auth/menus', HttpStatus.BAD_REQUEST)
+        assert str
     }
 
     @Test
     void getMenusWithOrder() {
         mockUser('test2', 't2', 'pwd', false)
-        def res = resOfGet('/auth/menus', HttpStatus.OK)
-        assert res[0].root
-        1..3.each { idx ->
-            res[idx].with {
-                assert id == "a2-m$idx"
-                assert parentId != null
-            }
-        }
+        def res = resOfGet('/auth/menus', HttpStatus.BAD_REQUEST)
+        assert str
     }
 
     @Test
     @NoTx
     void menuUnionTest() {
-
         mockUser('test1', 't1', 'pwd')
 
         def menu = [:]
         menu['icon'] = 'test_icon'
         menu['name'] = 'test_name1'
         menu['route'] = '/bbb'
-        menu['enable'] = false
+        menu['enable'] = true
         menu['sequenceNumber'] = 55
         menu['menuCode'] = '1'
         def menuObj = JSONUtil.parse(post('/auth/menus', JSONUtil.toJSON(menu), HttpStatus.CREATED)
@@ -95,6 +97,16 @@ class MenusControllerTest extends AbstractTest {
         menuObj = JSONUtil.parse(get('/auth/menus/' + id,  HttpStatus.OK)
             .getResponse().getContentAsString(), Map.class)
         assert menuObj.get("icon") == 'test_icon'
+
+        def req = [:]
+        def list = ['test-c']
+        req['ids'] = list
+        req['enable'] = true
+        put('/auth/menus', JSONUtil.toJSON(req), HttpStatus.OK)
+        menuObj = JSONUtil.parse(get('/auth/menus/' + id,  HttpStatus.OK)
+            .getResponse().getContentAsString(), Map.class)
+        assert menuObj.get('enable')
+        menuObj.get("url") == "/auth/test"
 
         menu['icon'] = 'test_icon_change'
         put('/auth/menus/' + id, JSONUtil.toJSON(menu), HttpStatus.OK)
@@ -127,8 +139,40 @@ class MenusControllerTest extends AbstractTest {
 
         def parents = JSONUtil.parse(get('/auth/menus/parents',  HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
-        assert parents.size() == 0 //TODO
+        assert parents.size() == 5
+        assert parents.get(0).size() == 11
+
     }
+
+    @Test
+    void test(){
+        mockUser('test1', 't1', 'pwd')
+        Collection<MenuEntity> collection = new HashSet<>()
+        MenuEntity menuEntity =new MenuEntity()
+        menuEntity.setName("test_name1")
+        menuEntity.setEnable(true)
+        menuEntity.setIcon('test_icon')
+        menuEntity.setSequenceNumber(55)
+        menuEntity.setRoute("/bbb")
+        menuEntity = menuRepository.save(menuEntity)
+
+        MenuEntity menuEntity2 =new MenuEntity()
+        menuEntity2.setName("test_name2")
+        menuEntity2.setEnable(true)
+        menuEntity2.setIcon('test_icon1')
+        menuEntity2.setSequenceNumber(52)
+        menuEntity2.setRoute("/bbc")
+        menuEntity2 = menuRepository.save(menuEntity2)
+        collection.add(menuEntity2.getId())
+        collection.add(menuEntity.getId())
+
+        menusService.updateEanble(collection, true)
+        assert collection.size() ==2
+
+//        assert menuEntity1.enable == true
+
+    }
+
 
     @Sql("/com/proper/enterprise/platform/auth/common/datadics.sql")
     @Test

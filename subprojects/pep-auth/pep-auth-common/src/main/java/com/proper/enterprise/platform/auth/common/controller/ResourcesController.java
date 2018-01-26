@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
+import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,33 +20,38 @@ public class ResourcesController extends BaseController {
     @Autowired
     ResourceService resourceService;
 
+    @Autowired
+    UserService userService;
+
     @SuppressWarnings("unchecked")
     @PutMapping
-    public ResponseEntity<Collection<? extends Resource>> updateEnable(@RequestBody Map<String, Object> reqMap) {
+    public ResponseEntity<Collection<? extends Resource>> updateEnable(@RequestBody Map<String, Object> reqMap) throws Exception {
+        userService.checkPermission("/auth/resources", RequestMethod.GET);
         Collection<String> idList = (Collection<String>)reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
-        // TODO 具体实现
         return responseOfPut(resourceService.updateEanble(idList, enable));
     }
 
     @PostMapping
-    public ResponseEntity<Resource> create(@RequestBody Map<String, Object> reqMap) {
+    public ResponseEntity<Resource> create(@RequestBody Map<String, Object> reqMap) throws Exception {
+        userService.checkPermission("/auth/resources", RequestMethod.POST);
         return responseOfPost(resourceService.save(reqMap));
     }
 
     @DeleteMapping
-    public ResponseEntity deleteResource(@RequestParam String ids) {
-        // TODO 具体实现
+    public ResponseEntity deleteResource(@RequestParam String ids) throws Exception {
+        userService.checkPermission("/auth/resources", RequestMethod.DELETE);
         return responseOfDelete(resourceService.deleteByIds(ids));
     }
 
     @GetMapping(path = "/{resourceId}")
-    public ResponseEntity<Resource> find(@PathVariable String resourceId) {
+    public ResponseEntity<Resource> find(@PathVariable String resourceId) throws Exception {
         return responseOfGet(resourceService.get(resourceId));
     }
 
     @PutMapping(path = "/{resourceId}")
-    public ResponseEntity<Resource> update(@PathVariable String resourceId, @RequestBody Map<String, Object> reqMap) {
+    public ResponseEntity<Resource> update(@PathVariable String resourceId, @RequestBody Map<String, Object> reqMap) throws Exception {
+        userService.checkPermission("/auth/resources/{resourceId}", RequestMethod.PUT);
         Resource resource = resourceService.get(resourceId);
         if (resource != null) {
             reqMap.put("id", resourceId);
@@ -55,7 +61,8 @@ public class ResourcesController extends BaseController {
     }
 
     @DeleteMapping(path = "/{resourceId}")
-    public ResponseEntity delete(@PathVariable String resourceId) {
+    public ResponseEntity delete(@PathVariable String resourceId) throws Exception {
+        userService.checkPermission("/auth/resources/{resourceId}", RequestMethod.DELETE);
         Resource resource = resourceService.get(resourceId);
         if (resource != null) {
             resourceService.delete(resource);

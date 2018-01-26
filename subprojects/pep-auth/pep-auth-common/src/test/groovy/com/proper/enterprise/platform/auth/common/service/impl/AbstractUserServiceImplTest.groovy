@@ -1,16 +1,11 @@
 package com.proper.enterprise.platform.auth.common.service.impl
 
 import com.proper.enterprise.platform.api.auth.model.User
+import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserService
-import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
-import com.proper.enterprise.platform.auth.common.entity.RoleEntity
-import com.proper.enterprise.platform.auth.common.entity.UserEntity
-import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity
-import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.common.repository.RoleRepository
-import com.proper.enterprise.platform.auth.common.repository.UserGroupRepository
-import com.proper.enterprise.platform.auth.common.repository.UserRepository
+import com.proper.enterprise.platform.auth.common.entity.*
+import com.proper.enterprise.platform.auth.common.repository.*
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.After
@@ -38,6 +33,12 @@ class AbstractUserServiceImplTest extends AbstractTest {
 
     @Autowired
     ResourceRepository resourceRepository
+
+    @Autowired
+    MenuRepository menuRepository
+
+    @Autowired
+    MenuService menuService
 
     @Test
     @Transactional
@@ -209,6 +210,58 @@ class AbstractUserServiceImplTest extends AbstractTest {
         userService.delete(user)
         assert userService.get(userEntity.getId()) == null
 
+    }
+
+    @Test
+    void testUserImpl() {
+        UserEntity userEntity = new UserEntity()
+        userEntity.setName("user1")
+        userEntity.setId("userId")
+        userEntity.setUsername("username")
+        userEntity.setPassword("pwd1")
+        userEntity.setCreateUserId("00000")
+        userEntity.setEnable(true)
+        userEntity.setValid(true)
+        userEntity = userRepository.save(userEntity)
+
+        RoleEntity roleEntity = new RoleEntity()
+        roleEntity.setName('role2')
+        roleEntity = roleRepository.save(roleEntity)
+
+        MenuEntity menuEntity = new MenuEntity()
+        menuEntity.setName("ralm")
+        menuEntity.setEnable(true)
+        menuEntity = menuRepository.save(menuEntity)
+
+        MenuEntity menuEntity1 = new MenuEntity()
+        menuEntity1.setName("ralm")
+        menuEntity1.setEnable(true)
+        menuEntity1 = menuRepository.save(menuEntity1)
+
+        List<MenuEntity> list = new ArrayList<>()
+        list.add(menuEntity)
+        list.add(menuEntity1)
+
+        roleEntity.add(list)
+        userEntity.add(roleEntity)
+
+        MenuEntity res = userService.getMenus()
+        assert res.enable == true
+    }
+    @Test
+    void testUser1(){
+        UserEntity userEntitw = new UserEntity()
+        userEntitw.setName("user1")
+        userEntitw.setId("userId")
+        userEntitw.setUsername("username")
+        userEntitw.setPassword("pwd1")
+        userEntitw.setCreateUserId("00000")
+        userEntitw.setEnable(true)
+        userEntitw.setValid(true)
+        userEntitw = userService.save(userEntitw)
+        UserEntity user = userService.getByUsername(userEntitw.getUsername())
+        MenuEntity menu = userService.getMenusByUsername(user.getUsername())
+        menu.enable == true
     }
 
 
