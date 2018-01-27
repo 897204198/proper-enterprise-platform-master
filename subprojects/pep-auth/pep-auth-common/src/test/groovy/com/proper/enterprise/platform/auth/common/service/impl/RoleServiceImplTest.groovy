@@ -5,15 +5,17 @@ import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.repository.RoleRepository
+import com.proper.enterprise.platform.auth.common.repository.UserRepository
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.annotation.NoTx
+import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
 class RoleServiceImplTest extends AbstractTest {
-
 
     @Autowired
     RoleRepository roleRepository;
@@ -26,6 +28,9 @@ class RoleServiceImplTest extends AbstractTest {
 
     @Autowired
     I18NService i18NService
+
+    @Autowired
+    UserRepository userRepository
 
     void initRoleData(boolean hasCircleInherit) {
         for (int i = 1; i < 11; i++) {
@@ -101,8 +106,6 @@ class RoleServiceImplTest extends AbstractTest {
         roleService.delete(roleEntity1)
     }
 
-
-
     @Test
     void testHasCircleInherit() {
         initRoleData(true)
@@ -112,7 +115,49 @@ class RoleServiceImplTest extends AbstractTest {
         initRoleData(false)
         assert !roleService.hasCircleInherit(roleRepository.findAll())
         roleRepository.deleteAll()
+    }
 
+    @Test
+    @NoTx
+    void testErrDelete(){
+        UserEntity userEntity = new UserEntity("u11", "p11")
+        userEntity.setSuperuser(true)
+        userEntity = userService.save(userEntity)
+        mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
+
+        RoleEntity roleEntity = new RoleEntity()
+        roleEntity.setName("role1")
+        roleEntity.setEnable(false)
+        roleEntity = roleService.save(roleEntity)
+
+        assert delete('/auth/roles?ids=' + roleEntity.getId(), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage(
+            "pep.auth.common.role.get.failed")
+
+        roleEntity.setEnable(true)
+        roleEntity = roleService.save(roleEntity)
+        userEntity.add(roleEntity)
+        userEntity = userService.save(userEntity)
+
+        assert delete('/auth/roles?ids=' + roleEntity.getId(), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage(
+            "pep.auth.common.role.delete.relation.failed")
+
+        userEntity.remove(roleEntity)
+        userEntity = userService.save(userEntity)
+
+        RoleEntity roleEntity1 = new RoleEntity()
+        roleEntity1.setName('role2')
+        roleEntity1.setParent(roleEntity)
+        roleEntity1 = roleService.save(roleEntity1)
+
+        assert delete('/auth/roles?ids=' + roleEntity.getId(), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage(
+            "pep.auth.common.role.delete.relation.failed")
+
+    }
+
+    @After
+    void clearAll(){
+        userRepository.deleteAll()
+        roleRepository.deleteAll()
     }
 
 }

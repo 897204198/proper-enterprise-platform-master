@@ -254,6 +254,7 @@ class UsersControllerTest extends AbstractTest {
     @Test
     @NoTx
     void userGroupTest() {
+        mockUser('test1', 't1', 'pwd')
         post('/auth/user-groups/group1/user/test3', '', HttpStatus.CREATED)
         def resList = JSONUtil.parse(get('/auth/users/test3/user-groups', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 1

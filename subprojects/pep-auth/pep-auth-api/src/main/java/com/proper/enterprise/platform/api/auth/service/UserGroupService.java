@@ -79,6 +79,14 @@ public interface UserGroupService {
     UserGroup saveUserGroupRole(String groupId, String roleId);
 
     /**
+     * 获取指定用户组角色集合
+     *
+     * @param groupId 用户组ID
+     * @return 角色集合
+     */
+    Collection<? extends Role> getGroupRoles(String groupId);
+
+    /**
      * 用户组删除角色
      *
      * @param groupId 用户组ID
@@ -86,14 +94,6 @@ public interface UserGroupService {
      * @return 用户组
      */
     UserGroup deleteUserGroupRole(String groupId, String roleId);
-
-    /**
-     * 获取指定用户组角色集合
-     *
-     * @param groupId 用户组ID
-     * @return 角色集合
-     */
-    Collection<? extends Role> getGroupRoles(String groupId);
 
     /**
      * 用户组添加用户

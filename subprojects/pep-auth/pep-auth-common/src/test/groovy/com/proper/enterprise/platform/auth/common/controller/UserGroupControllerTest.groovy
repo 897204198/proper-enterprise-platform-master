@@ -2,7 +2,8 @@ package com.proper.enterprise.platform.auth.common.controller
 
 import com.proper.enterprise.platform.api.auth.model.UserGroup
 import com.proper.enterprise.platform.api.auth.service.UserService
-import com.proper.enterprise.platform.auth.common.entity.DataRestrainEntity
+import com.proper.enterprise.platform.auth.common.entity.RoleEntity
+import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity
 import com.proper.enterprise.platform.auth.common.repository.MenuRepository
 import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
@@ -12,6 +13,7 @@ import com.proper.enterprise.platform.auth.common.repository.UserRepository
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,16 +32,26 @@ class UserGroupControllerTest extends AbstractTest {
     private UserRepository userRepo
 
     @Autowired
-    private UserGroupRepository userGroupRepo
+    private RoleRepository roleRepo
 
     @Autowired
-    private RoleRepository roleRepo
+    MenuRepository menuRepository
+    @Autowired
+    ResourceRepository resourceRepository
+    @Autowired
+    UserGroupRepository userGroupRepository
+    @Autowired
+    DataDicRepository dataDicRepository
 
     @Test
     @Sql(["/com/proper/enterprise/platform/auth/common/users.sql",
           "/com/proper/enterprise/platform/auth/common/roles.sql"
         ])
+    @NoTx
     void userGroupUnionTest() {
+
+        mockUser('test1', 't1', 'pwd')
+
         def group1 = [:]
         group1['name'] = 'group-1'
         group1['description'] = 'group-1-des'
@@ -100,85 +112,88 @@ class UserGroupControllerTest extends AbstractTest {
         def u1 = userService.getByUsername('t1')
         def u2 = userService.getByUsername('t2')
 
-        // group add user
         post(URI + '/' + id1 + '/user/' + u1.id, '', HttpStatus.CREATED)
         post(URI + '/' + id1 + '/user/' + u2.id, '', HttpStatus.CREATED)
-        def resList = JSONUtil.parse(get(URI + '/' + id1 + '/users', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert resList.size() == 2
-        assert resList.get(0).id == 'test1'
-        assert resList.get(1).id == 'test2'
-        // delete group's user
-        delete(URI + '/' + id1 + '/user/' + u1.id, HttpStatus.NO_CONTENT)
-        resList = JSONUtil.parse(get(URI + '/' + id1 + '/users', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert resList.size() == 1
-        assert resList.get(0).id == 'test2'
-
-        // group add role
         post(URI + '/' + id1 + '/role/role1', '', HttpStatus.CREATED)
-        resList = JSONUtil.parse(get(URI + '/' + id1 + '/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert resList.size() == 1
-        assert resList.get(0).id == 'role1'
-        // delete group's role
-        delete(URI + '/' + id1 + '/role/role1', HttpStatus.NO_CONTENT)
-        resList = JSONUtil.parse(get(URI + '/' + id1 + '/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert resList.size() == 0
 
-        delete(URI + '/' + id1, HttpStatus.NO_CONTENT)
-        delete(URI + '?ids=' + id2, HttpStatus.NO_CONTENT)
+        single = JSONUtil.parse(get(URI + '/' + id1, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert single.size() == 5
+        assert single.get("id") == id1
+        assert single.get("name") == 'group-1'
+
+        delete(URI + '/' + id1 + '/user/' + u1.id, HttpStatus.NO_CONTENT)
+        delete(URI + '/' + id1 + '/role/role1', HttpStatus.NO_CONTENT)
+
+        single = JSONUtil.parse(get(URI + '/' + id1, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert single.get('name') == 'group-1'
+        assert single.get('description') == 'group-1-des'
+        assert single.get('enable')
+
+        UserGroupEntity userGroupEntity = new UserGroupEntity()
+        userGroupEntity.setName("gourp-22221")
+        userGroupEntity.setSeq(3)
+        userGroupEntity.setDescription("ddddd")
+        userGroupEntity = userGroupRepository.saveAndFlush(userGroupEntity)
+
+        Map<String, Object> reqMap = new HashMap<>()
+        reqMap.put("name", "group-212121212")
+        reqMap.put("enable", true)
+        reqMap.put("description", "group-2-des")
+        reqMap.put("seq", 3)
+        single = JSONUtil.parse(put(URI + '/' + userGroupEntity.getId(), JSONUtil.toJSON(reqMap), HttpStatus.OK).getResponse().getContentAsString(), Map
+            .class)
+        assert single.get("name") == 'group-212121212'
+
+        assert delete(URI + '/' + userGroupEntity.getId(), HttpStatus.NO_CONTENT).getResponse().getContentAsString() == ''
+
+        UserEntity userEntity = new UserEntity('u11', 'p11')
+        userEntity = userService.save(userEntity)
+        UserEntity [] userEntitys = new UserEntity[1]
+        userEntitys[0] = userEntity
+
+        UserGroupEntity userGroupEntity1 = new UserGroupEntity()
+        userGroupEntity1.setName('lastgroup')
+        userGroupEntity1.add(userEntitys)
+        userGroupEntity1 = userGroupRepository.saveAndFlush(userGroupEntity1)
+        userGroupEntity1.remove(userEntity)
+        userGroupEntity1 = userGroupRepository.saveAndFlush(userGroupEntity1)
+
+        assert delete(URI + '?ids=' + userGroupEntity1.getId(), HttpStatus.NO_CONTENT).getResponse().getContentAsString() == ''
+
+
     }
 
     @Test
-    void testPut(){
-        def group1 = [:]
-        group1['name'] = 'group-1'
-        group1['description'] = 'group-1-des'
-        group1['enable'] = true
-        group1['seq'] = 1
+    void testGetUsersAndRoles(){
+        RoleEntity roleEntity = new RoleEntity()
+        roleEntity.setName('role11')
+        roleEntity = roleRepo.saveAndFlush(roleEntity)
 
-        def g1 = JSONUtil.parse(post(URI,
-            JSONUtil.toJSON(group1), HttpStatus.CREATED).getResponse().getContentAsString(), Map.class)
-        assert g1.get('id') != null
+        UserEntity userEntity = new UserEntity('u11', 'p11')
+        userEntity = userService.save(userEntity)
 
-        Map<String, Object> reqMap = new HashMap<>()
-        reqMap.put("name",'name1')
-        reqMap.put("enable", true)
-        reqMap.put("description", 'description1')
-        reqMap.put("seq",1)
+        UserGroupEntity userGroupEntity = new UserGroupEntity()
+        userGroupEntity.setName('group11')
+        userGroupEntity.add(roleEntity)
+        userGroupEntity.add(userEntity)
+        userGroupEntity = userGroupRepository.saveAndFlush(userGroupEntity)
 
-        put('/auth/user-groups/'+g1.get('id'), JSONUtil.toJSON(reqMap), HttpStatus.OK)
-        def single = JSONUtil.parse(get(URI + '/' + g1.get('id'), HttpStatus.OK).getResponse().getContentAsString(), Map.class)
-        assert single.get("id") == g1.get('id')
-        assert single.get('name') == 'name1'
+        def result = get(URI + '/' + userGroupEntity.getId() + '/roles', HttpStatus.OK).getResponse().getContentAsString()
+        List list = JSONUtil.parse(result, List.class)
+        assert list.size() == 1
+        assert list.get(0).get('id') == roleEntity.getId()
 
-        DataRestrainEntity dataRestrainEntity = new DataRestrainEntity()
-        dataRestrainEntity.setName('name1')
-        dataRestrainEntity.setTableName('tablename')
-        dataRestrainEntity.setSqlStr('select * from a')
-        dataRestrainEntity.setFilterName('filter')
-        assert dataRestrainEntity.getName() == 'name1'
-        assert dataRestrainEntity.getTableName() == 'tablename'
-        assert dataRestrainEntity.getSqlStr() == 'select * from a'
-        assert dataRestrainEntity.getFilterName() == 'filter'
+        result = get(URI + '/' + userGroupEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString()
+        list = JSONUtil.parse(result, List.class)
+        assert list.size() == 1
+        assert list.get(0).get('id') == userEntity.getId()
     }
-
-    @Autowired
-    UserRepository userRepository
-    @Autowired
-    MenuRepository menuRepository
-    @Autowired
-    RoleRepository roleRepository
-    @Autowired
-    ResourceRepository resourceRepository
-    @Autowired
-    UserGroupRepository userGroupRepository
-    @Autowired
-    DataDicRepository dataDicRepository
 
     @After
     void tearDown() {
         userGroupRepository.deleteAll()
-        userRepository.deleteAll()
-        roleRepository.deleteAll()
+        userRepo.deleteAll()
+        roleRepo.deleteAll()
         menuRepository.deleteAll()
         resourceRepository.deleteAll()
         dataDicRepository.deleteAll()

@@ -9,7 +9,9 @@ import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity;
 import com.proper.enterprise.platform.auth.common.repository.UserGroupRepository;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -33,6 +35,9 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private I18NService i18NService;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -59,7 +64,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public UserGroup get(String id) {
-        return repository.findOne(id);
+        return repository.findByValidAndId(true, id);
     }
 
     @Override
@@ -84,7 +89,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public void delete(UserGroup group) {
-        repository.delete((UserGroupEntity) group);
+        this.deleteByIds(group.getId());
     }
 
     @Override
@@ -94,8 +99,23 @@ public class UserGroupServiceImpl implements UserGroupService {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            // TODO 对删除业务进行逻辑判断
-            repository.delete(repository.findAll(idList));
+            List<UserGroupEntity> list = new ArrayList<>(idList.size());
+            for (String id : idList) {
+                UserGroupEntity tempGroup = repository.findByValidAndId(true, id);
+                if (tempGroup == null) {
+                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.get.failed"));
+                }
+                if (!tempGroup.getRoles().isEmpty()) {
+                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.delete.relation.role"));
+                }
+                if (!tempGroup.getUsers().isEmpty()) {
+                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.delete.relation.user"));
+                }
+                tempGroup.setValid(false);
+                tempGroup.setEnable(false);
+                list.add(tempGroup);
+            }
+            repository.save(list);
             ret = true;
         }
         return ret;
@@ -103,8 +123,10 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public Collection<? extends UserGroup> updateEanble(Collection<String> idList, boolean enable) {
-        // TODO 具体实现
-        List<UserGroupEntity> groupList = repository.findAll(idList);
+        List<UserGroupEntity> groupList = new ArrayList<>(idList.size());
+        for (String id : idList) {
+            groupList.add(repository.findByValidAndId(true, id));
+        }
         for (UserGroupEntity group : groupList) {
             group.setEnable(enable);
         }
@@ -113,7 +135,6 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public UserGroup saveUserGroupRole(String id, String roleId) {
-        // TODO 具体实现
         UserGroup userGroup = get(id);
         if (userGroup != null) {
             Role role = roleService.get(roleId);

@@ -9,4 +9,7 @@ public interface UserGroupRepository extends BaseRepository<UserGroupEntity, Str
 
     Collection<UserGroupEntity> findAllByValidTrue();
 
+    UserGroupEntity findByValidAndId(boolean valid, String id);
+
+
 }
