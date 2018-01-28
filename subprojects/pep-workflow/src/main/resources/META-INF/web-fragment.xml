@@ -17,7 +17,7 @@
         </init-param>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>org.activiti.app.servlet.AppDispatcherServletConfiguration</param-value>
+            <param-value>org.flowable.app.servlet.AppDispatcherServletConfiguration</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
@@ -40,7 +40,7 @@
         </init-param>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>org.activiti.app.servlet.ApiDispatcherServletConfiguration</param-value>
+            <param-value>org.flowable.app.servlet.ApiDispatcherServletConfiguration</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>

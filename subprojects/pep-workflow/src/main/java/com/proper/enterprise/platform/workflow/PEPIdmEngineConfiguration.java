@@ -1,12 +1,11 @@
 package com.proper.enterprise.platform.workflow;
 
-import org.activiti.spring.SpringProcessEngineConfiguration;
-
+import org.flowable.idm.engine.IdmEngineConfiguration;
 import java.io.InputStream;
 
-public class PEPSpringProcessEngineConfiguration extends SpringProcessEngineConfiguration {
+public class PEPIdmEngineConfiguration extends IdmEngineConfiguration {
 
-    protected String mappingFile = "org/activiti/db/mapping/mappings.xml";
+    protected String mappingFile = "conf/workflow/idm/engine/mapping/mappings.xml";
 
     public void setMappingFile(String mappingFile) {
         this.mappingFile = mappingFile;

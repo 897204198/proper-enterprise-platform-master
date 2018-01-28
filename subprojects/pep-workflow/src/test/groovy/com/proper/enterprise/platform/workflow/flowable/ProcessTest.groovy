@@ -1,12 +1,12 @@
-package com.proper.enterprise.platform.workflow.activiti
+package com.proper.enterprise.platform.workflow.flowable
 
 import com.proper.enterprise.platform.test.AbstractTest
-import com.proper.enterprise.platform.workflow.activiti.service.AssigneeService
+import com.proper.enterprise.platform.workflow.flowable.service.AssigneeService
 import com.proper.enterprise.platform.workflow.service.DeployService
-import org.activiti.engine.RuntimeService
-import org.activiti.engine.TaskService
-import org.activiti.engine.runtime.ProcessInstance
-import org.activiti.engine.task.Task
+import org.flowable.engine.RuntimeService
+import org.flowable.engine.TaskService
+import org.flowable.engine.runtime.ProcessInstance
+import org.flowable.task.service.impl.persistence.entity.TaskEntity
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -57,7 +57,7 @@ class ProcessTest extends AbstractTest {
         assert tasks.size() == assigneeService.getCountersignAssigneeList().size()
 
         def csars = [[csAgree]*6, [csDeny]*4].flatten()
-        for (Task task : tasks) {
+        for (TaskEntity task : tasks) {
             assert taskService.getVariable(task.id, 'csAssignee') == task.getAssignee()
             taskService.setVariableLocal(task.id, 'csApproveResult', csars.pop())
             taskService.complete(task.id)
@@ -69,7 +69,7 @@ class ProcessTest extends AbstractTest {
         getApprovePath(procInst.processInstanceId, ['同意', '同意']) == ['一级审批', '二级审批']
         tasks = getCurrentTasks(procInst.processInstanceId)
         csars = [[csAgree]*4, [csDeny]*6].flatten()
-        for (Task task : tasks) {
+        for (TaskEntity task : tasks) {
             taskService.setVariableLocal(task.id, 'csApproveResult', csars.pop())
             taskService.complete(task.id)
         }
@@ -96,7 +96,7 @@ class ProcessTest extends AbstractTest {
 
     private List getApprovePath(String procInstId, List approveOpinions, int examTimes = approveOpinions.size()) {
         def path = [], i = 0
-        Task task
+        TaskEntity task
         examTimes.times {
             task = getCurrentTask(procInstId)
             path << task.name
@@ -107,7 +107,7 @@ class ProcessTest extends AbstractTest {
         path
     }
 
-    private Task getCurrentTask(String procInstId) {
+    private TaskEntity getCurrentTask(String procInstId) {
         getCurrentTasks(procInstId)[0]
     }
 

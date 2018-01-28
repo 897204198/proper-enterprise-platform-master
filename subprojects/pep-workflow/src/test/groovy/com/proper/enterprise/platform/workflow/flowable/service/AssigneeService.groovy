@@ -1,8 +1,8 @@
-package com.proper.enterprise.platform.workflow.activiti.service
+package com.proper.enterprise.platform.workflow.flowable.service
 
-import org.activiti.engine.HistoryService
-import org.activiti.engine.delegate.DelegateExecution
-import org.activiti.engine.delegate.DelegateTask
+import org.flowable.engine.HistoryService
+import org.flowable.engine.delegate.DelegateExecution
+import org.flowable.task.service.delegate.DelegateTask
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,7 +35,11 @@ class AssigneeService {
     void executionEnd(DelegateExecution execution) {
         def nrOfInstances = execution.getVariable('nrOfInstances')
         def nrOfCompletedInstances = execution.getVariable('nrOfCompletedInstances')
-        if (nrOfCompletedInstances != null && nrOfInstances == nrOfCompletedInstances) {
+        LOGGER.debug("Invoke into executionEnd method and execution is ${execution.getVariables()}")
+        //通过日志判断出来了  在activiti中会签任务最后总任务结束时是包含已完成实例数和实例总数相关数据的
+        // 但是flowable则不然，它会在会签总任务结束时清除相关数据
+        //目前想到的方案是已完成会签数+1 在总任务前处理路由走向
+        if (nrOfCompletedInstances != null && nrOfInstances == nrOfCompletedInstances+1) {
             def vars = historyService.createHistoricVariableInstanceQuery()
                                      .processInstanceId(execution.getProcessInstanceId())
                                      .variableName('csApproveResult')

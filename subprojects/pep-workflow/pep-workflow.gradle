@@ -10,26 +10,20 @@ sourceSets {
 }
 
 dependencies {
-    compile libraries.activiti_engine,
-//            libraries.activiti_explorer,
-            libraries.activiti_app_logic,
-            libraries.activiti_app_rest,
-            libraries.activiti_common_rest,
-            libraries.activiti_json_converter,
-            libraries.activiti_rest,
-            libraries.activiti_spring,
-            // use modeler in compile block only when need to insert demo data
-            //libraries.activiti_modeler,
+    compile libraries.flowable_engine,
+            libraries.flowable_json_converter,
+            libraries.flowable_rest,
+            libraries.flowable_spring,
+            libraries.flowable_ui_modeler_rest,
             libraries.groovy_all,
+            libraries.javax_inject,
             libraries.servlet_api
 
     compile project(':pep-auth-api'),
             project(':pep-cache-api'),
             project(':pep-core')
 
-    runtime libraries.activiti_content_storage,
-            libraries.activiti_form_engine,
-            libraries.activiti_web_designer
+    runtime libraries.flowable_web_designer
 
     runtime project(':pep-auth-jwt')
 

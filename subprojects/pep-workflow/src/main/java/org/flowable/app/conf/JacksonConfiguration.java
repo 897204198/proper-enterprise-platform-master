@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.app.conf;
+package org.flowable.app.conf;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,7 @@ public class JacksonConfiguration {
     @Bean()
     public ObjectMapper objectMapper() {
 
-    	// To avoid instantiating and configuring the mapper everywhere
+        // To avoid instantiating and configuring the mapper everywhere
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 

@@ -12,7 +12,7 @@
 
     <import resource="classpath*:spring/workflow/workflow-*.xml" />
 
-    <context:component-scan base-package="org.activiti.app.conf, org.activiti.app.repository, org.activiti.app.service, org.activiti.app.model.component" />
+    <context:component-scan base-package="org.flowable.app.conf" />
 
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager"/>
 
@@ -26,7 +26,7 @@
     </bean>
 
     <mvc:resources mapping="/workflow/*.html"     location="classpath:/META-INF/resources/"/>
-    <mvc:resources mapping="/workflow/editor/**"  location="classpath:/META-INF/resources/editor/"/>
+    <mvc:resources mapping="/workflow/editor-app/**"  location="classpath:/META-INF/resources/editor-app/"/>
     <mvc:resources mapping="/workflow/fonts/**"   location="classpath:/META-INF/resources/fonts/"/>
     <mvc:resources mapping="/workflow/i18n/**"    location="classpath:/META-INF/resources/i18n/"/>
     <mvc:resources mapping="/workflow/libs/**"    location="classpath:/META-INF/resources/libs/"/>

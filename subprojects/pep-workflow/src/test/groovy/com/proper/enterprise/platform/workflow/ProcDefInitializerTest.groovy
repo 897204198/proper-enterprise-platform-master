@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.workflow
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.workflow.service.DeployService
-import org.activiti.engine.RepositoryService
+import org.flowable.engine.RepositoryService
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 

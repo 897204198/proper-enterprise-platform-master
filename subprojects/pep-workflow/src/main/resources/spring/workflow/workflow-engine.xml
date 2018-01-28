@@ -4,7 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
 
-    <bean id="processEngineConfiguration" class="com.proper.enterprise.platform.workflow.PEPSpringProcessEngineConfiguration">
+
+    <bean id="processEngineConfiguration" class="org.flowable.spring.SpringProcessEngineConfiguration">
         <property name="dataSource" ref="dataSource" />
         <property name="transactionManager" ref="transactionManager" />
         <property name="databaseSchemaUpdate" value="${workflow.databaseSchemaUpdate}" />
@@ -15,10 +16,13 @@
         <property name="history" value="${workflow.history}" />
         <property name="processDefinitionCacheLimit" value="500"/>
         <property name="enableSafeBpmnXml" value="true"/>
-        <property name="mappingFile" value="${workflow.mappingFile}"/>
     </bean>
-
-    <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean" destroy-method="destroy">
+    <!--身份识别引擎-->
+    <bean id="idmEngineConfiguration" class="com.proper.enterprise.platform.workflow.PEPIdmEngineConfiguration">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="databaseSchemaUpdate" value="true"/>
+    </bean>
+    <bean id="processEngine" class="org.flowable.spring.ProcessEngineFactoryBean" destroy-method="destroy">
         <property name="processEngineConfiguration" ref="processEngineConfiguration" />
     </bean>
 
@@ -26,8 +30,6 @@
     <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
     <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
     <bean id="formService" factory-bean="processEngine" factory-method="getFormService" />
-    <bean id="formEngineFormService" factory-bean="processEngine" factory-method="getFormEngineFormService" />
-    <bean id="formEngineRepositoryService" factory-bean="processEngine" factory-method="getFormEngineRepositoryService" />
     <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
     <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
     <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
