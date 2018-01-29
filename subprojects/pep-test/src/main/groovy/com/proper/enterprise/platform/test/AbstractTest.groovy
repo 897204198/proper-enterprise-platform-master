@@ -4,6 +4,7 @@ import groovy.json.JsonSlurper
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletRequest
@@ -274,6 +275,18 @@ abstract class AbstractTest {
             println "sleep 5 milliseconds to wait, current active count is ${threadPoolTaskExecutor.activeCount}"
             sleep(5)
         }
+    }
+
+    /**
+     * 按照名称覆盖单例 bean
+     *
+     * @param beanName          bean 名称
+     * @param singletonObject   单例对象
+     */
+    protected void overrideSingleton(String beanName, Object singletonObject) {
+        DefaultListableBeanFactory bf = (DefaultListableBeanFactory) wac.getAutowireCapableBeanFactory()
+        bf.removeBeanDefinition(beanName)
+        bf.registerSingleton(beanName, singletonObject)
     }
 
 }
