@@ -167,10 +167,35 @@ class MenusControllerTest extends AbstractTest {
         collection.add(menuEntity.getId())
 
         menusService.updateEanble(collection, true)
-        assert collection.size() ==2
+        assert collection.size() == 2
+    }
 
-//        assert menuEntity1.enable == true
+    @Test
+    void testCoverage(){
+        String id = "test-t"
+        String id1 = "test-a"
+        Collection<String> idd = new HashSet<>()
+        idd.add(id)
+        idd.add(id1)
+        MenuEntity menuEntity = menusService.getByIds(idd)
+        assert menuEntity == null
+    }
 
+    @Test
+    void testEntity(){
+        MenuEntity menu =  new MenuEntity()
+        menu.setName("tar")
+        menu.setId("9999")
+
+        MenuEntity menuEntity = new MenuEntity()
+        menuEntity.addChild(menu)
+        assert menuEntity.children.size() ==1
+
+        menuEntity.removeChild(menu)
+        assert menuEntity.getChildren().size() == 0
+
+        menuEntity.setParent(menu)
+        menuEntity.getName() == "tar"
     }
 
 

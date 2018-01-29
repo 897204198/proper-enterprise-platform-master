@@ -198,11 +198,14 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Collection<? extends Menu> getResourceMenus(String resourceId) {
         Collection<Menu> filterMenus = new ArrayList<>();
-        Resource resource = this.get(resourceId); // TODO 过滤invalid以及enable
+        Resource resource = this.get(resourceId);
         if (resource != null) {
             Collection<? extends Menu> menus = resource.getMenus();
-            // TODO 具体过滤
-            filterMenus.addAll(menus);
+            for (Menu menu : menus) {
+                if (menu.isEnable() && menu.isValid()) {
+                    filterMenus.add(menu);
+                }
+            }
         }
         return filterMenus;
     }
@@ -210,11 +213,14 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Collection<? extends Role> getResourceRoles(String resourceId) {
         Collection<Role> filterRoles = new ArrayList<>();
-        Resource resource = this.get(resourceId); // TODO 过滤invalid以及enable
+        Resource resource = this.get(resourceId);
         if (resource != null) {
             Collection<? extends Role> roles = resource.getRoles();
-            // TODO 具体过滤
-            filterRoles.addAll(roles);
+            for (Role role : roles) {
+                if (role.isEnable() && role.isValid()) {
+                    filterRoles.add(role);
+                }
+            }
         }
         return filterRoles;
     }

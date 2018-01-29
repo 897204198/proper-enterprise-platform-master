@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.controller
 import com.proper.enterprise.platform.api.auth.model.Resource
 import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.auth.common.dictionary.ResourceType
+import com.proper.enterprise.platform.auth.common.entity.DataRestrainEntity
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.repository.*
 import com.proper.enterprise.platform.core.utils.JSONUtil
@@ -124,6 +125,33 @@ class ResourcesControllerTest extends AbstractTest {
         Resource resource11 =  resourceService.get('/test/url', RequestMethod.POST)
         Boolean res = resourceService.hasPerimissionOfResource(resource11, localResource, RequestMethod.POST)
         assert res == false
+    }
+
+    @Test
+    void testCoverage1(){
+        String id = "test-t"
+        String id1 = "test-a"
+        Collection<String> idd = new HashSet<>()
+        idd.add(id)
+        idd.add(id1)
+        ResourceEntity resourceEntity = resourceService.getByIds(idd)
+        assert resourceEntity == null
+    }
+
+    @Test
+    void testEntity(){
+        DataRestrainEntity data = new DataRestrainEntity()
+        data.setName("ii")
+        data.setTableName("ww")
+
+        ResourceEntity resourceEntity = new ResourceEntity()
+        resourceEntity.add(data)
+        assert resourceEntity.dataRestrains.size() == 1
+
+        resourceEntity.remove(data)
+
+        String tableName = "ww"
+        resourceEntity.getDataRestrains(tableName).size() == 0
     }
 
     @Test
