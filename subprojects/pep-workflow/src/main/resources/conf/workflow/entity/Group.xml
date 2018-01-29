@@ -12,24 +12,24 @@
 
   <!-- GROUP SELECT -->
   <select id="selectGroup" parameterType="string" resultMap="groupResultMap">
-    select * from ${prefix}pep_auth_roles where id = #{id, jdbcType=VARCHAR}
+    select * from ${prefix}pep_auth_usergroups where id = #{id, jdbcType=VARCHAR}
   </select>
 
   <select id="selectGroupsByUserId" parameterType="org.flowable.engine.impl.db.ListQueryParameterObject"
           resultMap="groupResultMap">
-    select r.*
-    from ${prefix}pep_auth_roles r, ${prefix}pep_auth_users_roles ur
-    where r.id = ur.role_id
-      and ur.user_id = #{parameter}
-      and r.valid = 'Y'
+    select g.*
+      from ${prefix}pep_auth_usergroups g, ${prefix}pep_auth_groups_users gu
+     where gu.user_id = #{parameter}
+       and g.id = gu.user_id
+       and g.valid = 'Y'
   </select>
 
   <select id="selectGroupsByUserIdAndGroupType" parameterType="org.flowable.engine.impl.db.ListQueryParameterObject" resultMap="groupResultMap">
-    select r.*
-    from ${prefix}pep_auth_roles r, ${prefix}pep_auth_users_roles ur
-    where r.id = ur.role_id
-      and ur.user_id = #{parameter.userId}
-      and r.valid = 'Y'
+    select g.*
+      from ${prefix}pep_auth_usergroups g, ${prefix}pep_auth_groups_users gu
+     where gu.user_id = #{parameter.userId}
+       and g.id = gu.user_id
+       and g.valid = 'Y'
     <!--  <if test="groupType != null">
          and g.TYPE_ = #{parameter.groupType}
       </if>-->
@@ -49,32 +49,29 @@
   </select>
 
   <sql id="selectGroupByQueryCriteriaSql">
-    from ${prefix}pep_auth_roles RES
-    <if test="userId != null">
-      inner join ${prefix}pep_auth_users_roles ur on RES.id = ur.role_id
-      inner join ${prefix}pep_auth_users u on ur.user_id = u.id
-    </if>
-    <where>
-      <if test="id != null">
-        RES.id = #{id}
-      </if>
-      <if test="name != null">
-        and RES.name = #{name}
-      </if>
-      <if test="nameLike != null">
-        and RES.name like #{nameLike}${wildcardEscapeClause}
-      </if>
-<!--      <if test="type != null">
-        and RES.TYPE_ = #{type}
-      </if>-->
+      from ${prefix}pep_auth_usergroups RES
       <if test="userId != null">
-        and u.id = #{userId}
+          inner join ${prefix}pep_auth_groups_users M on RES.id = M.user_group_id
+          inner join ${prefix}pep_auth_users U on M.user_id = U.id
       </if>
-      <if test="procDefId != null">
-        and exists (select ID_ from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and GROUP_ID_=RES.ID_ )
-      </if>
-        and RES.valid = 'Y'
-    </where>
+      <where>
+          <if test="id != null">
+              RES.name = #{id}
+          </if>
+          <if test="name != null">
+              and RES.name = #{name}
+          </if>
+          <if test="nameLike != null">
+              and RES.name like #{nameLike}${wildcardEscapeClause}
+          </if>
+          <if test="userId != null">
+              and U.id = #{userId}
+          </if>
+          <if test="procDefId != null">
+              and exists (select ID_ from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{procDefId} and GROUP_ID_=RES.id )
+          </if>
+              and RES.valid = 'Y'
+      </where>
   </sql>
 
   <select id="selectGroupByNativeQuery" parameterType="java.util.Map" resultMap="groupResultMap">

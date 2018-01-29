@@ -33,12 +33,16 @@ dependencies {
     compile project(':pep-auth-api')
 
     runtime libraries.commons_fileupload,
-            libraries.h2,
             libraries.jackson_databind,
-            libraries.jaxws_rt,
-            libraries.mysql_driver,
             libraries.spring_orm,
             libraries.spring_webmvc
+
+    // Choose by datasource
+    runtime libraries.h2,
+            libraries.mysql_driver
+
+    // Necessary when using Web Service
+    // runtime libraries.jaxws_rt
 
     // Mandatory for PEP
     runtime project(':pep-configs')

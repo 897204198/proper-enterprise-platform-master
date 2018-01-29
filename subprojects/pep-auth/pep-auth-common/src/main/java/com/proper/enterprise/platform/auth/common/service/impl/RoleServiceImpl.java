@@ -41,6 +41,10 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Collection<? extends Role> getAllSimilarRolesByName(String nameLike) {
+        return roleRepository.findAllByNameLike(nameLike);
+    }
+
     public Role save(Role role) {
         return roleRepository.save((RoleEntity) role);
     }
@@ -231,4 +235,5 @@ public class RoleServiceImpl implements RoleService {
         }
         return filterUserGroups;
     }
+
 }

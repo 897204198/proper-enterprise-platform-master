@@ -56,10 +56,18 @@ configurations.all {
             }
         }
     }
+
+    // Exclude other log frameworks
     exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     exclude group: 'org.apache.commons.logging'
     exclude group: 'org.apache.log4j'
     exclude group: 'log4j'
+
+    // Exclude Woodstox implement of Stax API
+    // which has different behaviours with JDK default implement
+    // depend by Activiti
+    // https://cloud.propersoft.cn/youtrack/issue/PEP-154
+    exclude group: 'org.codehaus.woodstox', module: 'wstx-asl'
 }
 
 //libraries.aspectjrt = "org.aspectj:aspectjrt:${versions.aspectj}"

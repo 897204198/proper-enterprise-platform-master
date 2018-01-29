@@ -9,4 +9,6 @@ public interface RoleRepository extends BaseRepository<RoleEntity, String> {
 
     Collection<RoleEntity> findByName(String name);
 
+    Collection<RoleEntity> findAllByNameLike(String name);
+
 }

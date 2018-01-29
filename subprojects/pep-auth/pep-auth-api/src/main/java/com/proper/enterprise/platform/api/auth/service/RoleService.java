@@ -29,6 +29,13 @@ public interface RoleService {
     Collection<? extends Role> getByName(String name);
 
     /**
+     * 根据角色名字获取相近的角色集合
+     * 系统使用角色 ID 作为角色唯一标识，允许存在同名的角色
+     * @author sunshuai
+     */
+    Collection<? extends Role> getAllSimilarRolesByName(String nameLike);
+
+    /**
      * 保存或更新角色信息
      *
      * @param role 角色
@@ -154,4 +161,5 @@ public interface RoleService {
      * @return 用户组集合
      */
     Collection<? extends UserGroup> getRoleUserGroups(String roleId);
+
 }
