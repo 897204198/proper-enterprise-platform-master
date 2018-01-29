@@ -1,12 +1,10 @@
 package com.proper.enterprise.platform.auth.common.controller
 
+import com.proper.enterprise.platform.api.auth.model.Resource
+import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.auth.common.dictionary.ResourceType
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
-import com.proper.enterprise.platform.auth.common.repository.MenuRepository
-import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.common.repository.RoleRepository
-import com.proper.enterprise.platform.auth.common.repository.UserGroupRepository
-import com.proper.enterprise.platform.auth.common.repository.UserRepository
+import com.proper.enterprise.platform.auth.common.repository.*
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.test.AbstractTest
@@ -31,6 +29,9 @@ class ResourcesControllerTest extends AbstractTest {
 
     @Autowired
     ResourceType resourceType
+
+    @Autowired
+    ResourceService resourceService
 
     @Test
     public void checkUniqueConstraint() {
@@ -61,17 +62,22 @@ class ResourcesControllerTest extends AbstractTest {
     @Test
     @NoTx
     void resourcesUnionTest() {
+        // super user
+        mockUser('test1', 't1', 'pwd')
+
         def resource = JSONUtil.parse(get('/auth/resources/test-c', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert resource.get('url') == '/auth/test'
         assert resource.get('enable')
 
+        mockUser('test5', 't5', 'pwd', true)
         def req = [:]
         def list = ['test-c']
         req['ids'] = list
-        req['enable'] = false
+        req['enable'] = true
         put('/auth/resources', JSONUtil.toJSON(req), HttpStatus.OK)
         resource = JSONUtil.parse(get('/auth/resources/test-c', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
-        assert !resource.get('enable')
+        assert resource.get('enable')
+        assert resource.get("url") == "/auth/test"
 
         def reqMap = [:]
         reqMap['url'] = '/test/url'
@@ -107,14 +113,17 @@ class ResourcesControllerTest extends AbstractTest {
         delete('/auth/resources/test-c', HttpStatus.NO_CONTENT)
         get('/auth/menus/test-c',  HttpStatus.OK).getResponse().getContentAsString() == ''
 
-        get('/auth/menus/test-r',  HttpStatus.OK).getResponse().getContentAsString() != ''
-        get('/auth/menus/test-g',  HttpStatus.OK).getResponse().getContentAsString() != ''
-        delete('/auth/menus?ids=test-r,test-g', HttpStatus.NO_CONTENT)
-
         get('/auth/menus/test-r',  HttpStatus.OK).getResponse().getContentAsString() == ''
         get('/auth/menus/test-g',  HttpStatus.OK).getResponse().getContentAsString() == ''
 
         delete('/auth/resources?ids=test-u', HttpStatus.NO_CONTENT)
+
+        resourceService.get('/test/url', RequestMethod.POST)
+
+        String localResource = '/test/aaa'
+        Resource resource11 =  resourceService.get('/test/url', RequestMethod.POST)
+        Boolean res = resourceService.hasPerimissionOfResource(resource11, localResource, RequestMethod.POST)
+        assert res == false
     }
 
     @Test

@@ -14,6 +14,9 @@ import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.sort.BeanComparator;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
+import com.proper.enterprise.platform.sys.i18n.I18NService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,6 +32,9 @@ import java.util.*;
 @Service
 public class MenuServiceImpl implements MenuService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MenuServiceImpl.class);
+
+
     @Autowired
     private MenuRepository repository;
 
@@ -41,15 +47,33 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     private ResourceService resourceService;
 
+    @Autowired
+    private I18NService i18NService;
+
     @Override
     public Menu get(String id) {
-        return repository.findOne(id);
+        Menu menu = repository.findOne(id);
+        try {
+            if (menu != null) {
+                if (menu.isEnable() && menu.isValid()) {
+                    return menu;
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Menu is Null!", menu);
+        }
+        return null;
     }
 
     @Override
     public Collection<? extends Menu> getByIds(Collection<String> ids) {
-        // TODO 查询有效菜单
-        return repository.findAll(ids);
+        List<MenuEntity> menuEntities = repository.findAll(ids);
+        for (MenuEntity menuEntity : menuEntities) {
+            if (menuEntity.isEnable() && menuEntity.isValid()) {
+                return menuEntities;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -63,7 +87,7 @@ public class MenuServiceImpl implements MenuService {
         MenuEntity menuInfo = new MenuEntity();
         // 更新
         if (map.get("id") != null && StringUtil.isNotNull(id)) {
-            menuInfo = (MenuEntity)this.get(id);
+            menuInfo = (MenuEntity) this.get(id);
         }
         menuInfo.setIcon(String.valueOf(map.get("icon")));
         menuInfo.setName(String.valueOf(map.get("name")));
@@ -111,10 +135,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends Menu> getMenus(String name, String description, String route, String enable) {
-        // TODO 具体业务实现
+    public Collection<? extends Menu> getMenus(String name, String description, String route, String enable, String parentId) {
         List<Menu> menus = new ArrayList<>();
-        Collection<? extends Menu> filterMenus = getMenuByCondiction(name, description, route, enable);
+        Collection<? extends Menu> filterMenus = getMenuByCondiction(name, description, route, enable, parentId);
         Collection<? extends Menu> roleMenus = getMenus();
         for (Menu menu : roleMenus) {
             if (filterMenus.contains(menu)) {
@@ -150,10 +173,9 @@ public class MenuServiceImpl implements MenuService {
         return false;
     }
 
-
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends Menu> getMenuByCondiction(String name, String description, String route, String enable) {
+    public Collection<? extends Menu> getMenuByCondiction(String name, String description, String route, String enable, String parentId) {
         Specification specification = new Specification<MenuEntity>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
@@ -170,6 +192,9 @@ public class MenuServiceImpl implements MenuService {
                 if (StringUtil.isNotNull(enable)) {
                     predicates.add(cb.equal(root.get("enable"), enable.equals("Y")));
                 }
+                if (StringUtil.isNotNull(parentId)) {
+                    predicates.add(cb.equal(root.get("parent").get("id"), "%".concat(parentId).concat("%")));
+                }
                 predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
@@ -184,31 +209,55 @@ public class MenuServiceImpl implements MenuService {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            // TODO 对删除业务进行逻辑判断
             try {
-                repository.delete(repository.findAll(idList));
-                ret = true;
+                List<MenuEntity> list = repository.findAll(idList);
+                for (MenuEntity menuEntity : list) {
+                    if (menuEntity.getRoles().size() == 0 && menuEntity.getResources().size() == 0) {
+                        menuEntity.setValid(false);
+                        repository.save(list);
+                        ret = true;
+                    } else {
+                        ret = false;
+                    }
+                }
             } catch (Exception e) {
-                throw new ErrMsgException("Delete error!");
+                throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete"));
             }
-        } else {
-            throw new ErrMsgException("Param Error!");
         }
         return ret;
     }
 
     @Override
     public Collection<? extends Menu> getMenuParents() {
-        // TODO 获取父节点菜单列表
-        return new ArrayList<MenuEntity>();
+        Collection<MenuEntity> menu = new HashSet<>();
+        List<MenuEntity> list = repository.findAll();
+        for (MenuEntity menuEntity : list) {
+            if (!menuEntity.isEnable() || !menuEntity.isValid()) {
+                continue;
+            }
+            if (menuEntity.getParent() != null) {
+                menu.add((MenuEntity) menuEntity.getParent());
+            } else {
+                menu.add(menuEntity);
+            }
+
+        }
+        return menu;
     }
 
     @Override
     public Collection<? extends Menu> updateEanble(Collection<String> idList, boolean enable) {
-        // TODO 具体实现
         List<MenuEntity> menuList = repository.findAll(idList);
-        for (MenuEntity menu : menuList) {
-            menu.setEnable(enable);
+        for (Menu menu : menuList) {
+            if (menu.isEnable()) {
+                Collection<? extends Menu> list = getMenuByCondiction(null, null, null, "Y", menu.getId());
+                if (list.size() != 0) {
+                    LOGGER.debug("{} has parent menu {}, dont update!", menu.getName(), menu.getParent());
+                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.parent"));
+                } else {
+                    menu.setEnable(false);
+                }
+            }
         }
         return repository.save(menuList);
     }
