@@ -17,6 +17,7 @@ dependencies {
             libraries.flowable_ui_modeler_rest,
             libraries.groovy_all,
             libraries.javax_inject,
+            libraries.liquibase,
             libraries.servlet_api
 
     compile project(':pep-auth-api'),

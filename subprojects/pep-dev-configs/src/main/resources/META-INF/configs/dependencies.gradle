@@ -102,7 +102,6 @@ libraries.flowable_spring = "com.proper.enterprise.platform:flowable-spring:${ve
 libraries.flowable_ui_modeler_logic = "com.proper.enterprise.platform:flowable-ui-modeler-logic:${versions.flowable}"
 libraries.flowable_ui_modeler_rest = "com.proper.enterprise.platform:flowable-ui-modeler-rest:${versions.flowable}"
 libraries.flowable_web_designer="com.proper.enterprise.platform:flowable-web-designer:${versions.flowable}"
-
 // groovy-all include all below modules, used by code quality and workflow module
 libraries.groovy_all = "org.codehaus.groovy:groovy-all:${versions.groovy}"
 // sub modules
@@ -167,7 +166,7 @@ libraries.junit = 'junit:junit:4.12'
 //libraries.jsp_api = 'javax.servlet.jsp:jsp-api:2.2'
 
 //libraries.jstl = 'jstl:jstl:1.2'
-
+libraries.liquibase="org.liquibase:liquibase-core:3.5.3"
 libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:${versions.logback}") {
     dependency "ch.qos.logback:logback-core:${versions.logback}"
 }

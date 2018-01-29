@@ -1,6 +1,13 @@
 package org.flowable.app.conf;
 
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseConnection;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.flowable.app.service.exception.InternalServerErrorException;
 import org.flowable.engine.common.api.FlowableException;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -34,6 +41,7 @@ public class DatabaseConfiguration {
     @Autowired
     protected DataSource dataSource;
 
+    protected static final String LIQUIBASE_CHANGELOG_PREFIX = "ACT_DE_";
     protected static final Properties DATABASE_TYPE_MAPPINGS = getDefaultDatabaseTypeMappings();
 
     public static final String DATABASE_TYPE_H2 = "h2";
@@ -136,6 +144,23 @@ public class DatabaseConfiguration {
         }
 
         return databaseType;
+    }
+
+    @Bean
+    public Liquibase liquibase() {
+        LOGGER.info("Configuring Liquibase");
+        try {
+            DatabaseConnection connection = new JdbcConnection(dataSource.getConnection());
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
+            database.setDatabaseChangeLogTableName(LIQUIBASE_CHANGELOG_PREFIX + database.getDatabaseChangeLogTableName());
+            database.setDatabaseChangeLogLockTableName(LIQUIBASE_CHANGELOG_PREFIX + database.getDatabaseChangeLogLockTableName());
+            Liquibase liquibase = new Liquibase("META-INF/liquibase/flowable-modeler-app-db-changelog.xml", new ClassLoaderResourceAccessor(), database);
+            liquibase.update("flowable");
+            return liquibase;
+
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Error creating liquibase database", e);
+        }
     }
 
 }
