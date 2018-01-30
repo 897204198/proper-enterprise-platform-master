@@ -107,19 +107,19 @@ public class UsersController extends BaseController {
 
     @GetMapping(path = "/{userId}/user-groups")
     public ResponseEntity<Collection<? extends UserGroup>> getUserGroups(@PathVariable String userId) {
-        // TODO 具体业务实现
+        userService.checkPermission("/auth/users/" + userId + "/user-groups", RequestMethod.GET);
         return responseOfGet(userService.getUserGroups(userId));
     }
 
     @GetMapping(path = "/{userId}/roles")
     public ResponseEntity<Collection<? extends Role>> getUserRoles(@PathVariable String userId) {
-        // TODO 具体业务实现
+        userService.checkPermission("/auth/users/" + userId + "/roles", RequestMethod.GET);
         return responseOfGet(userService.getUserRoles(userId));
     }
 
     @GetMapping(path = "/query")
     public ResponseEntity<Collection<? extends User>> queryUser(@RequestParam String condition) {
-        // TODO 具体业务实现
+        userService.checkPermission("/auth/users/query", RequestMethod.GET);
         return responseOfGet(userService.getUsersByCondiction(condition));
     }
 }

@@ -130,6 +130,13 @@ public interface UserService {
     User groupHasTheUser(UserGroup userGroup, String userId);
 
     /**
+     * 根据传入的用户集合，获取合法的用户集合(过滤掉valid、enable为false的)
+     * @param users 待检测的用户集合
+     * @return 返回合法的用户集合
+     */
+    Collection<? extends User> getFilterUsers(Collection<? extends User> users);
+
+    /**
      * 根据请求的url、请求的方法，判断当前用户是否有此权限
      * 用户组也有资源，某个人的用户组有此资源，也视为这个人有此资源
      * @param user 待检测用户
@@ -137,7 +144,7 @@ public interface UserService {
      * @param requestMethod 请求的方法
      * @return 有权限返回真，没有返回假
      */
-    boolean hasPerimissionOfUser(User user, String reqUrl, RequestMethod requestMethod);
+    boolean hasPermissionOfUser(User user, String reqUrl, RequestMethod requestMethod);
 
     /**
      * 检测当前登录用户是否有对应的权限

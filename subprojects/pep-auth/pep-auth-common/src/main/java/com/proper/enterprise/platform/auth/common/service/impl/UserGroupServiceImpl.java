@@ -63,6 +63,20 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
+    public Collection<? extends UserGroup> getFilterGroups(Collection<? extends UserGroup> groups) {
+        Collection<UserGroupEntity> result = new HashSet<>();
+        Iterator iterator = groups.iterator();
+        while (iterator.hasNext()) {
+            UserGroupEntity userGroupEntity = (UserGroupEntity) iterator.next();
+            if (!userGroupEntity.isEnable() || !userGroupEntity.isValid()) {
+                continue;
+            }
+            result.add(userGroupEntity);
+        }
+        return result;
+    }
+
+    @Override
     public UserGroup get(String id) {
         return repository.findByValidAndId(true, id);
     }
@@ -162,14 +176,11 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public Collection<? extends Role> getGroupRoles(String groupId) {
-        Collection<Role> filterRoles = new ArrayList<>();
-        UserGroup userGroup = this.get(groupId); // TODO 过滤invalid以及enable
-        if (userGroup != null) {
-            Collection<? extends Role> roles = userGroup.getRoles();
-            // TODO 具体过滤
-            filterRoles.addAll(roles);
+        UserGroup userGroup = this.get(groupId);
+        if (userGroup == null || !userGroup.isEnable()) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.get.failed"));
         }
-        return filterRoles;
+        return roleService.getFilterRoles(userGroup.getRoles());
     }
 
     @Override
@@ -200,24 +211,21 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public Collection<? extends User> getGroupUsers(String groupId) {
-        Collection<User> filterUsers = new ArrayList<>();
-        UserGroup userGroup = this.get(groupId); // TODO 过滤invalid以及enable
-        if (userGroup != null) {
-            Collection<? extends User> users = userGroup.getUsers();
-            // TODO 具体过滤
-            filterUsers.addAll(users);
+        UserGroup userGroup = this.get(groupId);
+        if (userGroup == null || !userGroup.isEnable()) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.get.failed"));
         }
-        return filterUsers;
+        return userService.getFilterUsers(userGroup.getUsers());
     }
 
     @Override
-    public boolean hasPerimissionOfUserGroup(UserGroup userGroup, String reqUrl, RequestMethod requestMethod) {
+    public boolean hasPermissionOfUserGroup(UserGroup userGroup, String reqUrl, RequestMethod requestMethod) {
         if (userGroup == null || !userGroup.isEnable() || !userGroup.isValid()) {
             return false;
         }
         Collection<RoleEntity> roleEntities = (Collection<RoleEntity>) userGroup.getRoles();
         for (RoleEntity roleEntity : roleEntities) {
-            if (roleService.hasPerimissionOfRole(roleEntity, reqUrl, requestMethod)) {
+            if (roleService.hasPermissionOfRole(roleEntity, reqUrl, requestMethod)) {
                 return true;
             }
         }

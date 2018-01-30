@@ -58,7 +58,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Resource get(String id) {
         ResourceEntity resource = resourceRepository.findOne(id);
-        if (resource.isEnable() && resource.isValid()) {
+        if (resource != null && resource.isEnable() && resource.isValid()) {
             return resource;
         }
         return null;
@@ -86,6 +86,20 @@ public class ResourceServiceImpl implements ResourceService {
     public void delete(Resource resource) {
         resource.setValid(false);
         resourceRepository.save((ResourceEntity) resource);
+    }
+
+    @Override
+    public Collection<? extends Resource> getFilterResources(Collection<? extends Resource> resources) {
+        Collection<ResourceEntity> result = new HashSet<>();
+        Iterator iterator = resources.iterator();
+        while (iterator.hasNext()) {
+            ResourceEntity resourceEntity = (ResourceEntity) iterator.next();
+            if (!resourceEntity.isEnable() || !resourceEntity.isValid()) {
+                continue;
+            }
+            result.add(resourceEntity);
+        }
+        return result;
     }
 
     @Override
@@ -226,7 +240,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public boolean hasPerimissionOfResource(Resource resource, String reqUrl, RequestMethod requestMethod) {
+    public boolean hasPermissionOfResource(Resource resource, String reqUrl, RequestMethod requestMethod) {
         Resource localResource = this.get(reqUrl, requestMethod);
         if (localResource == null || resource == null || !resource.isValid() || !resource.isEnable()) {
             return false;

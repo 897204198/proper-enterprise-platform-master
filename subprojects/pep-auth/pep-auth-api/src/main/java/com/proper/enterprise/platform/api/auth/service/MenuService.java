@@ -48,6 +48,11 @@ public interface MenuService {
     Collection<? extends Menu> getMenus(String name, String description, String route, String enable, String parentId);
 
     /**
+     * 根据菜单集合获取过滤后的菜单包括父菜单
+     */
+    Collection<? extends Menu> getFilterMenusAndParent(Collection<? extends Menu> menus);
+
+    /**
      * 根据菜单ID列表获取菜单列表
      *
      * @param ids 菜单ID列表

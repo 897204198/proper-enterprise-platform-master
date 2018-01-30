@@ -123,7 +123,7 @@ class ResourcesControllerTest extends AbstractTest {
 
         String localResource = '/test/aaa'
         Resource resource11 =  resourceService.get('/test/url', RequestMethod.POST)
-        Boolean res = resourceService.hasPerimissionOfResource(resource11, localResource, RequestMethod.POST)
+        Boolean res = resourceService.hasPermissionOfResource(resource11, localResource, RequestMethod.POST)
         assert res == false
     }
 

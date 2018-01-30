@@ -124,7 +124,7 @@ class AbstractUserServiceImplTest extends AbstractTest {
 
     @Test
     @NoTx
-    void testHasPerimissionByUrl(){
+    void testHasPermissionByUrl(){
         ResourceEntity resourceEntity = new ResourceEntity()
         resourceEntity.setName('res1')
         resourceEntity.setURL('/auth/users/**')

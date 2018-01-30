@@ -111,8 +111,8 @@ public class MenuServiceImpl implements MenuService {
         return getMenus(userService.getCurrentUser());
     }
 
-    @Override
     @SuppressWarnings("unchecked")
+    @Override
     public Collection<? extends Menu> getMenus(User user) {
         Assert.notNull(user, "Could NOT get menus WITHOUT a user");
 
@@ -133,8 +133,8 @@ public class MenuServiceImpl implements MenuService {
         return menus;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
+    @Override
     public Collection<? extends Menu> getMenus(String name, String description, String route, String enable, String parentId) {
         List<Menu> menus = new ArrayList<>();
         Collection<? extends Menu> filterMenus = getMenuByCondiction(name, description, route, enable, parentId);
@@ -146,6 +146,23 @@ public class MenuServiceImpl implements MenuService {
         }
         Collections.sort(menus, new BeanComparator("parent", "sequenceNumber"));
         return menus;
+    }
+
+    @Override
+    public Collection<? extends Menu> getFilterMenusAndParent(Collection<? extends Menu> menus) {
+        Collection<MenuEntity> result = new HashSet<>();
+        Iterator iterator = menus.iterator();
+        MenuEntity menuEntity;
+        while (iterator.hasNext()) {
+            menuEntity = (MenuEntity) iterator.next();
+            if (menuEntity.isEnable() && menuEntity.isValid()) {
+                result.add(menuEntity);
+                if (menuEntity.getParent() != null) {
+                    result.add((MenuEntity) menuEntity.getParent());
+                }
+            }
+        }
+        return result;
     }
 
     @Override

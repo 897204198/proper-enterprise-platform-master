@@ -26,6 +26,13 @@ public interface ResourceService {
 
     Collection<? extends Resource> getByIds(Collection<String> ids);
 
+    /**
+     * 根据传入的资源集合，过滤掉非法的(valid、enable是false)
+     * @param resources 待过滤的资源集合
+     * @return 返回过滤后的资源集合
+     */
+    Collection<? extends Resource> getFilterResources(Collection<? extends Resource> resources);
+
     Collection<Resource> find();
 
     void delete(Resource resource);
@@ -69,6 +76,6 @@ public interface ResourceService {
      * @param requestMethod 指定的资源请求方法
      * @return 有则返回真
      */
-    boolean hasPerimissionOfResource(Resource resource, String reqUrl, RequestMethod requestMethod);
+    boolean hasPermissionOfResource(Resource resource, String reqUrl, RequestMethod requestMethod);
 
 }

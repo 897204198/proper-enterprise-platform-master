@@ -1,7 +1,9 @@
 package com.proper.enterprise.platform.auth.common.service.impl
 
+import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserService
+import com.proper.enterprise.platform.auth.common.entity.MenuEntity
 import com.proper.enterprise.platform.auth.common.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.repository.RoleRepository
@@ -19,6 +21,9 @@ class RoleServiceImplTest extends AbstractTest {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    MenuService menuService
 
     @Autowired
     RoleService roleService;
@@ -153,6 +158,44 @@ class RoleServiceImplTest extends AbstractTest {
             "pep.auth.common.role.delete.relation.failed")
 
     }
+
+    @Test
+    @NoTx
+    void testGetRoleMenus(){
+        MenuEntity menuEntity = new MenuEntity()
+        menuEntity.setName('menu1')
+        menuEntity = menuService.save(menuEntity)
+
+        MenuEntity menuEntity1 = new MenuEntity()
+        menuEntity1.setName('menu2')
+        menuEntity1 = menuService.save(menuEntity1)
+
+        MenuEntity menuEntity2 = new MenuEntity()
+        menuEntity2.setName('menu3')
+        menuEntity2 = menuService.save(menuEntity2)
+
+        Collection<MenuEntity> collection = new HashSet<>()
+        collection.add(menuEntity)
+        collection.add(menuEntity1)
+        RoleEntity roleEntity = new RoleEntity()
+        roleEntity.setName('parentRole')
+        roleEntity.add(collection)
+        roleEntity = roleService.save(roleEntity)
+
+        collection.clear()
+        collection.add(menuEntity1)
+        collection.add(menuEntity2)
+        RoleEntity roleEntity1 = new RoleEntity()
+        roleEntity1.setName('currentRole')
+        roleEntity1.add(collection)
+        roleEntity1.setParent(roleEntity)
+        roleEntity1 = roleService.save(roleEntity1)
+
+        Collection result = roleService.getRoleMenus(roleEntity1.getId())
+        assert result.size() == 3
+        assert roleService.getByName('currentRole').size() == 1
+    }
+
 
     @After
     void clearAll(){

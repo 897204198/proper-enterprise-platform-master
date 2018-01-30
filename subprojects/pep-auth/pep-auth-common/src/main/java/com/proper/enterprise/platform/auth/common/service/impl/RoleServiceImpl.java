@@ -1,12 +1,8 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.proper.enterprise.platform.api.auth.model.*;
-import com.proper.enterprise.platform.api.auth.service.MenuService;
-import com.proper.enterprise.platform.api.auth.service.ResourceService;
-import com.proper.enterprise.platform.api.auth.service.RoleService;
-import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
-import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity;
+import com.proper.enterprise.platform.api.auth.service.*;
+import com.proper.enterprise.platform.auth.common.entity.*;
 import com.proper.enterprise.platform.auth.common.repository.RoleRepository;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -36,6 +32,9 @@ public class RoleServiceImpl implements RoleService {
     private UserService userService;
 
     @Autowired
+    private UserGroupService userGroupService;
+
+    @Autowired
     private ResourceService resourceService;
 
     @Autowired
@@ -44,7 +43,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role get(String id) {
         Role role = roleRepository.findOne(id);
-        if (role.isValid() && role.isEnable()) {
+        if (role != null && role.isValid() && role.isEnable()) {
             return role;
         }
         return null;
@@ -171,6 +170,20 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Collection<? extends Role> getFilterRoles(Collection<? extends Role> roles) {
+        Collection<RoleEntity> result = new HashSet<>();
+        Iterator iterator = roles.iterator();
+        while (iterator.hasNext()) {
+            RoleEntity role = (RoleEntity) iterator.next();
+            if (!role.isEnable() || !role.isValid()) {
+                continue;
+            }
+            result.add(role);
+        }
+        return result;
+    }
+
+    @Override
     public Collection<? extends Role> updateEanble(Collection<String> idList, boolean enable) {
         List<RoleEntity> roleList = new ArrayList<>();
         Collection childrenRols;
@@ -188,110 +201,145 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<? extends Menu> getRoleMenus(String roleId) {
-        Collection<Menu> filterMenus = new ArrayList<>();
-        Role role = this.get(roleId); // TODO 过滤invalid以及enable
-        if (role != null) {
-            Collection<? extends Menu> menus = role.getMenus();
-            // TODO 具体过滤
-            filterMenus.addAll(menus);
+        Collection<MenuEntity> result = new HashSet<>();
+        Role role = this.get(roleId);
+        if (role == null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
-        return filterMenus;
+        Collection currentMenus = menuService.getFilterMenusAndParent(role.getMenus());
+        result.addAll(currentMenus);
+        //获取父角色集合
+        List<RoleEntity> parentList = this.getParentRolesByCurrentRoleId(roleId);
+        for (RoleEntity roleEntity : parentList) {
+            currentMenus = menuService.getFilterMenusAndParent(roleEntity.getMenus());
+            result.addAll(currentMenus);
+        }
+        return result;
     }
 
     @Override
     public Role addRoleMenus(String roleId, String ids) {
-        // TODO 具体实现
         Role role = this.get(roleId);
-        Collection<? extends Menu> menuList = new ArrayList<>();
-        if (StringUtil.isNotNull(ids)) {
-            String[] idArr = ids.split(",");
-            List<String> idList = new ArrayList<>();
-            Collections.addAll(idList, idArr);
-            menuList = menuService.getByIds(idList);
+        if (role == null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
-        role.add(menuList);
-        return save(role);
+        if (StringUtil.isNotNull(ids)) {
+            Collection<MenuEntity> menuList = new ArrayList<>();
+            String[] idArr = ids.split(",");
+            for (String id : idArr) {
+                menuList.add((MenuEntity) menuService.get(id));
+            }
+            role.add(menuList);
+            role = save(role);
+        }
+        return role;
     }
 
     @Override
     public Role deleteRoleMenus(String roleId, String ids) {
-        // TODO 具体实现
         Role role = this.get(roleId);
-        Collection<? extends Menu> menuList = new ArrayList<>();
-        if (StringUtil.isNotNull(ids)) {
-            String[] idArr = ids.split(",");
-            List<String> idList = new ArrayList<>();
-            Collections.addAll(idList, idArr);
-            menuList = menuService.getByIds(idList);
+        if (role == null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
-        role.remove(menuList);
-        return save(role);
+        if (StringUtil.isNotNull(ids)) {
+            Collection<MenuEntity> menuList = new ArrayList<>();
+            String[] idArr = ids.split(",");
+            for (String id : idArr) {
+                menuList.add((MenuEntity) menuService.get(id));
+            }
+            role.remove(menuList);
+            role = save(role);
+        }
+        return role;
     }
 
     @Override
     public Collection<? extends Resource> getRoleResources(String roleId) {
-        Collection<Resource> filterResources = new ArrayList<>();
-        Role role = this.get(roleId); // TODO 过滤invalid以及enable
-        if (role != null) {
-            Collection<? extends Resource> resources = role.getResources();
-            // TODO 具体过滤
-            filterResources.addAll(resources);
+        Role role = this.get(roleId);
+        if (role == null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
-        return filterResources;
+        return resourceService.getFilterResources(role.getResources());
+    }
+
+    @Override
+    public List<RoleEntity> getParentRolesByCurrentRoleId(String currentRoleId) {
+        List<RoleEntity> result = new LinkedList<>();
+        RoleEntity roleEntity = (RoleEntity) this.get(currentRoleId);
+        if (roleEntity == null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
+        }
+        RoleEntity parent = (RoleEntity) roleEntity.getParent();
+        while (true) {
+            if (parent == null || !parent.isValid() || !parent.isEnable()) {
+                break;
+            }
+            if (currentRoleId.equals(parent.getId())) {
+                throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.circle.error"));
+            }
+            result.add(parent);
+            parent = (RoleEntity) parent.getParent();
+        }
+        return result;
     }
 
     @Override
     public Role addRoleResources(String roleId, String ids) {
-        // TODO 具体实现
         Role role = this.get(roleId);
-        Collection<? extends Resource> resourceList = new ArrayList<>();
+        if (role == null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
+        }
         if (StringUtil.isNotNull(ids)) {
             String[] idArr = ids.split(",");
-            List<String> idList = new ArrayList<>();
-            Collections.addAll(idList, idArr);
-            resourceList = resourceService.getByIds(idList);
+            Collection<ResourceEntity> resourceList = new ArrayList<>();
+            for (String id : idArr) {
+                resourceList.add((ResourceEntity) resourceService.get(id));
+            }
+            role.addResources(resourceList);
+            role = save(role);
         }
-        role.addResources(resourceList);
-        return save(role);
+        return role;
     }
 
     @Override
     public Role deleteRoleResources(String roleId, String ids) {
-        // TODO 具体实现
         Role role = this.get(roleId);
-        Collection<? extends Resource> resourceList = new ArrayList<>();
-        if (StringUtil.isNotNull(ids)) {
-            String[] idArr = ids.split(",");
-            List<String> idList = new ArrayList<>();
-            Collections.addAll(idList, idArr);
-            resourceList = resourceService.getByIds(idList);
+        if (role == null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
-        role.removeResources(resourceList);
-        return save(role);
+        if (StringUtil.isNotNull(ids)) {
+            Collection<ResourceEntity> resourceList = new ArrayList<>();
+            String[] idArr = ids.split(",");
+            for (String id : idArr) {
+                resourceList.add((ResourceEntity) resourceService.get(id));
+            }
+            role.removeResources(resourceList);
+            role = save(role);
+        }
+        return role;
     }
 
     @Override
     public Collection<? extends User> getRoleUsers(String roleId) {
-        Collection<User> filterUsers = new ArrayList<>();
-        Role role = this.get(roleId); // TODO 过滤invalid以及enable
-        if (role != null) {
-            Collection<? extends User> users = role.getUsers();
-            // TODO 具体过滤
-            filterUsers.addAll(users);
+        Role role = this.get(roleId);
+        if (role == null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
-        return filterUsers;
+        return userService.getFilterUsers(role.getUsers());
     }
 
     @Override
     public Collection<? extends UserGroup> getRoleUserGroups(String roleId) {
-        Collection<UserGroup> filterUserGroups = new ArrayList<>();
-        Role role = this.get(roleId); // TODO 过滤invalid以及enable
-        if (role != null) {
-            Collection<? extends UserGroup> userGroups = role.getUserGroups();
-            // TODO 具体过滤
-            filterUserGroups.addAll(userGroups);
+        Collection users = this.getRoleUsers(roleId);
+        Iterator iterator = users.iterator();
+        Collection<? extends UserGroup> filterGroups = new HashSet<>();
+        Collection groups;
+        while (iterator.hasNext()) {
+            UserEntity userEntity = (UserEntity) iterator.next();
+            groups = userGroupService.getFilterGroups(userEntity.getUserGroups());
+            filterGroups.addAll(groups);
         }
-        return filterUserGroups;
+        return filterGroups;
     }
 
     @Override
@@ -362,14 +410,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public boolean hasPerimissionOfRole(Role role, String reqUrl, RequestMethod requestMethod) {
+    public boolean hasPermissionOfRole(Role role, String reqUrl, RequestMethod requestMethod) {
         if (role == null || !role.isValid() || !role.isEnable()) {
             return false;
         }
         Iterator iterator1 = role.getResources().iterator();
         while (iterator1.hasNext()) {
             Resource resource = (Resource) iterator1.next();
-            if (resourceService.hasPerimissionOfResource(resource, reqUrl, requestMethod)) {
+            if (resourceService.hasPermissionOfResource(resource, reqUrl, requestMethod)) {
                 return true;
             }
         }

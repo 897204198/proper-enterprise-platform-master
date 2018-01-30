@@ -21,6 +21,13 @@ public interface UserGroupService {
     Collection<? extends UserGroup> getGroups(String name, String description, String enable);
 
     /**
+     * 根据传入的用户组集合，获取合法的用户组(过滤掉valid、enable为false的用户组)
+     * @param groups 待过滤的用户组集合
+     * @return 返回合法的用户组集合
+     */
+    Collection<? extends UserGroup> getFilterGroups(Collection<? extends UserGroup> groups);
+
+    /**
      * 根据 ID 获得用户组
      *
      * @param  id 用户组 ID
@@ -128,6 +135,6 @@ public interface UserGroupService {
      * @param requestMethod  资源请求方法
      * @return 如果有则返回真
      */
-    boolean hasPerimissionOfUserGroup(UserGroup userGroup, String reqUrl, RequestMethod requestMethod);
+    boolean hasPermissionOfUserGroup(UserGroup userGroup, String reqUrl, RequestMethod requestMethod);
 
 }

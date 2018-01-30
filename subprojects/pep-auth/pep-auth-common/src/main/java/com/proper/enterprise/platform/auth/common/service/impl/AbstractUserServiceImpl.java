@@ -85,7 +85,6 @@ public abstract class AbstractUserServiceImpl implements UserService {
         LOGGER.debug("Get user with {} from DB", id);
         User user = userRepo.findOne(id);
         if (user == null || !user.isValid() || !user.isEnable()) {
-            LOGGER.debug("Get user is null");
             return null;
         }
         return user;
@@ -272,7 +271,21 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean hasPerimissionOfUser(User user, String reqUrl, RequestMethod requestMethod) {
+    public Collection<? extends User> getFilterUsers(Collection<? extends User> users) {
+        Collection<UserEntity> result = new HashSet<>();
+        Iterator iterator = users.iterator();
+        while (iterator.hasNext()) {
+            UserEntity userEntity = (UserEntity) iterator.next();
+            if (!userEntity.isValid() || !userEntity.isEnable()) {
+                continue;
+            }
+            result.add(userEntity);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean hasPermissionOfUser(User user, String reqUrl, RequestMethod requestMethod) {
         if (StringUtil.isBlank(reqUrl) || requestMethod == null) {
             return false;
         }
@@ -283,7 +296,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
         Iterator iterator = usergroups.iterator();
         while (iterator.hasNext()) {
             UserGroupEntity userGroupEntity = (UserGroupEntity) iterator.next();
-            if (userGroupService.hasPerimissionOfUserGroup(userGroupEntity, reqUrl, requestMethod)) {
+            if (userGroupService.hasPermissionOfUserGroup(userGroupEntity, reqUrl, requestMethod)) {
                 return true;
             }
         }
@@ -291,7 +304,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
         Iterator iterator1 = roles.iterator();
         while (iterator1.hasNext()) {
             RoleEntity roleEntity = (RoleEntity) iterator1.next();
-            if (roleService.hasPerimissionOfRole(roleEntity, reqUrl, requestMethod)) {
+            if (roleService.hasPermissionOfRole(roleEntity, reqUrl, requestMethod)) {
                 return true;
             }
         }
@@ -300,32 +313,26 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public void checkPermission(String reqUrl, RequestMethod requestMethod) {
-        if (!this.hasPerimissionOfUser(this.getCurrentUser(), reqUrl, requestMethod)) {
+        if (!this.hasPermissionOfUser(this.getCurrentUser(), reqUrl, requestMethod)) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.permission.failed"));
         }
     }
 
     @Override
     public Collection<? extends UserGroup> getUserGroups(String userId) {
-        Collection<UserGroup> filterUserGroups = new ArrayList<>();
-        User user = this.get(userId); // TODO 过滤invalid以及enable
-        if (user != null) {
-            Collection<? extends UserGroup> userGroups = user.getUserGroups();
-            // TODO 具体过滤
-            filterUserGroups.addAll(userGroups);
+        User user = userRepo.findByValidTrueAndId(userId);
+        if (user == null || !user.isEnable()) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
         }
-        return filterUserGroups;
+        return userGroupService.getFilterGroups(user.getUserGroups());
     }
 
     @Override
     public Collection<? extends Role> getUserRoles(String userId) {
-        Collection<Role> filterRoles = new ArrayList<>();
-        User user = this.get(userId); // TODO 过滤invalid以及enable
-        if (user != null) {
-            Collection<? extends Role> roles = user.getRoles();
-            // TODO 具体过滤
-            filterRoles.addAll(roles);
+        User user = userRepo.findByValidTrueAndId(userId);
+        if (user == null || !user.isEnable()) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
         }
-        return filterRoles;
+        return roleService.getFilterRoles(user.getRoles());
     }
 }

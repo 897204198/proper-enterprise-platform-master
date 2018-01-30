@@ -2,10 +2,13 @@ package com.proper.enterprise.platform.auth.common.service.impl
 
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.ResourceService
+import com.proper.enterprise.platform.auth.common.entity.MenuEntity
+import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
+import org.springframework.web.bind.annotation.RequestMethod
 
 @Sql([
     "/com/proper/enterprise/platform/auth/common/resources.sql",
@@ -64,5 +67,34 @@ class MenuServiceImplTest extends AbstractTest {
         assert service.accessible(resourceService.get('test-d'), 'test1')
         assert service.accessible(resourceService.get('test1'), 'test1')
     }
+
+    @Test
+    void testGetByIds(){
+        Collection<String> ids = new HashSet<>()
+        ids.add("id1")
+        ids.add("id2")
+        assert service.getByIds(ids) == null
+        assert resourceService.getByIds(ids) == null
+
+        MenuEntity menuEntity = new MenuEntity()
+        menuEntity.setName('menu')
+        menuEntity = service.save(menuEntity)
+
+        ids.clear()
+        ids.add(menuEntity.getId())
+        assert service.getByIds(ids).size() == 1
+
+        ResourceEntity resourceEntity = new ResourceEntity()
+        resourceEntity.setName('res1')
+        resourceEntity.setMethod(RequestMethod.GET)
+        resourceEntity.setURL('/auto')
+        resourceEntity = resourceService.save(resourceEntity)
+
+        ids.clear()
+        ids.add(resourceEntity.getId())
+        assert resourceService.getByIds(ids).size() == 1
+
+    }
+
 
 }
