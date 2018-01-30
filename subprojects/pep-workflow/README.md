@@ -15,19 +15,25 @@ Web 流程设计器使用 `Flowable` 项目中的 [flowable-ui-modeler](https://
 
 引用此模块的项目需要进行一些额外的配置，以保证流程设计器的可用
 
-### 代理
+### 代理(ng2中使用到workflow中的静态资源时需要配置)
 
-因为流程设计器的前端资源是集成在 jar 包中的，需要通过后端服务器的响应返回给前端，故为能够在前端使用流程设计器，需要在后端服务前增加代理服务器。以 nginx 举例，配置如下（假设前端资源上下文根为 `/isjadm`）：
+因为流程设计器的前端资源是集成在 jar 包中的，需要通过后端服务器的响应返回给前端，故为能够在前端使用流程设计器，需要在后端服务前增加代理服务器。以 nginx 举例，配置如下（假设前端资源上下文根为 `/ng2`）：
 
+- [下载nginx](http://nginx.org/en/download.html "下载nginx")
+- 修改nginx配置，路径为conf/nginx.conf
 ```
-location ^~ /isjadm/ {
+#server下添加
+#本地静态文件存放地址（具体地址自行修改）
+location ^~ /ng2/ {
     proxy_pass http://frontend_server:port/;
 }
-
-location ^~ /isjadm/workflow {
+#服务端静态文件存放地址（具体地址自行修改）
+location ^~ /ng2/workflow {
     proxy_pass http://backend_server:port/pep/workflow;
 }
 ```
+- 启动nginx，访问[http://127.0.0.1](http://127.0.0.1 "http://127.0.0.1")，看到welcom to nginx,启动成功
+- 访问代理路径[http://127.0.0.1/ng2](http://127.0.0.1/ng2 "http://127.0.0.1/ng2")，看到协同管理平台页面，代理成功
 
 ### Context Root
 
