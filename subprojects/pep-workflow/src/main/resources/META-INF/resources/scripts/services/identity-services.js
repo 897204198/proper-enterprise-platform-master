@@ -12,7 +12,7 @@
  */
 'use strict';
 
-angular.module('activitiModeler').service('UserService', ['$http', '$q',
+angular.module('flowableModeler').service('UserService', ['$http', '$q',
     function ($http, $q) {
 
         var httpAsPromise = function(options) {
@@ -41,14 +41,14 @@ angular.module('activitiModeler').service('UserService', ['$http', '$q',
 
             return httpAsPromise({
                 method: 'GET',
-                url: ACTIVITI.CONFIG.contextRoot + '/app/rest/workflow-users',
+                url: FLOWABLE.APP_URL.getEditorUsersUrl(),
                 params: params
             });
         };
 
     }]);
 
-angular.module('activitiModeler').service('GroupService', ['$http', '$q',
+angular.module('flowableModeler').service('GroupService', ['$http', '$q',
     function ($http, $q) {
 
         var httpAsPromise = function(options) {
@@ -74,41 +74,40 @@ angular.module('activitiModeler').service('GroupService', ['$http', '$q',
 
             return httpAsPromise({
                 method: 'GET',
-                url: ACTIVITI.CONFIG.contextRoot + '/app/rest/editor-groups',
+                url: FLOWABLE.APP_URL.getEditorGroupsUrl(),
                 params: params
             });
         };
     }]);
 
-angular.module('activitiModeler').service('RoleService', ['$http', '$q',
-function ($http, $q) {
+angular.module('flowableModeler').service('RoleService', ['$http', '$q',
+    function ($http, $q) {
 
-    var httpAsPromise = function(options) {
-        var deferred = $q.defer();
-        $http(options).
-            success(function (response, status, headers, config) {
-                deferred.resolve(response);
-            })
-            .error(function (response, status, headers, config) {
-                deferred.reject(response);
+        var httpAsPromise = function(options) {
+            var deferred = $q.defer();
+            $http(options).
+                success(function (response, status, headers, config) {
+                    deferred.resolve(response);
+                })
+                .error(function (response, status, headers, config) {
+                    deferred.reject(response);
+                });
+            return deferred.promise;
+        };
+
+        /*
+            * Filter functional groups based on a filter text.
+            */
+        this.getFilteredRoles = function (filterText) {
+            var params;
+            if(filterText) {
+                params = {filter: filterText};
+            }
+
+            return httpAsPromise({
+                method: 'GET',
+                url: ACTIVITI.CONFIG.contextRoot + '/editor-roles',
+                params: params
             });
-        return deferred.promise;
-    };
-
-    /*
-        * Filter functional groups based on a filter text.
-        */
-    this.getFilteredRoles = function (filterText) {
-        var params;
-        if(filterText) {
-            params = {filter: filterText};
-        }
-
-        return httpAsPromise({
-            method: 'GET',
-            url: ACTIVITI.CONFIG.contextRoot + '/editor-roles',
-            params: params
-        });
-    };
-}]);
-
+        };
+    }]);

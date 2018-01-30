@@ -16,7 +16,7 @@
  */
 'use strict';
 
-angular.module('activitiModeler').controller('KisBpmAssignmentCtrl', [ '$scope', '$modal', function($scope, $modal) {
+angular.module('flowableModeler').controller('FlowableAssignmentCtrl', [ '$scope', '$modal', function($scope, $modal) {
 
     // Config for the modal window
     var opts = {
@@ -28,7 +28,7 @@ angular.module('activitiModeler').controller('KisBpmAssignmentCtrl', [ '$scope',
     _internalCreateModal(opts, $modal, $scope);
 }]);
 
-angular.module('activitiModeler').controller('KisBpmAssignmentPopupCtrl',
+angular.module('flowableModeler').controller('FlowableAssignmentPopupCtrl',
     [ '$rootScope', '$scope', '$translate', '$http', 'UserService', 'GroupService', 'RoleService', function($rootScope, $scope, $translate, $http, UserService, GroupService, RoleService) {
 
     // Put json representing assignment on scope
@@ -37,6 +37,9 @@ angular.module('activitiModeler').controller('KisBpmAssignmentPopupCtrl',
         && $scope.property.value.assignment !== null) {
 
         $scope.assignment = $scope.property.value.assignment;
+        if (typeof $scope.assignment.type === 'undefined') {
+            $scope.assignment.type = 'static';
+        }
 
     } else {
         $scope.assignment = {type:'idm'};
@@ -605,24 +608,23 @@ angular.module('activitiModeler').controller('KisBpmAssignmentPopupCtrl',
             }
           }
         }
-
         if ($assignment.candidateRoles) {
-          toRemoveIndexes = [];
-          for (i = 0; i < $assignment.candidateRoles.length; i++) {
-            if (isEmptyString($assignment.candidateRoles[i].value)) {
-              toRemoveIndexes[toRemoveIndexes.length] = i;
+            toRemoveIndexes = [];
+            for (i = 0; i < $assignment.candidateRoles.length; i++) {
+              if (isEmptyString($assignment.candidateRoles[i].value)) {
+                toRemoveIndexes[toRemoveIndexes.length] = i;
+              }
             }
-          }
-      
-          if (toRemoveIndexes.length == $assignment.candidateRoles.length) {
-            $assignment.candidateRoles = undefined;
-          } else {
-            removedItems=0;
-            for (i = 0; i < toRemoveIndexes.length; i++) {
-              $assignment.candidateRoles.splice(toRemoveIndexes[i]-removedItems, 1);
-              removedItems++;
+        
+            if (toRemoveIndexes.length == $assignment.candidateRoles.length) {
+              $assignment.candidateRoles = undefined;
+            } else {
+              removedItems=0;
+              for (i = 0; i < toRemoveIndexes.length; i++) {
+                $assignment.candidateRoles.splice(toRemoveIndexes[i]-removedItems, 1);
+                removedItems++;
+              }
             }
-          }
         }
     };
     
