@@ -1,4 +1,5 @@
 package com.proper.enterprise.platform.test
+
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import groovy.json.JsonSlurper
 import org.junit.Before
@@ -285,7 +286,7 @@ abstract class AbstractTest {
      */
     protected void overrideSingleton(String beanName, Object singletonObject) {
         DefaultListableBeanFactory bf = (DefaultListableBeanFactory) wac.getAutowireCapableBeanFactory()
-        bf.removeBeanDefinition(beanName)
+        bf.destroySingleton(beanName)
         bf.registerSingleton(beanName, singletonObject)
     }
 
