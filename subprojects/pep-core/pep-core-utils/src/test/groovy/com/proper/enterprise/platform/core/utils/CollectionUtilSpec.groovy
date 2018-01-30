@@ -13,4 +13,9 @@ class CollectionUtilSpec extends Specification {
         c == collection
     }
 
+    def "validateIsNotEmpty"() {
+        expect:
+        assert !CollectionUtil.isNotEmpty(null)
+    }
+
 }
