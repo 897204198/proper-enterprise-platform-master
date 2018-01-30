@@ -9,7 +9,8 @@ dependencies {
             libraries.push_vendor_xiaomi
 
     compile project(':pep-auth-api'),
-            project(':pep-push-api')
+            project(':pep-push-api'),
+            project(':pep-schedule-cluster')
 
     runtime project(':pep-auth-common')
 
