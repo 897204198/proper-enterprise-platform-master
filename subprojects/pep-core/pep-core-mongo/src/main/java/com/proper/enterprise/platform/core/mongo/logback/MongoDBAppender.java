@@ -4,10 +4,16 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import com.proper.enterprise.platform.core.utils.MacAddressUtil;
 import org.bson.Document;
 import org.joda.time.LocalDateTime;
 
 public class MongoDBAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
+    private static final String MAC_COMPRESSED_ADDRESS;
+
+    static {
+        MAC_COMPRESSED_ADDRESS = MacAddressUtil.getCompressedMacAddress();
+    }
 
     private MongoDBConnectionSource connectionSource;
 
@@ -20,6 +26,7 @@ public class MongoDBAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         StackTraceElement stackTraceElement = eventObject.getCallerData()[0];
         document.append("clz", stackTraceElement.getClassName() + ":" + stackTraceElement.getLineNumber());
         document.append("msg", eventObject.getFormattedMessage() + addStackTraceIfNeeded(eventObject));
+        document.append("mac", MAC_COMPRESSED_ADDRESS);
         connectionSource.getMongoCollection().insertOne(document);
     }
 
@@ -28,7 +35,6 @@ public class MongoDBAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         if (proxy == null) {
             return "";
         }
-
         StringBuilder sb = new StringBuilder();
         sb.append(logStackTrace(proxy));
         for (IThrowableProxy suppressed : proxy.getSuppressed()) {
@@ -42,9 +48,8 @@ public class MongoDBAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         if (proxy == null) {
             return "";
         }
-
         StringBuilder sb = new StringBuilder("\r\n")
-                                .append(proxy.getClassName()).append(": ").append(proxy.getMessage());
+            .append(proxy.getClassName()).append(": ").append(proxy.getMessage());
         for (StackTraceElementProxy step : proxy.getStackTraceElementProxyArray()) {
             sb.append("\r\n\t").append(step.getSTEAsString());
         }

@@ -36,7 +36,6 @@ public class UserGroupController extends BaseController {
         userService.checkPermission("/auth/user-groups", RequestMethod.PUT);
         Collection<String> idList = (Collection<String>)reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
-        // TODO 具体实现
         return responseOfPut(service.updateEanble(idList, enable));
     }
 
@@ -94,7 +93,7 @@ public class UserGroupController extends BaseController {
 
     @GetMapping(path = "/{id}/roles")
     public ResponseEntity<Collection<? extends Role>> getGroupRoles(@PathVariable String id) {
-        // TODO 具体业务实现
+        userService.checkPermission("/auth/user-groups/" + id + "/roles", RequestMethod.GET);
         return responseOfGet(service.getGroupRoles(id));
     }
 
@@ -126,7 +125,7 @@ public class UserGroupController extends BaseController {
 
     @GetMapping(path = "/{id}/users")
     public ResponseEntity<Collection<? extends User>> getGroupUsers(@PathVariable String id) {
-        // TODO 具体业务实现
+        userService.checkPermission("/auth/user-groups/" + id + "/users", RequestMethod.GET);
         return responseOfGet(service.getGroupUsers(id));
     }
 

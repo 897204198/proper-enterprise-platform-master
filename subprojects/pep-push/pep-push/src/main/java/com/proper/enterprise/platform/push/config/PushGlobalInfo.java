@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.push.config;
 
+import com.proper.enterprise.platform.core.utils.ConfCenter;
 import org.nutz.ioc.loader.json.JsonLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +47,10 @@ public class PushGlobalInfo {
     /**
      * 获取数据库的批处理大小
      *
-     * @return 现在默认写死1000
+     * @return 现在默认1000
      */
     public int getDbBatchSize() {
-        return 1000;
+        return Integer.parseInt(ConfCenter.get("pep_push_db_batch_size"));
     }
 
 }

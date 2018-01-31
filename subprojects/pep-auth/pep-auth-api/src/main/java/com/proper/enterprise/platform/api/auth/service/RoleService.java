@@ -88,6 +88,13 @@ public interface RoleService {
     Collection<? extends Role> getRoleParents();
 
     /**
+     * 从传入的角色集合中，获取有效的角色(valid、enable都是true的)
+     * @param roles 待过滤的角色集合
+     * @return 返回有效的角色集合
+     */
+    Collection<? extends Role> getFilterRoles(Collection<? extends Role> roles);
+
+    /**
      * 更新角色状态
      *
      * @param idList 角色ID列表
@@ -129,6 +136,12 @@ public interface RoleService {
      * @return 资源集合
      */
     Collection<? extends Resource> getRoleResources(String roleId);
+
+    /**
+     * 根据当前角色ID，获取它的父角色链表，继承关系从前往后排列
+     * @return 返回父角色链表，从前往后依次父角色、父角色的父角色。。。。
+     */
+    List getParentRolesByCurrentRoleId(String currentRoleId);
 
     /**
      * 角色添加资源列表
@@ -205,6 +218,8 @@ public interface RoleService {
      * @param requestMethod 指定的资源请求方法
      * @return 如果有，则返回真
      */
-    boolean hasPerimissionOfRole(Role role, String reqUrl, RequestMethod requestMethod);
+    boolean hasPermissionOfRole(Role role, String reqUrl, RequestMethod requestMethod);
+
+
 
 }

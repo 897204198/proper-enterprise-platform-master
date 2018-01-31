@@ -12,6 +12,7 @@ import com.proper.enterprise.platform.auth.common.repository.UserGroupRepository
 import com.proper.enterprise.platform.auth.common.repository.UserRepository
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
+import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.After
@@ -27,6 +28,9 @@ class UserGroupControllerTest extends AbstractTest {
 
     @Autowired
     private UserService userService
+
+    @Autowired
+    private I18NService i18NService
 
     @Autowired
     private UserRepository userRepo
@@ -170,7 +174,10 @@ class UserGroupControllerTest extends AbstractTest {
         roleEntity = roleRepo.saveAndFlush(roleEntity)
 
         UserEntity userEntity = new UserEntity('u11', 'p11')
+        userEntity.setSuperuser(true)
         userEntity = userService.save(userEntity)
+
+        mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
 
         UserGroupEntity userGroupEntity = new UserGroupEntity()
         userGroupEntity.setName('group11')
@@ -187,6 +194,65 @@ class UserGroupControllerTest extends AbstractTest {
         list = JSONUtil.parse(result, List.class)
         assert list.size() == 1
         assert list.get(0).get('id') == userEntity.getId()
+    }
+
+    @Test
+    void testGetGroupRolesAndUsers(){
+        UserEntity userEntity = new UserEntity('u','p')
+        userEntity.setSuperuser(true)
+        userEntity = userRepo.saveAndFlush(userEntity)
+
+        mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
+
+        RoleEntity roleEntity = new RoleEntity()
+        roleEntity.setName('role')
+        roleEntity = roleRepo.saveAndFlush(roleEntity)
+
+        RoleEntity roleEntity1 = new RoleEntity()
+        roleEntity1.setName('role1')
+        roleEntity1.setEnable(false)
+        roleEntity1 = roleRepo.saveAndFlush(roleEntity1)
+
+        RoleEntity roleEntity2 = new RoleEntity()
+        roleEntity2.setName('role2')
+        roleEntity2 = roleRepo.saveAndFlush(roleEntity2)
+
+        RoleEntity roleEntity3 = new RoleEntity()
+        roleEntity3.setName('role3')
+        roleEntity3 = roleRepo.saveAndFlush(roleEntity3)
+
+        UserEntity userEntity1 = new UserEntity('u1','p1')
+        userEntity1 = userRepo.saveAndFlush(userEntity1)
+
+        UserEntity userEntity2 = new UserEntity('u2', 'p2')
+        userEntity2.setEnable(false)
+        userEntity2 = userRepo.saveAndFlush(userEntity2)
+
+        UserEntity userEntity3 = new UserEntity('u3', 'p3')
+        userEntity3 = userRepo.saveAndFlush(userEntity3)
+
+        UserGroupEntity userGroupEntity = new UserGroupEntity()
+        userGroupEntity.setName('group')
+        userGroupEntity.add(roleEntity)
+        userGroupEntity.add(roleEntity1)
+        userGroupEntity.add(roleEntity2)
+        userGroupEntity.add(roleEntity3)
+        userGroupEntity.add(userEntity1)
+        userGroupEntity.add(userEntity2)
+        userGroupEntity.add(userEntity3)
+        userGroupEntity = userGroupRepository.saveAndFlush(userGroupEntity)
+
+        def result = JSONUtil.parse(get('/auth/user-groups/' + userGroupEntity.getId() + '/roles', HttpStatus.OK).getResponse().getContentAsString
+            (), List.class)
+        assert result.size() == 3
+
+        result = get('/auth/user-groups/isdfsdlfsj/roles', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
+        assert result == i18NService.getMessage("pep.auth.common.usergroup.get.failed")
+
+        result = JSONUtil.parse(get('/auth/user-groups/' + userGroupEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString
+            (), List.class)
+        assert result.size() == 2
+
     }
 
     @After

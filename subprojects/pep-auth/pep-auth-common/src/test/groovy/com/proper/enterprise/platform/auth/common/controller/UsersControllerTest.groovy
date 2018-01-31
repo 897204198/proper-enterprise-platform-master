@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.common.controller
 
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserGroupService
+import com.proper.enterprise.platform.auth.common.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity
 import com.proper.enterprise.platform.auth.common.repository.MenuRepository
@@ -267,6 +268,7 @@ class UsersControllerTest extends AbstractTest {
     @Sql("/com/proper/enterprise/platform/auth/common/users.sql")
     @Test
     void userQueryTest() {
+        mockUser('test1', 't1', 'pwd')
         // certain query
         def list = JSONUtil.parse(get('/auth/users/query?condition=t2', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert list.size() == 1
@@ -286,6 +288,95 @@ class UsersControllerTest extends AbstractTest {
         assert list.get(1).username == 't2'
         assert list.get(2).username == 't1'
     }
+
+    @Test
+    @NoTx
+    void testGetUserGroups(){
+
+        RoleEntity roleEntity = new RoleEntity()
+        roleEntity.setName('role')
+        roleEntity = roleService.save(roleEntity)
+
+        RoleEntity roleEntity1 = new RoleEntity()
+        roleEntity1.setName('role1')
+        roleEntity1.setEnable(false)
+        roleEntity1 = roleService.save(roleEntity1)
+
+        RoleEntity roleEntity2 = new RoleEntity()
+        roleEntity2.setName('role2')
+        roleEntity2 = roleService.save(roleEntity2)
+
+        UserEntity userEntity1 = new UserEntity('u11', 'p11')
+        userEntity1.setSuperuser(true)
+        userEntity1.add(roleEntity)
+        userEntity1.add(roleEntity1)
+        userEntity1.add(roleEntity2)
+        userEntity1 = userRepository.saveAndFlush(userEntity1)
+
+        mockUser(userEntity1.getId(), userEntity1.getUsername(), userEntity1.getPassword())
+
+        UserEntity userEntity2 = new UserEntity('user2', 'pwd2')
+        userEntity2.setName('name2')
+        userEntity2.setPhone('15439392930')
+        userEntity2 = userRepository.save(userEntity2)
+
+        UserEntity userEntity3 = new UserEntity('user3', 'pwd3')
+        userEntity3.setName('name3')
+        userEntity3.setPhone('15443935852')
+        userEntity3 = userRepository.save(userEntity3)
+
+        UserEntity userEntity4 = new UserEntity('user4', 'pwd4')
+        userEntity4.setName('name4')
+        userEntity4.setPhone('15897535483')
+        userEntity4 = userRepository.save(userEntity4)
+
+        UserGroupEntity userGroupEntity = new UserGroupEntity()
+        userGroupEntity.setName('group')
+        userGroupEntity.add(userEntity1)
+        userGroupEntity = userGroupRepository.saveAndFlush(userGroupEntity)
+
+        UserGroupEntity userGroupEntity1 = new UserGroupEntity()
+        userGroupEntity1.setName('group1')
+        userGroupEntity1.setEnable(false)
+        userGroupEntity1.add(userEntity1)
+        userGroupEntity1 = userGroupRepository.saveAndFlush(userGroupEntity1)
+
+        UserGroupEntity userGroupEntity2 = new UserGroupEntity()
+        userGroupEntity2.setName('group2')
+        userGroupEntity2.add(userEntity1)
+        userGroupEntity2 = userGroupRepository.saveAndFlush(userGroupEntity2)
+
+        def result = JSONUtil.parse(get('/auth/users/' + userEntity1.getId() + '/user-groups', HttpStatus.OK).getResponse().getContentAsString(),
+            List.class)
+        assert result.size() == 2
+        result = get('/auth/users/safjsldfj/user-groups', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
+        assert result == i18NService.getMessage('pep.auth.common.user.get.failed')
+
+        UserGroupEntity userGroupEntity3 = userGroupService.get(userGroupEntity1.getId())
+        assert userGroupEntity3.getId() == userGroupEntity1.getId()
+
+        result = JSONUtil.parse(get('/auth/users/' + userEntity1.getId() + '/roles', HttpStatus.OK).getResponse().getContentAsString(),
+            List.class)
+        assert result.size() == 2
+        result = get('/auth/users/safjsldfj/roles', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
+        assert result == i18NService.getMessage('pep.auth.common.user.get.failed')
+
+        String condition = 'name'
+        result = JSONUtil.parse(get('/auth/users/query?condition=' + condition, HttpStatus.OK).getResponse().getContentAsString(),
+            List.class)
+        assert result.size() == 3
+
+        condition = '154'
+        result = JSONUtil.parse(get('/auth/users/query?condition=' + condition, HttpStatus.OK).getResponse().getContentAsString(),
+            List.class)
+        assert result.size() == 2
+
+        condition = 'user3'
+        result = JSONUtil.parse(get('/auth/users/query?condition=' + condition, HttpStatus.OK).getResponse().getContentAsString(),
+            List.class)
+        assert result.size() == 1
+    }
+
 
     @After
     void tearDown() {

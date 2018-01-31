@@ -111,8 +111,8 @@ public class MenuServiceImpl implements MenuService {
         return getMenus(userService.getCurrentUser());
     }
 
-    @Override
     @SuppressWarnings("unchecked")
+    @Override
     public Collection<? extends Menu> getMenus(User user) {
         Assert.notNull(user, "Could NOT get menus WITHOUT a user");
 
@@ -133,8 +133,8 @@ public class MenuServiceImpl implements MenuService {
         return menus;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
+    @Override
     public Collection<? extends Menu> getMenus(String name, String description, String route, String enable, String parentId) {
         List<Menu> menus = new ArrayList<>();
         Collection<? extends Menu> filterMenus = getMenuByCondiction(name, description, route, enable, parentId);
@@ -146,6 +146,23 @@ public class MenuServiceImpl implements MenuService {
         }
         Collections.sort(menus, new BeanComparator("parent", "sequenceNumber"));
         return menus;
+    }
+
+    @Override
+    public Collection<? extends Menu> getFilterMenusAndParent(Collection<? extends Menu> menus) {
+        Collection<MenuEntity> result = new HashSet<>();
+        Iterator iterator = menus.iterator();
+        MenuEntity menuEntity;
+        while (iterator.hasNext()) {
+            menuEntity = (MenuEntity) iterator.next();
+            if (menuEntity.isEnable() && menuEntity.isValid()) {
+                result.add(menuEntity);
+                if (menuEntity.getParent() != null) {
+                    result.add((MenuEntity) menuEntity.getParent());
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -264,13 +281,14 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Menu addMenuResource(String menuId, String resourceId) {
-        // TODO 具体业务实现
         Menu menu = this.get(menuId);
         if (menu != null) {
             Resource resource = resourceService.get(resourceId);
             if (resource != null) {
-                menu.add(resource);
-                menu = save(menu);
+                if (resource.isEnable() && resource.isValid()) {
+                    menu.add(resource);
+                    menu = save(menu);
+                }
             }
         }
         return menu;
@@ -278,13 +296,14 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Menu deleteMenuResource(String menuId, String resourceId) {
-        // TODO 具体业务实现
         Menu menu = this.get(menuId);
         if (menu != null) {
             Resource resource = resourceService.get(resourceId);
             if (resource != null) {
-                menu.remove(resource);
-                menu = save(menu);
+                if (resource.isEnable() && resource.isValid()) {
+                    menu.remove(resource);
+                    menu = save(menu);
+                }
             }
         }
         return menu;
@@ -293,11 +312,14 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Collection<? extends Resource> getMenuResources(String menuId) {
         Collection<Resource> filterResources = new ArrayList<>();
-        Menu menu = this.get(menuId); // TODO 过滤invalid以及enable
+        Menu menu = this.get(menuId);
         if (menu != null) {
             Collection<? extends Resource> resources = menu.getResources();
-            // TODO 具体过滤
-            filterResources.addAll(resources);
+            for (Resource resource : resources) {
+                if (resource.isEnable() && resource.isValid()) {
+                    filterResources.add(resource);
+                }
+            }
         }
         return filterResources;
     }
@@ -305,11 +327,14 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Collection<? extends Role> getMenuRoles(String menuId) {
         Collection<Role> filterRoles = new ArrayList<>();
-        Menu menu = this.get(menuId); // TODO 过滤invalid以及enable
+        Menu menu = this.get(menuId);
         if (menu != null) {
             Collection<? extends Role> roles = menu.getRoles();
-            // TODO 具体过滤
-            filterRoles.addAll(roles);
+            for (Role role : roles) {
+                if (role.isEnable() && role.isValid()) {
+                    filterRoles.add(role);
+                }
+            }
         }
         return filterRoles;
     }

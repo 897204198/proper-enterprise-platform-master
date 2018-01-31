@@ -33,7 +33,7 @@ public class MenusController extends BaseController {
     @PutMapping
     public ResponseEntity<Collection<? extends Menu>> updateEnable(@RequestBody Map<String, Object> reqMap) throws Exception {
         userService.checkPermission("/auth/menus", RequestMethod.PUT);
-        Collection<String> idList = (Collection<String>)reqMap.get("ids");
+        Collection<String> idList = (Collection<String>) reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
         return responseOfPut(service.updateEanble(idList, enable));
     }
@@ -53,13 +53,13 @@ public class MenusController extends BaseController {
 
     @GetMapping(path = "/{menuId}")
     public ResponseEntity<Menu> getMenuDetail(@PathVariable String menuId) throws Exception {
-        userService.checkPermission("/auth/menus/{menuId}", RequestMethod.GET);
+        userService.checkPermission("/auth/menus/" + menuId, RequestMethod.GET);
         return responseOfGet(service.get(menuId));
     }
 
     @PutMapping(path = "/{menuId}")
     public ResponseEntity<Menu> updateMenuDetail(@PathVariable String menuId, @RequestBody Map<String, Object> reqMap) throws Exception {
-        userService.checkPermission("/auth/menus/{menuId}", RequestMethod.PUT);
+        userService.checkPermission("/auth/menus/" + menuId, RequestMethod.PUT);
         Menu menu = service.get(menuId);
         if (menu != null) {
             reqMap.put("id", menuId);
@@ -70,28 +70,31 @@ public class MenusController extends BaseController {
 
     @GetMapping(path = "/{menuId}/resources")
     public ResponseEntity<Collection<? extends Resource>> getMenuResources(@PathVariable String menuId) {
-        // TODO 具体业务实现
+        userService.checkPermission("/auth/menus/" + menuId + "/resources", RequestMethod.GET);
         return responseOfGet(service.getMenuResources(menuId));
     }
 
     @GetMapping(path = "/{menuId}/roles")
     public ResponseEntity<Collection<? extends Role>> getMenuRoles(@PathVariable String menuId) {
-        // TODO 具体业务实现
+        userService.checkPermission("/auth/menus/" + menuId + "/roles", RequestMethod.GET);
         return responseOfGet(service.getMenuRoles(menuId));
     }
 
     @PostMapping(path = "/{menuId}/resource/{resourceId}")
     public ResponseEntity<Menu> addMenuResource(@PathVariable String menuId, @PathVariable String resourceId) {
+        userService.checkPermission("/auth/menus/" + menuId + "/resource/" + "resourceId", RequestMethod.POST);
         return responseOfPost(service.addMenuResource(menuId, resourceId));
     }
 
     @DeleteMapping(path = "/{menuId}/resource/{resourceId}")
     public ResponseEntity deleteMenuResource(@PathVariable String menuId, @PathVariable String resourceId) {
-        return  responseOfDelete(service.deleteMenuResource(menuId, resourceId) != null);
+        userService.checkPermission("/auth/menus/" + menuId + "/resource/" + resourceId, RequestMethod.DELETE);
+        return responseOfDelete(service.deleteMenuResource(menuId, resourceId) != null);
     }
 
     @GetMapping(path = "/parents")
     public ResponseEntity<Collection<? extends Menu>> getMenuParents() {
+        userService.checkPermission("/auth/menus/parents", RequestMethod.GET);
         return responseOfGet(service.getMenuParents());
     }
 }
