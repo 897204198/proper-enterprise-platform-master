@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.controller;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
+import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.entity.UserEntity;
 import com.proper.enterprise.platform.core.controller.BaseController;
@@ -20,6 +21,9 @@ public class UsersController extends BaseController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    PasswordEncryptService pwdService;
 
     @GetMapping
     public ResponseEntity<DataTrunk<? extends User>> getUser(String username, String name, String email, String phone, String enable,
@@ -40,6 +44,7 @@ public class UsersController extends BaseController {
     @PostMapping
     public ResponseEntity<User> create(@RequestBody UserEntity userEntity) {
         userService.checkPermission("/auth/users", RequestMethod.POST);
+        userEntity.setPassword(pwdService.encrypt(userEntity.getPassword()));
         return responseOfPost(userService.save(userEntity));
     }
 

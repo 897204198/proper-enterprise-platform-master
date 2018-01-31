@@ -46,6 +46,9 @@ public abstract class AbstractUserServiceImpl implements UserService {
     private ResourceService resourceService;
 
     @Autowired
+    private PasswordEncryptService pwdService;
+
+    @Autowired
     private MenuService menuService;
 
     @Autowired
@@ -75,7 +78,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
         user.setName(String.valueOf(map.get("name")));
         user.setEmail(String.valueOf(map.get("email")));
         user.setPhone(String.valueOf(map.get("phone")));
-        user.setPassword(String.valueOf(map.get("password")));
+        user.setPassword(pwdService.encrypt(String.valueOf(map.get("password"))));
         user.setEnable((boolean) map.get("enable"));
         return this.save(user);
     }
@@ -105,7 +108,8 @@ public abstract class AbstractUserServiceImpl implements UserService {
         user1.setName(userMap.get("name") == null ? user1.getName() : userMap.get("name").toString());
         user1.setEmail(userMap.get("email") == null ? user1.getEmail() : userMap.get("email").toString());
         user1.setPhone(userMap.get("phone") == null ? user1.getPhone() : userMap.get("phone").toString());
-        user1.setPassword(userMap.get("password") == null ? user1.getPassword() : userMap.get("password").toString());
+        user1.setPassword(userMap.get("password") == null ? user1.getPassword() : pwdService.encrypt(userMap.get("password").toString()));
+        user1.setEnable(userMap.get("enable") == null ? user1.isEnable() : (boolean) userMap.get("enable"));
         return this.save(user1);
     }
 
