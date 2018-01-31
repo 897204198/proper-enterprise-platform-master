@@ -1,5 +1,5 @@
 /* Copyright 2005-2015 Alfresco Software, Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,6 +21,12 @@ FLOWABLE.CONFIG = {
     'onPremise' : true,
     'contextRoot' : '/pep/workflow/service',
     'webContextRoot' : '/pep/workflow',
-    'lang': 'zh',
-    'loginUrl': 'http://localhost:9000'
+    'datesLocalization' : false
+};
+
+FLOWABLE.TOOLBAR = FLOWABLE.TOOLBAR || {};
+FLOWABLE.TOOLBAR.ACTIONS = FLOWABLE.TOOLBAR.ACTIONS || {};
+
+FLOWABLE.TOOLBAR.ACTIONS.customClose = function() {
+    window.location.href = '/home/workflow/designer'
 };
