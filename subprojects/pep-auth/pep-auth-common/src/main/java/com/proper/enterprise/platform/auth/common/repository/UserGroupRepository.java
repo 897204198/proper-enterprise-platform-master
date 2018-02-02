@@ -11,5 +11,6 @@ public interface UserGroupRepository extends BaseRepository<UserGroupEntity, Str
 
     UserGroupEntity findByValidAndId(boolean valid, String id);
 
+    UserGroupEntity findByValidAndName(boolean valid, String name);
 
 }

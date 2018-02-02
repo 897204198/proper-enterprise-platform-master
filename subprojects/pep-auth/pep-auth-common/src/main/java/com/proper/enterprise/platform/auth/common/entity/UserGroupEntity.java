@@ -28,7 +28,7 @@ public class UserGroupEntity extends BaseEntity implements UserGroup {
     /**
      * 用户组名称
      */
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
 
     /**

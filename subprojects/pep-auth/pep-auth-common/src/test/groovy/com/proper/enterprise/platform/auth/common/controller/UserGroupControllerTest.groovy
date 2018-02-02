@@ -5,11 +5,7 @@ import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity
-import com.proper.enterprise.platform.auth.common.repository.MenuRepository
-import com.proper.enterprise.platform.auth.common.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.common.repository.RoleRepository
-import com.proper.enterprise.platform.auth.common.repository.UserGroupRepository
-import com.proper.enterprise.platform.auth.common.repository.UserRepository
+import com.proper.enterprise.platform.auth.common.repository.*
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
@@ -73,6 +69,7 @@ class UserGroupControllerTest extends AbstractTest {
         def g1 = JSONUtil.parse(post(URI,
             JSONUtil.toJSON(group1), HttpStatus.CREATED).getResponse().getContentAsString(), Map.class)
 
+        assert post(URI,JSONUtil.toJSON(group1), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.usergroup.name.duplicate")
         assert g1.get('id') != null
         assert g2.get('id') != null
 
@@ -152,7 +149,7 @@ class UserGroupControllerTest extends AbstractTest {
 
         UserEntity userEntity = new UserEntity('u11', 'p11')
         userEntity = userService.save(userEntity)
-        UserEntity [] userEntitys = new UserEntity[1]
+        UserEntity[] userEntitys = new UserEntity[1]
         userEntitys[0] = userEntity
 
         UserGroupEntity userGroupEntity1 = new UserGroupEntity()
@@ -163,12 +160,10 @@ class UserGroupControllerTest extends AbstractTest {
         userGroupEntity1 = userGroupRepository.saveAndFlush(userGroupEntity1)
 
         assert delete(URI + '?ids=' + userGroupEntity1.getId(), HttpStatus.NO_CONTENT).getResponse().getContentAsString() == ''
-
-
     }
 
     @Test
-    void testGetUsersAndRoles(){
+    void testGetUsersAndRoles() {
         RoleEntity roleEntity = new RoleEntity()
         roleEntity.setName('role11')
         roleEntity = roleRepo.saveAndFlush(roleEntity)
@@ -197,8 +192,8 @@ class UserGroupControllerTest extends AbstractTest {
     }
 
     @Test
-    void testGetGroupRolesAndUsers(){
-        UserEntity userEntity = new UserEntity('u','p')
+    void testGetGroupRolesAndUsers() {
+        UserEntity userEntity = new UserEntity('u', 'p')
         userEntity.setSuperuser(true)
         userEntity = userRepo.saveAndFlush(userEntity)
 
