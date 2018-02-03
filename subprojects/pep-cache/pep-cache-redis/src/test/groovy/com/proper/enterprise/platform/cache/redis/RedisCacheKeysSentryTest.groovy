@@ -33,8 +33,10 @@ class RedisCacheKeysSentryTest extends AbstractTest {
     void test() {
         def cache = cacheManager.getCache('apiSecrets')
         def set = sentry.keySet(cache)
-        assert set.size() == 1
-        assert cache.get(set.iterator().next()).get() == 'sentry'
+        assert set.size() > 0
+        def key = 'dupKey'
+        assert set.contains(key)
+        assert cache.get(key).get() == 'sentry'
     }
 
 }
