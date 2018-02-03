@@ -123,7 +123,6 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
     ```
     class CrudBaseTest extends AbstractTest
     ```
-
 * 建表：Hibernate 按照 JPA 的注解自动创建
 * 初始化数据：sql 语句放在对应模块 `src/main/resources/sql/*.sql`，系统运行时自动执行
 * 异常不允许直接 `printStackTrace`，应记录到日志中
@@ -180,6 +179,36 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
 
 * 单元测试 `$ ./gradlew test`
 * 测试及代码质量检查 `$ ./gradlew check`
+* 单元测试覆盖 bean 的方法：因为单体测试类可能会因为具体的测试功能需要不同的测试数据，之前的做法是在测试文件中添加一个 Mock 接口的实现类并通过 `@Primary` 将 Mock 的实现类设置为主要实现类，例如：
+    ```
+    @Primary
+    public class MockDepartmentServiceImpl extends DepartmentServiceImpl implements DepartmentService {
+        @Override
+        List<Department> getAllDepartments() {
+            ... ...
+        }
+    }
+    ```
+  但是这样处理后当出现有多个不同的测试数据需求时很难进行分别处理，如何解决这个问题呢？
+  单体测试可以使用从 Spring 上下文中获取具体实现类，通过新的实现类重写接口方法进行测试验证并在测试验证后将原有的实现类放回上下文中，具体操作如下：
+  第一步：通过上下文获取目标接口的实现类，如：
+    ```
+    DepartmentExtService departmentExtService = PEPApplicationContext.getBean("departmentExtService");
+    ```
+  第二步：通过 `overrideSingleton` 方法中 使用 `@Override` 方法重写该接口的方法返回所需测试数据，如：
+    ```
+    overrideSingleton("departmentExtService", new DepartmentExtService() {
+        @Override
+        List<Department> getAllDepartments() {
+            ... ...
+        }
+    })
+    ```
+  第三步：在验证测试数据后，需要将原接口的实现类放回至 Spring 上下文中，这样就不会对其他的测试类造成影响，如：
+    ```
+    overrideSingleton("departmentExtService", departmentExtService);
+    ```
+  最后，还有一点需要说明，如果要覆盖的 bean 已被其他 bean 所引用，则需要在测试类结束前恢复 **所有** 相关类的实例，否则可能会对其他需要用到未覆盖前 bean 的行为的单元测试造成意外影响！详细可见此 [示例](https://github.com/propersoft-cn/ihos/pull/1531)
 
 **推送代码至远程仓库或创建 `Pull Request` 之前需确保所有测试及检查能够在本地通过**
 
@@ -205,3 +234,5 @@ master 分支的构建结果会在项目首页展现
 [![codecov](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform/branch/master/graph/badge.svg?token=uthbnLL68t)](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform)
 
 **每位工程师都要为项目构建失败或覆盖率下降负责！**
+
+
