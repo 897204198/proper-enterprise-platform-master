@@ -17,7 +17,7 @@
     select * from ${prefix}pep_auth_users where id = #{id,jdbcType=VARCHAR}
   </select>
 
-  <select id="selectUserByQueryCriteria" parameterType="org.activiti.engine.impl.UserQueryImpl" resultMap="userResultMap">
+  <select id="selectUserByQueryCriteria" parameterType="org.flowable.idm.engine.impl.UserQueryImpl" resultMap="userResultMap">
   	${limitBefore}
     select RES.* ${limitBetween}
     <include refid="selectUserByQueryCriteriaSql" />
@@ -25,7 +25,7 @@
     ${limitAfter}
   </select>
 
-   <select id="selectUserCountByQueryCriteria" parameterType="org.activiti.engine.impl.UserQueryImpl" resultType="long">
+   <select id="selectUserCountByQueryCriteria" parameterType="org.flowable.idm.engine.impl.UserQueryImpl" resultType="long">
     select count(RES.id)
     <include refid="selectUserByQueryCriteriaSql" />
   </select>
@@ -67,7 +67,7 @@
   </sql>
 
   <select id="selectUserByNativeQuery" parameterType="java.util.Map" resultMap="userResultMap">
-    <include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
+    <include refid="org.flowable.engine.db.common.selectByNativeQuery"/>
   </select>
 
   <select id="selectUserCountByNativeQuery" parameterType="java.util.Map" resultType="long">

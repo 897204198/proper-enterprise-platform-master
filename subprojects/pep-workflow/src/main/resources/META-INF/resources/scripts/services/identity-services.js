@@ -106,7 +106,7 @@ angular.module('flowableModeler').service('RoleService', ['$http', '$q',
 
             return httpAsPromise({
                 method: 'GET',
-                url: ACTIVITI.CONFIG.contextRoot + '/editor-roles',
+                url: FLOWABLE.CONFIG.contextRoot + '/app/rest/editor-roles',
                 params: params
             });
         };
