@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.auth.common.entity.MenuEntity
 import com.proper.enterprise.platform.auth.common.repository.*
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
+import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.After
@@ -47,6 +48,9 @@ class MenusControllerTest extends AbstractTest {
 
     @Autowired
     MenuService menusService
+
+    @Autowired
+    I18NService i18NService
 
     def str = 'Current user has no permissions'
 
@@ -98,6 +102,29 @@ class MenusControllerTest extends AbstractTest {
             .getResponse().getContentAsString(), Map.class)
         assert menuObj.get("icon") == 'test_icon'
 
+        def childMenu = [:]
+        childMenu['icon'] = 'child'
+        childMenu['name'] = 'child'
+        childMenu['route'] = '/child'
+        childMenu['enable'] = true
+        childMenu['sequenceNumber'] = 56
+        childMenu['menuCode'] = '1'
+        childMenu['parentId'] = id
+        def childObje = JSONUtil.parse(post('/auth/menus', JSONUtil.toJSON(childMenu), HttpStatus.CREATED)
+            .getResponse().getContentAsString(), Map.class)
+        def childId = childObje.get('id')
+
+        def req1 = [:]
+        def list1 = [id]
+        req1['ids'] = list1
+        req1['enable'] = false
+        put('/auth/menus', JSONUtil.toJSON(req1), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+            i18NService.getMessage("pep.auth.common.menu.parent")
+        // delete menu
+        assert delete('/auth/menus?ids=' + id, HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+            i18NService.getMessage("pep.auth.common.menu.delete.relation.failed")
+        delete('/auth/menus?ids=' + childId, HttpStatus.NO_CONTENT)
+
         def req = [:]
         def list = ['test-c']
         req['ids'] = list
@@ -117,6 +144,9 @@ class MenusControllerTest extends AbstractTest {
         def resList = JSONUtil.parse(get('/auth/menus/' + id + '/resources',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 1
         assert resList.get(0).id == 'test-c'
+        // delete menu
+        assert delete('/auth/menus?ids=' + id, HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+            i18NService.getMessage("pep.auth.common.menu.delete.relation.resource")
         // delete menu's role
         delete('/auth/menus/' + id + '/resource/test-c', HttpStatus.NO_CONTENT)
         resList = JSONUtil.parse(get('/auth/menus/' + id + '/resources',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
@@ -129,6 +159,9 @@ class MenusControllerTest extends AbstractTest {
         resList = JSONUtil.parse(get('/auth/menus/' + id + '/roles',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 1
         assert resList.get(0).id == 'role1'
+        // delete menu
+        assert delete('/auth/menus?ids=' + id, HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+            i18NService.getMessage("pep.auth.common.menu.delete.relation.role")
         // delete role's menu
         delete('/auth/roles/role1/menus?ids=' + id, HttpStatus.NO_CONTENT)
         resList = JSONUtil.parse(get('/auth/menus/' + id + '/roles',  HttpStatus.OK).getResponse().getContentAsString(), List.class)

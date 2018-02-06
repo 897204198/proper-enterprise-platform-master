@@ -109,7 +109,7 @@ public class RoleServiceImpl implements RoleService {
                     predicates.add(cb.like(root.get("description"), "%".concat(description).concat("%")));
                 }
                 if (StringUtil.isNotNull(parentId)) {
-                    predicates.add(cb.like(root.get("parent").get("id"), "%".concat(parentId).concat("%")));
+                    predicates.add(cb.equal(root.get("parent").get("id"), parentId));
                 }
                 if (StringUtil.isNotNull(enable)) {
                     predicates.add(cb.equal(root.get("enable"), enable.equals("Y")));

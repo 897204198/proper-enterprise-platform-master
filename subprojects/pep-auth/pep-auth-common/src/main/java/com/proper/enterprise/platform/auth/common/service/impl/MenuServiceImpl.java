@@ -210,7 +210,7 @@ public class MenuServiceImpl implements MenuService {
                     predicates.add(cb.equal(root.get("enable"), enable.equals("Y")));
                 }
                 if (StringUtil.isNotNull(parentId)) {
-                    predicates.add(cb.equal(root.get("parent").get("id"), "%".concat(parentId).concat("%")));
+                    predicates.add(cb.equal(root.get("parent").get("id"), parentId));
                 }
                 predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -226,20 +226,32 @@ public class MenuServiceImpl implements MenuService {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            try {
-                List<MenuEntity> list = repository.findAll(idList);
-                for (MenuEntity menuEntity : list) {
-                    if (menuEntity.getRoles().size() == 0 && menuEntity.getResources().size() == 0) {
-                        menuEntity.setValid(false);
-                        repository.save(list);
-                        ret = true;
-                    } else {
-                        ret = false;
+            List<MenuEntity> list = repository.findAll(idList);
+            for (MenuEntity menu : list) {
+                // 菜单存在关联关系
+                if (getMenuByCondiction(null, null, null, "Y", menu.getId()).size() > 0) {
+                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.failed"));
+                }
+                // 菜单存在资源
+                if (menu.getResources().size() > 0) {
+                    for (Resource resource : menu.getResources()) {
+                        if (resource.isEnable() && resource.isValid()) {
+                            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.resource"));
+                        }
                     }
                 }
-            } catch (Exception e) {
-                throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete"));
+                // 菜单存在角色
+                if (menu.getRoles().size() > 0) {
+                    for (Role role : menu.getRoles()) {
+                        if (role.isEnable() && menu.isValid()) {
+                            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.role"));
+                        }
+                    }
+                }
+                menu.setValid(false);
             }
+            repository.save(list);
+            ret = true;
         }
         return ret;
     }
@@ -266,15 +278,12 @@ public class MenuServiceImpl implements MenuService {
     public Collection<? extends Menu> updateEanble(Collection<String> idList, boolean enable) {
         List<MenuEntity> menuList = repository.findAll(idList);
         for (Menu menu : menuList) {
-            if (menu.isEnable()) {
-                Collection<? extends Menu> list = getMenuByCondiction(null, null, null, "Y", menu.getId());
-                if (list.size() != 0) {
-                    LOGGER.debug("{} has parent menu {}, dont update!", menu.getName(), menu.getParent());
-                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.parent"));
-                } else {
-                    menu.setEnable(false);
-                }
+            Collection<? extends Menu> list = getMenuByCondiction(null, null, null, "Y", menu.getId());
+            if (list.size() != 0) {
+                LOGGER.debug("{} has parent menu {}, dont update!", menu.getName(), menu.getParent());
+                throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.parent"));
             }
+            menu.setEnable(enable);
         }
         return repository.save(menuList);
     }
