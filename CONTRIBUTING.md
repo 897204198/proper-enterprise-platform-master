@@ -11,6 +11,12 @@ Proper Enterprise Platform Developer Guidelines
 
 > 在 IDEA 中需要配置为 gradle 项目才可部署至 tomcat 中开发
 
+### 使用静态资源
+
+假设前台资源根目录为ng2
+- 编辑ng2/index.html，搜索`<base href=`，将其修改为`<base href="/ng2/">`。
+- 在index.html中搜索src="main，查看main.*.js全部名称，如main.7629237391c2c56fcf3d.bundle.js
+- 编辑main.*.bundle.js，搜索./api将{context:"url"}中的url替换为本地服务
 
 内嵌 servlet 容器开发及调试
 ------------------------
