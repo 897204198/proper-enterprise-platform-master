@@ -5,8 +5,10 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.UserGroupService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +44,21 @@ public class UserGroupController extends BaseController {
     @PostMapping
     public ResponseEntity<UserGroup> create(@RequestBody Map<String, Object> reqMap) {
         userService.checkPermission("/auth/user-groups", RequestMethod.POST);
-        return responseOfPost(service.save(reqMap));
+        return responseOfPost(service.createUserGroup(save(reqMap)));
+    }
+
+    private UserGroup save(Map<String, Object> map) {
+        String id = String.valueOf(map.get("id"));
+        UserGroupEntity userGroupEntity = new UserGroupEntity();
+        // 更新
+        if (map.get("id") != null && StringUtil.isNotNull(id)) {
+            userGroupEntity = (UserGroupEntity)service.get(id);
+        }
+        userGroupEntity.setName(String.valueOf(map.get("name")));
+        userGroupEntity.setEnable((boolean) map.get("enable"));
+        userGroupEntity.setDescription(String.valueOf(map.get("description")));
+        userGroupEntity.setSeq(Integer.parseInt(String.valueOf(map.get("seq"))));
+        return userGroupEntity;
     }
 
     @DeleteMapping
@@ -63,7 +79,7 @@ public class UserGroupController extends BaseController {
         UserGroup group = service.get(id);
         if (group != null) {
             reqMap.put("id", id);
-            group = service.save(reqMap);
+            group = save(reqMap);
         }
         return responseOfPut(group);
     }
@@ -101,7 +117,7 @@ public class UserGroupController extends BaseController {
      * 添加用户到用户组
      *
      * @param groupId 用户组ID
-     * @param userId 用户ID
+     * @param userId  用户ID
      * @return 结果
      */
     @PostMapping(path = "/{groupId}/user/{userId}")
@@ -114,7 +130,7 @@ public class UserGroupController extends BaseController {
      * 从用户组中删除用户
      *
      * @param groupId 用户组ID
-     * @param userId 用户ID
+     * @param userId  用户ID
      * @return 结果
      */
     @DeleteMapping(path = "/{groupId}/user/{userId}")

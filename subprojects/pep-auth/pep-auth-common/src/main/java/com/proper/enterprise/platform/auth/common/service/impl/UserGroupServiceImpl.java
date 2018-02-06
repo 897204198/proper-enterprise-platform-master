@@ -87,21 +87,6 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
-    public UserGroup save(Map<String, Object> map) {
-        String id = String.valueOf(map.get("id"));
-        UserGroupEntity menuInfo = new UserGroupEntity();
-        // 更新
-        if (map.get("id") != null && StringUtil.isNotNull(id)) {
-            menuInfo = (UserGroupEntity)this.get(id);
-        }
-        menuInfo.setName(String.valueOf(map.get("name")));
-        menuInfo.setEnable((boolean) map.get("enable"));
-        menuInfo.setDescription(String.valueOf(map.get("description")));
-        menuInfo.setSeq(Integer.parseInt(String.valueOf(map.get("seq"))));
-        return repository.save(menuInfo);
-    }
-
-    @Override
     public void delete(UserGroup group) {
         this.deleteByIds(group.getId());
     }
@@ -230,5 +215,15 @@ public class UserGroupServiceImpl implements UserGroupService {
             }
         }
         return false;
+    }
+
+    @Override
+    public UserGroup createUserGroup(UserGroup userGroup) {
+        UserGroup group = repository.findByValidAndName(true, userGroup.getName());
+        if (group != null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.name.duplicate"));
+        } else {
+            return save(userGroup);
+        }
     }
 }

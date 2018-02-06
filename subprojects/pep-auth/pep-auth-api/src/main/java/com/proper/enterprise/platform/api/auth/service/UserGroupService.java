@@ -6,7 +6,6 @@ import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
-import java.util.Map;
 
 public interface UserGroupService {
 
@@ -42,14 +41,6 @@ public interface UserGroupService {
      * @return 更新后的用户组
      */
     UserGroup save(UserGroup group);
-
-    /**
-     * 保存或更新用户组信息
-     *
-     * @param map 请求参数
-     * @return 更新后的用户组
-     */
-    UserGroup save(Map<String, Object> map);
 
     /**
      * 删除用户组
@@ -137,4 +128,11 @@ public interface UserGroupService {
      */
     boolean hasPermissionOfUserGroup(UserGroup userGroup, String reqUrl, RequestMethod requestMethod);
 
+    /**
+     * 创建更新用户组信息
+     *
+     * @param userGroup 新增用户组信息
+     * @return 更新后的用户组
+     */
+    UserGroup createUserGroup(UserGroup userGroup);
 }
