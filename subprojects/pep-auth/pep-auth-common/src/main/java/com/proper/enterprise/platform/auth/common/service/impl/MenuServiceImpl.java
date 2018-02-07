@@ -325,7 +325,7 @@ public class MenuServiceImpl implements MenuService {
         if (menu != null) {
             Collection<? extends Resource> resources = menu.getResources();
             for (Resource resource : resources) {
-                if (resource.isEnable() && resource.isValid()) {
+                if (resource.isValid()) {
                     filterResources.add(resource);
                 }
             }
