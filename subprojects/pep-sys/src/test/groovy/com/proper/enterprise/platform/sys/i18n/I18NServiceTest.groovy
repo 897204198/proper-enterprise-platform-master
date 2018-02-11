@@ -19,4 +19,11 @@ class I18NServiceTest extends AbstractTest {
         assert service.getMessage(k2) == ins.getString(k2)
     }
 
+    @Test
+    void test() {
+        def msg = service.getMessage('sys.test.tpl',
+                                     new Date().format('yyyy年MM月dd日'), new Date().format('u'))
+        assert msg.length() > 4 + 2 + 2 + 1
+    }
+
 }

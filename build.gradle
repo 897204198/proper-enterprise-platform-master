@@ -1,3 +1,7 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.4.RELEASE"
+}
+
 allprojects {
     repositories {
         maven {
@@ -34,9 +38,17 @@ subprojects {
     apply plugin: 'groovy'
     apply plugin: 'maven'
 
+    apply plugin: 'io.spring.dependency-management'
+
     apply from: "$pepDevConfRoot/configs/dependencies.gradle"
 
     apply from: "$pepDevConfRoot/configs/quality/codeQuality.gradle"
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.data:spring-data-releasetrain:${versions.spring_data}"
+        }
+    }
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -56,7 +68,6 @@ subprojects {
 
     dependencies {
         compile libraries.slf4j_api,
-                libraries.spring_data_jpa,
                 libraries.spring_webmvc
 
         runtime libraries.hibernate_hikaricp,
@@ -68,9 +79,6 @@ subprojects {
                     libraries.spring_test
 
         testRuntime libraries.aspectjweaver,
-                    libraries.h2,
-                    libraries.hibernate_hikaricp,
-                    libraries.hibernate_entitymanager,
                     libraries.servlet_api,
                     libraries.spring_context_support
     }

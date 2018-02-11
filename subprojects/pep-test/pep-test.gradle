@@ -6,7 +6,9 @@ dependencies {
             libraries.jpa_api,
             libraries.junit,
             libraries.servlet_api,
-            libraries.spring_test
+            libraries.spring_orm,
+            libraries.spring_test,
+            libraries.spring_tx
 
     runtime libraries.h2
 }

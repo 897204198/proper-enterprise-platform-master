@@ -13,6 +13,7 @@ versions.mongo              = '3.2.2'
 versions.quartz             = '2.2.1'
 versions.slf4j              = '1.7.21'
 versions.spring             = '4.3.0.RELEASE'
+versions.spring_data        = 'Ingalls-SR10'
 versions.spring_integration = '4.3.9.RELEASE'
 versions.spring_security    = '4.0.1.RELEASE'
 
@@ -30,8 +31,6 @@ configurations.all {
         def nameVers = [
             'javassist': '3.19.0-GA',
             'jcl-over-slf4j': versions.slf4j,
-            // spring-data-jpa & spring-data-mongodb 依赖不同版本的 spring-data-commons 会有冲突
-            'spring-data-commons': '1.11.4.RELEASE',
             // xalan < 2.7.0 的版本会导致与 spring-ws 的冲突
             // http://stackoverflow.com/questions/12467186/java-spring-ws-org-springframework-ws-soap-saaj-saajsoapenvelopeexception-could/13156775#13156775
             'xalan': '2.7.2'
@@ -211,16 +210,16 @@ libraries.spring_orm = [
 ]
 libraries.spring_oxm = "org.springframework:spring-oxm:${versions.spring}"
 libraries.spring_test = "org.springframework:spring-test:${versions.spring}"
-//libraries.spring_tx = "org.springframework:spring-tx:${versions.spring}"
+libraries.spring_tx = "org.springframework:spring-tx:${versions.spring}"
 //libraries.spring_web = "org.springframework:spring-web:${versions.spring}"
 libraries.spring_webmvc = "org.springframework:spring-webmvc:${versions.spring}"
 libraries.spring_jms = "org.springframework:spring-jms:${versions.spring}"
 
-libraries.spring_data_jpa = 'org.springframework.data:spring-data-jpa:1.9.4.RELEASE'
-libraries.spring_data_mongodb = 'org.springframework.data:spring-data-mongodb:1.8.4.RELEASE'
+libraries.spring_data_jpa = 'org.springframework.data:spring-data-jpa'
+libraries.spring_data_mongodb = 'org.springframework.data:spring-data-mongodb'
 
 //libraries.spring_data_redis = [
-//    'org.springframework.data:spring-data-redis:1.7.5.RELEASE',
+//    'org.springframework.data:spring-data-redis',
 //    'org.apache.commons:commons-pool2:2.2',
 //    'redis.clients:jedis:2.9.0'
 //]

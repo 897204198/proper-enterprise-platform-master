@@ -6,7 +6,10 @@ dependencies {
             libraries.okhttp,
             libraries.pinyin4j,
             libraries.servlet_api,
+            libraries.spring_data_jpa,
             libraries.spring_oxm
+
+    runtime libraries.hibernate_entitymanager
 
     testCompile project(':pep-test')
 
