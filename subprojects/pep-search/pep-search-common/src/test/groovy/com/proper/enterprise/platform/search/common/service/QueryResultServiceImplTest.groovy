@@ -14,6 +14,7 @@ import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.jdbc.Sql
 
 class QueryResultServiceImplTest extends AbstractTest{
 
@@ -33,6 +34,7 @@ class QueryResultServiceImplTest extends AbstractTest{
     Table2RepositoryTest table2RepositoryTest
 
     @Test
+    @Sql(["/sql/search/001-datadics.sql"])
     void testSearchServiceImpl(){
         initData()
         get("/search/init",  HttpStatus.OK)
@@ -51,6 +53,11 @@ class QueryResultServiceImplTest extends AbstractTest{
         jn = objectMapper.readValue(req, JsonNode.class)
         result = queryResultService.assemble(configTest, jn, tableName)
         assert result.size() == 1
+
+        req = "[{\"key\":\"dept_member_count\",\"value\":\"1\",\"operate\":\">\"}]"
+        jn = objectMapper.readValue(req, JsonNode.class)
+        result = queryResultService.assemble(configTest, jn, tableName)
+        assert result.size() > 1
 
         req = "[{\"key\":\"create_time\",\"value\":\"2018\",\"operate\":\"like\"}," +
             "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\"}]"

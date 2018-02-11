@@ -12,6 +12,8 @@ import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.jdbc.Sql
+
 
 class DemoDeptControllerTest extends AbstractTest{
 
@@ -108,6 +110,7 @@ class DemoDeptControllerTest extends AbstractTest{
     }
 
     @Test
+    @Sql(["/sql/search/001-datadics.sql"])
     void testDeptQuery3(){
         initDeptDB()
         get("/search/init",  HttpStatus.OK)
@@ -124,6 +127,12 @@ class DemoDeptControllerTest extends AbstractTest{
         resultContent = get(url,  HttpStatus.OK).getResponse().getContentAsString()
         resultList = JSONUtil.parse(resultContent,List.class)
         assert resultList.size() == 1
+
+        req = "[{\"key\":\"dept_member_count\",\"value\":\"1\",\"operate\":\">\"}]"
+        url = "/search/dept/query?req=" + encode(req) + "&tableName=demo_dept"
+        resultContent = get(url,  HttpStatus.OK).getResponse().getContentAsString()
+        resultList = JSONUtil.parse(resultContent,List.class)
+        assert resultList.size() > 1
 
         req = "[{\"key\":\"create_time\",\"value\":\"2017\",\"operate\":\"like\"}," +
             "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\"}]"

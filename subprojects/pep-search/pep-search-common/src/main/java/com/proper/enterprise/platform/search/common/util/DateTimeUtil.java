@@ -1,12 +1,11 @@
 package com.proper.enterprise.platform.search.common.util;
 
+import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.utils.DateUtil;
-import com.proper.enterprise.platform.sys.i18n.I18NService;
+import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Date Time Tools
@@ -14,28 +13,21 @@ import java.util.Map;
  */
 public class DateTimeUtil {
 
-    public static int getTimeAxis(String element, I18NService i18NService) {
+    public static int getTimeAxis(String element) {
         Map<String, Integer> timeAxis = new HashMap<>();
-        timeAxis.put(i18NService.getMessage("search.qian"), -2);
-        timeAxis.put(i18NService.getMessage("search.zuo"), -1);
-        timeAxis.put(i18NService.getMessage("search.shang"), -1);
-        timeAxis.put(i18NService.getMessage("search.qu"), -1);
-        timeAxis.put(i18NService.getMessage("search.jin"), 0);
-        timeAxis.put(i18NService.getMessage("search.ben"), 0);
-        timeAxis.put(i18NService.getMessage("search.zhe"), 0);
-        timeAxis.put(i18NService.getMessage("search.ming"), 1);
-        timeAxis.put(i18NService.getMessage("search.xia"), 1);
-        timeAxis.put(i18NService.getMessage("search.hou"), 2);
+        List<DataDic> collection = (List<DataDic>)PEPApplicationContext.getBean(DataDicService.class).findByCatalog("TIME_AXIS");
+        for (DataDic temp : collection) {
+            timeAxis.put(temp.getName(), Integer.parseInt(temp.getCode()));
+        }
         return timeAxis.get(element);
     }
 
-    public static String getDateSubject(String element, I18NService i18NService) {
+    public static String getDateSubject(String element) {
         Map<String, String> dateSubject = new HashMap<>();
-        dateSubject.put(i18NService.getMessage("search.day"), "day");
-        dateSubject.put(i18NService.getMessage("search.week"), "week");
-        dateSubject.put(i18NService.getMessage("search.month"), "month");
-        dateSubject.put(i18NService.getMessage("search.quarter"), "quarter");
-        dateSubject.put(i18NService.getMessage("search.year"), "year");
+        List<DataDic> collection = (List<DataDic>)PEPApplicationContext.getBean(DataDicService.class).findByCatalog("DATE_TYPE");
+        for (DataDic temp : collection) {
+            dateSubject.put(temp.getName(), temp.getCode());
+        }
         return dateSubject.get(element);
     }
 

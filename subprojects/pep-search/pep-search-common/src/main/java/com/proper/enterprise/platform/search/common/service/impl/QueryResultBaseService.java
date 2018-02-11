@@ -26,7 +26,6 @@ public class QueryResultBaseService {
     @Autowired
     private I18NService i18NService;
 
-
     private Map<String, String> getFieldsByTableName(AbstractSearchConfigs searchConfig, String tableName) {
         List<SearchColumn> searchColumnList = searchConfig.getSearchColumnListByTable(tableName);
         Map<String, String> columnMap = new HashMap<>();
@@ -41,70 +40,83 @@ public class QueryResultBaseService {
         Set<String> set = columnMap.keySet();
         String sql = SqlInstallUtil.addSelectElements("", set);
         sql = SqlInstallUtil.addTableElements(sql, tableName);
-        String conditionOperate = "";
+        String logic = "";
         for (int i = 0; i < root.size(); i++) {
             JsonNode jn = root.get(i);
             String key = jn.findValue("key").asText();
             boolean isOperater = key.contains("or") || key.contains("and");
             if (isOperater) {
-                conditionOperate = key;
+                logic = key;
             } else {
                 String value = jn.findValue("value").asText();
                 String type = columnMap.get(key);
                 JsonNode jnOperate = jn.findValue("operate");
-                if (StringUtil.isEmpty(conditionOperate)) {
-                    conditionOperate = "and";
+                if (StringUtil.isEmpty(logic)) {
+                    logic = "and";
                 }
                 if (type.equals("date")) {
-                    String operate = jnOperate == null ? "like" : jnOperate.asText();
-                    value = installDate(key, operate, value);
-                    if (StringUtil.isEmpty(value)) {
-                        continue;
-                    }
-                    sql = sql + " " + conditionOperate + " " + value;
-                } else if (type.equals("num")) {
-                    String operate = jnOperate == null ? "=" : jnOperate.asText();
-                    sql = SqlInstallUtil.addWhereElementInt(sql, conditionOperate, key, operate, value);
+                    sql = sql + installDate(key, logic, jnOperate.asText(), value, type);
                 } else {
-                    String operate = jnOperate == null ? "like" : jnOperate.asText();
-                    sql = SqlInstallUtil.addWhereElement(sql, conditionOperate, key, operate, value);
+                    sql = SqlInstallUtil.addWhereElements(sql, logic, key, type, jnOperate.asText(), "", value);
                 }
-                conditionOperate = "";
+                logic = "";
             }
         }
         return sql;
     }
 
-    private String installDate(String key, String operate, String date) {
+    private String getChLogicFromDate(String str) {
+        if (str.contains(i18NService.getMessage("search.or"))) {
+            return i18NService.getMessage("search.or");
+        } else if (str.contains(i18NService.getMessage("search.till"))) {
+            return i18NService.getMessage("search.till");
+        } else {
+            return null;
+        }
+    }
+
+    private String getEnLogic(String str) {
+        Map<String, String> map = new HashMap<>();
+        map.put(i18NService.getMessage("search.or"), "or");
+        map.put(i18NService.getMessage("search.till"), "range");
+        return map.get(str);
+    }
+
+    private String installDate(String key, String logic, String operate, String date, String type) {
         try {
-            if (date.contains(i18NService.getMessage("search.or"))) {
-                String[] orArray = date.split(i18NService.getMessage("search.or"));
-                //TODO
-                return SqlInstallUtil.addWhereElements("", key, operate, orArray);
-            } else if (date.contains(i18NService.getMessage("search.till"))) {
-                String[] toArray = date.split(i18NService.getMessage("search.till"));
-                return SqlInstallUtil.addRangeElements("", key, toArray[0], toArray[1]);
+            String ch = getChLogicFromDate(date);
+            if (ch != null) {
+                //CH many date
+                String[] elements = date.split(ch);
+                return SqlInstallUtil.addWhereElements("", logic, key, type, operate, getEnLogic(ch), elements);
+            } else {
+                //Normal date
+                Date newDate = DateUtil.toDate(date);
+                String newStrDate = DateUtil.toString(newDate, "yyyy-MM-dd");
+                return SqlInstallUtil.addWhereElements("", logic, key, type, operate, "", newStrDate);
             }
-            Date newDate = DateUtil.toDate(date);
-            String newStrDate = DateUtil.toString(newDate, "yyyy-MM-dd");
-            return SqlInstallUtil.addWhereElement("", "", key, operate, newStrDate);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
+            //Special date
             try {
                 String log = e.getMessage();
                 if (log.contains("too short")) {
-                    return SqlInstallUtil.addWhereElement("", "", key, "like", date);
-                } else if (log.contains("Invalid format")) {
+                    //Partly date
+                    return SqlInstallUtil.addWhereElements("", logic, key, type, "like", "", date);
+                } else if (log.contains("Invalid format") && !log.contains("too short")) {
+                    //CH phrase date
                     String ruler = date.substring(0, date.length() - 1);
                     String element = date.substring(1, date.length());
-                    int position = DateTimeUtil.getTimeAxis(ruler, i18NService);
-                    String subject = DateTimeUtil.getDateSubject(element, i18NService);
+                    int position = DateTimeUtil.getTimeAxis(ruler);
+                    String subject = DateTimeUtil.getDateSubject(element);
                     if ("day".equals(subject)) {
-                        return SqlInstallUtil.addWhereElement("", "", key, "like", DateTimeUtil.day(position));
+                        //single
+                        return SqlInstallUtil.addWhereElements("", logic, key, type, "like", "", DateTimeUtil.day(position));
                     } else {
+                        //range
                         Method method = DateTimeUtil.class.getMethod(subject + "Range", Integer.class);
                         Map<String, String> range = (Map<String, String>) method.invoke(null, position);
-                        return SqlInstallUtil.addRangeElements("", key, range.get("S"), range.get("E"));
+                        return SqlInstallUtil.addWhereElements("", logic, key, type, "", "range", range.get("S"), range.get("E"));
                     }
                 } else {
                     return null;
