@@ -78,7 +78,7 @@ public interface RoleService {
      *
      * @return 父节点列表
      */
-    Collection<? extends Role> getRoleParents();
+    Collection<? extends Role> getRoleParents(String  roleId);
 
     /**
      * 从传入的角色集合中，获取有效的角色(valid、enable都是true的)

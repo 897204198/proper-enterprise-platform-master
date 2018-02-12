@@ -131,4 +131,8 @@ public interface Role extends IBase {
      */
     void removeResources(Collection<? extends Resource> resources);
 
+    String getParentId();
+
+    void setParentId(String parentId);
+
 }
