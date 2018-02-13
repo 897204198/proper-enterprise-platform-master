@@ -6,33 +6,30 @@
 
 
     <bean id="processEngineConfiguration" class="org.flowable.spring.SpringProcessEngineConfiguration">
-        <property name="dataSource" ref="dataSource" />
-        <property name="transactionManager" ref="transactionManager" />
-        <property name="databaseSchemaUpdate" value="${workflow.databaseSchemaUpdate}" />
-        <property name="asyncExecutorActivate" value="true" />
-        <property name="asyncExecutorCorePoolSize" value="${workflow.asyncExecutor.corePoolSize}" />
-        <property name="asyncExecutorMaxPoolSize" value="${workflow.asyncExecutor.maxPoolSize}" />
-        <property name="asyncExecutorThreadPoolQueueSize" value="${workflow.asyncExecutor.queueSize}" />
-        <property name="history" value="${workflow.history}" />
+        <property name="dataSource" ref="dataSource"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="databaseSchemaUpdate" value="${workflow.databaseSchemaUpdate}"/>
+        <property name="asyncExecutorActivate" value="true"/>
+        <property name="asyncExecutorCorePoolSize" value="${workflow.asyncExecutor.corePoolSize}"/>
+        <property name="asyncExecutorMaxPoolSize" value="${workflow.asyncExecutor.maxPoolSize}"/>
+        <property name="asyncExecutorThreadPoolQueueSize" value="${workflow.asyncExecutor.queueSize}"/>
+        <property name="history" value="${workflow.history}"/>
         <property name="processDefinitionCacheLimit" value="500"/>
         <property name="enableSafeBpmnXml" value="true"/>
-    </bean>
-    <!--身份识别引擎-->
-    <bean id="idmEngineConfiguration" class="com.proper.enterprise.platform.workflow.PEPIdmEngineConfiguration">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="databaseSchemaUpdate" value="true"/>
+        <!--自定义扩展属性 默认为false  如果extIdm设置为true 则flowable IdmIdentityService的实现由IdmIdentityServiceImpl变为自定义PEPIdmIdentityServiceImpl-->
+        <property name="extIdm" value="true"/>
     </bean>
     <bean id="processEngine" class="org.flowable.spring.ProcessEngineFactoryBean" destroy-method="destroy">
-        <property name="processEngineConfiguration" ref="processEngineConfiguration" />
+        <property name="processEngineConfiguration" ref="processEngineConfiguration"/>
     </bean>
 
-    <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
-    <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
-    <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
-    <bean id="formService" factory-bean="processEngine" factory-method="getFormService" />
-    <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
-    <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
-    <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService" />
+    <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService"/>
+    <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
+    <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService"/>
+    <bean id="formService" factory-bean="processEngine" factory-method="getFormService"/>
+    <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService"/>
+    <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
+    <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService"/>
 
     <bean id="clock" depends-on="processEngine" factory-bean="processEngineConfiguration" factory-method="getClock"/>
 

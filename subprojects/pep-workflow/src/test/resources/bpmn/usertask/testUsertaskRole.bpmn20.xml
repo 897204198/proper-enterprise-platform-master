@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="testUsertaskRole" name="testUsertaskRole" isExecutable="true">
+    <startEvent id="startEvent1"></startEvent>
+    <userTask id="sid-A6460DA4-7BAF-40FE-A176-62BAB8992A68" name="role1" flowable:candidateRoles="role1">
+      <extensionElements>
+        <modeler:role-info-name-role1 xmlns:modeler="http://flowable.org/modeler"><![CDATA[testrole1]]></modeler:role-info-name-role1>
+        <modeler:activiti-idm-candidate-role xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-candidate-role>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-3DE69F1A-7BA2-4A0A-B874-C2FF9AF39B3A" sourceRef="startEvent1" targetRef="sid-A6460DA4-7BAF-40FE-A176-62BAB8992A68"></sequenceFlow>
+    <userTask id="sid-A0731C30-FF3A-43AF-B5DF-246D640F1F14" name="role1ORrole2" flowable:candidateRoles="role1,role2">
+      <extensionElements>
+        <modeler:role-info-name-role1 xmlns:modeler="http://flowable.org/modeler"><![CDATA[testrole1]]></modeler:role-info-name-role1>
+        <modeler:role-info-name-role2 xmlns:modeler="http://flowable.org/modeler"><![CDATA[testrole2]]></modeler:role-info-name-role2>
+        <modeler:activiti-idm-candidate-role xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-candidate-role>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-B8E7DA8D-97FE-44A6-AD43-C515B648CC80" sourceRef="sid-A6460DA4-7BAF-40FE-A176-62BAB8992A68" targetRef="sid-A0731C30-FF3A-43AF-B5DF-246D640F1F14"></sequenceFlow>
+    <endEvent id="sid-FAD1DBB7-EC20-4A46-9DB7-018C307B6FE2"></endEvent>
+    <sequenceFlow id="sid-F7A1424D-763D-46E0-8226-346C55194B31" sourceRef="sid-A0731C30-FF3A-43AF-B5DF-246D640F1F14" targetRef="sid-FAD1DBB7-EC20-4A46-9DB7-018C307B6FE2"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_testUsertaskRole">
+    <bpmndi:BPMNPlane bpmnElement="testUsertaskRole" id="BPMNPlane_testUsertaskRole">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-A6460DA4-7BAF-40FE-A176-62BAB8992A68" id="BPMNShape_sid-A6460DA4-7BAF-40FE-A176-62BAB8992A68">
+        <omgdc:Bounds height="80.0" width="100.0" x="175.0" y="138.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-A0731C30-FF3A-43AF-B5DF-246D640F1F14" id="BPMNShape_sid-A0731C30-FF3A-43AF-B5DF-246D640F1F14">
+        <omgdc:Bounds height="80.0" width="100.0" x="315.0" y="138.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-FAD1DBB7-EC20-4A46-9DB7-018C307B6FE2" id="BPMNShape_sid-FAD1DBB7-EC20-4A46-9DB7-018C307B6FE2">
+        <omgdc:Bounds height="28.0" width="28.0" x="465.0" y="164.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-B8E7DA8D-97FE-44A6-AD43-C515B648CC80" id="BPMNEdge_sid-B8E7DA8D-97FE-44A6-AD43-C515B648CC80">
+        <omgdi:waypoint x="275.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="315.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-F7A1424D-763D-46E0-8226-346C55194B31" id="BPMNEdge_sid-F7A1424D-763D-46E0-8226-346C55194B31">
+        <omgdi:waypoint x="415.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="465.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-3DE69F1A-7BA2-4A0A-B874-C2FF9AF39B3A" id="BPMNEdge_sid-3DE69F1A-7BA2-4A0A-B874-C2FF9AF39B3A">
+        <omgdi:waypoint x="130.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="175.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
