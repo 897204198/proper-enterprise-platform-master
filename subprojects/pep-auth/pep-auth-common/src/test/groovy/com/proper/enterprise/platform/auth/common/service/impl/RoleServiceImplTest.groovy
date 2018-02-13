@@ -109,6 +109,13 @@ class RoleServiceImplTest extends AbstractTest {
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.delete.relation.failed")
 
         roleService.delete(roleEntity1)
+
+        RoleEntity roleEntity3 = new RoleEntity()
+        try {
+            roleService.delete(roleEntity3)
+        }catch (Exception e){
+            i18NService.getMessage("pep.auth.common.role.get.failed")
+        }
     }
 
     @Test

@@ -5,3 +5,4 @@ INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test-u', '改', 
 INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test-d', '删', '/auth/test/*', 'DELETE');
 INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test', '无菜单', '/test', 'GET');
 INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test1', '无角色', '/test1', 'GET');
+INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test-menus', '查菜单', '/auth/menus', 'GET');

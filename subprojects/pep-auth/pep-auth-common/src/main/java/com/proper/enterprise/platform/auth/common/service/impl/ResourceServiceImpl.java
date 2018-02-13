@@ -213,7 +213,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public Collection<? extends Resource> updateEanble(Collection<String> idList, boolean enable) {
+    public Collection<? extends Resource> updateEnable(Collection<String> idList, boolean enable) {
         List<ResourceEntity> resourceList = resourceRepository.findAll(idList);
         for (ResourceEntity resource : resourceList) {
             if (!resource.isEnable() && !resource.isValid()) {

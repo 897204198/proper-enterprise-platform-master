@@ -29,7 +29,7 @@ public class ResourcesController extends BaseController {
         userService.checkPermission("/auth/resources", RequestMethod.GET);
         Collection<String> idList = (Collection<String>) reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
-        return responseOfPut(resourceService.updateEanble(idList, enable));
+        return responseOfPut(resourceService.updateEnable(idList, enable));
     }
 
     @PostMapping

@@ -25,7 +25,6 @@ public class MenusController extends BaseController {
 
     @GetMapping
     public ResponseEntity get(String name, String description, String route, String enable) throws Exception {
-        userService.checkPermission("/auth/menus", RequestMethod.GET);
         return responseOfGet(service.getMenus(name, description, route, enable, null));
     }
 

@@ -52,8 +52,6 @@ class MenusControllerTest extends AbstractTest {
     @Autowired
     I18NService i18NService
 
-    def str = 'Current user has no permissions'
-
     @Test
     @NoTx
     void diffUsersGetDiffMenus() {
@@ -67,20 +65,13 @@ class MenusControllerTest extends AbstractTest {
 
         // has role
         mockUser('test2', 't2', 'pwd', false)
-        assert resOfGet('/auth/menus', HttpStatus.BAD_REQUEST)
-        assert str
+        def res = resOfGet('/auth/menus', HttpStatus.OK)
+        assert res.size() == 8
 
         // without role
         mockUser('test3', 't3', 'pwd', false)
-        assert resOfGet('/auth/menus', HttpStatus.BAD_REQUEST)
-        assert str
-    }
-
-    @Test
-    void getMenusWithOrder() {
-        mockUser('test2', 't2', 'pwd', false)
-        def res = resOfGet('/auth/menus', HttpStatus.BAD_REQUEST)
-        assert str
+        def res1 = resOfGet('/auth/menus', HttpStatus.OK)
+        assert res1.size() == 0
     }
 
     @Test

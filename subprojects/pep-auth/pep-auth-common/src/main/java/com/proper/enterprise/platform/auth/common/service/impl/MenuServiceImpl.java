@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.auth.common.entity.MenuEntity;
 import com.proper.enterprise.platform.auth.common.repository.MenuRepository;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.ConfCenter;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.sort.BeanComparator;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
@@ -21,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
+import org.springframework.util.PathMatcher;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -33,7 +36,6 @@ import java.util.*;
 public class MenuServiceImpl implements MenuService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuServiceImpl.class);
-
 
     @Autowired
     private MenuRepository repository;
@@ -49,6 +51,8 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     private I18NService i18NService;
+
+    private static PathMatcher matcher = new AntPathMatcher();
 
     @Override
     public Menu get(String id) {
@@ -137,7 +141,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Collection<? extends Menu> getMenus(String name, String description, String route, String enable, String parentId) {
         List<Menu> menus = new ArrayList<>();
-        Collection<? extends Menu> filterMenus = getMenuByCondiction(name, description, route, enable, parentId);
+        Collection<? extends Menu> filterMenus = getMenuByCondition(name, description, route, enable, parentId);
         Collection<? extends Menu> roleMenus = getMenus();
         for (Menu menu : roleMenus) {
             if (filterMenus.contains(menu)) {
@@ -171,6 +175,10 @@ public class MenuServiceImpl implements MenuService {
             return true;
         }
 
+        if (shouldIgnore(resource)) {
+            return true;
+        }
+
         Collection<? extends Menu> menus = resource.getMenus();
         if (CollectionUtil.isEmpty(menus)) {
             return true;
@@ -187,12 +195,26 @@ public class MenuServiceImpl implements MenuService {
                 return true;
             }
         }
+
+        return false;
+    }
+
+    private boolean shouldIgnore(Resource resource) {
+        List<String> ignorePatterns = new ArrayList<>();
+        String path = resource.getMethod().toString().concat(":").concat(resource.getURL());
+        Collections.addAll(ignorePatterns, ConfCenter.get("auth.ignorePatterns").split(","));
+        for (String pattern : ignorePatterns) {
+            if (matcher.match(pattern, path)) {
+                LOGGER.debug("{} {} is match {}", resource.getMethod().toString(), resource.getURL(), pattern);
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends Menu> getMenuByCondiction(String name, String description, String route, String enable, String parentId) {
+    public Collection<? extends Menu> getMenuByCondition(String name, String description, String route, String enable, String parentId) {
         Specification specification = new Specification<MenuEntity>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
@@ -229,7 +251,7 @@ public class MenuServiceImpl implements MenuService {
             List<MenuEntity> list = repository.findAll(idList);
             for (MenuEntity menu : list) {
                 // 菜单存在关联关系
-                if (getMenuByCondiction(null, null, null, "Y", menu.getId()).size() > 0) {
+                if (getMenuByCondition(null, null, null, "Y", menu.getId()).size() > 0) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.failed"));
                 }
                 // 菜单存在资源
@@ -278,7 +300,7 @@ public class MenuServiceImpl implements MenuService {
     public Collection<? extends Menu> updateEanble(Collection<String> idList, boolean enable) {
         List<MenuEntity> menuList = repository.findAll(idList);
         for (Menu menu : menuList) {
-            Collection<? extends Menu> list = getMenuByCondiction(null, null, null, "Y", menu.getId());
+            Collection<? extends Menu> list = getMenuByCondition(null, null, null, "Y", menu.getId());
             if (list.size() != 0) {
                 LOGGER.debug("{} has parent menu {}, dont update!", menu.getName(), menu.getParent());
                 throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.parent"));

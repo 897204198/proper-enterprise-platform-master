@@ -83,7 +83,7 @@ public interface MenuService {
      * @param parentId 父菜单ID
      * @return 获取菜单信息列表
      */
-    Collection<? extends Menu> getMenuByCondiction(String name, String description, String route, String enable, String parentId);
+    Collection<? extends Menu> getMenuByCondition(String name, String description, String route, String enable, String parentId);
 
     /**
      * 删除多条菜单数据
