@@ -30,6 +30,8 @@ dependencies {
 
     testCompile project(':pep-test')
 
+    testCompile project(':pep-auth-common')
+
     testRuntime libraries.commons_fileupload
 
     testRuntime project(':pep-cache-ehcache')
