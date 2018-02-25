@@ -81,7 +81,7 @@ public class UserGroupController extends BaseController {
             reqMap.put("id", id);
             group = save(reqMap);
         }
-        return responseOfPut(group);
+        return responseOfPut(service.save(group));
     }
 
     @DeleteMapping("/{id}")

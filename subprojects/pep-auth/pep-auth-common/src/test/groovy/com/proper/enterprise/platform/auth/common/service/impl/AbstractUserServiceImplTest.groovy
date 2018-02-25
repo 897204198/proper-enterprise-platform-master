@@ -235,11 +235,13 @@ class AbstractUserServiceImplTest extends AbstractTest {
         MenuEntity menuEntity = new MenuEntity()
         menuEntity.setName("ralm")
         menuEntity.setEnable(true)
+        menuEntity.setRoute("route")
         menuEntity = menuRepository.save(menuEntity)
 
         MenuEntity menuEntity1 = new MenuEntity()
         menuEntity1.setName("ralm")
         menuEntity1.setEnable(true)
+        menuEntity1.setRoute("route1")
         menuEntity1 = menuRepository.save(menuEntity1)
 
         List<MenuEntity> list = new ArrayList<>()

@@ -163,10 +163,16 @@ class ResourcesControllerTest extends AbstractTest {
         DataRestrainEntity data = new DataRestrainEntity()
         data.setName("ii")
         data.setTableName("ww")
+        data.setSqlStr("sql")
+        data.setFilterName("filterName")
 
         ResourceEntity resourceEntity = new ResourceEntity()
         resourceEntity.add(data)
         assert resourceEntity.dataRestrains.size() == 1
+        assert resourceEntity.dataRestrains.get(0).name == "ii"
+        assert resourceEntity.dataRestrains.get(0).tableName == "ww"
+        assert resourceEntity.dataRestrains.get(0).sqlStr == "sql"
+        assert resourceEntity.dataRestrains.get(0).filterName == "filterName"
 
         resourceEntity.remove(data)
 

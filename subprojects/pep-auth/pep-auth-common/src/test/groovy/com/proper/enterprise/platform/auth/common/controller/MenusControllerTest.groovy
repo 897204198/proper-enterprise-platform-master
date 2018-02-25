@@ -163,7 +163,7 @@ class MenusControllerTest extends AbstractTest {
 
         def parents = JSONUtil.parse(get('/auth/menus/parents',  HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
-        assert parents.size() == 5
+        assert parents.size() == 14
         assert parents.get(0).size() == 11
 
     }

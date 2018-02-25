@@ -286,7 +286,7 @@ public class MenuServiceImpl implements MenuService {
             if (!menuEntity.isEnable() || !menuEntity.isValid()) {
                 continue;
             }
-            if (menuEntity.getParent() != null) {
+            if (menuEntity.getMenuType() == dataDicService.get("MENU_TYPE", "0")) {
                 menu.add((MenuEntity) menuEntity.getParent());
             } else {
                 menu.add(menuEntity);

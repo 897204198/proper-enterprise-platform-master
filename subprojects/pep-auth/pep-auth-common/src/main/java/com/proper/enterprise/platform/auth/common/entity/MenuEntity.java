@@ -34,6 +34,7 @@ public class MenuEntity extends BaseEntity implements Menu {
     /**
      * 前端路径
      */
+    @Column(unique = true, nullable = false)
     private String route;
 
     /**

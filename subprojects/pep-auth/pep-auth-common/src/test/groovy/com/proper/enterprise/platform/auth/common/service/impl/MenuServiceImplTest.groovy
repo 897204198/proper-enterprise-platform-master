@@ -79,6 +79,7 @@ class MenuServiceImplTest extends AbstractTest {
 
         MenuEntity menuEntity = new MenuEntity()
         menuEntity.setName('menu')
+        menuEntity.setRoute("route")
         menuEntity = service.save(menuEntity)
 
         ids.clear()
