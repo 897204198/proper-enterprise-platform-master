@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.auth.common.service.impl;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
@@ -12,6 +12,9 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
+import com.proper.enterprise.platform.sys.i18n.I18NService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
@@ -22,6 +25,8 @@ import java.util.*;
 @Service
 public class ResourceServiceImpl implements ResourceService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MenuServiceImpl.class);
+
     @Autowired
     ResourceRepository resourceRepository;
 
@@ -30,6 +35,12 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    I18NService i18NService;
+
+    @Autowired
+    MenuService menuService;
 
     @Override
     public Resource save(Resource resource) {
@@ -175,37 +186,42 @@ public class ResourceServiceImpl implements ResourceService {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            try {
-                List<ResourceEntity> list = resourceRepository.findAll(idList);
-                if (list != null) {
-                    for (ResourceEntity resource : list) {
-                        if (resource.getMenus() == null && resource.getRoles() == null) {
-                            resource.setValid(false);
+            List<ResourceEntity> list = resourceRepository.findAll(idList);
+            for (ResourceEntity resourceEntity : list) {
+                // 资源存在菜单
+                if (resourceEntity.getMenus().size() > 0) {
+                    for (Menu menu : resourceEntity.getMenus()) {
+                        if (menu.isEnable() && menu.isValid()) {
+                            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.menu"));
                         }
-                        resourceRepository.save(list);
-                        ret = true;
                     }
                 }
-            } catch (Exception e) {
-                throw new ErrMsgException("Delete error!");
+                // 资源存在角色
+                if (resourceEntity.getRoles().size() > 0) {
+                    for (Role role : resourceEntity.getRoles()) {
+                        if (role.isEnable() && role.isValid()) {
+                            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.role"));
+                        }
+                    }
+                }
+                resourceEntity.setValid(false);
+                ret = true;
             }
+            resourceRepository.save(list);
         }
         return ret;
     }
 
     @Override
-    public Collection<? extends Resource> updateEanble(Collection<String> idList, boolean enable) {
-        User user = userService.getCurrentUser();
-        Collection<ResourceEntity> resourceList = new ArrayList<>();
-        if (user.isSuperuser()) {
-            resourceList = resourceRepository.findAll(idList);
-            for (ResourceEntity resource : resourceList) {
-                if (resource.isEnable() && resource.isValid()) {
-                    resource.setEnable(enable);
-                }
+    public Collection<? extends Resource> updateEnable(Collection<String> idList, boolean enable) {
+        List<ResourceEntity> resourceList = resourceRepository.findAll(idList);
+        for (ResourceEntity resource : resourceList) {
+            if (!resource.isEnable() && !resource.isValid()) {
+                throw new ErrMsgException("pep.auth.common.resource.used");
             }
-            resourceRepository.save(resourceList);
+            resource.setEnable(enable);
         }
+        resourceRepository.save(resourceList);
         return resourceList;
     }
 

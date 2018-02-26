@@ -1,6 +1,9 @@
 dependencies {
     compile libraries.quartz,
-            libraries.spring_context_support
+            libraries.spring_context_support,
+            libraries.spring_data_jpa
 
     testCompile project(':pep-test')
+
+    testRuntime libraries.hibernate_entitymanager
 }

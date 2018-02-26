@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.auth.common.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.repository.*
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
+import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.After
@@ -33,6 +34,9 @@ class ResourcesControllerTest extends AbstractTest {
 
     @Autowired
     ResourceService resourceService
+
+    @Autowired
+    I18NService i18NService
 
     @Test
     public void checkUniqueConstraint() {
@@ -91,44 +95,60 @@ class ResourcesControllerTest extends AbstractTest {
 
         // menu add resource
         post('/auth/menus/a2/resource/test-d', '', HttpStatus.CREATED)
-        def resList = JSONUtil.parse(get('/auth/resources/test-d/menus',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        def resList = JSONUtil.parse(get('/auth/resources/test-d/menus', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 1
         assert resList.get(0).id == 'a2'
         // delete menu's resource
         delete('/auth/menus/a2/resource/test-d', HttpStatus.NO_CONTENT)
-        resList = JSONUtil.parse(get('/auth/resources/test-d/menus',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        resList = JSONUtil.parse(get('/auth/resources/test-d/menus', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 0
 
         // role add resource
         def addResourceReq = [:]
         addResourceReq['ids'] = 'test-u'
         post('/auth/roles/role1/resources', JSONUtil.toJSON(addResourceReq), HttpStatus.CREATED)
-        resList = JSONUtil.parse(get('/auth/resources/test-u/roles',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        resList = JSONUtil.parse(get('/auth/resources/test-u/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 1
         assert resList.get(0).id == 'role1'
         // delete role's resource
         delete('/auth/roles/role1/resources?ids=test-u', HttpStatus.NO_CONTENT)
-        resList = JSONUtil.parse(get('/auth/resources/test-u/roles',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        resList = JSONUtil.parse(get('/auth/resources/test-u/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 0
 
         delete('/auth/resources/test-c', HttpStatus.NO_CONTENT)
-        get('/auth/menus/test-c',  HttpStatus.OK).getResponse().getContentAsString() == ''
+        get('/auth/menus/test-c', HttpStatus.OK).getResponse().getContentAsString() == ''
 
-        get('/auth/menus/test-r',  HttpStatus.OK).getResponse().getContentAsString() == ''
-        get('/auth/menus/test-g',  HttpStatus.OK).getResponse().getContentAsString() == ''
+        get('/auth/menus/test-r', HttpStatus.OK).getResponse().getContentAsString() == ''
+        get('/auth/menus/test-g', HttpStatus.OK).getResponse().getContentAsString() == ''
 
         delete('/auth/resources?ids=test-u', HttpStatus.NO_CONTENT)
 
         resourceService.get('/test/url', RequestMethod.POST)
 
         String localResource = '/test/aaa'
-        Resource resource11 =  resourceService.get('/test/url', RequestMethod.POST)
+        Resource resource11 = resourceService.get('/test/url', RequestMethod.POST)
         Boolean res = resourceService.hasPermissionOfResource(resource11, localResource, RequestMethod.POST)
         assert res == false
     }
 
+    @NoTx
     @Test
-    void testCoverage1(){
+    void testErrMsgException() {
+        mockUser('test5', 't5', 'pwd', true)
+
+        def addResource = [:]
+        addResource['ids'] = 'test-u'
+
+        post('/auth/roles/role1/resources', JSONUtil.toJSON(addResource), HttpStatus.CREATED)
+        delete('/auth/resources?ids=test-u', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource" +
+            ".delete.relation.role")
+
+        post('/auth/menus/a2/resource/test-d', JSONUtil.toJSON(addResource), HttpStatus.CREATED)
+        delete('/auth/resources?ids=test-d', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource.delete.relation.menu" )
+    }
+
+    @Test
+    void testCoverage1() {
         String id = "test-t"
         String id1 = "test-a"
         Collection<String> idd = new HashSet<>()
@@ -139,14 +159,20 @@ class ResourcesControllerTest extends AbstractTest {
     }
 
     @Test
-    void testEntity(){
+    void testEntity() {
         DataRestrainEntity data = new DataRestrainEntity()
         data.setName("ii")
         data.setTableName("ww")
+        data.setSqlStr("sql")
+        data.setFilterName("filterName")
 
         ResourceEntity resourceEntity = new ResourceEntity()
         resourceEntity.add(data)
         assert resourceEntity.dataRestrains.size() == 1
+        assert resourceEntity.dataRestrains.get(0).name == "ii"
+        assert resourceEntity.dataRestrains.get(0).tableName == "ww"
+        assert resourceEntity.dataRestrains.get(0).sqlStr == "sql"
+        assert resourceEntity.dataRestrains.get(0).filterName == "filterName"
 
         resourceEntity.remove(data)
 

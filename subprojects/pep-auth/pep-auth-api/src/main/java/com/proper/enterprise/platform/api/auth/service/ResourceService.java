@@ -51,7 +51,7 @@ public interface ResourceService {
      * @param enable 资源状态
      * @return 结果
      */
-    Collection<? extends Resource> updateEanble(Collection<String> idList, boolean enable);
+    Collection<? extends Resource> updateEnable(Collection<String> idList, boolean enable);
 
     /**
      * 获取指定资源菜单集合

@@ -349,8 +349,8 @@ class UsersControllerTest extends AbstractTest {
         def result = JSONUtil.parse(get('/auth/users/' + userEntity1.getId() + '/user-groups', HttpStatus.OK).getResponse().getContentAsString(),
             List.class)
         assert result.size() == 2
-        result = get('/auth/users/safjsldfj/user-groups', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == i18NService.getMessage('pep.auth.common.user.get.failed')
+        result = get('/auth/users/safjsldfj/user-groups', HttpStatus.OK).getResponse().getContentAsString()
+        assert result== '[]'
 
         UserGroupEntity userGroupEntity3 = userGroupService.get(userGroupEntity1.getId())
         assert userGroupEntity3.getId() == userGroupEntity1.getId()
@@ -358,8 +358,8 @@ class UsersControllerTest extends AbstractTest {
         result = JSONUtil.parse(get('/auth/users/' + userEntity1.getId() + '/roles', HttpStatus.OK).getResponse().getContentAsString(),
             List.class)
         assert result.size() == 2
-        result = get('/auth/users/safjsldfj/roles', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == i18NService.getMessage('pep.auth.common.user.get.failed')
+        result = get('/auth/users/safjsldfj/roles', HttpStatus.OK).getResponse().getContentAsString()
+        assert result == '[]'
 
         String condition = 'name'
         result = JSONUtil.parse(get('/auth/users/query?condition=' + condition, HttpStatus.OK).getResponse().getContentAsString(),

@@ -1,8 +1,5 @@
 package com.proper.enterprise.platform.sys.i18n;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ResourceBundle;
 
@@ -12,8 +9,6 @@ import java.util.ResourceBundle;
  * 可注入 Bean 时，请使用 {@link I18NService}
  */
 public class I18NUtil {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(I18NUtil.class);
 
     private String baseName;
 
@@ -40,8 +35,8 @@ public class I18NUtil {
         String result = null;
         try {
             result = new String(str.getBytes("ISO-8859-1"), "UTF-8");
-        } catch (UnsupportedEncodingException uee) {
-            LOGGER.warn("Should NOT throw this exception!", uee);
+        } catch (UnsupportedEncodingException ignored) {
+            // Should NOT throw this exception
         }
         return result;
     }

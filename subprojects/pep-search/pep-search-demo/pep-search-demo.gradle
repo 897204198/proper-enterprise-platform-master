@@ -1,0 +1,7 @@
+dependencies {
+    compile project(':pep-search-api'),
+            project(':pep-auth-api')
+
+    testCompile project(':pep-test'),
+                project(':pep-search-common')
+}

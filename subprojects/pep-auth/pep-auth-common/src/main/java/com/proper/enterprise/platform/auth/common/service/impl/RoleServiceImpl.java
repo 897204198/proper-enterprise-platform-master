@@ -122,7 +122,13 @@ public class RoleServiceImpl implements RoleService {
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
-        return roleRepository.findAll(specification, new Sort("name"));
+        Collection<? extends Role> roles = roleRepository.findAll(specification, new Sort("name"));
+        for (Role roleEntity : roles) {
+            if (roleEntity.getParent() != null) {
+                roleEntity.setParentId(roleEntity.getParent().getId());
+            }
+        }
+        return roles;
     }
 
     @Override
@@ -159,14 +165,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Collection<? extends Role> getRoleParents() {
+    public Collection<? extends Role> getRoleParents(String roleId) {
         List<RoleEntity> list = roleRepository.findAllByValidTrueAndEnableTrue();
-        Set<String> roleId = new HashSet<>();
         List<RoleEntity> result = new ArrayList<>();
         for (RoleEntity roleEntity : list) {
             Role parentRole = roleEntity.getParent();
             if (parentRole != null && !roleId.contains(parentRole.getId())) {
-                roleId.add(parentRole.getId());
+                roleId = parentRole.getId();
                 result.add((RoleEntity) parentRole);
             }
         }
@@ -232,6 +237,11 @@ public class RoleServiceImpl implements RoleService {
             String[] idArr = ids.split(",");
             for (String id : idArr) {
                 menuList.add((MenuEntity) menuService.get(id));
+                for (Menu detail : role.getMenus()) {
+                    if (detail.getId().equals(id)) {
+                        throw new ErrMsgException("pep.auth.common.role.has.menu");
+                    }
+                }
             }
             role.add(menuList);
             role = save(role);

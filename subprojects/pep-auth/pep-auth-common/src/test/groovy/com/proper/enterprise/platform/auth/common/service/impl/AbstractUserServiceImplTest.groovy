@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.entity.*
 import com.proper.enterprise.platform.auth.common.repository.*
+import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.After
@@ -39,6 +40,9 @@ class AbstractUserServiceImplTest extends AbstractTest {
 
     @Autowired
     MenuService menuService
+
+    @Autowired
+    I18NService i18NService
 
     @Test
     @Transactional
@@ -231,11 +235,13 @@ class AbstractUserServiceImplTest extends AbstractTest {
         MenuEntity menuEntity = new MenuEntity()
         menuEntity.setName("ralm")
         menuEntity.setEnable(true)
+        menuEntity.setRoute("route")
         menuEntity = menuRepository.save(menuEntity)
 
         MenuEntity menuEntity1 = new MenuEntity()
         menuEntity1.setName("ralm")
         menuEntity1.setEnable(true)
+        menuEntity1.setRoute("route1")
         menuEntity1 = menuRepository.save(menuEntity1)
 
         List<MenuEntity> list = new ArrayList<>()
@@ -264,8 +270,76 @@ class AbstractUserServiceImplTest extends AbstractTest {
         menu.enable == true
     }
 
+    @Test
+    void testDelException1(){
+        // test Exception
+        UserEntity user = new UserEntity()
+        user.setName("user1")
+        user.setId("userId")
+        user.setUsername("username")
+        user.setPassword("pwd1")
+        user.setCreateUserId("00000")
+        user.setEnable(false)
+        user.setValid(false)
+        user = userService.save(user)
+        try {
+            userService.delete(user)
+        }catch (Exception e){
+            i18NService.getMessage("pep.auth.common.user.get.failed")
+        }
+    }
 
+    @Test
+    void testDelException2(){
+        UserEntity userEntity = new UserEntity()
+        userEntity.setName("user2")
+        userEntity.setId("userId2")
+        userEntity.setUsername("username2")
+        userEntity.setPassword("pwd2")
+        userEntity.setCreateUserId("00002")
+        userEntity.setSuperuser(true)
+        userEntity.setEnable(true)
+        userEntity.setValid(true)
+        userEntity = userService.save(userEntity)
+        try {
+            userService.delete(userEntity)
+        }catch (Exception e){
+            i18NService.getMessage("pep.auth.common.user.delete.role.super.failed")
+        }
+    }
 
+    @Test
+    void testDelException3(){
+        RoleEntity roleEntity = new RoleEntity()
+        roleEntity.setName("roleName")
+        roleEntity = roleService.save(roleEntity)
+
+        UserEntity userEntity = new UserEntity()
+        userEntity.setName("user2")
+        userEntity.setId("userId2")
+        userEntity.setUsername("username2")
+        userEntity.setPassword("pwd2")
+        userEntity.setCreateUserId("00002")
+        userEntity.add(roleEntity)
+        userEntity = userService.save(userEntity)
+
+        try {
+            userService.delete(userEntity)
+        }catch (Exception e){
+            i18NService.getMessage("pep.auth.common.user.delete.role.relation.faile")
+        }
+    }
+
+    @Test
+    void testGetMenus() {
+        UserEntity userEntity = new UserEntity()
+        userEntity.setName("user2")
+        userEntity.setUsername("username2")
+        userEntity.setPassword("pwd2")
+        userEntity.setCreateUserId("00002")
+        userEntity = userService.save(userEntity)
+        assert userService.getMenus(userEntity.getId()).size() == 0
+    }
     @After
     void clearAll() {
         userGroupRepository.deleteAll()

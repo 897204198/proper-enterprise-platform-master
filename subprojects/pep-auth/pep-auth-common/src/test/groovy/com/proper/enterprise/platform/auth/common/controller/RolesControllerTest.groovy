@@ -74,7 +74,7 @@ class RolesControllerTest extends AbstractTest {
         req['name'] = 'req_test_name'
         req['description'] = 'req_test_description'
         req['enable'] = true
-//        req['parentId'] = 'req_test_parentId' TODO
+//        req['parentId'] = 'req_test_parentId'
         def role = JSONUtil.parse(post('/auth/roles', JSONUtil.toJSON(req), HttpStatus.CREATED).getResponse().getContentAsString(), Map.class)
         assert role != null
         def id = role.get('id')
@@ -88,7 +88,7 @@ class RolesControllerTest extends AbstractTest {
         updateReq['name'] = 'updateReq_test_name'
         updateReq['description'] = 'updateReq_test_description'
         updateReq['enable'] = true
-//        req['parentId'] = 'updateReq_test_parentId' TODO
+//        req['parentId'] = 'updateReq_test_parentId'
         put('/auth/roles/' + id, JSONUtil.toJSON(updateReq), HttpStatus.OK)
         role = JSONUtil.parse(get('/auth/roles/' + id, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert role.get('description') == 'updateReq_test_description'
@@ -138,9 +138,9 @@ class RolesControllerTest extends AbstractTest {
         delete('/auth/roles?ids=' + id, HttpStatus.NO_CONTENT)
         get('/auth/roles/' + id,  HttpStatus.OK).getResponse().getContentAsString() == ''
 
-        def parents = JSONUtil.parse(get('/auth/roles/parents',  HttpStatus.OK)
+        def parents = JSONUtil.parse(get('/auth/roles/' + id  +'/parents',  HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
-        assert parents.size() == 0 //TODO
+        assert parents.size() == 0
 
     }
 
@@ -162,9 +162,32 @@ class RolesControllerTest extends AbstractTest {
         roleEntity3.setParent(roleEntity2)
         roleService.save(roleEntity3)
 
-        def parents = JSONUtil.parse(get('/auth/roles/parents',  HttpStatus.OK)
+        def req = [:]
+        req['name'] = 'req_test_name'
+        req['description'] = 'req_test_description'
+        req['enable'] = true
+        def role = JSONUtil.parse(post('/auth/roles', JSONUtil.toJSON(req), HttpStatus.CREATED).getResponse().getContentAsString(), Map.class)
+        def id = role.get('id')
+
+        def parents = JSONUtil.parse(get('/auth/roles/' + id  +'/parents',  HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
         assert parents.size() == 2
+
+    }
+
+    @Test
+    void addOrDeleteRoleMenusErro(){
+        mockUser('test1','t1', 'pwd')
+        def id = "id"
+        def addReq = [:]
+        addReq['ids'] = 'a4,a5'
+        assert post('/auth/roles/' + id + '/menus', JSONUtil.toJSON(addReq), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+           i18NService.getMessage("pep.auth.common.role.get.failed")
+        assert delete('/auth/roles/' + id + '/menus?ids=a1,a2', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+            i18NService.getMessage("pep.auth.common.role.get.failed")
+
+        get('/auth/roles/' + id + '/menus', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+            i18NService.getMessage("pep.auth.common.role.get.failed")
 
     }
 

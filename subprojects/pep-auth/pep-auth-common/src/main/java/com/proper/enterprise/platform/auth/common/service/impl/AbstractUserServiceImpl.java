@@ -326,7 +326,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
     public Collection<? extends UserGroup> getUserGroups(String userId) {
         User user = userRepo.findByValidTrueAndId(userId);
         if (user == null || !user.isEnable()) {
-            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
+            return new ArrayList<>();
         }
         return userGroupService.getFilterGroups(user.getUserGroups());
     }
@@ -335,7 +335,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
     public Collection<? extends Role> getUserRoles(String userId) {
         User user = userRepo.findByValidTrueAndId(userId);
         if (user == null || !user.isEnable()) {
-            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
+            return new ArrayList<>();
         }
         return roleService.getFilterRoles(user.getRoles());
     }

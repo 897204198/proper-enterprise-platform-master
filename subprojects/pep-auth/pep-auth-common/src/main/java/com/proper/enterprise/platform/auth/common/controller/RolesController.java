@@ -118,9 +118,9 @@ public class RolesController extends BaseController {
         return responseOfGet(roleService.getRoleUserGroups(roleId));
     }
 
-    @GetMapping(path = "/parents")
-    public ResponseEntity<Collection<? extends Role>> getMenuParents() {
+    @GetMapping(path = "/{roleId}/parents")
+    public ResponseEntity<Collection<? extends Role>> getMenuParents(@PathVariable String roleId) {
         userService.checkPermission("/auth/roles/parents", RequestMethod.GET);
-        return responseOfGet(roleService.getRoleParents());
+        return responseOfGet(roleService.getRoleParents(roleId));
     }
 }

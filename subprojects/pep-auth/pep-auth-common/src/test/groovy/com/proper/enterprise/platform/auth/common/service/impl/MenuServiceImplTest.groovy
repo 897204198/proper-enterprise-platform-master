@@ -63,6 +63,7 @@ class MenuServiceImplTest extends AbstractTest {
         // super user could access everything
         mockUser('test1', 't1', 'pwd', true)
         assert service.accessible(null, 'test1')
+        assert service.accessible(resourceService.get('test-menus'), 'test1')
         assert service.accessible(resourceService.get('test'), 'test1')
         assert service.accessible(resourceService.get('test-d'), 'test1')
         assert service.accessible(resourceService.get('test1'), 'test1')
@@ -78,6 +79,7 @@ class MenuServiceImplTest extends AbstractTest {
 
         MenuEntity menuEntity = new MenuEntity()
         menuEntity.setName('menu')
+        menuEntity.setRoute("route")
         menuEntity = service.save(menuEntity)
 
         ids.clear()

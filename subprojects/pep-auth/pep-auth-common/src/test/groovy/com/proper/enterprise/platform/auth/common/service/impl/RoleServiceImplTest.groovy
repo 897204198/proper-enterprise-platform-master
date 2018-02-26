@@ -109,6 +109,13 @@ class RoleServiceImplTest extends AbstractTest {
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.delete.relation.failed")
 
         roleService.delete(roleEntity1)
+
+        RoleEntity roleEntity3 = new RoleEntity()
+        try {
+            roleService.delete(roleEntity3)
+        }catch (Exception e){
+            i18NService.getMessage("pep.auth.common.role.get.failed")
+        }
     }
 
     @Test
@@ -164,14 +171,17 @@ class RoleServiceImplTest extends AbstractTest {
     void testGetRoleMenus(){
         MenuEntity menuEntity = new MenuEntity()
         menuEntity.setName('menu1')
+        menuEntity.setRoute("route1")
         menuEntity = menuService.save(menuEntity)
 
         MenuEntity menuEntity1 = new MenuEntity()
         menuEntity1.setName('menu2')
+        menuEntity1.setRoute("route2")
         menuEntity1 = menuService.save(menuEntity1)
 
         MenuEntity menuEntity2 = new MenuEntity()
         menuEntity2.setName('menu3')
+        menuEntity2.setRoute("route3")
         menuEntity2 = menuService.save(menuEntity2)
 
         Collection<MenuEntity> collection = new HashSet<>()
