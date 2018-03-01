@@ -38,7 +38,7 @@ public class QueryResultBaseService {
     String installSql(AbstractSearchConfigs searchConfig, JsonNode root, String tableName) {
         Map<String, String> columnMap = getFieldsByTableName(searchConfig, tableName);
         Set<String> set = columnMap.keySet();
-        String sql = SqlInstallUtil.addSelectElements("", set);
+        String sql = SqlInstallUtil.addSelectElements(set);
         sql = SqlInstallUtil.addTableElements(sql, tableName);
         String logic = "";
         for (int i = 0; i < root.size(); i++) {

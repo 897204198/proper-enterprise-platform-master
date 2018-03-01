@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class SqlInstallUtil {
 
-    public static String addSelectElements(String sql, Set<String> value) {
+    public static String addSelectElements(Set<String> value) {
         StringBuffer stringBuffer = new StringBuffer("select ");
         for (String str : value) {
             stringBuffer.append(" ").append(str);
@@ -48,12 +48,12 @@ public class SqlInstallUtil {
         return stringBuffer.toString();
     }
 
-    public static String addWhereElements(String sql, String logic, String key, String keyType, String operate, String innerlogic, String... value) {
+    public static String addWhereElements(String sql, String logic, String key, String keyType, String operate, String innerLogic, String... value) {
         StringBuffer stringBuffer = new StringBuffer(sql);
         stringBuffer.append(" ").append(logic).append(" ");
         if (value.length > 1) {
             stringBuffer.append("(");
-            if (innerlogic.equals("range")) {
+            if (innerLogic.equals("range")) {
                 if (keyType.equals("date")) {
                     stringBuffer.append(addWhereDateRange(key, value));
                 }
@@ -61,7 +61,7 @@ public class SqlInstallUtil {
                 for (int i = 0; i < value.length; i++) {
                     stringBuffer.append(addElementWithoutLogic("", key, keyType, operate, value[i]));
                     if (i < value.length - 1) {
-                        stringBuffer.append(" ").append(innerlogic).append(" ");
+                        stringBuffer.append(" ").append(innerLogic).append(" ");
                     }
                 }
             }
@@ -72,7 +72,7 @@ public class SqlInstallUtil {
         return stringBuffer.toString();
     }
 
-    public static String getSeparator(String keyType, String operate, String director) {
+    private static String getSeparator(String keyType, String operate, String director) {
         Map<String, String> map = new HashMap<>();
         //op
         map.put("likel", "'%");
@@ -88,7 +88,7 @@ public class SqlInstallUtil {
         }
     }
 
-    public static String addElementWithoutLogic(String sql, String key, String keyType, String operate, String value) {
+    private static String addElementWithoutLogic(String sql, String key, String keyType, String operate, String value) {
         operate = operate == null ? getDefaultTypeOperate(keyType) : operate;
         StringBuffer stringBuffer = new StringBuffer(sql);
         stringBuffer.append(" ").append(key).append(" ");
@@ -99,13 +99,12 @@ public class SqlInstallUtil {
         return stringBuffer.toString();
     }
 
-    public static String getDefaultTypeOperate(String type) {
+    private static String getDefaultTypeOperate(String type) {
         Map<String, String> map = new HashMap<>();
         map.put("text", "like");
         map.put("num", "=");
         map.put("date", "like");
-        String operate = map.get(type) == null ? "like" : map.get(type);
-        return operate;
+        return map.get(type) == null ? "like" : map.get(type);
     }
 
 }
