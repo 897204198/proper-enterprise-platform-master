@@ -61,5 +61,55 @@ var appconfig = {
     "msg_save_days" : 3,
     "max_send_count" : 5,
     "secretKey" : "b2024e00064bc5d8db70fdee087eae4f"
-  }
+  },"MobileOADev" : {
+        "device" : {
+            "android" : {
+                "huawei" : {
+                    "the_app_id" : "100213965",
+                    "the_app_secret" : "cb5b99c684477aaa3b6a28b2c7cbe7b2"
+                },
+                "xiaomi" : {
+                    "the_app_secret" : "RGW+NA+T2ucpEX0a6bxyhA==",
+                    "the_app_package" : "com.proper.icmp.dev"
+                }
+            },
+            "ios" : {
+                "apns" : {
+                    "env_product" : true,
+                    "keystore_password" : "1234",
+                    "keystore_filename" : "icmp_dev_pro.p12",
+                    "topic" : "com.proper.icmp.dev"
+                }
+            }
+        },
+        "desc" : "掌上办公测试",
+        "msg_save_days" : 3,
+        "max_send_count" : 5,
+        "secretKey" : "b2024e00064bc5d8db70fdee087eae4f"
+    },"MobileOADemo" : {
+        "device" : {
+            "android" : {
+                "huawei" : {
+                    "the_app_id" : "100214089",
+                    "the_app_secret" : "93efe2d8b719b05b2cc0152e6fb7ca8e"
+                },
+                "xiaomi" : {
+                    "the_app_secret" : "I3d5bFQBQV5jo/awWyqnew==",
+                    "the_app_package" : "com.proper.icmp.demo"
+                }
+            },
+            "ios" : {
+                "apns" : {
+                    "env_product" : true,
+                    "keystore_password" : "1234",
+                    "keystore_filename" : "icmp_demo_pro.p12",
+                    "topic" : "com.proper.icmp.demo"
+                }
+            }
+        },
+        "desc" : "掌上办公测试",
+        "msg_save_days" : 3,
+        "max_send_count" : 5,
+        "secretKey" : "b2024e00064bc5d8db70fdee087eae4f"
+    }
 };
