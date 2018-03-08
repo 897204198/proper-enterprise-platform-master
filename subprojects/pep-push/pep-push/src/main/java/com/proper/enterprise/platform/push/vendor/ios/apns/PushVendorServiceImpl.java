@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import org.nutz.mapl.Mapl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
 
     @Override
     public int pushMsg(List<PushMsgEntity> lstMsgs) {
+        LOGGER.info("push log step5 ios pushMsg:msg:{}", JSONUtil.toJSONIgnoreException(lstMsgs));
         int sendCount = 0;
         if (pushApp == null) {
             pushApp = new ApnsPushApp();

@@ -77,6 +77,7 @@ public class ApnsPushApp extends BasePushApp {
      * @return
      */
     public boolean pushOneMsg(PushMsgEntity msg) {
+        LOGGER.info("push log step6 ios pushOneMsg:msg:{}", JSONUtil.toJSONIgnoreException(msg));
         boolean result = false;
         try {
             initApnsClient();
@@ -106,10 +107,12 @@ public class ApnsPushApp extends BasePushApp {
                 msg.setMresponse(JSONUtil.toJSON(pushNotificationResponse));
                 if (pushNotificationResponse.isAccepted()) {
                     LOGGER.info("Push notitification accepted by APNs gateway.");
+                    LOGGER.info("push log step6 ios pushOneMsg success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
                     result = true;
                 } else {
                     LOGGER.info(
-                        "Notification rejected by the APNs gateway: " + pushNotificationResponse.getRejectionReason());
+                        "Notification rejected by the APNs gateway:{},msg:{}",
+                        pushNotificationResponse.getRejectionReason(), JSONUtil.toJSONIgnoreException(msg));
                     pushService.onPushTokenInvalid(msg);
                     result = false; // 发送消息失败
                     if (pushNotificationResponse.getTokenInvalidationTimestamp() != null) {
@@ -123,7 +126,7 @@ public class ApnsPushApp extends BasePushApp {
             }
 
         } catch (Exception e) {
-            LOGGER.error("Failed to send push notification.", e);
+            LOGGER.error("Failed to send push notification.msg:{}", e, JSONUtil.toJSONIgnoreException(msg));
             if (e.getCause() instanceof ClientNotConnectedException) {
                 LOGGER.info("Waiting for client to reconnect…,Reconnected.");
             }

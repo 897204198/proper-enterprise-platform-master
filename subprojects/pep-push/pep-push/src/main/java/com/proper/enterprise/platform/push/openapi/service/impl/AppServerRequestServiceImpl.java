@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.push.entity.PushDeviceEntity;
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.entity.PushUserEntity;
@@ -51,6 +52,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
 
     @Override
     public void savePushMessageToAllUsers(String appkey, PushMessage thePushmsg) {
+        LOGGER.info("push log step4 savePushMessageToAllUsers:msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
         final int dbBatchSize = globalInfo.getDbBatchSize();
         Pageable pageable = new PageRequest(0, dbBatchSize);
         List<String> lstUids = new ArrayList<>(dbBatchSize);
@@ -74,6 +76,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
 
     @Override
     public void savePushMessageToAllDevices(String appkey, PushDeviceType deviceType0, PushMessage thePushmsg) {
+        LOGGER.info("push log step4 savePushMessageToAllDevices:msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
         Map<String, Object> deviceConf = (Map<String, Object>) Mapl.cell(globalInfo.getPushConfigs(),
             appkey + ".device");
         if (deviceConf == null) {
@@ -118,11 +121,12 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
     @SuppressWarnings("unchecked")
     @Override
     public void savePushMessageToUsers(String appkey, List<String> lstUids, PushMessage thePushmsg) {
+        LOGGER.info("push log step4 savePushMessageToUsers:msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
         Map<String, Object> rtn = new LinkedHashMap<>();
         Map<String, Object> deviceConf = (Map<String, Object>) Mapl.cell(globalInfo.getPushConfigs(),
             appkey + ".device");
         if (deviceConf == null) {
-            throw new PushException("appkey: " + appkey + " is not valid!");
+            throw new PushException("appkey: " + appkey + " is not valid!msg:" + JSONUtil.toJSONIgnoreException(thePushmsg));
         }
 
         for (Entry<String, Object> entry : deviceConf.entrySet()) {
@@ -141,7 +145,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
                         deviceType, pushMode, PushDeviceStatus.VALID, lstUids);
                     doSendMsgToDevices(appkey, thePushmsg, rtn, deviceType, pushMode, pushService, lstMsgs, lstDevices);
                 } else {
-                    LOGGER.error("savePushMessageToUsers but the userid is empty!");
+                    LOGGER.error("savePushMessageToUsers but the userid is empty!msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
                 }
 
             }
@@ -158,11 +162,17 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
                 if (StringUtil.isNotEmpty(d.getPushToken())) {
                     PushMsgEntity dbMsg = createMsgVO(thePushmsg, appkey, d);
                     lstMsgs.add(dbMsg);
+                    LOGGER.info("doSendMsgToDevices:saveMsg:msgConent:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
                 } else {
-                    LOGGER.info("appkey:" + appkey + " device:" + d.getDeviceid() + " push token is empty!");
+                    LOGGER.info("doSendMsgToDevices:saveMsgError:push token is empty:appkey:{},device:{},msg:{}"
+                        + appkey, d.getDeviceid(), JSONUtil.toJSONIgnoreException(thePushmsg));
                 }
             }
-            msgRepo.save(lstMsgs);
+            try {
+                msgRepo.save(lstMsgs);
+            } catch (Exception e) {
+                LOGGER.error("doSendMsgToDevices saveMsg error:msg:{}", e, JSONUtil.toJSONIgnoreException(thePushmsg));
+            }
         } else {
             LOGGER.info("doSendMsgToDevices,device is empty,then no need send msg!");
         }
@@ -170,7 +180,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
             int sendCount = pushService.pushMsg(lstMsgs);
             rtn.put(appkey + "_" + deviceType + "_" + pushMode, sendCount);
         } else {
-            LOGGER.info("doSendMsgToDevices,lstMsgs is empty,then no need send!");
+            LOGGER.info("doSendMsgToDevices,lstMsgs is empty,then no need send!msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
         }
     }
 
@@ -198,11 +208,12 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
     @Override
     public void savePushMessageToDevices(String appkey, PushDeviceType deviceType, List<String> lstDeviceids,
                                          PushMessage thePushmsg) {
+        LOGGER.info("push log step4 savePushMessageToDevices:msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
         Map<String, Object> rtn = new LinkedHashMap<>();
         Map<String, Object> deviceConf = (Map<String, Object>) Mapl.cell(globalInfo.getPushConfigs(),
             appkey + ".device");
         if (deviceConf == null) {
-            throw new PushException("appkey: " + appkey + " is not valid!");
+            throw new PushException("appkey: " + appkey + " is not valid!msg:" + JSONUtil.toJSONIgnoreException(thePushmsg));
         }
         Map<String, Object> mapPushModes = (Map<String, Object>) deviceConf.get(deviceType.toString());
         for (String strPushMode : mapPushModes.keySet()) {

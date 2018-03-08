@@ -18,7 +18,6 @@ import java.util.Map;
  * 推送服务类
  *
  * @author 沈东生
- *
  */
 public class XiaomiPushApp extends BasePushApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(XiaomiPushApp.class);
@@ -60,12 +59,13 @@ public class XiaomiPushApp extends BasePushApp {
      * @return
      */
     public boolean pushOneMsg(PushMsgEntity msg, int notifyId) {
+        LOGGER.info("push log step6 xiaomi pushOneMsg:msg:{}", JSONUtil.toJSONIgnoreException(msg));
 
         boolean result = false;
 
         Message.Builder msgBuilder = new Message.Builder().title(msg.getMtitle()).description(msg.getMcontent())
-                .restrictedPackageName(theAppPackage).notifyType(1) // 使用默认提示音提示
-                .notifyId(notifyId);
+            .restrictedPackageName(theAppPackage).notifyType(1) // 使用默认提示音提示
+            .notifyId(notifyId);
 
         if (isCmdMessage(msg)) {
             msgBuilder.passThrough(1); // 消息使用透传消息
@@ -93,12 +93,12 @@ public class XiaomiPushApp extends BasePushApp {
             result = doSendMsg(msg, toMsg);
 
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("XiaomiPushApp error:msg:{}", JSONUtil.toJSONIgnoreException(msg), e);
             try {
                 close();
                 result = doSendMsg(msg, toMsg);
             } catch (Exception ex) {
-                LOGGER.error(ex.getMessage(), ex);
+                LOGGER.error("XiaomiPushApp error:msg:{}", JSONUtil.toJSONIgnoreException(msg), ex);
                 result = false; // 第二次发送失败才真的发送失败
             }
         }
@@ -114,8 +114,10 @@ public class XiaomiPushApp extends BasePushApp {
             com.xiaomi.xmpush.server.Result rsp = getClient().send(toMsg, pushToken, 1);
             // 有错误返回
             if (rsp.getErrorCode() == ErrorCode.Success) {
+                LOGGER.info("push log step6 xiaomi doSendMsg success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
                 result = true;
             } else {
+                LOGGER.info("XiaomiPushApp doSendMsg error,msg{}", JSONUtil.toJSONIgnoreException(msg), rsp);
                 // 先不设设备的状态无效，这里有判断失误的情况。
                 // if(rsp.getErrorCode().getValue()==20301){
                 // pushService.onPushTokenInvalid(msg);

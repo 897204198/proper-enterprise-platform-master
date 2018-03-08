@@ -59,16 +59,18 @@ public class HuaweiPushApp extends BasePushApp {
      * @return boolean
      */
     boolean pushOneMsg(PushMsgEntity msg) {
+        LOGGER.info("push log step6 huawei pushOneMsg:msg:{}", JSONUtil.toJSONIgnoreException(msg));
+
         boolean result;
         try {
             result = doPushMsg(msg);
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("huawei push error:msg:{}", JSONUtil.toJSONIgnoreException(msg), e);
             try {
                 close();
                 result = doPushMsg(msg);
             } catch (Exception e1) {
-                LOGGER.error(e1.getMessage(), e1);
+                LOGGER.error("huawei push error:msg:{}", JSONUtil.toJSONIgnoreException(msg), e1);
                 result = false; // 第二次发送失败才真的发送失败
             }
         }
@@ -137,7 +139,10 @@ public class HuaweiPushApp extends BasePushApp {
         try {
             PushRet result = JSONUtil.parse(rsp, PushRet.class);
             if ("success".equals(result.getMsg())) {
+                LOGGER.info("push log step6 huawei handleNotificationRsp success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
                 rtn = true;
+            } else {
+                LOGGER.error("huaWei handleNotificationRsp error:msg:{},error_msg:{}", JSONUtil.toJSONIgnoreException(msg), result.toString());
             }
             Integer badgeNumber = getBadgeNumber(msg);
             //角标不为空，且当前消息为通知栏消息，则发送一条透传消息，设置应用角标
@@ -154,7 +159,7 @@ public class HuaweiPushApp extends BasePushApp {
                 msg.setMresponse(rsp);
             }
         } catch (Exception ex) {
-            LOGGER.error(ex.getMessage(), ex);
+            LOGGER.error("huaWei handleNotificationRsp error:msg:{}", JSONUtil.toJSONIgnoreException(msg), ex);
         }
         return rtn;
     }
