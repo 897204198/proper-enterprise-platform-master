@@ -28,7 +28,7 @@ public class PushJmsTemplateServiceImpl implements PushJmsTemplateService {
     @Override
     public void saveConvertAndSend(String destinationName, Object message) {
         if (appServerRequestJmsTemplate == null) {
-            LOGGER.info(destinationName, message);
+            LOGGER.info("push log step2:saveConvertAndSend,destinationName,{}msg:{}", destinationName, message);
             try {
                 //采用反射的方法，调用targetService上对应的方法
                 String methodName = "save" + StringUtil.capitalize(StringUtil
@@ -37,8 +37,8 @@ public class PushJmsTemplateServiceImpl implements PushJmsTemplateService {
                 Method m1 = clazz.getDeclaredMethod(methodName, Map.class);
                 m1.invoke(targetService, message);
             } catch (Exception e) {
-                LOGGER.error(e.getMessage(), e);
-                throw  new PushException(e.getMessage());
+                LOGGER.error("push log step2:saveConvertAndSend error:msg:{}", message, e);
+                throw new PushException(e.getMessage());
             }
         } else {
             appServerRequestJmsTemplate.convertAndSend(destinationName, message);

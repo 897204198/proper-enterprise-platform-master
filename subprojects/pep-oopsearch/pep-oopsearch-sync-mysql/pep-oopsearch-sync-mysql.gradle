@@ -1,0 +1,11 @@
+dependencies {
+    compile project(':pep-oopsearch-api'),
+            project(':pep-cache-api'),
+            project(':pep-auth-api'),
+            project(':pep-schedule-cluster'),
+            libraries.mysql_binlog_connector_java
+
+    testCompile project(':pep-test')
+    testRuntime project(':pep-cache-ehcache')
+
+}

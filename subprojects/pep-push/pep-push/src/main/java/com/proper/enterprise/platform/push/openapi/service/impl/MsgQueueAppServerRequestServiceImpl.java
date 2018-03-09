@@ -41,12 +41,13 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
     }
 
     @JmsListener(destination = PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST
-            + "/pushMessageToUsers", containerFactory = CONTAINER_FACTIORY_NAME)
+        + "/pushMessageToUsers", containerFactory = CONTAINER_FACTIORY_NAME)
     @Override
     public void savePushMessageToUsers(Map<String, String> requestParams) {
+        LOGGER.info("push log step3 savePushMessageToUsers:msg:{}", requestParams.toString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("receive jms " + PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/pushMessageToUsers"
-                    + " of data: " + requestParams + " ,time is " + DateUtil.toString(new Date(), "yyyyMMddHHmmss"));
+                + " of data: " + requestParams + " ,time is " + DateUtil.toString(new Date(), "yyyyMMddHHmmss"));
         }
         String userids = requestParams.get("userids");
         String appkey = requestParams.get("appkey");
@@ -56,12 +57,13 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
     }
 
     @JmsListener(destination = PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST
-            + "/pushMessageToDevices", containerFactory = CONTAINER_FACTIORY_NAME)
+        + "/pushMessageToDevices", containerFactory = CONTAINER_FACTIORY_NAME)
     @Override
     public void savePushMessageToDevices(Map<String, String> requestParams) {
+        LOGGER.info("push log step3 savePushMessageToDevices:msg:{}", requestParams.toString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("receive jms " + PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/pushMessageToDevices"
-                    + " of data: " + requestParams);
+                + " of data: " + requestParams);
         }
         String deviceids = requestParams.get("deviceids");
         String strDeviceType = requestParams.get("device_type");
@@ -76,12 +78,13 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
     }
 
     @JmsListener(destination = PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST
-            + "/pushMessageToAllUsers", containerFactory = CONTAINER_FACTIORY_NAME)
+        + "/pushMessageToAllUsers", containerFactory = CONTAINER_FACTIORY_NAME)
     @Override
     public void savePushMessageToAllUsers(Map<String, String> requestParams) {
+        LOGGER.info("push log step3 savePushMessageToAllUsers:msg:{}", requestParams.toString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("receive jms " + PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/pushMessageToAllUsers"
-                    + " of data: " + requestParams);
+                + " of data: " + requestParams);
         }
         String appkey = requestParams.get("appkey");
         final PushMessage thePushmsg = getPushMessage(requestParams);
@@ -95,18 +98,19 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
             thePushmsg = JSONUtil.parse(smsg, PushMessage.class);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
-            throw  new PushException(e.getMessage());
+            throw new PushException(e.getMessage());
         }
         return thePushmsg;
     }
 
     @JmsListener(destination = PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST
-            + "/pushMessageToAllDevices", containerFactory = CONTAINER_FACTIORY_NAME)
+        + "/pushMessageToAllDevices", containerFactory = CONTAINER_FACTIORY_NAME)
     @Override
     public void savePushMessageToAllDevices(Map<String, String> requestParams) {
+        LOGGER.info("push log step3 savePushMessageToAllDevices:msg:{}", requestParams.toString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("receive jms " + PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/pushMessageToAllDevices"
-                    + " of data: " + requestParams);
+                + " of data: " + requestParams);
         }
         String appkey = requestParams.get("appkey");
         String strDeviceType = requestParams.get("device_type");

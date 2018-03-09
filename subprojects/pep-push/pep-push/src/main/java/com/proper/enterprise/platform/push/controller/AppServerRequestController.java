@@ -20,7 +20,6 @@ import java.util.Map;
  * 推送消息
  *
  * @author shen
- *
  */
 @RestController
 @AuthcIgnore
@@ -32,7 +31,7 @@ public class AppServerRequestController {
 
     @RequestMapping(value = "/{requestMethod}", method = RequestMethod.POST)
     public Map<String, Object> doRequestMethod(@PathVariable("requestMethod") String requestMethod,
-            HttpServletRequest request) {
+                                               HttpServletRequest request) {
         Map<String, Object> rtn = new LinkedHashMap<String, Object>();
         try {
             Enumeration<String> paramNames = request.getParameterNames();
@@ -42,8 +41,9 @@ public class AppServerRequestController {
                 String value = request.getParameter(key);
                 requestParams.put(key, value);
             }
+            LOGGER.info("push log step1:rest msg:{}", requestParams.toString());
             appServerRequestJmsTemplate.saveConvertAndSend(PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/" + requestMethod,
-                    requestParams);
+                requestParams);
             rtn.put("result", "0");
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);

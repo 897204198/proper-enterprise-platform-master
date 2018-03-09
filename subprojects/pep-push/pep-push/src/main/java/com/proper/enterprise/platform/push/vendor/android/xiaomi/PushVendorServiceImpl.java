@@ -2,12 +2,14 @@ package com.proper.enterprise.platform.push.vendor.android.xiaomi;
 
 import java.util.Date;
 import java.util.List;
-
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import org.nutz.mapl.Mapl;
 
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
 import com.proper.enterprise.platform.push.vendor.AbstractPushVendorService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 华为推送消息
@@ -16,6 +18,8 @@ import com.proper.enterprise.platform.push.vendor.AbstractPushVendorService;
  *
  */
 public class PushVendorServiceImpl extends AbstractPushVendorService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PushVendorServiceImpl.class);
+
     XiaomiPushApp pushApp;
     private static final int MIN_NOTIFY_ID = 10000;
     private int notifyId = MIN_NOTIFY_ID;
@@ -29,6 +33,7 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
 
     @Override
     public int pushMsg(List<PushMsgEntity> lstMsgs) {
+        LOGGER.info("push log step5 xiaomi pushMsg:msg:{}", JSONUtil.toJSONIgnoreException(lstMsgs));
         int sendCount = 0;
         if (pushApp == null) {
             pushApp = new XiaomiPushApp();
