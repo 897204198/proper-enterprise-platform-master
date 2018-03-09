@@ -1,0 +1,9 @@
+dependencies {
+    compile project(':pep-oopsearch-api'),
+            project(':pep-auth-api')
+
+    testCompile project(':pep-test'),
+                project(':pep-oopsearch-sync-mysql'),
+                project(':pep-cache-redis')
+                project(':pep-schedule-cluster')
+}

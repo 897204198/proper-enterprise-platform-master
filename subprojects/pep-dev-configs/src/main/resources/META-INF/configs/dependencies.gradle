@@ -170,8 +170,11 @@ libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:
 
 libraries.mongodb_driver = "org.mongodb:mongodb-driver:${versions.mongo}"
 
+libraries.mysql_binlog_connector_java = 'com.github.shyiko:mysql-binlog-connector-java:0.13.0'
+
 libraries.mysql_driver = 'org.mariadb.jdbc:mariadb-java-client:1.5.4'
 //libraries.mysql_driver = 'mysql:mysql-connector-java:5.1.38'
+
 
 libraries.okhttp = 'com.squareup.okhttp3:okhttp:3.4.1'
 libraries.oracle_driver = 'com.oracle:ojdbc6:1.0'
@@ -262,3 +265,4 @@ libraries.push_vendor_xiaomi=[
     'com.xiaomi.pushapi:xiaomiPushSdk:2.2.16',
     'com.googlecode.json-simple:json-simple:1.1.1'
 ]
+
