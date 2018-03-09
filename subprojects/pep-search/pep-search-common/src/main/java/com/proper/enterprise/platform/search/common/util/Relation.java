@@ -1,10 +1,11 @@
 package com.proper.enterprise.platform.search.common.util;
 
+import com.proper.enterprise.platform.core.PEPApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 关系计算
@@ -14,65 +15,93 @@ public class Relation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Relation.class);
 
-    //节点
-    private RelationMap<String, Integer> relationNodes = new RelationMap<>();
+    public Relation(String relationName) {
+        this.relationName = relationName;
+        loadingLines();
+    }
+
+    //关系名称
+    private String relationName;
 
     //边
     private int[][] lines = {};
 
-    public RelationMap<String, Integer> getRelationNodes() {
-        return relationNodes;
-    }
-
-    private void addRelationNodes(String str) {
-        if (!relationNodes.containsNormalValue(str)) {
-            int num = relationNodes.size();
-            relationNodes.put(str, num);
-        }
-    }
-
-    //动态扩展二维数组
-    private void extendLine() {
+    /*
+        加载全部节点关系
+    */
+    private void loadingLines() {
+        addRelations();
         int size = relationNodes.size();
-        int[][] linePro = new int[size][size];
-        for (int i = 0; i < lines.length; i++) {
-            for (int j = 0; j < lines[i].length; j++) {
-                linePro[i][j] = lines[i][j];
-            }
+        lines = new int[size][size];
+        Set<String> set = dataMap.keySet();
+        for (String temp : set) {
+            String[] str = temp.split(":");
+            lines[relationNodes.getNormalValue(str[0])][relationNodes.getNormalValue(str[1])] = 1;
         }
-        lines = linePro;
     }
 
-    //打印边情况
-    public void printLines() {
-        StringBuffer stringBuffer = new StringBuffer("\n");
-        for (int i = 0; i < lines.length; i++) {
-            for (int j = 0; j < lines[i].length; j++) {
-                stringBuffer.append(lines[i][j] + " ");
-                if (j == lines.length - 1) {
-                    stringBuffer.append("\n");
-                }
-            }
+    //节点
+    private RelationMap<String, Integer> relationNodes = new RelationMap<>();
+
+    //扩展字段
+    private Map<String, Map<String, String>> dataMap = new HashMap<>();
+
+    public Map<String, Map<String, String>> getDataMap() {
+        return dataMap;
+    }
+
+    /*
+        添加关系节点
+    */
+    private void addRelationNode(String nodeId) {
+        if (!relationNodes.containsNormalValue(nodeId)) {
+            int num = relationNodes.size();
+            relationNodes.put(nodeId, num);
         }
-        stringBuffer.append("\n");
-        LOGGER.debug(stringBuffer.toString());
     }
 
-    //添加双向关系。包括增加节点、双关联边
-    public void addRelation(String a, String b) {
-        addRelationNodes(a);
-        addRelationNodes(b);
-        extendLine();
-        lines[relationNodes.getNormalValue(a)][relationNodes.getNormalValue(b)] = 1;
-        lines[relationNodes.getNormalValue(b)][relationNodes.getNormalValue(a)] = 1;
-        printLines();
+    /*
+         添加扩展字段，选填。如果需要请成对传入
+    */
+    private void addDatas(String nodeA, String nodeB, String[] datas) {
+        Map<String, String> forward = new HashMap<>();
+        Map<String, String> reverse = new HashMap<>();
+        if (datas.length > 0 && datas.length % 2 == 0) {
+            forward.put(datas[0], datas[1]);
+            reverse.put(datas[1], datas[0]);
+        }
+        dataMap.put(nodeA + ":" + nodeB, forward);
+        dataMap.put(nodeB + ":" + nodeA, reverse);
     }
 
-    //计算全路径
-    private List<RelationNode> routes(List<RelationNode> horizontal, String target, List<String> visited, List<RelationNode> routesList) {
+    private void addRelations() {
+        ApplicationContext context = PEPApplicationContext.getApplicationContext();
+        List<Map<String, Object>> configInfo = (List<Map<String, Object>>) context.getBean(relationName);
+        for (Map<String, Object> map : configInfo) {
+            String nodeA = (String) map.get("nodeA");
+            String nodeB = (String) map.get("nodeB");
+            String[] datas = (String[]) map.get("datas");
+            addRelation(nodeA, nodeB, datas);
+        }
+    }
+
+    /*
+        添加节点、双向关系、扩展字段
+     */
+    private void addRelation(String nodeA, String nodeB, String... datas) {
+        addRelationNode(nodeA);
+        addRelationNode(nodeB);
+        addDatas(nodeA, nodeB, datas);
+    }
+
+    /*
+        递归计算最短路径
+    */
+    private List<RelationNode> routes(List<RelationNode> horizontal, String target, List<String> visited, List<RelationNode> routesList, int level) {
         if (horizontal == null || horizontal.size() == 0) {
             return routesList;
         }
+        level++;
         List<RelationNode> list = new ArrayList<>();
         for (RelationNode temp : horizontal) {
             visited.add(temp.getRelationNodeId());
@@ -82,37 +111,49 @@ public class Relation {
                     && !horizontal.contains(relationNodes.getReverseValue(i))
                     && !visited.contains(relationNodes.getReverseValue(i))) {
                     if (relationNodes.getReverseValue(i).equals(target)) {
-                        routesList.add(new RelationNode(target, temp));
+                        if (routesList.size() > 0) {
+                            if (routesList.get(0).getLevel() > level) {
+                                routesList.add(new RelationNode(target, temp, level));
+                            }
+                        } else {
+                            routesList.add(new RelationNode(target, temp, level));
+                        }
                     } else {
-                        list.add(new RelationNode(relationNodes.getReverseValue(i), temp));
+                        list.add(new RelationNode(relationNodes.getReverseValue(i), temp, level));
                     }
                 }
             }
         }
-        routes(list, target, visited, routesList);
+        routes(list, target, visited, routesList, level);
         return routesList;
     }
 
+    /*
+        返回最短路径，如果有多个只取第一个
+    */
     public List<RelationNode> findRelation(String start, String end) {
         List<RelationNode> list = new ArrayList<>();
-        list.add(new RelationNode(start, null));
-        List<RelationNode> routes = routes(list, end, new ArrayList<>(), new ArrayList<>());
+        list.add(new RelationNode(start, null, 1));
+        List<RelationNode> routes = routes(list, end, new ArrayList<>(), new ArrayList<>(), 1);
+        if (routes != null && routes.size() > 0) {
+            return openRelation(routes.get(0));
+        }
         return routes;
     }
 
-    public void printRelation(List<RelationNode> list) {
-        for (RelationNode relationNode : list) {
-            printRelation(relationNode);
-        }
-    }
-
-    public void printRelation(RelationNode relationNode) {
-        StringBuffer stringBuffer = new StringBuffer(relationNode.getRelationNodeId() + " ");
+    /*
+        展开路径
+    */
+    private List<RelationNode> openRelation(RelationNode relationNode) {
+        List<RelationNode> list = new ArrayList<>();
+        list.add(relationNode);
         while (relationNode.getParentNode() != null) {
             relationNode = relationNode.getParentNode();
-            stringBuffer.append(relationNode.getRelationNodeId() + " ");
+            list.add(relationNode);
         }
-        LOGGER.debug(stringBuffer.toString());
+        Collections.reverse(list);
+        return list;
     }
+
 
 }

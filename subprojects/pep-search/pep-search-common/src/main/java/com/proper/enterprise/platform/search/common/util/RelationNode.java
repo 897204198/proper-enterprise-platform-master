@@ -7,10 +7,15 @@ package com.proper.enterprise.platform.search.common.util;
 public class RelationNode {
     private String relationNodeId;
     private RelationNode parentNode;
+    private Integer level;
 
-    public RelationNode(String relationNodeId, RelationNode parentNode) {
+    public RelationNode(){
+    }
+
+    public RelationNode(String relationNodeId, RelationNode parentNode, Integer level) {
         this.relationNodeId = relationNodeId;
         this.parentNode = parentNode;
+        this.level = level;
     }
 
     public String getRelationNodeId() {
@@ -19,6 +24,10 @@ public class RelationNode {
 
     public RelationNode getParentNode() {
         return parentNode;
+    }
+
+    public Integer getLevel() {
+        return level;
     }
 
 }
