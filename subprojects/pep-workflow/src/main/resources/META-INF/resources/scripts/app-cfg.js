@@ -28,5 +28,5 @@ FLOWABLE.TOOLBAR = FLOWABLE.TOOLBAR || {};
 FLOWABLE.TOOLBAR.ACTIONS = FLOWABLE.TOOLBAR.ACTIONS || {};
 
 FLOWABLE.TOOLBAR.ACTIONS.customClose = function() {
-    window.location.href = '/home/workflow/designer'
+    window.location.href = '/#/workflow/designer'
 };

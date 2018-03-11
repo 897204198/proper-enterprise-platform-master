@@ -183,6 +183,7 @@ public class PEPRemoteIdmServiceImpl implements RemoteIdmService {
             RemoteUser remoteUser = new RemoteUser();
             remoteUser.setFirstName(user.getUsername());
             remoteUser.setFullName(user.getUsername());
+            remoteUser.setLastName("");
             remoteUser.setGroups(RemoteGroupConvert.convert(user.getUserGroups()));
             remoteUser.setId(user.getId());
             remoteUser.setEmail(user.getEmail());
