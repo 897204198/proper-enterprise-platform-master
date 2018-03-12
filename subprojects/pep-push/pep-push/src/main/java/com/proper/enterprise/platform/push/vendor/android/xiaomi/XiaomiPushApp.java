@@ -114,10 +114,10 @@ public class XiaomiPushApp extends BasePushApp {
             com.xiaomi.xmpush.server.Result rsp = getClient().send(toMsg, pushToken, 1);
             // 有错误返回
             if (rsp.getErrorCode() == ErrorCode.Success) {
-                LOGGER.info("push log step6 xiaomi doSendMsg success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
+                LOGGER.info("push log step6 xiaomi success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
                 result = true;
             } else {
-                LOGGER.info("XiaomiPushApp doSendMsg error,msg{}", JSONUtil.toJSONIgnoreException(msg), rsp);
+                LOGGER.info("push log step6 xiaomi error,msg{}", JSONUtil.toJSONIgnoreException(msg), rsp);
                 // 先不设设备的状态无效，这里有判断失误的情况。
                 // if(rsp.getErrorCode().getValue()==20301){
                 // pushService.onPushTokenInvalid(msg);

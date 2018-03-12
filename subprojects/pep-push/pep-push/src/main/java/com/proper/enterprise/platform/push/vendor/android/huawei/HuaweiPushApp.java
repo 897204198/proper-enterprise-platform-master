@@ -139,10 +139,10 @@ public class HuaweiPushApp extends BasePushApp {
         try {
             PushRet result = JSONUtil.parse(rsp, PushRet.class);
             if ("success".equals(result.getMsg())) {
-                LOGGER.info("push log step6 huawei handleNotificationRsp success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
+                LOGGER.info("push log step6 huawei success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
                 rtn = true;
             } else {
-                LOGGER.error("huaWei handleNotificationRsp error:msg:{},error_msg:{}", JSONUtil.toJSONIgnoreException(msg), result.toString());
+                LOGGER.error("push log step6 huawei error:msg:{},error_msg:{}", JSONUtil.toJSONIgnoreException(msg), result.toString());
             }
             Integer badgeNumber = getBadgeNumber(msg);
             //角标不为空，且当前消息为通知栏消息，则发送一条透传消息，设置应用角标
@@ -169,7 +169,10 @@ public class HuaweiPushApp extends BasePushApp {
             msg.setMresponse(rsp);
             PushRet result = JSONUtil.parse(rsp, PushRet.class);
             if ("success".equals(result.getMsg())) {
+                LOGGER.info("push log step6 huawei success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
                 return true;
+            } else {
+                LOGGER.error("push log step6 huawei error:msg:{},error_msg:{}", JSONUtil.toJSONIgnoreException(msg), result.toString());
             }
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
