@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.auth.common.vo.MenuVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +35,13 @@ public class MenusController extends BaseController {
         userService.checkPermission("/auth/menus", RequestMethod.PUT);
         Collection<String> idList = (Collection<String>) reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
-        return responseOfPut(service.updateEanble(idList, enable));
+        return responseOfPut(service.updateEnable(idList, enable));
     }
 
     @PostMapping
-    public ResponseEntity addMenu(@RequestBody Map<String, Object> reqMap) throws Exception {
+    public ResponseEntity addMenu(@RequestBody MenuVO reqMenu) throws Exception {
         userService.checkPermission("/auth/menus", RequestMethod.POST);
-        return responseOfPost(service.save(reqMap));
+        return responseOfPost(service.saveOrUpdateMenu(reqMenu));
 
     }
 
@@ -57,12 +58,12 @@ public class MenusController extends BaseController {
     }
 
     @PutMapping(path = "/{menuId}")
-    public ResponseEntity<Menu> updateMenuDetail(@PathVariable String menuId, @RequestBody Map<String, Object> reqMap) throws Exception {
+    public ResponseEntity<Menu> updateMenuDetail(@PathVariable String menuId, @RequestBody MenuVO reqMenu) throws Exception {
         userService.checkPermission("/auth/menus/" + menuId, RequestMethod.PUT);
         Menu menu = service.get(menuId);
         if (menu != null) {
-            reqMap.put("id", menuId);
-            menu = service.save(reqMap);
+            reqMenu.setId(menuId);
+            menu = service.saveOrUpdateMenu(reqMenu);
         }
         return responseOfPut(menu);
     }

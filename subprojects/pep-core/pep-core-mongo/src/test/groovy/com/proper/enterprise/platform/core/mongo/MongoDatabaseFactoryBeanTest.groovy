@@ -23,5 +23,4 @@ class MongoDatabaseFactoryBeanTest extends AbstractTest {
     public void checkObjectType() {
         assert new MongoDatabaseFactoryBean().getObjectType() == MongoDatabase.class
     }
-
 }

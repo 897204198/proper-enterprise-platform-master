@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.auth.common.vo.ResourceVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,9 @@ public class ResourcesController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity<Resource> create(@RequestBody Map<String, Object> reqMap) throws Exception {
+    public ResponseEntity<Resource> create(@RequestBody ResourceVO resourceReq) throws Exception {
         userService.checkPermission("/auth/resources", RequestMethod.POST);
-        return responseOfPost(resourceService.save(reqMap));
+        return responseOfPost(resourceService.saveOrUpdateResource(resourceReq));
     }
 
     @DeleteMapping
@@ -50,12 +51,12 @@ public class ResourcesController extends BaseController {
     }
 
     @PutMapping(path = "/{resourceId}")
-    public ResponseEntity<Resource> update(@PathVariable String resourceId, @RequestBody Map<String, Object> reqMap) throws Exception {
+    public ResponseEntity<Resource> update(@PathVariable String resourceId, @RequestBody ResourceVO resourceReq) throws Exception {
         userService.checkPermission("/auth/resources/" + resourceId, RequestMethod.PUT);
         Resource resource = resourceService.get(resourceId);
         if (resource != null) {
-            reqMap.put("id", resourceId);
-            resource = resourceService.save(reqMap);
+            resourceReq.setId(resourceId);
+            resource = resourceService.saveOrUpdateResource(resourceReq);
         }
         return responseOfPut(resource);
     }

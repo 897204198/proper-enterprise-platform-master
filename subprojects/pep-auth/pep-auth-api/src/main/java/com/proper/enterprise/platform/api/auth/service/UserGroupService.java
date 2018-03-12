@@ -65,7 +65,7 @@ public interface UserGroupService {
      * @param enable 菜单状态
      * @return 结果
      */
-    Collection<? extends UserGroup> updateEanble(Collection<String> idList, boolean enable);
+    Collection<? extends UserGroup> updateEnable(Collection<String> idList, boolean enable);
 
     /**
      * 用户组添加角色
@@ -75,6 +75,14 @@ public interface UserGroupService {
      * @return 用户组
      */
     UserGroup saveUserGroupRole(String groupId, String roleId);
+
+    /**
+     * 保存或更新用户组
+     *
+     * @param userGroup 请求用户组对象
+     * @return 保存或更新后的用户组信息信息
+     */
+    UserGroup saveOrUpdateUserGroup(UserGroup userGroup);
 
     /**
      * 获取指定用户组角色集合
@@ -135,4 +143,5 @@ public interface UserGroupService {
      * @return 更新后的用户组
      */
     UserGroup createUserGroup(UserGroup userGroup);
+
 }

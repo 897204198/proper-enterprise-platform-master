@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.auth.common.entity.UserEntity;
+import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class UsersController extends BaseController {
     public ResponseEntity<DataTrunk<? extends User>> getUser(String username, String name, String email, String phone, String enable,
                                                              Integer pageNo, Integer pageSize) {
         userService.checkPermission("/auth/users", RequestMethod.GET);
-        return responseOfGet(userService.getUsersByCondiction(username, name, email, phone, enable, pageNo, pageSize));
+        return responseOfGet(userService.getUsersByCondition(username, name, email, phone, enable, pageNo, pageSize));
     }
 
     @SuppressWarnings("unchecked")
@@ -38,14 +38,14 @@ public class UsersController extends BaseController {
         userService.checkPermission("/auth/users", RequestMethod.PUT);
         Collection<String> idList = (Collection<String>) reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
-        return responseOfPut(userService.updateEanble(idList, enable));
+        return responseOfPut(userService.updateEnable(idList, enable));
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody UserEntity userEntity) {
+    public ResponseEntity<User> create(@RequestBody UserVO userVO) {
         userService.checkPermission("/auth/users", RequestMethod.POST);
-        userEntity.setPassword(pwdService.encrypt(userEntity.getPassword()));
-        return responseOfPost(userService.save(userEntity));
+        userVO.setPassword(pwdService.encrypt(userVO.getPassword()));
+        return responseOfPost(userService.saveOrUpdateUser(userVO));
     }
 
     @DeleteMapping
@@ -67,10 +67,14 @@ public class UsersController extends BaseController {
      * 更新指定用户ID的用户信息
      */
     @PutMapping(path = "/{userId}")
-    public ResponseEntity<String> update(@PathVariable String userId, @RequestBody Map<String, Object> userMap) {
+    public ResponseEntity<String> update(@PathVariable String userId, @RequestBody UserVO userVO) {
         userService.checkPermission("/auth/users/" + userId, RequestMethod.PUT);
-        userMap.put("id", userId);
-        userService.updateByUser(userMap);
+        User user = userService.get(userId);
+        if (user != null) {
+            userVO.setPassword(pwdService.encrypt(userVO.getPassword()));
+            userVO.setId(userId);
+        }
+        userService.saveOrUpdateUser(userVO);
         return responseOfPut("");
     }
 
@@ -125,6 +129,6 @@ public class UsersController extends BaseController {
     @GetMapping(path = "/query")
     public ResponseEntity<Collection<? extends User>> queryUser(@RequestParam String condition) {
         userService.checkPermission("/auth/users/query", RequestMethod.GET);
-        return responseOfGet(userService.getUsersByCondiction(condition));
+        return responseOfGet(userService.getUsersByCondition(condition));
     }
 }

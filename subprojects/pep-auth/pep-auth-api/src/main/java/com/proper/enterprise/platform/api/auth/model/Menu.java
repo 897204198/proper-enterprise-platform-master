@@ -220,4 +220,18 @@ public interface Menu extends IBase, Comparable<Menu> {
      */
     void setEnable(boolean enable);
 
+    /**
+     * 获取菜单CODE
+     *
+     * @return 菜单CODE
+     */
+    String getMenuCode();
+
+    /**
+     * 设置菜单CODE
+     *
+     * @param menuCode 菜单CODE
+     */
+    void setMenuCode(String menuCode);
+
 }

@@ -3,7 +3,8 @@ dependencies {
             project(':pep-auth-api')
 
     testCompile project(':pep-test'),
-                project(':pep-auth-common')
+                project(':pep-auth-common-jpa')
 
-    testRuntime project(':pep-auth-jwt')
+    testRuntime project(':pep-auth-jwt'),
+                project(':pep-auth-common-jpa')
 }

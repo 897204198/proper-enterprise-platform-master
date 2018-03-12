@@ -1,49 +1,30 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
-import com.proper.enterprise.platform.api.auth.model.*;
+import com.proper.enterprise.platform.api.auth.dao.UserDao;
+import com.proper.enterprise.platform.api.auth.model.Menu;
+import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.*;
-import com.proper.enterprise.platform.auth.common.entity.RoleEntity;
-import com.proper.enterprise.platform.auth.common.entity.UserEntity;
-import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity;
-import com.proper.enterprise.platform.auth.common.repository.UserRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.*;
 
-/**
- * 通用的/抽象的用户服务接口实现
- * 其中，获得当前用户的方法由于与安全框架具体实现关联，只能提供抽象实现
- */
 public abstract class AbstractUserServiceImpl implements UserService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractUserServiceImpl.class);
-
     @Autowired
-    private UserRepository userRepo;
+    private UserDao userDao;
 
     @Autowired
     private RoleService roleService;
 
     @Autowired
     private UserGroupService userGroupService;
-
-    @Autowired
-    private ResourceService resourceService;
 
     @Autowired
     private PasswordEncryptService pwdService;
@@ -59,22 +40,17 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        return userRepo.save((UserEntity) user);
+        return userDao.save(user);
     }
 
     @Override
     public void save(User... users) {
-        List<UserEntity> entities = new ArrayList<>(users.length);
-        for (User user : users) {
-            entities.add((UserEntity) user);
-        }
-        userRepo.save(entities);
+        userDao.save(users);
     }
 
     @Override
     public User save(String userId, Map<String, Object> map) {
-        // TODO 具体业务逻辑
-        UserEntity user = (UserEntity)this.get(userId);
+        User user = this.get(userId);
         user.setName(String.valueOf(map.get("name")));
         user.setEmail(String.valueOf(map.get("email")));
         user.setPhone(String.valueOf(map.get("phone")));
@@ -84,19 +60,32 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public User get(String id) {
-        LOGGER.debug("Get user with {} from DB", id);
-        User user = userRepo.findOne(id);
-        if (user == null || !user.isValid() || !user.isEnable()) {
-            return null;
+    public User saveOrUpdateUser(User user) {
+        String id = user.getId();
+        User newUser = userDao.getNewUser();
+        if (StringUtil.isNotBlank(id)) {
+            newUser = this.get(id);
         }
-        return user;
+        String username = user.getUsername();
+        if (StringUtil.isNotBlank(username)) {
+            newUser.setUsername(user.getUsername());
+        }
+        newUser.setPassword(user.getPassword());
+        newUser.setName(user.getName());
+        newUser.setEmail(user.getEmail());
+        newUser.setPhone(user.getPhone());
+        newUser.setEnable(user.isEnable());
+        return this.save(newUser);
+    }
+
+    @Override
+    public User get(String id) {
+        return userDao.get(id);
     }
 
     @Override
     public User getByUsername(String username) {
-        LOGGER.debug("GetByUsername with username {} from DB", username);
-        return userRepo.findByUsernameAndValidTrueAndEnableTrue(username);
+        return userDao.getByUsername(username);
     }
 
     @Override
@@ -120,7 +109,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public void delete(User user) {
-        UserEntity userEntity = userRepo.findOne(user.getId());
+        User userEntity = userDao.get(user.getId());
         if (userEntity == null || !userEntity.isValid() || !userEntity.isEnable()) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
         }
@@ -132,7 +121,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
         }
         userEntity.setValid(false);
         userEntity.setEnable(false);
-        userRepo.save(userEntity);
+        userDao.save(userEntity);
     }
 
     @Override
@@ -152,44 +141,15 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
 
     @Override
-    public Collection<? extends User> getUsersByCondiction(String condiction) {
-        condiction = "%".concat(condiction).concat("%");
-        return userRepo.findByUsernameLikeOrNameLikeOrPhoneLikeAndEnableTrueAndValidTrueOrderByName(condiction, condiction, condiction);
+    public Collection<? extends User> getUsersByCondition(String condition) {
+        return userDao.getUsersByCondition(condition);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<? extends User> getUsersByCondiction(String userName, String name, String email, String phone, String enable,
-                                                          Integer pageNo, Integer pageSize) {
-        DataTrunk<UserEntity> userDataTrunk = new DataTrunk<>();
-        PageRequest pageReq = new PageRequest(pageNo - 1, pageSize, new Sort(Sort.Direction.ASC, "name"));
-        Specification specification = new Specification<UserEntity>() {
-            @Override
-            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
-                List<Predicate> predicates = new ArrayList<>();
-                if (StringUtil.isNotNull(userName)) {
-                    predicates.add(cb.like(root.get("username"), "%".concat(userName).concat("%")));
-                }
-                if (StringUtil.isNotNull(name)) {
-                    predicates.add(cb.like(root.get("name"), "%".concat(name).concat("%")));
-                }
-                if (StringUtil.isNotNull(email)) {
-                    predicates.add(cb.like(root.get("email"), "%".concat(email).concat("%")));
-                }
-                if (StringUtil.isNotNull(phone)) {
-                    predicates.add(cb.like(root.get("phone"), "%".concat(phone).concat("%")));
-                }
-                if (StringUtil.isNotNull(enable)) {
-                    predicates.add(cb.equal(root.get("enable"), enable.equals("Y")));
-                }
-                predicates.add(cb.equal(root.get("valid"), true));
-                return cb.and(predicates.toArray(new Predicate[predicates.size()]));
-            }
-        };
-        Page<UserEntity> usersPage = userRepo.findAll(specification, pageReq);
-        userDataTrunk.setCount(usersPage.getTotalElements());
-        userDataTrunk.setData(usersPage.getContent());
-        return userDataTrunk;
+    public DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable,
+                                                         Integer pageNo, Integer pageSize) {
+        return userDao.getUsersByCondition(userName, name, email, phone, enable, pageNo, pageSize);
     }
 
     @Override
@@ -199,8 +159,8 @@ public abstract class AbstractUserServiceImpl implements UserService {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            List<UserEntity> list = userRepo.findAll(idList);
-            for (UserEntity userEntity : list) {
+            Collection<? extends User> collection = userDao.findAll(idList);
+            for (User userEntity : collection) {
                 if (userEntity == null || !userEntity.isValid() || !userEntity.isEnable()) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
                 }
@@ -213,22 +173,22 @@ public abstract class AbstractUserServiceImpl implements UserService {
                 userEntity.setValid(false);
                 userEntity.setEnable(false);
             }
-            userRepo.save(list);
+            userDao.save(collection);
             ret = true;
         }
         return ret;
     }
 
     @Override
-    public Collection<? extends User> updateEanble(Collection<String> idList, boolean enable) {
-        Collection<UserEntity> resourceList = new HashSet<>();
+    public Collection<? extends User> updateEnable(Collection<String> idList, boolean enable) {
+        Collection<User> resourceList = new HashSet<>();
         for (String id : idList) {
-            resourceList.add(userRepo.findByValidTrueAndId(id));
+            resourceList.add(userDao.findByValidTrueAndId(id));
         }
-        for (UserEntity resource : resourceList) {
+        for (User resource : resourceList) {
             resource.setEnable(enable);
         }
-        return userRepo.save(resourceList);
+        return userDao.save(resourceList);
     }
 
     @Override
@@ -276,10 +236,8 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends User> getFilterUsers(Collection<? extends User> users) {
-        Collection<UserEntity> result = new HashSet<>();
-        Iterator iterator = users.iterator();
-        while (iterator.hasNext()) {
-            UserEntity userEntity = (UserEntity) iterator.next();
+        Collection<User> result = new HashSet<>();
+        for (User userEntity : users) {
             if (!userEntity.isValid() || !userEntity.isEnable()) {
                 continue;
             }
@@ -293,26 +251,13 @@ public abstract class AbstractUserServiceImpl implements UserService {
         if (StringUtil.isBlank(reqUrl) || requestMethod == null) {
             return false;
         }
+        if (user == null || StringUtil.isBlank(user.getId()) || !user.isEnable() || !user.isValid()) {
+            return false;
+        }
         if (user.isSuperuser()) {
             return true;
         }
-        Collection usergroups = user.getUserGroups();
-        Iterator iterator = usergroups.iterator();
-        while (iterator.hasNext()) {
-            UserGroupEntity userGroupEntity = (UserGroupEntity) iterator.next();
-            if (userGroupService.hasPermissionOfUserGroup(userGroupEntity, reqUrl, requestMethod)) {
-                return true;
-            }
-        }
-        Collection roles = user.getRoles();
-        Iterator iterator1 = roles.iterator();
-        while (iterator1.hasNext()) {
-            RoleEntity roleEntity = (RoleEntity) iterator1.next();
-            if (roleService.hasPermissionOfRole(roleEntity, reqUrl, requestMethod)) {
-                return true;
-            }
-        }
-        return false;
+        return userDao.hasPermissionOfUser(user, reqUrl, requestMethod);
     }
 
     @Override
@@ -324,8 +269,8 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends UserGroup> getUserGroups(String userId) {
-        User user = userRepo.findByValidTrueAndId(userId);
-        if (user == null || !user.isEnable()) {
+        User user = this.get(userId);
+        if (user == null) {
             return new ArrayList<>();
         }
         return userGroupService.getFilterGroups(user.getUserGroups());
@@ -333,10 +278,11 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends Role> getUserRoles(String userId) {
-        User user = userRepo.findByValidTrueAndId(userId);
-        if (user == null || !user.isEnable()) {
-            return new ArrayList<>();
+        User user = this.get(userId);
+        if (user == null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
         }
         return roleService.getFilterRoles(user.getRoles());
     }
+
 }

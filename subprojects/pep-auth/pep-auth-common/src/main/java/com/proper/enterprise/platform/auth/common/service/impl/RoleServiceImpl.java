@@ -1,38 +1,27 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
+import com.proper.enterprise.platform.api.auth.dao.RoleDao;
 import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.*;
-import com.proper.enterprise.platform.auth.common.entity.*;
-import com.proper.enterprise.platform.auth.common.repository.RoleRepository;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.*;
 
 @Service
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleDao roleDao;
 
     @Autowired
     private MenuService menuService;
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserGroupService userGroupService;
 
     @Autowired
     private ResourceService resourceService;
@@ -42,7 +31,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role get(String id) {
-        Role role = roleRepository.findOne(id);
+        Role role = roleDao.get(id);
         if (role != null && role.isValid() && role.isEnable()) {
             return role;
         }
@@ -51,44 +40,45 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<? extends Role> getByName(String name) {
-        return roleRepository.findByNameAndValidAndEnable(name, true, true);
+        return roleDao.getByName(name);
     }
 
     @Override
     public Collection<? extends Role> getAllSimilarRolesByName(String nameLike) {
-        return roleRepository.findAllByNameLike(nameLike);
-    }
-
-    public Role save(Role role) {
-        return roleRepository.save((RoleEntity) role);
+        return roleDao.findAllByNameLike(nameLike);
     }
 
     @Override
-    public Role save(Map<String, Object> map) {
-        String id = String.valueOf(map.get("id"));
-        RoleEntity role = new RoleEntity();
+    public Role save(Role role) {
+        return roleDao.save(role);
+    }
+
+    @Override
+    public Role saveOrUpdateRole(Role roleReq) {
+        String id = roleReq.getId();
+        Role role = roleDao.getNewRole();
         // 更新
-        if (map.get("id") != null && StringUtil.isNotNull(id)) {
-            role = (RoleEntity) this.get(id);
+        if (StringUtil.isNotNull(id)) {
+            role = this.get(id);
         }
-        boolean enable = map.get("enable") == null ? role.isEnable() : (boolean) map.get("enable");
+        boolean enable = roleReq.isEnable();
         if (!enable) {
-            Collection childrenRols = this.getByCondiction("", "", role.getId(), "Y");
+            Collection childrenRols = this.getByCondition("", "", role.getId(), "Y");
             if (!childrenRols.isEmpty()) {
                 throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.delete.relation.failed"));
             }
         }
-        role.setDescription(String.valueOf(map.get("description")));
-        role.setName(String.valueOf(map.get("name")));
+        role.setDescription(roleReq.getDescription());
+        role.setName(roleReq.getName());
         role.setEnable(enable);
-        String parentId = String.valueOf(map.get("parentId"));
-        if (map.get("parentId") != null && StringUtil.isNotNull(parentId)) {
-            role.setParent(this.get(parentId));
+        String parentId = roleReq.getParentId();
+        if (StringUtil.isNotNull(parentId)) {
+            role.setParent(roleDao.get(parentId));
             if (this.hasCircleInheritForCurrentRole(role)) {
                 throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.circle.error"));
             }
         }
-        return roleRepository.save(role);
+        return roleDao.save(role);
     }
 
     @Override
@@ -101,34 +91,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends Role> getByCondiction(String name, String description, String parentId, String enable) {
-        Specification specification = new Specification<RoleEntity>() {
-            @Override
-            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
-                List<Predicate> predicates = new ArrayList<>();
-                if (StringUtil.isNotNull(name)) {
-                    predicates.add(cb.like(root.get("name"), "%".concat(name).concat("%")));
-                }
-                if (StringUtil.isNotNull(description)) {
-                    predicates.add(cb.like(root.get("description"), "%".concat(description).concat("%")));
-                }
-                if (StringUtil.isNotNull(parentId)) {
-                    predicates.add(cb.equal(root.get("parent").get("id"), parentId));
-                }
-                if (StringUtil.isNotNull(enable)) {
-                    predicates.add(cb.equal(root.get("enable"), enable.equals("Y")));
-                }
-                predicates.add(cb.equal(root.get("valid"), true));
-                return cb.and(predicates.toArray(new Predicate[predicates.size()]));
-            }
-        };
-        Collection<? extends Role> roles = roleRepository.findAll(specification, new Sort("name"));
-        for (Role roleEntity : roles) {
-            if (roleEntity.getParent() != null) {
-                roleEntity.setParentId(roleEntity.getParent().getId());
-            }
-        }
-        return roles;
+    public Collection<? extends Role> getByCondition(String name, String description, String parentId, String enable) {
+        return roleDao.getByCondition(name, description, parentId, enable);
     }
 
     @Override
@@ -138,9 +102,9 @@ public class RoleServiceImpl implements RoleService {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            List<RoleEntity> list = roleRepository.findAll(idList);
+            Collection<? extends Role> list = roleDao.findAll(idList);
             Collection childrenRols;
-            for (RoleEntity roleEntity : list) {
+            for (Role roleEntity : list) {
                 if (roleEntity == null || !roleEntity.isEnable() || !roleEntity.isValid()) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
                 }
@@ -149,7 +113,7 @@ public class RoleServiceImpl implements RoleService {
                 }
 
                 //如果有别的角色继承当前角色，也不能删除
-                childrenRols = this.getByCondiction("", "", roleEntity.getId(), "Y");
+                childrenRols = this.getByCondition("", "", roleEntity.getId(), "Y");
                 if (!childrenRols.isEmpty()) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.delete.relation.failed"));
                 }
@@ -158,7 +122,7 @@ public class RoleServiceImpl implements RoleService {
                 roleEntity.setEnable(false);
                 roleEntity.setParent(null);
             }
-            roleRepository.save(list);
+            roleDao.save(list);
             ret = true;
         }
         return ret;
@@ -166,13 +130,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<? extends Role> getRoleParents(String roleId) {
-        List<RoleEntity> list = roleRepository.findAllByValidTrueAndEnableTrue();
-        List<RoleEntity> result = new ArrayList<>();
-        for (RoleEntity roleEntity : list) {
+        Collection<? extends Role> list = roleDao.findAllByValidTrueAndEnableTrue();
+        Collection<Role> result = new ArrayList<>();
+        for (Role roleEntity : list) {
             Role parentRole = roleEntity.getParent();
             if (parentRole != null && !roleId.contains(parentRole.getId())) {
                 roleId = parentRole.getId();
-                result.add((RoleEntity) parentRole);
+                result.add(parentRole);
             }
         }
         return result;
@@ -180,10 +144,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<? extends Role> getFilterRoles(Collection<? extends Role> roles) {
-        Collection<RoleEntity> result = new HashSet<>();
-        Iterator iterator = roles.iterator();
-        while (iterator.hasNext()) {
-            RoleEntity role = (RoleEntity) iterator.next();
+        Collection<Role> result = new HashSet<>();
+        for (Role role : roles) {
             if (!role.isEnable() || !role.isValid()) {
                 continue;
             }
@@ -193,24 +155,24 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Collection<? extends Role> updateEanble(Collection<String> idList, boolean enable) {
-        List<RoleEntity> roleList = new ArrayList<>();
+    public Collection<? extends Role> updateEnable(Collection<String> idList, boolean enable) {
+        List<Role> roleList = new ArrayList<>();
         Collection childrenRols;
         for (String id : idList) {
-            childrenRols = this.getByCondiction("", "", id, "Y");
+            childrenRols = this.getByCondition("", "", id, "Y");
             if (!enable && !childrenRols.isEmpty()) {
                 throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.delete.relation.failed"));
             }
-            RoleEntity roleEntity = roleRepository.findByIdAndValid(id, true);
+            Role roleEntity = roleDao.findByIdAndValid(id, true);
             roleEntity.setEnable(enable);
             roleList.add(roleEntity);
         }
-        return roleRepository.save(roleList);
+        return roleDao.save(roleList);
     }
 
     @Override
     public Collection<? extends Menu> getRoleMenus(String roleId) {
-        Collection<MenuEntity> result = new HashSet<>();
+        Collection<Menu> result = new HashSet<>();
         Role role = this.get(roleId);
         if (role == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
@@ -218,9 +180,9 @@ public class RoleServiceImpl implements RoleService {
         Collection currentMenus = menuService.getFilterMenusAndParent(role.getMenus());
         result.addAll(currentMenus);
         //获取父角色集合
-        List<RoleEntity> parentList = this.getParentRolesByCurrentRoleId(roleId);
-        for (RoleEntity roleEntity : parentList) {
-            currentMenus = menuService.getFilterMenusAndParent(roleEntity.getMenus());
+        Collection<? extends Role> parentList = this.getParentRolesByCurrentRoleId(roleId);
+        for (Role detail : parentList) {
+            currentMenus = menuService.getFilterMenusAndParent(this.getRoleMenus(detail.getId()));
             result.addAll(currentMenus);
         }
         return result;
@@ -233,10 +195,10 @@ public class RoleServiceImpl implements RoleService {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
         if (StringUtil.isNotNull(ids)) {
-            Collection<MenuEntity> menuList = new ArrayList<>();
+            Collection<Menu> menuList = new ArrayList<>();
             String[] idArr = ids.split(",");
             for (String id : idArr) {
-                menuList.add((MenuEntity) menuService.get(id));
+                menuList.add(menuService.get(id));
                 for (Menu detail : role.getMenus()) {
                     if (detail.getId().equals(id)) {
                         throw new ErrMsgException("pep.auth.common.role.has.menu");
@@ -244,7 +206,7 @@ public class RoleServiceImpl implements RoleService {
                 }
             }
             role.add(menuList);
-            role = save(role);
+            role = this.save(role);
         }
         return role;
     }
@@ -256,13 +218,13 @@ public class RoleServiceImpl implements RoleService {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
         if (StringUtil.isNotNull(ids)) {
-            Collection<MenuEntity> menuList = new ArrayList<>();
+            Collection<Menu> menuList = new ArrayList<>();
             String[] idArr = ids.split(",");
             for (String id : idArr) {
-                menuList.add((MenuEntity) menuService.get(id));
+                menuList.add(menuService.get(id));
             }
             role.remove(menuList);
-            role = save(role);
+            role = this.save(role);
         }
         return role;
     }
@@ -277,65 +239,49 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<RoleEntity> getParentRolesByCurrentRoleId(String currentRoleId) {
-        List<RoleEntity> result = new LinkedList<>();
-        RoleEntity roleEntity = (RoleEntity) this.get(currentRoleId);
-        if (roleEntity == null) {
-            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
-        }
-        RoleEntity parent = (RoleEntity) roleEntity.getParent();
-        while (true) {
-            if (parent == null || !parent.isValid() || !parent.isEnable()) {
-                break;
-            }
-            if (currentRoleId.equals(parent.getId())) {
-                throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.circle.error"));
-            }
-            result.add(parent);
-            parent = (RoleEntity) parent.getParent();
-        }
-        return result;
+    public Collection<? extends Role> getParentRolesByCurrentRoleId(String currentRoleId) {
+        return roleDao.getParentRolesByCurrentRoleId(currentRoleId);
     }
 
     @Override
     public Role addRoleResources(String roleId, String ids) {
-        Role role = this.get(roleId);
+        Role role = roleDao.get(roleId);
         if (role == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
         if (StringUtil.isNotNull(ids)) {
             String[] idArr = ids.split(",");
-            Collection<ResourceEntity> resourceList = new ArrayList<>();
+            Collection<Resource> resourceList = new ArrayList<>();
             for (String id : idArr) {
-                resourceList.add((ResourceEntity) resourceService.get(id));
+                resourceList.add(resourceService.get(id));
             }
             role.addResources(resourceList);
-            role = save(role);
+            role = roleDao.save(role);
         }
         return role;
     }
 
     @Override
     public Role deleteRoleResources(String roleId, String ids) {
-        Role role = this.get(roleId);
+        Role role = roleDao.get(roleId);
         if (role == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
         if (StringUtil.isNotNull(ids)) {
-            Collection<ResourceEntity> resourceList = new ArrayList<>();
+            Collection<Resource> resourceList = new ArrayList<>();
             String[] idArr = ids.split(",");
             for (String id : idArr) {
-                resourceList.add((ResourceEntity) resourceService.get(id));
+                resourceList.add(resourceService.get(id));
             }
             role.removeResources(resourceList);
-            role = save(role);
+            role = roleDao.save(role);
         }
         return role;
     }
 
     @Override
     public Collection<? extends User> getRoleUsers(String roleId) {
-        Role role = this.get(roleId);
+        Role role = roleDao.get(roleId);
         if (role == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
@@ -344,16 +290,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<? extends UserGroup> getRoleUserGroups(String roleId) {
-        Collection users = this.getRoleUsers(roleId);
-        Iterator iterator = users.iterator();
-        Collection<? extends UserGroup> filterGroups = new HashSet<>();
-        Collection groups;
-        while (iterator.hasNext()) {
-            UserEntity userEntity = (UserEntity) iterator.next();
-            groups = userGroupService.getFilterGroups(userEntity.getUserGroups());
-            filterGroups.addAll(groups);
-        }
-        return filterGroups;
+        return roleDao.getRoleUserGroups(roleId);
     }
 
     @Override
@@ -365,9 +302,9 @@ public class RoleServiceImpl implements RoleService {
         if (roles != null && roles.size() > 0 && StringUtil.isNotBlank(roleId)) {
             Iterator iterator = roles.iterator();
             while (iterator.hasNext()) {
-                RoleEntity roleEntity = (RoleEntity) iterator.next();
-                if (roleId.equals(roleEntity.getId())) {
-                    return roleEntity;
+                Role role = (Role) iterator.next();
+                if (roleId.equals(role.getId())) {
+                    return role;
                 }
             }
         }
@@ -382,11 +319,11 @@ public class RoleServiceImpl implements RoleService {
         Iterator iterator = groups.iterator();
         while (iterator.hasNext()) {
             Object object = iterator.next();
-            UserGroupEntity userGroupEntity = (UserGroupEntity) object;
-            Collection<RoleEntity> roles = (Collection<RoleEntity>) userGroupEntity.getRoles();
-            for (RoleEntity roleEntity : roles) {
-                if (!result.containsKey(roleEntity.getId())) {
-                    result.put(roleEntity.getId(), roleEntity);
+            UserGroup userGroupEntity = (UserGroup) object;
+            Collection<? extends Role> roles = userGroupEntity.getRoles();
+            for (Role role : roles) {
+                if (!result.containsKey(role.getId())) {
+                    result.put(role.getId(), role);
                 }
             }
         }
@@ -405,22 +342,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public boolean hasCircleInheritForCurrentRole(Role currentRole) {
-        boolean result = false;
-        if (currentRole == null || StringUtil.isBlank(currentRole.getId())) {
-            return result;
-        }
-        String currentRoleId = currentRole.getId();
-        while (true) {
-            currentRole = currentRole.getParent();
-            if (currentRole == null || StringUtil.isBlank(currentRole.getId())) {
-                break;
-            }
-            if (currentRole.getId().equals(currentRoleId)) {
-                result = true;
-                break;
-            }
-        }
-        return result;
+        return roleDao.hasCircleInheritForCurrentRole(currentRole);
     }
 
     @Override
@@ -437,5 +359,4 @@ public class RoleServiceImpl implements RoleService {
         }
         return false;
     }
-
 }

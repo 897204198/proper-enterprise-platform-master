@@ -76,7 +76,7 @@ public class PEPRemoteIdmServiceImpl implements RemoteIdmService {
 
     @Override
     public List<RemoteUser> findUsersByNameFilter(String filter) {
-        Collection<? extends User> users = userService.getUsersByCondiction(filter);
+        Collection<? extends User> users = userService.getUsersByCondition(filter);
         List<RemoteUser> remoteUsers = RemoteUserConvert.convert(users);
         JsonNode json = null;
         try {
@@ -128,7 +128,7 @@ public class PEPRemoteIdmServiceImpl implements RemoteIdmService {
         } else {
             roleNameFilter = "%" + roleNameFilter + "%";
         }
-        Collection roles = roleService.getByCondiction(roleNameFilter, null, null, "Y");
+        Collection roles = roleService.getByCondition(roleNameFilter, null, null, "Y");
         Iterator iterator = roles.iterator();
         List<RemoteRole> list = new ArrayList<>();
         while (iterator.hasNext()) {

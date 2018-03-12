@@ -2,8 +2,8 @@ package com.proper.enterprise.platform.auth.jwt.filter;
 
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.auth.jwt.authz.AuthzService;
-import com.proper.enterprise.platform.auth.jwt.service.HandlerHolder;
-import com.proper.enterprise.platform.auth.jwt.service.JWTService;
+import com.proper.enterprise.platform.auth.service.HandlerHolder;
+import com.proper.enterprise.platform.auth.service.JWTService;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +45,10 @@ public class JWTVerifyFilter implements Filter {
         this.hasContext = hasContext;
     }
 
+    @Override
     public void destroy() { }
 
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
@@ -128,6 +130,7 @@ public class JWTVerifyFilter implements Filter {
         return ignore;
     }
 
+    @Override
     public void init(FilterConfig arg0) throws ServletException { }
 
 }

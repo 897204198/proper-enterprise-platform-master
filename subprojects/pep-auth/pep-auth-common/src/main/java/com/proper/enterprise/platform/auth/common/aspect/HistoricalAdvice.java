@@ -54,7 +54,7 @@ public class HistoricalAdvice {
     private void update(Object obj, String userId) {
         if (obj instanceof IBase) {
             IBase ibase = (IBase) obj;
-            if (StringUtil.isNull(ibase.getId())) {
+            if (StringUtil.isNull(ibase.getId()) || StringUtil.isNull(ibase.getCreateUserId())) {
                 ibase.setCreateUserId(userId);
                 ibase.setCreateTime(DateUtil.getTimestamp(true));
             }

@@ -4,7 +4,6 @@ import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
-
 class AuthzServiceSpec extends Specification {
 
     @Shared static AuthzService service = new AuthzService()

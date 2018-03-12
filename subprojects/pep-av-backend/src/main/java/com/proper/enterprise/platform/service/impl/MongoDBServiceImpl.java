@@ -2,10 +2,10 @@ package com.proper.enterprise.platform.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.client.result.UpdateResult;
+import com.proper.enterprise.platform.auth.jpa.repository.ResourceRepository;
 import com.proper.enterprise.platform.core.mongo.dao.MongoDAO;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.service.IMongoDBService;
-import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.bson.Document;
 import org.slf4j.Logger;

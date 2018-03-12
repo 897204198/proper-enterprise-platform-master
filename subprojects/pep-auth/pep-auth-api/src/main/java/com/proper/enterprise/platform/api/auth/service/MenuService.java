@@ -6,7 +6,6 @@ import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 
 import java.util.Collection;
-import java.util.Map;
 
 public interface MenuService {
 
@@ -17,10 +16,10 @@ public interface MenuService {
     /**
      * 保存菜单信息
      *
-     * @param map 保存参数
+     * @param menuReq 保存菜单对象
      * @return 菜单信息
      */
-    Menu save(Map<String, Object> map);
+    Menu saveOrUpdateMenu(Menu menuReq);
 
     /**
      * 根据当前用户获得用户拥有的所有角色权限范围内的菜单集合，
@@ -106,7 +105,7 @@ public interface MenuService {
      * @param enable 菜单状态
      * @return 结果
      */
-    Collection<? extends Menu> updateEanble(Collection<String> idList, boolean enable);
+    Collection<? extends Menu> updateEnable(Collection<String> idList, boolean enable);
 
     /**
      * 菜单添加资源

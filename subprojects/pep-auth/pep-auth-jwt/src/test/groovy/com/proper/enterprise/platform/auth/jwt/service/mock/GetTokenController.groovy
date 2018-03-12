@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.auth.jwt.service.mock
 
-import com.proper.enterprise.platform.auth.jwt.service.JWTService
+import com.proper.enterprise.platform.auth.service.JWTService
 import com.proper.enterprise.platform.core.controller.BaseController
 import com.proper.enterprise.platform.core.utils.RequestUtil
 import org.springframework.beans.factory.annotation.Autowired

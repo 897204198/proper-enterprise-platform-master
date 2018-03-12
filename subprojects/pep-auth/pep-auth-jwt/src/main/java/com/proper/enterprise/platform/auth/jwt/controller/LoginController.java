@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.auth.jwt.controller;
 
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.service.AuthcService;
-import com.proper.enterprise.platform.auth.jwt.service.JWTAuthcService;
+import com.proper.enterprise.platform.auth.service.JWTAuthcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

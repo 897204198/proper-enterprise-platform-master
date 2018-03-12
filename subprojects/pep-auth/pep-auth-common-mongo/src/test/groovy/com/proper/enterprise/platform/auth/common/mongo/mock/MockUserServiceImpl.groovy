@@ -1,8 +1,9 @@
 package com.proper.enterprise.platform.auth.common.mongo.mock
 
 import com.proper.enterprise.platform.api.auth.model.User
-import com.proper.enterprise.platform.auth.common.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.service.impl.AbstractUserServiceImpl
+import com.proper.enterprise.platform.auth.jpa.entity.UserEntity
+
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.core.utils.RequestUtil
 import org.slf4j.Logger

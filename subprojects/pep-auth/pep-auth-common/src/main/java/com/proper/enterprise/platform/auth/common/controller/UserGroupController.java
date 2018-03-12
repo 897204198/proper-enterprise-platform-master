@@ -5,10 +5,9 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.UserGroupService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity;
+import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
-import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,29 +35,15 @@ public class UserGroupController extends BaseController {
     @PutMapping
     public ResponseEntity<Collection<? extends UserGroup>> updateEnable(@RequestBody Map<String, Object> reqMap) {
         userService.checkPermission("/auth/user-groups", RequestMethod.PUT);
-        Collection<String> idList = (Collection<String>)reqMap.get("ids");
+        Collection<String> idList = (Collection<String>) reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
-        return responseOfPut(service.updateEanble(idList, enable));
+        return responseOfPut(service.updateEnable(idList, enable));
     }
 
     @PostMapping
-    public ResponseEntity<UserGroup> create(@RequestBody Map<String, Object> reqMap) {
+    public ResponseEntity<UserGroup> create(@RequestBody UserGroupVO userGroupVO) {
         userService.checkPermission("/auth/user-groups", RequestMethod.POST);
-        return responseOfPost(service.createUserGroup(save(reqMap)));
-    }
-
-    private UserGroup save(Map<String, Object> map) {
-        String id = String.valueOf(map.get("id"));
-        UserGroupEntity userGroupEntity = new UserGroupEntity();
-        // 更新
-        if (map.get("id") != null && StringUtil.isNotNull(id)) {
-            userGroupEntity = (UserGroupEntity)service.get(id);
-        }
-        userGroupEntity.setName(String.valueOf(map.get("name")));
-        userGroupEntity.setEnable((boolean) map.get("enable"));
-        userGroupEntity.setDescription(String.valueOf(map.get("description")));
-        userGroupEntity.setSeq(Integer.parseInt(String.valueOf(map.get("seq"))));
-        return userGroupEntity;
+        return responseOfPost(service.saveOrUpdateUserGroup(userGroupVO));
     }
 
     @DeleteMapping
@@ -74,14 +59,13 @@ public class UserGroupController extends BaseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserGroup> update(@PathVariable String id, @RequestBody Map<String, Object> reqMap) {
+    public ResponseEntity<UserGroup> update(@PathVariable String id, @RequestBody UserGroupVO userGroupVO) {
         userService.checkPermission("/auth/user-groups/" + id, RequestMethod.PUT);
         UserGroup group = service.get(id);
         if (group != null) {
-            reqMap.put("id", id);
-            group = save(reqMap);
+            userGroupVO.setId(id);
         }
-        return responseOfPut(service.save(group));
+        return responseOfPut(service.saveOrUpdateUserGroup(userGroupVO));
     }
 
     @DeleteMapping("/{id}")

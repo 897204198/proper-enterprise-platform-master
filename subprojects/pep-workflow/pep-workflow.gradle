@@ -30,7 +30,7 @@ dependencies {
 
     testCompile project(':pep-test')
 
-    testCompile project(':pep-auth-common')
+    testCompile project(':pep-auth-common-jpa')
 
     testRuntime libraries.commons_fileupload
 

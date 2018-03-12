@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.workflow.convert
 
 import com.proper.enterprise.platform.api.auth.model.UserGroup
-import com.proper.enterprise.platform.auth.common.entity.UserGroupEntity
+import com.proper.enterprise.platform.auth.common.vo.UserGroupVO
 import spock.lang.Specification
 
 class GroupConvertSpec extends Specification{
@@ -10,7 +10,7 @@ class GroupConvertSpec extends Specification{
     def "testConvert"(){
         List nullList=new ArrayList()
         nullList.add(null)
-        def userGroup=new UserGroupEntity()
+        def userGroup=new UserGroupVO()
         userGroup.setName(GROUP_NAME)
         userGroup.setId(GROUP_ID)
         List<UserGroup> userGroups=new ArrayList<>()

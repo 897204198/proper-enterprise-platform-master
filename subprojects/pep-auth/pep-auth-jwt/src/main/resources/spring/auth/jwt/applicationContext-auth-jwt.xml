@@ -9,7 +9,7 @@
 
     <context:property-placeholder location="classpath:conf/auth/jwt/auth-jwt.properties" ignore-unresolvable="true" />
 
-    <bean id="apiSecret" class="com.proper.enterprise.platform.auth.jwt.service.APISecret" />
+    <bean id="apiSecret" class="com.proper.enterprise.platform.auth.service.APISecret" />
 
     <bean id="authzService" class="com.proper.enterprise.platform.auth.jwt.authz.AuthzService">
         <property name="ignorePatterns" value="${auth.jwt.ignorePatterns}" />
@@ -17,7 +17,7 @@
         <property name="menuService" ref="menuServiceImpl" />
     </bean>
 
-    <bean id="jwtService" class="com.proper.enterprise.platform.auth.jwt.service.JWTService">
+    <bean id="jwtService" class="com.proper.enterprise.platform.auth.service.JWTService">
         <property name="secret" ref="apiSecret" />
     </bean>
 

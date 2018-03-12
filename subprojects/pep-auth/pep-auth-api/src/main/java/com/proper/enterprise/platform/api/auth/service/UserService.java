@@ -24,6 +24,14 @@ public interface UserService {
 
     User save(String userId, Map<String, Object> user);
 
+    /**
+     * 保存或更新用户信息
+     *
+     * @param user 请求用户对象
+     * @return 用户信息
+     */
+    User saveOrUpdateUser(User user);
+
     User getCurrentUser();
 
     User get(String id);
@@ -51,10 +59,10 @@ public interface UserService {
     /**
      * 通过用户名,显示名,手机号模糊查询用户列表
      *
-     * @param condiction 输入信息
+     * @param condition 输入信息
      * @return 用户列表
      */
-    Collection<? extends User> getUsersByCondiction(String condiction);
+    Collection<? extends User> getUsersByCondition(String condition);
 
     /**
      * 按照查询条件获取用户信息列表
@@ -68,8 +76,8 @@ public interface UserService {
      * @param pageSize 分页大小
      * @return 用户信息列表
      */
-    DataTrunk<? extends User> getUsersByCondiction(String userName, String name, String email, String phone, String enable,
-                                                    Integer pageNo, Integer pageSize);
+    DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable,
+                                                  Integer pageNo, Integer pageSize);
 
     /**
      * 删除多条用户数据
@@ -85,7 +93,7 @@ public interface UserService {
      * @param enable 资源状态
      * @return 结果
      */
-    Collection<? extends User> updateEanble(Collection<String> idList, boolean enable);
+    Collection<? extends User> updateEnable(Collection<String> idList, boolean enable);
 
     /**
      * 添加用户权限

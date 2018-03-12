@@ -1,47 +1,78 @@
 package com.proper.enterprise.platform.auth.service.impl
-import com.proper.enterprise.platform.api.auth.service.UserService
-import com.proper.enterprise.platform.auth.common.entity.UserEntity
+
+import com.proper.enterprise.platform.api.auth.dao.UserDao
+import com.proper.enterprise.platform.api.auth.model.User
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
-import com.proper.enterprise.platform.auth.jwt.service.JWTService
+import com.proper.enterprise.platform.auth.service.JWTService
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.context.jdbc.Sql
 
 class UserServiceImplTest extends AbstractTest {
 
     @Autowired
-    UserService userService
+    UserDao userDao
 
     @Autowired
     JWTService jwtService
 
     def static final DEFAULT_USER = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS")
 
+
+    @Before
+    void initData() {
+        tearDown()
+    }
+
+    @After
+    void cleanAll() {
+        tearDown()
+    }
+
+    void tearDown() {
+        userDao.deleteAll()
+    }
+
     @Test
-    @Sql
-    public void getUserFromToken() {
+    void getUserFromToken() {
+        User userNodeEntity = userDao.getNewUser()
+        userNodeEntity.setId('uid')
+        userNodeEntity.setUsername('unm')
+        userNodeEntity.setPassword('e10adc3949ba59abbe56e057f20f883e')
+        userDao.save(userNodeEntity)
+
         def token = jwtService.generateToken(new JWTHeader('uid', 'unm'), new JWTPayloadImpl())
         mockRequest.addHeader('Authorization', token)
 
-        def user = userService.save(new UserEntity('a', 'b'))
+        User user1 = userDao.getNewUser()
+        user1.setUsername('a')
+        user1.setPassword('b')
+        def user = userDao.save(user1)
         assert user.getCreateUserId() == 'uid'
     }
 
     @Test
     @NoTx
-    public void fallbackDefaultUserWithoutToken() {
-        def user = userService.save(new UserEntity('a', 'b'))
+    void fallbackDefaultUserWithoutToken() {
+        User user1 = userDao.getNewUser()
+        user1.setUsername('a')
+        user1.setPassword('b')
+        def user = userDao.save(user1)
         assert user.getCreateUserId() == DEFAULT_USER
     }
 
     @Test
-    public void fallbackDefaultUserUsingFakeToken() {
+    void fallbackDefaultUserUsingFakeToken() {
         mockRequest.addHeader('Authorization', 'a.b.c')
-        def user = userService.save(new UserEntity('a', 'b'))
+        User user1 = userDao.getNewUser()
+        user1.setUsername('a')
+        user1.setPassword('b')
+        def user = userDao.save(user1)
         assert user.getCreateUserId() == DEFAULT_USER
     }
 

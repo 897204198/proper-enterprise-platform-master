@@ -1,9 +1,8 @@
 dependencies {
-    compile libraries.servlet_api,
-            project(':pep-auth-common'),
-            project(':pep-core')
+    compile project(':pep-auth-common')
 
     testCompile project(':pep-test')
 
-    testRuntime project(':pep-cache-ehcache')
+    testRuntime project(':pep-cache-ehcache'),
+                project(':pep-auth-common-neo4j')
 }

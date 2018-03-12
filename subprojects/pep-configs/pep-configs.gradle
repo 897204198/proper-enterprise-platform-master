@@ -6,5 +6,6 @@ dependencies {
     testCompile project(':pep-core'),
                 project(':pep-test')
 
-    testRuntime project(':pep-auth-jwt')
+    testRuntime project(':pep-auth-jwt'),
+                project(':pep-auth-common-jpa')
 }

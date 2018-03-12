@@ -12,7 +12,7 @@ dependencies {
             project(':pep-push-api'),
             project(':pep-schedule-cluster')
 
-    runtime project(':pep-auth-common')
+    runtime project(':pep-auth-common-jpa')
 
     testCompile project(':pep-test')
     testCompile project(':pep-push-client')

@@ -48,10 +48,10 @@ public interface RoleService {
     /**
      * 保存或更新权限信息
      *
-     * @param map 请求参数
+     * @param role 请求角色对象
      * @return 角色信息
      */
-    Role save(Map<String, Object> map);
+    Role saveOrUpdateRole(Role role);
 
     /**
      * 删除角色
@@ -71,7 +71,7 @@ public interface RoleService {
      * @param enable      是否可用
      * @return 权限列表
      */
-    Collection<? extends Role> getByCondiction(String name, String description, String parentId, String enable);
+    Collection<? extends Role> getByCondition(String name, String description, String parentId, String enable);
 
     /**
      * 删除多条角色数据
@@ -101,7 +101,7 @@ public interface RoleService {
      * @param enable 角色状态
      * @return 结果
      */
-    Collection<? extends Role> updateEanble(Collection<String> idList, boolean enable);
+    Collection<? extends Role> updateEnable(Collection<String> idList, boolean enable);
 
     /**
      * 获取指定角色菜单集合
@@ -141,7 +141,7 @@ public interface RoleService {
      * 根据当前角色ID，获取它的父角色链表，继承关系从前往后排列
      * @return 返回父角色链表，从前往后依次父角色、父角色的父角色。。。。
      */
-    List getParentRolesByCurrentRoleId(String currentRoleId);
+    Collection<? extends Role> getParentRolesByCurrentRoleId(String currentRoleId);
 
     /**
      * 角色添加资源列表

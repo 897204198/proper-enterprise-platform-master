@@ -144,4 +144,17 @@ public interface Resource extends IBase {
      */
     void setIdentifier(String identifier);
 
+    /**
+     * 获得资源编码
+     *
+     * @return 资源编码
+     */
+    String getResourceCode();
+
+    /**
+     * 设置资源编码
+     *
+     * @param resourceCode 资源编码
+     */
+    void setResourceCode(String resourceCode);
 }

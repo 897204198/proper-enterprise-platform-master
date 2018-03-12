@@ -1,20 +1,18 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
+import com.proper.enterprise.platform.api.auth.dao.ResourceDao;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
+import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.auth.common.entity.ResourceEntity;
-import com.proper.enterprise.platform.auth.common.repository.ResourceRepository;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
@@ -25,10 +23,8 @@ import java.util.*;
 @Service
 public class ResourceServiceImpl implements ResourceService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MenuServiceImpl.class);
-
     @Autowired
-    ResourceRepository resourceRepository;
+    ResourceDao resourceDao;
 
     @Autowired
     DataDicService dataDicService;
@@ -42,33 +38,36 @@ public class ResourceServiceImpl implements ResourceService {
     @Autowired
     MenuService menuService;
 
+    @Autowired
+    RoleService roleService;
+
     @Override
     public Resource save(Resource resource) {
-        return resourceRepository.save((ResourceEntity) resource);
+        return resourceDao.save(resource);
     }
 
     @Override
-    public Resource save(Map<String, Object> map) {
-        String id = String.valueOf(map.get("id"));
-        Resource resource = new ResourceEntity();
+    public Resource saveOrUpdateResource(Resource resourceReq) {
+        String id = resourceReq.getId();
+        Resource resource = resourceDao.getNewResourceEntity();
         // 更新
-        if (map.get("id") != null && StringUtil.isNotNull(id)) {
+        if (StringUtil.isNotNull(id)) {
             resource = this.get(id);
         }
-        resource.setName(String.valueOf(map.get("name")));
-        resource.setURL(String.valueOf(map.get("url")));
-        resource.setEnable((boolean) map.get("enable"));
-        resource.setMethod(RequestMethod.valueOf(String.valueOf(map.get("method"))));
-        String resourceCode = String.valueOf(map.get("resourceCode"));
-        if (map.get("resourceCode") != null && StringUtil.isNotNull(resourceCode)) {
+        resource.setName(resourceReq.getName());
+        resource.setURL(resourceReq.getURL());
+        resource.setEnable(resourceReq.isEnable());
+        resource.setMethod(resourceReq.getMethod());
+        String resourceCode = resourceReq.getResourceCode();
+        if (StringUtil.isNotNull(resourceCode)) {
             resource.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
         }
-        return this.save(resource);
+        return resourceDao.save(resource);
     }
 
     @Override
     public Resource get(String id) {
-        ResourceEntity resource = resourceRepository.findOne(id);
+        Resource resource = resourceDao.get(id);
         if (resource != null && resource.isEnable() && resource.isValid()) {
             return resource;
         }
@@ -84,45 +83,128 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public Collection<? extends Resource> getByIds(Collection<String> ids) {
-        List<ResourceEntity> resourceEntities = resourceRepository.findAll(ids);
-        for (ResourceEntity resourceEntitie : resourceEntities) {
-            if (resourceEntitie.isEnable() && resourceEntitie.isValid()) {
-                return resourceEntities;
+        Collection<Resource> resourceList = new ArrayList<>();
+        Collection<? extends Resource> resources = resourceDao.findAll(ids);
+        for (Resource resource : resources) {
+            if (resource.isEnable() && resource.isValid()) {
+                resourceList.add(resource);
             }
         }
-        return null;
+        return resourceList;
     }
 
     @Override
     public void delete(Resource resource) {
         resource.setValid(false);
-        resourceRepository.save((ResourceEntity) resource);
+        resourceDao.save(resource);
     }
 
     @Override
     public Collection<? extends Resource> getFilterResources(Collection<? extends Resource> resources) {
-        Collection<ResourceEntity> result = new HashSet<>();
-        Iterator iterator = resources.iterator();
-        while (iterator.hasNext()) {
-            ResourceEntity resourceEntity = (ResourceEntity) iterator.next();
-            if (!resourceEntity.isEnable() || !resourceEntity.isValid()) {
+        Collection<Resource> result = new HashSet<>();
+        for (Resource resource : resources) {
+            if (!resource.isEnable() || !resource.isValid()) {
                 continue;
             }
-            result.add(resourceEntity);
+            result.add(resource);
         }
         return result;
     }
 
     @Override
     public Collection<Resource> find() {
-        Collection<ResourceEntity> resources = resourceRepository.findAll();
+        Collection<? extends Resource> resources = resourceDao.findAll();
         Collection collection = null;
-        for (ResourceEntity resourceEntity : resources) {
-            if (resourceEntity.isEnable() && resourceEntity.isValid()) {
+        for (Resource resource : resources) {
+            if (resource.isEnable() && resource.isValid()) {
                 collection = CollectionUtil.convert(resources);
             }
         }
         return collection;
+    }
+
+    @Override
+    public boolean deleteByIds(String ids) {
+        boolean ret = false;
+        if (StringUtil.isNotNull(ids)) {
+            String[] idArr = ids.split(",");
+            List<String> idList = new ArrayList<>();
+            Collections.addAll(idList, idArr);
+            Collection<? extends Resource> list = resourceDao.findAll(idList);
+            for (Resource resource : list) {
+                // 资源存在菜单
+                if (resource.getMenus().size() > 0) {
+                    for (Menu menu : resource.getMenus()) {
+                        if (menu.isEnable() && menu.isValid()) {
+                            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.menu"));
+                        }
+                    }
+                }
+                // 资源存在角色
+                if (resource.getRoles().size() > 0) {
+                    for (Role role : resource.getRoles()) {
+                        if (role.isEnable() && role.isValid()) {
+                            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.role"));
+                        }
+                    }
+                }
+                resource.setValid(false);
+            }
+            resourceDao.save(list);
+            ret = true;
+        }
+        return ret;
+    }
+
+    @Override
+    public Collection<? extends Resource> updateEnable(Collection<String> idList, boolean enable) {
+        Collection<? extends Resource> resourceList = resourceDao.findAll(idList);
+        for (Resource resource : resourceList) {
+            if (!resource.isEnable() && !resource.isValid()) {
+                throw new ErrMsgException("pep.auth.common.resource.used");
+            }
+            resource.setEnable(enable);
+        }
+        resourceDao.save(resourceList);
+        return resourceList;
+    }
+
+    @Override
+    public Collection<? extends Menu> getResourceMenus(String resourceId) {
+        Collection<Menu> filterMenus = new ArrayList<>();
+        Resource resource = this.get(resourceId);
+        if (resource != null) {
+            Collection<? extends Menu> menus = resource.getMenus();
+            for (Menu menu : menus) {
+                if (menu.isEnable() && menu.isValid()) {
+                    filterMenus.add(menu);
+                }
+            }
+        }
+        return filterMenus;
+    }
+
+    @Override
+    public Collection<? extends Role> getResourceRoles(String resourceId) {
+        Resource resource = this.get(resourceId);
+        if (resource != null) {
+            return roleService.getFilterRoles(resource.getRoles());
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public boolean hasPermissionOfResource(Resource resource, String reqUrl, RequestMethod requestMethod) {
+        if (resource == null || !resource.isValid() || !resource.isEnable()) {
+            return false;
+        }
+        Collection<Resource> collection = new HashSet();
+        collection.add(resource);
+        Resource resource1 = this.getBestMatch(collection, requestMethod.toString() + ":" + reqUrl);
+        if (resource1 != null) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -177,93 +259,5 @@ public class ResourceServiceImpl implements ResourceService {
         } else {
             return null;
         }
-    }
-
-    @Override
-    public boolean deleteByIds(String ids) {
-        boolean ret = false;
-        if (StringUtil.isNotNull(ids)) {
-            String[] idArr = ids.split(",");
-            List<String> idList = new ArrayList<>();
-            Collections.addAll(idList, idArr);
-            List<ResourceEntity> list = resourceRepository.findAll(idList);
-            for (ResourceEntity resourceEntity : list) {
-                // 资源存在菜单
-                if (resourceEntity.getMenus().size() > 0) {
-                    for (Menu menu : resourceEntity.getMenus()) {
-                        if (menu.isEnable() && menu.isValid()) {
-                            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.menu"));
-                        }
-                    }
-                }
-                // 资源存在角色
-                if (resourceEntity.getRoles().size() > 0) {
-                    for (Role role : resourceEntity.getRoles()) {
-                        if (role.isEnable() && role.isValid()) {
-                            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.role"));
-                        }
-                    }
-                }
-                resourceEntity.setValid(false);
-                ret = true;
-            }
-            resourceRepository.save(list);
-        }
-        return ret;
-    }
-
-    @Override
-    public Collection<? extends Resource> updateEnable(Collection<String> idList, boolean enable) {
-        List<ResourceEntity> resourceList = resourceRepository.findAll(idList);
-        for (ResourceEntity resource : resourceList) {
-            if (!resource.isEnable() && !resource.isValid()) {
-                throw new ErrMsgException("pep.auth.common.resource.used");
-            }
-            resource.setEnable(enable);
-        }
-        resourceRepository.save(resourceList);
-        return resourceList;
-    }
-
-    @Override
-    public Collection<? extends Menu> getResourceMenus(String resourceId) {
-        Collection<Menu> filterMenus = new ArrayList<>();
-        Resource resource = this.get(resourceId);
-        if (resource != null) {
-            Collection<? extends Menu> menus = resource.getMenus();
-            for (Menu menu : menus) {
-                if (menu.isEnable() && menu.isValid()) {
-                    filterMenus.add(menu);
-                }
-            }
-        }
-        return filterMenus;
-    }
-
-    @Override
-    public Collection<? extends Role> getResourceRoles(String resourceId) {
-        Collection<Role> filterRoles = new ArrayList<>();
-        Resource resource = this.get(resourceId);
-        if (resource != null) {
-            Collection<? extends Role> roles = resource.getRoles();
-            for (Role role : roles) {
-                if (role.isEnable() && role.isValid()) {
-                    filterRoles.add(role);
-                }
-            }
-        }
-        return filterRoles;
-    }
-
-    @Override
-    public boolean hasPermissionOfResource(Resource resource, String reqUrl, RequestMethod requestMethod) {
-        Resource localResource = this.get(reqUrl, requestMethod);
-        if (localResource == null || resource == null || !resource.isValid() || !resource.isEnable()) {
-            return false;
-        }
-        if (localResource.getId().equals(resource.getId())) {
-            return true;
-        }
-        return false;
     }
 }

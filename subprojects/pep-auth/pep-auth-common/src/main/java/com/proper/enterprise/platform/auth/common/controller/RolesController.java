@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.controller;
 import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.auth.common.vo.RoleVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,13 @@ public class RolesController extends BaseController {
     @GetMapping
     public ResponseEntity<Collection<? extends Role>> get(String name, String description, String parentId, String enable) {
         userService.checkPermission("/auth/roles", RequestMethod.GET);
-        return responseOfGet(roleService.getByCondiction(name, description, parentId, enable));
+        return responseOfGet(roleService.getByCondition(name, description, parentId, enable));
     }
 
     @PostMapping
-    public ResponseEntity<Role> create(@RequestBody Map<String, Object> reqMap) {
+    public ResponseEntity<Role> create(@RequestBody RoleVO roleReq) {
         userService.checkPermission("/auth/roles", RequestMethod.POST);
-        return responseOfPost(roleService.save(reqMap));
+        return responseOfPost(roleService.saveOrUpdateRole(roleReq));
     }
 
     @SuppressWarnings("unchecked")
@@ -39,7 +40,7 @@ public class RolesController extends BaseController {
         userService.checkPermission("/auth/roles", RequestMethod.PUT);
         Collection<String> idList = (Collection<String>)reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
-        return responseOfPut(roleService.updateEanble(idList, enable));
+        return responseOfPut(roleService.updateEnable(idList, enable));
     }
 
     @DeleteMapping
@@ -55,12 +56,12 @@ public class RolesController extends BaseController {
     }
 
     @PutMapping(path = "/{roleId}")
-    public ResponseEntity<Role> update(@PathVariable String roleId, @RequestBody Map<String, Object> reqMap) {
+    public ResponseEntity<Role> update(@PathVariable String roleId, @RequestBody RoleVO roleReq) {
         userService.checkPermission("/auth/roles/" + roleId, RequestMethod.PUT);
         Role role = roleService.get(roleId);
         if (role != null) {
-            reqMap.put("id", roleId);
-            role = roleService.save(reqMap);
+            roleReq.setId(roleId);
+            role = roleService.saveOrUpdateRole(roleReq);
         }
         return responseOfPut(role);
     }

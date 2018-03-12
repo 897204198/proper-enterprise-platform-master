@@ -6,7 +6,6 @@ import com.proper.enterprise.platform.api.auth.model.Role;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
-import java.util.Map;
 
 public interface ResourceService {
 
@@ -15,10 +14,10 @@ public interface ResourceService {
     /**
      * 保存资源信息
      *
-     * @param map 请求参数
+     * @param resource 请求资源对象
      * @return 资源信息
      */
-    Resource save(Map<String, Object> map);
+    Resource saveOrUpdateResource(Resource resource);
 
     Resource get(String id);
 
