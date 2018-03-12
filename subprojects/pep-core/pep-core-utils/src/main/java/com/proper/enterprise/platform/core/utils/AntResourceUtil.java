@@ -5,6 +5,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.Assert;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -15,7 +16,8 @@ public class AntResourceUtil {
     /**
      * 私有化工具类的构造函数，避免对工具类的实例化
      */
-    private AntResourceUtil() { }
+    private AntResourceUtil() {
+    }
 
     /**
      * 静态方法调用私有构造函数，以覆盖对构造函数的测试
@@ -30,7 +32,11 @@ public class AntResourceUtil {
         String[] patterns = locationPattern.split(",");
         Set<Resource> result = new LinkedHashSet<>();
         for (String pattern : patterns) {
-            result.addAll(Arrays.asList(resolver.getResources(pattern)));
+            try {
+                result.addAll(Arrays.asList(resolver.getResources(pattern)));
+            } catch (FileNotFoundException e) {
+                result.addAll(Arrays.asList(new Resource[0]));
+            }
         }
         return result.toArray(new Resource[result.size()]);
     }

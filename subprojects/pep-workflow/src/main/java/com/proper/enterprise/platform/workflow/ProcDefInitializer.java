@@ -2,15 +2,17 @@ package com.proper.enterprise.platform.workflow;
 
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.service.DeployService;
-import org.flowable.engine.RepositoryService;
+import org.flowable.app.domain.editor.AbstractModel;
+import org.flowable.app.service.api.ModelService;
 import org.flowable.engine.repository.Deployment;
-import org.flowable.engine.repository.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.util.List;
 
 @Component
 @Lazy(value = false)
+@DependsOn(value = "liquibase")
 public class ProcDefInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcDefInitializer.class);
@@ -41,7 +44,7 @@ public class ProcDefInitializer {
     private DeployService deployService;
 
     @Autowired
-    private RepositoryService repositoryService;
+    protected ModelService modelService;
 
     public static final String DEPLOY_NAME = "PEP system processes";
 
@@ -50,7 +53,6 @@ public class ProcDefInitializer {
         if ("false".equals(procDefUpdate)) {
             return;
         }
-
         cleanIfNecessary();
         deployService.deployFromResourcePattern(DEPLOY_NAME, procDefLocations);
     }
@@ -74,10 +76,13 @@ public class ProcDefInitializer {
     }
 
     private void cleanModels(String deploymentId) {
-        List<Model> models = repositoryService.createModelQuery().deploymentId(deploymentId).list();
-        for (Model model : models) {
-            LOGGER.debug("Delete model {}", model.getId());
-            repositoryService.deleteModel(model.getId());
+        String deployKey = DEPLOY_NAME + deploymentId;
+        List<AbstractModel> models = modelService.getModelsByModelType(AbstractModel.MODEL_TYPE_BPMN);
+        for (AbstractModel model : models) {
+            if (!deployKey.equals(model.getComment())) {
+                continue;
+            }
+            modelService.deleteModel(model.getId());
         }
     }
 

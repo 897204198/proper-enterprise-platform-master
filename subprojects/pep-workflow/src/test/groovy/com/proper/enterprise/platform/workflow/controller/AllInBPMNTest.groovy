@@ -21,7 +21,7 @@ class AllInBPMNTest extends AbstractTest {
     void redeployProcessCouldChangeBehavior() {
         def myVar = 10
         assert resOfGet("/bpm/script?initVal=$myVar", HttpStatus.OK) == (myVar + 100) * 200 - 50
-        deployService.deploy('redeploy', 'test-v2.bpmn20.xml')
+        deployService.deployInClassPath('redeploy', 'test-v2.bpmn20.xml')
         assert resOfGet("/bpm/script?initVal=$myVar", HttpStatus.OK) == myVar + 100 - 50
     }
 

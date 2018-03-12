@@ -78,7 +78,7 @@ class ProcessTest extends AbstractTest {
     }
 
     private void deployProcess(String resource) {
-        deployService.deploy(DEPLOY_NAME, resource)
+        deployService.deployInClassPath(DEPLOY_NAME, resource)
     }
 
     private List startProcAndGetApprovePath(List approveOpinions, int examTimes = approveOpinions.size()) {

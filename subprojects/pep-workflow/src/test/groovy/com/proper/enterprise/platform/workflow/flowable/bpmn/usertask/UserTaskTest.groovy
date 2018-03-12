@@ -1,25 +1,75 @@
 package com.proper.enterprise.platform.workflow.flowable.bpmn.usertask
 
 import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.workflow.flowable.service.AssigneeService
+import com.proper.enterprise.platform.workflow.service.DeployService
 import org.flowable.engine.HistoryService
+import org.flowable.engine.IdentityService
 import org.flowable.engine.RuntimeService
-import org.flowable.engine.test.Deployment
 import org.flowable.engine.TaskService
 import org.flowable.identitylink.api.IdentityLinkInfo
+import org.flowable.task.service.impl.persistence.entity.TaskEntity
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
 
-class UserTaskRoleTest extends AbstractTest {
+class UserTaskTest extends AbstractTest {
+
     @Autowired
-    private RuntimeService runtimeService
+    RuntimeService runtimeService
     @Autowired
-    private TaskService taskService
+    TaskService taskService
+    @Autowired
+    AssigneeService assigneeService
+    @Autowired
+    DeployService deployService
+    @Autowired
+    IdentityService identityService
     @Autowired
     private HistoryService historyService
 
     @Test
-    @Deployment(resources = 'bpmn/usertask/testUsertaskRole.bpmn20.xml')
+    void validateInitiator() {
+        identityService.setAuthenticatedUserId("zjl")
+        def procInst = runtimeService.startProcessInstanceByKey("ValidateInitiator")
+        TaskEntity task = taskService.createTaskQuery().taskAssignee("zjl").singleResult()
+        assert null != task
+        taskService.complete(task.getId())
+        assert isProcInstEnd(procInst.getId())
+    }
+
+    @Test
+    void validateNamedUser() {
+        def procInst = runtimeService.startProcessInstanceByKey("validateNamedUser")
+        TaskEntity task = taskService.createTaskQuery().taskAssignee("677036db-6ca6-47cf-915a-563ff8d58da4").singleResult()
+        assert null != task
+        taskService.complete(task.getId())
+        assert isProcInstEnd(procInst.getId())
+    }
+
+    @Test
+    @Sql("/com/proper/enterprise/platform/workflow/identity.sql")
+    void validateAssignGroup() {
+        def procInst = runtimeService.startProcessInstanceByKey("validateAssignGroup")
+        def task1 = taskService.createTaskQuery().taskCandidateGroup("group1").singleResult()
+        assert null != task1
+        def task2 = taskService.createTaskQuery().taskCandidateOrAssigned("user1").singleResult()
+        taskService.complete(task2.getId())
+        assert isProcInstEnd(procInst.getId())
+    }
+
+    @Test
+    void validateCandidatesUser() {
+        def procInst = runtimeService.startProcessInstanceByKey("validateCandidatesUser")
+        def task = taskService.createTaskQuery().taskCandidateOrAssigned("5d17010b-caf0-4613-bbb6-80b93380a7ca").singleResult()
+        assert null != task
+        taskService.complete(task.getId())
+        def task2 = taskService.createTaskQuery().taskCandidateOrAssigned("677036db-6ca6-47cf-915a-563ff8d58da4").singleResult()
+        assert null == task2
+        assert isProcInstEnd(procInst.getId())
+    }
+
+    @Test
     @Sql("/com/proper/enterprise/platform/workflow/identity.sql")
     void testUserTaskRole() {
         def processInstance = runtimeService.startProcessInstanceByKey("testUsertaskRole")
@@ -93,5 +143,10 @@ class UserTaskRoleTest extends AbstractTest {
             }
         }
         return false
+    }
+
+
+    private boolean isProcInstEnd(String procInstId) {
+        runtimeService.createProcessInstanceQuery().processInstanceId(procInstId).singleResult() == null
     }
 }
