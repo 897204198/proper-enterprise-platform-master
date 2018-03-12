@@ -14,6 +14,11 @@ class TestBPMController extends BaseBPMController {
     @GetMapping("/script")
     ResponseEntity<Integer> scriptTask(Integer initVal) {
         responseOfGet((Integer) getVariableAfterProcessDone(PROC_DEF_KEY, ['myVar': initVal], 'myVar'))
+        responseOfGet((Integer) getVariableAfterProcessDoneWithoutCache(PROC_DEF_KEY, ['myVar': initVal], 'myVar'))
+    }
+    @GetMapping("/script1")
+    ResponseEntity<Integer> scriptTask1(Integer initVal) {
+        handleBody(new Exception())
     }
 
 }

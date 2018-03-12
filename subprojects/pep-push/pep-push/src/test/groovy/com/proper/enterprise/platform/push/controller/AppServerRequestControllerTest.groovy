@@ -77,6 +77,47 @@ class AppServerRequestControllerTest extends PushAbstractTest {
         pusherApp.pushMessageToAllDevices(msg, PusherApp.DEVICE_TYPE_IOS)
         assert msgRepository.count()==9
 
+        msgRepository.deleteAll()
+        pusherApp.setConnTimeout(1)
+        assert pusherApp.getConnTimeout() == 1
+        pusherApp.getPushApiRequest()
+        pusherApp.setSecureKey("SecureKey")
+        assert pusherApp.getSecureKey() == "SecureKey"
+        pusherApp.setAppkey("Appkey")
+        assert pusherApp.getAppkey() == "Appkey"
+        assert pusherApp.isAsync() == false
+        Runnable r = new Runnable(){
+            @Override
+            public void run() {
+
+            }
+        }
+        pusherApp.startRunTask(r,true)
+        pusherApp.setPushUrl("PushUrl")
+        assert pusherApp.getPushUrl() == "PushUrl"
+        pusherApp.setPushApiRequest(null)
+        try{
+            pusherApp.pushMessageToUsers(msg,[])
+        }catch(Exception ex){
+
+        }
+        try{
+            pusherApp.pushMessageToDevices(msg,PusherApp.DEVICE_TYPE_ANDROID,[])
+        }catch(Exception ex){
+
+        }
+        try{
+            pusherApp.pushMessageToAllUsers(msg)
+        }catch(Exception ex){
+
+        }
+        try{
+            pusherApp.pushMessageToAllDevices(msg,PusherApp.DEVICE_TYPE_ANDROID)
+        }catch(Exception ex){
+
+        }
+        pusherApp  = new PusherApp()
+
 
     }
 

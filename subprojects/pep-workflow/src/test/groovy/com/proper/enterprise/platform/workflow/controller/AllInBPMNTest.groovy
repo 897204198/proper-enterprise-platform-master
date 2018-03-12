@@ -25,4 +25,10 @@ class AllInBPMNTest extends AbstractTest {
         assert resOfGet("/bpm/script?initVal=$myVar", HttpStatus.OK) == myVar + 100 - 50
     }
 
+    @Test
+    void controllerIsProcess1() {
+        def myVar = 0
+        assert resOfGet("/bpm/script1?initVal=$myVar", HttpStatus.OK) == ""
+    }
+
 }
