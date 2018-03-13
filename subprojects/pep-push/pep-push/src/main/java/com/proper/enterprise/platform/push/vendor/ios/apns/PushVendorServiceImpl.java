@@ -19,7 +19,6 @@ import com.proper.enterprise.platform.push.vendor.AbstractPushVendorService;
  * ios apns 推送实现
  *
  * @author shen
- *
  */
 public class PushVendorServiceImpl extends AbstractPushVendorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushVendorServiceImpl.class);
@@ -27,7 +26,6 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
 
     @Override
     public int pushMsg(List<PushMsgEntity> lstMsgs) {
-        LOGGER.info("push log step5 ios pushMsg:msg:{}", JSONUtil.toJSONIgnoreException(lstMsgs));
         int sendCount = 0;
         if (pushApp == null) {
             pushApp = new ApnsPushApp();
@@ -51,6 +49,7 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
         if (lstMsgs != null && lstMsgs.size() > 0) {
             // 向指定的设备推送数据。
             for (PushMsgEntity dm : lstMsgs) {
+                LOGGER.info("ios push log step5 content:{},msg:{}", dm.getMcontent(), JSONUtil.toJSONIgnoreException(lstMsgs));
                 dm.setSendCount(dm.getSendCount() + 1); // 发送次数+1
                 // 向手机端推送一条消息
                 boolean r = pushApp.pushOneMsg(dm);

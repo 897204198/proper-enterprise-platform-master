@@ -44,7 +44,6 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
         + "/pushMessageToUsers", containerFactory = CONTAINER_FACTIORY_NAME)
     @Override
     public void savePushMessageToUsers(Map<String, String> requestParams) {
-        LOGGER.info("push log step3 savePushMessageToUsers:msg:{}", requestParams.toString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("receive jms " + PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/pushMessageToUsers"
                 + " of data: " + requestParams + " ,time is " + DateUtil.toString(new Date(), "yyyyMMddHHmmss"));
@@ -53,6 +52,7 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
         String appkey = requestParams.get("appkey");
         final List<String> lstUids = Json.fromJsonAsList(String.class, userids);
         final PushMessage thePushmsg = getPushMessage(requestParams);
+        LOGGER.info("push log step3 content:{},msg:{}", thePushmsg.getContent(), requestParams.toString());
         service.savePushMessageToUsers(appkey, lstUids, thePushmsg);
     }
 
@@ -60,7 +60,6 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
         + "/pushMessageToDevices", containerFactory = CONTAINER_FACTIORY_NAME)
     @Override
     public void savePushMessageToDevices(Map<String, String> requestParams) {
-        LOGGER.info("push log step3 savePushMessageToDevices:msg:{}", requestParams.toString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("receive jms " + PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/pushMessageToDevices"
                 + " of data: " + requestParams);
@@ -70,6 +69,7 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
         String appkey = requestParams.get("appkey");
         final List<String> lstDeviceids = Json.fromJsonAsList(String.class, deviceids);
         final PushMessage thePushmsg = getPushMessage(requestParams);
+        LOGGER.info("push log step3 content:{},msg:{}", thePushmsg.getContent(), requestParams.toString());
         PushDeviceType deviceType = null;
         if (StringUtil.isNotEmpty(strDeviceType)) {
             deviceType = Enum.valueOf(PushDeviceType.class, strDeviceType.trim());
@@ -81,13 +81,13 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
         + "/pushMessageToAllUsers", containerFactory = CONTAINER_FACTIORY_NAME)
     @Override
     public void savePushMessageToAllUsers(Map<String, String> requestParams) {
-        LOGGER.info("push log step3 savePushMessageToAllUsers:msg:{}", requestParams.toString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("receive jms " + PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/pushMessageToAllUsers"
                 + " of data: " + requestParams);
         }
         String appkey = requestParams.get("appkey");
         final PushMessage thePushmsg = getPushMessage(requestParams);
+        LOGGER.info("push log step3 content:{},msg:{}", thePushmsg.getContent(), requestParams.toString());
         service.savePushMessageToAllUsers(appkey, thePushmsg);
     }
 
@@ -107,7 +107,6 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
         + "/pushMessageToAllDevices", containerFactory = CONTAINER_FACTIORY_NAME)
     @Override
     public void savePushMessageToAllDevices(Map<String, String> requestParams) {
-        LOGGER.info("push log step3 savePushMessageToAllDevices:msg:{}", requestParams.toString());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("receive jms " + PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/pushMessageToAllDevices"
                 + " of data: " + requestParams);
@@ -119,6 +118,7 @@ public class MsgQueueAppServerRequestServiceImpl implements MsgQueueAppServerReq
             deviceType = Enum.valueOf(PushDeviceType.class, strDeviceType.trim());
         }
         final PushMessage thePushmsg = getPushMessage(requestParams);
+        LOGGER.info("push log step3 content:{},msg:{}", thePushmsg.getContent(), requestParams.toString());
         service.savePushMessageToAllDevices(appkey, deviceType, thePushmsg);
     }
 
