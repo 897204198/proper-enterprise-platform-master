@@ -41,7 +41,7 @@ public class AppServerRequestController {
                 String value = request.getParameter(key);
                 requestParams.put(key, value);
             }
-            LOGGER.info("push log step1:rest msg:{}", requestParams.toString());
+            LOGGER.info("push log step1 msg:{}", requestParams.toString());
             appServerRequestJmsTemplate.saveConvertAndSend(PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/" + requestMethod,
                 requestParams);
             rtn.put("result", "0");

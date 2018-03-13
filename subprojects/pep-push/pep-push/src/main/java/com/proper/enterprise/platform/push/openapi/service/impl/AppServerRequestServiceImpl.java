@@ -52,7 +52,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
 
     @Override
     public void savePushMessageToAllUsers(String appkey, PushMessage thePushmsg) {
-        LOGGER.info("push log step4 savePushMessageToAllUsers:msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
+        LOGGER.info("push log step4 content:{},msg:{}", thePushmsg.getContent(), JSONUtil.toJSONIgnoreException(thePushmsg));
         final int dbBatchSize = globalInfo.getDbBatchSize();
         Pageable pageable = new PageRequest(0, dbBatchSize);
         List<String> lstUids = new ArrayList<>(dbBatchSize);
@@ -76,7 +76,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
 
     @Override
     public void savePushMessageToAllDevices(String appkey, PushDeviceType deviceType0, PushMessage thePushmsg) {
-        LOGGER.info("push log step4 savePushMessageToAllDevices:msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
+        LOGGER.info("push log step4 content:{},msg:{}", thePushmsg.getContent(), JSONUtil.toJSONIgnoreException(thePushmsg));
         Map<String, Object> deviceConf = (Map<String, Object>) Mapl.cell(globalInfo.getPushConfigs(),
             appkey + ".device");
         if (deviceConf == null) {
@@ -121,7 +121,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
     @SuppressWarnings("unchecked")
     @Override
     public void savePushMessageToUsers(String appkey, List<String> lstUids, PushMessage thePushmsg) {
-        LOGGER.info("push log step4 savePushMessageToUsers:msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
+        LOGGER.info("push log step4 content:{},msg:{}", thePushmsg.getContent(), JSONUtil.toJSONIgnoreException(thePushmsg));
         Map<String, Object> rtn = new LinkedHashMap<>();
         Map<String, Object> deviceConf = (Map<String, Object>) Mapl.cell(globalInfo.getPushConfigs(),
             appkey + ".device");
@@ -208,7 +208,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
     @Override
     public void savePushMessageToDevices(String appkey, PushDeviceType deviceType, List<String> lstDeviceids,
                                          PushMessage thePushmsg) {
-        LOGGER.info("push log step4 savePushMessageToDevices:msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
+        LOGGER.info("push log step4 content:{},msg:{}", thePushmsg.getContent(), JSONUtil.toJSONIgnoreException(thePushmsg));
         Map<String, Object> rtn = new LinkedHashMap<>();
         Map<String, Object> deviceConf = (Map<String, Object>) Mapl.cell(globalInfo.getPushConfigs(),
             appkey + ".device");

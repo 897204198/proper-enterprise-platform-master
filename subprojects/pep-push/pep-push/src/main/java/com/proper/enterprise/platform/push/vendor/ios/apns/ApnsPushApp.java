@@ -77,7 +77,7 @@ public class ApnsPushApp extends BasePushApp {
      * @return
      */
     public boolean pushOneMsg(PushMsgEntity msg) {
-        LOGGER.info("push log step6 ios pushOneMsg:msg:{}", JSONUtil.toJSONIgnoreException(msg));
+        LOGGER.info("ios push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
         boolean result = false;
         try {
             initApnsClient();
@@ -107,7 +107,7 @@ public class ApnsPushApp extends BasePushApp {
                 msg.setMresponse(JSONUtil.toJSON(pushNotificationResponse));
                 if (pushNotificationResponse.isAccepted()) {
                     LOGGER.info("Push notitification accepted by APNs gateway.");
-                    LOGGER.info("push log step6 ios pushOneMsg success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
+                    LOGGER.info("success ios push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
                     result = true;
                 } else {
                     LOGGER.info(

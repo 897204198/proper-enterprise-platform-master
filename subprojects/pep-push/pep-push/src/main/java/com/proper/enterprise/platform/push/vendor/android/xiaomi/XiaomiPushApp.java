@@ -59,7 +59,7 @@ public class XiaomiPushApp extends BasePushApp {
      * @return
      */
     public boolean pushOneMsg(PushMsgEntity msg, int notifyId) {
-        LOGGER.info("push log step6 xiaomi pushOneMsg:msg:{}", JSONUtil.toJSONIgnoreException(msg));
+        LOGGER.info("xiaomi push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
 
         boolean result = false;
 
@@ -93,12 +93,12 @@ public class XiaomiPushApp extends BasePushApp {
             result = doSendMsg(msg, toMsg);
 
         } catch (Exception e) {
-            LOGGER.error("XiaomiPushApp error:msg:{}", JSONUtil.toJSONIgnoreException(msg), e);
+            LOGGER.error("error xiaomi push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), e);
             try {
                 close();
                 result = doSendMsg(msg, toMsg);
             } catch (Exception ex) {
-                LOGGER.error("XiaomiPushApp error:msg:{}", JSONUtil.toJSONIgnoreException(msg), ex);
+                LOGGER.error("error xiaomi push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), ex);
                 result = false; // 第二次发送失败才真的发送失败
             }
         }
@@ -114,10 +114,10 @@ public class XiaomiPushApp extends BasePushApp {
             com.xiaomi.xmpush.server.Result rsp = getClient().send(toMsg, pushToken, 1);
             // 有错误返回
             if (rsp.getErrorCode() == ErrorCode.Success) {
-                LOGGER.info("push log step6 xiaomi success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
+                LOGGER.info("success xiaomi push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
                 result = true;
             } else {
-                LOGGER.info("push log step6 xiaomi error,msg{}", JSONUtil.toJSONIgnoreException(msg), rsp);
+                LOGGER.info("error xiaomi push log step6 content:{},msg{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), rsp);
                 // 先不设设备的状态无效，这里有判断失误的情况。
                 // if(rsp.getErrorCode().getValue()==20301){
                 // pushService.onPushTokenInvalid(msg);

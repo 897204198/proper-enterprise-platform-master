@@ -59,18 +59,18 @@ public class HuaweiPushApp extends BasePushApp {
      * @return boolean
      */
     boolean pushOneMsg(PushMsgEntity msg) {
-        LOGGER.info("push log step6 huawei pushOneMsg:msg:{}", JSONUtil.toJSONIgnoreException(msg));
+        LOGGER.info("huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
 
         boolean result;
         try {
             result = doPushMsg(msg);
         } catch (Exception e) {
-            LOGGER.error("huawei push error:msg:{}", JSONUtil.toJSONIgnoreException(msg), e);
+            LOGGER.error("error huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), e);
             try {
                 close();
                 result = doPushMsg(msg);
             } catch (Exception e1) {
-                LOGGER.error("huawei push error:msg:{}", JSONUtil.toJSONIgnoreException(msg), e1);
+                LOGGER.error("error huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), e1);
                 result = false; // 第二次发送失败才真的发送失败
             }
         }
@@ -127,7 +127,7 @@ public class HuaweiPushApp extends BasePushApp {
             rsp = sendPushMessage(1, pushToken, s, null);
         } else {
             getClient();
-            LOGGER.info("Push a cmd msg to Huawei push server with pushToken:{}", pushToken);
+            LOGGER.info("gr:{}", pushToken);
             rsp = "{\"msg\":\"success\",\"requestID\":\"14948199168335342557\",\"resultcode\":0}";
         }
         return rsp;
@@ -139,10 +139,11 @@ public class HuaweiPushApp extends BasePushApp {
         try {
             PushRet result = JSONUtil.parse(rsp, PushRet.class);
             if ("success".equals(result.getMsg())) {
-                LOGGER.info("push log step6 huawei success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
+                LOGGER.info("success huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
                 rtn = true;
             } else {
-                LOGGER.error("push log step6 huawei error:msg:{},error_msg:{}", JSONUtil.toJSONIgnoreException(msg), result.toString());
+                LOGGER.error("error huawei push log step6 content:{},msg:{},error_msg:{}",
+                    msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), result.toString());
             }
             Integer badgeNumber = getBadgeNumber(msg);
             //角标不为空，且当前消息为通知栏消息，则发送一条透传消息，设置应用角标
@@ -159,7 +160,7 @@ public class HuaweiPushApp extends BasePushApp {
                 msg.setMresponse(rsp);
             }
         } catch (Exception ex) {
-            LOGGER.error("huaWei handleNotificationRsp error:msg:{}", JSONUtil.toJSONIgnoreException(msg), ex);
+            LOGGER.error("error huawei push log step6 content:{},msg:{},error_msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), ex);
         }
         return rtn;
     }
@@ -169,13 +170,14 @@ public class HuaweiPushApp extends BasePushApp {
             msg.setMresponse(rsp);
             PushRet result = JSONUtil.parse(rsp, PushRet.class);
             if ("success".equals(result.getMsg())) {
-                LOGGER.info("push log step6 huawei success:msg:{}", JSONUtil.toJSONIgnoreException(msg));
+                LOGGER.info("success huawei push log step6 content:{},:msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
                 return true;
             } else {
-                LOGGER.error("push log step6 huawei error:msg:{},error_msg:{}", JSONUtil.toJSONIgnoreException(msg), result.toString());
+                LOGGER.error("error huawei push log step6 content:{},msg:{},error_msg:{}",
+                    msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), result.toString());
             }
         } catch (Exception ex) {
-            LOGGER.error(ex.getMessage(), ex);
+            LOGGER.error("error huawei push log step6 content:{},msg:{},error_msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), ex);
         }
         return false;
     }

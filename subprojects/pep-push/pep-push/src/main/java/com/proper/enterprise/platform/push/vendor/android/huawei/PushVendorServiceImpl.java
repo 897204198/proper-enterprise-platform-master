@@ -23,7 +23,6 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
 
     @Override
     public int pushMsg(List<PushMsgEntity> lstMsgs) {
-        LOGGER.info("push log step5 huawei pushMsg:msg:{}", JSONUtil.toJSONIgnoreException(lstMsgs));
         int sendCount = 0;
         if (pushApp == null) {
             pushApp = new HuaweiPushApp();
@@ -34,6 +33,7 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
 
         // 向指定的设备推送数据。
         for (PushMsgEntity dm : lstMsgs) {
+            LOGGER.info("huawei push log step5 content:{},msg:{}", dm.getMcontent(), JSONUtil.toJSONIgnoreException(lstMsgs));
             dm.setSendCount(dm.getSendCount() + 1); // 发送次数+1
             // 向手机端推送一条消息，手机端收到消息后，请求web服务器,再获取消息内容
             boolean r = pushApp.pushOneMsg(dm);
