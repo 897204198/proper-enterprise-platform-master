@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.oopsearch.api.document;
 
+import com.proper.enterprise.platform.core.mongo.document.BaseDocument;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * mongodb中文档对应的entity
  * */
 @Document(collection = "search_column")
-public class SearchDocument implements OOPSearchDocument {
+public class SearchDocument extends BaseDocument implements OOPSearchDocument {
 
     // 内容
     @Indexed

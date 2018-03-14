@@ -50,9 +50,13 @@ public class Relation {
         return dataMap;
     }
 
+    public RelationMap<String, Integer> getRelationNodes() {
+        return relationNodes;
+    }
+
     /*
-        添加关系节点
-    */
+            添加关系节点
+        */
     private void addRelationNode(String nodeId) {
         if (!relationNodes.containsNormalValue(nodeId)) {
             int num = relationNodes.size();

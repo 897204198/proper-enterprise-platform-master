@@ -5,10 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.proper.enterprise.platform.core.PEPApplicationContext
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.oopsearch.api.serivce.QueryResultService
+import com.proper.enterprise.platform.oopsearch.configs.MultiTableConfigTest
 import com.proper.enterprise.platform.oopsearch.entity.Table2EntityTest
 import com.proper.enterprise.platform.oopsearch.entity.TableEntityTest
-import com.proper.enterprise.platform.oopsearch.configs.MultiTableConfigTest
-import com.proper.enterprise.platform.oopsearch.configs.Table2ConfigTest
 import com.proper.enterprise.platform.oopsearch.repository.Table2RepositoryTest
 import com.proper.enterprise.platform.oopsearch.repository.TableRepositoryTest
 import com.proper.enterprise.platform.test.AbstractTest
@@ -17,13 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 
+import java.text.SimpleDateFormat
+
 class QueryResultServiceImplTest extends AbstractTest{
 
     @Autowired
     MultiTableConfigTest multiTableConfigTest
-
-    @Autowired
-    Table2ConfigTest configTest
 
     @Autowired
     QueryResultService queryResultService
@@ -42,60 +40,74 @@ class QueryResultServiceImplTest extends AbstractTest{
         initData()
         get("/search/init",  HttpStatus.OK)
 
-        String tableName = "test_table2"
-        String req = "[{\"key\":\"create_time\",\"value\":\"2017-12-25到2018-02-27\",\"operate\":\"like\"}," +
-                        "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\"}]"
+        String endDate = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+        String req = "[{\"key\":\"create_time\",\"value\":\"2017-12-25到" + endDate +
+                        "\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+                        "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         req = URLDecoder.decode(req, PEPConstants.DEFAULT_CHARSET.toString())
         ObjectMapper objectMapper = new ObjectMapper()
         JsonNode jn = objectMapper.readValue(req, JsonNode.class)
-        List result = queryResultService.assemble(configTest, jn, tableName)
+        List result = queryResultService.assemble(jn, "table2ConfigTest")
         assert result.size() == 1
 
-        req = "[{\"key\":\"create_time\",\"value\":\"2018-01-01或2018-02-27\",\"operate\":\"like\"}," +
-            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\"}]"
+        //测试无查询条件情况，查询所有
+        req = "[{}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(configTest, jn, tableName)
+        result = queryResultService.assemble(jn, "table2ConfigTest")
+        assert result.size() == 3
+
+        req = "[{\"key\":\"create_time\",\"value\":\"2018-01-01或"+ endDate +
+            "\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
+        jn = objectMapper.readValue(req, JsonNode.class)
+        result = queryResultService.assemble(jn, "table2ConfigTest")
         assert result.size() == 1
 
-        req = "[{\"key\":\"dept_member_count\",\"value\":\"1\",\"operate\":\">\"}]"
+        req = "[{\"key\":\"dept_member_count\",\"value\":\"1\",\"operate\":\">\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(configTest, jn, tableName)
+        result = queryResultService.assemble(jn, "table2ConfigTest")
         assert result.size() > 1
 
-        req = "[{\"key\":\"create_time\",\"value\":\"2018\",\"operate\":\"like\"}," +
-            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\"}]"
+        req = "[{\"key\":\"create_time\",\"value\":\"2018\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(configTest, jn, tableName)
+        result = queryResultService.assemble(jn, "table2ConfigTest")
+        assert result.size() == 1
 
-        req = "[{\"key\":\"create_time\",\"value\":\"本年\",\"operate\":\"like\"}," +
-            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\"}]"
+        req = "[{\"key\":\"create_time\",\"value\":\"本年\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(configTest, jn, tableName)
+        result = queryResultService.assemble(jn, "table2ConfigTest")
+        assert result.size() == 1
 
-        req = "[{\"key\":\"create_time\",\"value\":\"本季\",\"operate\":\"like\"}," +
-            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\"}]"
+        req = "[{\"key\":\"create_time\",\"value\":\"本季\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(configTest, jn, tableName)
+        result = queryResultService.assemble(jn, "table2ConfigTest")
+        assert result.size() == 1
 
-        req = "[{\"key\":\"create_time\",\"value\":\"本月\",\"operate\":\"like\"}," +
-            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\"}]"
+        req = "[{\"key\":\"create_time\",\"value\":\"本月\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(configTest, jn, tableName)
+        result = queryResultService.assemble(jn, "table2ConfigTest")
+        assert result.size() == 1
 
-        req = "[{\"key\":\"create_time\",\"value\":\"本周\",\"operate\":\"like\"}," +
-            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\"}]"
+        req = "[{\"key\":\"create_time\",\"value\":\"本周\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(configTest, jn, tableName)
+        result = queryResultService.assemble(jn, "table2ConfigTest")
+        assert result.size() == 1
 
-        req = "[{\"key\":\"create_time\",\"value\":\"本天\",\"operate\":\"like\"}," +
-            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\"}]"
+        req = "[{\"key\":\"create_time\",\"value\":\"本天\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(configTest, jn, tableName)
+        result = queryResultService.assemble(jn, "table2ConfigTest")
+        assert result.size() == 1
 
-        req = "[{\"key\":\"create_time\",\"value\":\"2017-12-25到2018-01-27\",\"operate\":\"like\"}," +
-            "{\"key\":\"dept_member_count\",\"value\":\"20\",\"operate\":\"=\"}]"
+        req = "[{\"key\":\"create_time\",\"value\":\"2017-12-25到"+ endDate +"\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+            "{\"key\":\"dept_member_count\",\"value\":\"20\",\"operate\":\"=\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(configTest, jn, tableName)
+        result = queryResultService.assemble(jn, "table2ConfigTest")
         assert result.size() == 1
     }
 
@@ -129,21 +141,18 @@ class QueryResultServiceImplTest extends AbstractTest{
         table2EntityTest.setDeptId("001")
         table2EntityTest.setDeptName("研发部")
         table2EntityTest.setDeptDesc("产品研发")
-        table2EntityTest.setCreateTime("2018-01-01")
         table2EntityTest.setDeptMemberCount(10)
 
         Table2EntityTest table2EntityTest2 = new Table2EntityTest()
         table2EntityTest2.setDeptId("002")
         table2EntityTest2.setDeptName("实施部")
         table2EntityTest2.setDeptDesc("产品实施")
-        table2EntityTest2.setCreateTime("2018-01-02")
         table2EntityTest2.setDeptMemberCount(20)
 
         Table2EntityTest table2EntityTest3 = new Table2EntityTest()
         table2EntityTest3.setDeptId("003")
         table2EntityTest3.setDeptName("销售部")
         table2EntityTest3.setDeptDesc("产品销售")
-        table2EntityTest3.setCreateTime("2018-01-03")
         table2EntityTest3.setDeptMemberCount(30)
 
         table2RepositoryTest.save(table2EntityTest)

@@ -1,19 +1,16 @@
 package com.proper.enterprise.platform.oopsearch.entity;
 
 import com.proper.enterprise.platform.core.annotation.CacheEntity;
-import org.hibernate.annotations.GenericGenerator;
+import com.proper.enterprise.platform.core.entity.BaseEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "TEST_TABLE")
 @CacheEntity
-public class TableEntityTest {
-
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    protected String id;
+public class TableEntityTest extends BaseEntity {
 
     @Column(nullable = false)
     private String userId;
@@ -26,17 +23,6 @@ public class TableEntityTest {
 
     @Column(nullable = false)
     private String deptId;
-
-    @Column(nullable = false)
-    private String createTime;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;
@@ -69,14 +55,5 @@ public class TableEntityTest {
     public void setDeptId(String deptId) {
         this.deptId = deptId;
     }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
 
 }
