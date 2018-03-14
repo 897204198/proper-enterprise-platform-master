@@ -45,6 +45,34 @@ class EntityTest extends AbstractTest {
         roleNodeEntity.remove(userNodeEntity)
     }
 
+    @Test
+    void testResourceNodeEntity() {
+        ResourceNodeEntity resourceNodeEntity = new ResourceNodeEntity()
+        MenuNodeEntity menuNodeEntity = new MenuNodeEntity()
+        menuNodeEntity.setName('menu1')
+        resourceNodeEntity.add(menuNodeEntity)
+        assert resourceNodeEntity.getMenus().size() == 1
+        resourceNodeEntity.remove(menuNodeEntity)
+        assert resourceNodeEntity.getMenus().size() == 0
+        RoleNodeEntity roleNodeEntity = new RoleNodeEntity()
+        roleNodeEntity.setName('role')
+        resourceNodeEntity.add(roleNodeEntity)
+        assert resourceNodeEntity.getRoles().size() == 1
+        resourceNodeEntity.remove(roleNodeEntity)
+        assert resourceNodeEntity.getRoles().size() == 0
+
+        Set<MenuNodeEntity> set = new HashSet<>()
+        set.add(menuNodeEntity)
+        resourceNodeEntity.setMenus(set)
+        assert resourceNodeEntity.getMenus().size() ==1
+
+        Set<RoleNodeEntity> set1 = new HashSet<>()
+        set1.add(roleNodeEntity)
+        resourceNodeEntity.setRoles(set1)
+        assert resourceNodeEntity.getRoles().size() == 1
+
+    }
+
 
 
 }
