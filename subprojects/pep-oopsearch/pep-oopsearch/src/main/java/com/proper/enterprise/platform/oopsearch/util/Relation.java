@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.oopsearch.util;
 
 import com.proper.enterprise.platform.core.PEPApplicationContext;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -26,9 +27,9 @@ public class Relation {
     //边
     private int[][] lines = {};
 
-    /*
-        加载全部节点关系
-    */
+    /**
+     * 加载全部节点关系
+     */
     private void loadingLines() {
         addRelations();
         int size = relationNodes.size();
@@ -54,9 +55,9 @@ public class Relation {
         return relationNodes;
     }
 
-    /*
-            添加关系节点
-        */
+    /**
+     *  添加关系节点
+     */
     private void addRelationNode(String nodeId) {
         if (!relationNodes.containsNormalValue(nodeId)) {
             int num = relationNodes.size();
@@ -64,9 +65,9 @@ public class Relation {
         }
     }
 
-    /*
-         添加扩展字段，选填。如果需要请成对传入
-    */
+    /**
+     *  添加扩展字段，选填。如果需要请成对传入
+     */
     private void addDatas(String nodeA, String nodeB, String[] datas) {
         Map<String, String> forward = new HashMap<>();
         Map<String, String> reverse = new HashMap<>();
@@ -78,9 +79,19 @@ public class Relation {
         dataMap.put(nodeB + ":" + nodeA, reverse);
     }
 
+    /**
+     *  批量添加关系
+     */
     private void addRelations() {
         ApplicationContext context = PEPApplicationContext.getApplicationContext();
-        List<Map<String, Object>> configInfo = (List<Map<String, Object>>) context.getBean(relationName);
+        List<Map<String, Object>> configInfo = null;
+        if (StringUtil.isEmpty(relationName)) {
+            //从xml中获得表关系，双向关联，不分先后
+            configInfo = EntityRelationUtil.getRelationFromEntitys();
+        } else {
+            //如果不配置关系，则从jpa检索表关系
+            configInfo = (List<Map<String, Object>>) context.getBean(relationName);
+        }
         for (Map<String, Object> map : configInfo) {
             String nodeA = (String) map.get("nodeA");
             String nodeB = (String) map.get("nodeB");
@@ -89,8 +100,8 @@ public class Relation {
         }
     }
 
-    /*
-        添加节点、双向关系、扩展字段
+    /**
+     *  添加节点、双向关系、扩展字段
      */
     private void addRelation(String nodeA, String nodeB, String... datas) {
         addRelationNode(nodeA);
@@ -98,9 +109,9 @@ public class Relation {
         addDatas(nodeA, nodeB, datas);
     }
 
-    /*
-        递归计算最短路径
-    */
+    /**
+     *  递归计算最短路径
+     */
     private List<RelationNode> routes(List<RelationNode> horizontal, String target, List<String> visited, List<RelationNode> routesList, int level) {
         if (horizontal == null || horizontal.size() == 0) {
             return routesList;
@@ -132,9 +143,9 @@ public class Relation {
         return routesList;
     }
 
-    /*
-        返回最短路径，如果有多个只取第一个
-    */
+    /**
+     *  返回最短路径，如果有多个只取第一个
+     */
     public List<RelationNode> findRelation(String start, String end) {
         List<RelationNode> list = new ArrayList<>();
         list.add(new RelationNode(start, null, 1));
@@ -145,9 +156,9 @@ public class Relation {
         return routes;
     }
 
-    /*
-        展开路径
-    */
+    /**
+     *  展开路径
+     */
     private List<RelationNode> openRelation(RelationNode relationNode) {
         List<RelationNode> list = new ArrayList<>();
         list.add(relationNode);
@@ -158,6 +169,5 @@ public class Relation {
         Collections.reverse(list);
         return list;
     }
-
 
 }

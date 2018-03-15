@@ -1,17 +1,18 @@
-package com.proper.enterprise.platform.oopsearch.sync.mysql.service
+package com.proper.enterprise.platform.oopsearch.api.service
 
+import com.proper.enterprise.platform.oopsearch.api.conf.DemoDeptConfigs
 import com.proper.enterprise.platform.oopsearch.api.document.SearchDocument
 import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel
 import com.proper.enterprise.platform.oopsearch.api.model.SyncDocumentModel
 import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService
-import com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl.MySQLMongoDataSync
+import com.proper.enterprise.platform.oopsearch.api.service.impl.TestMongoDataSync
 import com.proper.enterprise.platform.test.AbstractTest
 import com.zaxxer.hikari.HikariConfig
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class MongoDataSyncServiceImplTest extends AbstractTest{
+class AbstractMongoDataSyncTest extends AbstractTest{
 
     @Autowired
     MongoDataSyncService mongoDataSyncService
@@ -22,8 +23,8 @@ class MongoDataSyncServiceImplTest extends AbstractTest{
     @Autowired
     HikariConfig hikariConfig
 
-//    @Autowired
-//    MongoDataSyncServiceImpl mongoDataSyncServiceImpl
+    @Autowired
+    DemoDeptConfigs demoDeptConfigs
 
     @Test
     void test(){
@@ -53,14 +54,20 @@ class MongoDataSyncServiceImplTest extends AbstractTest{
 
     @Test
     void testGetSearchColumnMongo(){
-        MySQLMongoDataSync mongoDataSyncServiceImpl = new MySQLMongoDataSync()
+        TestMongoDataSync testMongoDataSync = new TestMongoDataSync()
         List<SearchColumnModel> searchColumnList = new ArrayList<>()
-        def result = mongoDataSyncServiceImpl.getSearchColumnMongo(searchColumnList, "column")
+        def result = testMongoDataSync.getSearchColumnMongo(searchColumnList, "column")
         assert result == null
-//        String oldUrl = hikariConfig.getDataSourceProperties().get("url")
-//        String newUrl = "jdbc:mysql://localhost:3306/pep_test"
-//        hikariConfig.addDataSourceProperty("url",newUrl)
-//        def result = mongoDataSyncServiceImpl.getPrimaryKeys("test_table")
-//        println result.size()
+
+        SearchColumnModel searchColumnModel = new SearchColumnModel()
+        searchColumnModel.setColumn("column")
+        searchColumnList.add(searchColumnModel)
+        def result2 = testMongoDataSync.getSearchColumnMongo(searchColumnList, "column")
+        assert result2.getColumn() == "column"
+    }
+
+    @Test
+    void testFullSync(){
+        mongoDataSyncService.fullSynchronization()
     }
 }

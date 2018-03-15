@@ -95,13 +95,13 @@ public class DemoDeptController extends BaseController {
 `searchInfo`方法为查询框输入内容后动态查询联想结果并返回前台，作为下拉框提示内容
 `deptResult`方法为点击查询按钮后，查询后台数据库，返回结果列表内容
 
-使用pep-oopsearch-mongo自动同步
+使用pep-oopsearch-sync-mysql自动同步
 ----------------------------
 当mysql中数据发生`insert`、`update`、`delete`操作时，pep-oopsearch-mongo模块，可以自动监听到该操作。
 并自动对操作内容进行解析，然后同步到mongodb当中。保持查询信息一致。
 >注意：`pep-oopsearch-sync-mysql`模块采用解析`mysql`数据库的`binlog`来实现以上功能。所以要使用该模块，数据库必须使用`mysql`。
 ### 设置pep-oopsearch-mongo配置文件
-* 配置pep-oopsearch-mongo模块的`binlog-analysis.properties`配置文件
+* 配置pep-oopsearch-sync-mysql模块的`binlog-analysis.properties`配置文件
 ```
 # 如果表分布在多个schema中，可配置多schema，用半角逗号","分割
 binlog.schema=pep_dev,pep_test
@@ -123,8 +123,15 @@ server-id=1
 * 根据上方的配置内容（slave的用户名、密码）为pep-oopsearch-mongo模块创建用户，并开启[REPLICATION SLAVE](http://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html#priv_replication-slave)、
 [REPLICATION CLIENT](http://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html#priv_replication-client)权限。
 
+使用pep-oopsearch-sync-h2自动同步
+------------------------------
+该模块实现将h2数据库中的数据，同步到mongo的功能。
+该模块采用了`pep-schedule-cluster`的定时任务功能。
+默认情况下，每5秒，全量同步一次h2的数据到mongo当中。
+>注意:可以查看`cluster-pep-oopsearch-sync-h2`中定时任务具体配置
+
 pep-webapp中的设置
-----------------------------
+----------------
 修改`pep-webapp.gradle`文件。
 ```
 runtime project(':pep-oopsearch'),
@@ -138,7 +145,8 @@ runtime project(':pep-oopsearch'),
         project(':pep-oopsearch-sync-mysql'),
         project(':pep-cache-ehcache')
 ```
-
+>注意：可以根据数据库实际环境，将project(':pep-oopsearch-sync-mysql')替换为project(':pep-oopsearch-sync-h2')
+两者不可同时使用。
 
 其他注意事项
 ----------

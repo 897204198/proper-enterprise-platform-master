@@ -14,6 +14,9 @@ public class SqlInstallUtil {
 
     private static Relation relation = new Relation("tableRelation");
 
+    /**
+     * The select part of SQL.
+     */
     public static String addSelectElements(List<SearchColumnModel> list) {
         RelationMap<String, Integer> relationNodes = relation.getRelationNodes();
         Map<String, Integer> times = new HashMap<>();
@@ -38,6 +41,9 @@ public class SqlInstallUtil {
         return stringBuffer.toString();
     }
 
+    /**
+     * The table part of SQL.
+     */
     public static String addTableElements(String sql, List<String> tableNames) {
         RelationMap<String, Integer> relationNodes = relation.getRelationNodes();
         if (tableNames.size() == 1) {
@@ -78,6 +84,9 @@ public class SqlInstallUtil {
         return sql;
     }
 
+    /**
+     * The date part of SQL.
+     */
     public static String addWhereDateRange(String table, String key, String[] value) {
         RelationMap<String, Integer> relationNodes = relation.getRelationNodes();
         StringBuffer stringBuffer = new StringBuffer();
@@ -101,6 +110,9 @@ public class SqlInstallUtil {
         return stringBuffer.toString();
     }
 
+    /**
+     * The where part of SQL.
+     */
     public static String addWhereElements(String sql,
                                           String table,
                                           String logic,
@@ -132,6 +144,9 @@ public class SqlInstallUtil {
         return stringBuffer.toString();
     }
 
+    /**
+     * Separator.
+     */
     private static String getSeparator(String keyType, String operate, String director) {
         Map<String, String> map = new HashMap<>();
         //op
@@ -148,6 +163,9 @@ public class SqlInstallUtil {
         }
     }
 
+    /**
+     * Where part without logic.
+     */
     private static String addElementWithoutLogic(String sql, String table, String key, String keyType, String operate, String value) {
         RelationMap<String, Integer> relationNodes = relation.getRelationNodes();
         Integer i = relationNodes.getNormalValue(table);
@@ -161,6 +179,9 @@ public class SqlInstallUtil {
         return stringBuffer.toString();
     }
 
+    /**
+     * Default operate.
+     */
     private static String getDefaultTypeOperate(String type) {
         Map<String, String> map = new HashMap<>();
         map.put("text", "like");

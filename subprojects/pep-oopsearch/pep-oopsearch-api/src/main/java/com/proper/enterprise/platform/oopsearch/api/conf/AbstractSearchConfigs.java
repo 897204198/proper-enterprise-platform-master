@@ -1,7 +1,10 @@
 package com.proper.enterprise.platform.oopsearch.api.conf;
 
 import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -9,6 +12,9 @@ import java.util.*;
  * 每一个使用oopsearch组件的业务模块，需配置一个查询配置类，继承该类
  * */
 public abstract class AbstractSearchConfigs {
+
+    // logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSearchConfigs.class);
 
     // 查询表名
     public String searchTables;
@@ -125,12 +131,24 @@ public abstract class AbstractSearchConfigs {
     }
 
     /**
-     * 获取查询字段与表名对应的集合
+     * 获取查询字段与表名对应的集合(获取的是searchTableColumnMap变量的拷贝)
      *
      * @return 查询字段对象与表名对应的集合
      * */
     public Map<String, List<SearchColumnModel>> getSearchTableColumnMap() {
-        return searchTableColumnMap;
+        Map<String, List<SearchColumnModel>> copySearchTableColumnMap = new HashMap<>();
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        ObjectOutputStream out = null;
+        try {
+            out = new ObjectOutputStream(byteOut);
+            out.writeObject(searchTableColumnMap);
+            ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
+            ObjectInputStream inputStream = new ObjectInputStream(byteIn);
+            copySearchTableColumnMap = (Map<String, List<SearchColumnModel>>) inputStream.readObject();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return copySearchTableColumnMap;
     }
 
     public Map<String, Map<String, SearchColumnModel>> getSearchTableColumn() {

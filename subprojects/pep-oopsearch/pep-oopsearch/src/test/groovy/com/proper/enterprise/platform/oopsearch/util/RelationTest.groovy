@@ -12,9 +12,14 @@ class RelationTest extends AbstractTest {
 
     @Test
     void testTable() {
-        //双向关联，不分先后
+        //从xml中获得表关系，双向关联，不分先后
         Relation relation = new Relation("tableRelation")
         List<RelationNode> list = relation.findRelation("pep_auth_users", "pep_auth_roles")
+        assert list.size() == 3
+
+        //如果不配置关系，则从jpa检索表关系
+        relation = new Relation("")
+        list = relation.findRelation("pep_auth_users", "pep_auth_roles")
         assert list.size() == 3
     }
 

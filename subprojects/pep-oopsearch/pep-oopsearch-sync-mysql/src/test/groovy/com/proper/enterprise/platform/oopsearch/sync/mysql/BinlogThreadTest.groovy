@@ -5,8 +5,8 @@ import com.github.shyiko.mysql.binlog.event.*
 import com.proper.enterprise.platform.api.cache.CacheKeysSentry
 import com.proper.enterprise.platform.core.jpa.repository.NativeRepository
 import com.proper.enterprise.platform.oopsearch.api.document.SearchDocument
+import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService
-import com.proper.enterprise.platform.oopsearch.sync.mysql.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl.SyncCacheService
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test

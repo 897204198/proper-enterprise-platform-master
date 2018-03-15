@@ -1,10 +1,12 @@
 package com.proper.enterprise.platform.oopsearch.api.model;
 
+import java.io.Serializable;
+
 /**
  * 查询字段对象模型
  * 用于不同模块，对查询字段对象的获取、转换等操作
  * */
-public class SearchColumnModel {
+public class SearchColumnModel implements Serializable {
 
     // 字段
     private String column;
