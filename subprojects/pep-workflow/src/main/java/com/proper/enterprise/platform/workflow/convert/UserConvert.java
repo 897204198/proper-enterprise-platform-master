@@ -27,7 +27,7 @@ public class UserConvert {
 
     public static List<org.flowable.idm.api.User> convertCollection(Collection<? extends User> pepUsers) {
         List<org.flowable.idm.api.User> users = new ArrayList<>();
-        for (com.proper.enterprise.platform.api.auth.model.User pepUser : pepUsers) {
+        for (User pepUser : pepUsers) {
             org.flowable.idm.api.User user = convert(pepUser);
             if (null == user) {
                 continue;

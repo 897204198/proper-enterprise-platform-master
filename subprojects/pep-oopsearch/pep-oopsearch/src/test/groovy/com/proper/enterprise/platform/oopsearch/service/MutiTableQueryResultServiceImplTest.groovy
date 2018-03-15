@@ -2,10 +2,10 @@ package com.proper.enterprise.platform.oopsearch.service
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.proper.enterprise.platform.auth.common.entity.RoleEntity
-import com.proper.enterprise.platform.auth.common.entity.UserEntity
-import com.proper.enterprise.platform.auth.common.repository.RoleRepository
-import com.proper.enterprise.platform.auth.common.repository.UserRepository
+import com.proper.enterprise.platform.auth.jpa.entity.RoleEntity
+import com.proper.enterprise.platform.auth.jpa.entity.UserEntity
+import com.proper.enterprise.platform.auth.jpa.repository.RoleRepository
+import com.proper.enterprise.platform.auth.jpa.repository.UserRepository
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.oopsearch.api.serivce.QueryResultService
 import com.proper.enterprise.platform.oopsearch.configs.UserRoleConfigTest

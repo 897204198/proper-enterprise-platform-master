@@ -35,7 +35,7 @@ public class ProcDefInitializer {
     private String procDefUpdate;
 
     /**
-     * Ant 风格的路径匹配，可使用逗号间隔多个路径模式
+     * Ant 风格的路径匹配,可使用逗号间隔多个路径模式
      */
     @Value("${workflow.procDefLocations}")
     private String procDefLocations;

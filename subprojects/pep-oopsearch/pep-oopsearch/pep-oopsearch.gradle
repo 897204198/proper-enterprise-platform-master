@@ -4,6 +4,7 @@ dependencies {
             project(':pep-auth-common')
 
     testCompile project(':pep-test')
+    testCompile project(':pep-auth-common-jpa')
     testRuntime project(':pep-oopsearch-sync-mysql'),
                 project(':pep-cache-ehcache')
 }

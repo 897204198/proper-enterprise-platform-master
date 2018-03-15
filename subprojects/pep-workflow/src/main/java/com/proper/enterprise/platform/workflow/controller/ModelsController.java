@@ -2,15 +2,18 @@ package com.proper.enterprise.platform.workflow.controller;
 
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.workflow.EditorSource;
 import com.proper.enterprise.platform.workflow.service.DeployService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.Deployment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -21,7 +24,6 @@ public class ModelsController extends BaseController {
     private RepositoryService repositoryService;
     @Autowired
     private DeployService deployService;
-
 
     /**
      * According to activiti-webapp-explorer2, an initial editor source is needed when
@@ -37,10 +39,14 @@ public class ModelsController extends BaseController {
             EditorSource.initialSource(modelId, name, description).getBytes(PEPConstants.DEFAULT_CHARSET));
     }
 
-    @RequestMapping(value = "/{modelId}/deployment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Deployment> deployModel(@PathVariable String modelId) {
-        return responseOfPost(deployService.deployModel(modelId));
+    @RequestMapping(value = "/{modelId}/deployment", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Map<String, String>> deployModel(@PathVariable String modelId) {
+        Deployment deployment = deployService.deployModel(modelId);
+        Map<String, String> returnMap = new HashMap<>();
+        returnMap.put("id", deployment.getId());
+        returnMap.put("name", deployment.getName());
+        returnMap.put("deployTime", DateUtil.toString(deployment.getDeploymentTime(), PEPConstants.DEFAULT_DATETIME_FORMAT));
+        return responseOfPost(returnMap);
     }
-
-
 }
