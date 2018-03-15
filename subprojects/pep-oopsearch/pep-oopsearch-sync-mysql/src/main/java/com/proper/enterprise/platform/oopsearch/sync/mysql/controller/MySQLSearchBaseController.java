@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AuthcIgnore
 @RestController
 @RequestMapping("/search")
-public class SearchBaseController extends BaseController {
+public class MySQLSearchBaseController extends BaseController {
 
     @Autowired
     private MongoDataSyncService mongoDataSyncService;

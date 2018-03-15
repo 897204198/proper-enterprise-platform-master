@@ -66,10 +66,10 @@ public class BinlogThread extends Thread {
     }
 
     public void run() {
-        initMysqlClient();
+        initMySQLClient();
     }
 
-    private void initMysqlClient() {
+    private void initMySQLClient() {
         client = new BinaryLogClient(this.hostname, this.port, this.username, this.password);
         client.registerEventListener(new BinaryLogClient.EventListener() {
             @Override

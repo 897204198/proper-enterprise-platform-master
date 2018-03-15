@@ -18,8 +18,8 @@ import java.util.Properties;
 
 @Component
 @Lazy(false)
-public class BinlogManager implements InitializingBean {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BinlogManager.class);
+public class MySQLSyncMongoManager implements InitializingBean {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MySQLSyncMongoManager.class);
 
     @Autowired
     private MongoDataSyncService mongoDataSyncService;

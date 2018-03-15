@@ -1,14 +1,18 @@
-package com.proper.enterprise.platform.oopsearch.sync.mysql.controller
+package com.proper.enterprise.platform.oopsearch.sync.h2.service.impl
 
 import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
-import com.proper.enterprise.platform.oopsearch.sync.mysql.entity.DemoDeptEntity
-import com.proper.enterprise.platform.oopsearch.sync.mysql.repository.DemoDeptRepository
+import com.proper.enterprise.platform.oopsearch.sync.h2.entity.DemoDeptEntity
+import com.proper.enterprise.platform.oopsearch.sync.h2.repository.DemoDeptRepository
 import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
-class SearchBaseControllerTest extends AbstractTest{
+class H2SyncJobServiceTest extends AbstractTest{
+
+    @Autowired
+    H2SyncJobService h2SyncJobService
 
     @Autowired
     private DemoDeptRepository demoDeptRepository
@@ -16,13 +20,23 @@ class SearchBaseControllerTest extends AbstractTest{
     @Autowired
     private SyncMongoRepository syncMongoRepository
 
+    @NoTx
     @Test
-    void testSyncMongoFromDB(){
+    void testFullSyncMongo(){
         initDB()
-        get("/search/init",  HttpStatus.OK)
+        sleep(5000)//等待定时任务自动同步数据到mongo
+//        h2SyncJobService.fullSyncMongo()
+        println "------开始查询mongo-----"
         int count = syncMongoRepository.findAll().size()
-        // 5 cols * 3 rows - 2 duplicated value
+        println "------查询mongo结束，count："+count+"-----"
+        // 5 cols * 3 rows - 1 duplicated value
         assert count == 5 * 3 - 1
+
+//        syncMongoRepository.deleteAll()
+//        get("/search/init",  HttpStatus.OK)
+//        count = syncMongoRepository.findAll().size()
+//        // 5 cols * 3 rows - 1 duplicated value
+//        assert count == 5 * 3 - 1
     }
 
     void initDB(){

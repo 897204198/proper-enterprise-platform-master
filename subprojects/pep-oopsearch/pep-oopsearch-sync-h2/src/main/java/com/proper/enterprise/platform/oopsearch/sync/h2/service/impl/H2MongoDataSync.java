@@ -1,31 +1,26 @@
-package com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl;
+package com.proper.enterprise.platform.oopsearch.sync.h2.service.impl;
 
 import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.repository.NativeRepository;
 import com.proper.enterprise.platform.oopsearch.api.annotation.SearchConfig;
-import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;
-import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel;
-import com.proper.enterprise.platform.oopsearch.api.model.SyncDocumentModel;
-import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService;
 import com.proper.enterprise.platform.oopsearch.api.document.SearchDocument;
-import com.proper.enterprise.platform.oopsearch.sync.mysql.repository.SyncMongoRepository;
+import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel;
+import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository;
+import com.proper.enterprise.platform.oopsearch.api.sync.AbstractMongoDataSync;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import com.zaxxer.hikari.HikariConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Service(value = "MongoDataSyncServiceImpl")
-public class MongoDataSyncServiceImpl implements MongoDataSyncService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MongoDataSyncServiceImpl.class);
+@Service(value = "h2MongoDataSync")
+public class H2MongoDataSync extends AbstractMongoDataSync {
+    private static final Logger LOGGER = LoggerFactory.getLogger(H2MongoDataSync.class);
 
     @Autowired
     // 初始化PEPApplicationContext，避免后续方法使用时尚未初始化导致获取不到application进而出错
@@ -47,50 +42,7 @@ public class MongoDataSyncServiceImpl implements MongoDataSyncService {
     HikariConfig hikariConfig;
 
     @Override
-    public void singleSynchronization(SyncDocumentModel doc, String method) {
-        SearchDocument searchDocument = convertToSearchDocument(doc);
-        Query query = new Query();
-        if ("insert".equalsIgnoreCase(method)) {
-            query.addCriteria(Criteria.where("tab").is(searchDocument.getTab()));
-            query.addCriteria(Criteria.where("col").is(searchDocument.getCol()));
-            query.addCriteria(Criteria.where("con").is(searchDocument.getCon()));
-            List<SearchDocument> result = mongoTemplate.find(query, SearchDocument.class);
-            if (result.size() == 0) {
-                mongoTemplate.insert(searchDocument);
-            }
-        } else if ("update".equalsIgnoreCase(method)) {
-            query.addCriteria(Criteria.where("tab").is(searchDocument.getTab()));
-            query.addCriteria(Criteria.where("col").is(searchDocument.getCol()));
-            String conBefore = doc.getConb();
-            query.addCriteria(Criteria.where("con").is(conBefore));
-
-            Update update = new Update();
-            update.set("con", searchDocument.getCon());
-
-            mongoTemplate.updateMulti(query, update, SearchDocument.class);
-        } else if ("delete".equalsIgnoreCase(method)) {
-            query.addCriteria(Criteria.where("tab").is(searchDocument.getTab()));
-            query.addCriteria(Criteria.where("col").is(searchDocument.getCol()));
-            query.addCriteria(Criteria.where("con").is(searchDocument.getCon()));
-            query.addCriteria(Criteria.where("pri").is(searchDocument.getPri()));
-            mongoTemplate.remove(query, SearchDocument.class);
-        }
-    }
-
-    private SearchDocument convertToSearchDocument(SyncDocumentModel doc) {
-        SearchDocument searchDocument = new SearchDocument();
-        searchDocument.setCon(doc.getCona());
-        searchDocument.setTab(doc.getTab());
-        searchDocument.setCol(doc.getCol());
-        searchDocument.setPri(doc.getPri());
-        searchDocument.setDes(doc.getDes());
-        return searchDocument;
-    }
-
-    @Override
     public void fullSynchronization() {
-        syncMongoRepository.deleteAll();
-
         // 整理所有需要查询的表名，及表名中对应的字段
         Map<String, Object> searchConfigBeans = pepApplicationContext.getApplicationContext().getBeansWithAnnotation(SearchConfig.class);
         Map<String, List<SearchColumnModel>> tableColumnMap = getTableColumnMap(searchConfigBeans);
@@ -106,7 +58,7 @@ public class MongoDataSyncServiceImpl implements MongoDataSyncService {
             for (int j = 0; j < searchColumnList.size(); j++) {
                 SearchColumnModel searchColumn = searchColumnList.get(j);
                 String columnName = searchColumn.getColumn();
-                querySql.append(columnName + ",");
+                querySql.append(columnName + ", ");
             }
             // 获取主键
             String tableName = tableColumnEntry.getKey();
@@ -115,7 +67,7 @@ public class MongoDataSyncServiceImpl implements MongoDataSyncService {
                 String url = hikariConfig.getDataSourceProperties().get("url").toString();
                 String[] temp = url.split(";")[0].split("/");
                 String schema = temp[temp.length - 1];
-                querySql.append(" CONCAT( '").append(schema).append("|").append(tableName).append("|',");
+                querySql.append(" CONCAT('").append(schema).append("|").append(tableName).append("|',");
                 for (int k = 0; k < primaryKeys.size(); k++) {
                     querySql.append(primaryKeys.get(k) + ",'|'");
                 }
@@ -165,13 +117,13 @@ public class MongoDataSyncServiceImpl implements MongoDataSyncService {
                                     contextFilterMap.put(value, columnList);
                                 }
                                 if (!isRepeat) {
-                                    SearchDocument demoUserDocument = new SearchDocument();
-                                    demoUserDocument.setCon(value);
-                                    demoUserDocument.setCol(searchColumnMongo.getColumn());
-                                    demoUserDocument.setTab(searchColumnMongo.getTable());
-                                    demoUserDocument.setDes(searchColumnMongo.getDescColumn());
-                                    demoUserDocument.setPri(priValue);
-                                    documentList.add(demoUserDocument);
+                                    SearchDocument searchDocument = new SearchDocument();
+                                    searchDocument.setCon(value);
+                                    searchDocument.setCol(searchColumnMongo.getColumn());
+                                    searchDocument.setTab(searchColumnMongo.getTable());
+                                    searchDocument.setDes(searchColumnMongo.getDescColumn());
+                                    searchDocument.setPri(priValue);
+                                    documentList.add(searchDocument);
                                 }
                             }
                         }
@@ -180,67 +132,28 @@ public class MongoDataSyncServiceImpl implements MongoDataSyncService {
             }
         }
         if (documentList.size() > 0) {
+            syncMongoRepository.deleteAll();
             syncMongoRepository.save(documentList);
         }
     }
 
-    public Map<String, List<SearchColumnModel>> getTableColumnMap(Map<String, Object> searchConfigBeans) {
-        Map<String, List<SearchColumnModel>> tableColumnMap = new HashMap<>();
-        for (Map.Entry<String, Object> entry : searchConfigBeans.entrySet()) {
-            AbstractSearchConfigs tempSearchConfig = (AbstractSearchConfigs) entry.getValue();
-            Map<String, List<SearchColumnModel>> tempTableColumnMap = tempSearchConfig.getSearchTableColumnMap();
-            for (Map.Entry<String, List<SearchColumnModel>> tempEntry: tempTableColumnMap.entrySet()) {
-                String tempTableName = tempEntry.getKey();
-                if (!tableColumnMap.containsKey(tempTableName)) {
-                    tableColumnMap.put(tempTableName, tempEntry.getValue());
-                } else {
-                    List<SearchColumnModel> searchColumnList = tableColumnMap.get(tempTableName);
-                    List<SearchColumnModel> tempSearchColumnList = tempEntry.getValue();
-                    List<SearchColumnModel> addSearchColumnList = new ArrayList<>();
-                    for (SearchColumnModel tempSearchColumn: tempSearchColumnList) {
-                        boolean isRepeat = false;
-                        String tempColumn = tempSearchColumn.getColumn();
-                        for (SearchColumnModel searchColumn: searchColumnList) {
-                            String column = searchColumn.getColumn();
-                            if (tempColumn.equalsIgnoreCase(column)) {
-                                isRepeat = true;
-                                break;
-                            }
-                        }
-                        if (!isRepeat) {
-                            addSearchColumnList.add(tempSearchColumn);
-                        }
-                    }
-                    if (addSearchColumnList.size() > 0) {
-                        searchColumnList.addAll(addSearchColumnList);
-                    }
-                }
-            }
 
-        }
-        return tableColumnMap;
-    }
-
-    public SearchColumnModel getSearchColumnMongo(List<SearchColumnModel> searchColumnList, String column) {
-        for (SearchColumnModel searchColumn: searchColumnList) {
-            if (column.equalsIgnoreCase(searchColumn.getColumn())) {
-                return searchColumn;
-            }
-        }
-        return null;
-    }
 
     public List<String> getPrimaryKeys(String tableName) {
         Properties properties = hikariConfig.getDataSourceProperties();
         String url = properties.get("url").toString();
         List<String> primaryKeys = new ArrayList<>();
         // 确保使用的是mysql数据源，避免数据源错误导致执行sql异常
-        if (url.toLowerCase().contains("jdbc:mysql:")) {
-            String sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = '" + tableName + "'";
+        if (url.toLowerCase().contains("jdbc:h2:")) {
+            String sql = "SELECT COLUMN_LIST FROM INFORMATION_SCHEMA.CONSTRAINTS WHERE TABLE_NAME = '"
+                + tableName.toUpperCase() + "' AND CONSTRAINT_TYPE = 'PRIMARY KEY'";
             List<Object> resultList = null;
             resultList = nativeRepository.executeQuery(sql);
             for (Object row:resultList) {
-                primaryKeys.add(row.toString());
+                if (row != null) {
+                    String[] tempPrimaryKeys = row.toString().split(",");
+                    primaryKeys = Arrays.asList(tempPrimaryKeys);
+                }
             }
         }
         return primaryKeys;
