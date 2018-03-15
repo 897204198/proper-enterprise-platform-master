@@ -1,9 +1,16 @@
 dependencies {
-    compile libraries.hibernate_entitymanager,
-            libraries.spring_data_jpa,
-            libraries.spring_orm
-
-    compile project(':pep-core-utils')
+    compile libraries.commons_codec,
+        libraries.commons_lang3,
+        libraries.jackson_databind,
+        libraries.joda_time,
+        libraries.okhttp,
+        libraries.pinyin4j,
+        libraries.servlet_api,
+        libraries.spring_data_jpa,
+        libraries.spring_oxm,
+        libraries.hibernate_entitymanager
 
     testCompile project(':pep-test')
+
+    testRuntime fileTree(dir: 'libs', include: 'conf-in-jar.jar')
 }

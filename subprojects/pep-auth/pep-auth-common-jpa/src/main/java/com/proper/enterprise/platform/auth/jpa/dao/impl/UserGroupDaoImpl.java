@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.UserGroupDao;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.jpa.entity.UserGroupEntity;
 import com.proper.enterprise.platform.auth.jpa.repository.UserGroupRepository;
+import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -19,10 +20,15 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class UserGroupDaoImpl implements UserGroupDao {
+public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepository, String> implements UserGroupDao {
 
     @Autowired
     private UserGroupRepository repository;
+
+    @Override
+    public UserGroupRepository getRepository() {
+        return repository;
+    }
 
     @Override
     public UserGroup get(String id) {
@@ -56,12 +62,6 @@ public class UserGroupDaoImpl implements UserGroupDao {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends UserGroup> save(Collection<? extends UserGroup> groups) {
-        return repository.save((Collection<UserGroupEntity>) groups);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public Collection<? extends UserGroup> getGroups(String name, String description, String enable) {
         Specification specification = new Specification<UserGroupEntity>() {
             @Override
@@ -82,4 +82,5 @@ public class UserGroupDaoImpl implements UserGroupDao {
         };
         return repository.findAll(specification, new Sort("seq"));
     }
+
 }

@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.push.client.model.PushMessage;
 import com.proper.enterprise.platform.push.client.service.IPushApiServiceRequest;
 import com.proper.enterprise.platform.push.client.service.impl.PushApiServiceRequestServiceImpl;

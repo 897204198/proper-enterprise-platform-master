@@ -7,7 +7,7 @@ import com.proper.enterprise.platform.auth.neo4j.entity.ResourceNodeEntity
 import com.proper.enterprise.platform.auth.neo4j.entity.RoleNodeEntity
 import com.proper.enterprise.platform.auth.neo4j.entity.UserNodeEntity
 import com.proper.enterprise.platform.auth.neo4j.repository.*
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.After
 import org.junit.Before
@@ -15,7 +15,7 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestMethod
 
-class MenuNodeServiceImplTest extends AbstractTest {
+class MenuNodeServiceImplTest extends AbstractNeo4jTest {
 
     @Autowired
     MenuService service

@@ -1,9 +1,9 @@
 dependencies {
     compile libraries.hibernate_hikaricp,
             libraries.spring_context_support
-            project(':pep-core')
+            project(':pep-core-jpa')
 
-    testCompile project(':pep-core'),
+    testCompile project(':pep-core-jpa'),
                 project(':pep-test')
 
     testRuntime project(':pep-auth-jwt'),

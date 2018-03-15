@@ -27,6 +27,7 @@ public interface ResourceService {
 
     /**
      * 根据传入的资源集合，过滤掉非法的(valid、enable是false)
+     *
      * @param resources 待过滤的资源集合
      * @return 返回过滤后的资源集合
      */
@@ -70,8 +71,9 @@ public interface ResourceService {
 
     /**
      * 判断这个资源是否有此权限
-     * @param resource 带检测资源
-     * @param reqUrl 指定的资源路径
+     *
+     * @param resource      带检测资源
+     * @param reqUrl        指定的资源路径
      * @param requestMethod 指定的资源请求方法
      * @return 有则返回真
      */

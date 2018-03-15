@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.auth.jpa.entity.MenuEntity;
 import com.proper.enterprise.platform.auth.jpa.repository.MenuRepository;
+import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -17,10 +18,15 @@ import javax.persistence.criteria.Root;
 import java.util.*;
 
 @Service
-public class MenuDaoImpl implements MenuDao {
+public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String> implements MenuDao {
 
     @Autowired
     private MenuRepository repository;
+
+    @Override
+    public MenuRepository getRepository() {
+        return repository;
+    }
 
     @Override
     public Menu get(String id) {
@@ -38,29 +44,13 @@ public class MenuDaoImpl implements MenuDao {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Collection<? extends Menu> save(Collection<? extends Menu> menus) {
-        return repository.save((Collection<MenuEntity>)menus);
-    }
-
-    @Override
     public Menu getNewMenuEntity() {
         return new MenuEntity();
     }
 
     @Override
-    public Collection<? extends Menu> findAll() {
-        return repository.findAll();
-    }
-
-    @Override
     public Collection<? extends Menu> findAll(Collection<String> idList) {
         return repository.findAll(idList);
-    }
-
-    @Override
-    public Collection<? extends Menu> findAll(Sort sort) {
-        return repository.findAll(new Sort("parent", "sequenceNumber"));
     }
 
     @Override

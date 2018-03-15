@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.entity;
 
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -31,6 +32,11 @@ public class DataTrunk<T> implements Serializable {
     public DataTrunk(Collection<T> data, long count) {
         this.data = data;
         this.count = count;
+    }
+
+    public DataTrunk(Page<T> data) {
+        this.data = data.getContent();
+        this.count = data.getTotalElements();
     }
 
     @SuppressWarnings("unchecked")

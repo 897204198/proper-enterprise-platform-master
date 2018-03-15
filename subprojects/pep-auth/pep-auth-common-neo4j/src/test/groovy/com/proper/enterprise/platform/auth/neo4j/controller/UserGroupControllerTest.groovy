@@ -9,17 +9,16 @@ import com.proper.enterprise.platform.auth.neo4j.repository.ResourceNodeReposito
 import com.proper.enterprise.platform.auth.neo4j.repository.RoleNodeRepository
 import com.proper.enterprise.platform.auth.neo4j.repository.UserGroupNodeRepository
 import com.proper.enterprise.platform.auth.neo4j.repository.UserNodeRepository
-
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.i18n.I18NService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
-class UserGroupControllerTest extends AbstractTest {
+class UserGroupControllerTest extends AbstractNeo4jTest {
 
     private static final String URI = '/auth/user-groups'
 

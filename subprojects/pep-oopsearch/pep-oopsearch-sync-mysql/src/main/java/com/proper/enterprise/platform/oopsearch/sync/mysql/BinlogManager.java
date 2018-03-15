@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.oopsearch.sync.mysql;
 
-import com.proper.enterprise.platform.core.repository.NativeRepository;
+import com.proper.enterprise.platform.core.jpa.repository.NativeRepository;
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService;
 import com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl.SyncCacheService;
 import com.zaxxer.hikari.HikariConfig;

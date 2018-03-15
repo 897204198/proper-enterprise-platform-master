@@ -4,30 +4,26 @@ import com.proper.enterprise.platform.api.auth.dao.ResourceDao;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.auth.neo4j.entity.ResourceNodeEntity;
 import com.proper.enterprise.platform.auth.neo4j.repository.ResourceNodeRepository;
-import com.proper.enterprise.platform.sys.i18n.I18NService;
+import com.proper.enterprise.platform.core.neo4j.service.impl.Neo4jServiceSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class Neo4jResourceDaoImpl implements ResourceDao {
+public class Neo4jResourceDaoImpl extends Neo4jServiceSupport<Resource, ResourceNodeRepository, String> implements ResourceDao {
 
     @Autowired
     private ResourceNodeRepository resourceNodeRepository;
 
-    @Autowired
-    private I18NService i18NService;
+    @Override
+    public ResourceNodeRepository getRepository() {
+        return resourceNodeRepository;
+    }
 
     @Override
     public Resource save(Resource resource) {
         return resourceNodeRepository.save((ResourceNodeEntity) resource);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Collection<? extends Resource> save(Collection<? extends Resource> resources) {
-        return resourceNodeRepository.save((Collection<ResourceNodeEntity>)resources);
     }
 
     @Override
@@ -38,11 +34,6 @@ public class Neo4jResourceDaoImpl implements ResourceDao {
     @Override
     public Resource get(String id) {
         return resourceNodeRepository.findOne(id);
-    }
-
-    @Override
-    public Collection<? extends Resource> findAll() {
-        return (Collection<? extends Resource>) resourceNodeRepository.findAll();
     }
 
     @Override

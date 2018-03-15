@@ -25,8 +25,8 @@ class IBaseSpec extends Specification {
         !obj.isValid()
 
         where:
-        clz                 | time                  | user  | id
-        BaseEntity.class    | '2016-06-08 10:42:00' | 'a'   | '1'
+        clz              | time                  | user | id
+        BaseEntity.class | '2016-06-08 10:42:00' | 'a'  | '1'
     }
 
 }

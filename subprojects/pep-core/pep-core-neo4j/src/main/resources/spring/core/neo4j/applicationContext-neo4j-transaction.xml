@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd"
+       default-lazy-init="true">
+
+    <bean id="neo4jTransactionManager" class="org.springframework.data.neo4j.transaction.Neo4jTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <tx:advice id="neo4jTxAdvice" transaction-manager="neo4jTransactionManager">
+        <tx:attributes>
+            <tx:method name="save*" rollback-for="RuntimeException"/>
+            <tx:method name="delete*" rollback-for="RuntimeException"/>
+            <tx:method name="update*" rollback-for="RuntimeException"/>
+            <tx:method name="add*" rollback-for="RuntimeException"/>
+            <tx:method name="create*" rollback-for="RuntimeException"/>
+            <!-- other methods are read-only -->
+            <tx:method name="*" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <aop:pointcut id="neo4jTxEntryPoint" expression="execution(* com.proper..service.impl.*ServiceImpl.*(..))"/>
+        <aop:advisor pointcut-ref="neo4jTxEntryPoint" advice-ref="neo4jTxAdvice"/>
+    </aop:config>
+</beans>

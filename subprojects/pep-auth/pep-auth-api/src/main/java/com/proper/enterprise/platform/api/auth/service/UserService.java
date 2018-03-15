@@ -72,12 +72,9 @@ public interface UserService {
      * @param email    用户邮箱
      * @param phone    用户手机号
      * @param enable   用户可用/不可用
-     * @param pageNo   分页页码
-     * @param pageSize 分页大小
      * @return 用户信息列表
      */
-    DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable,
-                                                  Integer pageNo, Integer pageSize);
+    DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable);
 
     /**
      * 删除多条用户数据

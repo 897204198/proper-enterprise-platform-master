@@ -2,19 +2,18 @@ package com.proper.enterprise.platform.push.repository;
 
 import java.util.List;
 
+import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import com.proper.enterprise.platform.core.repository.BaseRepository;
 import com.proper.enterprise.platform.push.entity.PushDeviceEntity;
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.common.model.enums.PushMode;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
 
-public interface PushMsgRepository extends BaseRepository<PushMsgEntity, String> {
+public interface PushMsgRepository extends BaseJpaRepository<PushMsgEntity, String> {
 
     List<PushMsgEntity> findByAppkeyAndMsgidIn(String appkey, List<String> lstMsgids);
 

@@ -33,7 +33,7 @@ public interface MenuService {
      * 获得用户拥有的所有角色权限范围内的菜单集合，
      * 需去重，并按 parent 和 sequence number 排序
      *
-     * @param  user 用户
+     * @param user 用户
      * @return 菜单集合
      */
     Collection<? extends Menu> getMenus(User user);
@@ -61,13 +61,13 @@ public interface MenuService {
 
     /**
      * 某资源是否能够被某用户访问
-     *
+     * <p>
      * 当资源未定义或未定义在任何菜单下时，任何人都有权限访问
      * 当资源定义到某菜单下时，没有角色的用户（即没有任何菜单访问权限）不能访问该资源
      * 用户需拥有菜单的访问权限，才可访问菜单下的资源
      *
-     * @param  resource 资源
-     * @param  userId   用户 ID
+     * @param resource 资源
+     * @param userId   用户 ID
      * @return true：有权限；false：无权限
      */
     boolean accessible(Resource resource, String userId);
@@ -75,11 +75,11 @@ public interface MenuService {
     /**
      * 按照查询条件获取菜单信息列表
      *
-     * @param name 菜单名称
+     * @param name        菜单名称
      * @param description 菜单描述
-     * @param route 前端路径
-     * @param enable 菜单状态
-     * @param parentId 父菜单ID
+     * @param route       前端路径
+     * @param enable      菜单状态
+     * @param parentId    父菜单ID
      * @return 获取菜单信息列表
      */
     Collection<? extends Menu> getMenuByCondition(String name, String description, String route, String enable, String parentId);
@@ -110,7 +110,7 @@ public interface MenuService {
     /**
      * 菜单添加资源
      *
-     * @param menuId 菜单ID
+     * @param menuId     菜单ID
      * @param resourceId 资源ID
      * @return 菜单
      */
@@ -119,7 +119,7 @@ public interface MenuService {
     /**
      * 菜单删除资源
      *
-     * @param menuId 菜单ID
+     * @param menuId     菜单ID
      * @param resourceId 资源ID
      * @return 菜单
      */

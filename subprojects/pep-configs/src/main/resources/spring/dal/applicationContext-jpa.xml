@@ -33,6 +33,6 @@
     </bean>
 
     <!-- Spring Data JPA -->
-    <jpa:repositories base-package="com.proper.**.repository" transaction-manager-ref="transactionManager" entity-manager-factory-ref="entityManagerFactory"/>
+    <jpa:repositories base-package="com.proper.**.repository" transaction-manager-ref="jpaTransactionManager" entity-manager-factory-ref="entityManagerFactory"/>
 
 </beans>

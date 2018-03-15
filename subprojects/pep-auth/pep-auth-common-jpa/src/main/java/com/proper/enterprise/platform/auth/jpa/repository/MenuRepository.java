@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.auth.jpa.repository;
 
 import com.proper.enterprise.platform.auth.jpa.entity.MenuEntity;
-import com.proper.enterprise.platform.core.repository.BaseRepository;
+import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
 
-public interface MenuRepository extends BaseRepository<MenuEntity, String> {
+public interface MenuRepository extends BaseJpaRepository<MenuEntity, String> {
 
 }

@@ -8,7 +8,7 @@
         <property name="applicationContextSchedulerContextKey" value="applicationContext"/>
         <property name="dataSource" ref="dataSource" />
         <property name="overwriteExistingJobs" value="true" />
-        <property name="transactionManager" ref="transactionManager" />
+        <property name="transactionManager" ref="jpaTransactionManager" />
         <property name="triggers" ref="pepJobList"/>
         <property name="waitForJobsToCompleteOnShutdown" value="true"/>
         <property name="jobFactory">

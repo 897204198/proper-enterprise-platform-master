@@ -9,16 +9,18 @@ import com.proper.enterprise.platform.auth.neo4j.entity.UserNodeEntity
 import com.proper.enterprise.platform.auth.neo4j.repository.*
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.i18n.I18NService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestMethod
 
-class MenusControllerTest extends AbstractTest {
+class MenusControllerTest extends AbstractNeo4jTest {
     @Autowired
     UserNodeRepository userNodeRepository
     @Autowired
@@ -35,6 +37,7 @@ class MenusControllerTest extends AbstractTest {
     UserGroupNodeRepository userGroupNodeRepository
     @Autowired
     ResourceNodeRepository resourceNodeRepository
+
 
     @Before
     void loginUser() {
@@ -63,7 +66,8 @@ class MenusControllerTest extends AbstractTest {
     }
 
     @Test
-    @Sql("/com/proper/enterprise/platform/auth/neo4j/datadics.sql")
+    @Sql(value = "/com/proper/enterprise/platform/auth/neo4j/datadics.sql")
+    @Transactional(transactionManager = "jpaTransactionManager",propagation=Propagation.REQUIRES_NEW)
     void menuUnionTest() {
         def menu = [:]
         menu['icon'] = 'test_icon'

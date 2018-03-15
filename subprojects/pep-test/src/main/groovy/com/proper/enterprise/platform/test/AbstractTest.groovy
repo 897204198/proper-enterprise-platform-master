@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * 包含测试常用的模拟对象、方法等
  */
-@Transactional
+@Transactional(transactionManager = "jpaTransactionManager")
 @WebAppConfiguration
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)

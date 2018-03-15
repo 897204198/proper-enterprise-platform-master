@@ -1,0 +1,8 @@
+pep-core-jpa
+========
+
+Proper Enterprise Platform
+
+Core Module
+
+为平台提供使用 JPA 的基础支持

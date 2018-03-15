@@ -12,13 +12,12 @@ import com.proper.enterprise.platform.auth.jpa.entity.UserEntity;
 import com.proper.enterprise.platform.auth.jpa.entity.UserGroupEntity;
 import com.proper.enterprise.platform.auth.jpa.repository.UserRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.sort.BeanComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,7 @@ import javax.persistence.criteria.Root;
 import java.util.*;
 
 @Service
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String> implements UserDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDaoImpl.class);
 
@@ -49,14 +48,13 @@ public class UserDaoImpl implements UserDao {
     private MenuDao menuDao;
 
     @Override
-    public User save(User user) {
-        return userRepo.save((UserEntity)user);
+    public UserRepository getRepository() {
+        return userRepo;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Collection<? extends User> save(Collection<? extends User> users) {
-        return userRepo.save((Collection<UserEntity>) users);
+    public User save(User user) {
+        return userRepo.save((UserEntity) user);
     }
 
     @Override
@@ -103,10 +101,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable,
-                                                          Integer pageNo, Integer pageSize) {
-        DataTrunk<UserEntity> userDataTrunk = new DataTrunk<>();
-        PageRequest pageReq = new PageRequest(pageNo - 1, pageSize, new Sort(Sort.Direction.ASC, "name"));
+    public DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
         Specification specification = new Specification<UserEntity>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
@@ -130,10 +125,7 @@ public class UserDaoImpl implements UserDao {
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
-        Page<UserEntity> usersPage = userRepo.findAll(specification, pageReq);
-        userDataTrunk.setCount(usersPage.getTotalElements());
-        userDataTrunk.setData(usersPage.getContent());
-        return userDataTrunk;
+        return this.findData(specification, new Sort(Sort.Direction.ASC, "name"));
     }
 
     @Override

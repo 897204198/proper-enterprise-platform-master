@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.oopsearch.entity;
 
-import com.proper.enterprise.platform.core.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

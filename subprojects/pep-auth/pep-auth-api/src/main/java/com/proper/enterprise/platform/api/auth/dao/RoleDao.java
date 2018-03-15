@@ -2,10 +2,11 @@ package com.proper.enterprise.platform.api.auth.dao;
 
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
+import com.proper.enterprise.platform.core.service.BaseService;
 
 import java.util.Collection;
 
-public interface RoleDao {
+public interface RoleDao extends BaseService<Role, String> {
 
     Role getNewRole();
 
@@ -15,13 +16,9 @@ public interface RoleDao {
 
     Role save(Role role);
 
-    Collection<? extends Role> save(Collection<? extends Role> roles);
-
     Role findByIdAndValid(String id, boolean valid);
 
     Collection<? extends Role> findAllByNameLike(String name);
-
-    Collection<? extends Role> findAll();
 
     Collection<? extends Role> findAll(Collection<String> idList);
 

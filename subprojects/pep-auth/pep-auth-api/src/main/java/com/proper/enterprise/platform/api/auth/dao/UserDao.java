@@ -3,17 +3,16 @@ package com.proper.enterprise.platform.api.auth.dao;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.service.BaseService;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
 
-public interface UserDao {
+public interface UserDao extends BaseService<User, String> {
 
     User save(User user);
 
     void save(User... users);
-
-    Collection<? extends User> save(Collection<? extends User> users);
 
     User getNewUser();
 
@@ -27,8 +26,7 @@ public interface UserDao {
 
     Collection<? extends User> getUsersByCondition(String condition);
 
-    DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable,
-                                                   Integer pageNo, Integer pageSize);
+    DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable);
 
     boolean hasPermissionOfUser(User user, String reqUrl, RequestMethod requestMethod);
 

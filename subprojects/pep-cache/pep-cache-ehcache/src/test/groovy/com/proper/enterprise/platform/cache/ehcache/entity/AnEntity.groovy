@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.cache.ehcache.entity
 
-import com.proper.enterprise.platform.core.annotation.CacheEntity
+import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity
 import org.hibernate.annotations.GenericGenerator
 
 import javax.persistence.*

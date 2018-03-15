@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.oopsearch.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.proper.enterprise.platform.core.repository.NativeRepository;
+import com.proper.enterprise.platform.core.jpa.repository.NativeRepository;
 import com.proper.enterprise.platform.oopsearch.api.serivce.QueryResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

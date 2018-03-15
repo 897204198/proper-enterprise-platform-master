@@ -11,11 +11,11 @@
                            http://www.springframework.org/schema/aop/spring-aop.xsd"
        default-lazy-init="true">
 
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <tx:advice id="txAdvice">
+    <tx:advice id="txAdvice" transaction-manager="jpaTransactionManager">
         <tx:attributes>
             <tx:method name="save*" rollback-for="RuntimeException" />
             <tx:method name="delete*" rollback-for="RuntimeException" />

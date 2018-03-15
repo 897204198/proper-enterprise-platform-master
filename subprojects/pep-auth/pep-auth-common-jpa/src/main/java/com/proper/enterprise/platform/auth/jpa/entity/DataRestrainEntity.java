@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.auth.jpa.entity;
 
 import com.proper.enterprise.platform.api.auth.model.DataRestrain;
-import com.proper.enterprise.platform.core.annotation.CacheEntity;
+import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
 import javax.persistence.*;

@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.pay.ali.entity;
 
-import com.proper.enterprise.platform.core.annotation.CacheEntity;
+import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 
 import javax.persistence.Entity;

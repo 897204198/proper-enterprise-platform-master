@@ -22,7 +22,7 @@ dependencies {
 
     compile project(':pep-auth-api'),
             project(':pep-cache-api'),
-            project(':pep-core')
+            project(':pep-core-jpa')
 
     runtime libraries.flowable_web_designer
 

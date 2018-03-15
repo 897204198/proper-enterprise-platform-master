@@ -4,26 +4,26 @@ import com.proper.enterprise.platform.api.auth.dao.ResourceDao;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.auth.jpa.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.jpa.repository.ResourceRepository;
+import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class ResourceDaoImpl implements ResourceDao {
+public class ResourceDaoImpl extends JpaServiceSupport<Resource, ResourceRepository, String> implements ResourceDao {
 
     @Autowired
     private ResourceRepository resourceRepository;
 
     @Override
-    public Resource save(Resource resource) {
-        return resourceRepository.save((ResourceEntity) resource);
+    public ResourceRepository getRepository() {
+        return resourceRepository;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Collection<? extends Resource> save(Collection<? extends Resource> resources) {
-        return resourceRepository.save((Collection<ResourceEntity>)resources);
+    public Resource save(Resource resource) {
+        return resourceRepository.save((ResourceEntity) resource);
     }
 
     @Override
@@ -34,11 +34,6 @@ public class ResourceDaoImpl implements ResourceDao {
     @Override
     public Resource get(String id) {
         return resourceRepository.findOne(id);
-    }
-
-    @Override
-    public Collection<? extends Resource> findAll() {
-        return resourceRepository.findAll();
     }
 
     @Override

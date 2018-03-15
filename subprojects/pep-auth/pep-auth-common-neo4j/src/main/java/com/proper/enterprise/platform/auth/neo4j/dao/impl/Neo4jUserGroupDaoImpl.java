@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.UserGroupDao;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.neo4j.entity.UserGroupNodeEntity;
 import com.proper.enterprise.platform.auth.neo4j.repository.UserGroupNodeRepository;
+import com.proper.enterprise.platform.core.neo4j.service.impl.Neo4jServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.neo4j.ogm.cypher.BooleanOperator;
 import org.neo4j.ogm.cypher.ComparisonOperator;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 @Service
-public class Neo4jUserGroupDaoImpl implements UserGroupDao {
+public class Neo4jUserGroupDaoImpl extends Neo4jServiceSupport<UserGroup, UserGroupNodeRepository, String> implements UserGroupDao {
 
     @Autowired
     private UserGroupNodeRepository userGroupNodeRepository;
@@ -56,12 +57,6 @@ public class Neo4jUserGroupDaoImpl implements UserGroupDao {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Collection<? extends UserGroup> save(Collection<? extends UserGroup> groups) {
-        return userGroupNodeRepository.save((Collection<UserGroupNodeEntity>) groups);
-    }
-
-    @Override
     public Collection<? extends UserGroup> getGroups(String name, String description, String enable) {
 
         Filters filters = new Filters();
@@ -93,5 +88,10 @@ public class Neo4jUserGroupDaoImpl implements UserGroupDao {
 
         Collection collection = session.loadAll(UserGroupNodeEntity.class, filters, sortOrder);
         return collection;
+    }
+
+    @Override
+    public UserGroupNodeRepository getRepository() {
+        return userGroupNodeRepository;
     }
 }

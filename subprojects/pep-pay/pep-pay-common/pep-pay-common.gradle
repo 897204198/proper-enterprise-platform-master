@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':pep-core'),
+    compile project(':pep-core-jpa'),
             project(':pep-auth-api'),
             project(':pep-pay-api')
 

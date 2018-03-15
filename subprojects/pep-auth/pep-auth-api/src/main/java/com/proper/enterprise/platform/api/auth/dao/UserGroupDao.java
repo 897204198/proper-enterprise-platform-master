@@ -1,18 +1,17 @@
 package com.proper.enterprise.platform.api.auth.dao;
 
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
+import com.proper.enterprise.platform.core.service.BaseService;
 
 import java.util.Collection;
 
-public interface UserGroupDao {
+public interface UserGroupDao extends BaseService<UserGroup, String> {
 
     UserGroup get(String id);
 
     UserGroup getNewUserGroup();
 
     UserGroup save(UserGroup group);
-
-    Collection<? extends UserGroup> save(Collection<? extends UserGroup> groups);
 
     Collection<? extends UserGroup> findAll(Collection<String> idList);
 

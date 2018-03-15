@@ -1,18 +1,12 @@
 package com.proper.enterprise.platform.core.neo4j;
 
-import org.neo4j.ogm.session.SessionFactory;
+import org.neo4j.ogm.MetaData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.data.neo4j.conversion.MetaDataDrivenConversionService;
-import org.springframework.data.neo4j.repository.config.*;
-import org.springframework.data.neo4j.transaction.Neo4jTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 
 @Configuration
-@EnableNeo4jRepositories(basePackages = "com.proper.**.repository")
-@EnableTransactionManagement
 public class GraphDBConfiguration {
 
     @Value("${neo4j.driver}")
@@ -42,18 +36,7 @@ public class GraphDBConfiguration {
     }
 
     @Bean
-    public SessionFactory sessionFactory() {
-        return new SessionFactory(configuration(), sessionPackage);
+    public MetaData neo4jMetaData() {
+        return new MetaData(sessionPackage);
     }
-
-    @Bean
-    public Neo4jTransactionManager transactionManager() {
-        return new Neo4jTransactionManager(sessionFactory());
-    }
-
-    @Bean
-    public ConversionService springConversionService() {
-        return new MetaDataDrivenConversionService(sessionFactory().metaData());
-    }
-
 }

@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.api.auth.service.UserGroupService;
 import com.proper.enterprise.platform.auth.jpa.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.jpa.repository.RoleRepository;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,15 @@ import javax.persistence.criteria.Root;
 import java.util.*;
 
 @Service
-public class RoleDaoImpl implements RoleDao {
+public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String> implements RoleDao {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Override
+    public RoleRepository getRepository() {
+        return roleRepository;
+    }
 
     @Autowired
     private I18NService i18NService;
@@ -53,12 +59,6 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Collection<? extends Role> save(Collection<? extends Role> roles) {
-        return roleRepository.save((Collection<RoleEntity>) roles);
-    }
-
-    @Override
     public Role getNewRole() {
         return new RoleEntity();
     }
@@ -71,11 +71,6 @@ public class RoleDaoImpl implements RoleDao {
     @Override
     public Collection<? extends Role> findAllByNameLike(String name) {
         return roleRepository.findAllByNameLike(name);
-    }
-
-    @Override
-    public Collection<? extends Role> findAll() {
-        return roleRepository.findAll();
     }
 
     @Override
@@ -168,13 +163,12 @@ public class RoleDaoImpl implements RoleDao {
         Collection<? extends UserGroup> filterGroups = new HashSet<>();
         Collection groups;
         while (iterator.hasNext()) {
-            User user = (User)iterator.next();
+            User user = (User) iterator.next();
             groups = userGroupService.getFilterGroups(user.getUserGroups());
             filterGroups.addAll(groups);
         }
         return filterGroups;
     }
-
 
 
 }

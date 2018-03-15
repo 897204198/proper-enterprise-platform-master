@@ -1,11 +1,11 @@
 package com.proper.enterprise.platform.api.auth.dao;
 
 import com.proper.enterprise.platform.api.auth.model.Menu;
-import org.springframework.data.domain.Sort;
+import com.proper.enterprise.platform.core.service.BaseService;
 
 import java.util.Collection;
 
-public interface MenuDao {
+public interface MenuDao extends BaseService<Menu, String> {
 
     Menu get(String id);
 
@@ -13,15 +13,9 @@ public interface MenuDao {
 
     Menu save(Menu menu);
 
-    Collection<? extends Menu> save(Collection<? extends Menu> menus);
-
     Menu getNewMenuEntity();
 
-    Collection<? extends Menu> findAll();
-
     Collection<? extends Menu> findAll(Collection<String> idList);
-
-    Collection<? extends Menu> findAll(Sort sort);
 
     Collection<? extends Menu> getMenuByCondition(String name, String description, String route, String enable, String parentId);
 

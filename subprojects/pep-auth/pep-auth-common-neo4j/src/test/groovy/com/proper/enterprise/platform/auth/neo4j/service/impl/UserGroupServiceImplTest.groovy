@@ -3,11 +3,11 @@ package com.proper.enterprise.platform.auth.neo4j.service.impl
 import com.proper.enterprise.platform.api.auth.service.UserGroupService
 import com.proper.enterprise.platform.auth.neo4j.entity.UserGroupNodeEntity
 import com.proper.enterprise.platform.sys.i18n.I18NService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class UserGroupServiceImplTest extends AbstractTest {
+class UserGroupServiceImplTest extends AbstractNeo4jTest {
 
     @Autowired
     UserGroupService userGroupService

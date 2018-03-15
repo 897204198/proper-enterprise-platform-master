@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.core.controller
 
+import com.proper.enterprise.platform.core.controller.mock.MockEntityR
 import com.proper.enterprise.platform.core.entity.DataTrunk
-import com.proper.enterprise.platform.core.repository.mock.entity.MockEntity
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
@@ -12,7 +12,7 @@ import org.springframework.http.MediaType
 class BaseControllerTest extends AbstractTest {
 
     def c = new BaseController() {}
-    def entity = new MockEntity('abc')
+    def entity = new MockEntityR('abc')
 
     @Test
     void testPOSTResponse() {

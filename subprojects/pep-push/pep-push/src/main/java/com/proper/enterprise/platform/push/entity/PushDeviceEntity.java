@@ -7,7 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 import com.proper.enterprise.platform.core.PEPConstants;
-import com.proper.enterprise.platform.core.annotation.CacheEntity;
+import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.push.common.model.PushDevice;
 import com.proper.enterprise.platform.push.common.model.enums.PushDeviceStatus;

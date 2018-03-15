@@ -1,11 +1,11 @@
 package com.proper.enterprise.platform.auth.neo4j.service.impl
 
 import com.proper.enterprise.platform.api.auth.service.AuthcService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class AuthcServiceImplTest extends AbstractTest{
+class AuthcServiceImplTest extends AbstractNeo4jTest{
 
     @Autowired
     AuthcService authcService

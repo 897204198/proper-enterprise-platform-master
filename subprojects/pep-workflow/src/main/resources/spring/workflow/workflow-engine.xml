@@ -12,7 +12,7 @@
     </bean>
     <bean id="processEngineConfiguration" class="org.flowable.spring.SpringProcessEngineConfiguration">
         <property name="dataSource" ref="dataSource"/>
-        <property name="transactionManager" ref="transactionManager"/>
+        <property name="transactionManager" ref="jpaTransactionManager"/>
         <property name="databaseSchemaUpdate" value="${workflow.databaseSchemaUpdate}"/>
         <property name="asyncExecutorActivate" value="true"/>
         <property name="asyncExecutorCorePoolSize" value="${workflow.asyncExecutor.corePoolSize}"/>

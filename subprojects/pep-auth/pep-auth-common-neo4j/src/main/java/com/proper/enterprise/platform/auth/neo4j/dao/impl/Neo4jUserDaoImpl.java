@@ -10,6 +10,7 @@ import com.proper.enterprise.platform.auth.neo4j.entity.ResourceNodeEntity;
 import com.proper.enterprise.platform.auth.neo4j.entity.UserNodeEntity;
 import com.proper.enterprise.platform.auth.neo4j.repository.UserNodeRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.neo4j.service.impl.Neo4jServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.sort.BeanComparator;
 import org.neo4j.ogm.cypher.BooleanOperator;
@@ -22,6 +23,7 @@ import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -30,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.*;
 
 @Service
-public class Neo4jUserDaoImpl implements UserDao {
+public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeRepository, String> implements UserDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Neo4jUserDaoImpl.class);
 
@@ -49,12 +51,6 @@ public class Neo4jUserDaoImpl implements UserDao {
     @Override
     public User save(User user) {
         return userNodeRepository.save((UserNodeEntity) user);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Collection<? extends User> save(Collection<? extends User> users) {
-        return userNodeRepository.save((Collection<UserNodeEntity>) users);
     }
 
     @Override
@@ -101,8 +97,7 @@ public class Neo4jUserDaoImpl implements UserDao {
 
     @Override
     @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-    public DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable, Integer pageNo,
-                                                          Integer pageSize) {
+    public DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
         Filters filters = new Filters();
         if (StringUtil.isNotBlank(userName)) {
             filters.add(new Filter("username", ComparisonOperator.CONTAINING, userName));
@@ -131,8 +126,8 @@ public class Neo4jUserDaoImpl implements UserDao {
         Filter filter = new Filter("valid", true);
         filter.setBooleanOperator(BooleanOperator.AND);
         filters.add(filter);
-
-        Pagination pagination = new Pagination(pageNo - 1, pageSize);
+        PageRequest pageRequest = getPageRequest();
+        Pagination pagination = new Pagination(pageRequest.getPageNumber(), pageRequest.getPageSize());
         SortOrder sortOrder = new SortOrder();
         sortOrder.add(SortOrder.Direction.ASC, "name");
         Collection<UserNodeEntity> collection = session.loadAll(UserNodeEntity.class, filters, sortOrder, pagination);
@@ -164,6 +159,11 @@ public class Neo4jUserDaoImpl implements UserDao {
         List<MenuNodeEntity> menus = (List<MenuNodeEntity>) userNodeRepository.findMenusById(user.getId());
         Collections.sort(menus, new BeanComparator("parent", "sequenceNumber"));
         return menus;
+    }
+
+    @Override
+    public UserNodeRepository getRepository() {
+        return userNodeRepository;
     }
 
     @Override

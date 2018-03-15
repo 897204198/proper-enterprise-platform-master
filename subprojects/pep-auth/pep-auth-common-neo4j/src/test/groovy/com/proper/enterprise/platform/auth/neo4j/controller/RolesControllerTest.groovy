@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.auth.neo4j.entity.*
 import com.proper.enterprise.platform.auth.neo4j.repository.*
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.After
@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestMethod
 
-class RolesControllerTest extends AbstractTest {
+class RolesControllerTest extends AbstractNeo4jTest {
 
     @Autowired
     RoleService roleService

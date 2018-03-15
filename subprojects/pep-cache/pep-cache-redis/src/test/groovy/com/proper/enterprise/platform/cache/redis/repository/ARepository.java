@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.cache.redis.repository;
 
 import com.proper.enterprise.platform.cache.redis.entity.AEntity;
-import com.proper.enterprise.platform.core.annotation.CacheQuery;
+import com.proper.enterprise.platform.core.jpa.annotation.CacheQuery;
 import com.proper.enterprise.platform.core.repository.BaseRepository;
 
 import java.util.Collection;

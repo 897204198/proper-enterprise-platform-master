@@ -93,5 +93,5 @@ public class BaseDocument implements IBase {
     public void setValid(boolean valid) {
         this.valid = valid;
     }
-    
+
 }

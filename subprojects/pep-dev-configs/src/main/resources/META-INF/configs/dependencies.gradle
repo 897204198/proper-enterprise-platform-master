@@ -176,8 +176,7 @@ libraries.mysql_binlog_connector_java = 'com.github.shyiko:mysql-binlog-connecto
 
 libraries.mysql_driver = 'org.mariadb.jdbc:mariadb-java-client:1.5.4'
 //libraries.mysql_driver = 'mysql:mysql-connector-java:5.1.38'
-
-
+libraries.neo4j_driver = 'org.neo4j.driver:neo4j-java-driver:1.5.0'
 libraries.okhttp = 'com.squareup.okhttp3:okhttp:3.4.1'
 libraries.oracle_driver = 'com.oracle:ojdbc6:1.0'
 
@@ -208,8 +207,6 @@ libraries.spock = [
 //libraries.spring_beans = "org.springframework:spring-beans:${versions.spring}"
 //libraries.spring_context = "org.springframework:spring-context:${versions.spring}"
 libraries.spring_context_support = "org.springframework:spring-context-support:${versions.spring}"
-//neo4j
-libraries.spring_data_neo4j = 'org.springframework.data:spring-data-neo4j'
 //libraries.spring_core = "org.springframework:spring-core:${versions.spring}"
 libraries.spring_orm = [
     "org.springframework:spring-orm:${versions.spring}",
@@ -224,7 +221,7 @@ libraries.spring_jms = "org.springframework:spring-jms:${versions.spring}"
 
 libraries.spring_data_jpa = 'org.springframework.data:spring-data-jpa'
 libraries.spring_data_mongodb = 'org.springframework.data:spring-data-mongodb'
-
+libraries.spring_data_neo4j= 'org.springframework.data:spring-data-neo4j'
 //libraries.spring_data_redis = [
 //    'org.springframework.data:spring-data-redis',
 //    'org.apache.commons:commons-pool2:2.2',
@@ -269,4 +266,3 @@ libraries.push_vendor_xiaomi=[
     'com.xiaomi.pushapi:xiaomiPushSdk:2.2.16',
     'com.googlecode.json-simple:json-simple:1.1.1'
 ]
-

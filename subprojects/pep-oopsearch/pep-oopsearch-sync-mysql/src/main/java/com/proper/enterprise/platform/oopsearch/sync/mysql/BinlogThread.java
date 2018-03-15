@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.oopsearch.sync.mysql;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import com.proper.enterprise.platform.core.PEPApplicationContext;
-import com.proper.enterprise.platform.core.repository.NativeRepository;
+import com.proper.enterprise.platform.core.jpa.repository.NativeRepository;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.oopsearch.api.annotation.SearchConfig;
 import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;

@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.neo4j.entity.RoleNodeEntity;
 import com.proper.enterprise.platform.auth.neo4j.repository.RoleNodeRepository;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.neo4j.service.impl.Neo4jServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.neo4j.ogm.cypher.BooleanOperator;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class Neo4jRoleDaoImpl implements RoleDao {
+public class Neo4jRoleDaoImpl extends Neo4jServiceSupport<Role, RoleNodeRepository, String> implements RoleDao {
 
     @Autowired
     private RoleNodeRepository roleNodeRepository;
@@ -47,12 +48,6 @@ public class Neo4jRoleDaoImpl implements RoleDao {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Collection<? extends Role> save(Collection<? extends Role> roles) {
-        return roleNodeRepository.save((Collection<RoleNodeEntity>) roles);
-    }
-
-    @Override
     public Role getNewRole() {
         return new RoleNodeEntity();
     }
@@ -68,8 +63,8 @@ public class Neo4jRoleDaoImpl implements RoleDao {
     }
 
     @Override
-    public Collection<? extends Role> findAll() {
-        return (Collection<? extends RoleNodeEntity>) roleNodeRepository.findAll();
+    public RoleNodeRepository getRepository() {
+        return roleNodeRepository;
     }
 
     @Override

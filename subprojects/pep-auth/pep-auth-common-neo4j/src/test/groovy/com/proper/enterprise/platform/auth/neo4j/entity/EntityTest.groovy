@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.auth.neo4j.entity
 
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import org.junit.Test
 
-class EntityTest extends AbstractTest {
+class EntityTest extends AbstractNeo4jTest {
 
     @Test
     void testMenuNodeEntity(){

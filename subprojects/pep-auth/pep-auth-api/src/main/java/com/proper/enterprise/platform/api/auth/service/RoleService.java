@@ -33,6 +33,7 @@ public interface RoleService {
     /**
      * 根据角色名字获取相近的角色集合
      * 系统使用角色 ID 作为角色唯一标识，允许存在同名的角色
+     *
      * @author sunshuai
      */
     Collection<? extends Role> getAllSimilarRolesByName(String nameLike);
@@ -85,10 +86,11 @@ public interface RoleService {
      *
      * @return 父节点列表
      */
-    Collection<? extends Role> getRoleParents(String  roleId);
+    Collection<? extends Role> getRoleParents(String roleId);
 
     /**
      * 从传入的角色集合中，获取有效的角色(valid、enable都是true的)
+     *
      * @param roles 待过滤的角色集合
      * @return 返回有效的角色集合
      */
@@ -139,6 +141,7 @@ public interface RoleService {
 
     /**
      * 根据当前角色ID，获取它的父角色链表，继承关系从前往后排列
+     *
      * @return 返回父角色链表，从前往后依次父角色、父角色的父角色。。。。
      */
     Collection<? extends Role> getParentRolesByCurrentRoleId(String currentRoleId);
@@ -219,7 +222,6 @@ public interface RoleService {
      * @return 如果有，则返回真
      */
     boolean hasPermissionOfRole(Role role, String reqUrl, RequestMethod requestMethod);
-
 
 
 }

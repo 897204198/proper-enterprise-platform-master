@@ -11,19 +11,17 @@ import com.proper.enterprise.platform.auth.neo4j.repository.ResourceNodeReposito
 import com.proper.enterprise.platform.auth.neo4j.repository.RoleNodeRepository
 import com.proper.enterprise.platform.auth.neo4j.repository.UserGroupNodeRepository
 import com.proper.enterprise.platform.auth.neo4j.repository.UserNodeRepository
-
 import com.proper.enterprise.platform.sys.i18n.I18NService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.test.context.jdbc.Sql
 import org.springframework.web.bind.annotation.RequestMethod
 
-class ResourcesControllerTest extends AbstractTest {
+class ResourcesControllerTest extends AbstractNeo4jTest {
 
     @Autowired
     ResourceNodeRepository repository
@@ -235,16 +233,4 @@ class ResourcesControllerTest extends AbstractTest {
         resourceService.get('/test/url1', RequestMethod.POST)
 
     }
-
-    @Sql("/com/proper/enterprise/platform/auth/neo4j/datadics.sql")
-    @Test
-    void testDicData() {
-        resourceType.getCatalog()
-        resourceType.method().getCode()
-        menuType.getCatalog()
-        menuType.page().getCode()
-        menuType.app().getCode()
-        menuType.function().getCode()
-    }
-
 }

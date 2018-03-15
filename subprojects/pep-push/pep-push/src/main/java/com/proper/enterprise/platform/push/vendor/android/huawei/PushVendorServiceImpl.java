@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.push.vendor.android.huawei;
 
 import java.util.Date;
 import java.util.List;
+
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import org.nutz.mapl.Mapl;
 
@@ -33,7 +34,8 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
 
         // 向指定的设备推送数据。
         for (PushMsgEntity dm : lstMsgs) {
-            LOGGER.info("huawei push log step5 content:{},msg:{}", dm.getMcontent(), JSONUtil.toJSONIgnoreException(lstMsgs));
+            LOGGER.info("huawei push log step5 content:{},userId:{},msg:{}", dm.getMcontent(), dm.getUserid(),
+                JSONUtil.toJSONIgnoreException(dm));
             dm.setSendCount(dm.getSendCount() + 1); // 发送次数+1
             // 向手机端推送一条消息，手机端收到消息后，请求web服务器,再获取消息内容
             boolean r = pushApp.pushOneMsg(dm);

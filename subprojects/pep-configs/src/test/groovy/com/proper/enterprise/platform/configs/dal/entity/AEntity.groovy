@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.configs.dal.entity
 import com.proper.enterprise.platform.core.PEPConstants
-import com.proper.enterprise.platform.core.annotation.CacheEntity
 import com.proper.enterprise.platform.core.entity.BaseEntity
+import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity
 
 import javax.persistence.*
 

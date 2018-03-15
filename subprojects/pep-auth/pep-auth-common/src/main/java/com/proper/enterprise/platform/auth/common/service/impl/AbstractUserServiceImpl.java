@@ -147,9 +147,8 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable,
-                                                         Integer pageNo, Integer pageSize) {
-        return userDao.getUsersByCondition(userName, name, email, phone, enable, pageNo, pageSize);
+    public DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
+        return userDao.getUsersByCondition(userName, name, email, phone, enable);
     }
 
     @Override

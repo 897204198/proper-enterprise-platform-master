@@ -6,18 +6,21 @@ import com.proper.enterprise.platform.api.auth.model.Menu
 import com.proper.enterprise.platform.api.auth.model.Permission
 import com.proper.enterprise.platform.auth.common.vo.*
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestMethod
 
-class VOTest extends AbstractTest {
+class VOTest extends AbstractNeo4jTest {
 
     @Autowired
     DataDicService dataDicService
 
     @Sql("/com/proper/enterprise/platform/auth/neo4j/datadics.sql")
+    @Transactional(transactionManager = "jpaTransactionManager",propagation=Propagation.REQUIRES_NEW)
     @Test
     void test() {
         Menu menu = new MenuVO()

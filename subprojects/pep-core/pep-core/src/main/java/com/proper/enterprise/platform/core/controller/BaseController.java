@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.controller;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.support.QuerySupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +21,7 @@ import java.util.List;
  *
  * 用于响应各类 method 的请求
  */
-public abstract class BaseController {
+public abstract class BaseController extends QuerySupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseController.class);
 
@@ -183,5 +184,6 @@ public abstract class BaseController {
     protected String handleBody(Exception ex) {
         return ex.getMessage();
     }
+
 
 }

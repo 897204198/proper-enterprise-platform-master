@@ -26,10 +26,9 @@ public class UsersController extends BaseController {
     PasswordEncryptService pwdService;
 
     @GetMapping
-    public ResponseEntity<DataTrunk<? extends User>> getUser(String username, String name, String email, String phone, String enable,
-                                                             Integer pageNo, Integer pageSize) {
+    public ResponseEntity<DataTrunk<? extends User>> getUser(String username, String name, String email, String phone, String enable) {
         userService.checkPermission("/auth/users", RequestMethod.GET);
-        return responseOfGet(userService.getUsersByCondition(username, name, email, phone, enable, pageNo, pageSize));
+        return responseOfGet(userService.getUsersByCondition(username, name, email, phone, enable));
     }
 
     @SuppressWarnings("unchecked")

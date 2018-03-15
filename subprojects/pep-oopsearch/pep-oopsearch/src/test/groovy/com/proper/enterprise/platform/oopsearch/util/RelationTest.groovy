@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.oopsearch.util
 
-import com.proper.enterprise.platform.core.repository.NativeRepository
+import com.proper.enterprise.platform.core.jpa.repository.NativeRepository
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired

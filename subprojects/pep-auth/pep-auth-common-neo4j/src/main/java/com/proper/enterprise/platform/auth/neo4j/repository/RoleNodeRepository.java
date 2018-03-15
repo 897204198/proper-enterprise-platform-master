@@ -2,16 +2,16 @@ package com.proper.enterprise.platform.auth.neo4j.repository;
 
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.neo4j.entity.RoleNodeEntity;
+import com.proper.enterprise.platform.core.neo4j.repository.BaseNeo4jRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
 
-public interface RoleNodeRepository extends Neo4jRepository<RoleNodeEntity, String> {
+public interface RoleNodeRepository extends BaseNeo4jRepository<RoleNodeEntity, String> {
 
     RoleNodeEntity findByIdAndValidTrueAndEnableTrue(String id);
 

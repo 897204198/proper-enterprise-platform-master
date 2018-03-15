@@ -6,6 +6,6 @@ dependencies {
     compile project(':pep-cache-api')
 
     testCompile project(':pep-test'),
-                project(':pep-core')
+                project(':pep-core-jpa')
 }
 

@@ -1,0 +1,7 @@
+dependencies {
+    compile libraries.hibernate_entitymanager,
+            libraries.spring_data_jpa,
+            libraries.spring_orm
+    compile project(':pep-core')
+    testCompile project(':pep-test')
+}

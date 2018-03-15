@@ -9,7 +9,7 @@ import com.proper.enterprise.platform.auth.neo4j.repository.RoleNodeRepository
 import com.proper.enterprise.platform.auth.neo4j.repository.UserGroupNodeRepository
 import com.proper.enterprise.platform.auth.neo4j.repository.UserNodeRepository
 import com.proper.enterprise.platform.core.entity.DataTrunk
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.After
@@ -18,7 +18,7 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
-class UsersControllerTest extends AbstractTest {
+class UsersControllerTest extends AbstractNeo4jTest {
 
     @Autowired
     UserNodeRepository userNodeRepository

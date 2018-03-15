@@ -1,6 +1,6 @@
 dependencies {
     compile libraries.ali_webpay,
-            project(':pep-core'),
+            project(':pep-core-jpa'),
             project(':pep-pay-api'),
             project(':pep-pay-common')
 

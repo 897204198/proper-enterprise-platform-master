@@ -3,13 +3,13 @@ package com.proper.enterprise.platform.auth.neo4j.util
 import com.proper.enterprise.platform.auth.common.dictionary.MenuType
 import com.proper.enterprise.platform.auth.neo4j.repository.*
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class InitNeo4jDataTest extends AbstractTest {
+class InitNeo4jDataTest extends AbstractNeo4jTest {
 
     @Autowired
     MenuNodeRepository menuNodeRepo

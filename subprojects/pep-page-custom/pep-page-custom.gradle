@@ -1,6 +1,6 @@
 dependencies {
     compile libraries.spring_data_mongodb,
-            project(':pep-core'),
+            project(':pep-core-jpa'),
             project(':pep-core-mongo'),
             project(':pep-auth-api')
 
