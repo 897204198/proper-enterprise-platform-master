@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.workflow.convert
 
 import com.proper.enterprise.platform.api.auth.model.User
-import com.proper.enterprise.platform.auth.jpa.entity.UserEntity
+import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import spock.lang.Specification
 
 class UserConvertSpec extends Specification{

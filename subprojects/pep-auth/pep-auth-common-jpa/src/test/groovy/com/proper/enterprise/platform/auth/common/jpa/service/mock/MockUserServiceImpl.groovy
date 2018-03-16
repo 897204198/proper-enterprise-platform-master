@@ -1,16 +1,18 @@
-package com.proper.enterprise.platform.page.custom.auth.common.mock
-import com.proper.enterprise.platform.api.auth.model.User
+package com.proper.enterprise.platform.auth.common.jpa.service.mock
+
 import com.proper.enterprise.platform.auth.common.service.impl.AbstractUserServiceImpl
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 
-import com.proper.enterprise.platform.core.utils.ConfCenter
-import com.proper.enterprise.platform.core.utils.RequestUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Service
 
-@Service("pageCustomMockUserService")
+import com.proper.enterprise.platform.api.auth.model.User
+import com.proper.enterprise.platform.core.utils.ConfCenter
+import com.proper.enterprise.platform.core.utils.RequestUtil
+
+@Service("mockUserService")
 @Primary
 class MockUserServiceImpl extends AbstractUserServiceImpl {
 
@@ -29,9 +31,12 @@ class MockUserServiceImpl extends AbstractUserServiceImpl {
             }
             def user
             if (mockUser != null) {
-                user = new UserEntity(mockUser.username, mockUser.password)
-                user.id = mockUser.id
-                user.superuser = mockUser.isSuper
+                user = this.getByUsername(mockUser.username)
+                if (user == null) {
+                    user = new UserEntity(mockUser.username, mockUser.password)
+                    user.id = mockUser.id
+                    user.superuser = mockUser.isSuper
+                }
             } else {
                 user = new UserEntity('default-mock-user', 'default-mock-user-pwd')
                 user.setId('default-mock-user-id')

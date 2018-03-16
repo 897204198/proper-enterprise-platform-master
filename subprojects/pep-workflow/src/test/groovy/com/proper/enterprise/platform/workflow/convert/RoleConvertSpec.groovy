@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.workflow.convert
 
 import com.proper.enterprise.platform.api.auth.model.Role
-import com.proper.enterprise.platform.auth.jpa.entity.RoleEntity
+import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
 import spock.lang.Specification
 
 class RoleConvertSpec extends Specification{
