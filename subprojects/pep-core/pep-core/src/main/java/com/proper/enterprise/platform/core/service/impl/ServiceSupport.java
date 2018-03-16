@@ -98,17 +98,17 @@ public abstract class ServiceSupport<T, R extends BaseRepository, IDT extends Se
     }
 
     @Override
-    public DataTrunk<T> findData() {
-        return this.findData(getPageRequest());
+    public DataTrunk<T> findPage() {
+        return this.findPage(getPageRequest());
     }
 
     @Override
-    public DataTrunk<T> findData(Sort sort) {
-        return this.findData(getPageRequest(sort));
+    public DataTrunk<T> findPage(Sort sort) {
+        return this.findPage(getPageRequest(sort));
     }
 
     @Override
-    public DataTrunk<T> findData(Pageable pageable) {
+    public DataTrunk<T> findPage(Pageable pageable) {
         return getDataTrunk(this.findAll(pageable));
     }
 

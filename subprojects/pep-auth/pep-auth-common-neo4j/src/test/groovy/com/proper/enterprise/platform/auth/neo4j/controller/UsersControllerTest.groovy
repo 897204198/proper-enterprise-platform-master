@@ -88,14 +88,6 @@ class UsersControllerTest extends AbstractNeo4jTest {
 
     }
 
-    @Test
-    void testDeleteUser() {
-        UserNodeEntity userNodeEntity = new UserNodeEntity()
-        userNodeEntity.setName('testa')
-        userNodeEntity = userNodeRepository.save(userNodeEntity)
-        def result = delete('/auth/users/' + userNodeEntity.getId(), HttpStatus.NO_CONTENT).getResponse().getContentAsString()
-        assert result == ''
-    }
 
     @Test
     void testGetUserByCondiction() {
@@ -112,6 +104,7 @@ class UsersControllerTest extends AbstractNeo4jTest {
 
         def resAll = JSONUtil.parse(get('/auth/users?username=sun&name=&phone=&email=&enable=y&pageNo=1&pageSize=20', HttpStatus.OK).getResponse()
             .getContentAsString(), DataTrunk.class)
+        assert resAll.data.size() == 20
         assert resAll.count == 20
         assert resAll.data[0].get("username") == 'sun0s1'
         assert resAll.data[0].get("name") == 'sas0'
@@ -124,7 +117,8 @@ class UsersControllerTest extends AbstractNeo4jTest {
 
         resAll = JSONUtil.parse(get('/auth/users?username=sun&name=&phone=&email=&enable=&pageNo=3&pageSize=2', HttpStatus.OK).getResponse()
             .getContentAsString(), DataTrunk.class)
-        assert resAll.count == 2
+        assert resAll.data.size() == 2
+        assert resAll.count == 20
         assert resAll.data[0].get("username") == 'sun12s1'
         assert resAll.data[0].get("name") == 'sas12'
         assert resAll.data[1].get("username") == 'sun13s1'

@@ -109,37 +109,37 @@ public abstract class JpaServiceSupport<T, R extends BaseJpaRepository, IDT exte
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<T> findData(Example<T> example) {
-        return findData(example, getPageRequest());
+    public DataTrunk<T> findPage(Example<T> example) {
+        return findPage(example, getPageRequest());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <S extends T> DataTrunk<S> findData(Example<S> example, Pageable pageable) {
+    public <S extends T> DataTrunk<S> findPage(Example<S> example, Pageable pageable) {
         return new DataTrunk<>(this.findAll(example, pageable));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <S extends T> DataTrunk<S> findData(Example<S> example, Sort sort) {
-        return findData(example, getPageRequest(sort));
+    public <S extends T> DataTrunk<S> findPage(Example<S> example, Sort sort) {
+        return findPage(example, getPageRequest(sort));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<T> findData(Specification<T> spec) {
-        return findData(spec, getPageRequest());
+    public DataTrunk<T> findPage(Specification<T> spec) {
+        return findPage(spec, getPageRequest());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<T> findData(Specification<T> spec, Pageable pageable) {
+    public DataTrunk<T> findPage(Specification<T> spec, Pageable pageable) {
         return getDataTrunk(getRepository().findAll(spec, pageable));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<T> findData(Specification<T> spec, Sort sort) {
-        return findData(spec, getPageRequest(sort));
+    public DataTrunk<T> findPage(Specification<T> spec, Sort sort) {
+        return findPage(spec, getPageRequest(sort));
     }
 }

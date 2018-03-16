@@ -45,9 +45,9 @@ public interface BaseService<T, ID extends Serializable> {
 
     Page<T> findAll(Pageable var1);
 
-    DataTrunk<T> findData();
+    DataTrunk<T> findPage();
 
-    DataTrunk<T> findData(Sort sort);
+    DataTrunk<T> findPage(Sort sort);
 
-    DataTrunk<T> findData(Pageable pageable);
+    DataTrunk<T> findPage(Pageable pageable);
 }

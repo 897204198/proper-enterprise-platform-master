@@ -17,13 +17,10 @@ import org.neo4j.ogm.cypher.BooleanOperator;
 import org.neo4j.ogm.cypher.ComparisonOperator;
 import org.neo4j.ogm.cypher.Filter;
 import org.neo4j.ogm.cypher.Filters;
-import org.neo4j.ogm.cypher.query.Pagination;
 import org.neo4j.ogm.cypher.query.SortOrder;
-import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -38,9 +35,6 @@ public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeReposito
 
     @Autowired
     private UserNodeRepository userNodeRepository;
-
-    @Autowired
-    private Session session;
 
     @Autowired
     private ResourceService resourceService;
@@ -126,13 +120,9 @@ public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeReposito
         Filter filter = new Filter("valid", true);
         filter.setBooleanOperator(BooleanOperator.AND);
         filters.add(filter);
-        PageRequest pageRequest = getPageRequest();
-        Pagination pagination = new Pagination(pageRequest.getPageNumber(), pageRequest.getPageSize());
         SortOrder sortOrder = new SortOrder();
         sortOrder.add(SortOrder.Direction.ASC, "name");
-        Collection<UserNodeEntity> collection = session.loadAll(UserNodeEntity.class, filters, sortOrder, pagination);
-        DataTrunk dataTrunk = new DataTrunk(collection, collection.size());
-        return dataTrunk;
+        return this.findPage(UserNodeEntity.class, filters, sortOrder);
     }
 
     private Collection<ResourceNodeEntity> getResourcesByUserIdAndValidAndEnable(String userId, boolean valid, boolean enable) {

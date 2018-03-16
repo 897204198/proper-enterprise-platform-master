@@ -125,7 +125,7 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
-        return this.findData(specification, new Sort(Sort.Direction.ASC, "name"));
+        return this.findPage(specification, new Sort(Sort.Direction.ASC, "name"));
     }
 
     @Override

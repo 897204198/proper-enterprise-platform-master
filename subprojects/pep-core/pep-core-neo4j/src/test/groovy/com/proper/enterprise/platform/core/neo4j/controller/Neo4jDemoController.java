@@ -16,6 +16,6 @@ public class Neo4jDemoController extends BaseController {
 
     @GetMapping
     public ResponseEntity<?> getUser() {
-        return responseOfGet(neo4jDemoNodeService.findData());
+        return responseOfGet(neo4jDemoNodeService.findPage());
     }
 }

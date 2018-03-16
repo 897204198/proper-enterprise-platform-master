@@ -16,6 +16,8 @@ class Neo4jCreateTest extends AbstractNeo4jTest {
         neo4jDemoNodeService.deleteAll()
         neo4jDemoNodeService.save(neo4JDemoNode)
         assert "saveNode" == neo4jDemoNodeService.findOne(neo4JDemoNode.getId()).getName()
+        Neo4jDemoNode neo4jDemoNode2=new Neo4jDemoNode()
+        neo4jDemoNodeService.save(neo4jDemoNode2,1)
     }
 
     @Test

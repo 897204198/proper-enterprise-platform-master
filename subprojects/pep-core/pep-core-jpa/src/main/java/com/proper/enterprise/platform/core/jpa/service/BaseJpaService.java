@@ -50,15 +50,15 @@ public interface BaseJpaService<T, ID extends Serializable> extends BaseService<
 
     <S extends T> Page<S> findAll(Example<S> example, Pageable pageable);
 
-    DataTrunk<T> findData(Example<T> example);
+    DataTrunk<T> findPage(Example<T> example);
 
-    <S extends T> DataTrunk<S> findData(Example<S> example, Pageable pageable);
+    <S extends T> DataTrunk<S> findPage(Example<S> example, Pageable pageable);
 
-    <S extends T> DataTrunk<S> findData(Example<S> example, Sort sort);
+    <S extends T> DataTrunk<S> findPage(Example<S> example, Sort sort);
 
-    DataTrunk<T> findData(Specification<T> spec);
+    DataTrunk<T> findPage(Specification<T> spec);
 
-    DataTrunk<T> findData(Specification<T> spec, Pageable pageable);
+    DataTrunk<T> findPage(Specification<T> spec, Pageable pageable);
 
-    DataTrunk<T> findData(Specification<T> spec, Sort sort);
+    DataTrunk<T> findPage(Specification<T> spec, Sort sort);
 }
