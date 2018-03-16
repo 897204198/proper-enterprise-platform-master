@@ -200,10 +200,33 @@ angular.module('flowableModeler').controller('FlowableAssignmentPopupCtrl',
                 $scope.popup.oldGroupFilter = $scope.popup.groupFilter;
             }
 
-            GroupService.getFilteredGroups($scope.popup.groupFilter).then(function(result) {
-                $scope.popup.groupResults = result.data;
-                $scope.resetGroupSelection();
-            });
+            if ($scope.popup.groupFilter !== null && $scope.popup.groupFilter !== undefined) {
+                GroupService.getFilteredGroups($scope.popup.groupFilter).then(function(result) {
+                    var filteredGroups = [];
+                    for (var i=0; i<result.data.length; i++) {
+                        var filteredGroup = result.data[i];
+
+                        var foundCandidateGroup = false;
+                        if ($scope.popup.assignmentObject.idm.candidateGroups !== null && $scope.popup.assignmentObject.idm.candidateGroups !== undefined) {
+                            for (var j=0; j<$scope.popup.assignmentObject.idm.candidateGroups.length; j++) {
+                                var candidateGroup = $scope.popup.assignmentObject.idm.candidateGroups[j];
+                                if (candidateGroup.id === filteredGroup.id) {
+                                    foundCandidateGroup = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!foundCandidateGroup) {
+                            filteredGroups.push(filteredGroup);
+                        }
+
+                    }
+
+                    $scope.popup.groupResults = filteredGroups;
+                    $scope.resetGroupSelection();
+                });
+            }
         }
     };
 
@@ -215,10 +238,33 @@ angular.module('flowableModeler').controller('FlowableAssignmentPopupCtrl',
                 $scope.popup.oldRoleFilter = $scope.popup.roleFilter;
             }
 
-            RoleService.getFilteredRoles($scope.popup.roleFilter).then(function(result) {
-                $scope.popup.roleResults = result.data;
-                $scope.resetRoleSelection();
-            });
+            if ($scope.popup.roleFilter !== null && $scope.popup.roleFilter !== undefined) {
+                RoleService.getFilteredRoles($scope.popup.roleFilter).then(function(result) {
+                    var filteredRoles = [];
+                    for (var i=0; i<result.data.length; i++) {
+                        var filteredRole = result.data[i];
+
+                        var foundCandidateRole = false;
+                        if ($scope.popup.assignmentObject.idm.candidateRoles !== null && $scope.popup.assignmentObject.idm.candidateRoles !== undefined) {
+                            for (var j=0; j<$scope.popup.assignmentObject.idm.candidateRoles.length; j++) {
+                                var candidateRole = $scope.popup.assignmentObject.idm.candidateRoles[j];
+                                if (candidateRole.id === filteredRole.id) {
+                                    foundCandidateRole = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!foundCandidateRole) {
+                            filteredRoles.push(filteredRole);
+                        }
+
+                    }
+
+                    $scope.popup.roleResults = filteredRoles;
+                    $scope.resetRoleSelection();
+                });
+            }
         }
     };
 

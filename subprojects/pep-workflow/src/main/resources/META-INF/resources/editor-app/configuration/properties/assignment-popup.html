@@ -138,6 +138,7 @@
                                 <ul class="simple-list"
                                     ng-show="popup.assignmentObject.idm.candidateGroups.length || popup.assignmentObject.idm.candidateGroupFields.length">
                                     <li ng-repeat="group in popup.assignmentObject.idm.candidateGroups">
+                                        <i class="icon icon-user"></i>
                                         {{group.name}}
                                         <div class="actions">
                                             <a ng-click="removeCandidateGroup(group)"><i class="icon icon-remove"></i></a>
@@ -167,6 +168,7 @@
                                 <ul class="simple-list"
                                     ng-show="popup.assignmentObject.idm.candidateRoles.length || popup.assignmentObject.idm.candidateRoleFields.length">
                                     <li ng-repeat="role in popup.assignmentObject.idm.candidateRoles">
+                                        <i class="icon icon-user"></i>
                                         {{role.name}}
                                         <div class="actions">
                                             <a ng-click="removeCandidateRole(role)"><i class="icon icon-remove"></i></a>
@@ -215,7 +217,7 @@
                          ng-if="popup.assignmentObject.type == 'idm' && (!popup.assignmentObject.assignmentSourceType || popup.assignmentObject.assignmentSourceType == 'search') && (assignmentOption.id == 'user' || assignmentOption.id == 'users')">
                         <div class="col-xs-12">
                             <div class="col-xs-4">
-                                <label>{{'PROPERTY.ASSIGNMENT.SEARCH' | translate}}:</label>
+                                <label>{{'PROPERTY.ASSIGNMENT.SEARCH' | translate}}</label>
                             </div>
                             <div class="col-xs-8">
                                 <input class="form-control" type="text" id="people-select-input" placeholder="{{'PROPERTY.ASSIGNMENT.SEARCH_USERS' | translate}}" auto-focus custom-keys
@@ -253,7 +255,7 @@
                          ng-show="popup.assignmentObject.type == 'idm' && (!popup.assignmentObject.assignmentSourceType || popup.assignmentObject.assignmentSourceType == 'search') && (assignmentOption.id == 'user' || assignmentOption.id == 'users')">
                         <div class="col-xs-12">
                             <div class="col-xs-4">
-                                <label>{{'PROPERTY.ASSIGNMENT.EMAIL' | translate}}:</label>
+                                <label>{{'PROPERTY.ASSIGNMENT.EMAIL' | translate}}</label>
                             </div>
                             <div class="col-xs-8">
                                 <form name="emailForm" class="form-group">
@@ -279,7 +281,7 @@
                          ng-if="popup.assignmentObject.type == 'idm' && (!popup.assignmentObject.assignmentSourceType || popup.assignmentObject.assignmentSourceType == 'search') && assignmentOption.id == 'groups'">
                         <div class="col-xs-12">
                             <div class="col-xs-4">
-                                <label>{{'PROPERTY.ASSIGNMENT.SEARCH' | translate}}:</label>
+                                <label>{{'PROPERTY.ASSIGNMENT.SEARCH' | translate}}</label>
                             </div>
                             <div class="col-xs-8">
                                 <input class="form-control" type="text" id="people-select-input" placeholder="{{'PROPERTY.ASSIGNMENT.SEARCH_GROUPS' | translate}}" auto-focus custom-keys
@@ -319,7 +321,7 @@
                          ng-if="popup.assignmentObject.type == 'idm' && (!popup.assignmentObject.assignmentSourceType || popup.assignmentObject.assignmentSourceType == 'search') && assignmentOption.id == 'roles'">
                         <div class="col-xs-12">
                             <div class="col-xs-4">
-                                <label>查询:</label>
+                                <label>查询</label>
                             </div>
                             <div class="col-xs-8">
                                 <input class="form-control" type="text" id="people-select-input" placeholder="{{'PROPERTY.ASSIGNMENT.SEARCH_ROLES' | translate}}" auto-focus custom-keys

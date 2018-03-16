@@ -33,3 +33,22 @@ var wdUnify = function() {
 
 angular.module('flowableModeler').directive('wdUnify', wdUnify);
 
+jQuery.fn.resize = function(callback) {
+  var str = callback.toString();
+  if (str.indexOf('#paletteSection') === -1) {
+    return callback;
+  }
+}
+jQuery(window).on('resize',function(){
+  setTimeout(function(){
+    var mainHeader = jQuery('#main-header');
+    var offset = jQuery("#editor-header").offset();
+    var totalAvailable = jQuery(window).height() - offset.top - mainHeader.height() - 21;
+    var propSectionHeight = jQuery('#propertySection').height();
+    var treeViewHeight = jQuery('#process-treeview-wrapper').height();
+    var footerHeight = jQuery('#paletteSectionFooter').height();
+    jQuery('#canvasSection').height(totalAvailable - propSectionHeight - 40);
+    jQuery('#paletteSection').height(totalAvailable - treeViewHeight - footerHeight - 40);
+  },100)
+})
+
