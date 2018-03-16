@@ -320,6 +320,7 @@ public class HuaweiPushApp extends BasePushApp {
         private String msg;
         private String requestID;
         private String resultcode;
+        private String code;
 
         public void setMsg(String msg) {
             this.msg = msg;
@@ -345,6 +346,13 @@ public class HuaweiPushApp extends BasePushApp {
             return msg;
         }
 
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
     }
 
 
