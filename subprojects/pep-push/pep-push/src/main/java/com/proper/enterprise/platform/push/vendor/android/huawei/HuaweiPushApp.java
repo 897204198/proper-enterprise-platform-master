@@ -111,7 +111,7 @@ public class HuaweiPushApp extends BasePushApp {
             } else {
                 getClient();
                 LOGGER.info("Push a notice msg to Huawei push server with pushToken:{}", pushToken);
-                rsp = "{\"msg\":\"success\",\"requestID\":\"14948813856457737\",\"resultcode\":0}";
+                rsp = "{\"msg\":\"success\",\"requestId\":\"14948813856457737\",\"code\":0}";
             }
 
             result = handleNotificationRsp(rsp, msg);
@@ -128,7 +128,7 @@ public class HuaweiPushApp extends BasePushApp {
         } else {
             getClient();
             LOGGER.info("gr:{}", pushToken);
-            rsp = "{\"msg\":\"success\",\"requestID\":\"14948199168335342557\",\"resultcode\":0}";
+            rsp = "{\"msg\":\"success\",\"requestId\":\"14948199168335342557\",\"code\":0}";
         }
         return rsp;
     }
@@ -318,28 +318,19 @@ public class HuaweiPushApp extends BasePushApp {
         }
 
         private String msg;
-        private String requestID;
-        private String resultcode;
+        private String requestId;
         private String code;
 
         public void setMsg(String msg) {
             this.msg = msg;
         }
 
-        public String getResultcode() {
-            return resultcode;
+        public String getRequestId() {
+            return requestId;
         }
 
-        public void setResultcode(String resultcode) {
-            this.resultcode = resultcode;
-        }
-
-        public String getRequestID() {
-            return requestID;
-        }
-
-        public void setRequestID(String requestID) {
-            this.requestID = requestID;
+        public void setRequestId(String requestId) {
+            this.requestId = requestId;
         }
 
         public String getMsg() {

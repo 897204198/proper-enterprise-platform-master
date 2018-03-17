@@ -36,7 +36,7 @@ public class CommonPushClientRequestServiceImpl implements CommonPushClientReque
             PushDeviceType deviceType, PushMode pushMode, String deviceOtherInfo, boolean unbindOtherDevice) {
         Object appconf = Mapl.cell(globalInfo.getPushConfigs(), appkey);
         if (appconf == null) {
-            throw new PushException("appkey: " + appkey + " is not valid!");
+            throw new PushException("appkey:" + appkey + " is not valid!");
         }
         if (StringUtil.isNotEmpty(userid)) {
             PushUserEntity user = userRepo.findByAppkeyAndUserid(appkey, userid);
