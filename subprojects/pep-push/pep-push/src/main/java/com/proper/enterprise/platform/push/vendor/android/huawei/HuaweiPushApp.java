@@ -111,7 +111,7 @@ public class HuaweiPushApp extends BasePushApp {
             } else {
                 getClient();
                 LOGGER.info("Push a notice msg to Huawei push server with pushToken:{}", pushToken);
-                rsp = "{\"msg\":\"success\",\"requestID\":\"14948813856457737\",\"resultcode\":0}";
+                rsp = "{\"msg\":\"Success\",\"requestId\":\"14948813856457737\",\"code\":0}";
             }
 
             result = handleNotificationRsp(rsp, msg);
@@ -128,7 +128,7 @@ public class HuaweiPushApp extends BasePushApp {
         } else {
             getClient();
             LOGGER.info("gr:{}", pushToken);
-            rsp = "{\"msg\":\"success\",\"requestID\":\"14948199168335342557\",\"resultcode\":0}";
+            rsp = "{\"msg\":\"Success\",\"requestId\":\"14948199168335342557\",\"code\":0}";
         }
         return rsp;
     }
@@ -138,7 +138,7 @@ public class HuaweiPushApp extends BasePushApp {
         boolean rtn = false;
         try {
             PushRet result = JSONUtil.parse(rsp, PushRet.class);
-            if ("success".equals(result.getMsg())) {
+            if ("Success".equals(result.getMsg())) {
                 LOGGER.info("success huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
                 rtn = true;
             } else {
@@ -169,8 +169,8 @@ public class HuaweiPushApp extends BasePushApp {
         try {
             msg.setMresponse(rsp);
             PushRet result = JSONUtil.parse(rsp, PushRet.class);
-            if ("success".equals(result.getMsg())) {
-                LOGGER.info("success huawei push log step6 content:{},:msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
+            if ("Success".equals(result.getMsg())) {
+                LOGGER.info("success huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
                 return true;
             } else {
                 LOGGER.error("error huawei push log step6 content:{},msg:{},error_msg:{}",
@@ -318,28 +318,19 @@ public class HuaweiPushApp extends BasePushApp {
         }
 
         private String msg;
-        private String requestID;
-        private String resultcode;
+        private String requestId;
         private String code;
 
         public void setMsg(String msg) {
             this.msg = msg;
         }
 
-        public String getResultcode() {
-            return resultcode;
+        public String getRequestId() {
+            return requestId;
         }
 
-        public void setResultcode(String resultcode) {
-            this.resultcode = resultcode;
-        }
-
-        public String getRequestID() {
-            return requestID;
-        }
-
-        public void setRequestID(String requestID) {
-            this.requestID = requestID;
+        public void setRequestId(String requestId) {
+            this.requestId = requestId;
         }
 
         public String getMsg() {
