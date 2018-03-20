@@ -22,6 +22,14 @@ public interface DataDicService {
     DataDic get(String catalog, String code);
 
     /**
+     * 根据分类及编码获得数据字典节点
+     *
+     * @param dataDicEnum 字典枚举
+     * @return 数据字典节点
+     */
+    DataDic get(Enum dataDicEnum);
+
+    /**
      * 根据 id 获得数据字典节点
      * @param  id ID
      * @return 数据字典节点

@@ -26,6 +26,11 @@ public class DataDicServiceImpl implements DataDicService {
     }
 
     @Override
+    public DataDic get(Enum dataDicEnum) {
+        return repository.getByCatalogAndCode(dataDicEnum.getClass().getSimpleName(), dataDicEnum.name());
+    }
+
+    @Override
     public DataDic get(String id) {
         return repository.getOne(id);
     }

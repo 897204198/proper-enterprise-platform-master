@@ -5,6 +5,8 @@ import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.workflow.EditorSource;
 import com.proper.enterprise.platform.workflow.service.DeployService;
+import com.proper.enterprise.platform.workflow.service.PEPModelService;
+import org.flowable.app.model.common.ResultListDataRepresentation;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.Deployment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class ModelsController extends BaseController {
     private RepositoryService repositoryService;
     @Autowired
     private DeployService deployService;
+    @Autowired
+    private PEPModelService pepModelService;
 
     /**
      * According to activiti-webapp-explorer2, an initial editor source is needed when
@@ -49,4 +53,12 @@ public class ModelsController extends BaseController {
         returnMap.put("deployTime", DateUtil.toString(deployment.getDeploymentTime(), PEPConstants.DEFAULT_DATETIME_FORMAT));
         return responseOfPost(returnMap);
     }
+
+
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public ResultListDataRepresentation getModels(@RequestParam(required = false) String filter,
+                                                  @RequestParam(required = false) String sort, @RequestParam(required = false) Integer modelType) {
+        return pepModelService.getModels(filter, sort, modelType);
+    }
+
 }
