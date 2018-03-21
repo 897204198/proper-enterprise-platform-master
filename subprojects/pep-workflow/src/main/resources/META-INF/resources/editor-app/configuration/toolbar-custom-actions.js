@@ -21,8 +21,9 @@ var wdUnify = function() {
     restrict: 'A',
     link: function(scope) {
       // 弹出保存对话框时将设计器中的 名称/描述 同步到对话框中显示
-      var properties = scope.editor.getJSON().properties;
+      var properties = scope.editor.properties;
       scope.saveDialog.name = properties.name;
+      scope.saveDialog.key = properties.process_id;
       scope.saveDialog.description = properties.documentation;
 
       // 为避免在保存对话框中修改 名称/描述 后还需要同步回设计器，禁止在保存对话框中修改
@@ -51,4 +52,3 @@ jQuery(window).on('resize',function(){
     jQuery('#paletteSection').height(totalAvailable - treeViewHeight - footerHeight - 40);
   },100)
 })
-
