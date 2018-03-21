@@ -14,5 +14,5 @@ public interface QueryResultService {
      *
      * @return 查询结果对象
      * */
-    Object assemble(JsonNode query, String moduleName);
+    Object assemble(JsonNode query, String moduleName, String pageNo, String pageSize);
 }

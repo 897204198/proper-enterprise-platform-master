@@ -36,13 +36,6 @@ public class MySQLSyncMongoManager implements InitializingBean {
     @Autowired
     HikariConfig hikariConfig;
 
-    private String hostname;
-
-    private int port;
-
-    @Value("${binlog.schema}")
-    private String schema;
-
     @Value("${binlog.username}")
     private String username;
 
@@ -55,18 +48,17 @@ public class MySQLSyncMongoManager implements InitializingBean {
         mongoDataSyncService.fullSynchronization();
         // 获取数据库ip地址和端口
         Properties properties = hikariConfig.getDataSourceProperties();
-        String url = properties.get("url").toString().toLowerCase();
-        if (url.contains("mysql")) {
-            String result = url.substring(url.indexOf("//"), url.lastIndexOf("/")).substring(2);
-            String[] temp = result.split(":");
-            hostname = temp[0];
-            port = Integer.parseInt(temp[1]);
-        } else {
-            return;
+        Object urlObj = properties.get("url");
+        if (urlObj != null) {
+            String url = urlObj.toString().toLowerCase();
+            if (url.contains("mysql")) {
+                String[] temp = (url.substring(url.indexOf("//"), url.lastIndexOf("/")).substring(2)).split(":");
+                // 启动binlog线程
+                BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, nativeRepository, mongoTemplate,
+                    mongoSyncService, temp[0], Integer.parseInt(temp[1]), url.substring(url.lastIndexOf("/")),
+                    username, password);
+                binlogThread.start();
+            }
         }
-        // 启动binlog线程
-        BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, nativeRepository, mongoTemplate,
-            mongoSyncService, hostname, port, schema, username, password);
-        binlogThread.start();
     }
 }

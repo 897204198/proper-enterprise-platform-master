@@ -54,6 +54,8 @@ dependencies {
             project(':pep-cache-ehcache'),
             project(':pep-page-custom'),
             project(':pep-push'),
+            project(':pep-oopsearch'),
+            project(':pep-oopsearch-sync-mysql'),
             project(':pep-workflow')
 }
 task cleanDist(type: Delete) {

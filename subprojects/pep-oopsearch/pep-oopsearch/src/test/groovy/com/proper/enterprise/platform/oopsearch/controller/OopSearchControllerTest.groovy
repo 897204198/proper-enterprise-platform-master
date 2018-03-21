@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.oopsearch.service
+package com.proper.enterprise.platform.oopsearch.controller
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -7,20 +7,17 @@ import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.RoleRepository
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository
 import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.oopsearch.api.serivce.QueryResultService
-import com.proper.enterprise.platform.oopsearch.configs.UserRoleConfigTest
+import com.proper.enterprise.platform.oopsearch.util.SqlInstallUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class MutiTableQueryResultServiceImplTest extends AbstractTest{
+import java.text.SimpleDateFormat
 
-    @Autowired
-    UserRoleConfigTest userRoleConfigTest
-
-    @Autowired
-    QueryResultService queryResultService
+class OopSearchControllerTest extends AbstractTest{
 
     @Autowired
     RoleRepository repository
@@ -28,16 +25,55 @@ class MutiTableQueryResultServiceImplTest extends AbstractTest{
     @Autowired
     UserRepository userRepository
 
+    @Autowired
+    QueryResultService queryResultService;
+
     @Test
-    void testSearchServiceImpl(){
-        String moduleName = "userRoleConfigTest"
-        String req = "[{\"key\":\"name\",\"value\":\"用户\",\"operate\":\"like\",\"table\":\"pep_auth_users\"}]"
+    void mutiTableQuery(){
+
+        String endDate = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+        String req = "[{\"key\":\"create_time\",\"value\":\"2017-12-25到" + endDate +
+            "\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         req = URLDecoder.decode(req, PEPConstants.DEFAULT_CHARSET.toString())
         ObjectMapper objectMapper = new ObjectMapper()
         JsonNode jn = objectMapper.readValue(req, JsonNode.class)
-        List result = queryResultService.assemble(jn, moduleName)
-        assert result.size() > 1
+        DataTrunk result = queryResultService.assemble(jn, "authusers", "1", "10")
+        assert result.data.size() > 1
 
+    }
+
+    @Test
+    void addTableElements(){
+        List<String> list = new ArrayList<>();
+        list.add("pep_auth_users");
+        list.add("pep_auth_roles");
+        String sql = SqlInstallUtil.addTableElements("", list);
+        assert sql.length() > 0;
+    }
+
+    @Test
+    void testPage(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode query = objectMapper.readValue("[{}]", JsonNode.class);
+
+        //第一页
+        String moduleName = "authusers"
+
+        DataTrunk result = queryResultService.assemble(query, moduleName, "1", "2")
+        assert result.data.size() == 2
+
+        //翻页
+        result = queryResultService.assemble(query, moduleName, "2", "2")
+        assert result.data.size() == 1
+
+        //page异常数据的处理
+        result = queryResultService.assemble(query, moduleName, "", "2")
+        assert result.data.size() == 2
+
+        //page异常数据的处理
+        result = queryResultService.assemble(query, moduleName, "0", "2")
+        assert result.data.size() == 2
     }
 
     @Before
@@ -69,4 +105,5 @@ class MutiTableQueryResultServiceImplTest extends AbstractTest{
         userRepository.save(userEntity3)
 
     }
+
 }

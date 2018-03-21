@@ -128,45 +128,45 @@ public class BinlogThread extends Thread {
             return;
         }
 
-        String sql  = "SELECT "
-            + "t1.COLUMN_NAME AS COL, "
-            + "t2.COLUMN_NAME AS PRI "
-            + "FROM "
-            + "INFORMATION_SCHEMA.COLUMNS t1 "
-            + "LEFT JOIN "
-            + "INFORMATION_SCHEMA.KEY_COLUMN_USAGE t2 "
-            + "ON t1.TABLE_NAME = t2.TABLE_NAME "
-            + "AND "
-            + "t1.COLUMN_NAME = t2.COLUMN_NAME "
+        String sql  = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS "
             + "WHERE "
-            + "t1.TABLE_NAME = '" + tableName + "' "
+            + "TABLE_NAME = '" + tableName + "' "
             + "AND "
-            + "t1.TABLE_SCHEMA = '" + schema + "'";
-        List<Object[]> resultList = null;
+            + "TABLE_SCHEMA = '" + schema + "'";
+        List<String> resultList = null;
         try {
             resultList = nativeRepository.executeQuery(sql);
+            List<String> columnObject = new ArrayList<>();
+            // 获取字段名称
+            for (String columnName:resultList) {
+                columnObject.add(columnName);
+            }
+            TableObject tableObject = new TableObject();
+            tableObject.setSchema(schema);
+            tableObject.setTableName(tableName);
+            tableObject.setColumnNames(columnObject);
+
+            String priSql  = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE "
+                + "WHERE "
+                + "TABLE_NAME = '" + tableName + "' "
+                + "AND "
+                + "TABLE_SCHEMA = '" + schema + "' "
+                + "AND "
+                + "CONSTRAINT_NAME = 'PRIMARY'";
+            resultList = nativeRepository.executeQuery(priSql);
+            StringBuffer primaryKey = new StringBuffer();
+            for (String primaryColumnName:resultList) {
+                primaryKey.append(primaryColumnName).append("|");
+            }
+            if (primaryKey.length() > 0) {
+                primaryKey.deleteCharAt(primaryKey.length() - 1);
+            }
+            tableObject.setPrimaryKeys(primaryKey.toString());
+            tableObjects.add(tableObject);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return;
         }
-        List<String> columnObject = new ArrayList<>();
-        StringBuffer primaryKey = new StringBuffer();
-        for (Object[] result:resultList) {
-            String columnName = result[0].toString();
-            if (result[1] != null) {
-                primaryKey.append(result[1].toString()).append("|");
-            }
-            columnObject.add(columnName);
-        }
-        TableObject tableObject = new TableObject();
-        tableObject.setSchema(schema);
-        tableObject.setTableName(tableName);
-        tableObject.setColumnNames(columnObject);
-        if (primaryKey.length() > 0) {
-            primaryKey.deleteCharAt(primaryKey.length() - 1);
-        }
-        tableObject.setPrimaryKeys(primaryKey.toString());
-        tableObjects.add(tableObject);
     }
 
     private void doInsertSync(EventData eventData, long pos) {
@@ -181,6 +181,10 @@ public class BinlogThread extends Thread {
         for (int i = 0; i < rows.size(); i++) {
             Object[] row = rows.get(i);
             for (int j = 0; j < row.length; j++) {
+                if (row[j] == null) {
+                    // 空值内容不需要存入mongo
+                    continue;
+                }
                 for (TableObject tableObject:tableObjects) {
                     String des = getSearchDocumentDesc(tableObject.getTableName(),
                         tableObject.getColumnNames().get(j));

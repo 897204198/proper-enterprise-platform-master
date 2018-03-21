@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.oopsearch.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.proper.enterprise.platform.core.PEPApplicationContext;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;
@@ -41,6 +42,16 @@ public class QueryResultBaseService {
             list.addAll(searchConfig.getSearchColumnListByTable(temp));
         }
         return list;
+    }
+
+    public String addPage(String sql, String pageNo, String pageSize) {
+        if (StringUtil.isEmpty(pageNo) || Integer.parseInt(pageNo) < 1) {
+            pageNo = "1";
+        }
+        if (StringUtil.isEmpty(pageSize)) {
+            throw new ErrMsgException("missing pageSize to buildPage");
+        }
+        return SqlInstallUtil.addPage(sql, Integer.parseInt(pageNo), Integer.parseInt(pageSize));
     }
 
     String installSql(JsonNode query, String moduleName) {

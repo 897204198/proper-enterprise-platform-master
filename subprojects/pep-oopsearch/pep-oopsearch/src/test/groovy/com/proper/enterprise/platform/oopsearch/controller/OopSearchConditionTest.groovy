@@ -1,9 +1,8 @@
-package com.proper.enterprise.platform.oopsearch.service
+package com.proper.enterprise.platform.oopsearch.controller
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.proper.enterprise.platform.core.PEPApplicationContext
-import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.oopsearch.api.serivce.QueryResultService
 import com.proper.enterprise.platform.oopsearch.configs.MultiTableConfigTest
 import com.proper.enterprise.platform.oopsearch.entity.Table2EntityTest
@@ -11,6 +10,7 @@ import com.proper.enterprise.platform.oopsearch.entity.TableEntityTest
 import com.proper.enterprise.platform.oopsearch.repository.Table2RepositoryTest
 import com.proper.enterprise.platform.oopsearch.repository.TableRepositoryTest
 import com.proper.enterprise.platform.test.AbstractTest
+import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -18,7 +18,7 @@ import org.springframework.test.context.jdbc.Sql
 
 import java.text.SimpleDateFormat
 
-class QueryResultServiceImplTest extends AbstractTest{
+class OopSearchConditionTest extends AbstractTest {
 
     @Autowired
     MultiTableConfigTest multiTableConfigTest
@@ -34,83 +34,87 @@ class QueryResultServiceImplTest extends AbstractTest{
 
     @Test
     @Sql(["/sql/oopsearch/001-datadics.sql"])
-    void testSearchServiceImpl(){
-        String name = PEPApplicationContext.getName()
-        println name
-        initData()
-        get("/search/init",  HttpStatus.OK)
+    void testSearchServiceImpl() {
+        //初始化mysql到mongo
+        get("/search/init", HttpStatus.OK)
+
+        String moduleName = "table2ConfigTest"
+
+        //mongo反向查询
+        get("/search/inverse?data=用&moduleName=" + moduleName, HttpStatus.OK)
 
         String endDate = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         String req = "[{\"key\":\"create_time\",\"value\":\"2017-12-25到" + endDate +
-                        "\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
-                        "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
-        req = URLDecoder.decode(req, PEPConstants.DEFAULT_CHARSET.toString())
+            "\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+            "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         ObjectMapper objectMapper = new ObjectMapper()
         JsonNode jn = objectMapper.readValue(req, JsonNode.class)
-        List result = queryResultService.assemble(jn, "table2ConfigTest")
-        assert result.size() == 1
+        DataTrunk result = queryResultService.assemble(jn, moduleName, "1", "10")
+        assert result.data.size() == 1
 
         //测试无查询条件情况，查询所有
         req = "[{}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(jn, "table2ConfigTest")
-        assert result.size() == 3
+        result = queryResultService.assemble(jn, moduleName, "1", "10")
+        assert result.data.size() == 3
 
-        req = "[{\"key\":\"create_time\",\"value\":\"2018-01-01或"+ endDate +
+        req = "[{\"key\":\"create_time\",\"value\":\"2018-01-01或" + endDate +
             "\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
             "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(jn, "table2ConfigTest")
-        assert result.size() == 1
+        result = queryResultService.assemble(jn, moduleName, "1", "10")
+        assert result.data.size() == 1
 
         req = "[{\"key\":\"dept_member_count\",\"value\":\"1\",\"operate\":\">\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(jn, "table2ConfigTest")
-        assert result.size() > 1
+        result = queryResultService.assemble(jn, moduleName, "1", "10")
+        assert result.data.size() > 1
 
         req = "[{\"key\":\"create_time\",\"value\":\"2018\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
             "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(jn, "table2ConfigTest")
-        assert result.size() == 1
+        result = queryResultService.assemble(jn, moduleName, "1", "10")
+        assert result.data.size()  ==  1
 
         req = "[{\"key\":\"create_time\",\"value\":\"本年\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
             "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(jn, "table2ConfigTest")
-        assert result.size() == 1
+        result = queryResultService.assemble(jn, moduleName, "1", "10")
+        assert result.data.size()  ==  1
 
         req = "[{\"key\":\"create_time\",\"value\":\"本季\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
             "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(jn, "table2ConfigTest")
-        assert result.size() == 1
+        result = queryResultService.assemble(jn, moduleName, "1", "10")
+        assert result.data.size()  ==  1
 
         req = "[{\"key\":\"create_time\",\"value\":\"本月\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
             "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(jn, "table2ConfigTest")
-        assert result.size() == 1
+        result = queryResultService.assemble(jn, moduleName, "1", "10")
+        assert result.data.size()  ==  1
 
         req = "[{\"key\":\"create_time\",\"value\":\"本周\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
             "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(jn, "table2ConfigTest")
-        assert result.size() == 1
+        result = queryResultService.assemble(jn, moduleName, "1", "10")
+        assert result.data.size()  ==  1
 
         req = "[{\"key\":\"create_time\",\"value\":\"本天\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
             "{\"key\":\"dept_name\",\"value\":\"研发\",\"operate\":\"like\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(jn, "table2ConfigTest")
-        assert result.size() == 1
+        result = queryResultService.assemble(jn, moduleName, "1", "10")
+        assert result.data.size()  ==  1
 
-        req = "[{\"key\":\"create_time\",\"value\":\"2017-12-25到"+ endDate +"\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
+        req = "[{\"key\":\"create_time\",\"value\":\"2017-12-25到" + endDate + "\",\"operate\":\"like\",\"table\":\"test_table2\"}," +
             "{\"key\":\"dept_member_count\",\"value\":\"20\",\"operate\":\"=\",\"table\":\"test_table2\"}]"
         jn = objectMapper.readValue(req, JsonNode.class)
-        result = queryResultService.assemble(jn, "table2ConfigTest")
-        assert result.size() == 1
+        result = queryResultService.assemble(jn, moduleName, "1", "10")
+        assert result.data.size()  ==  1
+
     }
 
+    @Before
     void initData() {
         TableEntityTest tableEntityTest = new TableEntityTest()
         tableEntityTest.setUserId("001")

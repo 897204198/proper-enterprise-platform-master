@@ -47,7 +47,8 @@ public class SqlInstallUtil {
     public static String addTableElements(String sql, List<String> tableNames) {
         RelationMap<String, Integer> relationNodes = relation.getRelationNodes();
         if (tableNames.size() == 1) {
-            return sql + " from " + tableNames.get(0) + " t where 1=1";
+            Integer i = relationNodes.getNormalValue(tableNames.get(0));
+            return sql + " from " + tableNames.get(0) + " t" + (i == null ? "" : i) + " where 1=1";
         }
         if (tableNames.size() == 2) {
             List<RelationNode> list = relation.findRelation(tableNames.get(0), tableNames.get(1));
@@ -176,6 +177,16 @@ public class SqlInstallUtil {
         stringBuffer.append(getSeparator(keyType, operate, "l"));
         stringBuffer.append(value);
         stringBuffer.append(getSeparator(keyType, operate, "r"));
+        return stringBuffer.toString();
+    }
+
+    /**
+     * The page part of SQL.
+     */
+    public static String addPage(String sql, Integer pageNo, Integer pageSize) {
+        StringBuffer stringBuffer = new StringBuffer(sql);
+        stringBuffer.append(" ").append("limit").append(" ");
+        stringBuffer.append((pageNo - 1) * pageSize).append(",").append(pageSize);
         return stringBuffer.toString();
     }
 

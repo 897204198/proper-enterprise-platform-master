@@ -103,8 +103,6 @@ public class DemoDeptController extends BaseController {
 ### 设置pep-oopsearch-mongo配置文件
 * 配置pep-oopsearch-sync-mysql模块的`binlog-analysis.properties`配置文件
 ```
-# 如果表分布在多个schema中，可配置多schema，用半角逗号","分割
-binlog.schema=pep_dev,pep_test
 # pep-oopsearch-mongo伪装slave时使用的用户名
 binlog.username=slave
 # pep-oopsearch-mongo伪装slave时使用的密码
