@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 
 /**
@@ -26,26 +27,51 @@ public interface BaseNeo4jService<T, ID extends Serializable> extends BaseServic
 
     <S extends T> Iterable<S> save(Iterable<S> entities, int depth);
 
-    T findOne(Long id, int depth);
+    T findOne(String id, int depth);
 
-    Iterable<T> findAll(int depth);
+    Collection<T> findAll(int depth);
 
-    Iterable<T> findAll(Sort sort, int depth);
+    Collection<T> findAll(Sort sort, int depth);
 
-    Iterable<T> findAll(Iterable<Long> ids, int depth);
+    Collection<T> findAll(Iterable<String> ids, int depth);
 
-    Iterable<T> findAll(Iterable<Long> ids, Sort sort);
+    Collection<T> findAll(Iterable<String> ids, Sort sort);
 
-    Iterable<T> findAll(Iterable<Long> ids, Sort sort, int depth);
+    Collection<T> findAll(Iterable<String> ids, Sort sort, int depth);
+
+    @SuppressWarnings("unchecked")
+    <I extends T> Collection<I> findAll(Class<I> classType, Filters filters);
+
+    @SuppressWarnings("unchecked")
+    <I extends T> Collection<I> findAll(Class<I> classType, Filters filters, int depth);
+
+    @SuppressWarnings("unchecked")
+    <I extends T> Collection<I> findAll(Class<I> classType, SortOrder sortOrder);
+
+    @SuppressWarnings("unchecked")
+    <I extends T> Collection<I> findAll(Class<I> classType, SortOrder sortOrder, int depth);
+
+    @SuppressWarnings("unchecked")
+    <I extends T> Collection<I> findAll(Class<I> classType, Filters filters, SortOrder sortOrder);
+
+    @SuppressWarnings("unchecked")
+    <I extends T> Collection<I> findAll(Class<I> classType, Filters filters, SortOrder sortOrder, int depth);
 
     Page<T> findAll(Pageable pageable, int depth);
 
     <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters);
 
+    <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters, int depth);
+
     <I extends T> DataTrunk<I> findPage(Class<I> classType, SortOrder sortOrder);
+
+    <I extends T> DataTrunk<I> findPage(Class<I> classType, SortOrder sortOrder, int depth);
 
     <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters, SortOrder sortOrder);
 
+    <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters, SortOrder sortOrder, int depth);
+
     <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters, SortOrder sortOrder, Pagination pagination);
 
+    <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters, SortOrder sortOrder, Pagination pagination, int depth);
 }

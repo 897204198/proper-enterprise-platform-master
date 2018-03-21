@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * Neo4jService基类的基础实现
@@ -48,38 +49,74 @@ public abstract class Neo4jServiceSupport<T, R extends BaseNeo4jRepository, IDT 
 
     @Override
     @SuppressWarnings("unchecked")
-    public T findOne(Long idt, int depth) {
+    public T findOne(String idt, int depth) {
         return (T) getRepository().findOne(idt, depth);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Iterable<T> findAll(int depth) {
-        return getRepository().findAll(depth);
+    public Collection<T> findAll(int depth) {
+        return (Collection<T>) getRepository().findAll(depth);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Iterable<T> findAll(Sort sort, int depth) {
-        return getRepository().findAll(sort, depth);
+    public Collection<T> findAll(Sort sort, int depth) {
+        return (Collection<T>) getRepository().findAll(sort, depth);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Iterable<T> findAll(Iterable<Long> ids, int depth) {
-        return getRepository().findAll(ids, depth);
+    public Collection<T> findAll(Iterable<String> ids, int depth) {
+        return (Collection<T>) getRepository().findAll(ids, depth);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Iterable<T> findAll(Iterable<Long> ids, Sort sort) {
-        return getRepository().findAll(ids, sort);
+    public Collection<T> findAll(Iterable<String> ids, Sort sort) {
+        return (Collection<T>) getRepository().findAll(ids, sort);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Iterable<T> findAll(Iterable<Long> ids, Sort sort, int depth) {
-        return getRepository().findAll(ids, sort, depth);
+    public Collection<T> findAll(Iterable<String> ids, Sort sort, int depth) {
+        return (Collection<T>) getRepository().findAll(ids, sort, depth);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I extends T> Collection<I> findAll(Class<I> classType, Filters filters) {
+        return getSession().loadAll(classType, filters, new SortOrder(), 1);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I extends T> Collection<I> findAll(Class<I> classType, Filters filters, int depth) {
+        return getSession().loadAll(classType, filters, new SortOrder(), depth);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I extends T> Collection<I> findAll(Class<I> classType, SortOrder sortOrder) {
+        return getSession().loadAll(classType, new Filters(), sortOrder, 1);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I extends T> Collection<I> findAll(Class<I> classType, SortOrder sortOrder, int depth) {
+        return getSession().loadAll(classType, new Filters(), sortOrder, depth);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I extends T> Collection<I> findAll(Class<I> classType, Filters filters, SortOrder sortOrder) {
+        return getSession().loadAll(classType, filters, sortOrder, 1);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <I extends T> Collection<I> findAll(Class<I> classType, Filters filters, SortOrder sortOrder, int depth) {
+        return getSession().loadAll(classType, filters, sortOrder, depth);
     }
 
     @Override
@@ -88,9 +125,15 @@ public abstract class Neo4jServiceSupport<T, R extends BaseNeo4jRepository, IDT 
         return getRepository().findAll(pageable, depth);
     }
 
+
     @Override
     public <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters) {
         return findPage(classType, filters, new SortOrder(), getPagination());
+    }
+
+    @Override
+    public <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters, int depth) {
+        return findPage(classType, filters, new SortOrder(), getPagination(), depth);
     }
 
     @Override
@@ -99,12 +142,27 @@ public abstract class Neo4jServiceSupport<T, R extends BaseNeo4jRepository, IDT 
     }
 
     @Override
+    public <I extends T> DataTrunk<I> findPage(Class<I> classType, SortOrder sortOrder, int depth) {
+        return findPage(classType, new Filters(), sortOrder, getPagination(), depth);
+    }
+
+    @Override
     public <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters, SortOrder sortOrder) {
         return findPage(classType, filters, sortOrder, getPagination());
     }
 
     @Override
+    public <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters, SortOrder sortOrder, int depth) {
+        return findPage(classType, filters, sortOrder, getPagination(), depth);
+    }
+
+    @Override
     public <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters, SortOrder sortOrder, Pagination pagination) {
-        return new DataTrunk<>(getSession().loadAll(classType, filters, sortOrder, pagination), getSession().count(classType, filters));
+        return findPage(classType, filters, sortOrder, pagination, 1);
+    }
+
+    @Override
+    public <I extends T> DataTrunk<I> findPage(Class<I> classType, Filters filters, SortOrder sortOrder, Pagination pagination, int depth) {
+        return new DataTrunk<>(getSession().loadAll(classType, filters, sortOrder, pagination, depth), getSession().count(classType, filters));
     }
 }
