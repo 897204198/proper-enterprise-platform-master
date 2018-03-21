@@ -59,22 +59,22 @@ public class UsersController extends BaseController {
     @GetMapping(path = "/{userId}")
     public ResponseEntity<User> get(@PathVariable String userId) {
         userService.checkPermission("/auth/users/" + userId, RequestMethod.GET);
-        return responseOfGet(userService.get(userId));
+        return responseOfGet(userService.get(userId, false));
     }
 
     /**
      * 更新指定用户ID的用户信息
      */
     @PutMapping(path = "/{userId}")
-    public ResponseEntity<String> update(@PathVariable String userId, @RequestBody UserVO userVO) {
+    public ResponseEntity<User> update(@PathVariable String userId, @RequestBody UserVO userVO) {
         userService.checkPermission("/auth/users/" + userId, RequestMethod.PUT);
         User user = userService.get(userId);
         if (user != null) {
             userVO.setPassword(pwdService.encrypt(userVO.getPassword()));
             userVO.setId(userId);
         }
-        userService.saveOrUpdateUser(userVO);
-        return responseOfPut("");
+
+        return responseOfPut(userService.saveOrUpdateUser(userVO));
     }
 
     /**

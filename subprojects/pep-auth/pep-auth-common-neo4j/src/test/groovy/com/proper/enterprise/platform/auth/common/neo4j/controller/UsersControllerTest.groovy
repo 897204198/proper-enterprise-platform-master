@@ -158,11 +158,10 @@ class UsersControllerTest extends AbstractNeo4jTest {
         userMap.put('name', 'new name')
         userMap.put('email', 'email@po.com')
         userMap.put('password', '789456')
-        userMap.put('enable', true)
+        userMap.put('enable', false)
 
-        result = put('/auth/users/' + userNodeEntity.getId(), JSONUtil.toJSON(userMap), HttpStatus.OK).getResponse().getContentAsString()
-        assert result == ''
-
+        result = JSONUtil.parse(put('/auth/users/' + userNodeEntity.getId(), JSONUtil.toJSON(userMap), HttpStatus.OK).getResponse().getContentAsString(), userNodeEntity.class)
+        assert result.getId() == userNodeEntity.getId()
         result = delete('/auth/users?ids=' + userNodeEntity.getId(), HttpStatus.NO_CONTENT).getResponse().getContentAsString()
         assert result == ''
     }
@@ -260,8 +259,8 @@ class UsersControllerTest extends AbstractNeo4jTest {
         reqMap['ids'] = [userNodeEntity.getId()]
         reqMap['enable'] = false
         put('/auth/users', JSONUtil.toJSON(reqMap), HttpStatus.OK)
-        def result = get('/auth/users/' + userNodeEntity.getId(), HttpStatus.OK).getResponse().getContentAsString()
-        assert result == ''
+        def result = JSONUtil.parse(get('/auth/users/' + userNodeEntity.getId(), HttpStatus.OK).getResponse().getContentAsString(), userNodeEntity.class)
+        assert result.getId() == userNodeEntity.getId()
     }
 
 }
