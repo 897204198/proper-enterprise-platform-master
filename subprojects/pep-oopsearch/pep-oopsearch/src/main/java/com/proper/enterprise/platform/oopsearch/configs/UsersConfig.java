@@ -2,10 +2,8 @@ package com.proper.enterprise.platform.oopsearch.configs;
 
 import com.proper.enterprise.platform.oopsearch.api.annotation.SearchConfig;
 import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-@Primary
 @Component("authusers")
 @SearchConfig
 public class UsersConfig extends AbstractSearchConfigs {
