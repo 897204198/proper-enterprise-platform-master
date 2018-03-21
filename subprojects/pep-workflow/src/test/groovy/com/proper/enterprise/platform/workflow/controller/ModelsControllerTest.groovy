@@ -26,18 +26,18 @@ class ModelsControllerTest extends AbstractTest {
     void testDeployment() {
         mockUser("pep-sysadmin", "admin", "123456", true)
         List<AbstractModel> models = modelService.getModelsByModelType(AbstractModel.MODEL_TYPE_BPMN)
-        Map<String, String> deploy1 = postAndReturn('/repository/models/' + models.get(0).id + '/deployment', new HashMap())
-        Map<String, String> deploy2 = postAndReturn('/repository/models/' + models.get(0).id + '/deployment', new HashMap())
-        assert deploy2.get('id') > deploy1.get('id')
-        assert deploy1.get('name') == deploy2.get('name')
+        PEPModelVO modelVO1 = postAndReturn('/repository/models/' + models.get(0).id + '/deployment', new PEPModelVO())
+        PEPModelVO modelVO2 = postAndReturn('/repository/models/' + models.get(0).id + '/deployment', new PEPModelVO())
+        assert modelVO1.getProcessVersion() < modelVO2.getProcessVersion()
+        assert modelVO1.getName() == modelVO2.getName()
     }
 
 
     @Test
     @Sql("/com/proper/enterprise/platform/workflow/datadics.sql")
     void testGetModels() {
-        def searchKey = "validatenameduser"
-        List<AbstractModel> models = modelRepository.findByModelTypeAndFilter(AbstractModel.MODEL_TYPE_BPMN, searchKey, null)
+        def searchKey = "validateNamedUser"
+        List<AbstractModel> models = modelRepository.findByModelTypeAndFilter(AbstractModel.MODEL_TYPE_BPMN, searchKey.toLowerCase(), null)
         postAndReturn('/repository/models/' + models.get(0).id + '/deployment', new HashMap())
         postAndReturn('/repository/models/' + models.get(0).id + '/deployment', new HashMap())
         postAndReturn('/repository/models/' + models.get(0).id + '/deployment', new HashMap())
@@ -61,6 +61,6 @@ class ModelsControllerTest extends AbstractTest {
         assert PEPModelVO.ModelStatus.DEPLOYED.name() == representation.getData().get(0).status.code
         ResultListDataRepresentation nodeploy = JSONUtil.parse(get('/repository/models/?filter=nodeploy&modelType=0'
             , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
-        assert PEPModelVO.ModelStatus.UN_DEPLOYED.name() == nodeploy.getData().get(0).status.code
+        assert PEPModelVO.ModelStatus.UN_DEPLOYED.name()  == nodeploy.getData().get(0).status.code
     }
 }

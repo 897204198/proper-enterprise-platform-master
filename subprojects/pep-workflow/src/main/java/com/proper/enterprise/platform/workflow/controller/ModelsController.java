@@ -2,20 +2,21 @@ package com.proper.enterprise.platform.workflow.controller;
 
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.workflow.EditorSource;
 import com.proper.enterprise.platform.workflow.service.DeployService;
 import com.proper.enterprise.platform.workflow.service.PEPModelService;
+import com.proper.enterprise.platform.workflow.vo.PEPModelVO;
+import org.flowable.app.domain.editor.Model;
 import org.flowable.app.model.common.ResultListDataRepresentation;
+import org.flowable.app.service.api.ModelService;
 import org.flowable.engine.RepositoryService;
+import org.flowable.engine.impl.ProcessDefinitionQueryProperty;
 import org.flowable.engine.repository.Deployment;
+import org.flowable.engine.repository.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 @RestController
@@ -28,6 +29,8 @@ public class ModelsController extends BaseController {
     private DeployService deployService;
     @Autowired
     private PEPModelService pepModelService;
+    @Autowired
+    private ModelService modelService;
 
     /**
      * According to activiti-webapp-explorer2, an initial editor source is needed when
@@ -45,13 +48,14 @@ public class ModelsController extends BaseController {
 
     @RequestMapping(value = "/{modelId}/deployment", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Map<String, String>> deployModel(@PathVariable String modelId) {
+    public ResponseEntity<PEPModelVO> deployModel(@PathVariable String modelId) {
         Deployment deployment = deployService.deployModel(modelId);
-        Map<String, String> returnMap = new HashMap<>();
-        returnMap.put("id", deployment.getId());
-        returnMap.put("name", deployment.getName());
-        returnMap.put("deployTime", DateUtil.toString(deployment.getDeploymentTime(), PEPConstants.DEFAULT_DATETIME_FORMAT));
-        return responseOfPost(returnMap);
+        Model model = modelService.getModel(modelId);
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+            .processDefinitionKey(model.getKey())
+            .orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_VERSION).desc()
+            .list().get(0);
+        return responseOfPost(new PEPModelVO(model.getId(), model.getName(), deployment.getDeploymentTime(), processDefinition.getVersion()));
     }
 
 

@@ -24,6 +24,7 @@ public class PEPModelVO {
     private String lastUpdatedBy;
     private Date lastUpdated;
     private Date created;
+    private Date deploymentTime;
     private Integer modelVersion;
     private Integer processVersion;
     private String comment;
@@ -31,9 +32,20 @@ public class PEPModelVO {
     @Convert(converter = DataDicLiteConverter.class)
     private DataDicLite status;
 
+    public PEPModelVO() {
+
+    }
+
     public PEPModelVO(Model model) {
         BeanUtils.copyProperties(model, this);
         this.setModelVersion(model.getVersion());
+    }
+
+    public PEPModelVO(String id, String name, Date deploymentTime, Integer processVersion) {
+        this.id = id;
+        this.name = name;
+        this.setDeploymentTime(deploymentTime);
+        this.processVersion = processVersion;
     }
 
     public String getId() {
@@ -114,6 +126,22 @@ public class PEPModelVO {
             return;
         }
         this.created = (Date) created.clone();
+    }
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    public Date getDeploymentTime() {
+        if (null == deploymentTime) {
+            return null;
+        }
+        return (Date) deploymentTime.clone();
+    }
+
+    public void setDeploymentTime(Date deployTime) {
+        if (null == deployTime) {
+            this.deploymentTime = null;
+            return;
+        }
+        this.deploymentTime = (Date) deployTime.clone();
     }
 
     public Integer getModelVersion() {

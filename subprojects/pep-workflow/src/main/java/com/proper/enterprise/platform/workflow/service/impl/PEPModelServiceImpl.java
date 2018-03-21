@@ -30,6 +30,9 @@ public class PEPModelServiceImpl implements PEPModelService {
 
     @Override
     public ResultListDataRepresentation getModels(String filter, String sort, Integer modelType) {
+        if (StringUtils.isNotEmpty(filter)) {
+            filter = filter.toLowerCase();
+        }
         List<Model> list = modelRepository.findByModelTypeAndFilter(modelType, filter, sort);
         Set<String> modelKeys = new HashSet<>();
         List<PEPModelVO> pepModelVOS = new ArrayList<>();
@@ -52,6 +55,7 @@ public class PEPModelServiceImpl implements PEPModelService {
             PEPProcessDefinitionVO pepProcessDefinitionVO = pepProcessDefinitionMap.get(pepModelVO.getKey());
             if (null != pepProcessDefinitionVO) {
                 pepModelVO.setProcessVersion(pepProcessDefinitionVO.getVersion());
+                pepModelVO.setDeploymentTime(pepProcessDefinitionVO.getDeploymentTime());
                 pepModelVO.setStatus(buildModelStatus(pepModelVO, pepProcessDefinitionVO));
                 continue;
             }
