@@ -1,14 +1,3 @@
-sourceSets {
-    main {
-        groovy {
-            srcDirs = ['src/main/groovy', 'src/main/java']
-        }
-        java {
-            srcDirs = [] // don't compile Java code twice
-        }
-    }
-}
-
 dependencies {
     compile libraries.flowable_engine,
             libraries.flowable_json_converter,
@@ -28,11 +17,9 @@ dependencies {
 
     runtime project(':pep-auth-jwt')
 
-    testCompile project(':pep-test')
-
-    testCompile project(':pep-auth-common-jpa')
-
     testRuntime libraries.commons_fileupload
 
-    testRuntime project(':pep-cache-ehcache')
+    testCompile project(':pep-auth-common-jpa'),
+                project(':pep-cache-ehcache'),
+                project(':pep-test')
 }
