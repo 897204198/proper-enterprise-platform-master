@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.service.impl
 
 import com.proper.enterprise.platform.api.auth.dao.UserDao
 import com.proper.enterprise.platform.api.auth.model.User
+import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
 import com.proper.enterprise.platform.auth.service.JWTService
@@ -20,6 +21,9 @@ class UserServiceImplTest extends AbstractTest {
 
     @Autowired
     JWTService jwtService
+
+    @Autowired
+    UserService userService
 
     def static final DEFAULT_USER = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS")
 
@@ -53,7 +57,7 @@ class UserServiceImplTest extends AbstractTest {
         user1.setUsername('a')
         user1.setPassword('b')
         def user = userDao.save(user1)
-        assert user.getCreateUserId() == 'uid'
+        assert user.getCreateUserId() == userService.getCurrentUser().getId()
     }
 
     @Test

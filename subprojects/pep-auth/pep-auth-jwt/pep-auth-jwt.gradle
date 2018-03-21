@@ -1,8 +1,8 @@
 dependencies {
     compile project(':pep-auth-common')
 
-    testCompile project(':pep-test')
-
-    testRuntime project(':pep-cache-ehcache'),
+    testCompile project(':pep-test'),
                 project(':pep-auth-common-neo4j')
+    testRuntime project(':pep-cache-ehcache')
+
 }

@@ -3,7 +3,9 @@ package com.proper.enterprise.platform.auth.jwt.controller
 import com.proper.enterprise.platform.api.auth.dao.UserDao
 import com.proper.enterprise.platform.api.auth.model.User
 import com.proper.enterprise.platform.auth.service.JWTService
+import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -12,7 +14,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
 class LoginControllerTest extends AbstractTest {
-
+    def static final DEFAULT_USER = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS")
     @Autowired
     JWTService jwtService
 
@@ -48,6 +50,17 @@ class LoginControllerTest extends AbstractTest {
         mockLogin('admin', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
         // wrong account
         mockLogin('test', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
+    }
+
+    @Test
+    void getCurrentUser() {
+        mockUser(DEFAULT_USER,'isTest', '123456')
+        Map<String, String> currentUserMap = JSONUtil.parse(get("/auth/login/user", HttpStatus.OK)
+            .getResponse().getContentAsString(),HashMap)
+        assert DEFAULT_USER==currentUserMap.get("userId")
+        assert ' '==currentUserMap.get("name")
+        assert 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'==currentUserMap.get("avatar")
+        assert '12'==currentUserMap.get("notifyCount")
     }
 
     private void mockLogin(String user, String pwd, MediaType produce, HttpStatus statusCode) {
