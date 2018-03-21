@@ -18,6 +18,8 @@ public interface UserDao extends BaseService<User, String> {
 
     User get(String id);
 
+    User get(String id, boolean enable);
+
     User getByUsername(String username);
 
     Collection<? extends User> findAll(Collection<String> idList);
@@ -26,7 +28,9 @@ public interface UserDao extends BaseService<User, String> {
 
     Collection<? extends User> getUsersByCondition(String condition);
 
-    DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable);
+    Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable);
+
+    DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, String enable);
 
     boolean hasPermissionOfUser(User user, String reqUrl, RequestMethod requestMethod);
 

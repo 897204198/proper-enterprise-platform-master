@@ -78,6 +78,11 @@ public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeReposito
     }
 
     @Override
+    public User get(String id, boolean enable) {
+        return enable ? userNodeRepository.findByIdAndValidAndEnable(id, true, true) : userNodeRepository.findByIdAndValid(id, true);
+    }
+
+    @Override
     public User getByUsername(String username) {
         LOGGER.debug("GetByUsername with username {} from DB", username);
         return userNodeRepository.findByUsernameAndValidTrueAndEnableTrue(username);
@@ -91,7 +96,20 @@ public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeReposito
 
     @Override
     @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-    public DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
+    public Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
+        SortOrder sortOrder = new SortOrder();
+        sortOrder.add(SortOrder.Direction.ASC, "name");
+        return this.findAll(UserNodeEntity.class, buildUserFilters(userName, name, email, phone, enable), sortOrder);
+    }
+
+    @Override
+    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, String enable) {
+        SortOrder sortOrder = new SortOrder();
+        sortOrder.add(SortOrder.Direction.ASC, "name");
+        return this.findPage(UserNodeEntity.class, buildUserFilters(userName, name, email, phone, enable), sortOrder);
+    }
+
+    private Filters buildUserFilters(String userName, String name, String email, String phone, String enable) {
         Filters filters = new Filters();
         if (StringUtil.isNotBlank(userName)) {
             filters.add(new Filter("username", ComparisonOperator.CONTAINING, userName));
@@ -120,9 +138,7 @@ public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeReposito
         Filter filter = new Filter("valid", true);
         filter.setBooleanOperator(BooleanOperator.AND);
         filters.add(filter);
-        SortOrder sortOrder = new SortOrder();
-        sortOrder.add(SortOrder.Direction.ASC, "name");
-        return this.findPage(UserNodeEntity.class, filters, sortOrder);
+        return filters;
     }
 
     private Collection<ResourceNodeEntity> getResourcesByUserIdAndValidAndEnable(String userId, boolean valid, boolean enable) {

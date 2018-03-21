@@ -60,7 +60,13 @@ class UsersControllerTest extends AbstractTest {
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert resAll.count == 4
         assert resAll.data[0].get("username") == 'user1'
-
+        def resAllPage = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&pageNo=1&pageSize=2',
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert resAllPage.count == 4
+        assert resAllPage.data.size() == 2
+        def resAllCollect = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&',
+            HttpStatus.OK).getResponse().getContentAsString(), ArrayList.class)
+        assert resAllCollect.size() == 4
         user.setName('new value')
         put(URI + '/' + user.getId(), JSONUtil.toJSON(user), HttpStatus.OK).getResponse().getContentAsString()
 
@@ -73,7 +79,7 @@ class UsersControllerTest extends AbstractTest {
         userGroupEntity = userGroupService.save(userGroupEntity)
 
         def result = get(URI + '/' + user.getId(), HttpStatus.OK).getResponse().getContentAsString()
-        result = (Map)JSONUtil.parse(result, java.lang.Object.class)
+        result = (Map) JSONUtil.parse(result, java.lang.Object.class)
         assert result.get("name") == 'new value'
 
 
@@ -159,7 +165,7 @@ class UsersControllerTest extends AbstractTest {
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/users.sql")
     @Test
-    void updateEnableTest(){
+    void updateEnableTest() {
         mockUser('test1', 't1', 'pwd')
         def user1 = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
         def user2 = JSONUtil.parse(get('/auth/users/test3', HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
@@ -175,7 +181,7 @@ class UsersControllerTest extends AbstractTest {
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/users.sql")
     @Test
-    void deleteTest(){
+    void deleteTest() {
         mockUser('test1', 't1', 'pwd')
         def resAll = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&pageNo=1&pageSize=10',
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
@@ -288,7 +294,7 @@ class UsersControllerTest extends AbstractTest {
 
     @Test
     @NoTx
-    void testGetUserGroups(){
+    void testGetUserGroups() {
 
         RoleEntity roleEntity = new RoleEntity()
         roleEntity.setName('role')
@@ -347,7 +353,7 @@ class UsersControllerTest extends AbstractTest {
             List.class)
         assert result.size() == 2
         result = get('/auth/users/safjsldfj/user-groups', HttpStatus.OK).getResponse().getContentAsString()
-        assert result== '[]'
+        assert result == '[]'
 
         UserGroupEntity userGroupEntity3 = userGroupService.get(userGroupEntity1.getId())
         assert userGroupEntity3.getId() == userGroupEntity1.getId()

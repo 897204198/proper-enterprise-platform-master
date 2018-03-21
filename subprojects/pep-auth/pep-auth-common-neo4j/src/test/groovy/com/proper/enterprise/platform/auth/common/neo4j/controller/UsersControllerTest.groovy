@@ -128,6 +128,13 @@ class UsersControllerTest extends AbstractNeo4jTest {
             .getContentAsString(), DataTrunk.class)
         assert resAll.count == 0
 
+        def resAllPage = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&pageNo=1&pageSize=2',
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert resAllPage.count == 21
+        assert resAllPage.data.size() == 2
+        def resAllCollect = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&',
+            HttpStatus.OK).getResponse().getContentAsString(), ArrayList.class)
+        assert resAllCollect.size() == 21
     }
 
     @Test

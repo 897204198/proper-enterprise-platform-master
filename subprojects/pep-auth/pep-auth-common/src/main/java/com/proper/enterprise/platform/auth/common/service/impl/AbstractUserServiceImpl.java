@@ -8,11 +8,11 @@ import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.*;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import java.util.*;
 
 public abstract class AbstractUserServiceImpl implements UserService {
@@ -84,6 +84,11 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
+    public User get(String id, boolean enable) {
+        return userDao.get(id, enable);
+    }
+
+    @Override
     public User getByUsername(String username) {
         return userDao.getByUsername(username);
     }
@@ -139,6 +144,13 @@ public abstract class AbstractUserServiceImpl implements UserService {
         return menuService.getMenus(getByUsername(username));
     }
 
+    @Override
+    public Collection<? extends User> getUsersByIds(List<String> ids) {
+        if (CollectionUtil.isEmpty(ids)) {
+            return new ArrayList<>();
+        }
+        return userDao.findAll(ids);
+    }
 
     @Override
     public Collection<? extends User> getUsersByCondition(String condition) {
@@ -146,9 +158,14 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
+    public Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
         return userDao.getUsersByCondition(userName, name, email, phone, enable);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, String enable) {
+        return userDao.findUsersPagniation(userName, name, email, phone, enable);
     }
 
     @Override
@@ -160,7 +177,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
             Collections.addAll(idList, idArr);
             Collection<? extends User> collection = userDao.findAll(idList);
             for (User userEntity : collection) {
-                if (userEntity == null || !userEntity.isValid() || !userEntity.isEnable()) {
+                if (userEntity == null || !userEntity.isValid()) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
                 }
                 if (userEntity.isSuperuser()) {
@@ -268,7 +285,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends UserGroup> getUserGroups(String userId) {
-        User user = this.get(userId);
+        User user = this.get(userId, false);
         if (user == null) {
             return new ArrayList<>();
         }
@@ -277,7 +294,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends Role> getUserRoles(String userId) {
-        User user = this.get(userId);
+        User user = this.get(userId, false);
         if (user == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
         }

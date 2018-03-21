@@ -10,6 +10,7 @@ import com.proper.enterprise.platform.auth.common.jpa.repository.ResourceReposit
 import com.proper.enterprise.platform.auth.common.jpa.repository.RoleRepository
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserGroupRepository
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
@@ -94,7 +95,9 @@ class UserGroupControllerTest extends AbstractTest {
         assert query.get(1).id == id2
         assert query.get(1).name == 'group-2'
         assert query.get(1).enable
-
+        def queryPage = JSONUtil.parse(get(URI + "?pageNo=1&pageSize=1", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert queryPage.getData().size() == 1
+        assert queryPage.count == 2
         def updateReq = [:]
         updateReq['ids'] = [id1, id2]
         updateReq['enable'] = false
@@ -252,6 +255,30 @@ class UserGroupControllerTest extends AbstractTest {
             (), List.class)
         assert result.size() == 2
 
+    }
+
+    @Test
+    @NoTx
+    void testPutUsers() {
+        UserEntity userEntity = new UserEntity('u11', 'p11')
+        userEntity.setSuperuser(true)
+        userEntity = userService.save(userEntity)
+        UserEntity userEntity2 = new UserEntity('u12', 'p11')
+        userEntity2 = userService.save(userEntity2)
+        mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
+        UserGroupEntity userGroupEntity = new UserGroupEntity()
+        userGroupEntity.setName('group11')
+        userGroupEntity.add(userEntity)
+        userGroupEntity = userGroupRepository.save(userGroupEntity)
+        def result = get(URI + '/' + userGroupEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString()
+        def list = JSONUtil.parse(result, List.class)
+        assert list.size() == 1
+        assert list.get(0).get('id') == userEntity.getId()
+        def req = [:]
+        req["ids"] = userEntity.getId() + "," + userEntity2.getId()
+        put(URI + '/' + userGroupEntity.getId() + '/users', JSONUtil.toJSON(req), HttpStatus.OK)
+        def result2 = JSONUtil.parse(get(URI + '/' + userGroupEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert result2.size() == 2
     }
 
     @After

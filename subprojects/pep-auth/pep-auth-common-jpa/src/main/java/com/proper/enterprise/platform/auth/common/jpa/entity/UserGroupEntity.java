@@ -134,6 +134,11 @@ public class UserGroupEntity extends BaseEntity implements UserGroup {
     }
 
     @Override
+    public void removeAllUsers() {
+        this.userEntities = new ArrayList<>();
+    }
+
+    @Override
     public boolean isEnable() {
         return enable;
     }

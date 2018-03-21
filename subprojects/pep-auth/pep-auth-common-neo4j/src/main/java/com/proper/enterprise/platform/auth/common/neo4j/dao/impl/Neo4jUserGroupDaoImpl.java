@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.UserGroupDao;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.common.neo4j.entity.UserGroupNodeEntity;
 import com.proper.enterprise.platform.auth.common.neo4j.repository.UserGroupNodeRepository;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.neo4j.service.impl.Neo4jServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.neo4j.ogm.cypher.BooleanOperator;
@@ -33,7 +34,7 @@ public class Neo4jUserGroupDaoImpl extends Neo4jServiceSupport<UserGroup, UserGr
 
     @Override
     public Collection<? extends UserGroup> findAll(Collection<String> idList) {
-        return (Collection<? extends UserGroup>)userGroupNodeRepository.findAll(idList);
+        return (Collection<? extends UserGroup>) userGroupNodeRepository.findAll(idList);
     }
 
     @Override
@@ -58,7 +59,19 @@ public class Neo4jUserGroupDaoImpl extends Neo4jServiceSupport<UserGroup, UserGr
 
     @Override
     public Collection<? extends UserGroup> getGroups(String name, String description, String enable) {
+        SortOrder sortOrder = new SortOrder();
+        sortOrder.add(SortOrder.Direction.ASC, "seq");
+        return this.findAll(UserGroupNodeEntity.class, buildFilters(name, description, enable), sortOrder);
+    }
 
+    @Override
+    public DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, String enable) {
+        SortOrder sortOrder = new SortOrder();
+        sortOrder.add(SortOrder.Direction.ASC, "seq");
+        return this.findPage(UserGroupNodeEntity.class, buildFilters(name, description, enable), sortOrder);
+    }
+
+    private Filters buildFilters(String name, String description, String enable) {
         Filters filters = new Filters();
         if (StringUtil.isNotBlank(name)) {
             filters.add(new Filter("name", ComparisonOperator.CONTAINING, name));
@@ -82,12 +95,7 @@ public class Neo4jUserGroupDaoImpl extends Neo4jServiceSupport<UserGroup, UserGr
         Filter filter = new Filter("valid", true);
         filter.setBooleanOperator(BooleanOperator.AND);
         filters.add(filter);
-
-        SortOrder sortOrder = new SortOrder();
-        sortOrder.add(SortOrder.Direction.ASC, "seq");
-
-        Collection collection = session.loadAll(UserGroupNodeEntity.class, filters, sortOrder);
-        return collection;
+        return filters;
     }
 
     @Override

@@ -10,6 +10,18 @@ import javax.servlet.http.HttpServletRequest;
 
 public abstract class QuerySupport {
 
+    public boolean isPageSearch() {
+        String pageNo = RequestUtil.getCurrentRequest().getParameter("pageNo");
+        String pageSize = RequestUtil.getCurrentRequest().getParameter("pageSize");
+        if (StringUtils.isEmpty(pageNo)) {
+            return false;
+        }
+        if (StringUtils.isEmpty(pageSize)) {
+            return false;
+        }
+        return true;
+    }
+
 
     public PageRequest getPageRequest() {
         return getPageRequest(null);

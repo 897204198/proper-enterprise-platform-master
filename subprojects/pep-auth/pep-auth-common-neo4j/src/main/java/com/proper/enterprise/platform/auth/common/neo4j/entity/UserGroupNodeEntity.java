@@ -98,6 +98,12 @@ public class UserGroupNodeEntity extends BaseNodeEntity implements UserGroup {
         this.getRoles().remove(role);
     }
 
+
+    @Override
+    public void removeAllUsers() {
+        this.setUsers(new HashSet<>());
+    }
+
     @JsonIgnore
     @Override
     public Collection<UserNodeEntity> getUsers() {

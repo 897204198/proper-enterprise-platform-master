@@ -7,7 +7,6 @@ import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +25,10 @@ public class UsersController extends BaseController {
     PasswordEncryptService pwdService;
 
     @GetMapping
-    public ResponseEntity<DataTrunk<? extends User>> getUser(String username, String name, String email, String phone, String enable) {
+    public ResponseEntity<?> getUser(String username, String name, String email, String phone, String enable) {
         userService.checkPermission("/auth/users", RequestMethod.GET);
-        return responseOfGet(userService.getUsersByCondition(username, name, email, phone, enable));
+        return responseOfGet(isPageSearch() ? userService.findUsersPagniation(username, name, email, phone, enable) :
+            userService.getUsersByCondition(username, name, email, phone, enable));
     }
 
     @SuppressWarnings("unchecked")

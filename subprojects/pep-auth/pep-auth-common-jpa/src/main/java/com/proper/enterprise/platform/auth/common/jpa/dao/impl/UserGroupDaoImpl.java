@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.UserGroupDao;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserGroupRepository;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,15 @@ public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepo
     @Override
     @SuppressWarnings("unchecked")
     public Collection<? extends UserGroup> getGroups(String name, String description, String enable) {
+        return this.findAll(buildSpecification(name, description, enable), new Sort("seq"));
+    }
+
+    @Override
+    public DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, String enable) {
+        return this.findPage(buildSpecification(name, description, enable), new Sort("seq"));
+    }
+
+    private Specification<UserGroup> buildSpecification(String name, String description, String enable) {
         Specification specification = new Specification<UserGroupEntity>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
@@ -80,7 +90,6 @@ public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepo
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
-        return repository.findAll(specification, new Sort("seq"));
+        return specification;
     }
-
 }

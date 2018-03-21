@@ -6,7 +6,7 @@ import java.util.Collection;
 
 /**
  * 用户组
- *
+ * <p>
  * 用来将用户组织到一起，方便被引用
  * 删除用户组时需考虑用户组引用关系
  */
@@ -102,6 +102,11 @@ public interface UserGroup extends IBase {
      * @param role 角色
      */
     void remove(Role role);
+
+    /**
+     * 从组中移除全部用户
+     */
+    void removeAllUsers();
 
     /**
      * 获得用户组下用户集合

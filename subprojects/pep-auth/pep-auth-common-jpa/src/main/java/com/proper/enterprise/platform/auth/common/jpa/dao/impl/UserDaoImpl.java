@@ -88,6 +88,11 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
     }
 
     @Override
+    public User get(String id, boolean enable) {
+        return enable ? userRepo.findByIdAndValidAndEnable(id, true, true) : userRepo.findByValidTrueAndId(id);
+    }
+
+    @Override
     public User getByUsername(String username) {
         LOGGER.debug("GetByUsername with username {} from DB", username);
         return userRepo.findByUsernameAndValidTrueAndEnableTrue(username);
@@ -101,8 +106,17 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
-        Specification specification = new Specification<UserEntity>() {
+    public Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
+        return this.findAll(buildUserSpecification(userName, name, email, phone, enable), new Sort(Sort.Direction.ASC, "name"));
+    }
+
+    @Override
+    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, String enable) {
+        return this.findPage(buildUserSpecification(userName, name, email, phone, enable), new Sort(Sort.Direction.ASC, "name"));
+    }
+
+    private Specification<User> buildUserSpecification(String userName, String name, String email, String phone, String enable) {
+        Specification<User> specification = new Specification<User>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>();
@@ -125,7 +139,7 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
-        return this.findPage(specification, new Sort(Sort.Direction.ASC, "name"));
+        return specification;
     }
 
     @Override

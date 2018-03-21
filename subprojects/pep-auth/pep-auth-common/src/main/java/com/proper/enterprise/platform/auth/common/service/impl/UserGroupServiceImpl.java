@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserGroupService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
@@ -88,6 +89,11 @@ public class UserGroupServiceImpl implements UserGroupService {
     @SuppressWarnings("unchecked")
     public Collection<? extends UserGroup> getGroups(String name, String description, String enable) {
         return userGroupDao.getGroups(name, description, enable);
+    }
+
+    @Override
+    public DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, String enable) {
+        return userGroupDao.getGroupsPagniation(name, description, enable);
     }
 
     @Override
@@ -178,6 +184,20 @@ public class UserGroupServiceImpl implements UserGroupService {
                 userGroup.remove(user);
                 userGroup = this.save(userGroup);
             }
+        }
+        return userGroup;
+    }
+
+    @Override
+    public UserGroup updateGroupUser(String groupId, List<String> userIds) {
+        UserGroup userGroup = this.get(groupId);
+        if (userGroup != null) {
+            Collection<? extends User> collection = userService.getUsersByIds(userIds);
+            userGroup.removeAllUsers();
+            for (User user : collection) {
+                userGroup.add(user);
+            }
+            userGroup = this.save(userGroup);
         }
         return userGroup;
     }

@@ -8,12 +8,12 @@ import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/auth/user-groups")
@@ -26,9 +26,10 @@ public class UserGroupController extends BaseController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<Collection<? extends UserGroup>> getGroups(String name, String description, String enable) {
+    public ResponseEntity<?> getGroups(String name, String description, String enable) {
         userService.checkPermission("/auth/user-groups", RequestMethod.GET);
-        return responseOfGet(service.getGroups(name, description, enable));
+        return responseOfGet(isPageSearch() ? service.getGroupsPagniation(name, description, enable)
+            : service.getGroups(name, description, enable));
     }
 
     @SuppressWarnings("unchecked")
@@ -129,4 +130,14 @@ public class UserGroupController extends BaseController {
         return responseOfGet(service.getGroupUsers(id));
     }
 
+    @PutMapping(path = "/{id}/users")
+    public ResponseEntity<UserGroup> updateGroupUserByUserIds(@PathVariable String id, @RequestBody Map<String, String> reqMap) {
+        userService.checkPermission("/auth/user-groups/" + id + "/users", RequestMethod.PUT);
+        String ids = reqMap.get("ids");
+        List<String> idsList = new ArrayList<>();
+        if (StringUtils.isNotEmpty(ids)) {
+            idsList = Arrays.asList(ids.split(","));
+        }
+        return responseOfGet(service.updateGroupUser(id, idsList));
+    }
 }

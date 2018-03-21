@@ -30,6 +30,9 @@ public class PEPModelServiceImpl implements PEPModelService {
 
     @Override
     public ResultListDataRepresentation getModels(String filter, String sort, Integer modelType) {
+        if (StringUtils.isEmpty(filter)) {
+            filter = null;
+        }
         if (StringUtils.isNotEmpty(filter)) {
             filter = filter.toLowerCase();
         }

@@ -9,9 +9,11 @@ import com.proper.enterprise.platform.auth.common.neo4j.repository.ResourceNodeR
 import com.proper.enterprise.platform.auth.common.neo4j.repository.RoleNodeRepository
 import com.proper.enterprise.platform.auth.common.neo4j.repository.UserGroupNodeRepository
 import com.proper.enterprise.platform.auth.common.neo4j.repository.UserNodeRepository
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractNeo4jTest
+import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -148,6 +150,9 @@ class UserGroupControllerTest extends AbstractNeo4jTest {
         assert query.get(1).name == 'group-2'
         assert query.get(1).enable
 
+        def queryPage = JSONUtil.parse(get(URI + "?pageNo=1&pageSize=1", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert queryPage.getData().size() == 1
+        assert queryPage.count == 2
         def updateReq = [:]
         updateReq['ids'] = [id1, id2]
         updateReq['enable'] = false
@@ -246,6 +251,30 @@ class UserGroupControllerTest extends AbstractNeo4jTest {
         list = JSONUtil.parse(result, List.class)
         assert list.size() == 1
         assert list.get(0).get('id') == userEntity.getId()
+    }
+
+    @Test
+    @NoTx
+    void testPutUsers() {
+        UserNodeEntity userEntity = new UserNodeEntity('u11', 'p11')
+        userEntity.setSuperuser(true)
+        userEntity = userService.save(userEntity)
+        UserNodeEntity userEntity2 = new UserNodeEntity('u12', 'p11')
+        userEntity2 = userService.save(userEntity2)
+        mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
+        UserGroupNodeEntity userGroupEntity = new UserGroupNodeEntity()
+        userGroupEntity.setName('group11')
+        userGroupEntity.add(userEntity)
+        userGroupEntity = userGroupNodeRepository.save(userGroupEntity)
+        def result = get(URI + '/' + userGroupEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString()
+        def list = JSONUtil.parse(result, List.class)
+        assert list.size() == 1
+        assert list.get(0).get('id') == userEntity.getId()
+        def req = [:]
+        req["ids"] = userEntity.getId() + "," + userEntity2.getId()
+        put(URI + '/' + userGroupEntity.getId() + '/users', JSONUtil.toJSON(req), HttpStatus.OK)
+        def result2 = JSONUtil.parse(get(URI + '/' + userGroupEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert result2.size() == 2
     }
 
 }

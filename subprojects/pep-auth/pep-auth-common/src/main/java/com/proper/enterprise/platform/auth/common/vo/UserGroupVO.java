@@ -91,6 +91,11 @@ public class UserGroupVO extends BaseVO implements UserGroup {
     }
 
     @Override
+    public void removeAllUsers() {
+
+    }
+
+    @Override
     public boolean isEnable() {
         return enable;
     }
