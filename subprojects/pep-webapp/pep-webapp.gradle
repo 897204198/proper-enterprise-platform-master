@@ -38,8 +38,8 @@ dependencies {
             libraries.spring_webmvc
 
     // Choose by datasource
-    runtime libraries.h2,
-            libraries.mysql_driver
+    // available choices: libraries.h2, libraries.mysql_driver
+    runtime libraries.h2
 
     // Necessary when using Web Service
     // runtime libraries.jaxws_rt
@@ -48,14 +48,13 @@ dependencies {
     runtime project(':pep-configs')
 
     // Select on demand
-    runtime project(':pep-auth-jwt'),
-            project(':pep-auth-common-jpa'),
+    runtime project(':pep-auth-common-jpa'),
+            project(':pep-auth-jwt'),
             // Needs one cache implementation if use cache API
             project(':pep-cache-ehcache'),
-            project(':pep-page-custom'),
-            project(':pep-push'),
             project(':pep-oopsearch'),
-            project(':pep-oopsearch-sync-mysql'),
+            // Choose according to datasource
+            project(':pep-oopsearch-sync-h2'),
             project(':pep-workflow')
 }
 task cleanDist(type: Delete) {
