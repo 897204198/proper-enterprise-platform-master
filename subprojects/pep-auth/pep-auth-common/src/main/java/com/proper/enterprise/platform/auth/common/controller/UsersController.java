@@ -68,7 +68,7 @@ public class UsersController extends BaseController {
     @PutMapping(path = "/{userId}")
     public ResponseEntity<User> update(@PathVariable String userId, @RequestBody UserVO userVO) {
         userService.checkPermission("/auth/users/" + userId, RequestMethod.PUT);
-        User user = userService.get(userId);
+        User user = userService.get(userId, false);
         if (user != null) {
             userVO.setPassword(pwdService.encrypt(userVO.getPassword()));
             userVO.setId(userId);

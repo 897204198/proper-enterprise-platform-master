@@ -133,13 +133,22 @@ public interface UserGroupService {
     UserGroup deleteGroupUser(String groupId, String userId);
 
     /**
-     * 用户组修改用户
+     * 用户组批量删除用户
      *
      * @param groupId 用户组ID
      * @param userIds 用户ID集合
      * @return 用户组
      */
-    UserGroup updateGroupUser(String groupId, List<String> userIds);
+    UserGroup deleteGroupUserByUserIds(String groupId, List<String> userIds);
+
+    /**
+     * 用户组批量添加用户
+     *
+     * @param groupId 用户组ID
+     * @param userIds 用户ID集合
+     * @return 用户组
+     */
+    UserGroup addGroupUserByUserIds(String groupId, List<String> userIds);
 
     /**
      * 获取指定用户组的用户集合

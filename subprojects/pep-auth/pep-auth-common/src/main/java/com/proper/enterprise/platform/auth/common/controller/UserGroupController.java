@@ -131,13 +131,24 @@ public class UserGroupController extends BaseController {
     }
 
     @PutMapping(path = "/{id}/users")
-    public ResponseEntity<UserGroup> updateGroupUserByUserIds(@PathVariable String id, @RequestBody Map<String, String> reqMap) {
+    public ResponseEntity<UserGroup> addGroupUserByUserIds(@PathVariable String id, @RequestBody Map<String, String> reqMap) {
         userService.checkPermission("/auth/user-groups/" + id + "/users", RequestMethod.PUT);
         String ids = reqMap.get("ids");
         List<String> idsList = new ArrayList<>();
         if (StringUtils.isNotEmpty(ids)) {
             idsList = Arrays.asList(ids.split(","));
         }
-        return responseOfGet(service.updateGroupUser(id, idsList));
+        return responseOfGet(service.addGroupUserByUserIds(id, idsList));
+    }
+
+    @DeleteMapping(path = "/{id}/users")
+    public ResponseEntity<UserGroup> deleteGroupUserByUserIds(@PathVariable String id, @RequestBody Map<String, String> reqMap) {
+        userService.checkPermission("/auth/user-groups/" + id + "/users", RequestMethod.DELETE);
+        String ids = reqMap.get("ids");
+        List<String> idsList = new ArrayList<>();
+        if (StringUtils.isNotEmpty(ids)) {
+            idsList = Arrays.asList(ids.split(","));
+        }
+        return responseOfGet(service.deleteGroupUserByUserIds(id, idsList));
     }
 }

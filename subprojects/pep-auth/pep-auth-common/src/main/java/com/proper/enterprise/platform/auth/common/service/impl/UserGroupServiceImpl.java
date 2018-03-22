@@ -166,7 +166,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     public UserGroup addGroupUser(String groupId, String userId) {
         UserGroup userGroup = this.get(groupId);
         if (userGroup != null) {
-            User user = userService.get(userId);
+            User user = userService.get(userId, false);
             if (user != null) {
                 userGroup.add(user);
                 userGroup = this.save(userGroup);
@@ -179,7 +179,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     public UserGroup deleteGroupUser(String groupId, String userId) {
         UserGroup userGroup = this.get(groupId);
         if (userGroup != null) {
-            User user = userService.get(userId);
+            User user = userService.get(userId, false);
             if (user != null) {
                 userGroup.remove(user);
                 userGroup = this.save(userGroup);
@@ -189,11 +189,23 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
-    public UserGroup updateGroupUser(String groupId, List<String> userIds) {
+    public UserGroup deleteGroupUserByUserIds(String groupId, List<String> userIds) {
         UserGroup userGroup = this.get(groupId);
         if (userGroup != null) {
             Collection<? extends User> collection = userService.getUsersByIds(userIds);
-            userGroup.removeAllUsers();
+            for (User user : collection) {
+                userGroup.remove(user);
+            }
+            userGroup = this.save(userGroup);
+        }
+        return userGroup;
+    }
+
+    @Override
+    public UserGroup addGroupUserByUserIds(String groupId, List<String> userIds) {
+        UserGroup userGroup = this.get(groupId);
+        if (userGroup != null) {
+            Collection<? extends User> collection = userService.getUsersByIds(userIds);
             for (User user : collection) {
                 userGroup.add(user);
             }

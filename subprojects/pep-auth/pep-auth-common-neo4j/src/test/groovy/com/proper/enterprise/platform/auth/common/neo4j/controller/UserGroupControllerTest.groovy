@@ -261,6 +261,8 @@ class UserGroupControllerTest extends AbstractNeo4jTest {
         userEntity = userService.save(userEntity)
         UserNodeEntity userEntity2 = new UserNodeEntity('u12', 'p11')
         userEntity2 = userService.save(userEntity2)
+        UserNodeEntity userEntity3 = new UserNodeEntity('u13', 'p11')
+        userEntity3 = userService.save(userEntity3)
         mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
         UserGroupNodeEntity userGroupEntity = new UserGroupNodeEntity()
         userGroupEntity.setName('group11')
@@ -271,10 +273,10 @@ class UserGroupControllerTest extends AbstractNeo4jTest {
         assert list.size() == 1
         assert list.get(0).get('id') == userEntity.getId()
         def req = [:]
-        req["ids"] = userEntity.getId() + "," + userEntity2.getId()
+        req["ids"] = userEntity.getId() + "," + userEntity2.getId() + "," + userEntity3.getId()
         put(URI + '/' + userGroupEntity.getId() + '/users', JSONUtil.toJSON(req), HttpStatus.OK)
         def result2 = JSONUtil.parse(get(URI + '/' + userGroupEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert result2.size() == 2
+        assert result2.size() == 3
     }
 
 }

@@ -13,6 +13,7 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import java.util.*;
 
 public abstract class AbstractUserServiceImpl implements UserService {
@@ -64,7 +65,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
         String id = user.getId();
         User newUser = userDao.getNewUser();
         if (StringUtil.isNotBlank(id)) {
-            newUser = this.get(id);
+            newUser = this.get(id, false);
         }
         String username = user.getUsername();
         if (StringUtil.isNotBlank(username)) {
