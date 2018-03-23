@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.jpa.dao.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.UserGroupDao;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserGroupRepository;
@@ -37,6 +38,19 @@ public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepo
     }
 
     @Override
+    public UserGroup get(String id, EnableEnum enable) {
+        switch (enable) {
+            case ALL:
+                return repository.findByValidAndId(true, id);
+            case DISABLE:
+                return repository.findByIdAndValidAndEnable(id, true, false);
+            case ENABLE:
+            default:
+                return repository.findByIdAndValidAndEnable(id, true, true);
+        }
+    }
+
+    @Override
     public Collection<? extends UserGroup> findAll(Collection<String> idList) {
         return repository.findAll(idList);
     }
@@ -63,16 +77,16 @@ public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepo
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends UserGroup> getGroups(String name, String description, String enable) {
+    public Collection<? extends UserGroup> getGroups(String name, String description, EnableEnum enable) {
         return this.findAll(buildSpecification(name, description, enable), new Sort("seq"));
     }
 
     @Override
-    public DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, String enable) {
+    public DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, EnableEnum enable) {
         return this.findPage(buildSpecification(name, description, enable), new Sort("seq"));
     }
 
-    private Specification<UserGroup> buildSpecification(String name, String description, String enable) {
+    private Specification<UserGroup> buildSpecification(String name, String description, EnableEnum enable) {
         Specification specification = new Specification<UserGroupEntity>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
@@ -83,8 +97,8 @@ public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepo
                 if (StringUtil.isNotNull(description)) {
                     predicates.add(cb.like(root.get("description"), "%".concat(description).concat("%")));
                 }
-                if (StringUtil.isNotNull(enable)) {
-                    predicates.add(cb.equal(root.get("enable"), enable.equals("Y")));
+                if (null != enable && EnableEnum.ALL != enable) {
+                    predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
                 }
                 predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));

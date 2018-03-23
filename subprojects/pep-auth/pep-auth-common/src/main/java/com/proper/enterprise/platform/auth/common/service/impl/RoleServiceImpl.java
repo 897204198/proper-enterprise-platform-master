@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.RoleDao;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.*;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
@@ -9,6 +10,7 @@ import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import java.util.*;
 
 @Service
@@ -36,6 +38,11 @@ public class RoleServiceImpl implements RoleService {
             return role;
         }
         return null;
+    }
+
+    @Override
+    public Role get(String id, EnableEnum enableEnum) {
+        return roleDao.get(id, enableEnum);
     }
 
     @Override
@@ -144,12 +151,24 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<? extends Role> getFilterRoles(Collection<? extends Role> roles) {
+        return getFilterRoles(roles, EnableEnum.ENABLE);
+    }
+
+    @Override
+    public Collection<? extends Role> getFilterRoles(Collection<? extends Role> roles, EnableEnum roleEnable) {
         Collection<Role> result = new HashSet<>();
         for (Role role : roles) {
-            if (!role.isEnable() || !role.isValid()) {
+            if (EnableEnum.ALL == roleEnable && role.isValid()) {
+                result.add(role);
                 continue;
             }
-            result.add(role);
+            if (EnableEnum.ENABLE == roleEnable && role.isEnable() && role.isValid()) {
+                result.add(role);
+                continue;
+            }
+            if (EnableEnum.DISABLE == roleEnable && !role.isEnable() && role.isValid()) {
+                result.add(role);
+            }
         }
         return result;
     }

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.api.auth.service;
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
@@ -37,7 +38,7 @@ public interface UserService {
 
     User get(String id);
 
-    User get(String id, boolean enable);
+    User get(String id, EnableEnum enable);
 
     User getByUsername(String username);
 
@@ -84,7 +85,7 @@ public interface UserService {
      * @param enable   用户可用/不可用
      * @return 用户信息列表
      */
-    Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable);
+    Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, EnableEnum enable);
 
     /**
      * 按照查询条件获取用户信息列表
@@ -93,10 +94,10 @@ public interface UserService {
      * @param name     用户显示名
      * @param email    用户邮箱
      * @param phone    用户手机号
-     * @param enable   用户可用/不可用
+     * @param enable   用户可用/不可用/全部
      * @return 用户信息列表 分页
      */
-    DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, String enable);
+    DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable);
 
     /**
      * 删除多条用户数据
@@ -141,12 +142,31 @@ public interface UserService {
     Collection<? extends UserGroup> getUserGroups(String userId);
 
     /**
+     * 获取指定用户的用户组集合
+     *
+     * @param userId     用户ID
+     * @param userEnable 用户默认全查
+     * @return 用户组集合
+     */
+    Collection<? extends UserGroup> getUserGroups(String userId, EnableEnum userEnable, EnableEnum userGroupEnable);
+
+    /**
      * 获取指定用户角色集合
      *
      * @param userId 用户ID
      * @return 角色集合
      */
     Collection<? extends Role> getUserRoles(String userId);
+
+    /**
+     * 获取指定用户角色集合
+     *
+     * @param userId     用户ID
+     * @param userEnable 用户默认全查
+     * @param roleEnable 角色默认为启用
+     * @return 角色集合
+     */
+    Collection<? extends Role> getUserRoles(String userId, EnableEnum userEnable, EnableEnum roleEnable);
 
     /**
      * 检测用户组是否含有此用户
@@ -164,6 +184,14 @@ public interface UserService {
      * @return 返回合法的用户集合
      */
     Collection<? extends User> getFilterUsers(Collection<? extends User> users);
+
+    /**
+     * 根据传入的用户集合，获取合法的用户集合(过滤掉valid、enable为false的)
+     *
+     * @param users 待检测的用户集合
+     * @return 返回合法的用户集合
+     */
+    Collection<? extends User> getFilterUsers(Collection<? extends User> users, EnableEnum userEnable);
 
     /**
      * 根据请求的url、请求的方法，判断当前用户是否有此权限

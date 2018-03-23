@@ -60,6 +60,18 @@ class UsersControllerTest extends AbstractTest {
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert resAll.count == 4
         assert resAll.data[0].get("username") == 'user1'
+        UserEntity userDisable = new UserEntity('user3', 'pwd1')
+        userDisable.setEnable(false)
+        postAndReturn(URI, userDisable)
+        def resAllDisEnable = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&userEnable=DISABLE&pageNo=1&pageSize=10',
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert resAllDisEnable.count == 1
+        assert resAllDisEnable.data.size() == 1
+        def resAllDisAndEnable = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&userEnable=ALL&pageNo=1&pageSize=10',
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert resAllDisAndEnable.count == 5
+        assert resAllDisAndEnable.data.size() == 5
+
         def resAllPage = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&pageNo=1&pageSize=2',
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert resAllPage.count == 4
@@ -154,11 +166,11 @@ class UsersControllerTest extends AbstractTest {
         assert resFullCondictions.data[0].get("username") == 't1'
         assert resFullCondictions.data[0].get("name") == 'c'
 
-        def resEnableFalseQuery = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=N&pageNo=1&pageSize=2',
+        def resEnableFalseQuery = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&userEnable=DISABLE&pageNo=1&pageSize=2',
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert resEnableFalseQuery.count == 0
 
-        def resNone = JSONUtil.parse(get('/auth/users?userName=1212341&name=23423&phone=234234&email=234234&enable=N&pageNo=1&pageSize=2',
+        def resNone = JSONUtil.parse(get('/auth/users?userName=1212341&name=23423&phone=234234&email=234234&userEnable=DISABLE&pageNo=1&pageSize=2',
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert resNone.count == 0
     }

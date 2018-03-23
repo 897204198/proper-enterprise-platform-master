@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.jpa.dao.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.RoleDao;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
@@ -46,6 +47,19 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
     @Override
     public Role get(String id) {
         return roleRepository.findOne(id);
+    }
+
+    @Override
+    public Role get(String id, EnableEnum enableEnum) {
+        switch (enableEnum) {
+            case ALL:
+                return roleRepository.findByIdAndValid(id, true);
+            case DISABLE:
+                return roleRepository.findByIdAndValidAndEnable(id, true, false);
+            case ENABLE:
+            default:
+                return roleRepository.findByIdAndValidAndEnable(id, true, true);
+        }
     }
 
     @Override

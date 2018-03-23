@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.common.neo4j.dao.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
@@ -77,9 +78,18 @@ public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeReposito
         return userNodeRepository.findByIdAndValidAndEnable(id, true, true);
     }
 
+
     @Override
-    public User get(String id, boolean enable) {
-        return enable ? userNodeRepository.findByIdAndValidAndEnable(id, true, true) : userNodeRepository.findByIdAndValid(id, true);
+    public User get(String id, EnableEnum enable) {
+        switch (enable) {
+            case ALL:
+                return userNodeRepository.findByIdAndValid(id, true);
+            case DISABLE:
+                return userNodeRepository.findByIdAndValidAndEnable(id, true, false);
+            case ENABLE:
+            default:
+                return userNodeRepository.findByIdAndValidAndEnable(id, true, true);
+        }
     }
 
     @Override
@@ -94,22 +104,23 @@ public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeReposito
         return userNodeRepository.findByUsernameLikeOrNameLikeOrPhoneLikeAndValidTrueAndEnableTrueOrderByNameDesc(condition, condition, condition);
     }
 
+
     @Override
     @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-    public Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
+    public Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, EnableEnum enable) {
         SortOrder sortOrder = new SortOrder();
         sortOrder.add(SortOrder.Direction.ASC, "name");
         return this.findAll(UserNodeEntity.class, buildUserFilters(userName, name, email, phone, enable), sortOrder);
     }
 
     @Override
-    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, String enable) {
+    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable) {
         SortOrder sortOrder = new SortOrder();
         sortOrder.add(SortOrder.Direction.ASC, "name");
         return this.findPage(UserNodeEntity.class, buildUserFilters(userName, name, email, phone, enable), sortOrder);
     }
 
-    private Filters buildUserFilters(String userName, String name, String email, String phone, String enable) {
+    private Filters buildUserFilters(String userName, String name, String email, String phone, EnableEnum enable) {
         Filters filters = new Filters();
         if (StringUtil.isNotBlank(userName)) {
             filters.add(new Filter("username", ComparisonOperator.CONTAINING, userName));
@@ -123,18 +134,11 @@ public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeReposito
         if (StringUtil.isNotBlank(phone)) {
             filters.add(new Filter("phone", ComparisonOperator.CONTAINING, phone));
         }
-        Boolean isEnable = null;
-        if ("Y".equalsIgnoreCase(enable)) {
-            isEnable = true;
-        } else if ("N".equalsIgnoreCase(enable)) {
-            isEnable = false;
-        }
-        if (isEnable != null) {
-            Filter filter = new Filter("enable", isEnable);
+        if (null != enable && EnableEnum.ALL != enable) {
+            Filter filter = new Filter("enable", EnableEnum.ENABLE == enable);
             filter.setBooleanOperator(BooleanOperator.AND);
             filters.add(filter);
         }
-
         Filter filter = new Filter("valid", true);
         filter.setBooleanOperator(BooleanOperator.AND);
         filters.add(filter);

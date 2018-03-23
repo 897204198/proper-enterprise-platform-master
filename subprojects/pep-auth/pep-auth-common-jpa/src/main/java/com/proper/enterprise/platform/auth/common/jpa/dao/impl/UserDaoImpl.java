@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.common.jpa.dao.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
@@ -88,8 +89,16 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
     }
 
     @Override
-    public User get(String id, boolean enable) {
-        return enable ? userRepo.findByIdAndValidAndEnable(id, true, true) : userRepo.findByValidTrueAndId(id);
+    public User get(String id, EnableEnum enable) {
+        switch (enable) {
+            case ALL:
+                return userRepo.findByValidTrueAndId(id);
+            case DISABLE:
+                return userRepo.findByIdAndValidAndEnable(id, true, false);
+            case ENABLE:
+            default:
+                return userRepo.findByIdAndValidAndEnable(id, true, true);
+        }
     }
 
     @Override
@@ -106,16 +115,16 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
+    public Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, EnableEnum enable) {
         return this.findAll(buildUserSpecification(userName, name, email, phone, enable), new Sort(Sort.Direction.ASC, "name"));
     }
 
     @Override
-    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, String enable) {
+    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable) {
         return this.findPage(buildUserSpecification(userName, name, email, phone, enable), new Sort(Sort.Direction.ASC, "name"));
     }
 
-    private Specification<User> buildUserSpecification(String userName, String name, String email, String phone, String enable) {
+    private Specification<User> buildUserSpecification(String userName, String name, String email, String phone, EnableEnum enable) {
         Specification<User> specification = new Specification<User>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
@@ -132,8 +141,8 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
                 if (StringUtil.isNotNull(phone)) {
                     predicates.add(cb.like(root.get("phone"), "%".concat(phone).concat("%")));
                 }
-                if (StringUtil.isNotNull(enable)) {
-                    predicates.add(cb.equal(root.get("enable"), enable.equals("Y")));
+                if (null != enable && EnableEnum.ALL != enable) {
+                    predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
                 }
                 predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));

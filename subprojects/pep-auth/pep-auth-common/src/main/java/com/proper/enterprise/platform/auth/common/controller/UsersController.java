@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,11 @@ public class UsersController extends BaseController {
     PasswordEncryptService pwdService;
 
     @GetMapping
-    public ResponseEntity<?> getUser(String username, String name, String email, String phone, String enable) {
+    public ResponseEntity<?> getUser(String username, String name, String email, String phone,
+                                     @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
         userService.checkPermission("/auth/users", RequestMethod.GET);
-        return responseOfGet(isPageSearch() ? userService.findUsersPagniation(username, name, email, phone, enable) :
-            userService.getUsersByCondition(username, name, email, phone, enable));
+        return responseOfGet(isPageSearch() ? userService.findUsersPagniation(username, name, email, phone, userEnable) :
+            userService.getUsersByCondition(username, name, email, phone, userEnable));
     }
 
     @SuppressWarnings("unchecked")
@@ -57,9 +59,9 @@ public class UsersController extends BaseController {
      * 取得指定用户ID的用户信息
      */
     @GetMapping(path = "/{userId}")
-    public ResponseEntity<User> get(@PathVariable String userId) {
+    public ResponseEntity<User> get(@PathVariable String userId, @RequestParam(defaultValue = "ALL") EnableEnum userEnable) {
         userService.checkPermission("/auth/users/" + userId, RequestMethod.GET);
-        return responseOfGet(userService.get(userId, false));
+        return responseOfGet(userService.get(userId, userEnable));
     }
 
     /**
@@ -68,7 +70,7 @@ public class UsersController extends BaseController {
     @PutMapping(path = "/{userId}")
     public ResponseEntity<User> update(@PathVariable String userId, @RequestBody UserVO userVO) {
         userService.checkPermission("/auth/users/" + userId, RequestMethod.PUT);
-        User user = userService.get(userId, false);
+        User user = userService.get(userId, EnableEnum.ALL);
         if (user != null) {
             userVO.setPassword(pwdService.encrypt(userVO.getPassword()));
             userVO.setId(userId);
@@ -114,15 +116,19 @@ public class UsersController extends BaseController {
     }
 
     @GetMapping(path = "/{userId}/user-groups")
-    public ResponseEntity<Collection<? extends UserGroup>> getUserGroups(@PathVariable String userId) {
+    public ResponseEntity<Collection<? extends UserGroup>> getUserGroups(@PathVariable String userId,
+                                                                         @RequestParam(defaultValue = "ALL") EnableEnum userEnable,
+                                                                         @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
         userService.checkPermission("/auth/users/" + userId + "/user-groups", RequestMethod.GET);
-        return responseOfGet(userService.getUserGroups(userId));
+        return responseOfGet(userService.getUserGroups(userId, userEnable, userGroupEnable));
     }
 
     @GetMapping(path = "/{userId}/roles")
-    public ResponseEntity<Collection<? extends Role>> getUserRoles(@PathVariable String userId) {
+    public ResponseEntity<Collection<? extends Role>> getUserRoles(@PathVariable String userId,
+                                                                   @RequestParam(defaultValue = "ALL") EnableEnum userEnable,
+                                                                   @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
         userService.checkPermission("/auth/users/" + userId + "/roles", RequestMethod.GET);
-        return responseOfGet(userService.getUserRoles(userId));
+        return responseOfGet(userService.getUserRoles(userId, userEnable, roleEnable));
     }
 
     @GetMapping(path = "/query")

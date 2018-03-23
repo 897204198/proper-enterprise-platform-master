@@ -13,4 +13,6 @@ public interface UserGroupRepository extends BaseJpaRepository<UserGroupEntity, 
 
     UserGroupEntity findByValidAndName(boolean valid, String name);
 
+    UserGroupEntity findByIdAndValidAndEnable(String id, boolean valid, boolean enable);
+
 }

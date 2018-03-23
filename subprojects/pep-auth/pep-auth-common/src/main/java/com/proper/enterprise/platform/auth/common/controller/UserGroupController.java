@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
@@ -26,10 +27,10 @@ public class UserGroupController extends BaseController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<?> getGroups(String name, String description, String enable) {
+    public ResponseEntity<?> getGroups(String name, String description, @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
         userService.checkPermission("/auth/user-groups", RequestMethod.GET);
-        return responseOfGet(isPageSearch() ? service.getGroupsPagniation(name, description, enable)
-            : service.getGroups(name, description, enable));
+        return responseOfGet(isPageSearch() ? service.getGroupsPagniation(name, description, userGroupEnable)
+            : service.getGroups(name, description, userGroupEnable));
     }
 
     @SuppressWarnings("unchecked")
@@ -54,15 +55,17 @@ public class UserGroupController extends BaseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserGroup> get(@PathVariable String id) {
+    public ResponseEntity<UserGroup> get(@PathVariable String id, @RequestParam(defaultValue = "ALL") EnableEnum userGroupEnable) {
         userService.checkPermission("/auth/user-groups/" + id, RequestMethod.GET);
-        return responseOfGet(service.get(id));
+        return responseOfGet(service.get(id, userGroupEnable));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserGroup> update(@PathVariable String id, @RequestBody UserGroupVO userGroupVO) {
+    public ResponseEntity<UserGroup> update(@PathVariable String id,
+                                            @RequestParam(defaultValue = "ALL") EnableEnum userGroupEnable,
+                                            @RequestBody UserGroupVO userGroupVO) {
         userService.checkPermission("/auth/user-groups/" + id, RequestMethod.PUT);
-        UserGroup group = service.get(id);
+        UserGroup group = service.get(id, userGroupEnable);
         if (group != null) {
             userGroupVO.setId(id);
         }
@@ -93,9 +96,11 @@ public class UserGroupController extends BaseController {
     }
 
     @GetMapping(path = "/{id}/roles")
-    public ResponseEntity<Collection<? extends Role>> getGroupRoles(@PathVariable String id) {
+    public ResponseEntity<Collection<? extends Role>> getGroupRoles(@PathVariable String id,
+                                                                    @RequestParam(defaultValue = "ALL") EnableEnum userGroupEnable,
+                                                                    @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
         userService.checkPermission("/auth/user-groups/" + id + "/roles", RequestMethod.GET);
-        return responseOfGet(service.getGroupRoles(id));
+        return responseOfGet(service.getGroupRoles(id, userGroupEnable, roleEnable));
     }
 
     /**
@@ -125,9 +130,11 @@ public class UserGroupController extends BaseController {
     }
 
     @GetMapping(path = "/{id}/users")
-    public ResponseEntity<Collection<? extends User>> getGroupUsers(@PathVariable String id) {
+    public ResponseEntity<Collection<? extends User>> getGroupUsers(@PathVariable String id,
+                                                                    @RequestParam(defaultValue = "ALL") EnableEnum userGroupEnable,
+                                                                    @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
         userService.checkPermission("/auth/user-groups/" + id + "/users", RequestMethod.GET);
-        return responseOfGet(service.getGroupUsers(id));
+        return responseOfGet(service.getGroupUsers(id, userGroupEnable, userEnable));
     }
 
     @PutMapping(path = "/{id}/users")

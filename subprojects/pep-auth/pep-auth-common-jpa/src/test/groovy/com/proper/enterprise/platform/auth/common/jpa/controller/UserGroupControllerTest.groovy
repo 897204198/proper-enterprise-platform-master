@@ -102,7 +102,7 @@ class UserGroupControllerTest extends AbstractTest {
         updateReq['ids'] = [id1, id2]
         updateReq['enable'] = false
         put(URI, JSONUtil.toJSON(updateReq), HttpStatus.OK)
-        query = JSONUtil.parse(get(URI, HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        query = JSONUtil.parse(get(URI+"?userGroupEnable=DISABLE", HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert query.size() == 2
         assert !query.get(0).enable
         assert !query.get(1).enable

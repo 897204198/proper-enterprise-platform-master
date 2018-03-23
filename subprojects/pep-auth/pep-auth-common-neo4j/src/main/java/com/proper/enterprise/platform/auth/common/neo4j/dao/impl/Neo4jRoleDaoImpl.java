@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.neo4j.dao.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.RoleDao;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.common.neo4j.entity.RoleNodeEntity;
@@ -35,6 +36,19 @@ public class Neo4jRoleDaoImpl extends Neo4jServiceSupport<Role, RoleNodeReposito
     @Override
     public Role get(String id) {
         return roleNodeRepository.findOne(id, 2);
+    }
+
+    @Override
+    public Role get(String id, EnableEnum enableEnum) {
+        switch (enableEnum) {
+            case ALL:
+                return roleNodeRepository.findOne(id, 2);
+            case DISABLE:
+                return roleNodeRepository.findByIdAndValidAndEnable(id, true, false);
+            case ENABLE:
+            default:
+                return roleNodeRepository.findByIdAndValidAndEnable(id, true, true);
+        }
     }
 
     @Override

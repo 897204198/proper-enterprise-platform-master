@@ -9,6 +9,8 @@ public interface UserGroupNodeRepository extends BaseNeo4jRepository<UserGroupNo
 
     UserGroupNodeEntity findByIdAndValid(String id, boolean valid);
 
+    UserGroupNodeEntity findByIdAndValidAndEnable(String id, boolean valid, boolean enable);
+
     UserGroupNodeEntity findByValidAndName(boolean valid, String name);
 
     Collection<UserGroupNodeEntity> save(Collection<UserGroupNodeEntity> groups);

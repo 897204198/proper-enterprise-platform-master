@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.api.auth.service;
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
@@ -19,7 +20,7 @@ public interface UserGroupService {
      * @param enable      用户组状态
      * @return 用户组集合
      */
-    Collection<? extends UserGroup> getGroups(String name, String description, String enable);
+    Collection<? extends UserGroup> getGroups(String name, String description, EnableEnum enable);
 
     /**
      * 用户组集合
@@ -29,7 +30,7 @@ public interface UserGroupService {
      * @param enable      用户组状态
      * @return 用户组集合 分页
      */
-    DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, String enable);
+    DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, EnableEnum enable);
 
     /**
      * 根据传入的用户组集合，获取合法的用户组(过滤掉valid、enable为false的用户组)
@@ -40,12 +41,30 @@ public interface UserGroupService {
     Collection<? extends UserGroup> getFilterGroups(Collection<? extends UserGroup> groups);
 
     /**
+     * 根据传入的用户组集合，获取合法的用户组(过滤掉valid、enable为false的用户组)
+     *
+     * @param groups          待过滤的用户组集合
+     * @param userGroupEnable 用户组是否禁用
+     * @return 返回合法的用户组集合
+     */
+    Collection<? extends UserGroup> getFilterGroups(Collection<? extends UserGroup> groups, EnableEnum userGroupEnable);
+
+    /**
      * 根据 ID 获得用户组
      *
      * @param id 用户组 ID
      * @return 用户组
      */
     UserGroup get(String id);
+
+    /**
+     * 根据 ID 获得用户组
+     *
+     * @param id     用户组 ID
+     * @param enable 启用禁用
+     * @return 用户组
+     */
+    UserGroup get(String id, EnableEnum enable);
 
     /**
      * 保存或更新用户组信息
@@ -106,6 +125,14 @@ public interface UserGroupService {
     Collection<? extends Role> getGroupRoles(String groupId);
 
     /**
+     * 获取指定用户组角色集合
+     *
+     * @param groupId 用户组ID
+     * @return 角色集合
+     */
+    Collection<? extends Role> getGroupRoles(String groupId, EnableEnum userGroupEnable, EnableEnum roleEnable);
+
+    /**
      * 用户组删除角色
      *
      * @param groupId 用户组ID
@@ -157,6 +184,14 @@ public interface UserGroupService {
      * @return 用户集合
      */
     Collection<? extends User> getGroupUsers(String groupId);
+
+    /**
+     * 获取指定用户组的用户集合
+     *
+     * @param groupId 用户组ID
+     * @return 用户集合
+     */
+    Collection<? extends User> getGroupUsers(String groupId, EnableEnum userGroupEnable, EnableEnum userEnable);
 
     /**
      * 检测用户组是否有此权限

@@ -17,6 +17,8 @@ public interface RoleNodeRepository extends BaseNeo4jRepository<RoleNodeEntity, 
 
     RoleNodeEntity findByIdAndValid(String id, boolean valid);
 
+    RoleNodeEntity findByIdAndValidAndEnable(String id, boolean valid, boolean enable);
+
     Collection<RoleNodeEntity> save(List<RoleNodeEntity> roleList);
 
     Collection<RoleNodeEntity> save(Collection<RoleNodeEntity> roles);
@@ -29,16 +31,16 @@ public interface RoleNodeRepository extends BaseNeo4jRepository<RoleNodeEntity, 
 
     Collection<RoleNodeEntity> findAllByIdIn(Specification specification, Sort name);
 
-    @Query("match (n:PEP_AUTH_ROLES)-[r:parent_to*]->(m:PEP_AUTH_ROLES) where n.id = {id} and m.valid = {valid} and m.enable = {enable} return "
-        + "distinct m")
+    @Query("MATCH (n:PEP_AUTH_ROLES)-[r:parent_to*]->(m:PEP_AUTH_ROLES) WHERE n.id = {id} AND m.valid = {valid} AND m.enable = {enable} RETURN "
+        + "DISTINCT m")
     Collection<RoleNodeEntity> findParentRolesByIdAndValidAndEnable(@Param("id") String id, @Param("valid") boolean valid, @Param("enable") boolean
         enable);
 
-    @Query("match (n:PEP_AUTH_ROLES)-[r:parent_to*]->(m:PEP_AUTH_ROLES) where n.id ={id} and m.id = n.id return case when m is null then false else "
-        + "true end;")
+    @Query("MATCH (n:PEP_AUTH_ROLES)-[r:parent_to*]->(m:PEP_AUTH_ROLES) WHERE n.id ={id} AND m.id = n.id RETURN CASE WHEN m IS NULL THEN false ELSE "
+        + "true END;")
     Boolean hasCircleInheritForCurrentRole(@Param("id") String id);
 
-    @Query("match (n:PEP_AUTH_ROLES)-[*]-(m:PEP_AUTH_USERGROUPS) where n.id = {id} and m.valid = true and m.enable = true return distinct m;")
+    @Query("MATCH (n:PEP_AUTH_ROLES)-[*]-(m:PEP_AUTH_USERGROUPS) WHERE n.id = {id} AND m.valid = true AND m.enable = true RETURN DISTINCT m;")
     Collection<UserGroup> findUsergroupsByRoleId(@Param("id") String id);
 
 }

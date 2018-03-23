@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.api.auth.dao;
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.service.BaseService;
@@ -11,6 +12,8 @@ public interface RoleDao extends BaseService<Role, String> {
     Role getNewRole();
 
     Role get(String id);
+
+    Role get(String id, EnableEnum enableEnum);
 
     Collection<? extends Role> getByName(String name);
 

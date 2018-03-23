@@ -111,7 +111,7 @@ class UsersControllerTest extends AbstractNeo4jTest {
         assert resAll.data[1].get("username") == 'sun1s1'
         assert resAll.data[1].get("name") == 'sas1'
 
-        resAll = JSONUtil.parse(get('/auth/users?username=sun&name=&phone=&email=&enable=n&pageNo=1&pageSize=20', HttpStatus.OK).getResponse()
+        resAll = JSONUtil.parse(get('/auth/users?username=sun&name=&phone=&email=&userEnable=DISABLE&pageNo=1&pageSize=20', HttpStatus.OK).getResponse()
             .getContentAsString(), DataTrunk.class)
         assert resAll.count == 0
 

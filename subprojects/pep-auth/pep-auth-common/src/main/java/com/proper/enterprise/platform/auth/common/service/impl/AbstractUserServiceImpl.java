@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
@@ -65,7 +66,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
         String id = user.getId();
         User newUser = userDao.getNewUser();
         if (StringUtil.isNotBlank(id)) {
-            newUser = this.get(id, false);
+            newUser = this.get(id, EnableEnum.ALL);
         }
         String username = user.getUsername();
         if (StringUtil.isNotBlank(username)) {
@@ -85,7 +86,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public User get(String id, boolean enable) {
+    public User get(String id, EnableEnum enable) {
         return userDao.get(id, enable);
     }
 
@@ -159,13 +160,13 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, String enable) {
+    public Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, EnableEnum enable) {
         return userDao.getUsersByCondition(userName, name, email, phone, enable);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, String enable) {
+    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable) {
         return userDao.findUsersPagniation(userName, name, email, phone, enable);
     }
 
@@ -210,7 +211,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public User addUserRole(String userId, String roleId) {
-        User user = this.get(userId);
+        User user = this.get(userId, EnableEnum.ENABLE);
         if (roleService.userHasTheRole(user, roleId) == null) {
             Role role = roleService.get(roleId);
             if (role != null) {
@@ -223,7 +224,7 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public User deleteUserRole(String userId, String roleId) {
-        User user = this.get(userId);
+        User user = this.get(userId, EnableEnum.ENABLE);
         Role role = roleService.userHasTheRole(user, roleId);
         if (role != null) {
             user.remove(role);
@@ -253,12 +254,24 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends User> getFilterUsers(Collection<? extends User> users) {
+        return getFilterUsers(users, EnableEnum.ENABLE);
+    }
+
+    @Override
+    public Collection<? extends User> getFilterUsers(Collection<? extends User> users, EnableEnum userEnable) {
         Collection<User> result = new HashSet<>();
-        for (User userEntity : users) {
-            if (!userEntity.isValid() || !userEntity.isEnable()) {
+        for (User user : users) {
+            if (EnableEnum.ALL == userEnable && user.isValid()) {
+                result.add(user);
                 continue;
             }
-            result.add(userEntity);
+            if (EnableEnum.ENABLE == userEnable && user.isEnable() && user.isValid()) {
+                result.add(user);
+                continue;
+            }
+            if (EnableEnum.DISABLE == userEnable && !user.isEnable() && user.isValid()) {
+                result.add(user);
+            }
         }
         return result;
     }
@@ -286,20 +299,29 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends UserGroup> getUserGroups(String userId) {
-        User user = this.get(userId, false);
+        return getUserGroups(userId, EnableEnum.ALL, EnableEnum.ENABLE);
+    }
+
+    @Override
+    public Collection<? extends UserGroup> getUserGroups(String userId, EnableEnum userEnable, EnableEnum userGroupEnable) {
+        User user = this.get(userId, userEnable);
         if (user == null) {
             return new ArrayList<>();
         }
-        return userGroupService.getFilterGroups(user.getUserGroups());
+        return userGroupService.getFilterGroups(user.getUserGroups(), userGroupEnable);
     }
 
     @Override
     public Collection<? extends Role> getUserRoles(String userId) {
-        User user = this.get(userId, false);
+        return getUserRoles(userId, EnableEnum.ALL, EnableEnum.ENABLE);
+    }
+
+    public Collection<? extends Role> getUserRoles(String userId, EnableEnum userEnable, EnableEnum roleEnable) {
+        User user = this.get(userId, userEnable);
         if (user == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
         }
-        return roleService.getFilterRoles(user.getRoles());
+        return roleService.getFilterRoles(user.getRoles(), roleEnable);
     }
 
 }

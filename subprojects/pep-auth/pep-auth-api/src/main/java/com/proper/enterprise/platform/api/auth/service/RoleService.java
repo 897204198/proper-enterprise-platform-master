@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.api.auth.service;
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.*;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -19,6 +20,14 @@ public interface RoleService {
      * @return 角色
      */
     Role get(String id);
+
+    /**
+     * 根据角色 ID 获得角色
+     *
+     * @param id 角色 ID
+     * @return 角色
+     */
+    Role get(String id, EnableEnum enableEnum);
 
     /**
      * 根据角色名称获得角色集合
@@ -95,6 +104,15 @@ public interface RoleService {
      * @return 返回有效的角色集合
      */
     Collection<? extends Role> getFilterRoles(Collection<? extends Role> roles);
+
+    /**
+     * 从传入的角色集合中，获取有效的角色(valid、enable都是true的)
+     *
+     * @param roles      待过滤的角色集合
+     * @param roleEnable 角色是否禁用
+     * @return 返回有效的角色集合
+     */
+    Collection<? extends Role> getFilterRoles(Collection<? extends Role> roles, EnableEnum roleEnable);
 
     /**
      * 更新角色状态

@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.neo4j.dao.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.UserGroupDao;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.common.neo4j.entity.UserGroupNodeEntity;
 import com.proper.enterprise.platform.auth.common.neo4j.repository.UserGroupNodeRepository;
@@ -33,6 +34,19 @@ public class Neo4jUserGroupDaoImpl extends Neo4jServiceSupport<UserGroup, UserGr
     }
 
     @Override
+    public UserGroup get(String id, EnableEnum enable) {
+        switch (enable) {
+            case ALL:
+                return userGroupNodeRepository.findByIdAndValid(id, true);
+            case DISABLE:
+                return userGroupNodeRepository.findByIdAndValidAndEnable(id, true, false);
+            case ENABLE:
+            default:
+                return userGroupNodeRepository.findByIdAndValidAndEnable(id, true, true);
+        }
+    }
+
+    @Override
     public Collection<? extends UserGroup> findAll(Collection<String> idList) {
         return (Collection<? extends UserGroup>) userGroupNodeRepository.findAll(idList);
     }
@@ -58,20 +72,20 @@ public class Neo4jUserGroupDaoImpl extends Neo4jServiceSupport<UserGroup, UserGr
     }
 
     @Override
-    public Collection<? extends UserGroup> getGroups(String name, String description, String enable) {
+    public Collection<? extends UserGroup> getGroups(String name, String description, EnableEnum enable) {
         SortOrder sortOrder = new SortOrder();
         sortOrder.add(SortOrder.Direction.ASC, "seq");
         return this.findAll(UserGroupNodeEntity.class, buildFilters(name, description, enable), sortOrder);
     }
 
     @Override
-    public DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, String enable) {
+    public DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, EnableEnum enable) {
         SortOrder sortOrder = new SortOrder();
         sortOrder.add(SortOrder.Direction.ASC, "seq");
         return this.findPage(UserGroupNodeEntity.class, buildFilters(name, description, enable), sortOrder);
     }
 
-    private Filters buildFilters(String name, String description, String enable) {
+    private Filters buildFilters(String name, String description, EnableEnum enable) {
         Filters filters = new Filters();
         if (StringUtil.isNotBlank(name)) {
             filters.add(new Filter("name", ComparisonOperator.CONTAINING, name));
@@ -82,16 +96,11 @@ public class Neo4jUserGroupDaoImpl extends Neo4jServiceSupport<UserGroup, UserGr
             filter.setBooleanOperator(BooleanOperator.AND);
             filters.add(filter);
         }
-        if (StringUtil.isNotBlank(enable)) {
-            boolean ok = true;
-            if ("n".equalsIgnoreCase(enable)) {
-                ok = false;
-            }
-            Filter filter = new Filter("enable", ok);
+        if (null != enable && EnableEnum.ALL != enable) {
+            Filter filter = new Filter("enable", EnableEnum.ENABLE == enable);
             filter.setBooleanOperator(BooleanOperator.AND);
             filters.add(filter);
         }
-
         Filter filter = new Filter("valid", true);
         filter.setBooleanOperator(BooleanOperator.AND);
         filters.add(filter);
