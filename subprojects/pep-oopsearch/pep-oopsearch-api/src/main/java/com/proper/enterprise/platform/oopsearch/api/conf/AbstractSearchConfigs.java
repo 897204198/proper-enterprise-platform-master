@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.oopsearch.api.conf;
 
+import com.proper.enterprise.platform.core.utils.SerializationUtil;
 import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,39 +18,39 @@ public abstract class AbstractSearchConfigs {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSearchConfigs.class);
 
     // 查询表名
-    public String searchTables;
+    private String searchTables;
 
     // 查询字段
-    public String searchColumns;
+    private String searchColumns;
 
     // 查询最大条数
-    public int limit;
+    private int limit;
 
     // 对于年份，输入内容，可以被识别的内容
-    public String extendByYear;
+    private String extendByYear;
 
     // 对于月份，输入内容，可以被识别的内容
-    public String extendByMonth;
+    private String extendByMonth;
 
     // 对于天，输入内容，可以被识别的内容
-    public String extendByDay;
+    private String extendByDay;
 
     // 可识别年份文字描述数组
-    public String[] extendByYearArr;
+    private String[] extendByYearArr;
 
     // 可识别月份文字描述数组
-    public String[] extendByMonthArr;
+    private String[] extendByMonthArr;
 
     // 可识别天文字描述数组
-    public String[] extendByDayArr;
+    private String[] extendByDayArr;
 
     // 表名数组
-    public List<String> tableNameList;
+    private List<String> tableNameList;
 
     // 表名与查询字段对象对应关系集合
-    public Map<String, List<SearchColumnModel>> searchTableColumnMap;
+    private Map<String, List<SearchColumnModel>> searchTableColumnMap;
 
-    public Map<String, Map<String, SearchColumnModel>> searchTableColumn;
+    private Map<String, Map<String, SearchColumnModel>> searchTableColumn;
 
     /**
      * 默认构造函数
@@ -80,17 +81,16 @@ public abstract class AbstractSearchConfigs {
     /**
      * 初始化各变量
      * */
-    public void init() {
+    private void init() {
         String[] tableNameArr = searchTables.split(",");
         tableNameList = Arrays.asList(tableNameArr);
 
-        String[] columnArr = searchColumns.split(",");
-        for (int i = 0; i < tableNameArr.length; i++) {
-            String tableName = tableNameArr[i];
+        String[] columnArrs = searchColumns.split(",");
+        for (String tableName : tableNameArr) {
             List<SearchColumnModel> columnList = new ArrayList<>();
             Map<String, SearchColumnModel> columnMap = new HashMap<>();
-            for (int j = 0; j < columnArr.length; j++) {
-                String[] searchColumnArr = columnArr[j].split(":");
+            for (String columnArr : columnArrs) {
+                String[] searchColumnArr = columnArr.split(":");
                 if (searchColumnArr[0].equalsIgnoreCase(tableName)) {
                     SearchColumnModel searchColumn = new SearchColumnModel();
                     searchColumn.setTable(searchColumnArr[0]);
@@ -135,18 +135,13 @@ public abstract class AbstractSearchConfigs {
      *
      * @return 查询字段对象与表名对应的集合
      * */
+    @SuppressWarnings("unchecked")
     public Map<String, List<SearchColumnModel>> getSearchTableColumnMap() {
         Map<String, List<SearchColumnModel>> copySearchTableColumnMap = new HashMap<>();
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        ObjectOutputStream out = null;
         try {
-            out = new ObjectOutputStream(byteOut);
-            out.writeObject(searchTableColumnMap);
-            ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
-            ObjectInputStream inputStream = new ObjectInputStream(byteIn);
-            copySearchTableColumnMap = (Map<String, List<SearchColumnModel>>) inputStream.readObject();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            copySearchTableColumnMap = SerializationUtil.deepClone((HashMap)searchTableColumnMap);
+        } catch (IOException e) {
+            LOGGER.error("invoke method getSearchTableColumnMap fail", e);
         }
         return copySearchTableColumnMap;
     }
@@ -171,15 +166,6 @@ public abstract class AbstractSearchConfigs {
      * */
     public List<SearchColumnModel> getSearchColumnListByTable(String tableName) {
         return searchTableColumnMap.get(tableName.toLowerCase());
-    }
-
-    /**
-     * 通过表名获取查询字段对象
-     *
-     * @return 查询字段对象的映射
-     * */
-    public Map<String, SearchColumnModel> getSearchColumnMapByTable(String tableName) {
-        return searchTableColumn.get(tableName.toLowerCase());
     }
 
     /**
