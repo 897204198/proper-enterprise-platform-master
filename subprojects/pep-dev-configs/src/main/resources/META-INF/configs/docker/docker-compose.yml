@@ -3,6 +3,7 @@ pep-mysql:
   volumes:
     - ./mysql/data:/var/lib/mysql
     - ./mysql/conf:/etc/mysql/conf.d
+    - ./mysql/init:/docker-entrypoint-initdb.d
   environment:
     - MYSQL_ROOT_PASSWORD=Proper123
     - MYSQL_DATABASE=pep
