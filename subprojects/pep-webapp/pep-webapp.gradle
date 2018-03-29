@@ -39,7 +39,9 @@ dependencies {
 
     // Choose by datasource
     // available choices: libraries.h2, libraries.mysql_driver
-    runtime libraries.h2
+    runtime libraries.h2,
+            // available choices: project(':pep-oopsearch-sync-h2'), project(':pep-oopsearch-sync-mysql')
+            project(':pep-oopsearch-sync-h2')
 
     // Necessary when using Web Service
     // runtime libraries.jaxws_rt
@@ -53,8 +55,6 @@ dependencies {
             // Needs one cache implementation if use cache API
             project(':pep-cache-ehcache'),
             project(':pep-oopsearch'),
-            // Choose according to datasource
-            project(':pep-oopsearch-sync-h2'),
             project(':pep-workflow')
 }
 task cleanDist(type: Delete) {
