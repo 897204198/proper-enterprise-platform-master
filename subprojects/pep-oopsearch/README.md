@@ -97,29 +97,22 @@ public class DemoDeptController extends BaseController {
 
 使用pep-oopsearch-sync-mysql自动同步
 ----------------------------
-当mysql中数据发生`insert`、`update`、`delete`操作时，pep-oopsearch-mongo模块，可以自动监听到该操作。
+当mysql中数据发生`insert`、`update`、`delete`操作时，pep-oopsearch-sync-mongo模块，可以自动监听到该操作。
 并自动对操作内容进行解析，然后同步到mongodb当中。保持查询信息一致。
 >注意：`pep-oopsearch-sync-mysql`模块采用解析`mysql`数据库的`binlog`来实现以上功能。所以要使用该模块，数据库必须使用`mysql`。
-### 设置pep-oopsearch-mongo配置文件
-* 配置pep-oopsearch-sync-mysql模块的`binlog-analysis.properties`配置文件
-```
-# pep-oopsearch-mongo伪装slave时使用的用户名
-binlog.username=slave
-# pep-oopsearch-mongo伪装slave时使用的密码
-binlog.password=testbinlog
-```
->注意：`pep-oopsearch-sync-mysql`模块通过把自己伪装成slave，来使用mysql的主从同步功能。进而读取并解析mysql主机的binlog日志。
+`pep-oopsearch-sync-mysql`模块通过把自己伪装成slave，来使用mysql的主从同步功能。进而读取并解析mysql主机的binlog日志。
 
 ### 设置mysql
-* 修改`my.cnf`配置文件，开启`binlog`功能，并修改`binlog-format`为`row`级别
-```
-binlog-format=row
-log-bin=mysql-bin
-server-id=1
-```
 
-* 根据上方的配置内容（slave的用户名、密码）为pep-oopsearch-mongo模块创建用户，并开启[REPLICATION SLAVE](http://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html#priv_replication-slave)、
+mysql 相关设置已在 `pep-dev-configs` 模块内的 docker-compose.yml 中配置好，使用 docker 方式启动 mysql 即可。
+
+若需以其他方式启动，需检查 mysql 的 binlog 格式需配置为 `row`，并且在 datasource 中使用的用户需包含 
+[REPLICATION SLAVE](http://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html#priv_replication-slave)、
 [REPLICATION CLIENT](http://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html#priv_replication-client)权限。
+
+>注意:模块通过读取`datasource`的url、user、password、schema 来进行连接mysql读取binlog，所以请务必保持datasource中各项配置正确。且不要轻易修改。
+针对`schema`，binlog解析本身并不区分schema，同步模块通过datasource中配置的schema，对binlog监听到是event进行过滤(只对本datasource中设置的schema进行监听)。
+
 
 使用pep-oopsearch-sync-h2自动同步
 ------------------------------

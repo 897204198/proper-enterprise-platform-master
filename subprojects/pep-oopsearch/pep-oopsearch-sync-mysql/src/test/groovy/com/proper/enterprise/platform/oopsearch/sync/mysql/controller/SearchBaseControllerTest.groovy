@@ -2,7 +2,9 @@ package com.proper.enterprise.platform.oopsearch.sync.mysql.controller
 
 import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.sync.mysql.entity.DemoDeptEntity
+import com.proper.enterprise.platform.oopsearch.sync.mysql.entity.DemoTestEntity
 import com.proper.enterprise.platform.oopsearch.sync.mysql.repository.DemoDeptRepository
+import com.proper.enterprise.platform.oopsearch.sync.mysql.repository.DemoTestRepository
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +16,9 @@ class SearchBaseControllerTest extends AbstractTest{
     private DemoDeptRepository demoDeptRepository
 
     @Autowired
+    private DemoTestRepository demoTestRepository
+
+    @Autowired
     private SyncMongoRepository syncMongoRepository
 
     @Test
@@ -21,8 +26,8 @@ class SearchBaseControllerTest extends AbstractTest{
         initDB()
         get("/search/init",  HttpStatus.OK)
         int count = syncMongoRepository.findAll().size()
-        // 5 cols * 3 rows - 2 duplicated value
-        assert count == 5 * 3 - 1
+        // 5 cols * 3 rows - 1 duplicated value + 3 cols from DemoTest
+        assert count == 5 * 3 - 1 + 3
     }
 
     void initDB(){
@@ -54,5 +59,12 @@ class SearchBaseControllerTest extends AbstractTest{
         searchEntity3.setDeptMemberCount(30)
 
         demoDeptRepository.save(searchEntity3)
+
+        // 复合主键的entity
+        DemoTestEntity demoTestEntity = new DemoTestEntity()
+        demoTestEntity.setPri2("pri2")
+        demoTestEntity.setName("test")
+
+        demoTestRepository.save(demoTestEntity)
     }
 }

@@ -9,7 +9,6 @@ pep-mysql:
     - MYSQL_DATABASE=pep
     - MYSQL_USER=pep
     - MYSQL_PASSWORD=pep
-  command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 pep-mongo:
   image: mongo
   entrypoint: /code/devops/current/mongoEp.sh

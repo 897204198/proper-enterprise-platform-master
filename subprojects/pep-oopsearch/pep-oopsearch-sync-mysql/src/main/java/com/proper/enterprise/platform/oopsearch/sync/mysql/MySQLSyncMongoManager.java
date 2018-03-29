@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
@@ -36,12 +35,6 @@ public class MySQLSyncMongoManager implements InitializingBean {
     @Autowired
     HikariConfig hikariConfig;
 
-    @Value("${binlog.username}")
-    private String username;
-
-    @Value("${binlog.password}")
-    private String password;
-
     @Override
     public void afterPropertiesSet() {
         // 初始同步mysql数据到mongodb中
@@ -49,14 +42,16 @@ public class MySQLSyncMongoManager implements InitializingBean {
         // 获取数据库ip地址和端口
         Properties properties = hikariConfig.getDataSourceProperties();
         Object urlObj = properties.get("url");
-        if (urlObj != null) {
+        Object usernameObj = properties.get("user");
+        Object passwordObj = properties.get("password");
+        if (urlObj != null && usernameObj != null && passwordObj != null) {
             String url = urlObj.toString().toLowerCase();
             if (url.contains("mysql")) {
                 String[] temp = (url.substring(url.indexOf("//"), url.lastIndexOf("/")).substring(2)).split(":");
                 // 启动binlog线程
                 BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, nativeRepository, mongoTemplate,
-                    mongoSyncService, temp[0], Integer.parseInt(temp[1]), url.substring(url.lastIndexOf("/")),
-                    username, password);
+                    mongoSyncService, temp[0], Integer.parseInt(temp[1]), url.substring(url.lastIndexOf("/") + 1),
+                    usernameObj.toString(), passwordObj.toString());
                 binlogThread.start();
             }
         }

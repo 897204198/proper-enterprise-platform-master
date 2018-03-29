@@ -2,8 +2,10 @@ package com.proper.enterprise.platform.oopsearch.api.service
 
 import com.proper.enterprise.platform.oopsearch.api.conf.DemoDeptConfigs
 import com.proper.enterprise.platform.oopsearch.api.document.SearchDocument
+import com.proper.enterprise.platform.oopsearch.api.entity.DemoDeptEntity
 import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel
 import com.proper.enterprise.platform.oopsearch.api.model.SyncDocumentModel
+import com.proper.enterprise.platform.oopsearch.api.repository.DemoDeptRepository
 import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService
 import com.proper.enterprise.platform.oopsearch.api.service.impl.TestMongoDataSync
@@ -25,6 +27,9 @@ class AbstractMongoDataSyncTest extends AbstractTest{
 
     @Autowired
     DemoDeptConfigs demoDeptConfigs
+
+    @Autowired
+    DemoDeptRepository demoDeptRepository
 
     @Test
     void test(){
@@ -68,6 +73,20 @@ class AbstractMongoDataSyncTest extends AbstractTest{
 
     @Test
     void testFullSync(){
+        initData()
         mongoDataSyncService.fullSynchronization()
+        List<SearchDocument> result = syncMongoRepository.findAll()
+        assert result.size() == 5
+    }
+
+    void initData() {
+        DemoDeptEntity searchEntity = new DemoDeptEntity()
+        searchEntity.setDeptId("001")
+        searchEntity.setDeptName("研发部")
+        searchEntity.setDeptDesc("产品研发")
+        searchEntity.setCreateTime("2018-01-01")
+        searchEntity.setDeptMemberCount(10)
+
+        demoDeptRepository.save(searchEntity)
     }
 }

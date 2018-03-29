@@ -2,7 +2,9 @@ package com.proper.enterprise.platform.oopsearch.sync.h2.service.impl
 
 import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.sync.h2.entity.DemoDeptEntity
+import com.proper.enterprise.platform.oopsearch.sync.h2.entity.DemoTestEntity
 import com.proper.enterprise.platform.oopsearch.sync.h2.repository.DemoDeptRepository
+import com.proper.enterprise.platform.oopsearch.sync.h2.repository.DemoTestRepository
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.Test
@@ -18,6 +20,9 @@ class H2SyncJobServiceTest extends AbstractTest{
     private DemoDeptRepository demoDeptRepository
 
     @Autowired
+    private DemoTestRepository demoTestRepository
+
+    @Autowired
     private SyncMongoRepository syncMongoRepository
 
     @NoTx
@@ -29,8 +34,8 @@ class H2SyncJobServiceTest extends AbstractTest{
         println "------开始查询mongo-----"
         int count = syncMongoRepository.findAll().size()
         println "------查询mongo结束，count："+count+"-----"
-        // 5 cols * 3 rows - 1 duplicated value
-        assert count == 5 * 3 - 1
+        // 5 cols * 3 rows - 1 duplicated value + 3 cols from DemoTest
+        assert count == 5 * 3 - 1 + 3
 
 //        syncMongoRepository.deleteAll()
 //        get("/search/init",  HttpStatus.OK)
@@ -68,5 +73,12 @@ class H2SyncJobServiceTest extends AbstractTest{
         searchEntity3.setDeptMemberCount(30)
 
         demoDeptRepository.save(searchEntity3)
+
+        // 复合主键的entity
+        DemoTestEntity demoTestEntity = new DemoTestEntity()
+        demoTestEntity.setPri2("pri2")
+        demoTestEntity.setName("test")
+
+        demoTestRepository.save(demoTestEntity)
     }
 }

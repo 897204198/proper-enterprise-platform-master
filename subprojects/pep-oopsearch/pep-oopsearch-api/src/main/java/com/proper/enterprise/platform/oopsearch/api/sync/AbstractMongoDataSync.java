@@ -1,20 +1,24 @@
 package com.proper.enterprise.platform.oopsearch.api.sync;
 
+import com.proper.enterprise.platform.core.PEPApplicationContext;
+import com.proper.enterprise.platform.core.jpa.repository.NativeRepository;
+import com.proper.enterprise.platform.oopsearch.api.annotation.SearchConfig;
 import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;
 import com.proper.enterprise.platform.oopsearch.api.document.SearchDocument;
 import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel;
 import com.proper.enterprise.platform.oopsearch.api.model.SyncDocumentModel;
+import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository;
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService;
+import com.zaxxer.hikari.HikariConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 同步mongo抽象类
@@ -25,9 +29,142 @@ import java.util.Map;
  * */
 public abstract class AbstractMongoDataSync implements MongoDataSyncService {
 
-    //操作mongo的mongoTemplate对象
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMongoDataSync.class);
+
+    // 操作mongo的mongoTemplate对象
     @Autowired
-    MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
+
+    // 同步mongo所使用的repository
+    @Autowired
+    private SyncMongoRepository syncMongoRepository;
+
+    @Autowired
+    // 初始化PEPApplicationContext，避免后续方法使用时尚未初始化导致获取不到application进而出错
+    private PEPApplicationContext pepApplicationContext;
+
+    // 数据源config
+    @Autowired
+    protected HikariConfig hikariConfig;
+
+    // 本地化repository
+    @Autowired
+    protected NativeRepository nativeRepository;
+
+
+    /**
+     * 全量同步方法
+     * 将配置中需要查询的表，及字段的内容，全部同步到mongodb当中
+     *
+     * */
+    @Override
+    public void fullSynchronization() {
+        // 整理所有需要查询的表名，及表名中对应的字段
+        Map<String, Object> searchConfigBeans = pepApplicationContext.getApplicationContext().getBeansWithAnnotation(SearchConfig.class);
+        Map<String, List<SearchColumnModel>> tableColumnMap = getTableColumnMap(searchConfigBeans);
+        List<SearchDocument> documentList = new ArrayList<>();
+        for (Map.Entry<String, List<SearchColumnModel>> tableColumnEntry: tableColumnMap.entrySet()) {
+            StringBuffer querySql = new StringBuffer();
+            querySql.append("SELECT ");
+            // 取出该表将要查询的字段
+            List<SearchColumnModel> searchColumnList = tableColumnEntry.getValue();
+            if (searchColumnList.size() == 0) {
+                LOGGER.error("can not find search column");
+            }
+            for (int j = 0; j < searchColumnList.size(); j++) {
+                SearchColumnModel searchColumn = searchColumnList.get(j);
+                String columnName = searchColumn.getColumn();
+                querySql.append(columnName + ",");
+            }
+            // 获取主键
+            String tableName = tableColumnEntry.getKey();
+            List<String> primaryKeys = getPrimaryKeys(tableName);
+            if (primaryKeys.size() > 0) {
+                String url = hikariConfig.getDataSourceProperties().get("url").toString();
+                String[] temp = url.split(";")[0].split("/");
+                String schema = temp[temp.length - 1];
+                querySql.append(" CONCAT( '").append(schema).append("|").append(tableName).append("|',");
+                for (int k = 0; k < primaryKeys.size(); k++) {
+                    querySql.append(primaryKeys.get(k) + ",'|',");
+                }
+                querySql.delete(querySql.length() - ",'|',".length(), querySql.length());
+                querySql.append(") AS pri ");
+            } else {
+                querySql.deleteCharAt(querySql.length() - 1);
+            }
+
+            querySql.append(" FROM " + tableName);
+            List<Map<String, Object>> resultList = nativeRepository.executeEntityMapQuery(querySql.toString());
+            Map<String, List<String>> contextFilterMap = new HashMap<>();
+            for (Map<String, Object> resultMap:resultList) {
+                String priValue = "";
+                Set<Map.Entry<String, Object>> entrySet = resultMap.entrySet();
+                for (Map.Entry<String, Object> getPriEntry: entrySet) {
+                    String key = getPriEntry.getKey().toLowerCase();
+                    if ("pri".equals(key)) {
+                        priValue = getPriEntry.getValue().toString();
+                        break;
+                    }
+                }
+                for (Map.Entry<String, Object> entry: entrySet) {
+                    String column = entry.getKey();
+                    if (!"pri".equalsIgnoreCase(column)) {
+                        SearchColumnModel searchColumnMongo = getSearchColumnMongo(searchColumnList, column);
+                        if (searchColumnMongo == null) {
+                            LOGGER.error("can not find search column");
+                        }
+                        // 插入mongodb
+                        String value;
+                        Object objValue = entry.getValue();
+                        boolean isRepeat = false;
+                        if (objValue != null) {
+                            value = objValue.toString();
+                            if (!"".equals(value.trim())) {
+                                if (contextFilterMap.containsKey(value)) {
+                                    List<String> columnList = contextFilterMap.get(value);
+                                    for (String columnTemp: columnList) {
+                                        if (columnTemp.equalsIgnoreCase(searchColumnMongo.getColumn())) {
+                                            isRepeat = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!isRepeat) {
+                                        columnList.add(searchColumnMongo.getColumn());
+                                    }
+                                } else {
+                                    List<String> columnList = new ArrayList<>();
+                                    columnList.add(searchColumnMongo.getColumn());
+                                    contextFilterMap.put(value, columnList);
+                                }
+                                if (!isRepeat) {
+                                    SearchDocument demoUserDocument = new SearchDocument();
+                                    demoUserDocument.setCon(value);
+                                    demoUserDocument.setCol(searchColumnMongo.getColumn());
+                                    demoUserDocument.setTab(searchColumnMongo.getTable());
+                                    demoUserDocument.setDes(searchColumnMongo.getDescColumn());
+                                    demoUserDocument.setPri(priValue);
+                                    documentList.add(demoUserDocument);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (documentList.size() > 0) {
+            syncMongoRepository.deleteAll();
+            syncMongoRepository.save(documentList);
+        }
+    }
+
+    /**
+     * 获取主键方法
+     * 各子类根据数据库的不同，进行具体实现
+     *
+     * @param  tableName 表名
+     * @return  主键集合
+     * */
+    protected abstract List<String> getPrimaryKeys(String tableName);
 
     /**
      * 增量同步mongo
