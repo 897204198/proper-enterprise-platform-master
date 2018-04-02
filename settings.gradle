@@ -1,34 +1,26 @@
 rootProject.name = 'proper-enterprise-platform'
 
-// Support two levels under subprojects folder
-file("${rootProject.projectDir}/subprojects").eachDir {project ->
-    def buildFile = new File(settingsDir, "subprojects/${project.name}/${project.name}.gradle")
+file("${rootProject.projectDir}/subprojects").eachDir { project ->
+    includeProject(project)
+}
+
+private void includeProject(File project) {
+    File buildFile = new File(settingsDir, separatorConvert("${project.path}${File.separator}${project.name}.gradle"))
     if (buildFile.isFile()) {
         include project.name
-    } else {
-        file("${rootProject.projectDir}/subprojects/${project.name}").eachDir { group ->
-            if (new File(settingsDir, "subprojects/${project.name}/${group.name}/${group.name}.gradle").isFile()) {
-                include group.name
-            }
-        }
+        this.findProject(":${project.name}").projectDir = new File(settingsDir, separatorConvert("${project.path}"))
+        this.findProject(":${project.name}").buildFileName = "${project.name}.gradle"
+        return
+    }
+    file(project.path).eachDir { childProject ->
+        includeProject(childProject)
     }
 }
 
-rootProject.children.each { project ->
-    String fileBaseName = project.name
 
-    def pd = new File(settingsDir, "subprojects/$fileBaseName")
-    def bf = new File(settingsDir, "subprojects/${project.name}/${project.name}.gradle")
-    if (pd.isDirectory() && bf.isFile()) {
-        project.projectDir = pd
-        project.buildFileName = "${fileBaseName}.gradle"
-    } else {
-        def groupName = project.name.split('-')[0..1].join('-')
-        pd = new File(settingsDir, "subprojects/$groupName/$fileBaseName")
-        bf = new File(settingsDir, "subprojects/$groupName/${project.name}/${project.name}.gradle")
-        if (pd.isDirectory() && bf.isFile()) {
-            project.projectDir = pd
-            project.buildFileName = "${fileBaseName}.gradle"
-        }
-    }
+private String separatorConvert(String path) {
+    path = path.replace("${rootProject.projectDir}", "")
+    path = path.replaceAll("\\${File.separator}", "/")
+    return path.substring(1, path.length())
 }
+
