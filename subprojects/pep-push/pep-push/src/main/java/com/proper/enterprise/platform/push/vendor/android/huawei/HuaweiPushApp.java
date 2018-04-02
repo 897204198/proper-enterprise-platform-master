@@ -225,36 +225,55 @@ public class HuaweiPushApp extends BasePushApp {
         JSONArray deviceTokens = new JSONArray();
         deviceTokens.add(token);
         String packageName = null;
+        PushType pushType = PushType.other;
         if (ext != null) {
             packageName = ext.getString("packageName");
             if (StringUtil.isNull(packageName)) {
                 packageName = "c";
             }
+            try {
+                String extPushType = ext.getString("push_type");
+                pushType = PushType.valueOf(extPushType);
+            } catch (Exception e) {
+                pushType = PushType.other;
+            }
         }
-        JSONObject param = new JSONObject();
-        //定义需要打开的appPkgName
-        param.put("appPkgName", packageName);
-        JSONObject action = new JSONObject();
-        //类型3为打开APP，其他行为请参考接口文档设置
-        action.put("type", 3);
-        //消息点击动作参数
-        action.put("param", param);
-
         JSONObject msg = new JSONObject();
         //3: 通知栏消息，异步透传消息请根据接口文档设置
         msg.put("type", type);
         //消息点击动作
+        JSONObject action = new JSONObject();
+        //消息点击动作参数
+        JSONObject param = new JSONObject();
+        switch (pushType) {
+            case chat:
+                //类型1为跳转页面
+                action.put("type", 1);
+                param.put("intent", ext.get("uri"));
+                break;
+            case video:
+            case other:
+            default:
+                //类型3为打开APP，其他行为请参考接口文档设置
+                action.put("type", 3);
+                //定义需要打开的appPkgName
+                param.put("appPkgName", packageName);
+                break;
+        }
+        action.put("param", param);
         msg.put("action", action);
         //通知栏消息body内容
         msg.put("body", body);
-        //        JSONObject ext = new JSONObject();//扩展信息，含BI消息统计，特定展示风格，消息折叠。
-        //        ext.put("biTag", "Trump");//设置消息标签，如果带了这个标签，会在回执中推送给CP用于检测某种类型消息的到达率和状态
-        //        ext.put("icon", "http://pic.qiantucdn.com/58pic/12/38/18/13758PIC4GV.jpg");//自定义推送消息在通知栏的图标,value为一个公网可以访问的URL
-
         //华为PUSH消息总结构体
         JSONObject hps = new JSONObject();
         hps.put("msg", msg);
-        hps.put("ext", ext);
+        //扩展信息，含BI消息统计，特定展示风格，消息折叠。
+        JSONObject extJson = new JSONObject();
+        //设置消息标签，如果带了这个标签，会在回执中推送给CP用于检测某种类型消息的到达率和状态
+        extJson.put("biTag", "Trump");
+        //自定义推送消息在通知栏的图标,value为一个公网可以访问的URL
+        //ext.put("icon", "https://avatars2.githubusercontent.com/u/17904702?s=200&v=4");
+        hps.put("ext", extJson);
 
         JSONObject payload = new JSONObject();
         payload.put("hps", hps);
@@ -276,7 +295,7 @@ public class HuaweiPushApp extends BasePushApp {
         return resBody;
     }
 
-    public String post(String postUrl, String postBody) throws IOException {
+    private String post(String postUrl, String postBody) throws IOException {
         ResponseEntity<byte[]> post = HttpClient.post(postUrl, MediaType.APPLICATION_FORM_URLENCODED, postBody);
         return new String(post.getBody(), "UTF-8");
     }
@@ -346,5 +365,10 @@ public class HuaweiPushApp extends BasePushApp {
         }
     }
 
+    enum PushType {
+        chat,
+        video,
+        other
+    }
 
 }

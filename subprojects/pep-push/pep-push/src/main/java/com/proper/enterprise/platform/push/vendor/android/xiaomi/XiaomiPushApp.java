@@ -78,7 +78,9 @@ public class XiaomiPushApp extends BasePushApp {
                 // 需要手机端自己生成一个notification通知
                 //因为在小米手机的设置角标接口里，角标接口是与通知栏消息绑定在一起的，需要程序自己发送notification,并带上角标数
                 newCustomMap.put("_proper_badge_type", "notification");
-                msgBuilder.passThrough(1); // 消息使用透传消息
+                if (newCustomMap.containsKey("uri")) {
+                    newCustomMap.remove("uri");
+                }
                 msg.setMcustomDatasMap(newCustomMap); // 更新mcustoms
             } else {
                 msgBuilder.passThrough(0); // 消息使用通知栏

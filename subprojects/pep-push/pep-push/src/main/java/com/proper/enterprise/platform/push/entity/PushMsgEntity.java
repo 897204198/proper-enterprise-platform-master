@@ -40,7 +40,7 @@ public class PushMsgEntity extends BaseEntity implements PushMsg {
     @Column(nullable = false, length = 1000)
     private String mcontent; // 消息正文
     private String mtitle; // 消息标题
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 1500)
     private String mcustoms; // 消息的附加信息，json 字符串
     @Enumerated(EnumType.ORDINAL)
     private PushMsgStatus mstatus; // 消息状态，是否发送
