@@ -47,6 +47,7 @@ public class AllowCrossOriginFilter implements Filter {
         response.setHeader("Access-Control-Allow-Methods", ConfCenter.get("auth.access_control.allow_methods"));
         response.setHeader("Access-Control-Allow-Headers", ConfCenter.get("auth.access_control.allow_headers"));
         response.setHeader("Access-Control-Max-Age", ConfCenter.get("auth.access_control.max_age"));
+        response.setHeader("Access-Control-Allow-Credentials", ConfCenter.get("auth.access_control.allow_credentials"));
     }
 
     @Override
