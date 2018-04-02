@@ -1,10 +1,10 @@
 package com.proper.enterprise.platform.core.mongo;
 
 import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
+import com.proper.enterprise.platform.core.mongo.client.PEPMongoClient;
 import com.proper.enterprise.platform.core.mongo.dao.MongoDAO;
 import com.proper.enterprise.platform.core.mongo.service.MongoShellService;
 import com.proper.enterprise.platform.core.mongo.service.impl.MongoShellServiceImpl;
@@ -68,7 +68,7 @@ public class MongoConfigs extends AbstractMongoConfiguration {
     }
 
     @Bean
-    public MongoClient mongoClient() {
+    public PEPMongoClient mongoClient() {
         List<MongoCredential> credentialList = Collections.emptyList();
         if (StringUtil.isNotNull(username)) {
             credentialList = singletonList(MongoCredential.createCredential(username, "admin", password.toCharArray()));
@@ -84,7 +84,7 @@ public class MongoConfigs extends AbstractMongoConfiguration {
             LOGGER.debug("Replica set not setting or invalid, use direct connection.");
             serverAddresses = singletonList(new ServerAddress(host, port));
         }
-        return new MongoClient(serverAddresses, credentialList);
+        return new PEPMongoClient(serverAddresses, credentialList);
     }
 
     @Bean

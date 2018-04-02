@@ -9,7 +9,6 @@ import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 
 class H2SyncJobServiceTest extends AbstractTest{
 

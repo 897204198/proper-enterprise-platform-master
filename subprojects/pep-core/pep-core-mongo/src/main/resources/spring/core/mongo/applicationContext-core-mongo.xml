@@ -13,8 +13,14 @@
     </beans>
 
     <beans profile="test">
-        <context:property-placeholder ignore-unresolvable="true"
-                                      location="classpath:conf/core/mongo/mongo-test.properties" />
+        <context:property-placeholder ignore-unresolvable="true" local-override="true"
+                                      properties-ref="pepPropertyPlaceholderConfigurerMongo"
+                                      location="classpath:conf/core/mongo/mongo-test.properties"/>
+        <bean id="pepPropertyPlaceholderConfigurerMongo"
+              class="com.proper.enterprise.platform.core.placeholder.PEPPropertyPlaceholderConfigurer" init-method="init">
+            <property name="location" value="classpath:conf/core/mongo/mongo-test.properties"/>
+            <property name="names" value="mongodb.database"/>
+        </bean>
     </beans>
 
     <beans profile="production">

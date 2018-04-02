@@ -13,8 +13,14 @@
     </beans>
 
     <beans profile="test">
-        <context:property-placeholder ignore-unresolvable="true"
-                                      location="classpath:conf/configs/datasource/datasource-test.properties" />
+        <context:property-placeholder ignore-unresolvable="true" local-override="true"
+                                      properties-ref="pepPropertyPlaceholderConfigurer"
+                                      location="classpath:conf/configs/datasource/datasource-test.properties"/>
+        <bean id="pepPropertyPlaceholderConfigurer"
+              class="com.proper.enterprise.platform.core.placeholder.PEPPropertyPlaceholderConfigurer" init-method="init">
+            <property name="location" value="classpath:conf/configs/datasource/datasource-test.properties"/>
+            <property name="names" value="database.url"/>
+        </bean>
     </beans>
 
     <beans profile="production">

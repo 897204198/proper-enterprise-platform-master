@@ -21,7 +21,7 @@ class ExpireTest extends AbstractTest {
     }
 
     @Test
-    void testTTI() {
+    synchronized void testTTI() {
         5.times {
             assert 1 == ttiService.access()
             sleep(300)
@@ -31,7 +31,7 @@ class ExpireTest extends AbstractTest {
     }
 
     @Test
-    void testTTL() {
+    synchronized void testTTL() {
         3.times {
             assert 1 == ttlService.access()
             sleep(300)
