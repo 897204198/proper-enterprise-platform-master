@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
@@ -128,7 +129,7 @@ public class PEPRemoteIdmServiceImpl implements RemoteIdmService {
         } else {
             roleNameFilter = "%" + roleNameFilter + "%";
         }
-        Collection roles = roleService.getByCondition(roleNameFilter, null, null, "Y");
+        Collection roles = roleService.getByCondition(roleNameFilter, null, null, EnableEnum.ENABLE);
         Iterator iterator = roles.iterator();
         List<RemoteRole> list = new ArrayList<>();
         while (iterator.hasNext()) {

@@ -1,15 +1,16 @@
 package com.proper.enterprise.platform.api.auth.service;
 
-import com.proper.enterprise.platform.api.auth.model.Menu;
-import com.proper.enterprise.platform.api.auth.model.Resource;
-import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
+import com.proper.enterprise.platform.api.auth.model.*;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 
 import java.util.Collection;
 
 public interface MenuService {
 
     Menu get(String id);
+
+    Menu get(String id, EnableEnum enableEnum);
 
     Menu save(Menu menu);
 
@@ -44,7 +45,7 @@ public interface MenuService {
      *
      * @return 菜单集合
      */
-    Collection<? extends Menu> getMenus(String name, String description, String route, String enable, String parentId);
+    Collection<? extends Menu> getMenus(String name, String description, String route, EnableEnum enable, String parentId);
 
     /**
      * 根据菜单集合获取过滤后的菜单包括父菜单
@@ -82,7 +83,19 @@ public interface MenuService {
      * @param parentId    父菜单ID
      * @return 获取菜单信息列表
      */
-    Collection<? extends Menu> getMenuByCondition(String name, String description, String route, String enable, String parentId);
+    Collection<? extends Menu> getMenuByCondition(String name, String description, String route, EnableEnum enable, String parentId);
+
+    /**
+     * 按照查询条件获取菜单信息列表
+     *
+     * @param name        菜单名称
+     * @param description 菜单描述
+     * @param route       前端路径
+     * @param enable      菜单状态
+     * @param parentId    父菜单ID
+     * @return 获取菜单信息列表
+     */
+    DataTrunk<? extends Menu> findMenusPagniation(String name, String description, String route, EnableEnum enable, String parentId);
 
     /**
      * 删除多条菜单数据
@@ -117,6 +130,12 @@ public interface MenuService {
     Menu addMenuResource(String menuId, String resourceId);
 
     /**
+     * 菜单添加资源
+     * @return 菜单
+     */
+    Resource postMenuResource(Resource resourceReq);
+
+    /**
      * 菜单删除资源
      *
      * @param menuId     菜单ID
@@ -129,9 +148,11 @@ public interface MenuService {
      * 获取指定菜单资源集合
      *
      * @param menuId 菜单ID
+     * @param menuEnable 菜单状态
+     * @param resourceEnable 资源状态
      * @return 资源集合
      */
-    Collection<? extends Resource> getMenuResources(String menuId);
+    Collection<? extends Resource> getMenuResources(String menuId, EnableEnum menuEnable, EnableEnum resourceEnable);
 
     /**
      * 获取指定菜单角色集合
@@ -139,6 +160,12 @@ public interface MenuService {
      * @param menuId 菜单ID
      * @return 角色集合
      */
-    Collection<? extends Role> getMenuRoles(String menuId);
+    Collection<? extends Role> getMenuRoles(String menuId, EnableEnum menuEnable, EnableEnum resourceEnable);
+
+    /**
+     * 获取菜单所有资源集合
+     * @return 资源集合
+     */
+    Collection<? extends Menu> getMenuAllResources();
 
 }

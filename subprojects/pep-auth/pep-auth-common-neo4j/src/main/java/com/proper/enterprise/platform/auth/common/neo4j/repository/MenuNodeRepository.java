@@ -16,4 +16,9 @@ public interface MenuNodeRepository extends BaseNeo4jRepository<MenuNodeEntity, 
     Collection<? extends Menu> save(Set<MenuNodeEntity> menuList);
 
     Collection<? extends Menu> save(Collection<MenuNodeEntity> menus);
+
+    MenuNodeEntity findByIdAndValid(String id, boolean valid);
+
+    MenuNodeEntity findByIdAndValidAndEnable(String id, boolean valid, boolean enable);
+
 }

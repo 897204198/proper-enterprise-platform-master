@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
@@ -46,14 +47,15 @@ public class ResourcesController extends BaseController {
     }
 
     @GetMapping(path = "/{resourceId}")
-    public ResponseEntity<Resource> find(@PathVariable String resourceId) throws Exception {
-        return responseOfGet(resourceService.get(resourceId));
+    public ResponseEntity<Resource> find(@PathVariable String resourceId,
+                                         @RequestParam(defaultValue = "ALL") EnableEnum resourceEnable) throws Exception {
+        return responseOfGet(resourceService.get(resourceId, resourceEnable));
     }
 
     @PutMapping(path = "/{resourceId}")
     public ResponseEntity<Resource> update(@PathVariable String resourceId, @RequestBody ResourceVO resourceReq) throws Exception {
         userService.checkPermission("/auth/resources/" + resourceId, RequestMethod.PUT);
-        Resource resource = resourceService.get(resourceId);
+        Resource resource = resourceService.get(resourceId, EnableEnum.ALL);
         if (resource != null) {
             resourceReq.setId(resourceId);
             resource = resourceService.saveOrUpdateResource(resourceReq);
@@ -72,14 +74,18 @@ public class ResourcesController extends BaseController {
     }
 
     @GetMapping(path = "/{resourceId}/menus")
-    public ResponseEntity<Collection<? extends Menu>> getResourceMenus(@PathVariable String resourceId) {
+    public ResponseEntity<Collection<? extends Menu>> getResourceMenus(@PathVariable String resourceId,
+                                                                       @RequestParam(defaultValue = "ALL") EnableEnum resourceEnable,
+                                                                       @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable) {
         userService.checkPermission("/auth/resources/" + resourceId + "/menus", RequestMethod.GET);
-        return responseOfGet(resourceService.getResourceMenus(resourceId));
+        return responseOfGet(resourceService.getResourceMenus(resourceId, resourceEnable, menuEnable));
     }
 
     @GetMapping(path = "/{resourceId}/roles")
-    public ResponseEntity<Collection<? extends Role>> getResourceRoles(@PathVariable String resourceId) {
+    public ResponseEntity<Collection<? extends Role>> getResourceRoles(@PathVariable String resourceId,
+                                                                       @RequestParam(defaultValue = "ALL") EnableEnum resourceEnable,
+                                                                       @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
         userService.checkPermission("/auth/resources/" + resourceId + "/roles", RequestMethod.GET);
-        return responseOfGet(resourceService.getResourceRoles(resourceId));
+        return responseOfGet(resourceService.getResourceRoles(resourceId, resourceEnable, roleEnable));
     }
 }

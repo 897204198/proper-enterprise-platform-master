@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserGroupService;
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.RoleRepository;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -94,7 +95,7 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends Role> getByCondition(String name, String description, String parentId, String enable) {
+    public Collection<? extends Role> getByCondition(String name, String description, String parentId, EnableEnum enable) {
         Specification specification = new Specification<RoleEntity>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
@@ -108,8 +109,8 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
                 if (StringUtil.isNotNull(parentId)) {
                     predicates.add(cb.equal(root.get("parent").get("id"), parentId));
                 }
-                if (StringUtil.isNotNull(enable)) {
-                    predicates.add(cb.equal(root.get("enable"), enable.equals("Y")));
+                if (null != enable && EnableEnum.ALL != enable) {
+                    predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
                 }
                 predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -172,7 +173,7 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
 
     @Override
     public Collection<? extends UserGroup> getRoleUserGroups(String roleId) {
-        Collection<? extends User> users = roleService.getRoleUsers(roleId);
+        Collection<? extends User> users = roleService.getRoleUsers(roleId, EnableEnum.ALL, EnableEnum.ENABLE);
         Iterator iterator = users.iterator();
         Collection<? extends UserGroup> filterGroups = new HashSet<>();
         Collection groups;
@@ -184,5 +185,33 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
         return filterGroups;
     }
 
+    @Override
+    public DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable) {
+        return this.findPage(buildRolesSpecification(name, description, parentId, enable), new Sort(Sort.Direction.ASC, "name"));
+    }
+
+    private Specification<Role> buildRolesSpecification(String name, String description, String parentId, EnableEnum enable) {
+        Specification<Role> specification = new Specification<Role>() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
+                List<Predicate> predicates = new ArrayList<>();
+                if (StringUtil.isNotNull(name)) {
+                    predicates.add(cb.like(root.get("name"), "%".concat(name).concat("%")));
+                }
+                if (StringUtil.isNotNull(description)) {
+                    predicates.add(cb.like(root.get("description"), "%".concat(description).concat("%")));
+                }
+                if (StringUtil.isNotNull(parentId)) {
+                    predicates.add(cb.like(root.get("email"), "%".concat(parentId).concat("%")));
+                }
+                if (null != enable && EnableEnum.ALL != enable) {
+                    predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
+                }
+                predicates.add(cb.equal(root.get("valid"), true));
+                return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        };
+        return specification;
+    }
 
 }

@@ -12,6 +12,7 @@ import com.proper.enterprise.platform.auth.common.neo4j.entity.RoleNodeEntity
 import com.proper.enterprise.platform.auth.common.neo4j.entity.UserNodeEntity
 import com.proper.enterprise.platform.auth.common.neo4j.repository.UserNodeRepository
 import com.proper.enterprise.platform.auth.neo4j.repository.*
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractNeo4jTest
@@ -209,5 +210,48 @@ class MenusControllerTest extends AbstractNeo4jTest {
         idd.add(id1)
         Collection<MenuNodeEntity> menus = service.getByIds(idd)
         assert menus.size() == 0
+    }
+
+    @Test
+    void testMenusPageIsOrNot() {
+        MenuNodeEntity menuNodeEntity
+        for (int i = 0; i < 20; i++) {
+            menuNodeEntity = new MenuNodeEntity()
+            menuNodeEntity.setName('sun' + i + 's1')
+            menuNodeEntity.setDescription('sas' + i)
+            menuNodeEntity.setRoute('sses' + i + '@ww.com')
+            menuNodeEntity.setEnable(true)
+            repository.save(menuNodeEntity)
+        }
+
+        def resAll = JSONUtil.parse(get('/auth/menus?name=sun&description=&route=&enable=y&pageNo=1&pageSize=20', HttpStatus.OK).getResponse()
+                .getContentAsString(), DataTrunk.class)
+        assert resAll.data.size() == 20
+        assert resAll.count == 20
+        assert resAll.data[0].get("name") == 'sun0s1'
+
+        resAll = JSONUtil.parse(get('/auth/menus?name=sun&description=&route=&menuEnable=DISABLE&pageNo=1&pageSize=20', HttpStatus.OK)
+                .getResponse()
+                .getContentAsString(), DataTrunk.class)
+        assert resAll.count == 0
+
+        resAll = JSONUtil.parse(get('/auth/menus?name=&description=&route=&menuEnable=&pageNo=3&pageSize=2', HttpStatus.OK).getResponse()
+                .getContentAsString(), DataTrunk.class)
+        assert resAll.data.size() == 2
+        assert resAll.count == 20
+        assert resAll.data[0].get("name") == 'sun13s1'
+        assert resAll.data[1].get("name") == 'sun14s1'
+
+        resAll = JSONUtil.parse(get('/auth/menus?name=&description=&route=48585688&menuEnable=&pageNo=3&pageSize=2', HttpStatus.OK).getResponse()
+                .getContentAsString(), DataTrunk.class)
+        assert resAll.count == 0
+
+        def resAllPage = JSONUtil.parse(get('/auth/menus?name=&description=&route=&menuEnable=&pageNo=1&pageSize=2',
+                HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert resAllPage.count == 20
+        assert resAllPage.data.size() == 2
+        def resAllCollect = JSONUtil.parse(get('/auth/menus?name=&description=&route=&menuEnable=&',
+                HttpStatus.OK).getResponse().getContentAsString(), ArrayList.class)
+        assert resAllCollect.size() == 20
     }
 }

@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.api.auth.dao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.service.BaseService;
 
 import java.util.Collection;
@@ -25,7 +26,9 @@ public interface RoleDao extends BaseService<Role, String> {
 
     Collection<? extends Role> findAll(Collection<String> idList);
 
-    Collection<? extends Role> getByCondition(String name, String description, String parentId, String enable);
+    Collection<? extends Role> getByCondition(String name, String description, String parentId, EnableEnum enable);
+
+    DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable);
 
     Collection<? extends Role> findAllByValidTrueAndEnableTrue();
 

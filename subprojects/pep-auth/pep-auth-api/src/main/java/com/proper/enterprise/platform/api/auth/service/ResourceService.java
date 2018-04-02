@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.api.auth.service;
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
@@ -20,6 +21,8 @@ public interface ResourceService {
     Resource saveOrUpdateResource(Resource resource);
 
     Resource get(String id);
+
+    Resource get(String id, EnableEnum enable);
 
     Resource get(String url, RequestMethod method);
 
@@ -57,17 +60,21 @@ public interface ResourceService {
      * 获取指定资源菜单集合
      *
      * @param resourceId 资源ID
+     * @param resourceEnable 资源状态
+     * @param menuEnable 菜单状态
      * @return 菜单集合
      */
-    Collection<? extends Menu> getResourceMenus(String resourceId);
+    Collection<? extends Menu> getResourceMenus(String resourceId, EnableEnum resourceEnable, EnableEnum menuEnable);
 
     /**
      * 获取指定资源角色集合
      *
      * @param resourceId 资源ID
+     * @param resourceEnable 资源状态
+     * @param roleEnable 角色状态
      * @return 角色集合
      */
-    Collection<? extends Role> getResourceRoles(String resourceId);
+    Collection<? extends Role> getResourceRoles(String resourceId, EnableEnum resourceEnable, EnableEnum roleEnable);
 
     /**
      * 判断这个资源是否有此权限

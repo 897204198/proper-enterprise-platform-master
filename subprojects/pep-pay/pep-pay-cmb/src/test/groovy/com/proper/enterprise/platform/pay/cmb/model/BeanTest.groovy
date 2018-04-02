@@ -39,6 +39,14 @@ class BeanTest extends AbstractTest {
         coverBean(new CmbRefundNoDupHeadReq())
         coverBean(new CmbRefundNoDupReq())
         coverBean(new CmbRefundNoDupRes())
+
+        coverBean(new CmbBllRecordRes())
+        coverBean(new CmbBillReq())
+        coverBean(new CmbBillRes())
+        coverBean(new CmbCommonHeadRes())
+        coverBean(new CmbBillHeadReq())
+        coverBean(new CmbBillBodyReq())
+        coverBean(new CmbBillBodyRes())
     }
 
 }

@@ -1,7 +1,9 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.MenuDao;
+import com.proper.enterprise.platform.api.auth.dao.ResourceDao;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
@@ -10,6 +12,9 @@ import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.auth.common.vo.MenuVO;
+import com.proper.enterprise.platform.auth.common.vo.ResourceVO;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -18,6 +23,7 @@ import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,6 +42,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private ResourceDao resourceDao;
 
     @Autowired
     private UserService userService;
@@ -73,6 +82,11 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public Menu get(String id, EnableEnum enable) {
+        return menuDao.get(id, enable);
+    }
+
+    @Override
     public Collection<? extends Menu> getByIds(Collection<String> ids) {
         Collection<Menu> menuList = new ArrayList<>();
         Collection<? extends Menu> menus = menuDao.getByIds(ids);
@@ -95,7 +109,7 @@ public class MenuServiceImpl implements MenuService {
         Menu menuInfo = menuDao.getNewMenuEntity();
         // 更新
         if (StringUtil.isNotNull(id)) {
-            menuInfo = this.get(id);
+            menuInfo = this.get(id, EnableEnum.ALL);
         }
         menuInfo.setIcon(menuReq.getIcon());
         menuInfo.setName(menuReq.getName());
@@ -127,7 +141,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends Menu> getMenus(String name, String description, String route, String enable, String parentId) {
+    public Collection<? extends Menu> getMenus(String name, String description, String route, EnableEnum enable, String parentId) {
         List<Menu> menus = new ArrayList<>();
         Collection<? extends Menu> filterMenus = menuDao.getMenuByCondition(name, description, route, enable, parentId);
         Collection<? extends Menu> roleMenus = getMenus();
@@ -141,9 +155,16 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public Collection<? extends Menu> getMenuByCondition(String name, String description, String route, String enable, String parentId) {
+    public Collection<? extends Menu> getMenuByCondition(String name, String description, String route, EnableEnum enable, String parentId) {
         return menuDao.getMenuByCondition(name, description, route, enable, parentId);
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public DataTrunk<? extends Menu> findMenusPagniation(String name, String description, String route, EnableEnum enable, String parentId) {
+        return menuDao.findMenusPagniation(name, description, route, enable, parentId);
+    }
+
 
     @Override
     public Collection<? extends Menu> getFilterMenusAndParent(Collection<? extends Menu> menus) {
@@ -169,7 +190,7 @@ public class MenuServiceImpl implements MenuService {
             Collection<? extends Menu> list = menuDao.findAll(idList);
             for (Menu menu : list) {
                 // 菜单存在关联关系
-                if (getMenuByCondition(null, null, null, "Y", menu.getId()).size() > 0) {
+                if (getMenuByCondition(null, null, null, EnableEnum.ENABLE, menu.getId()).size() > 0) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.failed"));
                 }
                 // 菜单存在资源
@@ -219,7 +240,7 @@ public class MenuServiceImpl implements MenuService {
     public Collection<? extends Menu> updateEnable(Collection<String> idList, boolean enable) {
         Collection<? extends Menu> menuList = menuDao.findAll(idList);
         for (Menu menu : menuList) {
-            Collection<? extends Menu> list = getMenuByCondition(null, null, null, "Y", menu.getId());
+            Collection<? extends Menu> list = getMenuByCondition(null, null, null, EnableEnum.ENABLE, menu.getId());
             if (list.size() != 0) {
                 LOGGER.debug("{} has parent menu {}, dont update!", menu.getName(), menu.getParent());
                 throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.parent"));
@@ -231,38 +252,53 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Menu addMenuResource(String menuId, String resourceId) {
-        Menu menu = this.get(menuId);
+        Menu menu = this.get(menuId, EnableEnum.ENABLE);
         if (menu != null) {
             Resource resource = resourceService.get(resourceId);
             if (resource != null) {
-                if (resource.isEnable() && resource.isValid()) {
-                    menu.add(resource);
-                    menu = save(menu);
-                }
+                menu.add(resource);
+                menu = save(menu);
             }
         }
         return menu;
+    }
+
+    @Override
+    public Resource postMenuResource(Resource resourceReq) {
+        String id = resourceReq.getId();
+        Resource resource = resourceDao.getNewResourceEntity();
+
+        if (StringUtil.isNotNull(id)) {
+            resource = resourceDao.get(id, EnableEnum.ALL);
+        }
+        resource.setName(resourceReq.getName());
+        resource.setURL(resourceReq.getURL());
+        resource.setEnable(resourceReq.isEnable());
+        resource.setMethod(resourceReq.getMethod());
+        String resourceCode = resourceReq.getResourceCode();
+        if (StringUtil.isNotNull(resourceCode)) {
+            resource.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
+        }
+        return resourceDao.save(resource);
     }
 
     @Override
     public Menu deleteMenuResource(String menuId, String resourceId) {
-        Menu menu = this.get(menuId);
+        Menu menu = this.get(menuId, EnableEnum.ENABLE);
         if (menu != null) {
             Resource resource = resourceService.get(resourceId);
             if (resource != null) {
-                if (resource.isEnable() && resource.isValid()) {
-                    menu.remove(resource);
-                    menu = save(menu);
-                }
+                menu.remove(resource);
+                menu = save(menu);
             }
         }
         return menu;
     }
 
     @Override
-    public Collection<? extends Resource> getMenuResources(String menuId) {
+    public Collection<? extends Resource> getMenuResources(String menuId, EnableEnum menuEnable, EnableEnum resourceEnable) {
         Collection<Resource> filterResources = new ArrayList<>();
-        Menu menu = this.get(menuId);
+        Menu menu = this.get(menuId, menuEnable);
         if (menu != null) {
             Collection<? extends Resource> resources = menu.getResources();
             for (Resource resource : resources) {
@@ -275,8 +311,8 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public Collection<? extends Role> getMenuRoles(String menuId) {
-        Menu menu = this.get(menuId);
+    public Collection<? extends Role> getMenuRoles(String menuId, EnableEnum menuEnable, EnableEnum roleEnable) {
+        Menu menu = this.get(menuId, menuEnable);
         if (menu != null) {
             return roleService.getFilterRoles(menu.getRoles());
         }
@@ -326,4 +362,25 @@ public class MenuServiceImpl implements MenuService {
         return false;
     }
 
+
+    @Override
+    public Collection<? extends Menu> getMenuAllResources() {
+        Collection<MenuVO> menusResources = new ArrayList<>();
+        Collection<? extends Menu> menuEntity = this.getMenus();
+        for (Menu menu : menuEntity) {
+            MenuVO detail = new MenuVO();
+            BeanUtils.copyProperties(menu, detail);
+            detail.setParentId(menu.getParentId());
+            Collection<ResourceVO> resList = new ArrayList<>();
+            Collection<Resource> resourceList = (Collection<Resource>) menu.getResources();
+            for (Resource resource : resourceList) {
+                ResourceVO resourceDetail = new ResourceVO();
+                BeanUtils.copyProperties(resource, resourceDetail);
+                resList.add(resourceDetail);
+            }
+            detail.setResources(resList);
+            menusResources.add(detail);
+        }
+        return menusResources;
+    }
 }

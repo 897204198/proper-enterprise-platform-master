@@ -17,6 +17,7 @@ class BeanTest extends AbstractTest {
         coverBean(new AliRefundReq())
         coverBean(new AliRefundRes())
         coverBean(new AliRefundTradeQueryRes())
+        coverBean(new AliBillRes())
     }
 
 }

@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.RoleDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.*;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
@@ -70,7 +71,7 @@ public class RoleServiceImpl implements RoleService {
         }
         boolean enable = roleReq.isEnable();
         if (!enable) {
-            Collection childrenRols = this.getByCondition("", "", role.getId(), "Y");
+            Collection childrenRols = this.getByCondition("", "", role.getId(), EnableEnum.ENABLE);
             if (!childrenRols.isEmpty()) {
                 throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.delete.relation.failed"));
             }
@@ -80,7 +81,7 @@ public class RoleServiceImpl implements RoleService {
         role.setEnable(enable);
         String parentId = roleReq.getParentId();
         if (StringUtil.isNotNull(parentId)) {
-            role.setParent(roleDao.get(parentId));
+            role.setParent(roleDao.get(parentId, EnableEnum.ENABLE));
             if (this.hasCircleInheritForCurrentRole(role)) {
                 throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.circle.error"));
             }
@@ -98,7 +99,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends Role> getByCondition(String name, String description, String parentId, String enable) {
+    public DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable) {
+        return roleDao.findRolesPagniation(name, description, parentId, enable);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Collection<? extends Role> getByCondition(String name, String description, String parentId, EnableEnum enable) {
         return roleDao.getByCondition(name, description, parentId, enable);
     }
 
@@ -120,7 +127,7 @@ public class RoleServiceImpl implements RoleService {
                 }
 
                 //如果有别的角色继承当前角色，也不能删除
-                childrenRols = this.getByCondition("", "", roleEntity.getId(), "Y");
+                childrenRols = this.getByCondition("", "", roleEntity.getId(), EnableEnum.ENABLE);
                 if (!childrenRols.isEmpty()) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.delete.relation.failed"));
                 }
@@ -178,7 +185,7 @@ public class RoleServiceImpl implements RoleService {
         List<Role> roleList = new ArrayList<>();
         Collection childrenRols;
         for (String id : idList) {
-            childrenRols = this.getByCondition("", "", id, "Y");
+            childrenRols = this.getByCondition("", "", id, EnableEnum.ENABLE);
             if (!enable && !childrenRols.isEmpty()) {
                 throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.delete.relation.failed"));
             }
@@ -190,9 +197,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Collection<? extends Menu> getRoleMenus(String roleId) {
+    public Collection<? extends Menu> getRoleMenus(String roleId, EnableEnum roleEnable, EnableEnum menuEnable) {
         Collection<Menu> result = new HashSet<>();
-        Role role = this.get(roleId);
+        Role role = this.get(roleId, roleEnable);
         if (role == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
@@ -201,7 +208,7 @@ public class RoleServiceImpl implements RoleService {
         //获取父角色集合
         Collection<? extends Role> parentList = this.getParentRolesByCurrentRoleId(roleId);
         for (Role detail : parentList) {
-            currentMenus = menuService.getFilterMenusAndParent(this.getRoleMenus(detail.getId()));
+            currentMenus = menuService.getFilterMenusAndParent(this.getRoleMenus(detail.getId(), roleEnable, menuEnable));
             result.addAll(currentMenus);
         }
         return result;
@@ -249,8 +256,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Collection<? extends Resource> getRoleResources(String roleId) {
-        Role role = this.get(roleId);
+    public Collection<? extends Resource> getRoleResources(String roleId, EnableEnum roleEnable, EnableEnum resourceEnable) {
+        Role role = this.get(roleId, roleEnable);
         if (role == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
@@ -264,7 +271,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role addRoleResources(String roleId, String ids) {
-        Role role = roleDao.get(roleId);
+        Role role = roleDao.get(roleId, EnableEnum.ENABLE);
         if (role == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
@@ -299,8 +306,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Collection<? extends User> getRoleUsers(String roleId) {
-        Role role = roleDao.get(roleId);
+    public Collection<? extends User> getRoleUsers(String roleId, EnableEnum roleEnable, EnableEnum userEnable) {
+        Role role = roleDao.get(roleId, roleEnable);
         if (role == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
@@ -308,7 +315,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Collection<? extends UserGroup> getRoleUserGroups(String roleId) {
+    public Collection<? extends UserGroup> getRoleUserGroups(String roleId, EnableEnum roleEnable, EnableEnum userGroupEnable) {
         return roleDao.getRoleUserGroups(roleId);
     }
 

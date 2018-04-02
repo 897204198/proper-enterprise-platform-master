@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.api.auth.service;
 
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.*;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
@@ -79,9 +80,20 @@ public interface RoleService {
      * @param description 描述
      * @param parentId    父ID
      * @param enable      是否可用
+     * @return 角色信息列表 分页
+     */
+    DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable);
+
+    /**
+     * 按照查询条件搜索权限列表
+     *
+     * @param name        名称
+     * @param description 描述
+     * @param parentId    父ID
+     * @param enable      是否可用
      * @return 权限列表
      */
-    Collection<? extends Role> getByCondition(String name, String description, String parentId, String enable);
+    Collection<? extends Role> getByCondition(String name, String description, String parentId, EnableEnum enable);
 
     /**
      * 删除多条角色数据
@@ -129,7 +141,7 @@ public interface RoleService {
      * @param roleId 角色ID
      * @return 菜单集合
      */
-    Collection<? extends Menu> getRoleMenus(String roleId);
+    Collection<? extends Menu> getRoleMenus(String roleId, EnableEnum roleEnable, EnableEnum menuEnable);
 
     /**
      * 角色添加菜单列表
@@ -155,7 +167,7 @@ public interface RoleService {
      * @param roleId 角色ID
      * @return 资源集合
      */
-    Collection<? extends Resource> getRoleResources(String roleId);
+    Collection<? extends Resource> getRoleResources(String roleId, EnableEnum roleEnable, EnableEnum resourceEnable);
 
     /**
      * 根据当前角色ID，获取它的父角色链表，继承关系从前往后排列
@@ -188,7 +200,7 @@ public interface RoleService {
      * @param roleId 角色ID
      * @return 用户集合
      */
-    Collection<? extends User> getRoleUsers(String roleId);
+    Collection<? extends User> getRoleUsers(String roleId, EnableEnum roleEnable, EnableEnum resourceEnable);
 
     /**
      * 获取指定角色用户组集合
@@ -196,7 +208,7 @@ public interface RoleService {
      * @param roleId 角色ID
      * @return 用户组集合
      */
-    Collection<? extends UserGroup> getRoleUserGroups(String roleId);
+    Collection<? extends UserGroup> getRoleUserGroups(String roleId, EnableEnum roleEnable, EnableEnum userGroupEnable);
 
     /**
      * 检测用户(user),是否有此角色

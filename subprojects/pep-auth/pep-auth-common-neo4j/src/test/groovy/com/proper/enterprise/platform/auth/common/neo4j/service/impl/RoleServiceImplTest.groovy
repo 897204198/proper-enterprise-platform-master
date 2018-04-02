@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.neo4j.service.impl
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserService
@@ -11,7 +12,7 @@ import com.proper.enterprise.platform.auth.common.neo4j.repository.ResourceNodeR
 import com.proper.enterprise.platform.auth.common.neo4j.repository.RoleNodeRepository
 import com.proper.enterprise.platform.auth.common.neo4j.repository.UserGroupNodeRepository
 import com.proper.enterprise.platform.auth.common.neo4j.repository.UserNodeRepository
-
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractNeo4jTest
 import com.proper.enterprise.platform.test.annotation.NoTx
@@ -209,6 +210,11 @@ class RoleServiceImplTest extends AbstractNeo4jTest {
     @NoTx
     void testGetRoleMenus() {
         clearAll()
+        UserNodeEntity userEntity = new UserNodeEntity("u22", "p22")
+        userEntity.setSuperuser(true)
+        userEntity = userService.save(userEntity)
+        mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
+
         MenuNodeEntity menuEntity = new MenuNodeEntity()
         menuEntity.setName('menu1')
         menuEntity.setRoute("route1")
@@ -241,9 +247,14 @@ class RoleServiceImplTest extends AbstractNeo4jTest {
         roleNodeEntity1.setParent(roleNodeEntity)
         roleNodeEntity1 = roleService.save(roleNodeEntity1)
 
-        Collection result = roleService.getRoleMenus(roleNodeEntity1.getId())
+        Collection result = roleService.getRoleMenus(roleNodeEntity1.getId(), EnableEnum.ALL, EnableEnum.ENABLE)
         assert result.size() == 3
         assert roleService.getByName('currentRole').size() == 1
+
+        def resAllPage = JSONUtil.parse(get('/auth/roles?name=currentRole&description=&roleEnable=&pageNo=1&pageSize=2',
+        HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert resAllPage.count == 1
+        assert resAllPage.data.size() == 1
         clearAll()
     }
 

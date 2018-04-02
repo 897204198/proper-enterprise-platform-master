@@ -145,12 +145,12 @@ class RolesControllerTest extends AbstractNeo4jTest {
 
         def requ = [:]
         requ['ids'] = ['role1', 'role2']
-        requ['enable'] = false
+        requ['enable'] = true
         put('/auth/roles', JSONUtil.toJSON(requ), HttpStatus.OK)
         roles = JSONUtil.parse(get('/auth/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert roles.size() == 2
-        assert !roles.get(0).enable
-        assert !roles.get(1).enable
+        assert roles.get(0).enable
+        assert roles.get(1).enable
 
         roles = JSONUtil.parse(get('/auth/roles?name=testrole&description=des&enable=N', HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)

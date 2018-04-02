@@ -70,7 +70,6 @@ class EntityTest extends AbstractNeo4jTest {
         set1.add(roleNodeEntity)
         resourceNodeEntity.setRoles(set1)
         assert resourceNodeEntity.getRoles().size() == 1
-
     }
 
 

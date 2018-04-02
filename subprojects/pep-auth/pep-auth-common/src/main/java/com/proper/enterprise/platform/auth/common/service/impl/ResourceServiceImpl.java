@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.ResourceDao;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
@@ -52,7 +53,7 @@ public class ResourceServiceImpl implements ResourceService {
         Resource resource = resourceDao.getNewResourceEntity();
         // 更新
         if (StringUtil.isNotNull(id)) {
-            resource = this.get(id);
+            resource = this.get(id, EnableEnum.ALL);
         }
         resource.setName(resourceReq.getName());
         resource.setURL(resourceReq.getURL());
@@ -72,6 +73,11 @@ public class ResourceServiceImpl implements ResourceService {
             return resource;
         }
         return null;
+    }
+
+    @Override
+    public Resource get(String id, EnableEnum enable) {
+        return resourceDao.get(id, enable);
     }
 
     @Override
@@ -170,9 +176,9 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public Collection<? extends Menu> getResourceMenus(String resourceId) {
+    public Collection<? extends Menu> getResourceMenus(String resourceId, EnableEnum resourceEnable, EnableEnum menuEnable) {
         Collection<Menu> filterMenus = new ArrayList<>();
-        Resource resource = this.get(resourceId);
+        Resource resource = this.get(resourceId, resourceEnable);
         if (resource != null) {
             Collection<? extends Menu> menus = resource.getMenus();
             for (Menu menu : menus) {
@@ -185,8 +191,8 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public Collection<? extends Role> getResourceRoles(String resourceId) {
-        Resource resource = this.get(resourceId);
+    public Collection<? extends Role> getResourceRoles(String resourceId, EnableEnum resourceEnable, EnableEnum menuEnable) {
+        Resource resource = this.get(resourceId, resourceEnable);
         if (resource != null) {
             return roleService.getFilterRoles(resource.getRoles());
         }
@@ -239,7 +245,7 @@ public class ResourceServiceImpl implements ResourceService {
 
                         StringBuffer oldstrbuf = new StringBuffer();
                         oldstrbuf = oldstrbuf.append(resource.getMethod().toString()).append(":")
-                            .append(returnres.getURL());
+                                .append(returnres.getURL());
                         // 比较本次值与返回值*的位置 *位置越靠后，越符合匹配值
                         if (strbuf.indexOf("*") >= oldstrbuf.indexOf("*")) {
                             // 特殊情况 如果* 位置相同 把长度更长的赋值给返回值

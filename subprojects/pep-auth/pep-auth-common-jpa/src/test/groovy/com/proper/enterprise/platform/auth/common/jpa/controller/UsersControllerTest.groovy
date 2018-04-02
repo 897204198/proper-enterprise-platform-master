@@ -5,11 +5,7 @@ import com.proper.enterprise.platform.api.auth.service.UserGroupService
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
-import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.RoleRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserGroupRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository
+import com.proper.enterprise.platform.auth.common.jpa.repository.*
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
@@ -186,9 +182,21 @@ class UsersControllerTest extends AbstractTest {
         def reqMap = [:]
         reqMap['ids'] = ['test3']
         reqMap['enable'] = false
-        put('/auth/users', JSONUtil.toJSONIgnoreException(reqMap), HttpStatus.OK)
-        user1 = JSONUtil.parse(get('/auth/users/test1', HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
-        assert user1.enable
+        put('/auth/users', JSONUtil.toJSON(reqMap), HttpStatus.OK)
+        def value = JSONUtil.parse(get('/auth/users/'+ user2.id, HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
+        assert !value.enable
+
+        def reqMap1 = [:]
+        reqMap1['ids'] = ['test3']
+        reqMap1['enable'] = true
+        put('/auth/users', JSONUtil.toJSON(reqMap1), HttpStatus.OK)
+        def value1 = JSONUtil.parse(get('/auth/users/'+ user2.id, HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
+        assert value1.enable
+
+        def res = JSONUtil.parse(get('/auth/users?userName=t3&name=a&phone=12345678903&email=test3@test.com&enable=Y&pageNo=1&pageSize=2',
+                HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert res.count == 1
+
     }
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/users.sql")

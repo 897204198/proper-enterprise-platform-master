@@ -5,11 +5,8 @@ import com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
-import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.RoleRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserGroupRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository
+import com.proper.enterprise.platform.auth.common.jpa.repository.*
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
@@ -58,14 +55,14 @@ class RolesControllerTest extends AbstractTest {
 
         def updateEnable = [:]
         updateEnable['ids'] = ['role1', 'role2']
-        updateEnable['enable'] = false
+        updateEnable['enable'] = true
         put('/auth/roles', JSONUtil.toJSON(updateEnable), HttpStatus.OK)
         roles = JSONUtil.parse(get('/auth/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert roles.size() == 2
-        assert !roles.get(0).enable
-        assert !roles.get(1).enable
+        assert roles.get(0).enable
+        assert roles.get(1).enable
 
-        roles = JSONUtil.parse(get('/auth/roles?name=testrole&description=des&enable=N', HttpStatus.OK)
+        roles = JSONUtil.parse(get('/auth/roles?name=testrole&description=des&roleEnable=ENABLE', HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
         assert roles.size() == 1
         assert roles.get(0).id == 'role1'
@@ -334,6 +331,17 @@ class RolesControllerTest extends AbstractTest {
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
     }
 
+    @Test
+    void testIsOrNotPage(){
+        mockUser('test1','t1', 'pwd')
+        def resAllPage = JSONUtil.parse(get('/auth/roles?name=testrole&description=des&roleEnable=&pageNo=1&pageSize=2',
+                HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert resAllPage.count == 1
+        assert resAllPage.data.size() == 1
+        def resAllCollect = JSONUtil.parse(get('/auth/roles?name=testrole&description=des&roleEnable=&',
+                HttpStatus.OK).getResponse().getContentAsString(), ArrayList.class)
+        assert resAllCollect.size() == 1
+    }
 
     @After
     void tearDown() {

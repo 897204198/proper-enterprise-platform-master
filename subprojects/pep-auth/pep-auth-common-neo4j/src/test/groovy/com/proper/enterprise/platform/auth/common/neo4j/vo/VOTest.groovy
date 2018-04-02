@@ -23,6 +23,8 @@ class VOTest extends AbstractNeo4jTest {
     @Transactional(transactionManager = "jpaTransactionManager",propagation=Propagation.REQUIRES_NEW)
     @Test
     void test() {
+        coverBean(new DataRestrainVO())
+
         Menu menu = new MenuVO()
         Permission permission = new Permission(menu, PermissionType.ASSIGN)
         permission.getMenu()

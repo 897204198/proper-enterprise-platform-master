@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.common.neo4j.entity.RoleNodeEntity;
 import com.proper.enterprise.platform.auth.common.neo4j.repository.RoleNodeRepository;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.neo4j.service.impl.Neo4jServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -19,7 +20,8 @@ import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
 
 @Service
 public class Neo4jRoleDaoImpl extends Neo4jServiceSupport<Role, RoleNodeRepository, String> implements RoleDao {
@@ -87,7 +89,7 @@ public class Neo4jRoleDaoImpl extends Neo4jServiceSupport<Role, RoleNodeReposito
     }
 
     @Override
-    public Collection<? extends Role> getByCondition(String name, String description, String parentId, String enable) {
+    public Collection<? extends Role> getByCondition(String name, String description, String parentId, EnableEnum enable) {
         Filters filters = new Filters();
         if (StringUtil.isNotBlank(name)) {
             filters.add(new Filter("name", ComparisonOperator.CONTAINING, name));
@@ -98,17 +100,12 @@ public class Neo4jRoleDaoImpl extends Neo4jServiceSupport<Role, RoleNodeReposito
             filter.setBooleanOperator(BooleanOperator.AND);
             filters.add(filter);
         }
-        Boolean isEnable = null;
-        if ("Y".equalsIgnoreCase(enable)) {
-            isEnable = true;
-        } else if ("N".equalsIgnoreCase(enable)) {
-            isEnable = false;
-        }
-        if (isEnable != null) {
-            Filter filter = new Filter("enable", isEnable);
+        if (null != enable && EnableEnum.ALL != enable) {
+            Filter filter = new Filter("enable", EnableEnum.ENABLE == enable);
             filter.setBooleanOperator(BooleanOperator.AND);
             filters.add(filter);
         }
+
         Filter filter = new Filter("valid", true);
         filter.setBooleanOperator(BooleanOperator.AND);
         filters.add(filter);
@@ -162,4 +159,32 @@ public class Neo4jRoleDaoImpl extends Neo4jServiceSupport<Role, RoleNodeReposito
         return roleNodeRepository.findUsergroupsByRoleId(roleId);
     }
 
+    @Override
+    public DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable) {
+        SortOrder sortOrder = new SortOrder();
+        sortOrder.add(SortOrder.Direction.ASC, "name");
+        return this.findPage(RoleNodeEntity.class, buildUserFilters(name, description, parentId, enable), sortOrder);
+    }
+
+    private Filters buildUserFilters(String name, String description, String parentId, EnableEnum enable) {
+        Filters filters = new Filters();
+        if (StringUtil.isNotBlank(name)) {
+            filters.add(new Filter("name", ComparisonOperator.CONTAINING, name));
+        }
+        if (StringUtil.isNotBlank(description)) {
+            filters.add(new Filter("description", ComparisonOperator.CONTAINING, description));
+        }
+        if (StringUtil.isNotBlank(parentId)) {
+            filters.add(new Filter("parentId", ComparisonOperator.CONTAINING, parentId));
+        }
+        if (null != enable && EnableEnum.ALL != enable) {
+            Filter filter = new Filter("enable", EnableEnum.ENABLE == enable);
+            filter.setBooleanOperator(BooleanOperator.AND);
+            filters.add(filter);
+        }
+        Filter filter = new Filter("valid", true);
+        filter.setBooleanOperator(BooleanOperator.AND);
+        filters.add(filter);
+        return filters;
+    }
 }

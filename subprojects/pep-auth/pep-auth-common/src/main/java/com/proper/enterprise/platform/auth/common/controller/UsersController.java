@@ -72,7 +72,6 @@ public class UsersController extends BaseController {
         userService.checkPermission("/auth/users/" + userId, RequestMethod.PUT);
         User user = userService.get(userId, EnableEnum.ALL);
         if (user != null) {
-            userVO.setPassword(pwdService.encrypt(userVO.getPassword()));
             userVO.setId(userId);
         }
 

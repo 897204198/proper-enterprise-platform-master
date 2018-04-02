@@ -11,4 +11,6 @@ public interface ResourceNodeRepository extends BaseNeo4jRepository<ResourceNode
 
     ResourceNodeEntity findByIdAndValid(String id, boolean valid);
 
+    ResourceNodeEntity findByIdAndValidAndEnable(String id, boolean valid, boolean enable);
+
 }

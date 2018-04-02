@@ -122,6 +122,10 @@ public class ResourceVO extends BaseVO implements Resource {
         return menus;
     }
 
+    public void setMenus(Collection<? extends Menu> menus) {
+        this.menus = menus;
+    }
+
     @Override
     public Collection<? extends Role> getRoles() {
         return roles;

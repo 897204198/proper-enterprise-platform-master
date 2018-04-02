@@ -1,9 +1,11 @@
 package com.proper.enterprise.platform.auth.common.neo4j.dao.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.MenuDao;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.auth.common.neo4j.entity.MenuNodeEntity;
 import com.proper.enterprise.platform.auth.common.neo4j.repository.MenuNodeRepository;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.neo4j.service.impl.Neo4jServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.neo4j.ogm.cypher.BooleanOperator;
@@ -37,6 +39,19 @@ public class Neo4jMenuDaoImpl extends Neo4jServiceSupport<Menu, MenuNodeReposito
     }
 
     @Override
+    public Menu get(String id, EnableEnum enable) {
+        switch (enable) {
+            case ALL:
+                return menuNodeRepository.findByIdAndValid(id, true);
+            case DISABLE:
+                return menuNodeRepository.findByIdAndValidAndEnable(id, true, false);
+            case ENABLE:
+            default:
+                return menuNodeRepository.findByIdAndValidAndEnable(id, true, true);
+        }
+    }
+
+    @Override
     public Collection<? extends Menu> getByIds(Collection<String> ids) {
         return (Collection<MenuNodeEntity>) menuNodeRepository.findAll(ids);
     }
@@ -57,7 +72,7 @@ public class Neo4jMenuDaoImpl extends Neo4jServiceSupport<Menu, MenuNodeReposito
     }
 
     @Override
-    public Collection<? extends Menu> getMenuByCondition(String name, String description, String route, String enable, String parentId) {
+    public Collection<? extends Menu> getMenuByCondition(String name, String description, String route, EnableEnum enable, String parentId) {
         Filters filters = new Filters();
         if (StringUtil.isNotBlank(name)) {
             filters.add(new Filter("name", ComparisonOperator.CONTAINING, name));
@@ -68,14 +83,8 @@ public class Neo4jMenuDaoImpl extends Neo4jServiceSupport<Menu, MenuNodeReposito
         if (StringUtil.isNotBlank(route)) {
             filters.add(new Filter("route", ComparisonOperator.CONTAINING, route));
         }
-        Boolean isEnable = null;
-        if ("Y".equalsIgnoreCase(enable)) {
-            isEnable = true;
-        } else if ("N".equalsIgnoreCase(enable)) {
-            isEnable = false;
-        }
-        if (isEnable != null) {
-            Filter filter = new Filter("enable", isEnable);
+        if (null != enable && EnableEnum.ALL != enable) {
+            Filter filter = new Filter("enable", EnableEnum.ENABLE == enable);
             filter.setBooleanOperator(BooleanOperator.AND);
             filters.add(filter);
         }
@@ -95,6 +104,39 @@ public class Neo4jMenuDaoImpl extends Neo4jServiceSupport<Menu, MenuNodeReposito
         }
         return result;
     }
+
+    @Override
+    public DataTrunk<? extends Menu> findMenusPagniation(String name, String description, String route, EnableEnum enable, String parentId) {
+        SortOrder sortOrder = new SortOrder();
+        sortOrder.add(SortOrder.Direction.ASC, "name");
+        return this.findPage(MenuNodeEntity.class, buildUserFilters(name, description, route, enable, parentId), sortOrder);
+    }
+
+    private Filters buildUserFilters(String name, String description, String route, EnableEnum enable, String parentId) {
+        Filters filters = new Filters();
+        if (StringUtil.isNotBlank(name)) {
+            filters.add(new Filter("name", ComparisonOperator.CONTAINING, name));
+        }
+        if (StringUtil.isNotBlank(description)) {
+            filters.add(new Filter("description", ComparisonOperator.CONTAINING, description));
+        }
+        if (StringUtil.isNotBlank(route)) {
+            filters.add(new Filter("route", ComparisonOperator.CONTAINING, route));
+        }
+        if (null != enable && EnableEnum.ALL != enable) {
+            Filter filter = new Filter("enable", EnableEnum.ENABLE == enable);
+            filter.setBooleanOperator(BooleanOperator.AND);
+            filters.add(filter);
+        }
+        if (StringUtil.isNotBlank(parentId)) {
+            filters.add(new Filter("parentId", ComparisonOperator.CONTAINING, parentId));
+        }
+        Filter filter = new Filter("valid", true);
+        filter.setBooleanOperator(BooleanOperator.AND);
+        filters.add(filter);
+        return filters;
+    }
+
 
     @Override
     public void deleteAll() {

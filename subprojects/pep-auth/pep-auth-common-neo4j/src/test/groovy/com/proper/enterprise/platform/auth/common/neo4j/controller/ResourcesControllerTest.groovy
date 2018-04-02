@@ -34,6 +34,8 @@ class ResourcesControllerTest extends AbstractNeo4jTest {
     @Autowired
     UserGroupNodeRepository userGroupNodeRepository
     @Autowired
+    ResourceNodeRepository resourceNodeRepository
+    @Autowired
     I18NService i18NService
     @Autowired
     ResourceType resourceType
@@ -63,6 +65,7 @@ class ResourcesControllerTest extends AbstractNeo4jTest {
         repository.deleteAll()
         roleNodeRepository.deleteAll()
         userGroupNodeRepository.deleteAll()
+        resourceNodeRepository.deleteAll()
     }
 
     @Test
@@ -103,7 +106,7 @@ class ResourcesControllerTest extends AbstractNeo4jTest {
         req['enable'] = false
         put('/auth/resources', JSONUtil.toJSON(req), HttpStatus.OK)
         result = get('/auth/resources/' + resourceNodeEntity.getId(), HttpStatus.OK).getResponse().getContentAsString()
-        assert result == ''
+        assert result.empty == false
 
         ResourceNodeEntity resource = new ResourceNodeEntity()
         resource.setId("test-u")

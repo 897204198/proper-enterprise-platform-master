@@ -1,14 +1,13 @@
 package com.proper.enterprise.platform.auth.common.jpa.controller
 
+import com.proper.enterprise.platform.api.auth.enums.PermissionType
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.dictionary.MenuType
 import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity
-import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.RoleRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserGroupRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository
+import com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity
+import com.proper.enterprise.platform.auth.common.jpa.repository.*
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
@@ -19,6 +18,7 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
+import org.springframework.web.bind.annotation.RequestMethod
 
 @Sql([
     "/com/proper/enterprise/platform/auth/common/jpa/resources.sql",
@@ -96,6 +96,19 @@ class MenusControllerTest extends AbstractTest {
         menuObj = JSONUtil.parse(get('/auth/menus/' + id,  HttpStatus.OK)
             .getResponse().getContentAsString(), Map.class)
         assert menuObj.get("icon") == 'test_icon'
+
+        def resource = [:]
+        resource['name'] = 'test123'
+        resource['url'] = 'test123'
+        resource['method'] = RequestMethod.GET
+        resource['enable'] = true
+        resource['resourceCode'] = '2'
+        def value = JSONUtil.parse(post('/auth/menus/'+ menuObj.get('id') + '/resources', JSONUtil.toJSON(resource), HttpStatus.CREATED)
+                .getResponse().getContentAsString(), Map.class)
+        assert value.get('name') == 'test123'
+
+
+
 
         def childMenu = [:]
         childMenu['icon'] = 'child'
@@ -226,6 +239,68 @@ class MenusControllerTest extends AbstractTest {
         menuEntity.getName() == "tar"
     }
 
+    @NoTx
+    @Test
+    void testPageIsOrNot(){
+        // 分页的两种情况
+        mockUser('test1', 't1', 'pwd', true)
+        def value = JSONUtil.parse(get('/auth/menus?name=&description=&route=&enable=&pageNo=1&pageSize=2' ,HttpStatus.OK).getResponse()
+                .getContentAsString(), DataTrunk.class)
+        value.count == 14
+        value.count.value == 2
+        value.data[0].size() == 12
+
+        def value1 = resOfGet('/auth/menus?name=&description=&route=&enable=Y', HttpStatus.OK)
+        value1.size() == 2
+
+       def result =  resOfGet('/auth/menus?name=菜单1&description=&route=a1&enable=Y&pageNo=1&pageSize=2', HttpStatus.OK)
+        result.count == 4
+        result.data[0].size()== 12
+
+        def value2 = resOfGet('/auth/menus?name=菜单2&description=&parentId=a1&route=/a1/m2&enable=Y&pageNo=1&pageSize=2', HttpStatus.OK)
+        value2.count == 1
+    }
+
+    @Test
+    void testMenuResources(){
+        tearDown()
+        mockUser('test1', 't1', 'pwd', true)
+
+        ResourceEntity resourceEntity1 = new ResourceEntity()
+        resourceEntity1.setURL("/foo11/bar")
+        resourceEntity1.setName("name11")
+        resourceEntity1.setMethod(RequestMethod.GET)
+        resourceEntity1 = resourceRepository.save(resourceEntity1)
+
+        ResourceEntity resourceEntity2 = new ResourceEntity()
+        resourceEntity2.setURL("/foo22/bar")
+        resourceEntity2.setName("name22")
+        resourceEntity2.setMethod(RequestMethod.POST)
+        resourceEntity2 = resourceRepository.save(resourceEntity2)
+
+        MenuEntity menuEntity =new MenuEntity()
+        menuEntity.setId("idd")
+        menuEntity.setName("test_namea")
+        menuEntity.setEnable(true)
+        menuEntity.setIcon('test_icona')
+        menuEntity.setSequenceNumber(50)
+        menuEntity.setRoute("/bbc")
+
+        menuEntity.add(resourceEntity1)
+        menuEntity.add(resourceEntity2)
+        menuRepository.save(menuEntity)
+
+        def res = JSONUtil.parse(get('/auth/menus/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+
+        assert res.size() == 1
+
+    }
+
+    @Test
+    void testPer(){
+        PermissionType.USE.getClass()
+        PermissionType.ASSIGN.getClass()
+    }
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/datadics.sql")
     @Test

@@ -11,6 +11,14 @@ import java.util.Collection;
 
 public class MenuVO extends BaseVO implements Menu {
 
+    private boolean leaf;
+
+    public void setLeaf(boolean leaf) {
+        this.leaf = leaf;
+    }
+
+    private Menu application;
+
     /**
      * 菜单名称
      */
@@ -136,7 +144,11 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public Menu getApplication() {
-        return new MenuVO();
+        return application;
+    }
+
+    public void setApplication(Menu application) {
+        this.application = application;
     }
 
     @Override
@@ -166,7 +178,7 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public boolean isLeaf() {
-        return getChildren().isEmpty();
+        return leaf;
     }
 
     @Override
@@ -226,7 +238,7 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public Collection<MenuVO> getChildren() {
-        return children;
+        return null;
     }
 
     @Override
@@ -239,6 +251,10 @@ public class MenuVO extends BaseVO implements Menu {
         return resources;
     }
 
+    public void setResources(Collection<? extends Resource> resources) {
+        this.resources = resources;
+    }
+
     @Override
     public String getMenuCode() {
         return menuCode;
@@ -247,5 +263,13 @@ public class MenuVO extends BaseVO implements Menu {
     @Override
     public void setMenuCode(String menuCode) {
         this.menuCode = menuCode;
+    }
+
+    public void setRoles(Collection<? extends Role> roles) {
+        this.roles = roles;
+    }
+
+    public void setChildren(Collection<MenuVO> children) {
+        this.children = children;
     }
 }

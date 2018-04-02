@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.jpa.service.impl
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserService
@@ -201,9 +202,11 @@ class RoleServiceImplTest extends AbstractTest {
         roleEntity1.setParent(roleEntity)
         roleEntity1 = roleService.save(roleEntity1)
 
-        Collection result = roleService.getRoleMenus(roleEntity1.getId())
+        Collection result = roleService.getRoleMenus(roleEntity1.getId(), EnableEnum.ALL, EnableEnum.ENABLE)
         assert result.size() == 3
         assert roleService.getByName('currentRole').size() == 1
+
+        roleRepository.findAllByNameLike('currentRole').size() == 1
     }
 
 
