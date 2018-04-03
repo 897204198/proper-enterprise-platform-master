@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.jpa.controller
 
+import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserGroupService
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
@@ -42,9 +43,10 @@ class UsersControllerTest extends AbstractTest {
     UserGroupRepository userGroupRepository
     @Autowired
     DataDicRepository dataDicRepository
-
     @Autowired
     I18NService i18NService
+    @Autowired
+    PasswordEncryptService pwdService;
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/users.sql")
     @Test
@@ -76,7 +78,10 @@ class UsersControllerTest extends AbstractTest {
             HttpStatus.OK).getResponse().getContentAsString(), ArrayList.class)
         assert resAllCollect.size() == 4
         user.setName('new value')
-        put(URI + '/' + user.getId(), JSONUtil.toJSON(user), HttpStatus.OK).getResponse().getContentAsString()
+
+        user.setPassword('w1')
+        def value = put(URI + '/' + user.getId(), JSONUtil.toJSON(user), HttpStatus.OK).getResponse().getContentAsString()
+        assert value.contains(pwdService.encrypt('w1'))
 
         //添加用户组
         UserGroupEntity userGroupEntity = new UserGroupEntity()

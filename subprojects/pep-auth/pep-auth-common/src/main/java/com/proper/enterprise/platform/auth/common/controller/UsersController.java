@@ -30,7 +30,7 @@ public class UsersController extends BaseController {
                                      @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
         userService.checkPermission("/auth/users", RequestMethod.GET);
         return responseOfGet(isPageSearch() ? userService.findUsersPagniation(username, name, email, phone, userEnable) :
-            userService.getUsersByCondition(username, name, email, phone, userEnable));
+                userService.getUsersByCondition(username, name, email, phone, userEnable));
     }
 
     @SuppressWarnings("unchecked")
@@ -73,8 +73,10 @@ public class UsersController extends BaseController {
         User user = userService.get(userId, EnableEnum.ALL);
         if (user != null) {
             userVO.setId(userId);
+            if (!user.getPassword().equals(userVO.getPassword())) {
+                userVO.setPassword(pwdService.encrypt(userVO.getPassword()));
+            }
         }
-
         return responseOfPut(userService.saveOrUpdateUser(userVO));
     }
 
