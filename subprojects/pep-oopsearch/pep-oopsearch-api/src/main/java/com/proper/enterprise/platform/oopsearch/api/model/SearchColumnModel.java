@@ -20,6 +20,13 @@ public class SearchColumnModel implements Serializable {
     // 字段描述
     private String descColumn;
 
+    // 字段别名
+    private String columnAlias;
+
+    // 请求url
+    private String url;
+
+
     /**
      * 获取字段
      * @return 字段
@@ -82,5 +89,21 @@ public class SearchColumnModel implements Serializable {
      * */
     public void setDescColumn(String descColumn) {
         this.descColumn = descColumn;
+    }
+
+    public String getColumnAlias() {
+        return columnAlias;
+    }
+
+    public void setColumnAlias(String columnAlias) {
+        this.columnAlias = columnAlias;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.oopsearch.sync.mysql;
 
 import com.proper.enterprise.platform.core.jpa.repository.NativeRepository;
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService;
+import com.proper.enterprise.platform.oopsearch.api.serivce.SearchConfigService;
 import com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl.SyncCacheService;
 import com.zaxxer.hikari.HikariConfig;
 import org.slf4j.Logger;
@@ -22,6 +23,9 @@ public class MySQLSyncMongoManager implements InitializingBean {
 
     @Autowired
     private MongoDataSyncService mongoDataSyncService;
+
+    @Autowired
+    private SearchConfigService searchConfigService;
 
     @Autowired
     private NativeRepository nativeRepository;
@@ -49,7 +53,7 @@ public class MySQLSyncMongoManager implements InitializingBean {
             if (url.contains("mysql")) {
                 String[] temp = (url.substring(url.indexOf("//"), url.lastIndexOf("/")).substring(2)).split(":");
                 // 启动binlog线程
-                BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, nativeRepository, mongoTemplate,
+                BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, searchConfigService, nativeRepository, mongoTemplate,
                     mongoSyncService, temp[0], Integer.parseInt(temp[1]), url.substring(url.lastIndexOf("/") + 1),
                     usernameObj.toString(), passwordObj.toString());
                 binlogThread.start();

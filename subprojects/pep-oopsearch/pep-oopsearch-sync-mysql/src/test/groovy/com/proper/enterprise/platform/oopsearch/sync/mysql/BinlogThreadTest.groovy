@@ -5,21 +5,28 @@ import com.github.shyiko.mysql.binlog.event.*
 import com.proper.enterprise.platform.api.cache.CacheKeysSentry
 import com.proper.enterprise.platform.core.jpa.repository.NativeRepository
 import com.proper.enterprise.platform.oopsearch.api.document.SearchDocument
+import com.proper.enterprise.platform.oopsearch.api.repository.SearchConfigRepository
 import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService
+import com.proper.enterprise.platform.oopsearch.api.serivce.SearchConfigService
 import com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl.SyncCacheService
 import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.Cache
 import org.springframework.cache.CacheManager
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.scheduling.quartz.SchedulerFactoryBean
+import org.springframework.test.context.jdbc.Sql
 
 class BinlogThreadTest extends AbstractTest{
 
     @Autowired
     private MongoDataSyncService mongoDataSyncService
+
+    @Autowired
+    private SearchConfigService searchConfigService
 
     @Autowired
     private NativeRepository nativeRepository
@@ -42,6 +49,9 @@ class BinlogThreadTest extends AbstractTest{
     @Autowired
     CacheKeysSentry sentry
 
+    @Autowired
+    private SearchConfigRepository searchConfigRepository
+
     private String hostname = "127.0.0.1"
 
     private int port = 3307
@@ -52,9 +62,11 @@ class BinlogThreadTest extends AbstractTest{
 
     private String password = "testbinlog"
 
+
+
     @Test
     void testEventDataFormatFail(){
-        BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, nativeRepository, mongoTemplate,
+        BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, searchConfigService, nativeRepository, mongoTemplate,
             mongoSyncService, hostname, port, schema, username, password)
         binlogThread.start()
         sleep(3000)
@@ -99,7 +111,7 @@ class BinlogThreadTest extends AbstractTest{
 
     @Test
     void testXid(){
-        BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, nativeRepository, mongoTemplate,
+        BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, searchConfigService, nativeRepository, mongoTemplate,
             mongoSyncService, hostname, port, schema, username, password)
         binlogThread.start()
         sleep(3000)
@@ -121,9 +133,14 @@ class BinlogThreadTest extends AbstractTest{
     }
 
     @Test
+    @NoTx
+    @Sql("/sql/oopsearch/sync/mysql/demoUserConfigData.sql")
     void testInitTableObject(){
-//        sleep(10)
-        BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, nativeRepository, mongoTemplate,
+        // 清除cachequery的缓存对象，避免通过@sql插入db的数据因为没有触发cache进行更新，而导致查询时出现脏读现象
+        Cache queryCache = cacheManager.getCache("org.hibernate.cache.internal.StandardQueryCache")
+        queryCache.clear()
+
+        BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, searchConfigService, nativeRepository, mongoTemplate,
             mongoSyncService, hostname, port, schema, username, password)
         binlogThread.start()
         sleep(3000)
@@ -145,13 +162,21 @@ class BinlogThreadTest extends AbstractTest{
             e.printStackTrace()
         }
         sleep(2000)
+        binlogThread.interrupt()
+        searchConfigRepository.deleteAll()
     }
 
     @Test
+    @NoTx
+    @Sql("/sql/oopsearch/sync/mysql/demoUserConfigData.sql")
     void testSync(){
+        // 清除cachequery的缓存对象，避免通过@sql插入db的数据因为没有触发cache进行更新，而导致查询时出现脏读现象
+        Cache queryCache = cacheManager.getCache("org.hibernate.cache.internal.StandardQueryCache")
+        queryCache.clear()
+
         syncMongoRepository.deleteAll()
 
-        BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, nativeRepository, mongoTemplate,
+        BinlogThread binlogThread = new BinlogThread(mongoDataSyncService, searchConfigService, nativeRepository, mongoTemplate,
             mongoSyncService, hostname, port, schema, username, password)
         binlogThread.start()
         sleep(3000)
@@ -250,14 +275,17 @@ class BinlogThreadTest extends AbstractTest{
         // mongo sync
         sleep(5000)
         result = syncMongoRepository.findAll()
+        if (result.size() > 0) {
+            for (SearchDocument temp:result) {
+                println "--------con:" + temp.getCon()
+            }
+            sleep(5000)
+            result = syncMongoRepository.findAll()
+        }
         assert result.size() == 0
         println "after delete mongo size:" + result.size()
-        // waiting redis expire
-        sleep(70000)
-        Cache cache = cacheManager.getCache("syncMongo")
-        LinkedHashSet<String> set = (LinkedHashSet)sentry.keySet(cache)
-        assert set.size() == 0
-        println "cache key size:" + set.size()
+
         binlogThread.interrupt()
+        searchConfigRepository.deleteAll()
     }
 }

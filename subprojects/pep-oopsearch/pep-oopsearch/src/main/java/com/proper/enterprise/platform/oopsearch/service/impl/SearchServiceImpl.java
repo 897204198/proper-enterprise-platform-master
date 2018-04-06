@@ -1,10 +1,11 @@
 package com.proper.enterprise.platform.oopsearch.service.impl;
 
 import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;
-import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel;
-import com.proper.enterprise.platform.oopsearch.api.serivce.SearchService;
 import com.proper.enterprise.platform.oopsearch.api.document.SearchDocument;
-import com.proper.enterprise.platform.oopsearch.repository.SearchMongoRepository;
+import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel;
+import com.proper.enterprise.platform.oopsearch.api.serivce.SearchConfigService;
+import com.proper.enterprise.platform.oopsearch.api.serivce.SearchService;
+import com.proper.enterprise.platform.oopsearch.api.repository.SearchMongoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,16 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     SearchMongoRepository searchMongoRepository;
 
+    @Autowired
+    SearchConfigService searchConfigService;
+
     @Override
-    public List<SearchDocument> getSearchInfo(String inputStr, AbstractSearchConfigs searchConfigs) {
+    public List<SearchDocument> getSearchInfo(String inputStr, String moduleName) {
+        AbstractSearchConfigs searchConfigs = searchConfigService.getSearchConfig(moduleName);
+        if (searchConfigs == null) {
+            LOGGER.error("get search config class fail");
+            return null;
+        }
         List<SearchDocument> demoUserDocumentList;
         List<SearchDocument> resultList = new ArrayList<>();
         try {
@@ -53,14 +62,16 @@ public class SearchServiceImpl implements SearchService {
         } else {
             return;
         }
-        for (SearchColumnModel searchColumn: searchColumnList) {
-            for (String extend: extendArr) {
-                SearchDocument document = new SearchDocument();
-                document.setCol(searchColumn.getColumn());
-                document.setTab(searchColumn.getTable());
-                document.setDes(searchColumn.getDescColumn());
-                document.setCon(extend);
-                resultList.add(document);
+        if (extendArr != null) {
+            for (SearchColumnModel searchColumn: searchColumnList) {
+                for (String extend: extendArr) {
+                    SearchDocument document = new SearchDocument();
+                    document.setCol(searchColumn.getColumn());
+                    document.setTab(searchColumn.getTable());
+                    document.setDes(searchColumn.getDescColumn());
+                    document.setCon(extend);
+                    resultList.add(document);
+                }
             }
         }
     }

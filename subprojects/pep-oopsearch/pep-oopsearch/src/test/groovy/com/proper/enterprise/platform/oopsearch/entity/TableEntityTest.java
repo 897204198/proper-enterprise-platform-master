@@ -18,10 +18,10 @@ public class TableEntityTest extends BaseEntity {
     @Column(nullable = false)
     private String userName;
 
-    @Column(nullable = false)
+    @Column
     private int age;
 
-    @Column(nullable = false)
+    @Column
     private String deptId;
 
     public String getUserId() {

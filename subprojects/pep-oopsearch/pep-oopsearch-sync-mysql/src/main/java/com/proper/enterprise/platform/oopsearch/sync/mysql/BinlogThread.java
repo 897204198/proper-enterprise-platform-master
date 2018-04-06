@@ -2,14 +2,13 @@ package com.proper.enterprise.platform.oopsearch.sync.mysql;
 
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
-import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.jpa.repository.NativeRepository;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.oopsearch.api.annotation.SearchConfig;
 import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;
 import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel;
 import com.proper.enterprise.platform.oopsearch.api.model.SyncDocumentModel;
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService;
+import com.proper.enterprise.platform.oopsearch.api.serivce.SearchConfigService;
 import com.proper.enterprise.platform.oopsearch.sync.mysql.listener.BinlogLifecycleListener;
 import com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl.SyncCacheService;
 import org.slf4j.Logger;
@@ -25,6 +24,8 @@ public class BinlogThread extends Thread {
     private static final Logger LOGGER = LoggerFactory.getLogger(BinlogThread.class);
 
     private MongoDataSyncService mongoDataSyncService;
+
+    private SearchConfigService searchConfigService;
 
     private BinaryLogClient client;
 
@@ -48,10 +49,11 @@ public class BinlogThread extends Thread {
 
     private String password;
 
-    public BinlogThread(MongoDataSyncService mongoDataSyncService, NativeRepository nativeRepository,
+    public BinlogThread(MongoDataSyncService mongoDataSyncService, SearchConfigService searchConfigService, NativeRepository nativeRepository,
                         MongoTemplate mongoTemplate, SyncCacheService mongoSyncService, String hostname,
                         int port, String schema, String username, String password) {
         setName("BinlogThread");
+        this.searchConfigService = searchConfigService;
         this.mongoDataSyncService = mongoDataSyncService;
         this.nativeRepository = nativeRepository;
         this.mongoTemplate = mongoTemplate;
@@ -186,22 +188,23 @@ public class BinlogThread extends Thread {
                     continue;
                 }
                 for (TableObject tableObject:tableObjects) {
-                    String des = getSearchDocumentDesc(tableObject.getTableName(),
+                    List<SyncDocumentModel> modelList = filterSearchDocument(tableObject.getTableName(),
                         tableObject.getColumnNames().get(j));
-                    if (StringUtil.isNull(des)) {
-                        // 没有描述的column表明不在mongo中,无需更新
+                    if (modelList.size() == 0) {
+                        // 没有匹配到符合条件的SearchColumnModel,表明不在mongo中,无需更新
                         continue;
                     } else {
-                        String primaryKeysValue = getPrimaryKeysValue(tableObject, row);
-                        SyncDocumentModel syncDocumentModel = new SyncDocumentModel();
-                        syncDocumentModel.setTab(tableObject.getTableName());
-                        syncDocumentModel.setCol(tableObject.getColumnNames().get(j));
-                        syncDocumentModel.setCona(row[j].toString());
-                        syncDocumentModel.setPri(primaryKeysValue);
-                        syncDocumentModel.setDes(des);
-
-                        mongoSyncService.syncCache(pos + ":" + tempPos + ":insert", syncDocumentModel);
-                        tempPos++;
+                        // 当modelList元素为多个时，说明不同的config类中存在同表同名字段，此时字段描述、别名、url，均可能不同
+                        // 所以需要创建对应的document存入mongo当中
+                        for (SyncDocumentModel syncDocumentModel : modelList) {
+                            String primaryKeysValue = getPrimaryKeysValue(tableObject, row);
+                            syncDocumentModel.setTab(tableObject.getTableName());
+                            syncDocumentModel.setCol(tableObject.getColumnNames().get(j));
+                            syncDocumentModel.setCona(row[j].toString());
+                            syncDocumentModel.setPri(primaryKeysValue);
+                            mongoSyncService.syncCache(pos + ":" + tempPos + ":insert", syncDocumentModel);
+                            tempPos++;
+                        }
                     }
                 }
             }
@@ -231,22 +234,23 @@ public class BinlogThread extends Thread {
                         tableName = tableObject.getTableName();
                         columnName = tableObject.getColumnNames().get(i);
                     }
-                    String des = getSearchDocumentDesc(tableName, columnName);
-                    if (StringUtil.isNull(des)) {
-                        // 没有描述的column表明不在mongo中,无需更新
+                    List<SyncDocumentModel> modelList = filterSearchDocument(tableName, columnName);
+                    if (modelList.size() == 0) {
+                        // 没有匹配到符合条件的SearchColumnModel,表明不在mongo中,无需更新
                         continue;
                     } else {
-                        // 根据tablename columnname确认doc对象,并更新content为update之后的值
-                        SyncDocumentModel syncDocumentModel = new SyncDocumentModel();
-                        String columnContentBefore = before[i].toString();
-                        String columnContentAfter = after[i].toString();
-                        syncDocumentModel.setCol(columnName);
-                        syncDocumentModel.setTab(tableName);
-                        syncDocumentModel.setConb(columnContentBefore);
-                        syncDocumentModel.setCona(columnContentAfter);
+                        for (SyncDocumentModel syncDocumentModel : modelList) {
+                            // 根据tablename columnname确认doc对象,并更新content为update之后的值
+                            String columnContentBefore = before[i].toString();
+                            String columnContentAfter = after[i].toString();
+                            syncDocumentModel.setCol(columnName);
+                            syncDocumentModel.setTab(tableName);
+                            syncDocumentModel.setConb(columnContentBefore);
+                            syncDocumentModel.setCona(columnContentAfter);
 
-                        mongoSyncService.syncCache(pos + ":" + tempPos + ":update", syncDocumentModel);
-                        tempPos++;
+                            mongoSyncService.syncCache(pos + ":" + tempPos + ":update", syncDocumentModel);
+                            tempPos++;
+                        }
                     }
                 }
             }
@@ -274,19 +278,20 @@ public class BinlogThread extends Thread {
                     columnName = tableObject.getColumnNames().get(j);
                     primaryKeysValue = getPrimaryKeysValue(tableObject, row);
                 }
-                String des = getSearchDocumentDesc(tableName, columnName);
-                if (StringUtil.isNull(des)) {
-                    // 没有描述的column表明不在mongo中,无需更新
+                List<SyncDocumentModel> modelList = filterSearchDocument(tableName, columnName);
+                if (modelList.size() == 0) {
+                    // 没有匹配到符合条件的SearchColumnModel,表明不在mongo中,无需更新
                     continue;
                 } else {
-                    SyncDocumentModel syncDocumentModel = new SyncDocumentModel();
-                    syncDocumentModel.setTab(tableName);
-                    syncDocumentModel.setCol(columnName);
-                    syncDocumentModel.setCona(row[j].toString());
-                    syncDocumentModel.setPri(primaryKeysValue);
+                    for (SyncDocumentModel syncDocumentModel : modelList) {
+                        syncDocumentModel.setTab(tableName);
+                        syncDocumentModel.setCol(columnName);
+                        syncDocumentModel.setCona(row[j].toString());
+                        syncDocumentModel.setPri(primaryKeysValue);
 
-                    mongoSyncService.syncCache(pos + ":" + tempPos + ":delete", syncDocumentModel);
-                    tempPos++;
+                        mongoSyncService.syncCache(pos + ":" + tempPos + ":delete", syncDocumentModel);
+                        tempPos++;
+                    }
                 }
             }
         }
@@ -312,31 +317,41 @@ public class BinlogThread extends Thread {
         return primaryKeysValue.toString();
     }
 
-    public String getSearchDocumentDesc(String tableName, String columnName) {
-        String des = "";
-        boolean flag = false;
-        Map<String, Object> searchConfigBeans = PEPApplicationContext.getApplicationContext().getBeansWithAnnotation(SearchConfig.class);
+    /**
+     * searchDocument过滤方法
+     * 根据表名和字段名，从配置信息中获取对应的searchColumnModel。如果获取不到，说明配置中没有该表该字段的信息，
+     * mongodb中也就不会存储该信息；如果搜索到，则根据搜索到的次数，创建syncDocumentModel，并将公共信息（别名、描述、url）
+     * 预先存入对象中。后续取出该对象，再存入其他属性即可
+     *
+     * @param tableName 表名
+     * @param columnName 字段名
+     *
+     * @return SyncDocumentModel集合
+     * */
+    public List<SyncDocumentModel> filterSearchDocument(String tableName, String columnName) {
+        List<SyncDocumentModel> modelList = new ArrayList<>();
+        Map<String, Object> searchConfigBeans = searchConfigService.getSearchConfigs();
         for (Map.Entry<String, Object> entry : searchConfigBeans.entrySet()) {
             AbstractSearchConfigs tempSearchConfig = (AbstractSearchConfigs) entry.getValue();
-            List<SearchColumnModel> searchColumnList = tempSearchConfig.getSearchColumnListByTable(tableName);
-            if (searchColumnList != null) {
-                for (SearchColumnModel searchColumnModel:searchColumnList) {
-                    if (searchColumnModel.getColumn().equalsIgnoreCase(columnName)) {
-                        des = searchColumnModel.getDescColumn();
-                        flag = true;
-                        break;
-                    }
-                }
-            }
-            if (flag) {
-                break;
+            SearchColumnModel searchColumnModel = tempSearchConfig.getSearchColumnByTableNameAndColumnName(tableName, columnName);
+            if (searchColumnModel != null) {
+                SyncDocumentModel syncDocumentModel = new SyncDocumentModel();
+                syncDocumentModel.setDes(searchColumnModel.getDescColumn());
+                syncDocumentModel.setAlias(searchColumnModel.getColumnAlias());
+                syncDocumentModel.setUrl(searchColumnModel.getUrl());
+                modelList.add(syncDocumentModel);
             }
         }
-        return des;
+        return modelList;
     }
 
     public void containTableName(String tableName) {
-        Map<String, Object> searchConfigBeans = PEPApplicationContext.getApplicationContext().getBeansWithAnnotation(SearchConfig.class);
+        Map<String, Object> searchConfigBeans = searchConfigService.getSearchConfigs();
+        if (searchConfigBeans == null) {
+            LOGGER.error("search config is null");
+            return;
+        }
+        // Map<String, Object> searchConfigBeans = PEPApplicationContext.getApplicationContext().getBeansWithAnnotation(SearchConfig.class);
         for (Map.Entry<String, Object> entry : searchConfigBeans.entrySet()) {
             AbstractSearchConfigs tempSearchConfig = (AbstractSearchConfigs) entry.getValue();
             List<String> tableNameList = tempSearchConfig.getTableNameList();

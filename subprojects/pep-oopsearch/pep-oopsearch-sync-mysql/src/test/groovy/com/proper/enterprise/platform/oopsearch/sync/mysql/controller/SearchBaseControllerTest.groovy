@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.oopsearch.sync.mysql.controller
 
+import com.proper.enterprise.platform.oopsearch.api.repository.SearchConfigRepository
 import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.sync.mysql.entity.DemoDeptEntity
 import com.proper.enterprise.platform.oopsearch.sync.mysql.entity.DemoTestEntity
@@ -8,7 +9,10 @@ import com.proper.enterprise.platform.oopsearch.sync.mysql.repository.DemoTestRe
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.Cache
+import org.springframework.cache.CacheManager
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.jdbc.Sql
 
 class SearchBaseControllerTest extends AbstractTest{
 
@@ -21,16 +25,32 @@ class SearchBaseControllerTest extends AbstractTest{
     @Autowired
     private SyncMongoRepository syncMongoRepository
 
+    @Autowired
+    private SearchConfigRepository searchConfigRepository
+
+    @Autowired
+    CacheManager cacheManager
+
     @Test
+    @Sql([
+        "/sql/oopsearch/sync/mysql/demoDeptConfigData.sql",
+        "/sql/oopsearch/sync/mysql/demoTestConfigData.sql"
+    ])
     void testSyncMongoFromDB(){
-        initDB()
+        syncMongoRepository.deleteAll()
+        // 清除cachequery的缓存对象，避免通过@sql插入db的数据因为没有触发cache进行更新，而导致查询时出现脏读现象
+        Cache queryCache = cacheManager.getCache("org.hibernate.cache.internal.StandardQueryCache")
+        queryCache.clear()
+
+        initDeptDB()
+
         get("/search/init",  HttpStatus.OK)
         int count = syncMongoRepository.findAll().size()
         // 5 cols * 3 rows - 1 duplicated value + 3 cols from DemoTest
         assert count == 5 * 3 - 1 + 3
     }
 
-    void initDB(){
+    void initDeptDB(){
         DemoDeptEntity searchEntity = new DemoDeptEntity()
         searchEntity.setDeptId("001")
         searchEntity.setDeptName("研发部")

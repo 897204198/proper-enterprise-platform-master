@@ -27,6 +27,12 @@ public class SyncDocumentModel {
     // 是否已处理 false:未处理 true:已处理
     private boolean process;
 
+    // 字段别名
+    private String alias;
+
+    // 调用url
+    private String url;
+
     /**
      * 获取更新前内容
      * @return 更新前内容
@@ -137,5 +143,21 @@ public class SyncDocumentModel {
      * */
     public void setProcess(boolean process) {
         this.process = process;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

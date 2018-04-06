@@ -6,6 +6,8 @@ dependencies {
             libraries.mysql_binlog_connector_java
 
     testCompile project(':pep-test')
-    testRuntime project(':pep-cache-ehcache')
+    testRuntime project(':pep-auth-common-jpa'),
+                project(':pep-cache-ehcache'),
+                project(':pep-oopsearch-config')
 
 }

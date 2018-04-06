@@ -26,6 +26,12 @@ public class SearchDocument extends BaseDocument implements OOPSearchDocument {
     // 主键内容拼接字符串
     private String pri;
 
+    // 字段别名
+    private String ali;
+
+    // 访问路径
+    private String url;
+
     /**
      * 获取内容
      * @return 内容
@@ -104,5 +110,21 @@ public class SearchDocument extends BaseDocument implements OOPSearchDocument {
      * */
     public void setPri(String pri) {
         this.pri = pri;
+    }
+
+    public String getAli() {
+        return ali;
+    }
+
+    public void setAli(String ali) {
+        this.ali = ali;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

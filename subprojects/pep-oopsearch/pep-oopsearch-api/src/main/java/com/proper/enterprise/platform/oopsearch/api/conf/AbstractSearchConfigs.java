@@ -4,8 +4,9 @@ import com.proper.enterprise.platform.core.utils.SerializationUtil;
 import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -97,6 +98,8 @@ public abstract class AbstractSearchConfigs {
                     searchColumn.setColumn(searchColumnArr[1]);
                     searchColumn.setType(searchColumnArr[2]);
                     searchColumn.setDescColumn(searchColumnArr[3]);
+                    searchColumn.setColumnAlias(searchColumnArr[4]);
+                    searchColumn.setUrl(searchColumnArr[5]);
                     columnList.add(searchColumn);
                     columnMap.put(searchColumn.getColumn(), searchColumn);
                 }
@@ -148,6 +151,18 @@ public abstract class AbstractSearchConfigs {
 
     public Map<String, Map<String, SearchColumnModel>> getSearchTableColumn() {
         return searchTableColumn;
+    }
+
+    public SearchColumnModel getSearchColumnByTableNameAndColumnName(String tableName, String columnName) {
+        Assert.notNull(tableName, "COULD NOT GET DESC FROM NULL TABLENAME!");
+        Assert.notNull(columnName, "COULD NOT GET DESC FROM NULL COLUMNNAME!");
+        Map<String, SearchColumnModel> map = searchTableColumn.get(tableName.toLowerCase());
+        if (map != null) {
+            SearchColumnModel model = map.get(columnName.toLowerCase());
+            return model;
+        } else {
+            return null;
+        }
     }
 
     /**

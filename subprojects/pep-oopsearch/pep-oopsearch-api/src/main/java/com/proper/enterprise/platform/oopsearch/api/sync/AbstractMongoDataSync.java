@@ -1,14 +1,14 @@
 package com.proper.enterprise.platform.oopsearch.api.sync;
 
-import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.jpa.repository.NativeRepository;
-import com.proper.enterprise.platform.oopsearch.api.annotation.SearchConfig;
 import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;
 import com.proper.enterprise.platform.oopsearch.api.document.SearchDocument;
 import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel;
 import com.proper.enterprise.platform.oopsearch.api.model.SyncDocumentModel;
+import com.proper.enterprise.platform.oopsearch.api.repository.SearchConfigRepository;
 import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository;
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService;
+import com.proper.enterprise.platform.oopsearch.api.serivce.SearchConfigService;
 import com.zaxxer.hikari.HikariConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,10 +39,6 @@ public abstract class AbstractMongoDataSync implements MongoDataSyncService {
     @Autowired
     private SyncMongoRepository syncMongoRepository;
 
-    @Autowired
-    // 初始化PEPApplicationContext，避免后续方法使用时尚未初始化导致获取不到application进而出错
-    private PEPApplicationContext pepApplicationContext;
-
     // 数据源config
     @Autowired
     protected HikariConfig hikariConfig;
@@ -50,6 +46,13 @@ public abstract class AbstractMongoDataSync implements MongoDataSyncService {
     // 本地化repository
     @Autowired
     protected NativeRepository nativeRepository;
+
+    // 查询配置信息repository
+    @Autowired
+    SearchConfigRepository searchConfigRepository;
+
+    @Autowired
+    SearchConfigService searchConfigService;
 
 
     /**
@@ -60,7 +63,10 @@ public abstract class AbstractMongoDataSync implements MongoDataSyncService {
     @Override
     public void fullSynchronization() {
         // 整理所有需要查询的表名，及表名中对应的字段
-        Map<String, Object> searchConfigBeans = pepApplicationContext.getApplicationContext().getBeansWithAnnotation(SearchConfig.class);
+        Map<String, Object> searchConfigBeans = searchConfigService.getSearchConfigs();
+        if (searchConfigBeans == null) {
+            return;
+        }
         Map<String, List<SearchColumnModel>> tableColumnMap = getTableColumnMap(searchConfigBeans);
         List<SearchDocument> documentList = new ArrayList<>();
         for (Map.Entry<String, List<SearchColumnModel>> tableColumnEntry: tableColumnMap.entrySet()) {
@@ -143,6 +149,8 @@ public abstract class AbstractMongoDataSync implements MongoDataSyncService {
                                     demoUserDocument.setTab(searchColumnMongo.getTable());
                                     demoUserDocument.setDes(searchColumnMongo.getDescColumn());
                                     demoUserDocument.setPri(priValue);
+                                    demoUserDocument.setAli(searchColumnMongo.getColumnAlias());
+                                    demoUserDocument.setUrl(searchColumnMongo.getUrl());
                                     documentList.add(demoUserDocument);
                                 }
                             }
@@ -178,28 +186,34 @@ public abstract class AbstractMongoDataSync implements MongoDataSyncService {
         SearchDocument searchDocument = convertToSearchDocument(doc);
         Query query = new Query();
         if ("insert".equalsIgnoreCase(method)) {
+            query.addCriteria(Criteria.where("con").is(searchDocument.getCon()));
             query.addCriteria(Criteria.where("tab").is(searchDocument.getTab()));
             query.addCriteria(Criteria.where("col").is(searchDocument.getCol()));
-            query.addCriteria(Criteria.where("con").is(searchDocument.getCon()));
+            query.addCriteria(Criteria.where("ali").is(searchDocument.getAli()));
+            query.addCriteria(Criteria.where("url").is(searchDocument.getUrl()));
             List<SearchDocument> result = mongoTemplate.find(query, SearchDocument.class);
             if (result.size() == 0) {
                 mongoTemplate.insert(searchDocument);
             }
         } else if ("update".equalsIgnoreCase(method)) {
-            query.addCriteria(Criteria.where("tab").is(searchDocument.getTab()));
-            query.addCriteria(Criteria.where("col").is(searchDocument.getCol()));
             String conBefore = doc.getConb();
             query.addCriteria(Criteria.where("con").is(conBefore));
+            query.addCriteria(Criteria.where("tab").is(searchDocument.getTab()));
+            query.addCriteria(Criteria.where("col").is(searchDocument.getCol()));
+            query.addCriteria(Criteria.where("ali").is(searchDocument.getAli()));
+            query.addCriteria(Criteria.where("url").is(searchDocument.getUrl()));
 
             Update update = new Update();
             update.set("con", searchDocument.getCon());
 
             mongoTemplate.updateMulti(query, update, SearchDocument.class);
         } else if ("delete".equalsIgnoreCase(method)) {
-            query.addCriteria(Criteria.where("tab").is(searchDocument.getTab()));
-            query.addCriteria(Criteria.where("col").is(searchDocument.getCol()));
             query.addCriteria(Criteria.where("con").is(searchDocument.getCon()));
             query.addCriteria(Criteria.where("pri").is(searchDocument.getPri()));
+            query.addCriteria(Criteria.where("tab").is(searchDocument.getTab()));
+            query.addCriteria(Criteria.where("col").is(searchDocument.getCol()));
+            query.addCriteria(Criteria.where("ali").is(searchDocument.getAli()));
+            query.addCriteria(Criteria.where("url").is(searchDocument.getUrl()));
             mongoTemplate.remove(query, SearchDocument.class);
         }
     }
@@ -217,6 +231,8 @@ public abstract class AbstractMongoDataSync implements MongoDataSyncService {
         searchDocument.setCol(doc.getCol());
         searchDocument.setPri(doc.getPri());
         searchDocument.setDes(doc.getDes());
+        searchDocument.setAli(doc.getAlias());
+        searchDocument.setUrl(doc.getUrl());
         return searchDocument;
     }
 

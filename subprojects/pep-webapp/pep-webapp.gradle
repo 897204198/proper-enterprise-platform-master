@@ -54,6 +54,7 @@ dependencies {
             project(':pep-auth-jwt'),
             // Needs one cache implementation if use cache API
             project(':pep-cache-ehcache'),
+            project(':pep-oopsearch-config'),
             project(':pep-oopsearch'),
             project(':pep-workflow')
 }

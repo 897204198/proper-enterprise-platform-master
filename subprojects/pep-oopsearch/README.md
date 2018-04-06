@@ -11,89 +11,39 @@ OOPSEARCH
 
 调用oopsearch模块方式
 ------------------
-下面以`DemoDept`模块为例进行具体内容讲解。
-### 设定 `search-*.properties`配置文件
-该文件路径需符合`conf/oopsearch/**/search-*.properties` 规则。
-以下为`search-dept.properties`配置文件具体内容
-
-    # 需要查询的表,多张表以逗号(",")分割
-    search.dept.tables=demo_dept
-    # 查询联想的字段.表名:查询字段:字段类型:描述字段 多个条件以逗号(",")分割
-    search.dept.columns=demo_dept:dept_id:string:部门id,demo_dept:dept_name:string:部门名称,demo_dept:create_time:date:创建时间,demo_dept:dept_member_count:num:部门人数
-    # 每次查询返回结果条数限制
-    search.dept.limit=10
-    # 时间类型字段扩充处理 多个扩展内容以逗号(",")分割
-    search.dept.extendDateYear=去年,今年,明年
-    search.dept.extendDateMonth=上月,本月,下月
-    search.dept.extendDateDay=昨天,今天,明天
-
-
->注意：由于存在多个模块配置了多个配置文件的情况，所以应避免当前key值与其他已经配置的key重复。
-key的定义规则为：`search.业务名.tables`等。
-
-### 创建Config Java类
-需创建一个配置Java类，该类继承`AbstractSearchConfigs`类，并从`search-dept.properties`读取配置信息。
-调用父类构造方法，具体如下：
-
-```java
-@Component
-@SearchConfig
-public class DemoDeptConfigs extends AbstractSearchConfigs {
-
-    public DemoDeptConfigs(@Value("${search.dept.tables}") String searchTables,
-                           @Value("${search.dept.columns}") String searchColumns,
-                           @Value("${search.dept.limit}") int limit,
-                           @Value("${search.dept.extendDateYear}") String extendByYear,
-                           @Value("${search.dept.extendDateMonth}") String extendByMonth,
-                           @Value("${search.dept.extendDateDay}") String extendByDay) {
-        super(searchTables, searchColumns, limit, extendByYear, extendByMonth, extendByDay);
-    }
-}
+下面以`authusers`模块为例进行具体内容讲解。
+### 初始化`PEP_OOPSEARCH_CONFIG`表数据
 ```
->注意：该类需设置注解 `@SearchConfig`、`@Component`
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('001', 'authusers', 'pep_auth_users', 'id', 'string', 'id', 'authusers_user_id', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('002', 'authusers', 'pep_auth_users', 'username', 'string', 'username', 'authusers_username', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('003', 'authusers', 'pep_auth_users', 'name', 'string', 'name', 'authusers_name', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('004', 'authusers', 'pep_auth_users', 'email', 'string', 'email', 'authusers_email', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('005', 'authusers', 'pep_auth_users', 'phone', 'string', 'phone', 'authusers_phone', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('006', 'authusers', 'pep_auth_users', 'enable', 'string', 'enable', 'authusers_enable', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('007', 'authusers', 'pep_auth_usergroups', 'id', 'string', 'id', 'authusergroups_id', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('008', 'authusers', 'pep_auth_usergroups', 'name', 'string', 'name', 'authusergroups_name', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('009', 'authusers', 'pep_auth_usergroups', 'description', 'string', 'description', 'authusergroups_description', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('010', 'authusers', 'pep_auth_usergroups', 'enable', 'string', 'enable', 'authusergroups_enable', '/authusers');
+COMMIT;
+
+```
+
+>注意：目前配置模块的页面开发尚未完成。后续会使用页面来进行配置信息的管理。
+`module_name`与`url`为一对一关系；
+`module_name`与`table_name`为一对多关系；
+`table_name`与`search_column`为一对多关系；
+`search_column`与`column_type`、`column_desc`、`column_alias`为一对一关系
+字段含义
+`module_name`:模块名称
+`table_name`:查询使用到的表名
+`search_column`:查询的字段名
+`column_type`:查询字段的类型(string、num、date)
+`column_desc`:查询字段的描述(在输入框输入内容后下方显示数据中的描述内容)
+`column_alias`:查询字段别名(为了区分多表同名字段设置)
+`url`:模块请求跳转的业务url
 
 ### Controller中的调用
-在你的业务Controller中调用oopsearch模块，获取查询信息。具体如下：
-```java
-@RestController
-@RequestMapping("/search")
-public class DemoDeptController extends BaseController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DemoDeptController.class);
-
-    @Autowired
-    private SearchService searchService;
-
-    @Autowired
-    private QueryResultService queryResultService;
-
-    @Autowired
-    private DemoDeptConfigs demoDeptConfigs;
-
-    @GetMapping("/dept")
-    public ResponseEntity<List<OOPSearchDocument>> searchInfo(@RequestParam String data) {
-        List<OOPSearchDocument> docs = (List<OOPSearchDocument>) searchService.getSearchInfo(data, demoDeptConfigs);
-        ResponseEntity<List<OOPSearchDocument>> result = responseOfGet(docs);
-        return result;
-    }
-
-    @GetMapping("/dept/query")
-    public ResponseEntity deptResult(String req, String tableName) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            req = URLDecoder.decode(req, PEPConstants.DEFAULT_CHARSET.toString());
-            JsonNode jn = objectMapper.readValue(req, JsonNode.class);
-            return responseOfGet(queryResultService.assemble(demoDeptConfigs, jn, tableName));
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-        }
-        return responseOfGet(new ArrayList<>());
-    }
-}
-```
->注意：`OOPSearchDocument`为oopsearch的标准entity接口。`data`参数为前台界面传递的查询内容。restful的访问请求路径可以质询前台框架设定。
-`searchInfo`方法为查询框输入内容后动态查询联想结果并返回前台，作为下拉框提示内容
-`deptResult`方法为点击查询按钮后，查询后台数据库，返回结果列表内容
+当点击查询按钮时，请求会经过oopsearch模块，根据`PEP_OOPSEARCH_CONFIG`表中`module_name`字段找到对应的`url`进行跳转。后续查询具体操作由业务调用者自行处理。
 
 使用pep-oopsearch-sync-mysql自动同步
 ----------------------------
@@ -121,18 +71,25 @@ mysql 相关设置已在 `pep-dev-configs` 模块内的 docker-compose.yml 中�
 默认情况下，每5秒，全量同步一次h2的数据到mongo当中。
 >注意:可以查看`cluster-pep-oopsearch-sync-h2`中定时任务具体配置
 
+使用pep-oopsearch-config配置模块
+------------------------------
+该模块实现对oopsearch的配置相关操作。包括读取配置信息等功能
+同时后续开发会实现页面对配置信息进行管理的相关功能
+
 pep-webapp中的设置
 ----------------
 修改`pep-webapp.gradle`文件。
 ```
-runtime project(':pep-oopsearch'),
+runtime project(':pep-oopsearch-config'),
+        project(':pep-oopsearch'),
         project(':pep-oopsearch-sync-mysql'),
         project(':pep-cache-redis')
 ```
 >注意：根据你使用的缓存实现，需要配置不同的cache实现模块。上面的例子使用了`redis`作为Spring Cache的实现。
 如果想使用`ehcache`作为缓存实现，则需修改为如下配置
 ```
-runtime project(':pep-oopsearch'),
+runtime project(':pep-oopsearch-config'),
+        project(':pep-oopsearch'),
         project(':pep-oopsearch-sync-mysql'),
         project(':pep-cache-ehcache')
 ```

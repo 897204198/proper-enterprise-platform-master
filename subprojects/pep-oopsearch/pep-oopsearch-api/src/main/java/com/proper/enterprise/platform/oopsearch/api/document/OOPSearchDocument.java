@@ -64,4 +64,13 @@ public interface OOPSearchDocument {
      * @param  pri 主键内容拼接字符串
      * */
     void setPri(String pri);
+
+    String getAli();
+
+    void setAli(String ali);
+
+    String getUrl();
+
+    void setUrl(String url);
+
 }

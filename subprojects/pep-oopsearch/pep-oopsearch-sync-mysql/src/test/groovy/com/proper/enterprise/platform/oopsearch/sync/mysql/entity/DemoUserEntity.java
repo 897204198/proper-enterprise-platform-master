@@ -1,13 +1,11 @@
 package com.proper.enterprise.platform.oopsearch.sync.mysql.entity;
 
-import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "DEMO_USER")
-@CacheEntity
 public class DemoUserEntity {
 
     @Id

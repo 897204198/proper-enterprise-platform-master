@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.oopsearch.sync.h2.service.impl
 
+import com.proper.enterprise.platform.oopsearch.api.repository.SearchConfigRepository
 import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.sync.h2.entity.DemoDeptEntity
 import com.proper.enterprise.platform.oopsearch.sync.h2.entity.DemoTestEntity
@@ -7,8 +8,13 @@ import com.proper.enterprise.platform.oopsearch.sync.h2.repository.DemoDeptRepos
 import com.proper.enterprise.platform.oopsearch.sync.h2.repository.DemoTestRepository
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
+import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.Cache
+import org.springframework.cache.CacheManager
+import org.springframework.test.context.jdbc.Sql
+
 
 class H2SyncJobServiceTest extends AbstractTest{
 
@@ -24,26 +30,42 @@ class H2SyncJobServiceTest extends AbstractTest{
     @Autowired
     private SyncMongoRepository syncMongoRepository
 
+    @Autowired
+    SearchConfigRepository searchConfigRepository
+
+    @Autowired
+    CacheManager cacheManager
+
     @NoTx
     @Test
+    @Sql([
+            "/sql/oopsearch/sync/h2/demoTestConfigData.sql",
+            "/sql/oopsearch/sync/h2/demoDeptConfigData.sql"
+    ])
     void testFullSyncMongo(){
-        initDB()
-        sleep(5000)//等待定时任务自动同步数据到mongo
+        // 清除cachequery的缓存对象，避免通过@sql插入db的数据因为没有触发cache进行更新，而导致查询时出现脏读现象
+        Cache queryCache = cacheManager.getCache("org.hibernate.cache.internal.StandardQueryCache")
+        queryCache.clear()
+
+        initDemoDeptData()
+        initDemoTestData()
+
+        sleep(10000)//等待定时任务自动同步数据到mongo
 //        h2SyncJobService.fullSyncMongo()
         println "------开始查询mongo-----"
         int count = syncMongoRepository.findAll().size()
         println "------查询mongo结束，count："+count+"-----"
         // 5 cols * 3 rows - 1 duplicated value + 3 cols from DemoTest
         assert count == 5 * 3 - 1 + 3
-
-//        syncMongoRepository.deleteAll()
-//        get("/search/init",  HttpStatus.OK)
-//        count = syncMongoRepository.findAll().size()
-//        // 5 cols * 3 rows - 1 duplicated value
-//        assert count == 5 * 3 - 1
     }
 
-    void initDB(){
+    @Before
+    void initMongo(){
+        syncMongoRepository.deleteAll()
+    }
+
+
+    void initDemoDeptData(){
         DemoDeptEntity searchEntity = new DemoDeptEntity()
         searchEntity.setDeptId("001")
         searchEntity.setDeptName("研发部")
@@ -73,6 +95,9 @@ class H2SyncJobServiceTest extends AbstractTest{
 
         demoDeptRepository.save(searchEntity3)
 
+    }
+
+    void initDemoTestData(){
         // 复合主键的entity
         DemoTestEntity demoTestEntity = new DemoTestEntity()
         demoTestEntity.setPri2("pri2")
