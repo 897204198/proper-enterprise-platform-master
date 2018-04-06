@@ -2,12 +2,8 @@ package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.dao.ResourceDao;
-import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.Menu;
-import com.proper.enterprise.platform.api.auth.model.Resource;
-import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
@@ -26,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
@@ -39,9 +36,6 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     private MenuDao menuDao;
-
-    @Autowired
-    private UserDao userDao;
 
     @Autowired
     private ResourceDao resourceDao;
@@ -136,7 +130,10 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @SuppressWarnings("unchecked")
     public Collection<? extends Menu> getMenus(User user) {
-        return userDao.getMenus(user);
+        if (user.isSuperuser()) {
+            return menuDao.findAll(new Sort("parent", "sequenceNumber"));
+        }
+        return menuDao.getMenus(user);
     }
 
     @Override
@@ -150,7 +147,7 @@ public class MenuServiceImpl implements MenuService {
                 menus.add(menu);
             }
         }
-        Collections.sort(menus, new BeanComparator("parent", "sequenceNumber"));
+        menus.sort(new BeanComparator("parent", "sequenceNumber"));
         return menus;
     }
 
@@ -321,15 +318,18 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public boolean accessible(Resource resource, String userId) {
+        // 资源未定义，无需授权即可访问
         if (resource == null) {
             return true;
         }
 
+        // 资源被定义到了忽略列表中，无需授权即可访问
         if (shouldIgnore(resource)) {
             return true;
         }
 
         Collection<? extends Menu> menus = resource.getMenus();
+        // 资源未被定义到菜单下时，无需授权即可访问
         if (CollectionUtil.isEmpty(menus)) {
             return true;
         }

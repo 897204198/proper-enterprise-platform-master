@@ -13,7 +13,6 @@ import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.*;
 
@@ -274,27 +273,6 @@ public abstract class AbstractUserServiceImpl implements UserService {
             }
         }
         return result;
-    }
-
-    @Override
-    public boolean hasPermissionOfUser(User user, String reqUrl, RequestMethod requestMethod) {
-        if (StringUtil.isBlank(reqUrl) || requestMethod == null) {
-            return false;
-        }
-        if (user == null || StringUtil.isBlank(user.getId()) || !user.isEnable() || !user.isValid()) {
-            return false;
-        }
-        if (user.isSuperuser()) {
-            return true;
-        }
-        return userDao.hasPermissionOfUser(user, reqUrl, requestMethod);
-    }
-
-    @Override
-    public void checkPermission(String reqUrl, RequestMethod requestMethod) {
-        if (!this.hasPermissionOfUser(this.getCurrentUser(), reqUrl, requestMethod)) {
-            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.permission.failed"));
-        }
     }
 
     @Override

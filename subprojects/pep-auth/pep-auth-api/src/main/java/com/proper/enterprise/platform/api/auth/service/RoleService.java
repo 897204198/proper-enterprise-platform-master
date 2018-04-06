@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.api.auth.service;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
 import java.util.List;
@@ -242,16 +241,5 @@ public interface RoleService {
      * @return 有则返回真，没有返回假
      */
     boolean hasCircleInheritForCurrentRole(Role currentRole);
-
-    /**
-     * 检测指定的角色，有没有指定的资源权限
-     *
-     * @param role          指定的角色
-     * @param reqUrl        指定的资源路径
-     * @param requestMethod 指定的资源请求方法
-     * @return 如果有，则返回真
-     */
-    boolean hasPermissionOfRole(Role role, String reqUrl, RequestMethod requestMethod);
-
 
 }

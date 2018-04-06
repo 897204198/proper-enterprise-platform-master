@@ -5,7 +5,6 @@ import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
 import java.util.List;
@@ -160,15 +159,6 @@ public interface UserGroupService {
     UserGroup deleteGroupUser(String groupId, String userId);
 
     /**
-     * 用户组批量删除用户
-     *
-     * @param groupId 用户组ID
-     * @param userIds 用户ID集合
-     * @return 用户组
-     */
-    UserGroup deleteGroupUserByUserIds(String groupId, List<String> userIds);
-
-    /**
      * 用户组批量添加用户
      *
      * @param groupId 用户组ID
@@ -183,25 +173,7 @@ public interface UserGroupService {
      * @param groupId 用户组ID
      * @return 用户集合
      */
-    Collection<? extends User> getGroupUsers(String groupId);
-
-    /**
-     * 获取指定用户组的用户集合
-     *
-     * @param groupId 用户组ID
-     * @return 用户集合
-     */
     Collection<? extends User> getGroupUsers(String groupId, EnableEnum userGroupEnable, EnableEnum userEnable);
-
-    /**
-     * 检测用户组是否有此权限
-     *
-     * @param userGroup     待检测用户组
-     * @param reqUrl        资源请求路径
-     * @param requestMethod 资源请求方法
-     * @return 如果有则返回真
-     */
-    boolean hasPermissionOfUserGroup(UserGroup userGroup, String reqUrl, RequestMethod requestMethod);
 
     /**
      * 创建更新用户组信息

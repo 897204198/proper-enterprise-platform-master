@@ -76,14 +76,4 @@ public interface ResourceService {
      */
     Collection<? extends Role> getResourceRoles(String resourceId, EnableEnum resourceEnable, EnableEnum roleEnable);
 
-    /**
-     * 判断这个资源是否有此权限
-     *
-     * @param resource      带检测资源
-     * @param reqUrl        指定的资源路径
-     * @param requestMethod 指定的资源请求方法
-     * @return 有则返回真
-     */
-    boolean hasPermissionOfResource(Resource resource, String reqUrl, RequestMethod requestMethod);
-
 }

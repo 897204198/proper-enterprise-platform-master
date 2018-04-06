@@ -3,8 +3,10 @@ package com.proper.enterprise.platform.auth.common.neo4j.dao.impl;
 import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
+import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.auth.common.neo4j.entity.MenuNodeEntity;
 import com.proper.enterprise.platform.auth.common.neo4j.repository.MenuNodeRepository;
+import com.proper.enterprise.platform.auth.common.neo4j.repository.UserNodeRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.neo4j.service.impl.Neo4jServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -24,6 +26,9 @@ public class Neo4jMenuDaoImpl extends Neo4jServiceSupport<Menu, MenuNodeReposito
 
     @Autowired
     private MenuNodeRepository menuNodeRepository;
+
+    @Autowired
+    private UserNodeRepository userNodeRepository;
 
     @Override
     public MenuNodeRepository getRepository() {
@@ -49,6 +54,11 @@ public class Neo4jMenuDaoImpl extends Neo4jServiceSupport<Menu, MenuNodeReposito
             default:
                 return menuNodeRepository.findByIdAndValidAndEnable(id, true, true);
         }
+    }
+
+    @Override
+    public Collection<? extends Menu> getMenus(User user) {
+        return userNodeRepository.findMenusById(user.getId());
     }
 
     @Override

@@ -3,14 +3,16 @@ package com.proper.enterprise.platform.auth.common.service.impl;
 import com.proper.enterprise.platform.api.auth.dao.RoleDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.*;
-import com.proper.enterprise.platform.api.auth.service.*;
+import com.proper.enterprise.platform.api.auth.service.MenuService;
+import com.proper.enterprise.platform.api.auth.service.ResourceService;
+import com.proper.enterprise.platform.api.auth.service.RoleService;
+import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.*;
 
@@ -371,18 +373,4 @@ public class RoleServiceImpl implements RoleService {
         return roleDao.hasCircleInheritForCurrentRole(currentRole);
     }
 
-    @Override
-    public boolean hasPermissionOfRole(Role role, String reqUrl, RequestMethod requestMethod) {
-        if (role == null || !role.isValid() || !role.isEnable()) {
-            return false;
-        }
-        Iterator iterator1 = role.getResources().iterator();
-        while (iterator1.hasNext()) {
-            Resource resource = (Resource) iterator1.next();
-            if (resourceService.hasPermissionOfResource(resource, reqUrl, requestMethod)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

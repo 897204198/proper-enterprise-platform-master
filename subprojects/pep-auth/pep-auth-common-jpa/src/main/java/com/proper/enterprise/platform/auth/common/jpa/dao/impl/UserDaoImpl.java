@@ -1,35 +1,27 @@
 package com.proper.enterprise.platform.auth.common.jpa.dao.impl;
 
-import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.Menu;
-import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.service.RoleService;
-import com.proper.enterprise.platform.api.auth.service.UserGroupService;
-import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity;
-import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.core.utils.sort.BeanComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Service
 public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String> implements UserDao {
@@ -38,15 +30,6 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
 
     @Autowired
     private UserRepository userRepo;
-
-    @Autowired
-    private RoleService roleService;
-
-    @Autowired
-    private UserGroupService userGroupService;
-
-    @Autowired
-    private MenuDao menuDao;
 
     @Override
     public UserRepository getRepository() {
@@ -149,45 +132,6 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
             }
         };
         return specification;
-    }
-
-    @Override
-    public boolean hasPermissionOfUser(User user, String reqUrl, RequestMethod requestMethod) {
-        Collection usergroups = user.getUserGroups();
-        Iterator iterator = usergroups.iterator();
-        while (iterator.hasNext()) {
-            UserGroupEntity userGroupEntity = (UserGroupEntity) iterator.next();
-            if (userGroupService.hasPermissionOfUserGroup(userGroupEntity, reqUrl, requestMethod)) {
-                return true;
-            }
-        }
-        Collection roles = user.getRoles();
-        Iterator iterator1 = roles.iterator();
-        while (iterator1.hasNext()) {
-            RoleEntity roleEntity = (RoleEntity) iterator1.next();
-            if (roleService.hasPermissionOfRole(roleEntity, reqUrl, requestMethod)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Collection<? extends Menu> getMenus(User user) {
-        Assert.notNull(user, "Could NOT get menus WITHOUT a user");
-        if (user.isSuperuser()) {
-            return menuDao.findAll(new Sort("parent", "sequenceNumber"));
-        }
-        List<Menu> menus = new ArrayList<>();
-        for (Role role : user.getRoles()) {
-            for (Menu menu : role.getMenus()) {
-                if (!menus.contains(menu)) {
-                    menus.add(menu);
-                }
-            }
-        }
-        Collections.sort(menus, new BeanComparator("parent", "sequenceNumber"));
-        return menus;
     }
 
     @Override

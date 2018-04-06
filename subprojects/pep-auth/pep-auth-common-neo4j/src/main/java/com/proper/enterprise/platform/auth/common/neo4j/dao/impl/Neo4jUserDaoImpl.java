@@ -1,19 +1,13 @@
 package com.proper.enterprise.platform.auth.common.neo4j.dao.impl;
 
-import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.auth.common.neo4j.entity.UserNodeEntity;
 import com.proper.enterprise.platform.auth.common.neo4j.repository.UserNodeRepository;
-import com.proper.enterprise.platform.auth.common.neo4j.entity.MenuNodeEntity;
-import com.proper.enterprise.platform.auth.common.neo4j.entity.ResourceNodeEntity;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.neo4j.service.impl.Neo4jServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.core.utils.sort.BeanComparator;
 import org.neo4j.ogm.cypher.BooleanOperator;
 import org.neo4j.ogm.cypher.ComparisonOperator;
 import org.neo4j.ogm.cypher.Filter;
@@ -22,12 +16,11 @@ import org.neo4j.ogm.cypher.query.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Service
 public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeRepository, String> implements UserDao {
@@ -36,12 +29,6 @@ public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeReposito
 
     @Autowired
     private UserNodeRepository userNodeRepository;
-
-    @Autowired
-    private ResourceService resourceService;
-
-    @Autowired
-    private MenuDao menuDao;
 
     @Override
     public User save(User user) {
@@ -143,32 +130,6 @@ public class Neo4jUserDaoImpl extends Neo4jServiceSupport<User, UserNodeReposito
         filter.setBooleanOperator(BooleanOperator.AND);
         filters.add(filter);
         return filters;
-    }
-
-    private Collection<ResourceNodeEntity> getResourcesByUserIdAndValidAndEnable(String userId, boolean valid, boolean enable) {
-        return userNodeRepository.getResourcesByIdAndValidAndEnable(userId, valid, enable);
-    }
-
-    @Override
-    public boolean hasPermissionOfUser(User user, String reqUrl, RequestMethod requestMethod) {
-        Collection<ResourceNodeEntity> collection = this.getResourcesByUserIdAndValidAndEnable(user.getId(), true, true);
-        for (ResourceNodeEntity resourceNodeEntity : collection) {
-            if (resourceService.hasPermissionOfResource(resourceNodeEntity, reqUrl, requestMethod)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Collection<? extends Menu> getMenus(User user) {
-        Assert.notNull(user, "Could NOT get menus WITHOUT a user");
-        if (user.isSuperuser()) {
-            return menuDao.findAll(new Sort("parent", "sequenceNumber"));
-        }
-        List<MenuNodeEntity> menus = (List<MenuNodeEntity>) userNodeRepository.findMenusById(user.getId());
-        Collections.sort(menus, new BeanComparator("parent", "sequenceNumber"));
-        return menus;
     }
 
     @Override

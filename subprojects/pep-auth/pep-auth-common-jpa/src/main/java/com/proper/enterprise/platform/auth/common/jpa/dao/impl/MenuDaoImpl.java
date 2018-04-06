@@ -3,11 +3,15 @@ package com.proper.enterprise.platform.auth.common.jpa.dao.impl;
 import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
+import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.core.utils.sort.BeanComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,9 +21,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String> implements MenuDao {
@@ -48,6 +50,23 @@ public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String>
             default:
                 return repository.findByIdAndValidAndEnable(id, true, true);
         }
+    }
+
+    @Override
+    public Collection<? extends Menu> getMenus(User user) {
+        Set<Menu> menus = new HashSet<>();
+        for (Role role : user.getRoles()) {
+            menus.addAll(role.getMenus());
+        }
+        for (UserGroup userGroup : user.getUserGroups()) {
+            for (Role role : userGroup.getRoles()) {
+                menus.addAll(role.getMenus());
+            }
+        }
+        List<Menu> result = new ArrayList<>(menus.size());
+        result.addAll(menus);
+        result.sort(new BeanComparator("parent", "sequenceNumber"));
+        return result;
     }
 
     @Override

@@ -262,41 +262,6 @@ class RolesControllerTest extends AbstractNeo4jTest {
             i18NService.getMessage("pep.auth.common.role.get.failed")
     }
 
-
-    @Test
-    void testNoPermission() {
-        def str = i18NService.getMessage("pep.auth.common.user.permission.failed")
-        def result = get('/auth/roles', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == str
-
-        Map<String, Object> map = new HashMap<>()
-        result = put('/auth/roles', JSONUtil.toJSON(map), HttpStatus.BAD_REQUEST).getResponse()
-            .getContentAsString()
-        assert result == str
-
-        result = post('/auth/roles', JSONUtil.toJSON(map), HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == str
-
-        result = delete('/auth/roles?ids=', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == str
-
-        result = get('/auth/roles/1', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == str
-
-        result = put('/auth/roles/1', JSONUtil.toJSON(map), HttpStatus.BAD_REQUEST).getResponse()
-            .getContentAsString()
-        assert result == str
-
-        result = post('/auth/roles/1/menus', JSONUtil.toJSON(map), HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == str
-
-        result = delete('/auth/roles/1/menus?ids=', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == str
-
-        result = get('/auth/roles/parents', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == str
-    }
-
     @Test
     @NoTx
     void testGetRoleUsersAndGroups() {

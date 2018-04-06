@@ -239,43 +239,6 @@ class UsersControllerTest extends AbstractTest {
         tearDown()
     }
 
-    @Test
-    void testNoPermission() {
-        def deletefailed = i18NService.getMessage("pep.auth.common.user.permission.failed")
-        def result = null
-        Map<String, Object> map = new HashMap<>()
-        String mapstr = JSONUtil.toJSON(map)
-
-        result = get('/auth/users?userName=&name=&phone=&email=&enable=&pageNo=1&pageSize=10',
-            HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == deletefailed
-
-        result = put('/auth/users', mapstr, HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == deletefailed
-
-        result = post('/auth/users', JSONUtil.toJSON(new UserEntity('s', 's')), HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == deletefailed
-
-        result = delete('/auth/users?ids=', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == deletefailed
-
-        result = get('/auth/users/1', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == deletefailed
-
-        result = put('/auth/users/1', mapstr, HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == deletefailed
-
-        result = delete('/auth/users/1', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == deletefailed
-
-        result = post('/auth/users/1/role/1', '', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == deletefailed
-
-        result = delete('/auth/users/1/role/1', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
-        assert result == deletefailed
-
-    }
-
     @Sql([
         "/com/proper/enterprise/platform/auth/common/jpa/usergroups.sql",
         "/com/proper/enterprise/platform/auth/common/jpa/users.sql"

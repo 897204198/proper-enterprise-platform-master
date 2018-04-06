@@ -199,24 +199,14 @@ public class ResourceServiceImpl implements ResourceService {
         return new ArrayList<>();
     }
 
-    @Override
-    public boolean hasPermissionOfResource(Resource resource, String reqUrl, RequestMethod requestMethod) {
-        if (resource == null || !resource.isValid() || !resource.isEnable()) {
-            return false;
-        }
-        Collection<Resource> collection = new HashSet();
-        collection.add(resource);
-        Resource resource1 = this.getBestMatch(collection, requestMethod.toString() + ":" + reqUrl);
-        if (resource1 != null) {
-            return true;
-        }
-        return false;
-    }
-
     /**
-     * 思路：传参数signature与所有resources.method+resources.url
-     * 字符进行 ANT 风格的路径匹配，匹配原则：符合条件的如果完全匹配直接return,无完全匹配的比较*号位置，*号越靠后越符合匹配规则，当*
-     * 号位置相同时再比较整个字符长度，长度长的更符合条件。
+     * 思路：
+     * 传参数signature与所有resources.method+resources.url
+     * 字符进行 ANT 风格的路径匹配
+     *
+     * 匹配原则：
+     * 符合条件的如果完全匹配直接return,无完全匹配的比较*号位置，*号越靠后越符合匹配规则，
+     * 当*号位置相同时再比较整个字符长度，长度长的更符合条件。
      *
      * @param resources 资源集合
      * @param signature resources.method+":"+resources.url
@@ -225,43 +215,43 @@ public class ResourceServiceImpl implements ResourceService {
     public Resource getBestMatch(Collection<Resource> resources, String signature) {
         if (resources != null) {
             Iterator<Resource> it = resources.iterator();
-            Resource returnres = null;
+            Resource returnRes = null;
             AntPathMatcher matcher = new AntPathMatcher();
 
             while (it.hasNext()) {
                 Resource resource = it.next();
-                StringBuffer strbuf = new StringBuffer();
-                strbuf = strbuf.append(resource.getMethod().toString()).append(":").append(resource.getURL());
+                StringBuffer strBuf = new StringBuffer();
+                strBuf = strBuf.append(resource.getMethod().toString()).append(":").append(resource.getURL());
 
-                if (matcher.match(strbuf.toString(), signature)) {
+                if (matcher.match(strBuf.toString(), signature)) {
                     // 如果直接可以匹配上（无*） 直接返回
-                    if (strbuf.indexOf("*") < 0) {
+                    if (strBuf.indexOf("*") < 0) {
                         return resource;
                     }
                     // 把符合条件的第一条记录赋值给返回值
-                    if (returnres == null) {
-                        returnres = resource;
+                    if (returnRes == null) {
+                        returnRes = resource;
                     } else {
 
                         StringBuffer oldstrbuf = new StringBuffer();
                         oldstrbuf = oldstrbuf.append(resource.getMethod().toString()).append(":")
-                                .append(returnres.getURL());
+                                .append(returnRes.getURL());
                         // 比较本次值与返回值*的位置 *位置越靠后，越符合匹配值
-                        if (strbuf.indexOf("*") >= oldstrbuf.indexOf("*")) {
+                        if (strBuf.indexOf("*") >= oldstrbuf.indexOf("*")) {
                             // 特殊情况 如果* 位置相同 把长度更长的赋值给返回值
-                            if (strbuf.indexOf("*") == oldstrbuf.indexOf("*")) {
-                                if (strbuf.length() > oldstrbuf.length()) {
-                                    returnres = resource;
+                            if (strBuf.indexOf("*") == oldstrbuf.indexOf("*")) {
+                                if (strBuf.length() > oldstrbuf.length()) {
+                                    returnRes = resource;
                                 }
                             } else {
-                                returnres = resource;
+                                returnRes = resource;
                             }
                         }
                     }
                 }
             }
 
-            return returnres;
+            return returnRes;
         } else {
             return null;
         }

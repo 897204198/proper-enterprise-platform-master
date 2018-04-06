@@ -1,11 +1,9 @@
 package com.proper.enterprise.platform.api.auth.dao;
 
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.service.BaseService;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
 
@@ -32,10 +30,6 @@ public interface UserDao extends BaseService<User, String> {
     Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, EnableEnum enable);
 
     DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable);
-
-    boolean hasPermissionOfUser(User user, String reqUrl, RequestMethod requestMethod);
-
-    Collection<? extends Menu> getMenus(User user);
 
     void deleteAll();
 

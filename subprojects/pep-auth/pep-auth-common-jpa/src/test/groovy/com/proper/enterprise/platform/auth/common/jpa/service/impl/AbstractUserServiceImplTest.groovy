@@ -186,12 +186,8 @@ class AbstractUserServiceImplTest extends AbstractTest {
 
         mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
 
-        assert userService.checkPermission('/auth/users/{userId}/role/{roleId}',RequestMethod.POST) == null
-        assert userService.checkPermission('/auth/users/{userId}/role/{roleId}',RequestMethod.GET) == null
-
         User user = userService.groupHasTheUser(userGroupEntity, userEntity.getId())
         assert user.getId() == userEntity.getId()
-
     }
 
     @Test

@@ -14,7 +14,6 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.*;
 
@@ -224,20 +223,6 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
-    public UserGroup deleteGroupUserByUserIds(String groupId, List<String> userIds) {
-        UserGroup userGroup = get(groupId, EnableEnum.ENABLE);
-        if (userGroup == null) {
-            throw new ErrMsgException("can't save beacuse userGropu not find");
-        }
-        Collection<? extends User> collection = userService.getUsersByIds(userIds);
-        for (User user : collection) {
-            userGroup.remove(user);
-        }
-        userGroup = this.save(userGroup);
-        return userGroup;
-    }
-
-    @Override
     public UserGroup addGroupUserByUserIds(String groupId, List<String> userIds) {
         UserGroup userGroup = get(groupId, EnableEnum.ENABLE);
         if (userGroup == null) {
@@ -253,31 +238,12 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
-    public Collection<? extends User> getGroupUsers(String groupId) {
-        return getGroupUsers(groupId, EnableEnum.ALL, EnableEnum.ENABLE);
-    }
-
-    @Override
     public Collection<? extends User> getGroupUsers(String groupId, EnableEnum userGroupEnable, EnableEnum userEnable) {
         UserGroup userGroup = this.get(groupId, userGroupEnable);
         if (userGroup == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.get.failed"));
         }
         return userService.getFilterUsers(userGroup.getUsers(), userEnable);
-    }
-
-    @Override
-    public boolean hasPermissionOfUserGroup(UserGroup userGroup, String reqUrl, RequestMethod requestMethod) {
-        if (userGroup == null || !userGroup.isEnable() || !userGroup.isValid()) {
-            return false;
-        }
-        Collection<? extends Role> roles = userGroup.getRoles();
-        for (Role role : roles) {
-            if (roleService.hasPermissionOfRole(role, reqUrl, requestMethod)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

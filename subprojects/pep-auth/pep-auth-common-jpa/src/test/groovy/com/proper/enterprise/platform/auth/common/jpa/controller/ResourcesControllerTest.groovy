@@ -128,11 +128,6 @@ class ResourcesControllerTest extends AbstractTest {
         delete('/auth/resources?ids=test-u', HttpStatus.NO_CONTENT)
 
         resourceService.get('/test/url', RequestMethod.POST)
-
-        String localResource = '/test/aaa'
-        Resource resource11 = resourceService.get('/test/url', RequestMethod.POST)
-        Boolean res = resourceService.hasPermissionOfResource(resource11, localResource, RequestMethod.POST)
-        assert res == false
     }
 
     @NoTx

@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.auth.common.jpa.controller
 
-import com.proper.enterprise.platform.api.auth.enums.PermissionType
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.dictionary.MenuType
@@ -33,28 +32,25 @@ import org.springframework.web.bind.annotation.RequestMethod
 class MenusControllerTest extends AbstractTest {
 
     @Autowired
-    MenuType menuType
+    private MenuType menuType
     @Autowired
-    UserRepository userRepository
+    private UserRepository userRepository
     @Autowired
-    MenuRepository menuRepository
+    private MenuRepository menuRepository
     @Autowired
-    RoleRepository roleRepository
+    private RoleRepository roleRepository
     @Autowired
-    ResourceRepository resourceRepository
+    private ResourceRepository resourceRepository
     @Autowired
-    UserGroupRepository userGroupRepository
+    private UserGroupRepository userGroupRepository
     @Autowired
-    DataDicRepository dataDicRepository
-
+    private DataDicRepository dataDicRepository
     @Autowired
-    UserService userService
-
+    private UserService userService
     @Autowired
-    MenuService menusService
-
+    private MenuService menusService
     @Autowired
-    I18NService i18NService
+    private I18NService i18NService
 
     @Test
     @NoTx
@@ -290,16 +286,8 @@ class MenusControllerTest extends AbstractTest {
         menuEntity.add(resourceEntity2)
         menuRepository.save(menuEntity)
 
-        def res = JSONUtil.parse(get('/auth/menus/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-
+        def res = resOfGet('/auth/menus/resources', HttpStatus.OK)
         assert res.size() == 1
-
-    }
-
-    @Test
-    void testPer(){
-        PermissionType.USE.getClass()
-        PermissionType.ASSIGN.getClass()
     }
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/datadics.sql")
