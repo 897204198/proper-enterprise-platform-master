@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.jpa.service.impl
 
+import com.proper.enterprise.platform.api.auth.dao.ResourceDao
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity
@@ -26,6 +27,9 @@ class MenuServiceImplTest extends AbstractTest {
 
     @Autowired
     ResourceService resourceService
+
+    @Autowired
+    ResourceDao resourceDao
 
     @Test
     void getMenuTree() {
@@ -67,6 +71,9 @@ class MenuServiceImplTest extends AbstractTest {
         assert service.accessible(resourceService.get('test'), 'test1')
         assert service.accessible(resourceService.get('test-d'), 'test1')
         assert service.accessible(resourceService.get('test1'), 'test1')
+
+        assert !service.accessible(resourceDao.get('test-enable'), 'test1')
+        assert !service.accessible(resourceDao.get('test-valid'), 'test1')
     }
 
     @Test

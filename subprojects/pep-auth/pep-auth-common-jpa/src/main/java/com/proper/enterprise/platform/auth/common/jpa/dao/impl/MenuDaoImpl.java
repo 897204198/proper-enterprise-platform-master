@@ -54,19 +54,34 @@ public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String>
 
     @Override
     public Collection<? extends Menu> getMenus(User user) {
-        Set<Menu> menus = new HashSet<>();
-        for (Role role : user.getRoles()) {
-            menus.addAll(role.getMenus());
+        List<Menu> result = new ArrayList<>(0);
+        if (user.isEnable() && user.isValid()) {
+            Set<Menu> menus = new HashSet<>();
+            menus = addRoleMenus(user.getRoles(), menus);
+            for (UserGroup userGroup : user.getUserGroups()) {
+                if (userGroup.isEnable() && userGroup.isValid()) {
+                    menus = addRoleMenus(userGroup.getRoles(), menus);
+                }
+            }
+            result = new ArrayList<>(menus.size());
+            result.addAll(menus);
+            result.sort(new BeanComparator("parent", "sequenceNumber"));
         }
-        for (UserGroup userGroup : user.getUserGroups()) {
-            for (Role role : userGroup.getRoles()) {
-                menus.addAll(role.getMenus());
+        return result;
+    }
+
+    private Set<Menu> addRoleMenus(Collection<? extends Role> roles, Set<Menu> menus) {
+        for (Role role : roles) {
+            if (role.isEnable() && role.isValid()) {
+                Collection<? extends Menu> userMenus = role.getMenus();
+                for (Menu menu : userMenus) {
+                    if (menu.isEnable() && menu.isValid()) {
+                        menus.add(menu);
+                    }
+                }
             }
         }
-        List<Menu> result = new ArrayList<>(menus.size());
-        result.addAll(menus);
-        result.sort(new BeanComparator("parent", "sequenceNumber"));
-        return result;
+        return menus;
     }
 
     @Override

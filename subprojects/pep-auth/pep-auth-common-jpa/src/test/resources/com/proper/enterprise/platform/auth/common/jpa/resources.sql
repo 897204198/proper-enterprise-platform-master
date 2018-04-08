@@ -6,3 +6,5 @@ INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test-d', '删', 
 INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test', '无菜单', '/test', 'GET');
 INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test1', '无角色', '/test1', 'GET');
 INSERT INTO pep_auth_resources (id, name, url, method) VALUES ('test-menus', '查菜单', '/auth/menus', 'GET');
+INSERT INTO pep_auth_resources (id, name, url, method, enable, valid) VALUES ('test-enable', '启用停用', '/test-enable', 'GET', 'N', 'Y');
+INSERT INTO pep_auth_resources (id, name, url, method, enable, valid) VALUES ('test-valid', '逻辑删除', '/test-valid', 'GET', 'Y', 'N');

@@ -328,6 +328,11 @@ public class MenuServiceImpl implements MenuService {
             return true;
         }
 
+        // resource 是否有效
+        if (!resource.isEnable() || !resource.isValid()) {
+            return false;
+        }
+
         Collection<? extends Menu> menus = resource.getMenus();
         // 资源未被定义到菜单下时，无需授权即可访问
         if (CollectionUtil.isEmpty(menus)) {

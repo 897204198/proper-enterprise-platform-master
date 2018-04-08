@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.auth.common.neo4j.entity.MenuNodeEntity
 import com.proper.enterprise.platform.auth.common.neo4j.entity.ResourceNodeEntity
 import com.proper.enterprise.platform.auth.common.neo4j.entity.RoleNodeEntity
+import com.proper.enterprise.platform.auth.common.neo4j.entity.UserGroupNodeEntity
 import com.proper.enterprise.platform.auth.common.neo4j.entity.UserNodeEntity
 import com.proper.enterprise.platform.auth.common.neo4j.repository.*
 import com.proper.enterprise.platform.test.AbstractNeo4jTest
@@ -161,7 +162,18 @@ class MenuNodeServiceImplTest extends AbstractNeo4jTest {
         res8.setId('test-c')
         res8.setName('增')
 
-        resourceNodeRepository.save([res1, res2, res3, res4, res5, res6, res7, res8])
+        def res9 = new ResourceNodeEntity('/test-enable', RequestMethod.GET)
+        res9.setId('test-enable')
+        res9.setName('启用停用')
+        res9.setEnable(false)
+        res9.setValid(true)
+        def res10 = new ResourceNodeEntity('/test-valid', RequestMethod.GET)
+        res10.setId('test-valid')
+        res10.setName('逻辑删除')
+        res10.setEnable(true)
+        res10.setValid(false)
+
+        resourceNodeRepository.save([res1, res2, res3, res4, res5, res6, res7, res8, res9, res10])
 
         def user1 = new UserNodeEntity('t3', 'e10adc3949ba59abbe56e057f20f883e')
         user1.setId('test3')
@@ -265,6 +277,9 @@ class MenuNodeServiceImplTest extends AbstractNeo4jTest {
         assert service.accessible(resourceService.get('test'), 'test1')
         assert service.accessible(resourceService.get('test-d'), 'test1')
         assert service.accessible(resourceService.get('test1'), 'test1')
+
+        assert !service.accessible(resourceNodeRepository.findOne('test-enable'), 'test1')
+        assert !service.accessible(resourceNodeRepository.findOne('test-valid'), 'test1')
     }
 
     @Test
@@ -293,5 +308,70 @@ class MenuNodeServiceImplTest extends AbstractNeo4jTest {
         ids.clear()
         ids.add(resourceEntity.getId())
         assert resourceService.getByIds(ids).size() == 1
+    }
+
+    //@Test
+    //@NoTx TODO 待完成
+    void testGetMenus() {
+
+        def menu1 = new MenuNodeEntity('test1', '测试1', '/test1', null, null, 0)
+        menu1.setEnable(false)
+        def menu2 = new MenuNodeEntity('test2', '测试2', '/test2', null, null, 0)
+        menu2.setValid(false)
+        def menu3 = new MenuNodeEntity('test3', '测试3', '/test3', null, null, 0)
+        def menu4 = new MenuNodeEntity('test4', '测试4', '/test4', null, null, 0)
+        def menu5 = new MenuNodeEntity('test5', '测试5', '/test5', null, null, 0)
+        def menu6 = new MenuNodeEntity('test6', '测试6', '/test6', null, null, 0)
+        menu6.setValid(true)
+        menu6.setParent(menu3)
+
+        menuNodeRepository.save([menu1, menu2, menu3, menu4, menu5, menu6])
+
+        def role1 = new RoleNodeEntity('testrole1')
+        role1.setId('role1')
+        role1.setDescription('des1')
+        role1.add(menu1)
+        role1.add(menu2)
+        role1.add(menu3)
+        role1.add(menu4)
+        role1.add(menu5)
+        role1.add(menu6)
+        def role2 = new RoleNodeEntity('testrole2')
+        role2.setId('role2')
+        role2.setDescription('des2')
+        roleRepository.save([role1, role2])
+
+        UserGroupNodeEntity userGroupEntity = new UserGroupNodeEntity()
+        userGroupEntity.setId("group1")
+        userGroupEntity.setName("group-1")
+        userGroupEntity.setSeq(1)
+        userGroupEntity.setDescription("description1")
+        userGroupEntity.add(role1)
+        userGroupEntity.setEnable(false)
+        userGroupNodeRepository.save(userGroupEntity)
+
+        UserGroupNodeEntity userGroupEntity2 = new UserGroupNodeEntity()
+        userGroupEntity2.setId("group2")
+        userGroupEntity2.setName("group-2")
+        userGroupEntity2.setSeq(1)
+        userGroupEntity2.setDescription("description2")
+        userGroupEntity2.add(role2)
+        userGroupNodeRepository.save(userGroupEntity2)
+
+        def user4 = new UserNodeEntity('t3', 'e10adc3949ba59abbe56e057f20f883e')
+        user4.setId('test4')
+        user4.setSuperuser(false)
+        user4.setPepDtype('UserEntity')
+        user4.setName('a')
+        user4.setPhone('12345678903')
+        user4.setEmail('test4@test.com')
+        user4.setEnable(true)
+        user4.add(userGroupEntity)
+        user4.add(userGroupEntity2)
+
+        userNodeRepository.save([user4])
+
+        mockUser('test4', 't4')
+        assert service.getMenus().size() == 4
     }
 }
