@@ -13,10 +13,18 @@ Proper Enterprise Platform Developer Guidelines
 
 ### 使用静态资源
 
-假设前台资源根目录为ng2
-- 编辑ng2/index.html，搜索`<base href=`，将其修改为`<base href="/ng2/">`。
-- 在index.html中搜索src="main，查看main.*.js全部名称，如main.7629237391c2c56fcf3d.bundle.js
-- 编辑main.*.bundle.js，搜索./api将{context:"url"}中的url替换为本地服务
+- 准备一个nginx 将静态资源包解压到html目录，将静态资源粘贴到html根目录
+- 配置nginx，直接访问即可用。
+
+		location ^~ /workflow {
+		    #服务端流程静态文件存放地址（具体地址自行修改）
+			proxy_pass http://127.0.0.1:8082/pep/workflow;
+		}
+		
+		location ^~ /pep {
+		    #服务端地址（具体地址自行修改）
+			proxy_pass http://127.0.0.1:8082/pep;
+		}
 
 内嵌 servlet 容器开发及调试
 ------------------------
