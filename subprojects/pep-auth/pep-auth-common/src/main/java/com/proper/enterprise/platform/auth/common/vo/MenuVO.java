@@ -32,7 +32,7 @@ public class MenuVO extends BaseVO implements Menu {
     /**
      * 父菜单
      */
-    private MenuVO parent;
+    private Menu parent;
 
     /**
      * 上级菜单 id
@@ -130,7 +130,9 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public void setParent(Menu parent) {
-        this.parent = (MenuVO)parent;
+        if (parent != null) {
+            this.parent = parent;
+        }
     }
 
     @Override

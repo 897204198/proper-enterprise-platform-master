@@ -103,8 +103,9 @@ class MenusControllerTest extends AbstractTest {
                 .getResponse().getContentAsString(), Map.class)
         assert value.get('name') == 'test123'
 
-
-
+        def resourcesOfMenu = resOfGet("/auth/menus/${menuObj['id']}/resources", HttpStatus.OK)
+        assert resourcesOfMenu.size() > 0
+        assert resourcesOfMenu.get(0).name == 'test123'
 
         def childMenu = [:]
         childMenu['icon'] = 'child'
@@ -146,37 +147,38 @@ class MenusControllerTest extends AbstractTest {
         menuObj = JSONUtil.parse(get('/auth/menus/' + id,  HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert menuObj.get("icon") == 'test_icon_change'
         def resList = JSONUtil.parse(get('/auth/menus/' + id + '/resources',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert resList.size() == 1
-        assert resList.get(0).id == 'test-c'
+        assert resList.size() == 2
+        assert resList.get(1).id == 'test-c'
         // delete menu
         assert delete('/auth/menus?ids=' + id, HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.menu.delete.relation.resource")
         // delete menu's role
         delete('/auth/menus/' + id + '/resource/test-c', HttpStatus.NO_CONTENT)
         resList = JSONUtil.parse(get('/auth/menus/' + id + '/resources',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert resList.size() == 0
+        assert resList.size() == 1
 
         // role add menu
         def addReq = [:]
-        addReq['ids'] = id
+        addReq['ids'] = [id]
         post('/auth/roles/role1/menus', JSONUtil.toJSON(addReq), HttpStatus.CREATED)
         resList = JSONUtil.parse(get('/auth/menus/' + id + '/roles',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 1
         assert resList.get(0).id == 'role1'
         // delete menu
         assert delete('/auth/menus?ids=' + id, HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
-            i18NService.getMessage("pep.auth.common.menu.delete.relation.role")
+            i18NService.getMessage("pep.auth.common.menu.delete.relation.resource")
         // delete role's menu
         delete('/auth/roles/role1/menus?ids=' + id, HttpStatus.NO_CONTENT)
         resList = JSONUtil.parse(get('/auth/menus/' + id + '/roles',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 0
 
-        delete('/auth/menus?ids=' + id, HttpStatus.NO_CONTENT)
+        delete('/auth/menus?ids=' + id, HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+                i18NService.getMessage("pep.auth.common.menu.delete.relation.resource")
         get('/auth/menus/' + id,  HttpStatus.OK).getResponse().getContentAsString() == ''
 
         def parents = JSONUtil.parse(get('/auth/menus/parents',  HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
-        assert parents.size() == 5
+        assert parents.size() == 6
         assert parents.get(0).size() == 12
 
     }
@@ -259,7 +261,6 @@ class MenusControllerTest extends AbstractTest {
 
     @Test
     void testMenuResources(){
-        tearDown()
         mockUser('test1', 't1', 'pwd', true)
 
         ResourceEntity resourceEntity1 = new ResourceEntity()
@@ -287,7 +288,10 @@ class MenusControllerTest extends AbstractTest {
         menuRepository.save(menuEntity)
 
         def res = resOfGet('/auth/menus/resources', HttpStatus.OK)
-        assert res.size() == 1
+        assert res.size() == 15
+        assert res.get(2).name == 'test_namea'
+        assert res.get(2).resources.name.get(0)== 'name11'
+        assert res.get(2).resources.name.get(1)== 'name22'
     }
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/datadics.sql")

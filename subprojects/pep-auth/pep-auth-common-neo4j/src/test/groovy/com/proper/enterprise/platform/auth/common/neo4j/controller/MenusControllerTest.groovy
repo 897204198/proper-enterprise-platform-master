@@ -158,7 +158,7 @@ class MenusControllerTest extends AbstractNeo4jTest {
         role.setName("name")
         roleRepository.save(role)
         def addReq = [:]
-        addReq['ids'] = id
+        addReq['ids'] = [id]
         post('/auth/roles/role1/menus', JSONUtil.toJSON(addReq), HttpStatus.CREATED)
         resList = JSONUtil.parse(get('/auth/menus/' + id + '/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 1

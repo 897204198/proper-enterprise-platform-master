@@ -122,7 +122,12 @@ class UserGroupControllerTest extends AbstractTest {
 
         post(URI + '/' + id1 + '/user/' + u1.id, '', HttpStatus.CREATED)
         post(URI + '/' + id1 + '/user/' + u2.id, '', HttpStatus.CREATED)
+
+        // add role to group and check could find the group from role
         post(URI + '/' + id1 + '/role/role1', '', HttpStatus.CREATED)
+        def groups = resOfGet('/auth/roles/role1/user-groups', HttpStatus.OK)
+        assert groups.size() > 0
+        assert groups.get(0).name == 'group-1'
 
         single = JSONUtil.parse(get(URI + '/' + id1, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert single.size() == 5

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -70,7 +71,7 @@ public class RolesController extends BaseController {
     @SuppressWarnings("unchecked")
     @PostMapping(path = "/{roleId}/menus")
     public ResponseEntity<Role> addRoleMenus(@PathVariable String roleId, @RequestBody Map<String, Object> reqMap) {
-        String ids = (String) reqMap.get("ids");
+        List<String> ids = (List<String>)reqMap.get("ids");
         return responseOfPost(roleService.addRoleMenus(roleId, ids));
     }
 
@@ -89,7 +90,7 @@ public class RolesController extends BaseController {
     @SuppressWarnings("unchecked")
     @PostMapping(path = "/{roleId}/resources")
     public ResponseEntity<Role> addRoleResources(@PathVariable String roleId, @RequestBody Map<String, Object> reqMap) {
-        String ids = (String) reqMap.get("ids");
+        List<String> ids = (List<String>)reqMap.get("ids");
         return responseOfPost(roleService.addRoleResources(roleId, ids));
     }
 

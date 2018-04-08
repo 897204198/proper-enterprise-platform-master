@@ -149,7 +149,7 @@ public interface RoleService {
      * @param ids    以 , 分隔的菜单ID列表
      * @return 角色
      */
-    Role addRoleMenus(String roleId, String ids);
+    Role addRoleMenus(String roleId, List<String> ids);
 
     /**
      * 角色删除菜单列表
@@ -182,7 +182,7 @@ public interface RoleService {
      * @param ids    以 , 分隔的资源ID列表
      * @return 角色
      */
-    Role addRoleResources(String roleId, String ids);
+    Role addRoleResources(String roleId, List<String> ids);
 
     /**
      * 角色删除资源列表

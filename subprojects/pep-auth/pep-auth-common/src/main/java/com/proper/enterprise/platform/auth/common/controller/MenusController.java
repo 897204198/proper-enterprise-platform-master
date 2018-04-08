@@ -102,10 +102,6 @@ public class MenusController extends BaseController {
 
     @PostMapping(path = "/{menuId}/resources")
     public ResponseEntity<Resource> postMenuResource(@PathVariable String menuId, @RequestBody ResourceVO resourceReq) {
-        Menu menu = service.get(menuId, EnableEnum.ALL);
-        if (menu != null) {
-            menu.setId(menuId);
-        }
-        return responseOfPost(service.postMenuResource(resourceReq));
+        return responseOfPost(service.addResourceOfMenu(menuId, resourceReq));
     }
 }

@@ -85,15 +85,16 @@ class RolesControllerTest extends AbstractTest {
         updateReq['name'] = 'updateReq_test_name'
         updateReq['description'] = 'updateReq_test_description'
         updateReq['enable'] = true
-//        req['parentId'] = 'updateReq_test_parentId'
+        updateReq['parentId'] = 'role1'
         put('/auth/roles/' + id, JSONUtil.toJSON(updateReq), HttpStatus.OK)
         role = JSONUtil.parse(get('/auth/roles/' + id, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert role.get('description') == 'updateReq_test_description'
         assert role.get('name') == 'updateReq_test_name'
+        assert role.get('parentId') == 'role1'
+        assert role.get('parentName') == 'testrole'
 
         // role add menu
-        def addReq = [:]
-        addReq['ids'] = 'a1,a2'
+        def addReq = ['ids': ['a1', 'a2']]
         post('/auth/roles/' + id + '/menus', JSONUtil.toJSON(addReq), HttpStatus.CREATED)
         def resList = JSONUtil.parse(get('/auth/roles/' + id + '/menus', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 2
@@ -105,8 +106,7 @@ class RolesControllerTest extends AbstractTest {
         assert resList.size() == 0
 
         // role add resource
-        def addResourceReq = [:]
-        addResourceReq['ids'] = 'test-g,test-d'
+        def addResourceReq = ['ids': ['test-g', 'test-d']]
         post('/auth/roles/' + id + '/resources', JSONUtil.toJSON(addResourceReq), HttpStatus.CREATED)
         resList = JSONUtil.parse(get('/auth/roles/' + id + '/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 2
@@ -127,6 +127,9 @@ class RolesControllerTest extends AbstractTest {
 
         // userGroup add role
         post('/auth/user-groups/group1/role/' + id, '', HttpStatus.CREATED)
+        def groups = resOfGet('/auth/roles/' + id + '/user-groups', HttpStatus.OK)
+        assert groups.size() > 0
+
         // delete userGroup's role
         delete('/auth/user-groups/group1/role/' + id, HttpStatus.NO_CONTENT)
         resList = JSONUtil.parse(get('/auth/roles/' + id + '/user-groups', HttpStatus.OK).getResponse().getContentAsString(), List.class)
@@ -176,8 +179,7 @@ class RolesControllerTest extends AbstractTest {
     void addOrDeleteRoleMenusErro(){
         mockUser('test1','t1', 'pwd')
         def id = "id"
-        def addReq = [:]
-        addReq['ids'] = 'a4,a5'
+        def addReq = ['ids': ['a4', 'a5']]
         assert post('/auth/roles/' + id + '/menus', JSONUtil.toJSON(addReq), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
            i18NService.getMessage("pep.auth.common.role.get.failed")
         assert delete('/auth/roles/' + id + '/menus?ids=a1,a2', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
@@ -226,11 +228,6 @@ class RolesControllerTest extends AbstractTest {
         assert result.size() == 3
         assert get('/auth/roles/sdlfjsdf/users', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common" +
             ".role.get.failed")
-
-        result = JSONUtil.parse(get('/auth/roles/' + roleEntity.getId() + '/user-groups', HttpStatus.OK).getResponse().getContentAsString(),
-            List.class)
-        assert result.size() == 2
-
     }
 
     @Test
@@ -283,16 +280,15 @@ class RolesControllerTest extends AbstractTest {
         resourceEntity4.setMethod(RequestMethod.PUT)
         resourceEntity4 = resourceRepository.saveAndFlush(resourceEntity4)
 
-        Map<String, Object> reqMap = new HashMap<>()
-        reqMap.put('ids', resourceEntity3.getId() + ',' + resourceEntity4.getId())
+        def reqMap = ['ids': [resourceEntity3.getId() + ',' + resourceEntity4.getId()]]
         result = JSONUtil.parse(post('/auth/roles/' + roleEntity.getId() + '/resources', JSONUtil.toJSON(reqMap), HttpStatus.CREATED).getResponse()
             .getContentAsString(), java.lang.Object.class)
         assert result.get('id') == roleEntity.getId()
         assert post('/auth/roles/sdfsdf/resources', JSONUtil.toJSON(reqMap), HttpStatus.BAD_REQUEST).getResponse()
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
 
-        assert delete('/auth/roles/' + roleEntity.getId() + '/resources?ids='+reqMap.get('ids'), HttpStatus.NO_CONTENT)
-        assert delete('/auth/roles/sdfasdf/resources?ids='+reqMap.get('ids'), HttpStatus.BAD_REQUEST).getResponse()
+        assert delete('/auth/roles/' + roleEntity.getId() + '/resources?ids='+reqMap.get('ids').join(','), HttpStatus.NO_CONTENT)
+        assert delete('/auth/roles/sdfasdf/resources?ids='+reqMap.get('ids').join(','), HttpStatus.BAD_REQUEST).getResponse()
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
     }
 

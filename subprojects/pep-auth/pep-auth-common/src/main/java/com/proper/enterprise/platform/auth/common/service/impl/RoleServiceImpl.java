@@ -217,25 +217,23 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role addRoleMenus(String roleId, String ids) {
+    public Role addRoleMenus(String roleId, List<String> ids) {
         Role role = this.get(roleId);
         if (role == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
-        if (StringUtil.isNotNull(ids)) {
-            Collection<Menu> menuList = new ArrayList<>();
-            String[] idArr = ids.split(",");
-            for (String id : idArr) {
-                menuList.add(menuService.get(id));
-                for (Menu detail : role.getMenus()) {
-                    if (detail.getId().equals(id)) {
-                        throw new ErrMsgException("pep.auth.common.role.has.menu");
-                    }
+        Collection<Menu> menuList = new ArrayList<>();
+        for (String id : ids) {
+            menuList.add(menuService.get(id));
+            for (Menu detail : role.getMenus()) {
+                if (detail.getId().equals(id)) {
+                    throw new ErrMsgException("pep.auth.common.role.has.menu");
                 }
             }
-            role.add(menuList);
-            role = this.save(role);
         }
+        role.add(menuList);
+        role = this.save(role);
+
         return role;
     }
 
@@ -272,15 +270,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role addRoleResources(String roleId, String ids) {
+    public Role addRoleResources(String roleId, List<String> ids) {
         Role role = roleDao.get(roleId, EnableEnum.ENABLE);
         if (role == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
         }
-        if (StringUtil.isNotNull(ids)) {
-            String[] idArr = ids.split(",");
+        if (ids != null) {
             Collection<Resource> resourceList = new ArrayList<>();
-            for (String id : idArr) {
+            for (String id : ids) {
                 resourceList.add(resourceService.get(id));
             }
             role.addResources(resourceList);
@@ -318,7 +315,12 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<? extends UserGroup> getRoleUserGroups(String roleId, EnableEnum roleEnable, EnableEnum userGroupEnable) {
-        return roleDao.getRoleUserGroups(roleId);
+        Role role = roleDao.get(roleId, roleEnable);
+        if (role == null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
+        }
+        Collection<? extends UserGroup> userGroups = role.getUserGroups();
+        return userGroups;
     }
 
     @Override

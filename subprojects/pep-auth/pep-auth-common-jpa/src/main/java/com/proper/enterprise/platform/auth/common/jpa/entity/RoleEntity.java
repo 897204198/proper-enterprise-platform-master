@@ -81,11 +81,15 @@ public class RoleEntity extends BaseEntity implements Role {
     private Collection<ResourceEntity> resourcesEntities = new ArrayList<>();
 
     public String getParentId() {
-        return parentId;
+        return parent != null ? parent.getId() : parentId;
     }
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public String getParentName() {
+        return parent != null ? parent.getName() : "";
     }
 
     @Override

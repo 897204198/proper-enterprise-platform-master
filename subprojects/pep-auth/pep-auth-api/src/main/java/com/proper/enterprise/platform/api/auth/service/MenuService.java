@@ -137,7 +137,7 @@ public interface MenuService {
      * 菜单添加资源
      * @return 菜单
      */
-    Resource postMenuResource(Resource resourceReq);
+    Resource addResourceOfMenu(String menuId, Resource resourceReq);
 
     /**
      * 菜单删除资源

@@ -183,7 +183,7 @@ class RolesControllerTest extends AbstractNeo4jTest {
 
         // role add menu
         def addReq = [:]
-        addReq['ids'] = 'a1,a2'
+        addReq['ids'] = ['a1','a2']
         post('/auth/roles/' + id + '/menus', JSONUtil.toJSON(addReq), HttpStatus.CREATED)
         def resList = JSONUtil.parse(get('/auth/roles/' + id + '/menus', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 2
@@ -196,7 +196,7 @@ class RolesControllerTest extends AbstractNeo4jTest {
 
         // role add resource
         def addResourceReq = [:]
-        addResourceReq['ids'] = 'test-g,test-d'
+        addResourceReq['ids'] = ['test-g','test-d']
         post('/auth/roles/' + id + '/resources', JSONUtil.toJSON(addResourceReq), HttpStatus.CREATED)
         resList = JSONUtil.parse(get('/auth/roles/' + id + '/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 2
@@ -252,7 +252,7 @@ class RolesControllerTest extends AbstractNeo4jTest {
         loginUser()
         def id = "id"
         def addReq = [:]
-        addReq['ids'] = 'a4,a5'
+        addReq['ids'] = ['a4,a5']
         assert post('/auth/roles/' + id + '/menus', JSONUtil.toJSON(addReq), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.role.get.failed")
         assert delete('/auth/roles/' + id + '/menus?ids=a1,a2', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
@@ -305,11 +305,6 @@ class RolesControllerTest extends AbstractNeo4jTest {
         assert result.size() == 3
         assert get('/auth/roles/sdlfjsdf/users', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common" +
             ".role.get.failed")
-
-        result = JSONUtil.parse(get('/auth/roles/' + roleEntity.getId() + '/user-groups', HttpStatus.OK).getResponse().getContentAsString(),
-            List.class)
-        assert result.size() == 2
-
     }
 
     @Test
@@ -363,7 +358,7 @@ class RolesControllerTest extends AbstractNeo4jTest {
         resourceEntity4 = resourceRepository.save(resourceEntity4)
 
         Map<String, Object> reqMap = new HashMap<>()
-        reqMap.put('ids', resourceEntity3.getId() + ',' + resourceEntity4.getId())
+        reqMap['ids'] = [resourceEntity3.getId(), resourceEntity4.getId()]
         result = JSONUtil.parse(post('/auth/roles/' + roleEntity.getId() + '/resources', JSONUtil.toJSON(reqMap), HttpStatus.CREATED).getResponse()
             .getContentAsString(), java.lang.Object.class)
         assert result.get('id') == roleEntity.getId()

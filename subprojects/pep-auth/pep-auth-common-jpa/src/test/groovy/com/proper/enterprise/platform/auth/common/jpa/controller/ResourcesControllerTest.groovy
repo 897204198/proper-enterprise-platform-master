@@ -109,7 +109,7 @@ class ResourcesControllerTest extends AbstractTest {
 
         // role add resource
         def addResourceReq = [:]
-        addResourceReq['ids'] = 'test-u'
+        addResourceReq['ids'] = ['test-u']
         post('/auth/roles/role1/resources', JSONUtil.toJSON(addResourceReq), HttpStatus.CREATED)
         resList = JSONUtil.parse(get('/auth/resources/test-u/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 1
@@ -136,7 +136,7 @@ class ResourcesControllerTest extends AbstractTest {
         mockUser('test5', 't5', 'pwd', true)
 
         def addResource = [:]
-        addResource['ids'] = 'test-u'
+        addResource['ids'] = ['test-u']
 
         post('/auth/roles/role1/resources', JSONUtil.toJSON(addResource), HttpStatus.CREATED)
         delete('/auth/resources?ids=test-u', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource" +

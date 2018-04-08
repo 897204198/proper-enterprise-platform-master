@@ -261,10 +261,9 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public Resource postMenuResource(Resource resourceReq) {
+    public Resource addResourceOfMenu(String menuId, Resource resourceReq) {
         String id = resourceReq.getId();
         Resource resource = resourceDao.getNewResourceEntity();
-
         if (StringUtil.isNotNull(id)) {
             resource = resourceDao.get(id, EnableEnum.ALL);
         }
@@ -276,7 +275,11 @@ public class MenuServiceImpl implements MenuService {
         if (StringUtil.isNotNull(resourceCode)) {
             resource.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
         }
-        return resourceDao.save(resource);
+        Resource resourcesOfSave = resourceDao.save(resource);
+        Menu menu = this.get(menuId, EnableEnum.ALL);
+        menu.add(resourcesOfSave);
+        menuDao.save(menu);
+        return resourcesOfSave;
     }
 
     @Override
@@ -295,7 +298,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Collection<? extends Resource> getMenuResources(String menuId, EnableEnum menuEnable, EnableEnum resourceEnable) {
         Collection<Resource> filterResources = new ArrayList<>();
-        Menu menu = this.get(menuId, menuEnable);
+        Menu menu = this.get(menuId, EnableEnum.ALL);
         if (menu != null) {
             Collection<? extends Resource> resources = menu.getResources();
             for (Resource resource : resources) {
