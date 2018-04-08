@@ -111,5 +111,30 @@ var appconfig = {
         "msg_save_days" : 3,
         "max_send_count" : 5,
         "secretKey" : "b2024e00064bc5d8db70fdee087eae4f"
+    },"MobileOAPr" : {
+        "device" : {
+            "android" : {
+                "huawei" : {
+                    "the_app_id" : "100244217",
+                    "the_app_secret" : "794c3813d787d0a0f717908a130835ce"
+                },
+                "xiaomi" : {
+                    "the_app_secret" : "YEyyT4YeTaVjMipXfmsNeg==",
+                    "the_app_package" : "com.proper.icmp.pr"
+                }
+            },
+            "ios" : {
+                "apns" : {
+                    "env_product" : true,
+                    "keystore_password" : "1234",
+                    "keystore_filename" : "icmp_pr_pro.p12",
+                    "topic" : "com.proper.icmp.pr"
+                }
+            }
+        },
+        "desc" : "掌上办公测试",
+        "msg_save_days" : 3,
+        "max_send_count" : 5,
+        "secretKey" : "b2024e00064bc5d8db70fdee087eae4f"
     }
 };
