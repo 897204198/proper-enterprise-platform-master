@@ -221,6 +221,7 @@ class MenusControllerTest extends AbstractNeo4jTest {
             menuNodeEntity.setDescription('sas' + i)
             menuNodeEntity.setRoute('sses' + i + '@ww.com')
             menuNodeEntity.setEnable(true)
+            menuNodeEntity.setSequenceNumber(i)
             repository.save(menuNodeEntity)
         }
 
@@ -239,8 +240,8 @@ class MenusControllerTest extends AbstractNeo4jTest {
                 .getContentAsString(), DataTrunk.class)
         assert resAll.data.size() == 2
         assert resAll.count == 20
-        assert resAll.data[0].get("name") == 'sun13s1'
-        assert resAll.data[1].get("name") == 'sun14s1'
+        assert resAll.data[0].get("name") == 'sun4s1'
+        assert resAll.data[1].get("name") == 'sun5s1'
 
         resAll = JSONUtil.parse(get('/auth/menus?name=&description=&route=48585688&menuEnable=&pageNo=3&pageSize=2', HttpStatus.OK).getResponse()
                 .getContentAsString(), DataTrunk.class)

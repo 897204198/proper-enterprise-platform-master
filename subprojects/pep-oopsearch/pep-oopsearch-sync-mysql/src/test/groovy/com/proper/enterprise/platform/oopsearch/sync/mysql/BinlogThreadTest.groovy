@@ -219,8 +219,16 @@ class BinlogThreadTest extends AbstractTest{
             e.printStackTrace()
         }
         // mongo sync
-        sleep(5000)
-        List<SearchDocument> result = syncMongoRepository.findAll()
+//        sleep(5000)
+        List<SearchDocument> result = new ArrayList<>()
+        for(i in 1..20){
+            result = syncMongoRepository.findAll()
+            if (result.size() > 0) {
+                break
+            } else {
+                sleep(1000)
+            }
+        }
         assert result.size() > 0
         println "mongo inserted:" + result.size()
 
@@ -242,15 +250,22 @@ class BinlogThreadTest extends AbstractTest{
             e.printStackTrace()
         }
         // mongo sync
-        sleep(5000)
-        result = syncMongoRepository.findAll()
+//        sleep(5000)
         boolean hasUpdated = false
-        for (SearchDocument searchDocument:result){
-            if (searchDocument.getCon().equalsIgnoreCase("张二")) {
-                hasUpdated = true
+        for(i in 1..20){
+            result = syncMongoRepository.findAll()
+            for (SearchDocument searchDocument:result){
+                if (searchDocument.getCon().equalsIgnoreCase("张二")) {
+                    hasUpdated = true
+                }
+                if (hasUpdated) {
+                    break
+                }
             }
             if (hasUpdated) {
                 break
+            } else {
+                sleep(1000)
             }
         }
         assert hasUpdated
@@ -273,14 +288,14 @@ class BinlogThreadTest extends AbstractTest{
             e.printStackTrace()
         }
         // mongo sync
-        sleep(5000)
-        result = syncMongoRepository.findAll()
-        if (result.size() > 0) {
-            for (SearchDocument temp:result) {
-                println "--------con:" + temp.getCon()
-            }
-            sleep(5000)
+//        sleep(6000)
+        for(i in 1..20){
             result = syncMongoRepository.findAll()
+            if (result.size() == 0) {
+                break
+            } else {
+                sleep(1000)
+            }
         }
         assert result.size() == 0
         println "after delete mongo size:" + result.size()

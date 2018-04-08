@@ -50,12 +50,20 @@ class H2SyncJobServiceTest extends AbstractTest{
         initDemoDeptData()
         initDemoTestData()
 
-        sleep(10000)//等待定时任务自动同步数据到mongo
+//        sleep(5000)//等待定时任务自动同步数据到mongo
 //        h2SyncJobService.fullSyncMongo()
         println "------开始查询mongo-----"
-        int count = syncMongoRepository.findAll().size()
+        int count = 0
         println "------查询mongo结束，count："+count+"-----"
         // 5 cols * 3 rows - 1 duplicated value + 3 cols from DemoTest
+        for(i in 1..20){
+            count = syncMongoRepository.findAll().size()
+            if (count == 5 * 3 - 1 + 3) {
+                break
+            } else {
+                sleep(1000)
+            }
+        }
         assert count == 5 * 3 - 1 + 3
     }
 

@@ -118,7 +118,7 @@ public class Neo4jMenuDaoImpl extends Neo4jServiceSupport<Menu, MenuNodeReposito
     @Override
     public DataTrunk<? extends Menu> findMenusPagniation(String name, String description, String route, EnableEnum enable, String parentId) {
         SortOrder sortOrder = new SortOrder();
-        sortOrder.add(SortOrder.Direction.ASC, "name");
+        sortOrder.add(SortOrder.Direction.ASC, "sequenceNumber");
         return this.findPage(MenuNodeEntity.class, buildUserFilters(name, description, route, enable, parentId), sortOrder);
     }
 

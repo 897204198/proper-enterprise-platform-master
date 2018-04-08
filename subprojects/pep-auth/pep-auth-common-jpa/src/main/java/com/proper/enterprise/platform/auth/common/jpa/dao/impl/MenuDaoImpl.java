@@ -120,7 +120,7 @@ public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String>
 
     @Override
     public DataTrunk<? extends Menu> findMenusPagniation(String name, String description, String route, EnableEnum enable, String parentId) {
-        return this.findPage(buildUserSpecification(name, description, route, enable, parentId), new Sort(Sort.Direction.ASC, "name"));
+        return this.findPage(buildUserSpecification(name, description, route, enable, parentId), new Sort("parent", "sequenceNumber"));
     }
 
     private Specification<Menu> buildUserSpecification(String name, String description, String route, EnableEnum enable, String parentId) {
