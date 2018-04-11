@@ -155,8 +155,10 @@ public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String>
                 if (null != enable && EnableEnum.ALL != enable) {
                     predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
                 }
-                if (StringUtil.isNotNull(parentId)) {
+                if (StringUtil.isNotNull(parentId) && !"-1".equals(parentId)) {
                     predicates.add(cb.equal(root.get("parent").get("id"), parentId));
+                } else if ("-1".equals(parentId)) {
+                    predicates.add(cb.isNull(root.get("parent").get("id")));
                 }
                 predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));

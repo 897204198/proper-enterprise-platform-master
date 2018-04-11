@@ -315,4 +315,29 @@ class MenusControllerTest extends AbstractTest {
         resourceRepository.deleteAll()
         dataDicRepository.deleteAll()
     }
+
+    @Test
+    void testMenuOrder(){
+        mockUser('test1', 't1', 'pwd', true)
+
+        // 初始化列表测试
+        def value = JSONUtil.parse(get('/auth/menus?name=&description=&route=&enable=&parentId=-1&pageNo=1&pageSize=20' ,HttpStatus.OK).getResponse()
+            .getContentAsString(), DataTrunk.class)
+        assert value.data.size() == 2
+        assert value.data[0].name == '应用1'
+        assert value.data[1].name == 'CRUD'
+
+        // 分页测试
+        value = JSONUtil.parse(get('/auth/menus?name=&description=&route=&enable=&parentId=-1&pageNo=2&pageSize=1' ,HttpStatus.OK).getResponse()
+            .getContentAsString(), DataTrunk.class)
+        assert value.data.size() == 1
+        assert value.data[0].name == 'CRUD'
+
+        // 点击节点后列表页面查询测试
+        value = JSONUtil.parse(get('/auth/menus?name=&description=&route=&enable=&parentId=a1&pageNo=1&pageSize=10' ,HttpStatus.OK).getResponse()
+            .getContentAsString(), DataTrunk.class)
+        assert value.data.size() == 2
+        assert value.data[0].name == '菜单1'
+        assert value.data[1].name == '菜单2'
+    }
 }
