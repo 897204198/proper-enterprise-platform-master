@@ -61,7 +61,7 @@ subprojects {
 
     group = 'com.proper.enterprise.platform'
     // Needs to change version code in core-utils.properties TOGETHER!!
-    version = '0.4.0'
+    version = '0.4.1-SNAPSHOT'
     test {
         reports.html.enabled = false
         reports.junitXml.enabled = false
