@@ -272,6 +272,8 @@ class MenusControllerTest extends AbstractTest {
         ResourceEntity resourceEntity2 = new ResourceEntity()
         resourceEntity2.setURL("/foo22/bar")
         resourceEntity2.setName("name22")
+        resourceEntity2.setEnable(false)
+        resourceEntity2.setValid(false)
         resourceEntity2.setMethod(RequestMethod.POST)
         resourceEntity2 = resourceRepository.save(resourceEntity2)
 
@@ -290,8 +292,9 @@ class MenusControllerTest extends AbstractTest {
         def res = resOfGet('/auth/menus/resources', HttpStatus.OK)
         assert res.size() == 15
         assert res.get(2).name == 'test_namea'
-        assert res.get(2).resources.name.get(0)== 'name11'
-        assert res.get(2).resources.name.get(1)== 'name22'
+        assert res.get(2).resources.size() == 1
+        assert res.get(2).resources.name.get(0) == 'name11'
+        assert !res.contains('name22')
     }
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/datadics.sql")

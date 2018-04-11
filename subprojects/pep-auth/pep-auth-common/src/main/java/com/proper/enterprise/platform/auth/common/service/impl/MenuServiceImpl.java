@@ -382,9 +382,11 @@ public class MenuServiceImpl implements MenuService {
             Collection<ResourceVO> resList = new ArrayList<>();
             Collection<Resource> resourceList = (Collection<Resource>) menu.getResources();
             for (Resource resource : resourceList) {
-                ResourceVO resourceDetail = new ResourceVO();
-                BeanUtils.copyProperties(resource, resourceDetail);
-                resList.add(resourceDetail);
+                if (resource != null && resource.isEnable() && resource.isValid()) {
+                    ResourceVO resourceDetail = new ResourceVO();
+                    BeanUtils.copyProperties(resource, resourceDetail);
+                    resList.add(resourceDetail);
+                }
             }
             detail.setResources(resList);
             menusResources.add(detail);
