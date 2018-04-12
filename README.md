@@ -89,7 +89,7 @@ nexusPassword=你的密码
 构建好的 `war` 包会输出到 `pep-webapp` 项目根路径下的 `build/libs` 路径内。
 
 
-产品发布
+产品部署
 -------
 
 产品默认运行在 tomcat 内，并需要对其进行一定的调整。
@@ -112,6 +112,87 @@ tomcat 的 docker 镜像需使用 [docker-tomcat](https://github.com/propersoft-
 - 版本号第二位表示每次需求变更，版本号生成后，要把版本号记录到需求文档上，方便下次查找
 - 版本号第三位表示bug等非需求修改
 - 前台、后台、raml工程版本号要保持一致，方便三个工程对应。例如第一次需求变更版本号为1.1.0，只修改了前台工程，则前台工程版本号为1.1.0，后台和raml未修改依然为原版本号；第二次需求变更版本号为1.2.0，修改了前台和后台工程，则前台和后台工程版本号变为1.2.0，此处后台工程跳过一个版本直接更新成最新版本
+
+
+版本发布流程
+-----------
+
+### 平台
+
+* **同步** 修改前端、后端、API 等版本号
+
+> 后端修改 build.gradle 中的 `version` 和 core-utils.properties 中的 `core.version` 值
+
+> 接口文档调整 API 仓库的 `api.raml` 和 `package.json` 中的版本号
+
+> 前端修改`框架`的package.json、修改平台各个`模块`的package.json并与之同步并上传至npm私服。
+
+* 提交代码打 tag，推送远程仓库
+
+> 例：
+$ git tag v0.4.0
+$ git push upstream v0.4.0
+
+* 编写发布说明
+
+> 平台发布说明在 https://github.com/propersoft-cn/proper-enterprise-platform/releases 中编写
+
+* 区分发布分支和开发分支，发布分支的内容自动合并至开发分支，在开发分支发布新版本后，将开发分支中的内容合并至发布分支
+
+### web 前端发布
+
+#### 产品发布
+
+##### npm相关
+
+- 首先同后台确认发布的版本号，修改产品各个`模块`的package.json并与之同步并上传至npm私服。
+
+##### git代码
+
+- (首次发布)从平台的master创建为该产品的dev分支，添加最新的`模块`依赖并完成开发工作后，合并dev分支到该产品的master，最终发布的为该master主干。
+- (非首次发布)修改master主干代码的package.json的`模块`依赖，重新安装，提交至master。
+
+#### 项目发布
+
+##### git代码
+
+- (首次发布)从产品的master创建为该项目的dev分支，完成开发工作后合并dev分支到该项目的master，最终发布的为该master主干
+
+### [iCMP](https://github.com/propersoft-cn/icmp)
+
+* 产品**开发**版可以依赖平台**开发**版
+* 产品**发布**版必须依赖平台**发布**版
+
+### [iHos](https://github.com/propersoft-cn/ihos)
+
+##### **同步** 修改后端依赖平台的版本号
+
+> 后端修改依赖平台版本号 dependencies-project.gradle 中的 `versions.pep` 的值
+
+> 后端修改依赖平台版本号 build.gradle 中的 `com.proper.enterprise.platform:pep-dev-configs:` 冒号后面所依赖的平台的版本
+
+* 以上两条所依赖的平台版本必须一致
+
+* 产品**开发**版可以依赖平台**开发**版
+* 产品**发布**版必须依赖平台**发布**版
+
+##### **同步** 修改前端、后端、API 等版本号
+
+> 后端修改开发版本号 build.gradle 中的 `version` 中的版本号
+
+> 接口文档调整 API 仓库的 `api.raml` 和 `package.json` 中的版本号
+
+* 提交代码打 tag，推送远程仓库
+* 编写发布说明
+
+> 就医后端发布说明在 https://github.com/propersoft-cn/ihos/releases 中编写
+
+* 区分发布分支和开发分支，发布分支的内容自动合并至开发分支，在开发分支发布新版本后，将开发分支中的内容合并至发布分支
+
+### 衍生项目
+
+* 项目**开发**版可以依赖产品和平台的**开发**版
+* 项目**发布**版必须依赖产品和平台的**发布**版
 
 
 开发者文档
