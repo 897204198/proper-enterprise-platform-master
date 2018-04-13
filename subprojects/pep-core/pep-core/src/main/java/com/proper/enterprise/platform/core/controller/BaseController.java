@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.core.controller;
 
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.support.QuerySupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,11 +163,15 @@ public abstract class BaseController extends QuerySupport {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex, WebRequest request) {
-        HttpHeaders headers = handleHeaders();
         HttpStatus status = handleStatus(ex, request);
         String body = handleBody(ex);
         LOGGER.trace("Controller throws exception", ex);
         LOGGER.debug("Handle controller's exception to {}:{}", status, body);
+        HttpHeaders headers = handleHeaders();
+        headers.set(PEPConstants.RESPONSE_HEADER_ERROR_TYPE, PEPConstants.RESPONSE_SYSTEM_ERROR);
+        if (ex instanceof ErrMsgException) {
+            headers.set(PEPConstants.RESPONSE_HEADER_ERROR_TYPE, PEPConstants.RESPONSE_BUSINESS_ERROR);
+        }
         return new ResponseEntity<>(body, headers, status);
     }
 
@@ -178,11 +184,11 @@ public abstract class BaseController extends QuerySupport {
     protected HttpStatus handleStatus(Exception ex, WebRequest request) {
         ResponseEntityExceptionHandler handler = new ResponseEntityExceptionHandler() { };
         ResponseEntity res = handler.handleException(ex, request);
-        return res.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR) ? HttpStatus.BAD_REQUEST : res.getStatusCode();
+        return res.getStatusCode();
     }
 
     protected String handleBody(Exception ex) {
-        return ex.getMessage();
+        return null == ex.getMessage() ? PEPConstants.RESPONSE_SYSTEM_ERROR_MSG : ex.getMessage();
     }
 
 

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.controller
 
+import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.controller.mock.MockEntityR
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
@@ -8,6 +9,7 @@ import org.junit.Test
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.MvcResult
 
 class BaseControllerTest extends AbstractTest {
 
@@ -74,19 +76,21 @@ class BaseControllerTest extends AbstractTest {
         def r = get('/core/test/trouble/1?div=1', HttpStatus.OK)
         assert r.getResponse().getContentType() == MediaType.APPLICATION_JSON_UTF8_VALUE
 
-        def r1 = get('/core/test/trouble/1?div=0', HttpStatus.BAD_REQUEST)
+        def r1 = get('/core/test/trouble/1?div=0', HttpStatus.INTERNAL_SERVER_ERROR)
         assert 'Division by zero' == r1.getResponse().getContentAsString()
         assert r1.getResponse().getContentType() == textPlainUtf8
-        def r2 = get('/core/test/trouble/1?div=abc', HttpStatus.BAD_REQUEST)
+        def r2 = get('/core/test/trouble/1?div=abc', HttpStatus.INTERNAL_SERVER_ERROR)
         assert 'For input string: "abc"' == r2.getResponse().getContentAsString()
 
-        def r3 = get('/core/test/trouble/2', HttpStatus.BAD_REQUEST)
+        def r3 = get('/core/test/trouble/2', HttpStatus.INTERNAL_SERVER_ERROR)
         assert '异常啦' == r3.getResponse().getContentAsString()
         assert r3.getResponse().getContentType() == textPlainUtf8
-
+        assert r3.getResponse().getHeader(PEPConstants.RESPONSE_HEADER_ERROR_TYPE) == PEPConstants.RESPONSE_SYSTEM_ERROR
         get('/core/test/trouble/3', HttpStatus.NOT_FOUND)
 
-        assert resOfGet('/core/test/trouble/4', HttpStatus.BAD_REQUEST) == 'empty stack'
+        MvcResult bussinessErrResult = get('/core/test/trouble/4', HttpStatus.INTERNAL_SERVER_ERROR)
+        assert bussinessErrResult.getResponse().getContentAsString() == 'empty stack'
+        assert bussinessErrResult.getResponse().getHeader(PEPConstants.RESPONSE_HEADER_ERROR_TYPE) == PEPConstants.RESPONSE_BUSINESS_ERROR
     }
 
     @Test

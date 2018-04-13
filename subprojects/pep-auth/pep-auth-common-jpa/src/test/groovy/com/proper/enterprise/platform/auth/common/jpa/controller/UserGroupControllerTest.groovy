@@ -74,7 +74,7 @@ class UserGroupControllerTest extends AbstractTest {
         def g1 = JSONUtil.parse(post(URI,
             JSONUtil.toJSON(group1), HttpStatus.CREATED).getResponse().getContentAsString(), Map.class)
 
-        assert post(URI,JSONUtil.toJSON(group1), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.usergroup.name.duplicate")
+        assert post(URI,JSONUtil.toJSON(group1), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.usergroup.name.duplicate")
         assert g1.get('id') != null
         assert g2.get('id') != null
 
@@ -253,7 +253,7 @@ class UserGroupControllerTest extends AbstractTest {
             (), List.class)
         assert result.size() == 3
 
-        result = get('/auth/user-groups/isdfsdlfsj/roles', HttpStatus.BAD_REQUEST).getResponse().getContentAsString()
+        result = get('/auth/user-groups/isdfsdlfsj/roles', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
         assert result == i18NService.getMessage("pep.auth.common.usergroup.get.failed")
 
         result = JSONUtil.parse(get('/auth/user-groups/' + userGroupEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString

@@ -99,7 +99,7 @@ public class CmbController extends BaseController {
         // 检验数字签名
         if (!cmbPayService.isValid(queryStr)) {
             LOGGER.debug("Verify sign failed!{}", queryStr);
-            return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         try {
             // 保存异步通知信息flag
@@ -122,7 +122,7 @@ public class CmbController extends BaseController {
         } catch (Exception e) {
             LOGGER.debug("Error occurred while saving cmb async notice", e);
             LOGGER.debug("-----------Cmb async notice:save message error------end error-----------------");
-            return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

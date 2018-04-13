@@ -253,12 +253,12 @@ class RolesControllerTest extends AbstractNeo4jTest {
         def id = "id"
         def addReq = [:]
         addReq['ids'] = ['a4,a5']
-        assert post('/auth/roles/' + id + '/menus', JSONUtil.toJSON(addReq), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+        assert post('/auth/roles/' + id + '/menus', JSONUtil.toJSON(addReq), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.role.get.failed")
-        assert delete('/auth/roles/' + id + '/menus?ids=a1,a2', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+        assert delete('/auth/roles/' + id + '/menus?ids=a1,a2', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.role.get.failed")
 
-        get('/auth/roles/' + id + '/menus', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+        get('/auth/roles/' + id + '/menus', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.role.get.failed")
     }
 
@@ -303,7 +303,7 @@ class RolesControllerTest extends AbstractNeo4jTest {
         def result = JSONUtil.parse(get('/auth/roles/' + roleEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString(),
             List.class)
         assert result.size() == 3
-        assert get('/auth/roles/sdlfjsdf/users', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common" +
+        assert get('/auth/roles/sdlfjsdf/users', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common" +
             ".role.get.failed")
     }
 
@@ -342,7 +342,7 @@ class RolesControllerTest extends AbstractNeo4jTest {
 
         def result = JSONUtil.parse(get('/auth/roles/' + roleEntity.getId() + '/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert result.size() == 2
-        assert get('/auth/roles/sdjflsdkj/resources', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
+        assert get('/auth/roles/sdjflsdkj/resources', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
 
 
         ResourceNodeEntity resourceEntity3 = new ResourceNodeEntity()
@@ -362,11 +362,11 @@ class RolesControllerTest extends AbstractNeo4jTest {
         result = JSONUtil.parse(post('/auth/roles/' + roleEntity.getId() + '/resources', JSONUtil.toJSON(reqMap), HttpStatus.CREATED).getResponse()
             .getContentAsString(), java.lang.Object.class)
         assert result.get('id') == roleEntity.getId()
-        assert post('/auth/roles/sdfsdf/resources', JSONUtil.toJSON(reqMap), HttpStatus.BAD_REQUEST).getResponse()
+        assert post('/auth/roles/sdfsdf/resources', JSONUtil.toJSON(reqMap), HttpStatus.INTERNAL_SERVER_ERROR).getResponse()
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
 
         assert delete('/auth/roles/' + roleEntity.getId() + '/resources?ids=' + reqMap.get('ids'), HttpStatus.NO_CONTENT)
-        assert delete('/auth/roles/sdfasdf/resources?ids=' + reqMap.get('ids'), HttpStatus.BAD_REQUEST).getResponse()
+        assert delete('/auth/roles/sdfasdf/resources?ids=' + reqMap.get('ids'), HttpStatus.INTERNAL_SERVER_ERROR).getResponse()
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
     }
 

@@ -211,7 +211,7 @@ class UsersControllerTest extends AbstractTest {
         def resAll = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&pageNo=1&pageSize=10',
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert resAll.count == 3
-        assert delete('/auth/users?ids=test1', HttpStatus.BAD_REQUEST).getResponse()
+        assert delete('/auth/users?ids=test1', HttpStatus.INTERNAL_SERVER_ERROR).getResponse()
             .getContentAsString() == i18NService.getMessage("pep.auth.common.user.delete.role.super.failed")
         delete('/auth/users?ids=test2,test3', HttpStatus.NO_CONTENT)
         resAll = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&pageNo=1&pageSize=10',
@@ -349,7 +349,7 @@ class UsersControllerTest extends AbstractTest {
         result = JSONUtil.parse(get('/auth/users/' + userEntity1.getId() + '/roles', HttpStatus.OK).getResponse().getContentAsString(),
             List.class)
         assert result.size() == 2
-        assert get('/auth/users/safjsldfj/roles', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.user.get.failed")
+        assert get('/auth/users/safjsldfj/roles', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.user.get.failed")
 
         String condition = 'name'
         result = JSONUtil.parse(get('/auth/users/query?condition=' + condition, HttpStatus.OK).getResponse().getContentAsString(),

@@ -31,7 +31,7 @@ class Neo4jDemoControllerTest extends AbstractNeo4jTest {
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert resAll.count == 2
         assert resAll.data.size() == 1
-        def err = get('/neo4j/test', HttpStatus.BAD_REQUEST)
+        def err = get('/neo4j/test', HttpStatus.INTERNAL_SERVER_ERROR)
         assert "missing pageNo to buildPage" == err.getResponse().getContentAsString()
     }
 

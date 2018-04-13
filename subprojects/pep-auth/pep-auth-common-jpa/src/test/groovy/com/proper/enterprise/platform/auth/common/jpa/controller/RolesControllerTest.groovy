@@ -180,12 +180,12 @@ class RolesControllerTest extends AbstractTest {
         mockUser('test1','t1', 'pwd')
         def id = "id"
         def addReq = ['ids': ['a4', 'a5']]
-        assert post('/auth/roles/' + id + '/menus', JSONUtil.toJSON(addReq), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+        assert post('/auth/roles/' + id + '/menus', JSONUtil.toJSON(addReq), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
            i18NService.getMessage("pep.auth.common.role.get.failed")
-        assert delete('/auth/roles/' + id + '/menus?ids=a1,a2', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+        assert delete('/auth/roles/' + id + '/menus?ids=a1,a2', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.role.get.failed")
 
-        get('/auth/roles/' + id + '/menus', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+        get('/auth/roles/' + id + '/menus', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.role.get.failed")
 
     }
@@ -226,7 +226,7 @@ class RolesControllerTest extends AbstractTest {
         def result = JSONUtil.parse(get('/auth/roles/' + roleEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString(),
             List.class)
         assert result.size() == 3
-        assert get('/auth/roles/sdlfjsdf/users', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common" +
+        assert get('/auth/roles/sdlfjsdf/users', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common" +
             ".role.get.failed")
     }
 
@@ -265,7 +265,7 @@ class RolesControllerTest extends AbstractTest {
 
         def result = JSONUtil.parse(get('/auth/roles/' + roleEntity.getId() + '/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert result.size() == 2
-        assert get('/auth/roles/sdjflsdkj/resources', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
+        assert get('/auth/roles/sdjflsdkj/resources', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
 
 
         ResourceEntity resourceEntity3 = new ResourceEntity()
@@ -284,11 +284,11 @@ class RolesControllerTest extends AbstractTest {
         result = JSONUtil.parse(post('/auth/roles/' + roleEntity.getId() + '/resources', JSONUtil.toJSON(reqMap), HttpStatus.CREATED).getResponse()
             .getContentAsString(), java.lang.Object.class)
         assert result.get('id') == roleEntity.getId()
-        assert post('/auth/roles/sdfsdf/resources', JSONUtil.toJSON(reqMap), HttpStatus.BAD_REQUEST).getResponse()
+        assert post('/auth/roles/sdfsdf/resources', JSONUtil.toJSON(reqMap), HttpStatus.INTERNAL_SERVER_ERROR).getResponse()
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
 
         assert delete('/auth/roles/' + roleEntity.getId() + '/resources?ids='+reqMap.get('ids').join(','), HttpStatus.NO_CONTENT)
-        assert delete('/auth/roles/sdfasdf/resources?ids='+reqMap.get('ids').join(','), HttpStatus.BAD_REQUEST).getResponse()
+        assert delete('/auth/roles/sdfasdf/resources?ids='+reqMap.get('ids').join(','), HttpStatus.INTERNAL_SERVER_ERROR).getResponse()
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
     }
 

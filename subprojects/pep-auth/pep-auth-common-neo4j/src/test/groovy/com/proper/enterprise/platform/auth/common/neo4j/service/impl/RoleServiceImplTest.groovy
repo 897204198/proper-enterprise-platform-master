@@ -138,7 +138,7 @@ class RoleServiceImplTest extends AbstractNeo4jTest {
 
         mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
 
-        assert post('/auth/roles', JSONUtil.toJSON(map), HttpStatus.BAD_REQUEST).getResponse()
+        assert post('/auth/roles', JSONUtil.toJSON(map), HttpStatus.INTERNAL_SERVER_ERROR).getResponse()
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.delete.relation.failed")
 
         roleService.delete(roleNodeEntity1)
@@ -181,7 +181,7 @@ class RoleServiceImplTest extends AbstractNeo4jTest {
         roleNodeEntity.setEnable(false)
         roleNodeEntity = roleService.save(roleNodeEntity)
 
-        assert delete('/auth/roles?ids=' + roleNodeEntity.getId(), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage(
+        assert delete('/auth/roles?ids=' + roleNodeEntity.getId(), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage(
             "pep.auth.common.role.get.failed")
 
         roleNodeEntity.setEnable(true)
@@ -189,7 +189,7 @@ class RoleServiceImplTest extends AbstractNeo4jTest {
         userEntity.add(roleNodeEntity)
         userEntity = userService.save(userEntity)
 
-        assert delete('/auth/roles?ids=' + roleNodeEntity.getId(), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService
+        assert delete('/auth/roles?ids=' + roleNodeEntity.getId(), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService
             .getMessage(
             "pep.auth.common.role.delete.relation.failed")
 
@@ -201,7 +201,7 @@ class RoleServiceImplTest extends AbstractNeo4jTest {
         roleNodeEntity1.setParent(roleNodeEntity)
         roleNodeEntity1 = roleService.save(roleNodeEntity1)
 
-        assert delete('/auth/roles?ids=' + roleNodeEntity.getId(), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage(
+        assert delete('/auth/roles?ids=' + roleNodeEntity.getId(), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage(
             "pep.auth.common.role.delete.relation.failed")
         clearAll()
     }

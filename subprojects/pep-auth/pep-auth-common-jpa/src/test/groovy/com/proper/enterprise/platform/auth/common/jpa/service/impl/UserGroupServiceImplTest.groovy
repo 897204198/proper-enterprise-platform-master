@@ -50,12 +50,12 @@ class UserGroupServiceImplTest extends AbstractTest {
         userGroupEntity.setName("group1")
         userGroupEntity.add(userEntity)
 
-        assert delete('/auth/user-groups?ids='+userGroupEntity.getId(),HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService
+        assert delete('/auth/user-groups?ids='+userGroupEntity.getId(),HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService
             .getMessage("pep.auth.common.usergroup.get.failed")
 
         userGroupEntity = userGroupService.save(userGroupEntity)
 
-        assert delete('/auth/user-groups?ids='+userGroupEntity.getId(),HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService
+        assert delete('/auth/user-groups?ids='+userGroupEntity.getId(),HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService
             .getMessage("pep.auth.common.usergroup.delete.relation.user")
 
         RoleEntity roleEntity = new RoleEntity()
@@ -65,7 +65,7 @@ class UserGroupServiceImplTest extends AbstractTest {
         userGroupEntity.remove(userEntity)
         userGroupEntity.add(roleEntity)
         userGroupEntity = userGroupService.save(userGroupEntity)
-        assert delete('/auth/user-groups?ids='+userGroupEntity.getId(),HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService
+        assert delete('/auth/user-groups?ids='+userGroupEntity.getId(),HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService
             .getMessage("pep.auth.common.usergroup.delete.relation.role")
     }
 

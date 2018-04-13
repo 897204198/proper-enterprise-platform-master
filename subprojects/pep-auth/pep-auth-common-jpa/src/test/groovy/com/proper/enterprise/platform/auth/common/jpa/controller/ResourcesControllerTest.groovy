@@ -139,11 +139,11 @@ class ResourcesControllerTest extends AbstractTest {
         addResource['ids'] = ['test-u']
 
         post('/auth/roles/role1/resources', JSONUtil.toJSON(addResource), HttpStatus.CREATED)
-        delete('/auth/resources?ids=test-u', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource" +
+        delete('/auth/resources?ids=test-u', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource" +
             ".delete.relation.role")
 
         post('/auth/menus/a2/resource/test-d', JSONUtil.toJSON(addResource), HttpStatus.CREATED)
-        delete('/auth/resources?ids=test-d', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource.delete.relation.menu" )
+        delete('/auth/resources?ids=test-d', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource.delete.relation.menu" )
     }
 
     @Test

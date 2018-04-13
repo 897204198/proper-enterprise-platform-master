@@ -206,7 +206,7 @@ class ResourcesControllerTest extends AbstractNeo4jTest {
         entity11.add(roles)
         resourceService.save(entity11)
         post('/auth/roles/role1/resources', JSONUtil.toJSON(roles), HttpStatus.CREATED)
-        delete('/auth/resources?ids=test-ua', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource" +
+        delete('/auth/resources?ids=test-ua', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource" +
             ".delete.relation.role")
 
         MenuNodeEntity menu1 = new MenuNodeEntity()
@@ -224,7 +224,7 @@ class ResourcesControllerTest extends AbstractNeo4jTest {
         entity12.add(menu1)
         resourceService.save(entity11)
         post('/auth/menus/' + menu1.getId() + '/resource/' + resourceEntity.getId(), '', HttpStatus.CREATED)
-        delete('/auth/resources?ids=test-d', HttpStatus.BAD_REQUEST).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource.delete.relation.menu")
+        delete('/auth/resources?ids=test-d', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource.delete.relation.menu")
 
         // test service.get()
         ResourceNodeEntity entity13 = new ResourceNodeEntity()

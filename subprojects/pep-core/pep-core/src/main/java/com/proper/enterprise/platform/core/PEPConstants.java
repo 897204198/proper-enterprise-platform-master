@@ -57,4 +57,24 @@ public final class PEPConstants {
      */
     public static final boolean ALLOW_SINGLE_QUOTES = Boolean.parseBoolean(ConfCenter.get("core.json.allow_single_quotes"));
 
+    /**
+     * 响应头中封装的异常编码key
+     */
+    public static final String RESPONSE_HEADER_ERROR_TYPE = "X-PEP-ERR-TYPE";
+
+    /**
+     * 业务异常编码
+     */
+    public static final String RESPONSE_BUSINESS_ERROR = "PEP_BIZ_ERR";
+
+    /**
+     * 系统异常编码
+     */
+    public static final String RESPONSE_SYSTEM_ERROR = "PEP_SYS_ERR";
+
+    /**
+     * 系统异常信息
+     */
+    public static final String RESPONSE_SYSTEM_ERROR_MSG = "SYSTEM_ERROR";
+
 }

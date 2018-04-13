@@ -123,10 +123,10 @@ class MenusControllerTest extends AbstractTest {
         def list1 = [id]
         req1['ids'] = list1
         req1['enable'] = false
-        put('/auth/menus', JSONUtil.toJSON(req1), HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+        put('/auth/menus', JSONUtil.toJSON(req1), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.menu.parent")
         // delete menu
-        assert delete('/auth/menus?ids=' + id, HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+        assert delete('/auth/menus?ids=' + id, HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.menu.delete.relation.failed")
         delete('/auth/menus?ids=' + childId, HttpStatus.NO_CONTENT)
 
@@ -150,7 +150,7 @@ class MenusControllerTest extends AbstractTest {
         assert resList.size() == 2
         assert resList.get(1).id == 'test-c'
         // delete menu
-        assert delete('/auth/menus?ids=' + id, HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+        assert delete('/auth/menus?ids=' + id, HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.menu.delete.relation.resource")
         // delete menu's role
         delete('/auth/menus/' + id + '/resource/test-c', HttpStatus.NO_CONTENT)
@@ -165,14 +165,14 @@ class MenusControllerTest extends AbstractTest {
         assert resList.size() == 1
         assert resList.get(0).id == 'role1'
         // delete menu
-        assert delete('/auth/menus?ids=' + id, HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+        assert delete('/auth/menus?ids=' + id, HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.menu.delete.relation.resource")
         // delete role's menu
         delete('/auth/roles/role1/menus?ids=' + id, HttpStatus.NO_CONTENT)
         resList = JSONUtil.parse(get('/auth/menus/' + id + '/roles',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 0
 
-        delete('/auth/menus?ids=' + id, HttpStatus.BAD_REQUEST).getResponse().getContentAsString() ==
+        delete('/auth/menus?ids=' + id, HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
                 i18NService.getMessage("pep.auth.common.menu.delete.relation.resource")
         get('/auth/menus/' + id,  HttpStatus.OK).getResponse().getContentAsString() == ''
 
