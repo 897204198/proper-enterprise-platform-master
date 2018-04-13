@@ -19,7 +19,7 @@ codenarc {
 }
 
 findbugs {
-	toolVersion = '3.0.1'
+    toolVersion = '3.0.1'
     excludeFilter = file("$configDir/findbugs/excludeFilter.xml")
 }
 
@@ -54,15 +54,6 @@ tasks.withType(Checkstyle) {
 }
 
 tasks.withType(FindBugs) {
-    def excludeFolders = [new File(excludeFlowable).path, new File(excludeGzipFromJetty).path]
-    classes = classes.filter {
-        for (String excludePattern : excludeFolders) {
-            if (it.path.contains(new File(excludePattern).path)) {
-                return false
-            }
-        }
-        return true
-    }
     reports {
         xml.enabled = false
         html.enabled = true

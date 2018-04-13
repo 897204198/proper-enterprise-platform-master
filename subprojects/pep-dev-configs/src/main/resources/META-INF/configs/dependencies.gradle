@@ -4,7 +4,7 @@ ext {
 }
 
 versions.flowable           = '6.2.1-SNAPSHOT'
-versions.groovy             = '2.4.3'
+versions.groovy             = '2.4.15'
 versions.hibernate          = '4.3.10.Final'
 versions.jackson            = '2.8.1'
 //versions.jcaptcha         = '1.0'

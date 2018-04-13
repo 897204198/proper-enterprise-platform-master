@@ -35,13 +35,13 @@ Proper Enterprise Platform Developer Guidelines
 
 ### 直接运行
 
-    $ ./gradlew assemble run
+    $ ./gradlew assemble appRun
 
 > `assemble` 任务的作用是将各个模块均进行编译。当前 web 应用模块 `pep-webapp` 只是将其他模块作为运行时依赖，gradle tomcat 插件在运行时没自动编译这些运行时依赖，故需要手动执行编译，否则会报依赖的包不存在
 
 ### 远程调试
 
-    $ ./gradlew assemble debug
+    $ ./gradlew assemble appRunDebug
 
 
 IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration](http://www.jetbrains.com/idea/webhelp/run-debug-configuration-remote.html)

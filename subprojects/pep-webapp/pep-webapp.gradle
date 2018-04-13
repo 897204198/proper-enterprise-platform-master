@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.akhikhl.gretty:gretty:1.2.4'
+        classpath 'org.akhikhl.gretty:gretty:2.0.0'
     }
 }
 
@@ -25,6 +25,7 @@ gretty {
     managedClassReload = true
     serverConfigFile = "$pepDevConfRoot/configs/docker/tomcat/conf/server.xml"
     servletContainer = 'tomcat7'
+    jacocoEnabled = false
 }
 
 dependencies {
