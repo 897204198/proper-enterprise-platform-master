@@ -31,7 +31,7 @@ Proper Enterprise Platform Developer Guidelines
 
 平台使用 [gretty](https://github.com/akhikhl/gretty) gradle 插件以支持在内嵌的容器中运行及调试。
 
-默认使用 tomcat7.x，端口 `8080`（在 [server.xml](configs/docker/tomcat/conf/server.xml) 中配置），上下文根 `pep`（在 [pep-webapp.gradle](subprojects/pep-webapp/pep-webapp.gradle) 中配置）。
+默认使用 tomcat7.x，端口 `8080`（在 [server.xml](subprojects/pep-dev-configs/src/main/resources/META-INF/configs/docker/tomcat/conf/server.xml) 中配置），上下文根 `pep`（在 [pep-webapp.gradle](subprojects/pep-webapp/pep-webapp.gradle) 中配置）。
 
 ### 直接运行
 
