@@ -10,16 +10,16 @@ class BasePushAppTest extends PushAbstractTest {
     void getBadgeNumberTest() {
         BasePushApp basePushApp = new BasePushApp();
         Map<String, Object> map = new HashMap<String, Object>()
-        map.put("_proper_badge",Integer.valueOf(-1))
+        map.put("_proper_badge", Integer.valueOf(-1))
         PushMsgEntity msg = new PushMsgEntity()
         msg.setMcustomDatasMap(map)
         assert basePushApp.getBadgeNumber(msg) == 0
 
-        map.put("_proper_badge","a")
+        map.put("_proper_badge", "a")
         msg.setMcustomDatasMap(map)
-        try{
+        try {
             basePushApp.getBadgeNumber(msg)
-        }catch(Exception ex){
+        } catch (Exception ex) {
         }
 
         basePushApp.setPushService(null)

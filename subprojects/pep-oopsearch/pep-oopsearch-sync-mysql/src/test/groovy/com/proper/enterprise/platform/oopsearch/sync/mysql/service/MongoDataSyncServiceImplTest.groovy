@@ -7,7 +7,6 @@ import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoReposito
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService
 import com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl.MySQLMongoDataSync
 import com.proper.enterprise.platform.test.AbstractTest
-import com.zaxxer.hikari.HikariConfig
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -18,9 +17,6 @@ class MongoDataSyncServiceImplTest extends AbstractTest{
 
     @Autowired
     SyncMongoRepository syncMongoRepository
-
-    @Autowired
-    HikariConfig hikariConfig
 
 //    @Autowired
 //    MongoDataSyncServiceImpl mongoDataSyncServiceImpl

@@ -43,8 +43,12 @@ dependencies {
             // available choices: project(':pep-oopsearch-sync-h2'), project(':pep-oopsearch-sync-mysql')
             project(':pep-oopsearch-sync-h2')
 
+
     // Necessary when using Web Service
     // runtime libraries.jaxws_rt
+
+    // Select when need datasource monitor
+    // runtime project(':pep-datasource-monitor')
 
     // Mandatory for PEP
     runtime project(':pep-configs')

@@ -5,6 +5,7 @@ import liquibase.database.Database;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.flowable.app.service.exception.InternalServerErrorException;
@@ -149,17 +150,25 @@ public class DatabaseConfiguration {
     @Bean
     public Liquibase liquibase() {
         LOGGER.info("Configuring Liquibase");
+        DatabaseConnection connection = null;
         try {
-            DatabaseConnection connection = new JdbcConnection(dataSource.getConnection());
+            connection = new JdbcConnection(dataSource.getConnection());
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(connection);
             database.setDatabaseChangeLogTableName(LIQUIBASE_CHANGELOG_PREFIX + database.getDatabaseChangeLogTableName());
             database.setDatabaseChangeLogLockTableName(LIQUIBASE_CHANGELOG_PREFIX + database.getDatabaseChangeLogLockTableName());
             Liquibase liquibase = new Liquibase("META-INF/liquibase/flowable-modeler-app-db-changelog.xml", new ClassLoaderResourceAccessor(), database);
             liquibase.update("flowable");
             return liquibase;
-
         } catch (Exception e) {
             throw new InternalServerErrorException("Error creating liquibase database", e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (DatabaseException e) {
+                LOGGER.error("Exception while closing the Database connection", e);
+            }
         }
     }
 

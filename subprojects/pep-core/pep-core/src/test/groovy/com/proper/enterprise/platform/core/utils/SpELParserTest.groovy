@@ -13,11 +13,11 @@ class SpELParserTest extends AbstractTest {
     void getBeanInSpEL() {
         mockUser('id', 'name', 'pwdInSpEl')
 
-        String tpl = '{usergroup: {$in: [#{@hikariConfig.autoCommit}]}}'
+        String tpl = '{usergroup: {$in: [#{@dataSource.defaultAutoCommit}]}}'
         def val = parser.parse(tpl)
 
         assert val == "{usergroup: {\$in: [${ConfCenter.get('database.autoCommit')}]}}".toString()
-        assert null == parser.parse('#{@hikariConfig.catalog}')
+        assert null == parser.parse('#{@dataSource.defaultCatalog}')
     }
 
     @Test

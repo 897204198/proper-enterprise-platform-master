@@ -9,10 +9,10 @@ import com.proper.enterprise.platform.oopsearch.api.repository.SearchConfigRepos
 import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository;
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService;
 import com.proper.enterprise.platform.oopsearch.api.serivce.SearchConfigService;
-import com.zaxxer.hikari.HikariConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -40,8 +40,8 @@ public abstract class AbstractMongoDataSync implements MongoDataSyncService {
     private SyncMongoRepository syncMongoRepository;
 
     // 数据源config
-    @Autowired
-    protected HikariConfig hikariConfig;
+    @Value("database.url")
+    private String databaseUrl;
 
     // 本地化repository
     @Autowired
@@ -86,7 +86,7 @@ public abstract class AbstractMongoDataSync implements MongoDataSyncService {
             String tableName = tableColumnEntry.getKey();
             List<String> primaryKeys = getPrimaryKeys(tableName);
             if (primaryKeys.size() > 0) {
-                String url = hikariConfig.getDataSourceProperties().get("url").toString();
+                String url = databaseUrl;
                 String[] temp = url.split(";")[0].split("/");
                 String schema = temp[temp.length - 1];
                 querySql.append(" CONCAT( '").append(schema).append("|").append(tableName).append("|',");

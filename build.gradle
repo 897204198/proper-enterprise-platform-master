@@ -83,7 +83,7 @@ subprojects {
         compile libraries.slf4j_api,
                 libraries.spring_webmvc
 
-        runtime libraries.hibernate_hikaricp,
+        runtime libraries.druid,
                 libraries.logback_classic
 
         testCompile libraries.groovy,

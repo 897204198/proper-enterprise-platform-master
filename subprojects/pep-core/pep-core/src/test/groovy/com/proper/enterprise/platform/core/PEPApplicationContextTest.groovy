@@ -27,7 +27,7 @@ class PEPApplicationContextTest extends AbstractTest {
 
     @Test
     void invokeStaticMethod() {
-        assert parser.parse('#{T(com.proper.enterprise.platform.core.PEPApplicationContext).getBean("hikariConfig").maximumPoolSize}') == maximumPoolSize
+        assert parser.parse('#{T(com.proper.enterprise.platform.core.PEPApplicationContext).getBean("dataSource").maxActive}') == maximumPoolSize
     }
 
 }

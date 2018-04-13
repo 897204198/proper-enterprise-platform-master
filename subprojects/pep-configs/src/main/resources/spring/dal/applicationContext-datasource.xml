@@ -8,23 +8,25 @@
                            http://www.springframework.org/schema/jdbc/spring-jdbc.xsd"
        default-lazy-init="true">
 
-    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-        <property name="dataSourceClassName" value="${database.driverClassName}" />
-        <property name="maximumPoolSize" value="${database.maxPoolSize}" />
-        <property name="autoCommit" value="${database.autoCommit}" />
-        <property name="maxLifetime" value="${database.maxLifetime}" />
-        <property name="leakDetectionThreshold" value="${database.leakDetectionThreshold}" />
-        <property name="dataSourceProperties">
-            <value>
-                url      = ${database.url}
-                user     = ${database.username}
-                password = ${database.password}
-            </value>
-        </property>
-    </bean>
-
-    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
-        <constructor-arg ref="hikariConfig" />
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <!-- 基本属性 url、user、password -->
+        <property name="url" value="${database.url}"/>
+        <property name="username" value="${database.username}"/>
+        <property name="password" value="${database.password}"/>
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="${database.maxPoolSize}"/>
+        <property name="minIdle" value="${database.maxPoolSize}"/>
+        <property name="maxActive" value="${database.maxPoolSize}"/>
+        <property name="defaultAutoCommit" value="${database.autoCommit}"/>
+        <property name="driverClassName" value="${database.driverClassName}"/>
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="60000"/>
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000"/>
+        <!-- 配置监控统计拦截的filters -->
+        <property name="filters" value="stat"/>
     </bean>
 
     <beans profile="production">
