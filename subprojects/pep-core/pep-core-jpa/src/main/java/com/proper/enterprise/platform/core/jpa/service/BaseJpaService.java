@@ -28,6 +28,8 @@ public interface BaseJpaService<T, ID extends Serializable> extends BaseService<
 
     <S extends T> boolean exists(Example<S> example);
 
+    boolean deleteById(ID var1);
+
     void deleteInBatch(Iterable<T> entities);
 
     void deleteAllInBatch();

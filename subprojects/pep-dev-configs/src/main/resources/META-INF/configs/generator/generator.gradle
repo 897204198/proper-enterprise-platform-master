@@ -1,0 +1,481 @@
+import groovy.transform.Field
+
+//static param
+@Field rootPackageName = "com.proper.enterprise"
+@Field singleEntityPackageName = "entity"
+@Field singleRepositoryPackageName = "repository"
+@Field singleControllerPackageName = "controller"
+@Field singleServicePackageName = "service"
+@Field singleImplPackageName = "impl"
+
+//need build param
+@Field parentPath = ""
+@Field haveParentPath = false
+@Field haveBusiness = false
+@Field entityPath
+@Field entityPackageName
+@Field repositoryPath
+@Field repositoryPackageName
+@Field controllerPath
+@Field controllerPackageName
+@Field servicePath
+@Field servicePackageName
+@Field implPath
+@Field implPackageName
+@Field subProjRoot
+@Field testProGroovyPath
+@Field testControllerPath
+@Field testMockPath
+@Field testMockPackageName
+@Field testPropertiesPath
+@Field testSpringPath
+/**
+ * 模块类型 jpa，neo4j，mongo
+ * 目前仅支持jpa代码生成
+ */
+@Field modelDAOType = 'jpa'
+/**
+ * 模块名
+ */
+@Field modelName
+/**
+ * 模块名包
+ */
+@Field modelPackageName
+/**
+ * 模块路径
+ */
+@Field modelPackagePath
+/**
+ * 模块资源名称
+ */
+@Field modelResourceName
+/**
+ * 业务名
+ * 默认业务名等于模块名
+ */
+@Field businessName
+/**
+ * 业务表
+ */
+@Field businessDataTableName
+/**
+ * 业务路径
+ */
+@Field projectPackagePath
+/**
+ * 业务包名
+ */
+@Field projectPackageName
+/**
+ * controller名
+ */
+@Field controllerName
+/**
+ * service名
+ */
+@Field serviceName
+/**
+ * 实现名
+ */
+@Field implName
+/**
+ * repository名
+ */
+@Field repositoryName
+/**
+ * entity名
+ */
+@Field entityName
+
+task buildCode << {
+    initProjectParam()
+    mkProcessDir()
+    mkProcess()
+    initBusinessParam()
+    mkBusinessDir()
+    mkJava()
+    mkTestDir()
+    mkTest()
+}
+
+def initProjectParam() {
+    def modelParam = project.getProperties().get('model')
+    if ("" == modelParam || null == modelParam) {
+        throw new Exception("=======================buildCode modelParam like -Pmodel=*** is required | example gradlew buildCode -Pmodel=five -PmodelPackage=four=======================")
+    }
+    if (!modelParam.toString().startsWith("${projectGenerator.name}-")) {
+        modelParam = "${projectGenerator.name}-" + modelParam
+    }
+    haveBusiness = project.getProperties().containsKey('business')
+    haveParentPath = project.getProperties().containsKey('parentPath')
+    if (haveParentPath) {
+        this.parentPath = project.getProperties().get('parentPath')
+        if (!this.parentPath.toString().endsWith("/")) {
+            throw new Exception("=======================parentPath must end with /=======================")
+        }
+        if (this.parentPath == "/") {
+            throw new Exception("=======================parentPath is a error path=======================")
+        }
+    }
+    this.modelName = toLowerCase(modelParam)
+    parseModelPackage()
+    parseBusinessPackage()
+    this.subProjRoot = "${rootProject.projectDir}/subprojects/" + (haveParentPath ? parentPath + modelName : modelName)
+    this.projectPackagePath = "${subProjRoot}/src/main/java/com/proper/enterprise/${projectGenerator.path}/${modelPackagePath}" + (haveBusiness ? "/${businessName}" : "")
+    this.projectPackageName = "${rootPackageName}.${projectGenerator.path}.${modelPackageName}" + (haveBusiness ? ".${businessName}" : "")
+    this.testProGroovyPath = "$subProjRoot/src/test/groovy/com/proper/enterprise/${projectGenerator.path}/${modelPackagePath}" + (haveBusiness ? "/${businessName}" : "")
+    this.testPropertiesPath = "$subProjRoot/src/test/resources/conf/$modelPackagePath"
+    this.testSpringPath = "$subProjRoot/src/test/resources/spring/$modelPackagePath"
+}
+
+def parseModelPackage() {
+    this.modelPackageName = (this.modelName - "${projectGenerator.name}-").replace('-', '.')
+    this.modelPackagePath = (this.modelName - "${projectGenerator.name}-").replace('-', '/')
+    this.modelResourceName = this.modelName - "${projectGenerator.name}-"
+}
+
+def parseBusinessPackage() {
+    def businessParam = project.getProperties().get('business')
+    if (!haveBusiness) {
+        businessParam = this.modelPackageName
+        if (this.modelPackageName.toString().contains(".")) {
+            String[] args = this.modelPackageName.toString().split("\\.")
+            businessParam = args.last()
+        }
+    }
+    this.businessName = toLowerCase(businessParam)
+}
+
+def initBusinessParam() {
+    this.entityPath = projectPackagePath + "/${singleEntityPackageName}"
+    this.entityPackageName = "${projectPackageName}.${singleEntityPackageName}"
+    this.repositoryPath = projectPackagePath + "/${singleRepositoryPackageName}"
+    this.repositoryPackageName = "${projectPackageName}.${singleRepositoryPackageName}"
+    this.servicePath = projectPackagePath + "/${singleServicePackageName}"
+    this.servicePackageName = "${projectPackageName}.${singleServicePackageName}"
+    this.implPath = projectPackagePath + "/${singleServicePackageName}/${singleImplPackageName}"
+    this.implPackageName = "${projectPackageName}.${singleServicePackageName}.${singleImplPackageName}"
+    this.controllerPath = projectPackagePath + "/${singleControllerPackageName}"
+    this.controllerPackageName = "${projectPackageName}.${singleControllerPackageName}"
+
+    this.controllerName = "jpa" == this.modelDAOType ? toFirstUpperCase("${businessName}Controller") : ""
+    this.serviceName = "jpa" == this.modelDAOType ? toFirstUpperCase("${businessName}Service") : ""
+    this.implName = "jpa" == this.modelDAOType ? toFirstUpperCase("${businessName}ServiceImpl") : ""
+    this.repositoryName = "jpa" == this.modelDAOType ? toFirstUpperCase("${businessName}Repository") : ""
+    this.entityName = "jpa" == this.modelDAOType ? toFirstUpperCase("${businessName}Entity") : ""
+
+    this.testControllerPath = "${testProGroovyPath}/${singleControllerPackageName}"
+    this.testMockPath = "${testProGroovyPath}/mock"
+    this.testMockPackageName = "${projectPackageName}.mock"
+    this.businessDataTableName = "${projectGenerator.name}_${(this.modelName - "${projectGenerator.name}-").replace('-', '_')}" + (haveBusiness ? "_${businessName.toString().toUpperCase()}" : "")
+}
+
+def mkProcessDir() {
+    mkdir(subProjRoot)
+    mkdir("$subProjRoot/src/main/java/com/proper/enterprise/${projectGenerator.path}")
+    mkdir("$subProjRoot/src/main/resources")
+    mkdir(testProGroovyPath)
+    mkdir("$subProjRoot/src/test/resources")
+    mkdir(testPropertiesPath)
+    mkdir(testSpringPath)
+}
+
+def mkBusinessDir() {
+    mkdir(entityPath)
+    mkdir(repositoryPath)
+    mkdir(servicePath)
+    mkdir(implPath)
+    mkdir(controllerPath)
+}
+
+def mkTestDir() {
+    mkdir(testControllerPath)
+}
+
+def mkProcess() {
+    file("$subProjRoot/${modelName}.gradle").withWriter {
+        it.write("""dependencies {
+    compile project(':pep-core-${modelDAOType}')
+
+    testCompile project(':pep-auth-common'),
+                project(':pep-test')
+    testRuntime project(':pep-cache-ehcache')
+}""")
+    }
+    file("$subProjRoot/README.md").withWriter {
+        it.write("""$modelName
+${"=" * modelName.length()}
+Proper Enterprise Platform""")
+    }
+}
+
+def mkJava() {
+    mkEntity()
+    mkRepository()
+    mkService()
+    mkImpl()
+    mkController()
+}
+
+def mkTest() {
+    mkControllerTest()
+    mkResourceTest()
+}
+
+def mkControllerTest() {
+    if ("jpa" == modelDAOType) {
+        mkJpaControllerTest()
+    }
+}
+
+def mkResourceTest() {
+    file("$testPropertiesPath/${modelResourceName}.properties").withWriter {
+        it.write("#test 中的配置文件仅在单元测试环境中有效，若想全局代码有效将单元测试中的源文件及目录一同粘贴到main下resources")
+    }
+    file("$testSpringPath/applicationContext-${modelResourceName}.xml").withWriter {
+        it.write("""<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <beans>
+        <context:property-placeholder ignore-unresolvable="true"
+                                      location="classpath:conf/${modelPackagePath}/${modelResourceName}.properties"/>
+    </beans>
+
+</beans>""")
+    }
+}
+
+def mkController() {
+    if ("jpa" == modelDAOType) {
+        mkJpaController()
+    }
+}
+
+def mkService() {
+    if ("jpa" == modelDAOType) {
+        mkJpaService()
+    }
+}
+
+def mkImpl() {
+    if ("jpa" == modelDAOType) {
+        mkJpaImpl()
+    }
+}
+
+def mkRepository() {
+    if ("jpa" == modelDAOType) {
+        mkJpaRepository()
+    }
+}
+
+def mkEntity() {
+    if ("jpa" == modelDAOType) {
+        mkJpaEntity()
+    }
+}
+
+//===================================================== jpa ==============================================================
+def mkJpaController() {
+    file("${controllerPath}/${controllerName}.java").withWriter {
+        it.write("""package ${controllerPackageName};
+
+import com.proper.enterprise.platform.core.controller.BaseController;
+import ${entityPackageName}.${entityName};
+import ${servicePackageName}.${serviceName};
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/${businessName}")
+public class ${controllerName} extends BaseController {
+
+    @Autowired
+    private ${serviceName} ${toFirstLowerCase(serviceName)};
+
+    @PostMapping
+    public ResponseEntity<${entityName}> post(@RequestBody ${entityName} ${toFirstLowerCase(entityName)}) {
+        return responseOfPost(${toFirstLowerCase(serviceName)}.save(${toFirstLowerCase(entityName)}));
+    }
+
+    @DeleteMapping
+    public ResponseEntity delete(@RequestParam String id) {
+        return responseOfDelete(${toFirstLowerCase(serviceName)}.deleteById(id));
+    }
+
+    @PutMapping
+    public ResponseEntity<${entityName}> put(@RequestBody ${entityName} ${toFirstLowerCase(entityName)}) {
+        return responseOfPut(${toFirstLowerCase(serviceName)}.save(${toFirstLowerCase(entityName)}));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> get() {
+        return responseOfGet(isPageSearch() ? ${toFirstLowerCase(serviceName)}.findPage() : ${
+            toFirstLowerCase(serviceName)
+        }.findAll());
+    }
+}""")
+    }
+}
+
+def mkJpaControllerTest() {
+    file("${testControllerPath}/${controllerName}Test.groovy").withWriter {
+        it.write("""package ${controllerPackageName}
+
+import org.junit.Test
+import org.springframework.http.HttpStatus
+import com.proper.enterprise.platform.core.entity.DataTrunk
+import ${entityPackageName}.${entityName}
+import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.utils.JSONUtil
+
+
+class ${controllerName}Test extends AbstractTest {
+
+    private static final URL = "/${businessName}"
+
+    @Test
+    void "post"() {
+        mockUser('test1', 't1', 'pwd')
+        ${entityName} result = postAndReturn(URL, new ${entityName}())
+        expect:
+        assert null != result.getId()
+    }
+
+    @Test
+    void "delete"() {
+        mockUser('test1', 't1', 'pwd')
+        delete(URL + "?id=1", HttpStatus.NOT_FOUND)
+        ${entityName} result = postAndReturn(URL, new ${entityName}())
+        delete(URL + "?id=" + result.getId(), HttpStatus.NO_CONTENT)
+    }
+
+    @Test
+    void "put"() {
+        mockUser('test1', 't1', 'pwd')
+        ${entityName} entity = new ${entityName}()
+        entity.setTest(1)
+        ${entityName} result = postAndReturn(URL, entity)
+        result.setTest(2)
+        ${entityName} result2 = JSONUtil.parse(put(URL, JSONUtil.toJSON(result), HttpStatus.OK)
+            .getResponse().getContentAsString(), ${entityName}.class)
+        expect:
+        assert 2 == result2.getTest()
+    }
+
+    @Test
+    void "get"() {
+        mockUser('test1', 't1', 'pwd')
+        ${entityName} entity1 = new ${entityName}().setTest(1)
+        ${entityName} entity2 = new ${entityName}().setTest(2)
+        ${entityName} entity3 = new ${entityName}().setTest(3)
+        postAndReturn(URL, entity1)
+        postAndReturn(URL, entity2)
+        postAndReturn(URL, entity3)
+        List<${entityName}> list = JSONUtil.parse(get(URL, HttpStatus.OK).getResponse().getContentAsString(), List)
+        DataTrunk<${entityName}> page = JSONUtil.parse(get(URL + "?pageNo=1&pageSize=1", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk)
+        expect:
+        assert 3 == list.size()
+        assert 3 == page.count
+        assert 1 == page.getData().size()
+    }
+}""")
+    }
+}
+
+def mkJpaService() {
+    file("${servicePath}/${serviceName}.java").withWriter {
+        it.write("""package ${servicePackageName};
+
+import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
+import ${entityPackageName}.${entityName};
+
+public interface ${serviceName} extends BaseJpaService<${entityName}, String> {
+
+}""")
+    }
+}
+
+def mkJpaImpl() {
+    file("${implPath}/${implName}.java").withWriter {
+        it.write("""package ${implPackageName};
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
+import ${entityPackageName}.${entityName};
+import ${repositoryPackageName}.${repositoryName};
+import ${servicePackageName}.${serviceName};
+
+@Service
+public class ${implName} extends JpaServiceSupport<${entityName}, ${repositoryName}, String> implements ${serviceName} {
+
+    @Autowired
+    private ${repositoryName} ${toFirstLowerCase(businessName)}Repository;
+
+    @Override
+    public ${repositoryName} getRepository() {
+        return ${toFirstLowerCase(businessName)}Repository;
+    }
+}""")
+    }
+}
+
+def mkJpaEntity() {
+    file("${entityPath}/${entityName}.java").withWriter {
+        it.write("""package ${entityPackageName};
+
+import com.proper.enterprise.platform.core.entity.BaseEntity;
+import javax.persistence.*;
+
+@Entity
+@Table(name = "${businessDataTableName.toString().toUpperCase()}")
+public class ${entityName} extends BaseEntity {
+
+    public ${entityName}(){}
+
+    @Column
+    private Integer test;
+
+    public Integer getTest() {
+        return test;
+    }
+
+    public ${entityName} setTest(Integer test) {
+        this.test = test;
+        return this;
+    }
+}""")
+    }
+}
+
+def mkJpaRepository() {
+    file("${repositoryPath}/${repositoryName}.java").withWriter {
+        it.write("""package ${repositoryPackageName};
+
+import ${entityPackageName}.${entityName};
+import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
+
+public interface ${repositoryName} extends BaseJpaRepository<${entityName}, String> {
+}""")
+    }
+}
+
+static def toFirstUpperCase(str) {
+    return str.substring(0, 1).toUpperCase() + str.substring(1)
+}
+
+static def toFirstLowerCase(str) {
+    return str.substring(0, 1).toLowerCase() + str.substring(1)
+}
+
+static def toLowerCase(str) {
+    return str.toLowerCase()
+}
+

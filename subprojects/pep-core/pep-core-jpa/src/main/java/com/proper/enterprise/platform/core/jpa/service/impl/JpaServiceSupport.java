@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
 import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
 import com.proper.enterprise.platform.core.service.impl.ServiceSupport;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +39,17 @@ public abstract class JpaServiceSupport<T, R extends BaseJpaRepository, IDT exte
     @SuppressWarnings("unchecked")
     public <S extends T> boolean exists(Example<S> var1) {
         return getRepository().exists(var1);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean deleteById(IDT var1) {
+        try {
+            getRepository().delete(var1);
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+            return false;
+        }
     }
 
     @Override

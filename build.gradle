@@ -32,11 +32,16 @@ allprojects {
     }
 }
 
-apply plugin: 'idea'
 
 ext {
     pepDevConfRoot = "$rootDir/subprojects/pep-dev-configs/src/main/resources/META-INF"
+    projectGenerator = [:]
+    projectGenerator.name = 'pep'
+    projectGenerator.path = 'platform'
 }
+
+apply plugin: 'idea'
+apply from: "$pepDevConfRoot/configs/generator/generator.gradle"
 
 subprojects {
     apply plugin: 'idea'
@@ -106,36 +111,6 @@ subprojects {
                 snapshotRepository(url: "${nexusUrl}/repository/maven-snapshots") {
                     authentication(userName: nexusUsername, password: nexusPassword)
                 }
-            }
-        }
-    }
-}
-
-// could use init-${sub-project-name} task to initial a sub project folder
-tasks.addRule('Pattern: init-pep-<ID>') { String initSubProj ->
-    if (initSubProj.startsWith('init-pep-')) {
-        task(initSubProj) << {
-            def subProjName = (initSubProj - 'init-').toLowerCase()
-            def subProjRoot = "${rootProject.projectDir}/subprojects/$subProjName"
-            def confPath = (subProjName - 'pep-').replace('-', '/')
-
-            delete(subProjRoot)
-            mkdir(subProjRoot)
-            mkdir("$subProjRoot/src/main/java/com/proper/enterprise/platform")
-            mkdir("$subProjRoot/src/main/resources")
-            mkdir("$subProjRoot/src/main/resources/conf/$confPath")
-            file("$subProjRoot/src/main/resources/conf/$confPath/${subProjName - 'pep-'}.properties").createNewFile()
-            mkdir("$subProjRoot/src/main/resources/spring/$confPath")
-            file("$subProjRoot/src/main/resources/spring/$confPath/applicationContext-${subProjName - 'pep-'}.xml").createNewFile()
-            mkdir("$subProjRoot/src/test/groovy/com/proper/enterprise/platform")
-            mkdir("$subProjRoot/src/test/resources")
-
-            file("$subProjRoot/${subProjName}.gradle").createNewFile()
-            file("$subProjRoot/README.md").withWriter {
-                it.write("""$subProjName
-${'=' * subProjName.length()}
-
-Proper Enterprise Platform""")
             }
         }
     }

@@ -61,8 +61,7 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
     1. spring 配置文件放置在 `src/main/resources/spring/<module>`。spring 配置文件采用各个模块统一入口的方式来组织，文件名为 `applicationContext-<module>.xml`。在入口中将模块内的配置文件关联起来。需注意避免重复 import。
     2. 其他配置文件放置在 `src/main/resources/conf/<module>`
 
-        > 可参考 `./gradlew init-pep-<module>` 自动生成的配置文件
-
+     
 * Controller：`com.proper.enterprise.platform.<module>..controller.*Controller`，Controller 放置在各模块中。RESTFul Controller 可以继承 `BaseController`，以方便响应 RESTFul 请求。可参考 `UsersController`
 * 服务接口：`com.proper.enterprise.platform.api.<module>..service.*Service`
 * 服务实现：`com.proper.enterprise.platform.<module>..service.impl.*ServiceImpl`
@@ -203,20 +202,16 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
 
 例如要新增一个 `pep-test-init` 模块，可以通过下面的任务初始化该模块的基本路径及文件：
 
-    $ ./gradlew init-pep-test-init
-
+    $ ./gradlew buildCode -Pmodel=pep-test-init 
+支持参数
+ 
+    -Pmodel 模块名 example  -Pmodel=pep-isme             required 
+    -Pbusiness 模块下业务名 example  -Pbusiness=api              
+    -PparentPath 模块父包名 example  -PparentPath=pep-is/ 
+    
 初始化内容包括：
 
-    subprojects/pep-test-init
-    subprojects/pep-test-init/src/main/java
-    subprojects/pep-test-init/src/main/resources
-    subprojects/pep-test-init/src/main/resources/conf/test/init
-    subprojects/pep-test-init/src/main/resources/conf/test/init/test-init-context.xml
-    subprojects/pep-test-init/src/main/resources/conf/test/init/test-init.properties
-    subprojects/pep-test-init/src/test/groovy
-    subprojects/pep-test-init/src/test/resources
-    subprojects/pep-test-init/pep-test-init.gradle
-    subprojects/pep-test-init/README.md
+    模块的包路径，properties,spring配置文件及增删改查的基础代码和配套的单元测试
 
 > 注意：初始化任务执行时会先将改模块根路径删除
 
