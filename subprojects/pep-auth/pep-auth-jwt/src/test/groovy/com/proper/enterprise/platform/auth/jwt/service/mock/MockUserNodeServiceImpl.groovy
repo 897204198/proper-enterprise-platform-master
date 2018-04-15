@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.auth.jwt.service.mock
 
 import com.proper.enterprise.platform.api.auth.model.User
-import com.proper.enterprise.platform.auth.common.neo4j.entity.UserNodeEntity
+import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.service.impl.AbstractUserServiceImpl
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.core.utils.RequestUtil
@@ -32,12 +32,12 @@ class MockUserNodeServiceImpl extends AbstractUserServiceImpl {
             if (mockUser != null) {
                 user = this.getByUsername(mockUser.username)
                 if (user == null) {
-                    user = new UserNodeEntity(mockUser.username, mockUser.password)
+                    user = new UserEntity(mockUser.username, mockUser.password)
                     user.id = mockUser.id
                     user.superuser = mockUser.isSuper
                 }
             } else {
-                user = new UserNodeEntity('default-mock-user', 'default-mock-user-pwd')
+                user = new UserEntity('default-mock-user', 'default-mock-user-pwd')
                 user.setId(DEFAULT_USER)
             }
             return user

@@ -3,9 +3,6 @@ package com.proper.enterprise.platform.auth.jwt.filter
 import com.proper.enterprise.platform.api.auth.dao.MenuDao
 import com.proper.enterprise.platform.api.auth.dao.ResourceDao
 import com.proper.enterprise.platform.api.auth.dao.UserDao
-import com.proper.enterprise.platform.api.auth.model.Menu
-import com.proper.enterprise.platform.api.auth.model.Resource
-import com.proper.enterprise.platform.api.auth.model.User
 import com.proper.enterprise.platform.auth.jwt.authz.AuthzService
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
@@ -15,8 +12,8 @@ import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.bind.annotation.RequestMethod
 
 class JWTVerifyFilterTest extends AbstractTest {
 
@@ -102,47 +99,14 @@ class JWTVerifyFilterTest extends AbstractTest {
     }
 
     @Test
+    @Sql
     void accessResource() {
-
-        User userNodeEntity = userDao.getNewUser()
-        userNodeEntity.setId("art")
-        userNodeEntity.setUsername('art')
-        userNodeEntity.setPassword('pwd')
-        userDao.save(userNodeEntity)
-
-        Resource resourceNodeEntity = resourceDao.getNewResourceEntity()
-        resourceNodeEntity.setId('r1')
-        resourceNodeEntity.setName('test-res-1')
-        resourceNodeEntity.setURL('/jwt/filter/res/nomenu')
-        resourceNodeEntity.setMethod(RequestMethod.GET)
-        resourceDao.save(resourceNodeEntity)
-
-        Resource resourceNodeEntity1 = resourceDao.getNewResourceEntity()
-        resourceNodeEntity1.setId('r2')
-        resourceNodeEntity1.setName('test-res-2')
-        resourceNodeEntity1.setURL('/jwt/filter/res/menures')
-        resourceNodeEntity1.setMethod(RequestMethod.GET)
-        resourceDao.save(resourceNodeEntity1)
-
-        Menu menuNodeEntity = menuDao.getNewMenuEntity()
-        menuNodeEntity.setId('m1')
-        menuNodeEntity.setName('test-menu')
-        menuNodeEntity.setRoute('/test/menu')
-        menuNodeEntity.setIcon(null)
-        menuNodeEntity.setSequenceNumber(0)
-        menuNodeEntity.add(resourceNodeEntity1)
-        menuDao.save(menuNodeEntity)
-
         def token = getToken()
         mockRequest.addHeader('Authorization', token)
 
         get('/jwt/filter/res/nores', HttpStatus.OK)
         get('/jwt/filter/res/nomenu', HttpStatus.OK)
         get('/jwt/filter/res/menures', HttpStatus.UNAUTHORIZED)
-
-        userDao.deleteAll()
-        resourceDao.deleteAll()
-        menuDao.deleteAll()
     }
 
 }

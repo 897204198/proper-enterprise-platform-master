@@ -1,8 +1,0 @@
-dependencies {
-    compile libraries.spring_data_neo4j,
-            libraries.neo4j_driver,
-            libraries.spring_orm
-    compile project(':pep-core')
-    testCompile project(':pep-test')
-
-}
