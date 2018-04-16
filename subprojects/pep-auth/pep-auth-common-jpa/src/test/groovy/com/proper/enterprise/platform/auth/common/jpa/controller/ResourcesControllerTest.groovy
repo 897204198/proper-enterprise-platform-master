@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.model.Resource
 import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.auth.common.dictionary.ResourceType
 import com.proper.enterprise.platform.auth.common.jpa.entity.DataRestrainEntity
+import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository
 import com.proper.enterprise.platform.auth.common.jpa.repository.ResourceRepository
@@ -43,32 +44,6 @@ class ResourcesControllerTest extends AbstractTest {
     I18NService i18NService
 
     @Test
-    public void checkUniqueConstraint() {
-        mockUser('id', 'name', 'pwd', true)
-
-        doPost()
-
-        // 查询一下触发数据插入操作
-        repository.findAll()
-    }
-
-    private ResourceEntity doPost() {
-        def resource = [:]
-        resource['url'] = '/foo/bar'
-        resource['method'] = RequestMethod.PUT
-        resource['enable'] = true
-
-        JSONUtil.parse(
-            post('/auth/resources',
-                JSONUtil.toJSON(resource),
-                HttpStatus.CREATED)
-                .getResponse()
-                .getContentAsString(),
-            ResourceEntity
-        )
-    }
-
-    @Test
     @NoTx
     void resourcesUnionTest() {
         // super user
@@ -92,26 +67,17 @@ class ResourcesControllerTest extends AbstractTest {
         reqMap['url'] = '/test/url'
         reqMap['enable'] = true
         reqMap['method'] = 'POST'
+        reqMap['identifier'] = 'edit'
         put('/auth/resources/test-c', JSONUtil.toJSON(reqMap), HttpStatus.OK)
         resource = JSONUtil.parse(get('/auth/resources/test-c', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert resource.get('url') == '/test/url'
         assert resource.get('enable')
 
-        // menu add resource
-        post('/auth/menus/a2/resource/test-d', '', HttpStatus.CREATED)
-        def resList = JSONUtil.parse(get('/auth/resources/test-d/menus', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert resList.size() == 1
-        assert resList.get(0).id == 'a2'
-        // delete menu's resource
-        delete('/auth/menus/a2/resource/test-d', HttpStatus.NO_CONTENT)
-        resList = JSONUtil.parse(get('/auth/resources/test-d/menus', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert resList.size() == 0
-
         // role add resource
         def addResourceReq = [:]
         addResourceReq['ids'] = ['test-u']
         post('/auth/roles/role1/resources', JSONUtil.toJSON(addResourceReq), HttpStatus.CREATED)
-        resList = JSONUtil.parse(get('/auth/resources/test-u/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        def resList = JSONUtil.parse(get('/auth/resources/test-u/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 1
         assert resList.get(0).id == 'role1'
         // delete role's resource
@@ -142,8 +108,6 @@ class ResourcesControllerTest extends AbstractTest {
         delete('/auth/resources?ids=test-u', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource" +
             ".delete.relation.role")
 
-        post('/auth/menus/a2/resource/test-d', JSONUtil.toJSON(addResource), HttpStatus.CREATED)
-        delete('/auth/resources?ids=test-d', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.resource.delete.relation.menu" )
     }
 
     @Test
@@ -166,6 +130,7 @@ class ResourcesControllerTest extends AbstractTest {
         data.setFilterName("filterName")
 
         ResourceEntity resourceEntity = new ResourceEntity()
+        resourceEntity.setResourceCode("aa")
         resourceEntity.add(data)
         assert resourceEntity.dataRestrains.size() == 1
         assert resourceEntity.dataRestrains.get(0).name == "ii"
@@ -177,6 +142,30 @@ class ResourcesControllerTest extends AbstractTest {
 
         String tableName = "ww"
         resourceEntity.getDataRestrains(tableName).size() == 0
+    }
+
+    @NoTx
+    @Test
+    void testGetResourceMenus(){
+        ResourceEntity resourceEntity = new ResourceEntity()
+        resourceEntity.setName('resource')
+        resourceEntity.setURL("/aa")
+        resourceEntity.setIdentifier("edit")
+        resourceEntity = resourceService.save(resourceEntity)
+
+        MenuEntity menuEntity = new MenuEntity()
+        menuEntity.setName('menu1')
+        menuEntity.setRoute("route1")
+        menuEntity.add(resourceEntity)
+        menuEntity = menuRepository.save(menuEntity)
+
+        def value = JSONUtil.parse(get('/auth/resources/'+ resourceEntity.getId() + '/menus', HttpStatus.OK).getResponse().getContentAsString(), java
+                .lang.Object.class)
+        assert value.size() == 1
+        assert value.get(0).name == "menu1"
+
+        delete('/auth/resources?ids='+ resourceEntity.getId(), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage(" pep.auth.common.resource.delete.relation.menu")
+
     }
 
     @Test

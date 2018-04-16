@@ -106,7 +106,7 @@ public interface UserGroup extends IBase {
     /**
      * 从组中移除全部用户
      */
-    void removeAllUsers();
+    void removeAllUsers(Collection<? extends User> users);
 
     /**
      * 获得用户组下用户集合

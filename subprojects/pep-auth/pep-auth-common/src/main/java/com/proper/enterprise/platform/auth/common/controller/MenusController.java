@@ -85,16 +85,6 @@ public class MenusController extends BaseController {
         return responseOfGet(service.getMenuRoles(menuId, menuEnable, roleEnable));
     }
 
-    @PostMapping(path = "/{menuId}/resource/{resourceId}")
-    public ResponseEntity<Menu> addMenuResource(@PathVariable String menuId, @PathVariable String resourceId) {
-        return responseOfPost(service.addMenuResource(menuId, resourceId));
-    }
-
-    @DeleteMapping(path = "/{menuId}/resource/{resourceId}")
-    public ResponseEntity deleteMenuResource(@PathVariable String menuId, @PathVariable String resourceId) {
-        return responseOfDelete(service.deleteMenuResource(menuId, resourceId) != null);
-    }
-
     @GetMapping(path = "/parents")
     public ResponseEntity<Collection<? extends Menu>> getMenuParents() {
         return responseOfGet(service.getMenuParents());

@@ -126,27 +126,9 @@ public interface MenuService {
 
     /**
      * 菜单添加资源
-     *
-     * @param menuId     菜单ID
-     * @param resourceId 资源ID
-     * @return 菜单
-     */
-    Menu addMenuResource(String menuId, String resourceId);
-
-    /**
-     * 菜单添加资源
      * @return 菜单
      */
     Resource addResourceOfMenu(String menuId, Resource resourceReq);
-
-    /**
-     * 菜单删除资源
-     *
-     * @param menuId     菜单ID
-     * @param resourceId 资源ID
-     * @return 菜单
-     */
-    Menu deleteMenuResource(String menuId, String resourceId);
 
     /**
      * 获取指定菜单资源集合

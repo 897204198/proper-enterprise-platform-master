@@ -105,5 +105,4 @@ class MenuServiceImplTest extends AbstractTest {
 
     }
 
-
 }

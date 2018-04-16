@@ -223,6 +223,25 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
+    public UserGroup deleteGroupUsers(String groupId, String ids) {
+        UserGroup userGroup = get(groupId, EnableEnum.ENABLE);
+        if (userGroup == null) {
+            throw new ErrMsgException("can't save beacuse userGropu not find");
+        }
+        if (StringUtil.isNotNull(ids)) {
+            Collection<User> menuList = new ArrayList<>();
+            String[] idArr = ids.split(",");
+            for (String id : idArr) {
+                menuList.add(userService.get(id));
+            }
+            userGroup.removeAllUsers(menuList);
+            userGroup = this.save(userGroup);
+        }
+        return userGroup;
+    }
+
+
+    @Override
     public UserGroup addGroupUserByUserIds(String groupId, List<String> userIds) {
         UserGroup userGroup = get(groupId, EnableEnum.ENABLE);
         if (userGroup == null) {

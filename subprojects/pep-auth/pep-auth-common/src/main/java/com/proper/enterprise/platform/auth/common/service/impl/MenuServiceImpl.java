@@ -34,6 +34,8 @@ public class MenuServiceImpl implements MenuService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuServiceImpl.class);
 
+    private static final String DEFAULT_VALUE = "-1";
+
     @Autowired
     private MenuDao menuDao;
 
@@ -111,7 +113,7 @@ public class MenuServiceImpl implements MenuService {
         menuInfo.setEnable(menuReq.isEnable());
         menuInfo.setDescription(menuReq.getDescription());
         String parentId = menuReq.getParentId();
-        if (StringUtil.isNotNull(parentId)) {
+        if (StringUtil.isNotNull(parentId) && !parentId.equals(DEFAULT_VALUE)) {
             menuInfo.setParent(this.get(parentId));
         }
         menuInfo.setSequenceNumber(menuReq.getSequenceNumber());
@@ -145,6 +147,14 @@ public class MenuServiceImpl implements MenuService {
         for (Menu menu : roleMenus) {
             if (filterMenus.contains(menu)) {
                 menus.add(menu);
+                if (parentId == null) {
+                    while (menu.getParent() != null) {
+                        menu = menu.getParent();
+                        if (!menus.contains(menu)) {
+                            menus.add(menu);
+                        }
+                    }
+                }
             }
         }
         menus.sort(new BeanComparator("parent", "sequenceNumber"));
@@ -248,25 +258,8 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public Menu addMenuResource(String menuId, String resourceId) {
-        Menu menu = this.get(menuId, EnableEnum.ENABLE);
-        if (menu != null) {
-            Resource resource = resourceService.get(resourceId);
-            if (resource != null) {
-                menu.add(resource);
-                menu = save(menu);
-            }
-        }
-        return menu;
-    }
-
-    @Override
     public Resource addResourceOfMenu(String menuId, Resource resourceReq) {
-        String id = resourceReq.getId();
         Resource resource = resourceDao.getNewResourceEntity();
-        if (StringUtil.isNotNull(id)) {
-            resource = resourceDao.get(id, EnableEnum.ALL);
-        }
         resource.setName(resourceReq.getName());
         resource.setURL(resourceReq.getURL());
         resource.setEnable(resourceReq.isEnable());
@@ -275,24 +268,26 @@ public class MenuServiceImpl implements MenuService {
         if (StringUtil.isNotNull(resourceCode)) {
             resource.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
         }
-        Resource resourcesOfSave = resourceDao.save(resource);
-        Menu menu = this.get(menuId, EnableEnum.ALL);
-        menu.add(resourcesOfSave);
-        menuDao.save(menu);
-        return resourcesOfSave;
-    }
-
-    @Override
-    public Menu deleteMenuResource(String menuId, String resourceId) {
         Menu menu = this.get(menuId, EnableEnum.ENABLE);
-        if (menu != null) {
-            Resource resource = resourceService.get(resourceId);
-            if (resource != null) {
-                menu.remove(resource);
-                menu = save(menu);
+        if (menu != null && menu.isValid()) {
+            Collection<? extends Resource> collection = menu.getResources();
+            for (Resource res : collection) {
+                String identification = res.getIdentifier();
+                if (resourceReq.getIdentifier() != null && !resourceReq.getIdentifier().equals(identification)) {
+                    continue;
+                } else {
+                    throw new ErrMsgException("pep.auth.common.menu.param");
+                }
             }
+            resource.setIdentifier(resourceReq.getIdentifier());
         }
-        return menu;
+        Resource resourcesOfSave = resourceDao.save(resource);
+        Menu menus = this.get(menuId, EnableEnum.ENABLE);
+        if (menus != null) {
+            menus.add(resourcesOfSave);
+            menuDao.save(menus);
+        }
+        return resourcesOfSave;
     }
 
     @Override
@@ -376,20 +371,22 @@ public class MenuServiceImpl implements MenuService {
         Collection<MenuVO> menusResources = new ArrayList<>();
         Collection<? extends Menu> menuEntity = this.getMenus();
         for (Menu menu : menuEntity) {
-            MenuVO detail = new MenuVO();
-            BeanUtils.copyProperties(menu, detail);
-            detail.setParentId(menu.getParentId());
-            Collection<ResourceVO> resList = new ArrayList<>();
-            Collection<Resource> resourceList = (Collection<Resource>) menu.getResources();
-            for (Resource resource : resourceList) {
-                if (resource != null && resource.isEnable() && resource.isValid()) {
-                    ResourceVO resourceDetail = new ResourceVO();
-                    BeanUtils.copyProperties(resource, resourceDetail);
-                    resList.add(resourceDetail);
+            if (menu.isValid() && menu.isEnable()) {
+                MenuVO detail = new MenuVO();
+                BeanUtils.copyProperties(menu, detail);
+                detail.setParentId(menu.getParentId());
+                Collection<ResourceVO> resList = new ArrayList<>();
+                Collection<Resource> resourceList = (Collection<Resource>) menu.getResources();
+                for (Resource resource : resourceList) {
+                    if (resource != null && resource.isEnable() && resource.isValid()) {
+                        ResourceVO resourceDetail = new ResourceVO();
+                        BeanUtils.copyProperties(resource, resourceDetail);
+                        resList.add(resourceDetail);
+                    }
                 }
+                detail.setResources(resList);
+                menusResources.add(detail);
             }
-            detail.setResources(resList);
-            menusResources.add(detail);
         }
         return menusResources;
     }

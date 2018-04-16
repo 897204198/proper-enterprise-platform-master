@@ -142,26 +142,15 @@ class MenusControllerTest extends AbstractTest {
 
         menu['icon'] = 'test_icon_change'
         put('/auth/menus/' + id, JSONUtil.toJSON(menu), HttpStatus.OK)
-        // menu add resources
-        post('/auth/menus/' + id + '/resource/test-c', '', HttpStatus.CREATED)
-        menuObj = JSONUtil.parse(get('/auth/menus/' + id,  HttpStatus.OK).getResponse().getContentAsString(), Map.class)
-        assert menuObj.get("icon") == 'test_icon_change'
-        def resList = JSONUtil.parse(get('/auth/menus/' + id + '/resources',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert resList.size() == 2
-        assert resList.get(1).id == 'test-c'
         // delete menu
         assert delete('/auth/menus?ids=' + id, HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.menu.delete.relation.resource")
-        // delete menu's role
-        delete('/auth/menus/' + id + '/resource/test-c', HttpStatus.NO_CONTENT)
-        resList = JSONUtil.parse(get('/auth/menus/' + id + '/resources',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert resList.size() == 1
 
         // role add menu
         def addReq = [:]
         addReq['ids'] = [id]
         post('/auth/roles/role1/menus', JSONUtil.toJSON(addReq), HttpStatus.CREATED)
-        resList = JSONUtil.parse(get('/auth/menus/' + id + '/roles',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        def resList = JSONUtil.parse(get('/auth/menus/' + id + '/roles',  HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert resList.size() == 1
         assert resList.get(0).id == 'role1'
         // delete menu
@@ -225,6 +214,11 @@ class MenusControllerTest extends AbstractTest {
         MenuEntity menu =  new MenuEntity()
         menu.setName("tar")
         menu.setId("9999")
+        menu.setIdentifier("edit")
+        menu.setMenuCode("a")
+
+        ResourceEntity resourceEntity = new ResourceEntity()
+        menu.remove(resourceEntity)
 
         MenuEntity menuEntity = new MenuEntity()
         menuEntity.addChild(menu)

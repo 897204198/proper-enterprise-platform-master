@@ -5,11 +5,7 @@ import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
-import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.RoleRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserGroupRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository
+import com.proper.enterprise.platform.auth.common.jpa.repository.*
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
@@ -172,6 +168,30 @@ class UserGroupControllerTest extends AbstractTest {
         userGroupEntity1 = userGroupRepository.saveAndFlush(userGroupEntity1)
 
         assert delete(URI + '?ids=' + userGroupEntity1.getId(), HttpStatus.NO_CONTENT).getResponse().getContentAsString() == ''
+    }
+
+    @NoTx
+    @Test
+    void testDeleteUsersOfUserGroup(){
+        mockUser('test1', 't1', 'pwd')
+
+        UserEntity userEntity = new UserEntity('u11', 'p11')
+        userEntity = userRepo.save(userEntity)
+
+        UserEntity userEntity2 = new UserEntity('u22', 'p11')
+        userEntity2 = userRepo.save(userEntity2)
+
+        UserGroup userGroupEntity = new UserGroupEntity()
+        userGroupEntity.setName("group1")
+        userGroupEntity.setDescription("des")
+        userGroupEntity.setEnable(true)
+        userGroupEntity.setSeq(2)
+        userGroupEntity.add(userEntity)
+        userGroupEntity.add(userEntity2)
+        userGroupEntity = userGroupRepository.save(userGroupEntity)
+
+        delete(URI + '/'+ userGroupEntity.getId()+ '/users?ids=' +userEntity.getId() + ',' + userEntity2.getId(), HttpStatus.NO_CONTENT)
+                .getResponse().getContentAsString() == ''
     }
 
     @Test

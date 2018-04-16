@@ -134,11 +134,6 @@ public class UserGroupEntity extends BaseEntity implements UserGroup {
     }
 
     @Override
-    public void removeAllUsers() {
-        this.userEntities = new ArrayList<>();
-    }
-
-    @Override
     public boolean isEnable() {
         return enable;
     }
@@ -158,5 +153,10 @@ public class UserGroupEntity extends BaseEntity implements UserGroup {
     @JsonIgnore
     public Collection<? extends Role> getRoles() {
         return roleGroupEntities;
+    }
+
+    @Override
+    public void removeAllUsers(Collection<? extends User> users) {
+        userEntities.removeAll(CollectionUtil.convert(users));
     }
 }

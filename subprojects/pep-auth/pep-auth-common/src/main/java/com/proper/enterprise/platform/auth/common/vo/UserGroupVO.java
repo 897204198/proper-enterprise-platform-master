@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.vo;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -91,8 +92,8 @@ public class UserGroupVO extends BaseVO implements UserGroup {
     }
 
     @Override
-    public void removeAllUsers() {
-
+    public void removeAllUsers(Collection<? extends User> users) {
+        users.removeAll(CollectionUtil.convert(users));
     }
 
     @Override

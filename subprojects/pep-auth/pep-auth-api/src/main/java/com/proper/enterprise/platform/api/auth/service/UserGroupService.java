@@ -159,13 +159,22 @@ public interface UserGroupService {
     UserGroup deleteGroupUser(String groupId, String userId);
 
     /**
+     * 从用户组中删除多条用户
+     *
+     * @param groupId 用户组ID
+     * @param ids  用户 ids
+     * @return 用户组
+     */
+    UserGroup deleteGroupUsers(String groupId, String ids);
+
+    /**
      * 用户组批量添加用户
      *
      * @param groupId 用户组ID
-     * @param userIds 用户ID集合
+     * @param ids 用户ID集合
      * @return 用户组
      */
-    UserGroup addGroupUserByUserIds(String groupId, List<String> userIds);
+    UserGroup addGroupUserByUserIds(String groupId, List<String> ids);
 
     /**
      * 获取指定用户组的用户集合

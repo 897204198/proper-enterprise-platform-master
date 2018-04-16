@@ -113,6 +113,17 @@ public class UserGroupController extends BaseController {
         return responseOfDelete(service.deleteGroupUser(groupId, userId) != null);
     }
 
+    /**
+     * 从用户组中删除多个用户
+     *
+     * @param groupId 用户组ID
+     * @return 结果
+     */
+    @DeleteMapping(path = "/{groupId}/users")
+    public ResponseEntity deleteUserGroupUsers(@PathVariable String groupId, @RequestParam Map<String, String> req) {
+        return responseOfDelete(service.deleteGroupUsers(groupId, req.get("ids")) != null);
+    }
+
     @GetMapping(path = "/{id}/users")
     public ResponseEntity<Collection<? extends User>> getGroupUsers(@PathVariable String id,
                                                                     @RequestParam(defaultValue = "ALL") EnableEnum userGroupEnable,

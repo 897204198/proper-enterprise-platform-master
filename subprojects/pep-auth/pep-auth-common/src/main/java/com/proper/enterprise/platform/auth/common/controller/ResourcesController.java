@@ -30,11 +30,6 @@ public class ResourcesController extends BaseController {
         return responseOfPut(resourceService.updateEnable(idList, enable));
     }
 
-    @PostMapping
-    public ResponseEntity<Resource> create(@RequestBody ResourceVO resourceReq) throws Exception {
-        return responseOfPost(resourceService.saveOrUpdateResource(resourceReq));
-    }
-
     @DeleteMapping
     public ResponseEntity deleteResource(@RequestParam String ids) throws Exception {
         return responseOfDelete(resourceService.deleteByIds(ids));

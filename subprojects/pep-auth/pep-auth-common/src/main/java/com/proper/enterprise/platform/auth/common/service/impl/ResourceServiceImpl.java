@@ -59,6 +59,21 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setURL(resourceReq.getURL());
         resource.setEnable(resourceReq.isEnable());
         resource.setMethod(resourceReq.getMethod());
+        Collection<? extends Menu> collection = resourceReq.getMenus();
+        for (Menu menus : collection) {
+            if (menus != null && menus.isValid()) {
+                Collection<? extends Resource> resources = menus.getResources();
+                for (Resource resource1 : resources) {
+                    String identification = resource1.getIdentifier();
+                    if (resourceReq.isValid() && !resourceReq.getIdentifier().equals(identification)) {
+                        continue;
+                    } else {
+                        throw new ErrMsgException("pep.auth.common.menu.param");
+                    }
+                }
+                resource.setIdentifier(resourceReq.getIdentifier());
+            }
+        }
         String resourceCode = resourceReq.getResourceCode();
         if (StringUtil.isNotNull(resourceCode)) {
             resource.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
@@ -203,7 +218,7 @@ public class ResourceServiceImpl implements ResourceService {
      * 思路：
      * 传参数signature与所有resources.method+resources.url
      * 字符进行 ANT 风格的路径匹配
-     *
+     * <p>
      * 匹配原则：
      * 符合条件的如果完全匹配直接return,无完全匹配的比较*号位置，*号越靠后越符合匹配规则，
      * 当*号位置相同时再比较整个字符长度，长度长的更符合条件。
