@@ -25,6 +25,8 @@ Proper Enterprise Platform Developer Guidelines
 		    #服务端地址（具体地址自行修改）
 			proxy_pass http://127.0.0.1:8082/pep;
 		}
+- 编辑index.html 搜索src="/index  看这个js全名，如:index.db2d6a52.js
+  在静态资源中找到该js，搜索r="/api",将/api改为http://后台项目地址即可
 
 内嵌 servlet 容器开发及调试
 ------------------------

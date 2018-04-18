@@ -195,7 +195,7 @@
                                 <label>{{'PROPERTY.ASSIGNMENT.ASSIGNEE' | translate}}</label>
                             </div>
                             <div class="col-xs-8">
-                                <label ng-if="!popup.assignmentObject.idm.assignee && !popup.assignmentObject.idm.assigneeField">None...</label>
+                                <label ng-if="!popup.assignmentObject.idm.assignee && !popup.assignmentObject.idm.assigneeField">{{'PROPERTY.ASSIGNMENT.IDM.NO_ASSIGNEE_USERS' | translate}}</label>
                                 <ul class="simple-list" ng-if="popup.assignmentObject.idm.assignee || popup.assignmentObject.idm.assigneeField">
                                     <li>
                                         <i class="icon icon-user"></i>
