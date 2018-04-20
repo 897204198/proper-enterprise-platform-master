@@ -8,7 +8,10 @@ import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +26,10 @@ public class UsersController extends BaseController {
     private UserService userService;
 
     @Autowired
-    PasswordEncryptService pwdService;
+    private PasswordEncryptService pwdService;
+
+    @Autowired
+    private I18NService i18NService;
 
     @GetMapping
     public ResponseEntity<?> getUser(String username, String name, String email, String phone,
@@ -43,7 +49,13 @@ public class UsersController extends BaseController {
     @PostMapping
     public ResponseEntity<User> create(@RequestBody UserVO userVO) {
         userVO.setPassword(pwdService.encrypt(userVO.getPassword()));
-        return responseOfPost(userService.saveOrUpdateUser(userVO));
+        User user;
+        try {
+            user = userService.saveOrUpdateUser(userVO);
+        } catch (DataIntegrityViolationException e) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.username.duplicated"));
+        }
+        return responseOfPost(user);
     }
 
     @DeleteMapping
@@ -71,7 +83,12 @@ public class UsersController extends BaseController {
                 userVO.setPassword(pwdService.encrypt(userVO.getPassword()));
             }
         }
-        return responseOfPut(userService.saveOrUpdateUser(userVO));
+        try {
+            user = userService.saveOrUpdateUser(userVO);
+        } catch (DataIntegrityViolationException e) {
+            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.username.duplicated"));
+        }
+        return responseOfPut(user);
     }
 
     /**

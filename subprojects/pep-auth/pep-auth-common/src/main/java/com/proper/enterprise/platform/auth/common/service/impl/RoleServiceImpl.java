@@ -227,7 +227,7 @@ public class RoleServiceImpl implements RoleService {
             menuList.add(menuService.get(id));
             for (Menu detail : role.getMenus()) {
                 if (detail.getId().equals(id)) {
-                    throw new ErrMsgException("pep.auth.common.role.has.menu");
+                    continue;
                 }
             }
         }

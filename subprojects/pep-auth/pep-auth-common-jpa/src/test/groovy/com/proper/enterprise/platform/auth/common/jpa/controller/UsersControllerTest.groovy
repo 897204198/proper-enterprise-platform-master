@@ -3,16 +3,19 @@ package com.proper.enterprise.platform.auth.common.jpa.controller
 import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserGroupService
+import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.*
+import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
+import groovy.json.JsonSlurper
 import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,7 +49,9 @@ class UsersControllerTest extends AbstractTest {
     @Autowired
     I18NService i18NService
     @Autowired
-    PasswordEncryptService pwdService;
+    PasswordEncryptService pwdService
+    @Autowired
+    UserService userService
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/users.sql")
     @Test
@@ -367,6 +372,46 @@ class UsersControllerTest extends AbstractTest {
         assert result.size() == 1
     }
 
+    @Test
+    @NoTx
+    void couldAddSameUsernameAfterDelete() {
+        def userReq = [:]
+        userReq['username'] = 'user'
+        userReq['name'] = 'name'
+        userReq['password'] = 'password'
+        userReq['email'] = 'email'
+        userReq['phone'] = '123'
+        userReq['enable'] = true
+        def newUser = new JsonSlurper().parseText(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString)
+
+        def id = newUser.id
+        delete("$URI?ids=$id", HttpStatus.NO_CONTENT)
+
+        post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED)
+    }
+
+    @Test
+    @NoTx
+    void addSameUsernameWillGetErrAfterDisable() {
+        def userReq = [:]
+        userReq['username'] = 'user_dup'
+        userReq['name'] = 'name'
+        userReq['password'] = 'password'
+        userReq['email'] = 'email'
+        userReq['phone'] = '123'
+        userReq['enable'] = true
+        def newUser = new JsonSlurper().parseText(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString)
+
+        def id = newUser.id
+        userReq['id'] = id
+        userReq['enable'] = false
+        put("$URI/$id", JSONUtil.toJSON(userReq), HttpStatus.OK)
+
+        userReq.remove('id')
+        userReq['enable'] = true
+        def res = post(URI, JSONUtil.toJSON(userReq), HttpStatus.INTERNAL_SERVER_ERROR).response
+        assert res.getHeader(PEPConstants.RESPONSE_HEADER_ERROR_TYPE) == PEPConstants.RESPONSE_BUSINESS_ERROR
+    }
 
     @After
     void tearDown() {

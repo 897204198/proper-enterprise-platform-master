@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-@Table(name = "PEP_AUTH_USERS")
+@Table(name = "PEP_AUTH_USERS", indexes = {
+    @Index(name = "usernameAndValid", columnList = "username,valid", unique = true),
+})
 @DiscriminatorColumn(name = "pepDtype")
 @DiscriminatorValue("UserEntity")
 @CacheEntity
@@ -29,7 +31,7 @@ public class UserEntity extends BaseEntity implements User {
     /**
      * 用户名，唯一
      */
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String username;
 
     /**
@@ -73,12 +75,6 @@ public class UserEntity extends BaseEntity implements User {
     @Column(insertable = false, updatable = false)
     protected String pepDtype;
 
-    @Transient
-    private Collection<? extends Role> roles = new ArrayList<>();
-
-    @Transient
-    private Collection<? extends UserGroup> userGroups = new ArrayList<>();
-
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
             joinColumns = @JoinColumn(name = "USER_ID"),
@@ -93,7 +89,7 @@ public class UserEntity extends BaseEntity implements User {
 
     @Override
     public boolean equals(Object obj) {
-        return obj != null && (obj instanceof UserEntity) && id.equals(((UserEntity) obj).id);
+        return (obj instanceof UserEntity) && id.equals(((UserEntity) obj).id);
     }
 
     @ManyToMany(mappedBy = "userEntities")

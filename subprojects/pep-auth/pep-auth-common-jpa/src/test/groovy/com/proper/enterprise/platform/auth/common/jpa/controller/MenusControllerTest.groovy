@@ -6,12 +6,14 @@ import com.proper.enterprise.platform.auth.common.dictionary.MenuType
 import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.*
+import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
+import groovy.json.JsonSlurper
 import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -168,7 +170,7 @@ class MenusControllerTest extends AbstractTest {
         def parents = JSONUtil.parse(get('/auth/menus/parents',  HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
         assert parents.size() == 6
-        assert parents.get(0).size() == 12
+        assert parents.get(0).size() == 13
 
     }
 
@@ -333,5 +335,46 @@ class MenusControllerTest extends AbstractTest {
         assert value.data.size() == 2
         assert value.data[0].name == '菜单1'
         assert value.data[1].name == '菜单2'
+    }
+
+    @Test
+    @NoTx
+    void couldAddSameRouteAfterDelete() {
+        def menu = [:]
+        menu['icon'] = 'test_icon'
+        menu['name'] = 'test_name1'
+        menu['route'] = '/bbb'
+        menu['enable'] = true
+        menu['sequenceNumber'] = 55
+        menu['menuCode'] = '1'
+        def newMenu = new JsonSlurper().parseText(post('/auth/menus', JSONUtil.toJSON(menu), HttpStatus.CREATED).response.contentAsString)
+
+        def id = newMenu.id
+        delete("/auth/menus?ids=$id", HttpStatus.NO_CONTENT)
+
+        post('/auth/menus', JSONUtil.toJSON(menu), HttpStatus.CREATED)
+    }
+
+    @Test
+    @NoTx
+    void addSameRouteWillGetErrAfterDisable() {
+        def menu = [:]
+        menu['icon'] = 'test_icon'
+        menu['name'] = 'test_name1'
+        menu['route'] = '/bbb/ccc'
+        menu['enable'] = true
+        menu['sequenceNumber'] = 55
+        menu['menuCode'] = '1'
+        def newMenu = new JsonSlurper().parseText(post('/auth/menus', JSONUtil.toJSON(menu), HttpStatus.CREATED).response.contentAsString)
+
+        def id = newMenu.id
+        menu['id'] = id
+        menu['enable'] = false
+        put("/auth/menus/$id", JSONUtil.toJSON(menu), HttpStatus.OK)
+
+        menu.remove('id')
+        menu['enable'] = true
+        def res = post('/auth/menus', JSONUtil.toJSON(menu), HttpStatus.INTERNAL_SERVER_ERROR).response
+        assert res.getHeader(PEPConstants.RESPONSE_HEADER_ERROR_TYPE) == PEPConstants.RESPONSE_BUSINESS_ERROR
     }
 }

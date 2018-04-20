@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-@Table(name = "PEP_AUTH_MENUS")
 @CacheEntity
+@Table(name = "PEP_AUTH_MENUS", indexes = {
+    @Index(name = "route", columnList = "route,valid", unique = true)
+})
 public class MenuEntity extends BaseEntity implements Menu {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuEntity.class);
@@ -34,7 +36,7 @@ public class MenuEntity extends BaseEntity implements Menu {
     /**
      * 前端路径
      */
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String route;
 
     /**
@@ -51,9 +53,6 @@ public class MenuEntity extends BaseEntity implements Menu {
      * 描述说明
      */
     private String description;
-
-    @Transient
-    private boolean boot;
 
     /**
      * 菜单类别数据字典
@@ -82,15 +81,6 @@ public class MenuEntity extends BaseEntity implements Menu {
     @JoinColumn(name = "PARENT_ID")
     @JsonIgnore
     private MenuEntity parent;
-
-    @Transient
-    private String parentId;
-
-    @Transient
-    private Collection<? extends Resource> resources = new ArrayList<>();
-
-    @Transient
-    private Collection<? extends Role> roles = new ArrayList<>();
 
     /**
      * 子菜单集合
@@ -219,7 +209,6 @@ public class MenuEntity extends BaseEntity implements Menu {
     }
 
     @Override
-    @JsonIgnore
     public boolean isLeaf() {
         return getChildren().isEmpty();
     }

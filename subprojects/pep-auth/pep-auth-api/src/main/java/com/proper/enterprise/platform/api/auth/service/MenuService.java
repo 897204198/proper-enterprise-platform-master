@@ -15,7 +15,7 @@ public interface MenuService {
     Menu save(Menu menu);
 
     /**
-     * 保存菜单信息
+     * 保存或更新菜单信息
      *
      * @param menuReq 保存菜单对象
      * @return 菜单信息

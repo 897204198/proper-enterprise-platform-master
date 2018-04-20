@@ -46,8 +46,8 @@ public class RolesController extends BaseController {
     }
 
     @GetMapping(path = "/{roleId}")
-    public ResponseEntity<Role> find(@PathVariable String roleId, @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(roleService.get(roleId, roleEnable));
+    public ResponseEntity<Role> find(@PathVariable String roleId) {
+        return responseOfGet(roleService.get(roleId, EnableEnum.ALL));
     }
 
     @PutMapping(path = "/{roleId}")
