@@ -29,7 +29,7 @@ public class UsersController extends BaseController {
     public ResponseEntity<?> getUser(String username, String name, String email, String phone,
                                      @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
         return responseOfGet(isPageSearch() ? userService.findUsersPagniation(username, name, email, phone, userEnable) :
-                userService.getUsersByCondition(username, name, email, phone, userEnable));
+            userService.getUsersByCondition(username, name, email, phone, userEnable));
     }
 
     @SuppressWarnings("unchecked")
@@ -55,8 +55,8 @@ public class UsersController extends BaseController {
      * 取得指定用户ID的用户信息
      */
     @GetMapping(path = "/{userId}")
-    public ResponseEntity<User> get(@PathVariable String userId, @RequestParam(defaultValue = "ALL") EnableEnum userEnable) {
-        return responseOfGet(userService.get(userId, userEnable));
+    public ResponseEntity<User> get(@PathVariable String userId) {
+        return responseOfGet(userService.get(userId, EnableEnum.ALL));
     }
 
     /**
@@ -109,16 +109,14 @@ public class UsersController extends BaseController {
 
     @GetMapping(path = "/{userId}/user-groups")
     public ResponseEntity<Collection<? extends UserGroup>> getUserGroups(@PathVariable String userId,
-                                                                         @RequestParam(defaultValue = "ALL") EnableEnum userEnable,
                                                                          @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
-        return responseOfGet(userService.getUserGroups(userId, userEnable, userGroupEnable));
+        return responseOfGet(userService.getUserGroups(userId, EnableEnum.ALL, userGroupEnable));
     }
 
     @GetMapping(path = "/{userId}/roles")
     public ResponseEntity<Collection<? extends Role>> getUserRoles(@PathVariable String userId,
-                                                                   @RequestParam(defaultValue = "ALL") EnableEnum userEnable,
                                                                    @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(userService.getUserRoles(userId, userEnable, roleEnable));
+        return responseOfGet(userService.getUserRoles(userId, EnableEnum.ALL, roleEnable));
     }
 
     @GetMapping(path = "/query")

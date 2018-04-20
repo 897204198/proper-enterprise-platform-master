@@ -37,9 +37,8 @@ public class ResourcesController extends BaseController {
 
     @AuthcIgnore // TODO necessary?
     @GetMapping(path = "/{resourceId}")
-    public ResponseEntity<Resource> find(@PathVariable String resourceId,
-                                         @RequestParam(defaultValue = "ALL") EnableEnum resourceEnable) throws Exception {
-        return responseOfGet(resourceService.get(resourceId, resourceEnable));
+    public ResponseEntity<Resource> find(@PathVariable String resourceId) throws Exception {
+        return responseOfGet(resourceService.get(resourceId, EnableEnum.ALL));
     }
 
     @PutMapping(path = "/{resourceId}")
@@ -63,15 +62,13 @@ public class ResourcesController extends BaseController {
 
     @GetMapping(path = "/{resourceId}/menus")
     public ResponseEntity<Collection<? extends Menu>> getResourceMenus(@PathVariable String resourceId,
-                                                                       @RequestParam(defaultValue = "ALL") EnableEnum resourceEnable,
                                                                        @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable) {
-        return responseOfGet(resourceService.getResourceMenus(resourceId, resourceEnable, menuEnable));
+        return responseOfGet(resourceService.getResourceMenus(resourceId, EnableEnum.ALL, menuEnable));
     }
 
     @GetMapping(path = "/{resourceId}/roles")
     public ResponseEntity<Collection<? extends Role>> getResourceRoles(@PathVariable String resourceId,
-                                                                       @RequestParam(defaultValue = "ALL") EnableEnum resourceEnable,
                                                                        @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(resourceService.getResourceRoles(resourceId, resourceEnable, roleEnable));
+        return responseOfGet(resourceService.getResourceRoles(resourceId, EnableEnum.ALL, roleEnable));
     }
 }

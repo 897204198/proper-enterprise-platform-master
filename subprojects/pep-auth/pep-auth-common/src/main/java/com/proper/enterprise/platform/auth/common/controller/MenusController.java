@@ -51,9 +51,8 @@ public class MenusController extends BaseController {
     }
 
     @GetMapping(path = "/{menuId}")
-    public ResponseEntity<Menu> getMenuDetail(@PathVariable String menuId,
-                                              @RequestParam(defaultValue = "ALL") EnableEnum menuEnable) throws Exception {
-        return responseOfGet(service.get(menuId, menuEnable));
+    public ResponseEntity<Menu> getMenuDetail(@PathVariable String menuId) throws Exception {
+        return responseOfGet(service.get(menuId, EnableEnum.ALL));
     }
 
     @PutMapping(path = "/{menuId}")
@@ -68,9 +67,8 @@ public class MenusController extends BaseController {
 
     @GetMapping(path = "/{menuId}/resources")
     public ResponseEntity<Collection<? extends Resource>> getMenuResources(@PathVariable String menuId,
-                                                                           @RequestParam(defaultValue = "ALL") EnableEnum menuEnable,
                                                                            @RequestParam(defaultValue = "ENABLE") EnableEnum resourceEnable) {
-        return responseOfGet(service.getMenuResources(menuId, menuEnable, resourceEnable));
+        return responseOfGet(service.getMenuResources(menuId, EnableEnum.ALL, resourceEnable));
     }
 
     @GetMapping(path = "/resources")
@@ -80,9 +78,8 @@ public class MenusController extends BaseController {
 
     @GetMapping(path = "/{menuId}/roles")
     public ResponseEntity<Collection<? extends Role>> getMenuRoles(@PathVariable String menuId,
-                                                                   @RequestParam(defaultValue = "ALL") EnableEnum menuEnable,
                                                                    @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(service.getMenuRoles(menuId, menuEnable, roleEnable));
+        return responseOfGet(service.getMenuRoles(menuId, EnableEnum.ALL, roleEnable));
     }
 
     @GetMapping(path = "/parents")

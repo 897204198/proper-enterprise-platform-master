@@ -62,9 +62,8 @@ public class RolesController extends BaseController {
 
     @GetMapping(path = "/{roleId}/menus")
     public ResponseEntity<Collection<? extends Menu>> getRoleMenus(@PathVariable String roleId,
-                                                                   @RequestParam(defaultValue = "ALL") EnableEnum roleEnable,
                                                                    @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable) {
-        return responseOfGet(roleService.getRoleMenus(roleId, roleEnable, menuEnable));
+        return responseOfGet(roleService.getRoleMenus(roleId, EnableEnum.ALL, menuEnable));
     }
 
 
@@ -82,9 +81,8 @@ public class RolesController extends BaseController {
 
     @GetMapping(path = "/{roleId}/resources")
     public ResponseEntity<Collection<? extends Resource>> getRoleResources(@PathVariable String roleId,
-                                                                           @RequestParam(defaultValue = "ALL") EnableEnum roleEnable,
                                                                            @RequestParam(defaultValue = "ENABLE") EnableEnum resourceEnable) {
-        return responseOfGet(roleService.getRoleResources(roleId, roleEnable, resourceEnable));
+        return responseOfGet(roleService.getRoleResources(roleId, EnableEnum.ALL, resourceEnable));
     }
 
     @SuppressWarnings("unchecked")
@@ -101,16 +99,14 @@ public class RolesController extends BaseController {
 
     @GetMapping(path = "/{roleId}/users")
     public ResponseEntity<Collection<? extends User>> getRoleUsers(@PathVariable String roleId,
-                                                                   @RequestParam(defaultValue = "ALL") EnableEnum roleEnable,
                                                                    @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
-        return responseOfGet(roleService.getRoleUsers(roleId, roleEnable, userEnable));
+        return responseOfGet(roleService.getRoleUsers(roleId, EnableEnum.ALL, userEnable));
     }
 
     @GetMapping(path = "/{roleId}/user-groups")
     public ResponseEntity<Collection<? extends UserGroup>> getRoleUserGroups(@PathVariable String roleId,
-                                                                             @RequestParam(defaultValue = "ALL") EnableEnum roleEnable,
                                                                              @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
-        return responseOfGet(roleService.getRoleUserGroups(roleId, roleEnable, userGroupEnable));
+        return responseOfGet(roleService.getRoleUserGroups(roleId, EnableEnum.ALL, userGroupEnable));
     }
 
     @GetMapping(path = "/{roleId}/parents")

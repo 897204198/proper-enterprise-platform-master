@@ -47,15 +47,14 @@ public class UserGroupController extends BaseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserGroup> get(@PathVariable String id, @RequestParam(defaultValue = "ALL") EnableEnum userGroupEnable) {
-        return responseOfGet(service.get(id, userGroupEnable));
+    public ResponseEntity<UserGroup> get(@PathVariable String id) {
+        return responseOfGet(service.get(id, EnableEnum.ALL));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserGroup> update(@PathVariable String id,
-                                            @RequestParam(defaultValue = "ALL") EnableEnum userGroupEnable,
                                             @RequestBody UserGroupVO userGroupVO) {
-        UserGroup group = service.get(id, userGroupEnable);
+        UserGroup group = service.get(id, EnableEnum.ALL);
         if (group != null) {
             userGroupVO.setId(id);
         }
@@ -84,9 +83,8 @@ public class UserGroupController extends BaseController {
 
     @GetMapping(path = "/{id}/roles")
     public ResponseEntity<Collection<? extends Role>> getGroupRoles(@PathVariable String id,
-                                                                    @RequestParam(defaultValue = "ALL") EnableEnum userGroupEnable,
                                                                     @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(service.getGroupRoles(id, userGroupEnable, roleEnable));
+        return responseOfGet(service.getGroupRoles(id, EnableEnum.ALL, roleEnable));
     }
 
     /**
@@ -126,9 +124,8 @@ public class UserGroupController extends BaseController {
 
     @GetMapping(path = "/{id}/users")
     public ResponseEntity<Collection<? extends User>> getGroupUsers(@PathVariable String id,
-                                                                    @RequestParam(defaultValue = "ALL") EnableEnum userGroupEnable,
                                                                     @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
-        return responseOfGet(service.getGroupUsers(id, userGroupEnable, userEnable));
+        return responseOfGet(service.getGroupUsers(id, EnableEnum.ALL, userEnable));
     }
 
     @PutMapping(path = "/{id}/users")
