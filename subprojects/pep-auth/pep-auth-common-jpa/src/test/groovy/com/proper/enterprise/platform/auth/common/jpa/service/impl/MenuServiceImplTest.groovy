@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.jpa.service.impl
 
 import com.proper.enterprise.platform.api.auth.dao.ResourceDao
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod
     "/com/proper/enterprise/platform/auth/common/jpa/menus-resources.sql",
     "/com/proper/enterprise/platform/auth/common/jpa/roles.sql",
     "/com/proper/enterprise/platform/auth/common/jpa/roles-menus.sql",
+    "/com/proper/enterprise/platform/auth/common/jpa/roles-resources.sql",
     "/com/proper/enterprise/platform/auth/common/jpa/users.sql",
     "/com/proper/enterprise/platform/auth/common/jpa/users-roles.sql"
 ])
@@ -60,7 +62,14 @@ class MenuServiceImplTest extends AbstractTest {
 
         mockUser('test2', 't2')
         assert service.accessible(resourceService.get('test'), 'test2')
-        assert service.accessible(resourceService.get('test-d'), 'test2')
+        // could not access resource if role has no relationship with it
+        assert !service.accessible(resourceService.get('test-d'), 'test2')
+        // could access the resource with a role having it
+        assert service.accessible(resourceService.get('test-u'), 'test2')
+        // 资源停用且未删除时，仍受访问控制约束
+        assert !service.accessible(resourceService.get('test-enable', EnableEnum.ALL), 'test2')
+        // 资源删除后按未定义资源处理，不受访问控制
+        assert service.accessible(resourceService.get('test-valid'), 'test2')
         // normal user could not access resource without authorization
         assert !service.accessible(resourceService.get('test1'), 'test2')
 

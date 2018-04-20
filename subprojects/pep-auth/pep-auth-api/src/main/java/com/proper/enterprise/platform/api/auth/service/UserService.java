@@ -1,10 +1,7 @@
 package com.proper.enterprise.platform.api.auth.service;
 
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.Menu;
-import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.model.UserGroup;
+import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 
 import java.util.Collection;
@@ -41,8 +38,6 @@ public interface UserService {
 
     User getByUsername(String username);
 
-    User updateByUser(Map<String, Object> userMap);
-
     boolean delete(String id);
 
     void delete(User user);
@@ -57,6 +52,14 @@ public interface UserService {
     Collection<? extends Menu> getMenus(String userId);
 
     Collection<? extends Menu> getMenusByUsername(String username);
+
+    /**
+     * 获得某用户所拥有的资源集合
+     *
+     * @param  userId 用户 ID
+     * @return 资源集合
+     */
+    Collection<? extends Resource> getResources(String userId);
 
     /**
      * 通过用户id集合查询用户

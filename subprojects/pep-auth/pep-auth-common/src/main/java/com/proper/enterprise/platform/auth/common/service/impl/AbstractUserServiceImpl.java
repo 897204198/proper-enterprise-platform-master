@@ -2,10 +2,7 @@ package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.Menu;
-import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.model.UserGroup;
+import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.*;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
@@ -35,6 +32,9 @@ public abstract class AbstractUserServiceImpl implements UserService {
 
     @Autowired
     private I18NService i18NService;
+
+    @Autowired
+    private ResourceService resourceService;
 
     @Override
     public abstract User getCurrentUser();
@@ -95,20 +95,6 @@ public abstract class AbstractUserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateByUser(Map<String, Object> userMap) {
-        User user1 = this.get(userMap.get("id").toString());
-        if (user1 == null) {
-            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
-        }
-        user1.setName(userMap.get("name") == null ? user1.getName() : userMap.get("name").toString());
-        user1.setEmail(userMap.get("email") == null ? user1.getEmail() : userMap.get("email").toString());
-        user1.setPhone(userMap.get("phone") == null ? user1.getPhone() : userMap.get("phone").toString());
-        user1.setPassword(userMap.get("password") == null ? user1.getPassword() : pwdService.encrypt(userMap.get("password").toString()));
-        user1.setEnable(userMap.get("enable") == null ? user1.isEnable() : (boolean) userMap.get("enable"));
-        return this.save(user1);
-    }
-
-    @Override
     public boolean delete(String id) {
         return this.deleteByIds(id);
     }
@@ -143,6 +129,38 @@ public abstract class AbstractUserServiceImpl implements UserService {
     @Override
     public Collection<? extends Menu> getMenusByUsername(String username) {
         return menuService.getMenus(getByUsername(username));
+    }
+
+    @Override
+    public Collection<? extends Resource> getResources(String userId) {
+        User user = get(userId);
+        if (user.isSuperuser()) {
+            return resourceService.find();
+        }
+        if (!user.isEnable() || !user.isValid()) {
+            return Collections.emptyList();
+        }
+        Set<Resource> resources = new HashSet<>(filterDisableAndInvalid(user.getRoles()));
+        for (UserGroup userGroup : user.getUserGroups()) {
+            if (userGroup.isEnable() && userGroup.isValid()) {
+                resources.addAll(filterDisableAndInvalid(userGroup.getRoles()));
+            }
+        }
+        return resources;
+    }
+
+    private Set<Resource> filterDisableAndInvalid(Collection<? extends Role> roles) {
+        Set<Resource> resources = new HashSet<>();
+        for (Role role : roles) {
+            if (role.isEnable() && role.isValid()) {
+                for (Resource resource : role.getResources()) {
+                    if (resource.isEnable() && resource.isValid()) {
+                        resources.add(resource);
+                    }
+                }
+            }
+        }
+        return resources;
     }
 
     @Override

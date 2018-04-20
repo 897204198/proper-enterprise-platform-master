@@ -3,9 +3,11 @@ package com.proper.enterprise.platform.auth.common.service.impl;
 import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.dao.ResourceDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.*;
+import com.proper.enterprise.platform.api.auth.model.Menu;
+import com.proper.enterprise.platform.api.auth.model.Resource;
+import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
-import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.vo.MenuVO;
@@ -50,9 +52,6 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     private DataDicService dataDicService;
-
-    @Autowired
-    private ResourceService resourceService;
 
     @Autowired
     private I18NService i18NService;
@@ -342,14 +341,19 @@ public class MenuServiceImpl implements MenuService {
         if (CollectionUtil.isEmpty(userMenus)) {
             return false;
         }
-
+        boolean hasMenu = false;
         for (Menu menu : menus) {
             if (userMenus.contains(menu)) {
-                return true;
+                hasMenu = true;
             }
         }
 
-        return false;
+        Collection<? extends Resource> userResources = userService.getResources(userId);
+        if (CollectionUtil.isEmpty(userResources)) {
+            return false;
+        }
+        boolean hasResource = userResources.contains(resource);
+        return hasMenu && hasResource;
     }
 
     private boolean shouldIgnore(Resource resource) {

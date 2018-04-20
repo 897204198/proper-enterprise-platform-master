@@ -10,7 +10,6 @@ import com.proper.enterprise.platform.api.auth.service.ResourceService;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
-import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
@@ -135,10 +134,10 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Collection<Resource> find() {
         Collection<? extends Resource> resources = resourceDao.findAll();
-        Collection collection = null;
+        Collection<Resource> collection = new ArrayList<>(resources.size());
         for (Resource resource : resources) {
-            if (resource.isEnable() && resource.isValid()) {
-                collection = CollectionUtil.convert(resources);
+            if (resource.isValid()) {
+                collection.add(resource);
             }
         }
         return collection;
