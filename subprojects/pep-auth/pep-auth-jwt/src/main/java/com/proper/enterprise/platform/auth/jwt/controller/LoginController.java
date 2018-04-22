@@ -5,6 +5,8 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.AuthcService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.service.JWTAuthcService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@Api(tags = "/auth")
 public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
@@ -35,6 +38,7 @@ public class LoginController {
     private UserService userService;
 
     @AuthcIgnore
+    @ApiOperation(value = "用户登录")
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> login(@RequestBody Map<String, String> loginMap) throws IOException {
         String username = authcService.getUsername(loginMap);
@@ -50,7 +54,7 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/auth/login/user", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, String>> getCurrentUser() throws IOException {
+    public ResponseEntity<Map<String, String>> getCurrentUser() {
         Map<String, String> currentUserMap = new HashMap<>();
         User user = userService.getCurrentUser();
         currentUserMap.put("name", user.getName());
@@ -59,4 +63,5 @@ public class LoginController {
         currentUserMap.put("notifyCount", "12");
         return new ResponseEntity<>(currentUserMap, HttpStatus.OK);
     }
+
 }

@@ -66,7 +66,7 @@ subprojects {
     targetCompatibility = 1.8
 
     group = 'com.proper.enterprise.platform'
-    // Needs to change version code in core-utils.properties TOGETHER!!
+    // Needs to change version code in core.properties TOGETHER!!
     version = '0.4.1-SNAPSHOT'
     test {
         reports.html.enabled = false
@@ -87,7 +87,8 @@ subprojects {
 
     dependencies {
         compile libraries.slf4j_api,
-                libraries.spring_webmvc
+                libraries.spring_webmvc,
+                libraries.springfox
 
         runtime libraries.druid,
                 libraries.logback_classic

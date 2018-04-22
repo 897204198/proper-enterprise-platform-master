@@ -1,10 +1,11 @@
 dependencies {
     compile libraries.druid,
-            libraries.spring_context_support
-            project(':pep-core-jpa')
+            libraries.spring_context_support,
+            libraries.springfox
 
-    testCompile project(':pep-core-jpa'),
-                project(':pep-test')
+    compile project(':pep-core-jpa')
+
+    testCompile project(':pep-test')
 
     testRuntime project(':pep-auth-jwt'),
                 project(':pep-auth-common-jpa')

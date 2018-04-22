@@ -21,7 +21,7 @@ gretty {
     contextPath = 'pep'
     debugSuspend = false
     fileLogEnabled = false
-    jvmArgs = ['-XX:PermSize=256M', '-Xms256m', '-Xmx1024m']
+    jvmArgs = ['-Xms256m', '-Xmx1024m']
     managedClassReload = true
     serverConfigFile = "$pepDevConfRoot/configs/docker/tomcat/conf/server.xml"
     servletContainer = 'tomcat7'
