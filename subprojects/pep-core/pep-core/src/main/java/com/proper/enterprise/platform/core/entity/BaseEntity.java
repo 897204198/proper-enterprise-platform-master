@@ -3,19 +3,17 @@ package com.proper.enterprise.platform.core.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.api.IBase;
-import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.core.listener.HistoricalEntityListener;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 
 /**
  * 数据模型及实体基类，包含数据表公共字段的 getter 和 setter 方法
  */
 @MappedSuperclass
+@EntityListeners({HistoricalEntityListener.class})
 public class BaseEntity implements IBase {
 
     private static final long serialVersionUID = PEPConstants.VERSION;
@@ -40,7 +38,7 @@ public class BaseEntity implements IBase {
      */
     @JsonIgnore
     @Column(updatable = false, nullable = false, columnDefinition = "VARCHAR(255) DEFAULT '2017-02-20 00:00:00'")
-    protected String createTime = DateUtil.getTimestamp(true);
+    protected String createTime;
 
     /**
      * 最后修改用户 id
@@ -54,7 +52,7 @@ public class BaseEntity implements IBase {
      */
     @JsonIgnore
     @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT '2017-02-20 00:00:00'")
-    protected String lastModifyTime = DateUtil.getTimestamp(true);
+    protected String lastModifyTime;
 
     /**
      * 数据是否有效（可表示逻辑删除）

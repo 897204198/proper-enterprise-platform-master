@@ -12,7 +12,8 @@ public final class PEPConstants {
     /**
      * 私有化工具类的构造函数，避免对工具类的实例化
      */
-    private PEPConstants() { }
+    private PEPConstants() {
+    }
 
     /**
      * 静态方法调用私有构造函数，以覆盖对构造函数的测试
@@ -20,6 +21,8 @@ public final class PEPConstants {
     static {
         new PEPConstants();
     }
+
+    public static final String DEFAULT_OPERAOTR_ID = "PEP_SYS";
 
     /**
      * 默认字符集

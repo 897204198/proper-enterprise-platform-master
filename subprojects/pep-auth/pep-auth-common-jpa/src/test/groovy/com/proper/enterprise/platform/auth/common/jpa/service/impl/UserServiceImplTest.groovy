@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestMethod
 
-class AbstractUserServiceImplTest extends AbstractTest {
+class UserServiceImplTest extends AbstractTest {
 
     @Autowired
     UserService userService
@@ -221,6 +221,7 @@ class AbstractUserServiceImplTest extends AbstractTest {
     }
 
     @Test
+    @NoTx
     void testUserImpl() {
         UserEntity userEntity = new UserEntity()
         userEntity.setName("user1")
@@ -245,7 +246,7 @@ class AbstractUserServiceImplTest extends AbstractTest {
         MenuEntity menuEntity1 = new MenuEntity()
         menuEntity1.setName("ralm")
         menuEntity1.setEnable(true)
-        menuEntity1.setRoute("route1")
+        menuEntity1.setRoute("route6")
         menuEntity1 = menuRepository.save(menuEntity1)
 
         List<MenuEntity> list = new ArrayList<>()

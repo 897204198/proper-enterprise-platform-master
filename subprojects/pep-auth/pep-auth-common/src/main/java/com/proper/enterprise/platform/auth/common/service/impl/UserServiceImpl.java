@@ -6,14 +6,17 @@ import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.*;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.security.util.SecurityUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-public abstract class AbstractUserServiceImpl implements UserService {
+@Service
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
@@ -37,7 +40,9 @@ public abstract class AbstractUserServiceImpl implements UserService {
     private ResourceService resourceService;
 
     @Override
-    public abstract User getCurrentUser();
+    public User getCurrentUser() {
+        return userDao.getCurrentUserByUserId(SecurityUtil.getCurrentUserId());
+    }
 
     @Override
     public User save(User user) {

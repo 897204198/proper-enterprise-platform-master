@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.common.jpa.aspect
+package com.proper.enterprise.platform.auth.common.jpa.listener
 
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
@@ -8,21 +8,20 @@ import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class HistoricalAdviceTest extends AbstractTest {
+class HistoricalListenerTest extends AbstractTest {
 
     def static final MOCK_USER_ID = 'MockUserId'
-    def static final DEFAULT_USER_ID = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS")
 
     @Autowired
     UserService service
 
     @Before
-    def void mockCurrentUser() {
+    void mockCurrentUser() {
         mockUser(MOCK_USER_ID)
     }
 
     @Test
-    def void saveEntity() {
+    void saveEntity() {
         def user = new UserEntity('hinex', 'hinex_password')
         service.save(user)
 
@@ -32,7 +31,7 @@ class HistoricalAdviceTest extends AbstractTest {
     }
 
     @Test
-    def void saveEntities() {
+    void saveEntities() {
         def user1 = new UserEntity('hinex1', 'hinex_password1')
         def user2 = new UserEntity('hinex2', 'hinex_password2')
         service.save(user1, user2)
@@ -42,7 +41,7 @@ class HistoricalAdviceTest extends AbstractTest {
     }
 
     @Test
-    def void onlyUpdateLastModify() {
+    void onlyUpdateLastModify() {
         service.save new UserEntity('u1', 'p1')
         def user = service.getByUsername 'u1'
 
@@ -54,15 +53,15 @@ class HistoricalAdviceTest extends AbstractTest {
     }
 
     @Test
-    def void thorwExceptionWhenGettingCurrentUser() {
+    void thorwExceptionWhenGettingCurrentUser() {
         System.setProperty('test.mockUser.throwEx', 'true')
         ConfCenter.reload()
 
         service.save(new UserEntity('hinex', 'hinex_password'))
 
         def result = service.getByUsername('hinex')
-        assert result.getCreateUserId() == DEFAULT_USER_ID
-        assert result.getLastModifyUserId() == DEFAULT_USER_ID
+        assert result.getCreateUserId() == MOCK_USER_ID
+        assert result.getLastModifyUserId() == MOCK_USER_ID
 
         System.clearProperty('test.mockUser.throwEx')
         ConfCenter.reload()

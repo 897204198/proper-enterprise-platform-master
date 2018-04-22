@@ -45,12 +45,11 @@ class UserServiceImplTest extends AbstractTest {
     @Test
     void getUserFromToken() {
         User userNodeEntity = userDao.getNewUser()
-        userNodeEntity.setId('uid')
         userNodeEntity.setUsername('unm')
         userNodeEntity.setPassword('e10adc3949ba59abbe56e057f20f883e')
         userDao.save(userNodeEntity)
 
-        def token = jwtService.generateToken(new JWTHeader('uid', 'unm'), new JWTPayloadImpl())
+        def token = jwtService.generateToken(new JWTHeader(userNodeEntity.getId(), 'unm'), new JWTPayloadImpl())
         mockRequest.addHeader('Authorization', token)
 
         User user1 = userDao.getNewUser()

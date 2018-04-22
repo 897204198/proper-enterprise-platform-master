@@ -165,7 +165,7 @@ class ResourcesControllerTest extends AbstractTest {
         assert value.get(0).name == "menu1"
 
         delete('/auth/resources?ids='+ resourceEntity.getId(), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage(" pep.auth.common.resource.delete.relation.menu")
-
+        menuRepository.deleteAll()
     }
 
     @Test

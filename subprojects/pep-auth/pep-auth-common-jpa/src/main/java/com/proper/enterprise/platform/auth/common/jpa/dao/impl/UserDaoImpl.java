@@ -91,6 +91,12 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
     }
 
     @Override
+    public User getCurrentUserByUserId(String userId) {
+        LOGGER.debug("GetByUserId with userId {} from DB", userId);
+        return userRepo.findByIdAndValidTrueAndEnableTrue(userId);
+    }
+
+    @Override
     public Collection<? extends User> getUsersByCondition(String condition) {
         condition = "%".concat(condition).concat("%");
         return userRepo.findByUsernameLikeOrNameLikeOrPhoneLikeAndEnableTrueAndValidTrueOrderByName(condition, condition, condition);

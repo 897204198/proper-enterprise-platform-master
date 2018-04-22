@@ -14,6 +14,9 @@ public interface UserRepository extends BaseJpaRepository<UserEntity, String> {
     @CacheQuery
     UserEntity findByUsernameAndValidTrueAndEnableTrue(String username);
 
+    @CacheQuery
+    UserEntity findByIdAndValidTrueAndEnableTrue(String userId);
+
     @Override
     Page<UserEntity> findAll(Specification<UserEntity> spec, Pageable pageable);
 

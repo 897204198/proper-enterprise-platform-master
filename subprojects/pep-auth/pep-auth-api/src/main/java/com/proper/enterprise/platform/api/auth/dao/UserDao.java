@@ -21,6 +21,8 @@ public interface UserDao extends BaseService<User, String> {
 
     User getByUsername(String username);
 
+    User getCurrentUserByUserId(String userId);
+
     Collection<? extends User> findAll(Collection<String> idList);
 
     User findByValidTrueAndId(String id);
