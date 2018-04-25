@@ -16,10 +16,9 @@ versions.spring             = '4.3.0.RELEASE'
 versions.spring_data        = 'Ingalls-SR10'
 versions.spring_integration = '4.3.9.RELEASE'
 versions.spring_security    = '4.2.3.RELEASE'
-versions.springfox          = '2.8.0'
 
 configurations.all {
-    //Don't cache snapshots
+    //Don't cache snapshots, need to check work or not
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 
     resolutionStrategy.force 'xml-apis:xml-apis:1.4.01'
@@ -83,7 +82,7 @@ libraries.aspectjweaver = "org.aspectj:aspectjweaver:1.8.6"
 
 //libraries.cglib = 'cglib:cglib:2.2'
 
-libraries.commons_collections = 'commons-collections:commons-collections:3.2.1'
+//libraries.commons_collections = 'commons-collections:commons-collections:3.2.1'
 
 libraries.cmb_b2b = 'com.cmb.b2b:cmb-b2b:1.0.0'
 libraries.cmb_pay = 'com.cmb.pay:cmb-pay:1.0.0'
@@ -249,11 +248,6 @@ libraries.spring_integration_jdbc = "org.springframework.integration:spring-inte
 //libraries.spring_security_taglibs = "org.springframework.security:spring-security-taglibs:${versions.spring_security}"
 //libraries.spring_security_test = "org.springframework.security:spring-security-test:${versions.spring_security}"
 //libraries.spring_security_web = "org.springframework.security:spring-security-web:${versions.spring_security}"
-
-libraries.springfox = [
-    "io.springfox:springfox-swagger2:${versions.springfox}",
-    "io.springfox:springfox-swagger-ui:${versions.springfox}"
-]
 
 //libraries.urlrewritefilter = 'org.tuckey:urlrewritefilter:4.0.3'
 

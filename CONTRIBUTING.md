@@ -55,12 +55,6 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
 > assemble 任务会将源码重新编译，class 更新后会被 `spring-loaded` 自动加载，实现热部署效果
 
 
-接口文档
--------
-
-[http://localhost:8080/pep/swagger-ui.html](http://localhost:8080/pep/swagger-ui.html)
-
-
 开发规范
 -------
 

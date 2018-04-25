@@ -1,7 +1,6 @@
 dependencies {
     compile libraries.druid,
-            libraries.spring_context_support,
-            libraries.springfox
+            libraries.spring_context_support
 
     compile project(':pep-core-jpa')
 
