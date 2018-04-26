@@ -5,8 +5,6 @@ import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.listener.HistoricalEntityListener;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 
 /**
@@ -54,13 +52,6 @@ public class BaseEntity implements IBase {
     @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT '2017-02-20 00:00:00'")
     protected String lastModifyTime;
 
-    /**
-     * 数据是否有效（可表示逻辑删除）
-     */
-    @JsonIgnore
-    @Type(type = "yes_no")
-    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    protected boolean valid = true;
 
     @Override
     public String getId() {
@@ -110,16 +101,6 @@ public class BaseEntity implements IBase {
     @Override
     public void setLastModifyTime(String lastModifyTime) {
         this.lastModifyTime = lastModifyTime;
-    }
-
-    @Override
-    public boolean isValid() {
-        return valid;
-    }
-
-    @Override
-    public void setValid(boolean valid) {
-        this.valid = valid;
     }
 
 }

@@ -66,7 +66,7 @@ public class MenuServiceImpl implements MenuService {
         Menu menu = menuDao.get(id);
         try {
             if (menu != null) {
-                if (menu.isEnable() && menu.isValid()) {
+                if (menu.isEnable()) {
                     return menu;
                 }
             }
@@ -86,7 +86,7 @@ public class MenuServiceImpl implements MenuService {
         Collection<Menu> menuList = new ArrayList<>();
         Collection<? extends Menu> menus = menuDao.getByIds(ids);
         for (Menu menu : menus) {
-            if (menu.isEnable() && menu.isValid()) {
+            if (menu.isEnable()) {
                 menuList.add(menu);
             }
         }
@@ -176,7 +176,7 @@ public class MenuServiceImpl implements MenuService {
     public Collection<? extends Menu> getFilterMenusAndParent(Collection<? extends Menu> menus) {
         Collection<Menu> result = new HashSet<>();
         for (Menu menu : menus) {
-            if (menu.isEnable() && menu.isValid()) {
+            if (menu.isEnable()) {
                 result.add(menu);
                 if (menu.getParent() != null) {
                     result.add(menu.getParent());
@@ -202,7 +202,7 @@ public class MenuServiceImpl implements MenuService {
                 // 菜单存在资源
                 if (menu.getResources().size() > 0) {
                     for (Resource resource : menu.getResources()) {
-                        if (resource.isEnable() && resource.isValid()) {
+                        if (resource.isEnable()) {
                             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.resource"));
                         }
                     }
@@ -210,14 +210,13 @@ public class MenuServiceImpl implements MenuService {
                 // 菜单存在角色
                 if (menu.getRoles().size() > 0) {
                     for (Role role : menu.getRoles()) {
-                        if (role.isEnable() && menu.isValid()) {
+                        if (role.isEnable()) {
                             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.role"));
                         }
                     }
                 }
-                menu.setValid(false);
             }
-            menuDao.save(list);
+            menuDao.delete(list);
             ret = true;
         }
         return ret;
@@ -228,7 +227,7 @@ public class MenuServiceImpl implements MenuService {
         Collection<Menu> menus = new HashSet<>();
         Collection<? extends Menu> list = menuDao.findAll();
         for (Menu menuEntity : list) {
-            if (!menuEntity.isEnable() || !menuEntity.isValid()) {
+            if (!menuEntity.isEnable()) {
                 continue;
             }
             if (!menus.contains(menuEntity)) {
@@ -268,7 +267,7 @@ public class MenuServiceImpl implements MenuService {
             resource.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
         }
         Menu menu = this.get(menuId, EnableEnum.ENABLE);
-        if (menu != null && menu.isValid()) {
+        if (menu != null) {
             Collection<? extends Resource> collection = menu.getResources();
             for (Resource res : collection) {
                 String identification = res.getIdentifier();
@@ -291,17 +290,11 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Collection<? extends Resource> getMenuResources(String menuId, EnableEnum menuEnable, EnableEnum resourceEnable) {
-        Collection<Resource> filterResources = new ArrayList<>();
         Menu menu = this.get(menuId, EnableEnum.ALL);
         if (menu != null) {
-            Collection<? extends Resource> resources = menu.getResources();
-            for (Resource resource : resources) {
-                if (resource.isValid()) {
-                    filterResources.add(resource);
-                }
-            }
+            return menu.getResources();
         }
-        return filterResources;
+        return new ArrayList<>();
     }
 
     @Override
@@ -326,7 +319,7 @@ public class MenuServiceImpl implements MenuService {
         }
 
         // resource 是否有效
-        if (!resource.isEnable() || !resource.isValid()) {
+        if (!resource.isEnable()) {
             return false;
         }
 
@@ -375,14 +368,14 @@ public class MenuServiceImpl implements MenuService {
         Collection<MenuVO> menusResources = new ArrayList<>();
         Collection<? extends Menu> menuEntity = this.getMenus();
         for (Menu menu : menuEntity) {
-            if (menu.isValid() && menu.isEnable()) {
+            if (menu.isEnable()) {
                 MenuVO detail = new MenuVO();
                 BeanUtils.copyProperties(menu, detail);
                 detail.setParentId(menu.getParentId());
                 Collection<ResourceVO> resList = new ArrayList<>();
                 Collection<Resource> resourceList = (Collection<Resource>) menu.getResources();
                 for (Resource resource : resourceList) {
-                    if (resource != null && resource.isEnable() && resource.isValid()) {
+                    if (resource != null && resource.isEnable()) {
                         ResourceVO resourceDetail = new ResourceVO();
                         BeanUtils.copyProperties(resource, resourceDetail);
                         resList.add(resourceDetail);

@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(User user) {
         User userEntity = userDao.get(user.getId());
-        if (userEntity == null || !userEntity.isValid() || !userEntity.isEnable()) {
+        if (userEntity == null || !userEntity.isEnable()) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
         }
         if (userEntity.isSuperuser()) {
@@ -116,7 +116,6 @@ public class UserServiceImpl implements UserService {
         if (userEntity.getRoles().size() > 0 || userEntity.getUserGroups().size() > 0) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.delete.role.relation.failed"));
         }
-        userEntity.setValid(false);
         userEntity.setEnable(false);
         userDao.save(userEntity);
     }
@@ -142,24 +141,24 @@ public class UserServiceImpl implements UserService {
         if (user.isSuperuser()) {
             return resourceService.find();
         }
-        if (!user.isEnable() || !user.isValid()) {
+        if (!user.isEnable()) {
             return Collections.emptyList();
         }
-        Set<Resource> resources = new HashSet<>(filterDisableAndInvalid(user.getRoles()));
+        Set<Resource> resources = new HashSet<>(filterDisable(user.getRoles()));
         for (UserGroup userGroup : user.getUserGroups()) {
-            if (userGroup.isEnable() && userGroup.isValid()) {
-                resources.addAll(filterDisableAndInvalid(userGroup.getRoles()));
+            if (userGroup.isEnable()) {
+                resources.addAll(filterDisable(userGroup.getRoles()));
             }
         }
         return resources;
     }
 
-    private Set<Resource> filterDisableAndInvalid(Collection<? extends Role> roles) {
+    private Set<Resource> filterDisable(Collection<? extends Role> roles) {
         Set<Resource> resources = new HashSet<>();
         for (Role role : roles) {
-            if (role.isEnable() && role.isValid()) {
+            if (role.isEnable()) {
                 for (Resource resource : role.getResources()) {
-                    if (resource.isEnable() && resource.isValid()) {
+                    if (resource.isEnable()) {
                         resources.add(resource);
                     }
                 }
@@ -194,36 +193,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean deleteByIds(String ids) {
-        boolean ret = false;
         if (StringUtil.isNotNull(ids)) {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
             Collection<? extends User> collection = userDao.findAll(idList);
             for (User userEntity : collection) {
-                if (userEntity == null || !userEntity.isValid()) {
-                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
-                }
                 if (userEntity.isSuperuser()) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.delete.role.super.failed"));
                 }
                 if (userEntity.getRoles().size() > 0 || userEntity.getUserGroups().size() > 0) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.delete.role.relation.failed"));
                 }
-                userEntity.setValid(false);
-                userEntity.setEnable(false);
             }
-            userDao.save(collection);
-            ret = true;
+            userDao.delete(collection);
+            return collection.size() > 0;
         }
-        return ret;
+        return false;
     }
 
     @Override
     public Collection<? extends User> updateEnable(Collection<String> idList, boolean enable) {
         Collection<User> resourceList = new HashSet<>();
         for (String id : idList) {
-            resourceList.add(userDao.findByValidTrueAndId(id));
+            resourceList.add(userDao.findById(id));
         }
         for (User resource : resourceList) {
             resource.setEnable(enable);
@@ -283,15 +276,15 @@ public class UserServiceImpl implements UserService {
     public Collection<? extends User> getFilterUsers(Collection<? extends User> users, EnableEnum userEnable) {
         Collection<User> result = new HashSet<>();
         for (User user : users) {
-            if (EnableEnum.ALL == userEnable && user.isValid()) {
+            if (EnableEnum.ALL == userEnable) {
                 result.add(user);
                 continue;
             }
-            if (EnableEnum.ENABLE == userEnable && user.isEnable() && user.isValid()) {
+            if (EnableEnum.ENABLE == userEnable && user.isEnable()) {
                 result.add(user);
                 continue;
             }
-            if (EnableEnum.DISABLE == userEnable && !user.isEnable() && user.isValid()) {
+            if (EnableEnum.DISABLE == userEnable && !user.isEnable()) {
                 result.add(user);
             }
         }

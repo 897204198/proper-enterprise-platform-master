@@ -61,45 +61,45 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
     }
 
     @Override
-    public User findByValidTrueAndId(String id) {
-        return userRepo.findByValidTrueAndId(id);
+    public User findById(String id) {
+        return userRepo.findOne(id);
     }
 
     @Override
     public User get(String id) {
         LOGGER.debug("Get user with {} from DB", id);
-        return userRepo.findByIdAndValidAndEnable(id, true, true);
+        return userRepo.findByIdAndEnable(id, true);
     }
 
     @Override
     public User get(String id, EnableEnum enable) {
         switch (enable) {
             case ALL:
-                return userRepo.findByValidTrueAndId(id);
+                return userRepo.findOne(id);
             case DISABLE:
-                return userRepo.findByIdAndValidAndEnable(id, true, false);
+                return userRepo.findByIdAndEnable(id, false);
             case ENABLE:
             default:
-                return userRepo.findByIdAndValidAndEnable(id, true, true);
+                return userRepo.findByIdAndEnable(id, true);
         }
     }
 
     @Override
     public User getByUsername(String username) {
         LOGGER.debug("GetByUsername with username {} from DB", username);
-        return userRepo.findByUsernameAndValidTrueAndEnableTrue(username);
+        return userRepo.findByUsernameAndEnableTrue(username);
     }
 
     @Override
     public User getCurrentUserByUserId(String userId) {
         LOGGER.debug("GetByUserId with userId {} from DB", userId);
-        return userRepo.findByIdAndValidTrueAndEnableTrue(userId);
+        return userRepo.findByIdAndEnableTrue(userId);
     }
 
     @Override
     public Collection<? extends User> getUsersByCondition(String condition) {
         condition = "%".concat(condition).concat("%");
-        return userRepo.findByUsernameLikeOrNameLikeOrPhoneLikeAndEnableTrueAndValidTrueOrderByName(condition, condition, condition);
+        return userRepo.findByUsernameLikeOrNameLikeOrPhoneLikeAndEnableTrueOrderByName(condition, condition, condition);
     }
 
     @Override
@@ -133,7 +133,6 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
                 if (null != enable && EnableEnum.ALL != enable) {
                     predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
                 }
-                predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };

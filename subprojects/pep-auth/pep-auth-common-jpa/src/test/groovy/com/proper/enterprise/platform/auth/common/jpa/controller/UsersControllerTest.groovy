@@ -286,7 +286,6 @@ class UsersControllerTest extends AbstractTest {
     }
 
     @Test
-    @NoTx
     void testGetUserGroups() {
 
         RoleEntity roleEntity = new RoleEntity()
@@ -302,11 +301,28 @@ class UsersControllerTest extends AbstractTest {
         roleEntity2.setName('role2')
         roleEntity2 = roleService.save(roleEntity2)
 
+
+        UserGroupEntity userGroupEntity = new UserGroupEntity()
+        userGroupEntity.setName('group')
+        userGroupEntity = userGroupService.save(userGroupEntity)
+
+        UserGroupEntity userGroupEntity1 = new UserGroupEntity()
+        userGroupEntity1.setName('group1')
+        userGroupEntity1.setEnable(false)
+        userGroupEntity1 = userGroupService.save(userGroupEntity1)
+
+        UserGroupEntity userGroupEntity2 = new UserGroupEntity()
+        userGroupEntity2.setName('group2')
+        userGroupEntity2 = userGroupService.save(userGroupEntity2)
+
         UserEntity userEntity1 = new UserEntity('u11', 'p11')
         userEntity1.setSuperuser(true)
         userEntity1.add(roleEntity)
         userEntity1.add(roleEntity1)
         userEntity1.add(roleEntity2)
+        userEntity1.add(userGroupEntity)
+        userEntity1.add(userGroupEntity1)
+        userEntity1.add(userGroupEntity2)
         userEntity1 = userRepository.saveAndFlush(userEntity1)
 
         mockUser(userEntity1.getId(), userEntity1.getUsername(), userEntity1.getPassword())
@@ -326,21 +342,7 @@ class UsersControllerTest extends AbstractTest {
         userEntity4.setPhone('15897535483')
         userEntity4 = userRepository.save(userEntity4)
 
-        UserGroupEntity userGroupEntity = new UserGroupEntity()
-        userGroupEntity.setName('group')
-        userGroupEntity.add(userEntity1)
-        userGroupEntity = userGroupRepository.saveAndFlush(userGroupEntity)
 
-        UserGroupEntity userGroupEntity1 = new UserGroupEntity()
-        userGroupEntity1.setName('group1')
-        userGroupEntity1.setEnable(false)
-        userGroupEntity1.add(userEntity1)
-        userGroupEntity1 = userGroupRepository.saveAndFlush(userGroupEntity1)
-
-        UserGroupEntity userGroupEntity2 = new UserGroupEntity()
-        userGroupEntity2.setName('group2')
-        userGroupEntity2.add(userEntity1)
-        userGroupEntity2 = userGroupRepository.saveAndFlush(userGroupEntity2)
 
         def result = JSONUtil.parse(get('/auth/users/' + userEntity1.getId() + '/user-groups', HttpStatus.OK).getResponse().getContentAsString(),
             List.class)

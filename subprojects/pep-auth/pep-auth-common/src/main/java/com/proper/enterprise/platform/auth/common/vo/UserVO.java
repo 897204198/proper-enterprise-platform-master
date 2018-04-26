@@ -127,7 +127,17 @@ public class UserVO extends BaseVO implements User {
     }
 
     @Override
+    public void add(UserGroup userGroup) {
+
+    }
+
+    @Override
     public void remove(Role role) {
+    }
+
+    @Override
+    public void remove(UserGroup userGroup) {
+
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.jpa.controller
 
 import com.proper.enterprise.platform.api.auth.model.UserGroup
+import com.proper.enterprise.platform.api.auth.service.UserGroupService
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
@@ -43,6 +44,8 @@ class UserGroupControllerTest extends AbstractTest {
     UserGroupRepository userGroupRepository
     @Autowired
     DataDicRepository dataDicRepository
+    @Autowired
+    UserGroupService userGroupService
 
     @Test
     @Sql(["/com/proper/enterprise/platform/auth/common/jpa/users.sql",
@@ -283,7 +286,6 @@ class UserGroupControllerTest extends AbstractTest {
     }
 
     @Test
-    @NoTx
     void testPutUsers() {
         UserEntity userEntity = new UserEntity('u11', 'p11')
         userEntity.setSuperuser(true)
@@ -296,7 +298,7 @@ class UserGroupControllerTest extends AbstractTest {
         UserGroupEntity userGroupEntity = new UserGroupEntity()
         userGroupEntity.setName('group11')
         userGroupEntity.add(userEntity)
-        userGroupEntity = userGroupRepository.save(userGroupEntity)
+        userGroupEntity = userGroupService.save(userGroupEntity)
         def result = get(URI + '/' + userGroupEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString()
         def list = JSONUtil.parse(result, List.class)
         assert list.size() == 1
@@ -310,8 +312,8 @@ class UserGroupControllerTest extends AbstractTest {
 
     @After
     void tearDown() {
-        userGroupRepository.deleteAll()
         userRepo.deleteAll()
+        userGroupRepository.deleteAll()
         roleRepo.deleteAll()
         menuRepository.deleteAll()
         resourceRepository.deleteAll()

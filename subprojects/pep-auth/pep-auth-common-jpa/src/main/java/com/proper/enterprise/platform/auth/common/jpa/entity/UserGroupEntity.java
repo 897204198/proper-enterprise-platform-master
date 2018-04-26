@@ -62,11 +62,7 @@ public class UserGroupEntity extends BaseEntity implements UserGroup {
     @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
     private boolean enable = true;
 
-    @ManyToMany
-    @JoinTable(name = "PEP_AUTH_GROUPS_USERS",
-            joinColumns = @JoinColumn(name = "USER_GROUP_ID"),
-            inverseJoinColumns = @JoinColumn(name = "USER_ID"),
-            uniqueConstraints = @UniqueConstraint(columnNames = {"USER_GROUP_ID", "USER_ID"}))
+    @ManyToMany(mappedBy = "userGroupEntities")
     private Collection<UserEntity> userEntities = new ArrayList<>();
 
     @ManyToMany

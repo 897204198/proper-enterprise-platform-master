@@ -30,8 +30,6 @@ class CrudBaseTest extends AbstractTest {
         assert user.username == '中文'
         assert user.password == 'testpassword'
 
-        // check default values
-        assert user.valid
     }
 
     void update() {

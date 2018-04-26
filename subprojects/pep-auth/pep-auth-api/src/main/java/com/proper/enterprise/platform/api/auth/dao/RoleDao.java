@@ -20,7 +20,7 @@ public interface RoleDao extends BaseService<Role, String> {
 
     Role save(Role role);
 
-    Role findByIdAndValid(String id, boolean valid);
+    Role findById(String id);
 
     Collection<? extends Role> findAllByNameLike(String name);
 
@@ -30,7 +30,7 @@ public interface RoleDao extends BaseService<Role, String> {
 
     DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable);
 
-    Collection<? extends Role> findAllByValidTrueAndEnableTrue();
+    Collection<? extends Role> findAllByEnableTrue();
 
     /**
      * 获取当前节点的父节点集合

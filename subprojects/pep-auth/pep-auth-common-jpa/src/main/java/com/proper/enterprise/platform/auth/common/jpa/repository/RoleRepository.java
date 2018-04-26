@@ -8,13 +8,11 @@ import java.util.List;
 
 public interface RoleRepository extends BaseJpaRepository<RoleEntity, String> {
 
-    Collection<RoleEntity> findByNameAndValidAndEnable(String name, boolean valid, boolean enable);
+    Collection<RoleEntity> findByNameAndEnable(String name, boolean enable);
 
-    List<RoleEntity> findAllByValidTrueAndEnableTrue();
+    List<RoleEntity> findAllByEnableTrue();
 
-    RoleEntity findByIdAndValid(String id, boolean valid);
-
-    RoleEntity findByIdAndValidAndEnable(String id, boolean valid, boolean enable);
+    RoleEntity findByIdAndEnable(String id, boolean enable);
 
     Collection<RoleEntity> findAllByNameLike(String name);
 

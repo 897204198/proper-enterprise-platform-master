@@ -60,11 +60,11 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setMethod(resourceReq.getMethod());
         Collection<? extends Menu> collection = resourceReq.getMenus();
         for (Menu menus : collection) {
-            if (menus != null && menus.isValid()) {
+            if (menus != null) {
                 Collection<? extends Resource> resources = menus.getResources();
                 for (Resource resource1 : resources) {
                     String identification = resource1.getIdentifier();
-                    if (resourceReq.isValid() && !resourceReq.getIdentifier().equals(identification)) {
+                    if (!resourceReq.getIdentifier().equals(identification)) {
                         continue;
                     } else {
                         throw new ErrMsgException("pep.auth.common.menu.param");
@@ -83,7 +83,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Resource get(String id) {
         Resource resource = resourceDao.get(id);
-        if (resource != null && resource.isEnable() && resource.isValid()) {
+        if (resource != null && resource.isEnable()) {
             return resource;
         }
         return null;
@@ -106,7 +106,7 @@ public class ResourceServiceImpl implements ResourceService {
         Collection<Resource> resourceList = new ArrayList<>();
         Collection<? extends Resource> resources = resourceDao.findAll(ids);
         for (Resource resource : resources) {
-            if (resource.isEnable() && resource.isValid()) {
+            if (resource.isEnable()) {
                 resourceList.add(resource);
             }
         }
@@ -115,15 +115,14 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public void delete(Resource resource) {
-        resource.setValid(false);
-        resourceDao.save(resource);
+        resourceDao.delete(resource);
     }
 
     @Override
     public Collection<? extends Resource> getFilterResources(Collection<? extends Resource> resources) {
         Collection<Resource> result = new HashSet<>();
         for (Resource resource : resources) {
-            if (!resource.isEnable() || !resource.isValid()) {
+            if (!resource.isEnable()) {
                 continue;
             }
             result.add(resource);
@@ -136,9 +135,7 @@ public class ResourceServiceImpl implements ResourceService {
         Collection<? extends Resource> resources = resourceDao.findAll();
         Collection<Resource> collection = new ArrayList<>(resources.size());
         for (Resource resource : resources) {
-            if (resource.isValid()) {
-                collection.add(resource);
-            }
+            collection.add(resource);
         }
         return collection;
     }
@@ -155,7 +152,7 @@ public class ResourceServiceImpl implements ResourceService {
                 // 资源存在菜单
                 if (resource.getMenus().size() > 0) {
                     for (Menu menu : resource.getMenus()) {
-                        if (menu.isEnable() && menu.isValid()) {
+                        if (menu.isEnable()) {
                             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.menu"));
                         }
                     }
@@ -163,14 +160,13 @@ public class ResourceServiceImpl implements ResourceService {
                 // 资源存在角色
                 if (resource.getRoles().size() > 0) {
                     for (Role role : resource.getRoles()) {
-                        if (role.isEnable() && role.isValid()) {
+                        if (role.isEnable()) {
                             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.role"));
                         }
                     }
                 }
-                resource.setValid(false);
             }
-            resourceDao.save(list);
+            resourceDao.delete(list);
             ret = true;
         }
         return ret;
@@ -180,7 +176,7 @@ public class ResourceServiceImpl implements ResourceService {
     public Collection<? extends Resource> updateEnable(Collection<String> idList, boolean enable) {
         Collection<? extends Resource> resourceList = resourceDao.findAll(idList);
         for (Resource resource : resourceList) {
-            if (!resource.isEnable() && !resource.isValid()) {
+            if (!resource.isEnable()) {
                 throw new ErrMsgException("pep.auth.common.resource.used");
             }
             resource.setEnable(enable);
@@ -196,7 +192,7 @@ public class ResourceServiceImpl implements ResourceService {
         if (resource != null) {
             Collection<? extends Menu> menus = resource.getMenus();
             for (Menu menu : menus) {
-                if (menu.isEnable() && menu.isValid()) {
+                if (menu.isEnable()) {
                     filterMenus.add(menu);
                 }
             }

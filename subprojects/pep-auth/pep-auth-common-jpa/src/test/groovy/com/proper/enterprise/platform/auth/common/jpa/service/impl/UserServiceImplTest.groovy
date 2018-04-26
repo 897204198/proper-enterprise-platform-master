@@ -110,16 +110,13 @@ class UserServiceImplTest extends AbstractTest {
         roleEntity5.setName('role5')
         roleEntity5 = roleRepository.save(roleEntity5)
 
-        UserEntity userEntity = new UserEntity('user','pwd')
-        userEntity.add(roleEntity5)
-        userEntity = userRepository.save(userEntity)
+
 
         UserGroupEntity userGroupEntity1 = new UserGroupEntity()
         userGroupEntity1.setName('group1')
         userGroupEntity1.setSeq(1)
         userGroupEntity1.add(roleEntity1)
         userGroupEntity1.add(roleEntity2)
-        userGroupEntity1.add(userEntity)
         userGroupRepository.save(userGroupEntity1)
 
         UserGroupEntity userGroupEntity2 = new UserGroupEntity()
@@ -127,8 +124,13 @@ class UserServiceImplTest extends AbstractTest {
         userGroupEntity2.setSeq(2)
         userGroupEntity2.add(roleEntity3)
         userGroupEntity2.add(roleEntity4)
-        userGroupEntity2.add(userEntity)
         userGroupRepository.save(userGroupEntity2)
+
+        UserEntity userEntity = new UserEntity('user','pwd')
+        userEntity.add(roleEntity5)
+        userEntity.add(userGroupEntity1)
+        userEntity.add(userGroupEntity2)
+        userEntity = userRepository.save(userEntity)
 
         Map<String,RoleEntity> map = roleService.getUserGroupRolesByUserId(userEntity.getId())
         assert map.size() == 4
@@ -230,7 +232,6 @@ class UserServiceImplTest extends AbstractTest {
         userEntity.setPassword("pwd1")
         userEntity.setCreateUserId("00000")
         userEntity.setEnable(true)
-        userEntity.setValid(true)
         userEntity = userRepository.save(userEntity)
 
         RoleEntity roleEntity = new RoleEntity()
@@ -268,7 +269,6 @@ class UserServiceImplTest extends AbstractTest {
         userEntitw.setPassword("pwd1")
         userEntitw.setCreateUserId("00000")
         userEntitw.setEnable(true)
-        userEntitw.setValid(true)
         userEntitw = userService.save(userEntitw)
         UserEntity user = userService.getByUsername(userEntitw.getUsername())
         MenuEntity menu = userService.getMenusByUsername(user.getUsername())
@@ -285,7 +285,6 @@ class UserServiceImplTest extends AbstractTest {
         user.setPassword("pwd1")
         user.setCreateUserId("00000")
         user.setEnable(false)
-        user.setValid(false)
         user = userService.save(user)
         try {
             userService.delete(user)
@@ -304,7 +303,6 @@ class UserServiceImplTest extends AbstractTest {
         userEntity.setCreateUserId("00002")
         userEntity.setSuperuser(true)
         userEntity.setEnable(true)
-        userEntity.setValid(true)
         userEntity = userService.save(userEntity)
         try {
             userService.delete(userEntity)
@@ -347,8 +345,8 @@ class UserServiceImplTest extends AbstractTest {
     }
     @After
     void clearAll() {
-        userGroupRepository.deleteAll()
         userRepository.deleteAll()
+        userGroupRepository.deleteAll()
         roleRepository.deleteAll()
         resourceRepository.deleteAll()
     }

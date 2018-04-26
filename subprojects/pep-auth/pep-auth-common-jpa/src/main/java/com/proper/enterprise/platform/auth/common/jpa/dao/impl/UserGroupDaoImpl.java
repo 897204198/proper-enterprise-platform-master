@@ -34,19 +34,19 @@ public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepo
 
     @Override
     public UserGroup get(String id) {
-        return repository.findByValidAndId(true, id);
+        return repository.findOne(id);
     }
 
     @Override
     public UserGroup get(String id, EnableEnum enable) {
         switch (enable) {
             case ALL:
-                return repository.findByValidAndId(true, id);
+                return repository.findOne(id);
             case DISABLE:
-                return repository.findByIdAndValidAndEnable(id, true, false);
+                return repository.findByIdAndEnable(id, false);
             case ENABLE:
             default:
-                return repository.findByIdAndValidAndEnable(id, true, true);
+                return repository.findByIdAndEnable(id, true);
         }
     }
 
@@ -56,13 +56,13 @@ public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepo
     }
 
     @Override
-    public UserGroup findByValidAndName(boolean valid, String name) {
-        return repository.findByValidAndName(true, name);
+    public UserGroup findByName(String name) {
+        return repository.findByName(name);
     }
 
     @Override
-    public UserGroup findByValidAndId(boolean valid, String id) {
-        return repository.findByValidAndId(true, id);
+    public UserGroup findById(String id) {
+        return repository.findOne(id);
     }
 
     @Override
@@ -100,7 +100,6 @@ public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepo
                 if (null != enable && EnableEnum.ALL != enable) {
                     predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
                 }
-                predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };

@@ -61,7 +61,7 @@ public class UserGroupServiceImpl implements UserGroupService {
             Collections.addAll(idList, idArr);
             List<UserGroup> list = new ArrayList<>(idList.size());
             for (String id : idList) {
-                UserGroup tempGroup = userGroupDao.findByValidAndId(true, id);
+                UserGroup tempGroup = userGroupDao.findOne(id);
                 if (tempGroup == null) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.get.failed"));
                 }
@@ -71,11 +71,9 @@ public class UserGroupServiceImpl implements UserGroupService {
                 if (!tempGroup.getUsers().isEmpty()) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.delete.relation.user"));
                 }
-                tempGroup.setValid(false);
-                tempGroup.setEnable(false);
                 list.add(tempGroup);
             }
-            userGroupDao.save(list);
+            userGroupDao.delete(list);
             ret = true;
         }
         return ret;
@@ -110,15 +108,15 @@ public class UserGroupServiceImpl implements UserGroupService {
     public Collection<? extends UserGroup> getFilterGroups(Collection<? extends UserGroup> groups, EnableEnum userGroupEnable) {
         Collection<UserGroup> result = new HashSet<>();
         for (UserGroup userGroupEntity : groups) {
-            if (EnableEnum.ALL == userGroupEnable && userGroupEntity.isValid()) {
+            if (EnableEnum.ALL == userGroupEnable) {
                 result.add(userGroupEntity);
                 continue;
             }
-            if (EnableEnum.ENABLE == userGroupEnable && userGroupEntity.isEnable() && userGroupEntity.isValid()) {
+            if (EnableEnum.ENABLE == userGroupEnable && userGroupEntity.isEnable()) {
                 result.add(userGroupEntity);
                 continue;
             }
-            if (EnableEnum.DISABLE == userGroupEnable && !userGroupEntity.isEnable() && userGroupEntity.isValid()) {
+            if (EnableEnum.DISABLE == userGroupEnable && !userGroupEntity.isEnable()) {
                 result.add(userGroupEntity);
             }
         }
@@ -163,7 +161,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         if (StringUtil.isNotBlank(id)) {
             newUserGroup = this.get(id, EnableEnum.ALL);
         } else {
-            if (userGroupDao.findByValidAndName(true, userGroup.getName()) != null) {
+            if (userGroupDao.findByName(userGroup.getName()) != null) {
                 throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.name.duplicate"));
             }
         }
@@ -202,8 +200,8 @@ public class UserGroupServiceImpl implements UserGroupService {
         if (user == null) {
             throw new ErrMsgException("can't save beacuse user not find");
         }
-        userGroup.add(user);
-        userGroup = this.save(userGroup);
+        user.add(userGroup);
+        userService.save(user);
         return userGroup;
     }
 
@@ -217,8 +215,8 @@ public class UserGroupServiceImpl implements UserGroupService {
         if (user == null) {
             throw new ErrMsgException("can't save beacuse user not find");
         }
-        userGroup.remove(user);
-        userGroup = this.save(userGroup);
+        user.remove(userGroup);
+        userService.save(user);
         return userGroup;
     }
 
@@ -267,7 +265,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public UserGroup createUserGroup(UserGroup userGroup) {
-        UserGroup group = userGroupDao.findByValidAndName(true, userGroup.getName());
+        UserGroup group = userGroupDao.findByName(userGroup.getName());
         if (group != null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.name.duplicate"));
         } else {

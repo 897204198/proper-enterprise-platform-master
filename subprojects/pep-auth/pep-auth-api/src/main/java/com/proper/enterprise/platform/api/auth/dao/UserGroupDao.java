@@ -19,9 +19,9 @@ public interface UserGroupDao extends BaseService<UserGroup, String> {
 
     Collection<? extends UserGroup> findAll(Collection<String> idList);
 
-    UserGroup findByValidAndName(boolean valid, String name);
+    UserGroup findByName(String name);
 
-    UserGroup findByValidAndId(boolean valid, String id);
+    UserGroup findById(String id);
 
     Collection<? extends UserGroup> getGroups(String name, String description, EnableEnum enable);
 

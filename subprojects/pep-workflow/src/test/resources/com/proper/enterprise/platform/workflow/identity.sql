@@ -12,6 +12,6 @@ INSERT INTO pep_auth_users_roles (user_id, role_id) VALUES ('user1', 'role1');
 INSERT INTO pep_auth_usergroups (id, name, description, seq) VALUES ('group1', 'testgroup1', 'testgroup1', 1);
 INSERT INTO pep_auth_usergroups (id, name, description, seq) VALUES ('group2', 'testgroup2', 'testgroup2', 2);
 
-INSERT INTO PEP_AUTH_GROUPS_USERS (USER_GROUP_ID, USER_ID) VALUES ('group1', 'user1');
-INSERT INTO PEP_AUTH_GROUPS_USERS (USER_GROUP_ID, USER_ID) VALUES ('group2', 'user2');
-INSERT INTO PEP_AUTH_GROUPS_USERS (USER_GROUP_ID, USER_ID) VALUES ('group2', 'user3');
+INSERT INTO PEP_AUTH_USERS_GROUPS (USER_ID,USER_GROUP_ID ) VALUES ('user1','group1' );
+INSERT INTO PEP_AUTH_USERS_GROUPS (USER_ID,USER_GROUP_ID ) VALUES ('user2','group2' );
+INSERT INTO PEP_AUTH_USERS_GROUPS (USER_ID,USER_GROUP_ID ) VALUES ('user3','group2' );

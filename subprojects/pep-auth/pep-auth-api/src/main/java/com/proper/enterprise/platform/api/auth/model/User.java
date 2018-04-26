@@ -105,11 +105,25 @@ public interface User extends IBase {
     void add(Role role);
 
     /**
+     * 为用户增加一个用户组
+     *
+     * @param userGroup 用户组
+     */
+    void add(UserGroup userGroup);
+
+    /**
      * 为用户移除一个角色
      *
      * @param role 角色
      */
     void remove(Role role);
+
+    /**
+     * 为用户移除一个用户组
+     *
+     * @param userGroup 用户组
+     */
+    void remove(UserGroup userGroup);
 
     /**
      * 判断用户是否为超级用户

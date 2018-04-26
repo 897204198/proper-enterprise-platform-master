@@ -12,18 +12,16 @@ import java.util.Collection;
 public interface UserRepository extends BaseJpaRepository<UserEntity, String> {
 
     @CacheQuery
-    UserEntity findByUsernameAndValidTrueAndEnableTrue(String username);
+    UserEntity findByUsernameAndEnableTrue(String username);
 
     @CacheQuery
-    UserEntity findByIdAndValidTrueAndEnableTrue(String userId);
+    UserEntity findByIdAndEnableTrue(String userId);
 
     @Override
     Page<UserEntity> findAll(Specification<UserEntity> spec, Pageable pageable);
 
-    UserEntity findByValidTrueAndId(String id);
+    UserEntity findByIdAndEnable(String id, boolean enable);
 
-    UserEntity findByIdAndValidAndEnable(String id, boolean valid, boolean enable);
-
-    Collection<UserEntity> findByUsernameLikeOrNameLikeOrPhoneLikeAndEnableTrueAndValidTrueOrderByName(String username, String name, String phone);
+    Collection<UserEntity> findByUsernameLikeOrNameLikeOrPhoneLikeAndEnableTrueOrderByName(String username, String name, String phone);
 
 }

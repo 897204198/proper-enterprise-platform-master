@@ -43,23 +43,23 @@ public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String>
     public Menu get(String id, EnableEnum enableEnum) {
         switch (enableEnum) {
             case ALL:
-                return repository.findByIdAndValid(id, true);
+                return repository.findOne(id);
             case DISABLE:
-                return repository.findByIdAndValidAndEnable(id, true, false);
+                return repository.findByIdAndEnable(id, false);
             case ENABLE:
             default:
-                return repository.findByIdAndValidAndEnable(id, true, true);
+                return repository.findByIdAndEnable(id, true);
         }
     }
 
     @Override
     public Collection<? extends Menu> getMenus(User user) {
         List<Menu> result = new ArrayList<>(0);
-        if (user.isEnable() && user.isValid()) {
+        if (user.isEnable()) {
             Set<Menu> menus = new HashSet<>();
             menus = addRoleMenus(user.getRoles(), menus);
             for (UserGroup userGroup : user.getUserGroups()) {
-                if (userGroup.isEnable() && userGroup.isValid()) {
+                if (userGroup.isEnable()) {
                     menus = addRoleMenus(userGroup.getRoles(), menus);
                 }
             }
@@ -72,10 +72,10 @@ public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String>
 
     private Set<Menu> addRoleMenus(Collection<? extends Role> roles, Set<Menu> menus) {
         for (Role role : roles) {
-            if (role.isEnable() && role.isValid()) {
+            if (role.isEnable()) {
                 Collection<? extends Menu> userMenus = role.getMenus();
                 for (Menu menu : userMenus) {
-                    if (menu.isEnable() && menu.isValid()) {
+                    if (menu.isEnable()) {
                         menus.add(menu);
                     }
                 }
@@ -126,7 +126,6 @@ public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String>
                 if (StringUtil.isNotNull(parentId)) {
                     predicates.add(cb.equal(root.get("parent").get("id"), parentId));
                 }
-                predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
@@ -160,7 +159,6 @@ public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String>
                 } else if ("-1".equals(parentId)) {
                     predicates.add(cb.isNull(root.get("parent").get("id")));
                 }
-                predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };

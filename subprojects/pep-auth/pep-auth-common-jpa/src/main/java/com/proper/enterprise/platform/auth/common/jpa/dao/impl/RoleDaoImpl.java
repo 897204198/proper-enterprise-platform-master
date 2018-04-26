@@ -54,18 +54,18 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
     public Role get(String id, EnableEnum enableEnum) {
         switch (enableEnum) {
             case ALL:
-                return roleRepository.findByIdAndValid(id, true);
+                return roleRepository.findOne(id);
             case DISABLE:
-                return roleRepository.findByIdAndValidAndEnable(id, true, false);
+                return roleRepository.findByIdAndEnable(id, false);
             case ENABLE:
             default:
-                return roleRepository.findByIdAndValidAndEnable(id, true, true);
+                return roleRepository.findByIdAndEnable(id, true);
         }
     }
 
     @Override
     public Collection<? extends Role> getByName(String name) {
-        return roleRepository.findByNameAndValidAndEnable(name, true, true);
+        return roleRepository.findByNameAndEnable(name, true);
     }
 
     @Override
@@ -79,8 +79,8 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
     }
 
     @Override
-    public Role findByIdAndValid(String id, boolean valid) {
-        return roleRepository.findByIdAndValid(id, valid);
+    public Role findById(String id) {
+        return roleRepository.findOne(id);
     }
 
     @Override
@@ -112,7 +112,6 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
                 if (null != enable && EnableEnum.ALL != enable) {
                     predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
                 }
-                predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
@@ -126,8 +125,8 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
     }
 
     @Override
-    public Collection<? extends Role> findAllByValidTrueAndEnableTrue() {
-        return roleRepository.findAllByValidTrueAndEnableTrue();
+    public Collection<? extends Role> findAllByEnableTrue() {
+        return roleRepository.findAllByEnableTrue();
     }
 
     @Override
@@ -139,7 +138,7 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
         }
         Role parent = role.getParent();
         while (true) {
-            if (parent == null || !parent.isValid() || !parent.isEnable()) {
+            if (parent == null || !parent.isEnable()) {
                 break;
             }
             if (currentRoleId.equals(parent.getId())) {
@@ -207,7 +206,6 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
                 if (null != enable && EnableEnum.ALL != enable) {
                     predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
                 }
-                predicates.add(cb.equal(root.get("valid"), true));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };

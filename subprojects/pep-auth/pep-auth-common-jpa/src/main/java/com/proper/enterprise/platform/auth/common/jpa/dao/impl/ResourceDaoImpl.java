@@ -41,12 +41,12 @@ public class ResourceDaoImpl extends JpaServiceSupport<Resource, ResourceReposit
     public Resource get(String id, EnableEnum enable) {
         switch (enable) {
             case ALL:
-                return resourceRepository.findByValidTrueAndId(id);
+                return resourceRepository.findOne(id);
             case DISABLE:
-                return resourceRepository.findByIdAndValidAndEnable(id, true, false);
+                return resourceRepository.findByIdAndEnable(id, false);
             case ENABLE:
             default:
-                return resourceRepository.findByIdAndValidAndEnable(id, true, true);
+                return resourceRepository.findByIdAndEnable(id, true);
         }
     }
 

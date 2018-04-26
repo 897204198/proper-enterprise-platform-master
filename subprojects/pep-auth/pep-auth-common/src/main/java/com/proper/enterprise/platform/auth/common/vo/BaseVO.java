@@ -35,11 +35,6 @@ public class BaseVO implements IBase {
     @JsonIgnore
     protected String lastModifyTime = DateUtil.getTimestamp(true);
 
-    /**
-     * 数据是否有效（可表示逻辑删除）
-     */
-    protected boolean valid = true;
-
     @Override
     public String getId() {
         return id;
@@ -90,13 +85,4 @@ public class BaseVO implements IBase {
         this.lastModifyTime = lastModifyTime;
     }
 
-    @Override
-    public boolean isValid() {
-        return valid;
-    }
-
-    @Override
-    public void setValid(boolean valid) {
-        this.valid = valid;
-    }
 }

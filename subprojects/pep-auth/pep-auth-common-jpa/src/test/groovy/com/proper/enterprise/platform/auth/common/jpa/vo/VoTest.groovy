@@ -18,7 +18,6 @@ class VoTest extends AbstractTest{
         baseVO.setCreateUserId("creatUserId")
         baseVO.setLastModifyTime("time1")
         baseVO.setLastModifyUserId("lastUserId")
-        baseVO.setValid(true)
         baseVO.getId() == "id"
         baseVO.getCreateTime() == "creatTime"
         baseVO.getCreateUserId() == "creatUserId"

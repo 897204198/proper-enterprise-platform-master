@@ -37,7 +37,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role get(String id) {
         Role role = roleDao.get(id);
-        if (role != null && role.isValid() && role.isEnable()) {
+        if (role != null && role.isEnable()) {
             return role;
         }
         return null;
@@ -121,7 +121,7 @@ public class RoleServiceImpl implements RoleService {
             Collection<? extends Role> list = roleDao.findAll(idList);
             Collection childrenRols;
             for (Role roleEntity : list) {
-                if (roleEntity == null || !roleEntity.isEnable() || !roleEntity.isValid()) {
+                if (roleEntity == null || !roleEntity.isEnable()) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.get.failed"));
                 }
                 if (!roleEntity.getResources().isEmpty() || !roleEntity.getUsers().isEmpty() || !roleEntity.getMenus().isEmpty()) {
@@ -134,11 +134,10 @@ public class RoleServiceImpl implements RoleService {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.delete.relation.failed"));
                 }
 
-                roleEntity.setValid(false);
                 roleEntity.setEnable(false);
                 roleEntity.setParent(null);
             }
-            roleDao.save(list);
+            roleDao.delete(list);
             ret = true;
         }
         return ret;
@@ -146,7 +145,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<? extends Role> getRoleParents(String roleId) {
-        Collection<? extends Role> list = roleDao.findAllByValidTrueAndEnableTrue();
+        Collection<? extends Role> list = roleDao.findAllByEnableTrue();
         Collection<Role> result = new ArrayList<>();
         for (Role roleEntity : list) {
             Role parentRole = roleEntity.getParent();
@@ -167,15 +166,15 @@ public class RoleServiceImpl implements RoleService {
     public Collection<? extends Role> getFilterRoles(Collection<? extends Role> roles, EnableEnum roleEnable) {
         Collection<Role> result = new HashSet<>();
         for (Role role : roles) {
-            if (EnableEnum.ALL == roleEnable && role.isValid()) {
+            if (EnableEnum.ALL == roleEnable) {
                 result.add(role);
                 continue;
             }
-            if (EnableEnum.ENABLE == roleEnable && role.isEnable() && role.isValid()) {
+            if (EnableEnum.ENABLE == roleEnable && role.isEnable()) {
                 result.add(role);
                 continue;
             }
-            if (EnableEnum.DISABLE == roleEnable && !role.isEnable() && role.isValid()) {
+            if (EnableEnum.DISABLE == roleEnable && !role.isEnable()) {
                 result.add(role);
             }
         }
@@ -191,7 +190,7 @@ public class RoleServiceImpl implements RoleService {
             if (!enable && !childrenRols.isEmpty()) {
                 throw new ErrMsgException(i18NService.getMessage("pep.auth.common.role.delete.relation.failed"));
             }
-            Role roleEntity = roleDao.findByIdAndValid(id, true);
+            Role roleEntity = roleDao.findById(id);
             roleEntity.setEnable(enable);
             roleList.add(roleEntity);
         }

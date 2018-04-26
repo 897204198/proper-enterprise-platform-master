@@ -13,15 +13,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-@Table(name = "PEP_AUTH_USERS", indexes = {
-    @Index(name = "usernameAndValid", columnList = "username,valid", unique = true),
-})
+@Table(name = "PEP_AUTH_USERS")
 @DiscriminatorColumn(name = "pepDtype")
 @DiscriminatorValue("UserEntity")
 @CacheEntity
 public class UserEntity extends BaseEntity implements User {
 
-    public UserEntity() { }
+    public UserEntity() {
+    }
 
     public UserEntity(String username, String password) {
         this.username = username;
@@ -31,7 +30,7 @@ public class UserEntity extends BaseEntity implements User {
     /**
      * 用户名，唯一
      */
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String username;
 
     /**
@@ -77,9 +76,9 @@ public class UserEntity extends BaseEntity implements User {
 
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_USERS_ROLES",
-            joinColumns = @JoinColumn(name = "USER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "ROLE_ID"),
-            uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "ROLE_ID"}))
+        joinColumns = @JoinColumn(name = "USER_ID"),
+        inverseJoinColumns = @JoinColumn(name = "ROLE_ID"),
+        uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "ROLE_ID"}))
     private Collection<RoleEntity> roleEntities = new ArrayList<>();
 
     @Override
@@ -92,7 +91,11 @@ public class UserEntity extends BaseEntity implements User {
         return (obj instanceof UserEntity) && id.equals(((UserEntity) obj).id);
     }
 
-    @ManyToMany(mappedBy = "userEntities")
+    @ManyToMany
+    @JoinTable(name = "PEP_AUTH_USERS_GROUPS",
+        joinColumns = @JoinColumn(name = "USER_ID"),
+        inverseJoinColumns = @JoinColumn(name = "USER_GROUP_ID"),
+        uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "USER_GROUP_ID"}))
     private Collection<UserGroupEntity> userGroupEntities = new ArrayList<>();
 
     @Override
@@ -166,8 +169,19 @@ public class UserEntity extends BaseEntity implements User {
     }
 
     @Override
+    public void add(UserGroup userGroup) {
+        userGroupEntities.add((UserGroupEntity) userGroup);
+    }
+
+    @Override
     public void remove(Role role) {
         roleEntities.remove(role);
+    }
+
+
+    @Override
+    public void remove(UserGroup userGroup) {
+        userGroupEntities.remove(userGroup);
     }
 
     @Override

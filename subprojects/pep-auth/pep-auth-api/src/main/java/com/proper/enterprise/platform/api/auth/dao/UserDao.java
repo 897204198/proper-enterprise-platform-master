@@ -25,7 +25,7 @@ public interface UserDao extends BaseService<User, String> {
 
     Collection<? extends User> findAll(Collection<String> idList);
 
-    User findByValidTrueAndId(String id);
+    User findById(String id);
 
     Collection<? extends User> getUsersByCondition(String condition);
 

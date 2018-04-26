@@ -29,10 +29,8 @@ class HistoricalListenerTest extends AbstractTest {
     void "createUserIdAndLastModifyUserId"() {
         mockUser("test", "test")
         OneEntity oneEntity = new OneEntity().setTest(1)
-        oneEntity.setValid(false)
         oneService.save(oneEntity)
         assert securityService.getCurrentUserId() == oneEntity.getCreateUserId()
-        assert !oneEntity.isValid()
 
         mockUser("test2", "test2")
         oneEntity.setTest(2)

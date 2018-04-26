@@ -269,7 +269,6 @@ class MenusControllerTest extends AbstractTest {
         resourceEntity2.setURL("/foo22/bar")
         resourceEntity2.setName("name22")
         resourceEntity2.setEnable(false)
-        resourceEntity2.setValid(false)
         resourceEntity2.setMethod(RequestMethod.POST)
         resourceEntity2 = resourceRepository.save(resourceEntity2)
 

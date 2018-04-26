@@ -19,14 +19,13 @@ import java.util.Collection;
 
 @Entity
 @CacheEntity
-@Table(name = "PEP_AUTH_MENUS", indexes = {
-    @Index(name = "route", columnList = "route,valid", unique = true)
-})
+@Table(name = "PEP_AUTH_MENUS")
 public class MenuEntity extends BaseEntity implements Menu {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuEntity.class);
 
-    public MenuEntity() { }
+    public MenuEntity() {
+    }
 
     /**
      * 菜单名称
@@ -36,7 +35,7 @@ public class MenuEntity extends BaseEntity implements Menu {
     /**
      * 前端路径
      */
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String route;
 
     /**

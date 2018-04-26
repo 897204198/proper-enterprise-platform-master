@@ -6,7 +6,7 @@ INSERT INTO pep_auth_resources (id, name, url, method, identifier) VALUES ('test
 INSERT INTO pep_auth_resources (id, name, url, method, identifier) VALUES ('test', '无菜单', '/test', 'GET', 'get');
 INSERT INTO pep_auth_resources (id, name, url, method, identifier) VALUES ('test1', '无角色', '/test1', 'GET', 'get');
 INSERT INTO pep_auth_resources (id, name, url, method, identifier) VALUES ('test-menus', '查菜单', '/auth/menus', 'GET', 'get');
-INSERT INTO pep_auth_resources (id, name, url, method, enable, valid, identifier) VALUES ('test-enable', '启用停用', '/test-enable', 'GET', 'N', 'Y',
+INSERT INTO pep_auth_resources (id, name, url, method, enable,identifier) VALUES ('test-enable', '启用停用', '/test-enable', 'GET', 'N',
 'get');
-INSERT INTO pep_auth_resources (id, name, url, method, enable, valid, identifier) VALUES ('test-valid', '逻辑删除', '/test-valid', 'GET', 'Y', 'N',
+INSERT INTO pep_auth_resources (id, name, url, method, enable,identifier) VALUES ('test-valid', '逻辑删除', '/test-valid', 'GET', 'Y',
 'get');

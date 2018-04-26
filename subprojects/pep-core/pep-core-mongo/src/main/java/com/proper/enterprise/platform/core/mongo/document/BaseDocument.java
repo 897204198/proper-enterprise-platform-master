@@ -84,14 +84,4 @@ public class BaseDocument implements IBase {
         this.lastModifyTime = lastModifyTime;
     }
 
-    @Override
-    public boolean isValid() {
-        return valid;
-    }
-
-    @Override
-    public void setValid(boolean valid) {
-        this.valid = valid;
-    }
-
 }
