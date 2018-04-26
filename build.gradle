@@ -32,7 +32,6 @@ allprojects {
     }
 }
 
-
 ext {
     pepDevConfRoot = "$rootDir/subprojects/pep-dev-configs/src/main/resources/META-INF"
     projectGenerator = [:]
@@ -67,7 +66,7 @@ subprojects {
 
     group = 'com.proper.enterprise.platform'
     // Needs to change version code in core.properties TOGETHER!!
-    version = '0.4.1'
+    version = '0.4.2-SNAPSHOT'
     test {
         reports.html.enabled = false
         reports.junitXml.enabled = false
