@@ -18,7 +18,7 @@ class AllowCrossOriginFilterTest extends AbstractTest {
     private WebApplicationContext wac
 
     @Test
-    public void allowCrossOriginFilterShouldSetResponseHeaders() {
+    void allowCrossOriginFilterShouldSetResponseHeaders() {
         def filter = new AllowCrossOriginFilter()
         coverFilter(filter)
 
@@ -29,9 +29,11 @@ class AllowCrossOriginFilterTest extends AbstractTest {
 
     def checkResponse(MvcResult result) {
         HttpServletResponse response = result.getResponse()
-        assert response.getHeader('Access-Control-Allow-Origin') == ConfCenter.get("auth.access_control.allow_origin")
-        assert response.getHeader('Access-Control-Allow-Methods') == ConfCenter.get("auth.access_control.allow_methods")
+        assert response.getHeader('Access-Control-Allow-Credentials') == ConfCenter.get("auth.access_control.allow_credentials")
         assert response.getHeader('Access-Control-Allow-Headers') == ConfCenter.get("auth.access_control.allow_headers")
+        assert response.getHeader('Access-Control-Allow-Methods') == ConfCenter.get("auth.access_control.allow_methods")
+        assert response.getHeader('Access-Control-Allow-Origin') == ConfCenter.get("auth.access_control.allow_origin")
+        assert response.getHeader('Access-Control-Expose-Headers') == ConfCenter.get("auth.access_control.expose_headers")
         assert response.getHeader('Access-Control-Max-Age') == ConfCenter.get("auth.access_control.max_age")
     }
 
