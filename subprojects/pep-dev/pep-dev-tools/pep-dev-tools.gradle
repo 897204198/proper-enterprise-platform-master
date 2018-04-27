@@ -1,0 +1,13 @@
+dependencies {
+    compile libraries.spring_context_support,
+            project(':pep-core-jpa'),
+            project(':pep-auth-api'),
+            project(':pep-auth-common'),
+            project(':pep-auth-common-jpa'),
+            project(':pep-cache-api'),
+            project(':pep-core-mongo')
+
+    testCompile project(':pep-test')
+
+    testRuntime project(':pep-cache-ehcache')
+}
