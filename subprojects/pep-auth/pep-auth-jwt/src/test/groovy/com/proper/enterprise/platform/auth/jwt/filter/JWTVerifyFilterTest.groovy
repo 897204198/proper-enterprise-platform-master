@@ -106,7 +106,7 @@ class JWTVerifyFilterTest extends AbstractTest {
 
         get('/jwt/filter/res/nores', HttpStatus.OK)
         get('/jwt/filter/res/nomenu', HttpStatus.OK)
-        get('/jwt/filter/res/menures', HttpStatus.UNAUTHORIZED)
+        get('/jwt/filter/res/menures', HttpStatus.FORBIDDEN)
     }
 
 }

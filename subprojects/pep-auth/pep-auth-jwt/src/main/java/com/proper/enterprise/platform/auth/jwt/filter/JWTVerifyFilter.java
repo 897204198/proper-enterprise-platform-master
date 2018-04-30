@@ -70,16 +70,22 @@ public class JWTVerifyFilter implements Filter {
                 return;
             } else {
                 LOGGER.trace("Current user with {} could NOT access {}:{}!", token, req.getMethod(), req.getRequestURI());
+                HttpServletResponse resp = (HttpServletResponse) response;
+                resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                resp.setHeader("WWW-Authenticate",
+                        "Bearer realm=\"pep\", "
+                                + "error=\"invalid_auth\", "
+                                + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHORIZATION\"");
             }
         } else {
             LOGGER.trace("JWT verfiy failed.");
+            HttpServletResponse resp1 = (HttpServletResponse) response;
+            resp1.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp1.setHeader("WWW-Authenticate",
+                    "Bearer realm=\"pep\", "
+                            + "error=\"invalid_auth\", "
+                            + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHENTICATION\"");
         }
-        HttpServletResponse resp = (HttpServletResponse) response;
-        resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        resp.setHeader("WWW-Authenticate",
-            "Bearer realm=\"pep\", "
-                + "error=\"invalid_auth\", "
-                + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHENTICATION OR AUTHORIZATION\"");
     }
 
     /**
