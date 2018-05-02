@@ -1,6 +1,6 @@
 # ignore duplicated configurations in pep-test module
-subprojects/pep-test/src/main/resources/conf/
-subprojects/pep-test/src/main/resources/spring/
+subprojects/pep-dev/pep-test/src/main/resources/conf/
+subprojects/pep-dev/pep-test/src/main/resources/spring/
 
 
 # ignore temp files and folders
