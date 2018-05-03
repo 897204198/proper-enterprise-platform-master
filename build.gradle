@@ -33,7 +33,7 @@ allprojects {
 }
 
 ext {
-    pepDevConfRoot = "$rootDir/subprojects/pep-dev-configs/src/main/resources/META-INF"
+    pepDevConfRoot = "$rootDir/subprojects/pep-dev/pep-dev-configs/src/main/resources/META-INF"
     projectGenerator = [:]
     projectGenerator.name = 'pep'
     projectGenerator.path = 'platform'
