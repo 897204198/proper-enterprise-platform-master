@@ -1,10 +1,10 @@
-package com.proper.enterprise.platform.dev.tools.service.impl;
+package com.proper.enterprise.platform.app.service.impl;
 
 import com.proper.enterprise.platform.api.cache.CacheDuration;
+import com.proper.enterprise.platform.app.document.AppVersionDocument;
+import com.proper.enterprise.platform.app.repository.AppVersionRepository;
+import com.proper.enterprise.platform.app.service.AppVersionService;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.dev.tools.document.AppVersionDocument;
-import com.proper.enterprise.platform.dev.tools.repository.AppVersionRepository;
-import com.proper.enterprise.platform.dev.tools.service.AppVersionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;

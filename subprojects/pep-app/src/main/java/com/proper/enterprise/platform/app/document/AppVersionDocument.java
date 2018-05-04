@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.dev.tools.document;
+package com.proper.enterprise.platform.app.document;
 
 import com.proper.enterprise.platform.core.mongo.document.BaseDocument;
 import org.springframework.data.mongodb.core.mapping.Document;

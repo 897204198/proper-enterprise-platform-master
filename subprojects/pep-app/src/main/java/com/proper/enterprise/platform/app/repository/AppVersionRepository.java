@@ -1,6 +1,6 @@
-package com.proper.enterprise.platform.dev.tools.repository;
+package com.proper.enterprise.platform.app.repository;
 
-import com.proper.enterprise.platform.dev.tools.document.AppVersionDocument;
+import com.proper.enterprise.platform.app.document.AppVersionDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

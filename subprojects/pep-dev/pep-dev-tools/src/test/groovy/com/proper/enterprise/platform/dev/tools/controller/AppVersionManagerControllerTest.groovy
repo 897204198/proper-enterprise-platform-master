@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.dev.tools.controller
 
-import com.proper.enterprise.platform.dev.tools.document.AppVersionDocument
-import com.proper.enterprise.platform.dev.tools.repository.AppVersionRepository
+import com.proper.enterprise.platform.app.document.AppVersionDocument
+import com.proper.enterprise.platform.app.repository.AppVersionRepository
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.After

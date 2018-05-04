@@ -1,7 +1,7 @@
-package com.proper.enterprise.platform.dev.tools.service;
+package com.proper.enterprise.platform.app.service;
 
+import com.proper.enterprise.platform.app.document.AppVersionDocument;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.dev.tools.document.AppVersionDocument;
 
 public interface AppVersionService {
 

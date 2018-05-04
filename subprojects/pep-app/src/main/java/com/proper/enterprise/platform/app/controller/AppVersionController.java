@@ -1,9 +1,9 @@
-package com.proper.enterprise.platform.dev.tools.controller;
+package com.proper.enterprise.platform.app.controller;
 
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
+import com.proper.enterprise.platform.app.document.AppVersionDocument;
+import com.proper.enterprise.platform.app.service.AppVersionService;
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.dev.tools.document.AppVersionDocument;
-import com.proper.enterprise.platform.dev.tools.service.AppVersionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
