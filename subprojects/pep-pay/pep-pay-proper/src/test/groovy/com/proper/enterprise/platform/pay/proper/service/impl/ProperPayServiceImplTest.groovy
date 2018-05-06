@@ -5,12 +5,14 @@ import com.proper.enterprise.platform.api.pay.factory.PayFactory
 import com.proper.enterprise.platform.api.pay.model.PrepayReq
 import com.proper.enterprise.platform.api.pay.model.RefundReq
 import com.proper.enterprise.platform.api.pay.service.PayService
+import com.proper.enterprise.platform.pay.proper.entity.ProperEntity
 import com.proper.enterprise.platform.pay.proper.entity.ProperRefundEntity
 import com.proper.enterprise.platform.pay.proper.model.ProperPayResultRes
 import com.proper.enterprise.platform.pay.proper.model.ProperQueryRes
 import com.proper.enterprise.platform.pay.proper.model.ProperRefundRes
 import com.proper.enterprise.platform.pay.proper.model.ProperRefundTradeQueryRes
 import com.proper.enterprise.platform.pay.proper.repository.ProperRefundRepository
+import com.proper.enterprise.platform.pay.proper.service.ProperPayService
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,9 +26,9 @@ class ProperPayServiceImplTest extends AbstractTest {
     ProperRefundRepository properRefundRepo
 
     private String payWay = "proper"
-//
-//    @Autowired
-//    PayService payService
+
+    @Autowired
+    ProperPayService properPayService
 
     @Test
     public void testPrepay() {
@@ -82,5 +84,25 @@ class ProperPayServiceImplTest extends AbstractTest {
 
         assert queryRefundRes.getCode().equals("10000")
         assert queryRefundRes.getMsg().equals("SUCCESS")
+    }
+
+    @Test
+    void testProperServiceImplOfMethod(){
+        ProperEntity properEntity = new ProperEntity()
+        properEntity.setNotifyTime("time")
+        properEntity.setOutTradeNo("number")
+        properEntity.setTotalFee("fee")
+        properEntity = properPayService.save(properEntity)
+        ProperRefundEntity properRefundEntity = new ProperRefundEntity()
+        properRefundEntity.setCode("code")
+        properRefundEntity.setMsg("msg")
+        properRefundEntity.setTradeNo("tradeNo")
+        properRefundEntity.setOutTradeNo("outTradeNo")
+        properRefundEntity.setRefundNo("refundNo")
+        properRefundEntity.setRefundFee("refundFee")
+        properRefundEntity = properPayService.save(properRefundEntity)
+        properPayService.findByOutTradeNo(properEntity.getOutTradeNo())
+        properPayService.getByTradeNo(properEntity.getOutTradeNo())
+        properPayService.findByRefundNo(properRefundEntity.getRefundNo())
     }
 }

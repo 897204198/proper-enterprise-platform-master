@@ -1,16 +1,15 @@
 package com.proper.enterprise.platform.auth.common.jpa.controller
 
+import com.proper.enterprise.platform.api.auth.dao.ResourceDao
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum
+import com.proper.enterprise.platform.api.auth.model.Menu
 import com.proper.enterprise.platform.api.auth.model.Resource
 import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.auth.common.dictionary.ResourceType
 import com.proper.enterprise.platform.auth.common.jpa.entity.DataRestrainEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity
-import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.RoleRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserGroupRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository
+import com.proper.enterprise.platform.auth.common.jpa.repository.*
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
@@ -42,6 +41,9 @@ class ResourcesControllerTest extends AbstractTest {
 
     @Autowired
     I18NService i18NService
+
+    @Autowired
+    ResourceDao resourceDao
 
     @Test
     @NoTx
@@ -164,8 +166,50 @@ class ResourcesControllerTest extends AbstractTest {
         assert value.size() == 1
         assert value.get(0).name == "menu1"
 
+        assert resourceDao.get(resourceEntity.getId(), EnableEnum.DISABLE) == null
+
         delete('/auth/resources?ids='+ resourceEntity.getId(), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage(" pep.auth.common.resource.delete.relation.menu")
         menuRepository.deleteAll()
+        resourceDao.deleteAll()
+    }
+
+    @NoTx
+    @Test
+    void testSaveOrUpdateResource(){
+        ResourceEntity resourceEntity = new ResourceEntity()
+        resourceEntity.setName('resource')
+        resourceEntity.setURL("/aa")
+        resourceEntity.setIdentifier("edit")
+        resourceEntity = resourceService.save(resourceEntity)
+
+        MenuEntity menuEntity = new MenuEntity()
+        menuEntity.setName('menu1')
+        menuEntity.setRoute("route1")
+        menuEntity.setEnable(true)
+        menuEntity.add(resourceEntity)
+        menuEntity = menuRepository.save(menuEntity)
+
+        MenuEntity menuEntity1 = new MenuEntity()
+        menuEntity1.setName('menu2')
+        menuEntity1.setRoute("route2")
+        menuEntity1.setEnable(true)
+        menuEntity1.add(resourceEntity)
+        menuEntity1 = menuRepository.save(menuEntity1)
+
+        Collection<? extends Menu> collection = new HashSet<>()
+        collection.add(menuEntity)
+        collection.add(menuEntity1)
+
+        def reqMap = [:]
+        reqMap['url'] = '/test/aa'
+        reqMap['enable'] = true
+        reqMap['method'] = 'POST'
+        reqMap['identifier'] = 'edit'
+        put('/auth/resources/'+ resourceEntity.getId(), JSONUtil.toJSON(reqMap), HttpStatus.OK)
+        def resource = JSONUtil.parse(get('/auth/resources/'+ resourceEntity.getId(), HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert resource.get('url') == '/test/aa'
+        assert resource.get('enable')
+
     }
 
     @Test

@@ -121,14 +121,6 @@ public interface UserGroupService {
      * @param groupId 用户组ID
      * @return 角色集合
      */
-    Collection<? extends Role> getGroupRoles(String groupId);
-
-    /**
-     * 获取指定用户组角色集合
-     *
-     * @param groupId 用户组ID
-     * @return 角色集合
-     */
     Collection<? extends Role> getGroupRoles(String groupId, EnableEnum userGroupEnable, EnableEnum roleEnable);
 
     /**

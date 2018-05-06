@@ -2,7 +2,6 @@ package com.proper.enterprise.platform.api.auth.dao;
 
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.service.BaseService;
 
@@ -44,7 +43,5 @@ public interface RoleDao extends BaseService<Role, String> {
      * @return 有则返回真，没有返回假
      */
     boolean hasCircleInheritForCurrentRole(Role currentRole);
-
-    Collection<? extends UserGroup> getRoleUserGroups(String roleId);
 
 }

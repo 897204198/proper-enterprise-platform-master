@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.jpa.service.impl
 
+import com.proper.enterprise.platform.api.auth.dao.RoleDao
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.RoleService
@@ -37,6 +38,9 @@ class RoleServiceImplTest extends AbstractTest {
 
     @Autowired
     UserRepository userRepository
+
+    @Autowired
+    RoleDao roleDao
 
     void initRoleData(boolean hasCircleInherit) {
         for (int i = 1; i < 11; i++) {
@@ -81,7 +85,6 @@ class RoleServiceImplTest extends AbstractTest {
 
     @Test
     void testEnable() {
-
         RoleEntity roleEntity = new RoleEntity()
         roleEntity.setName('role1')
         roleEntity = roleRepository.save(roleEntity)
@@ -117,6 +120,8 @@ class RoleServiceImplTest extends AbstractTest {
         }catch (Exception e){
             i18NService.getMessage("pep.auth.common.role.get.failed")
         }
+        assert roleDao.findAllByNameLike(roleEntity2.getName()).size() == 1
+        assert roleDao.get(roleEntity2.getId(), EnableEnum.DISABLE) == null
     }
 
     @Test
@@ -207,6 +212,40 @@ class RoleServiceImplTest extends AbstractTest {
         assert roleService.getByName('currentRole').size() == 1
 
         roleRepository.findAllByNameLike('currentRole').size() == 1
+    }
+
+    @NoTx
+    @Test
+    void testParentRoleDaoErr(){
+        RoleEntity roleEntity = new RoleEntity()
+        try {
+            roleDao.getParentRolesByCurrentRoleId(roleEntity.getId())
+        }catch (Exception e){
+            i18NService.getMessage("pep.auth.common.role.get.failed")
+        }
+
+        try {
+            roleService.getRoleUserGroups(roleEntity.getId(), EnableEnum.ENABLE, EnableEnum.ENABLE)
+        }catch (Exception e1){
+            i18NService.getMessage("pep.auth.common.role.get.failed")
+        }
+
+        RoleEntity role = new RoleEntity()
+        role.setId("aa")
+        role.setName('role')
+        role = roleService.save(role)
+
+        RoleEntity role11 = new RoleEntity()
+        role11.setId("aa")
+        role11.setName('role1')
+        role11.setParent(role)
+        role11 = roleService.save(role11)
+
+        try {
+            roleDao.getParentRolesByCurrentRoleId(role11.getId())
+        }catch (Exception e){
+            i18NService.getMessage("pep.auth.common.role.circle.error")
+        }
     }
 
 

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.jpa.service.impl
 
+import com.proper.enterprise.platform.api.auth.dao.MenuDao
 import com.proper.enterprise.platform.api.auth.dao.ResourceDao
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.service.MenuService
@@ -32,6 +33,9 @@ class MenuServiceImplTest extends AbstractTest {
 
     @Autowired
     ResourceDao resourceDao
+
+    @Autowired
+    MenuDao menuDao
 
     @Test
     void getMenuTree() {
@@ -101,6 +105,7 @@ class MenuServiceImplTest extends AbstractTest {
         ids.clear()
         ids.add(menuEntity.getId())
         assert service.getByIds(ids).size() == 1
+        assert menuDao.get(menuEntity.getId(), EnableEnum.DISABLE) == null
 
         ResourceEntity resourceEntity = new ResourceEntity()
         resourceEntity.setName('res1')
@@ -112,6 +117,7 @@ class MenuServiceImplTest extends AbstractTest {
         ids.add(resourceEntity.getId())
         assert resourceService.getByIds(ids).size() == 1
 
+        menuDao.deleteAll()
     }
 
 }

@@ -111,4 +111,12 @@ class BaseControllerTest extends AbstractTest {
         assert dt.getCount() == 10
     }
 
+    @Test
+    void testServiceSupport() {
+        assert  c.isPageSearch() == false
+        try {
+            c.getPageRequest()
+        }catch (Exception e){}
+
+    }
 }

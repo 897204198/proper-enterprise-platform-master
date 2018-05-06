@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.mongo
 
 import com.mongodb.client.MongoDatabase
+import com.proper.enterprise.platform.core.mongo.logback.MongoDBConnectionSource
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,5 +23,13 @@ class MongoDatabaseFactoryBeanTest extends AbstractTest {
     @Test
     public void checkObjectType() {
         assert new MongoDatabaseFactoryBean().getObjectType() == MongoDatabase.class
+    }
+
+    @Test
+    void testBean(){
+        MongoDBConnectionSource source = new MongoDBConnectionSource()
+        source.setUsername("name")
+        source.setPassword("123")
+        source.setReplica("aa")
     }
 }

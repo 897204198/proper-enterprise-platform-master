@@ -1,19 +1,12 @@
 package com.proper.enterprise.platform.auth.common.jpa.service.impl
 
+import com.proper.enterprise.platform.api.auth.dao.UserDao
 import com.proper.enterprise.platform.api.auth.model.User
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserService
-import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity
-import com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity
-import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
-import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
-import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
-import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.ResourceRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.RoleRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserGroupRepository
-import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository
+import com.proper.enterprise.platform.auth.common.jpa.entity.*
+import com.proper.enterprise.platform.auth.common.jpa.repository.*
 import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
@@ -51,6 +44,9 @@ class UserServiceImplTest extends AbstractTest {
 
     @Autowired
     I18NService i18NService
+
+    @Autowired
+    UserDao userDao
 
     @Test
     @Transactional
@@ -270,6 +266,7 @@ class UserServiceImplTest extends AbstractTest {
         userEntitw.setCreateUserId("00000")
         userEntitw.setEnable(true)
         userEntitw = userService.save(userEntitw)
+        userDao.getCurrentUserByUserId(userEntitw.getId())
         UserEntity user = userService.getByUsername(userEntitw.getUsername())
         MenuEntity menu = userService.getMenusByUsername(user.getUsername())
         menu.enable == true

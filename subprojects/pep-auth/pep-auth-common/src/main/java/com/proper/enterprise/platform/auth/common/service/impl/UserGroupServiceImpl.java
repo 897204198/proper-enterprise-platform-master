@@ -173,15 +173,6 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
-    public Collection<? extends Role> getGroupRoles(String groupId) {
-        UserGroup userGroup = this.get(groupId);
-        if (userGroup == null || !userGroup.isEnable()) {
-            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.get.failed"));
-        }
-        return roleService.getFilterRoles(userGroup.getRoles());
-    }
-
-    @Override
     public Collection<? extends Role> getGroupRoles(String groupId, EnableEnum userGroupEnable, EnableEnum roleEnable) {
         UserGroup userGroup = this.get(groupId, userGroupEnable);
         if (userGroup == null) {

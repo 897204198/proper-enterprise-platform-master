@@ -3,8 +3,6 @@ package com.proper.enterprise.platform.auth.common.jpa.dao.impl;
 import com.proper.enterprise.platform.api.auth.dao.RoleDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserGroupService;
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity;
@@ -23,7 +21,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String> implements RoleDao {
@@ -168,20 +169,6 @@ public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String>
             }
         }
         return result;
-    }
-
-    @Override
-    public Collection<? extends UserGroup> getRoleUserGroups(String roleId) {
-        Collection<? extends User> users = roleService.getRoleUsers(roleId, EnableEnum.ALL, EnableEnum.ENABLE);
-        Iterator iterator = users.iterator();
-        Collection<? extends UserGroup> filterGroups = new HashSet<>();
-        Collection groups;
-        while (iterator.hasNext()) {
-            User user = (User) iterator.next();
-            groups = userGroupService.getFilterGroups(user.getUserGroups());
-            filterGroups.addAll(groups);
-        }
-        return filterGroups;
     }
 
     @Override

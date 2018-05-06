@@ -8,10 +8,11 @@ import com.proper.enterprise.platform.api.pay.factory.PayFactory
 import com.proper.enterprise.platform.api.pay.model.PrepayReq
 import com.proper.enterprise.platform.api.pay.model.RefundReq
 import com.proper.enterprise.platform.api.pay.service.PayService
-import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.pay.web.ali.entity.AliwebRefundEntity
 import com.proper.enterprise.platform.pay.web.ali.model.AliwebPayResultRes
 import com.proper.enterprise.platform.pay.web.ali.repository.AliwebRefundRepository
+import com.proper.enterprise.platform.pay.web.ali.service.AliwebPayResService
+import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -24,6 +25,9 @@ class AliwebPayServiceImplTest extends AbstractTest {
     AliwebRefundRepository aliwebRefundRepo
 
     private String payWay = "aliweb"
+
+    @Autowired
+    AliwebPayResService aliwebPayResService
 
     @Test
     public void testPrepay() {
