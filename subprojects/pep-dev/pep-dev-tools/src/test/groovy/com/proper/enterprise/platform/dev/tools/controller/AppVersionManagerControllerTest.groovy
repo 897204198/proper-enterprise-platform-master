@@ -6,15 +6,12 @@ import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.After
 import org.junit.Before
-import org.junit.FixMethodOrder
 import org.junit.Test
-import org.junit.runners.MethodSorters
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MvcResult
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class AppVersionManagerControllerTest extends AbstractTest {
 
     @Autowired
@@ -26,10 +23,10 @@ class AppVersionManagerControllerTest extends AbstractTest {
 
     @Before
     void createDataTest() {
-        long version = 300000;
+        long version = 300000
         for (int i = 0; i <= 16; i++) {
-            AppVersionDocument appVersionDocument = new AppVersionDocument();
-            appVersionDocument.setVer(++version);
+            AppVersionDocument appVersionDocument = new AppVersionDocument()
+            appVersionDocument.setVer(++version)
             appVersionDocument.setNote("第" + version + "版的解释说明")
             appVersionDocument.setUrl("http://test.com/" + version)
             MvcResult result = post(prefix, JSONUtil.toJSON(appVersionDocument), HttpStatus.CREATED)
@@ -76,7 +73,7 @@ class AppVersionManagerControllerTest extends AbstractTest {
         app.setNote("这是更新后的内容信息")
         MvcResult result = put("$prefix/" + updatever, JSONUtil.toJSON(app), HttpStatus.OK)
         AppVersionDocument app1 = JSONUtil.parse(result.getResponse().getContentAsString(), AppVersionDocument.class)
-        assert app.getNote().equals(app1.getNote());
+        assert app.getNote() == app1.getNote()
     }
 
     @Test
@@ -93,6 +90,12 @@ class AppVersionManagerControllerTest extends AbstractTest {
 
         assert originalapp.getVer() != nowapp.getVer()
         assert nowapp.getVer() == newreleaseapp.getVer()
+    }
+
+    @Test
+    void initGetLatestVersion() {
+        tearDown()
+        resOfGet("$prefix/latest", HttpStatus.OK)
     }
 
     @After

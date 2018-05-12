@@ -26,10 +26,11 @@ public class AppVersionManagerController extends BaseController {
      */
     @AuthcIgnore
     @GetMapping("/latest")
-    public ResponseEntity<AppVersionDocument> getLatestReleaseVersionInfoByVer(@RequestParam(required = false) Long current) {
-        AppVersionDocument latestVersion = appVersionService.getLatestReleaseVersionOnlyValid();
+    public ResponseEntity<AppVersionDocument> getLatestReleaseVersionInfoByVer(Long current) {
+        AppVersionDocument latestVersionDocument = appVersionService.getLatestReleaseVersionOnlyValid();
         long currentVersion = current == null ? -1 : current;
-        return responseOfGet(latestVersion.getVer() > currentVersion ? latestVersion : null);
+        long latestVersion = latestVersionDocument == null ? -1 : latestVersionDocument.getVer();
+        return responseOfGet(latestVersion > currentVersion ? latestVersionDocument : null);
     }
 
     /**
@@ -87,6 +88,7 @@ public class AppVersionManagerController extends BaseController {
      */
     @PutMapping("/{version}")
     public ResponseEntity<AppVersionDocument> update(@PathVariable long version, @RequestBody AppVersionDocument appVersionDocument) {
+        appVersionDocument.setVer(version);
         return responseOfPut(appVersionService.updateVersionInfo(appVersionDocument));
     }
 

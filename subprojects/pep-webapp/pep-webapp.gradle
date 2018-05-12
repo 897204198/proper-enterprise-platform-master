@@ -62,7 +62,8 @@ dependencies {
             project(':pep-cache-ehcache'),
             project(':pep-oopsearch-config'),
             project(':pep-oopsearch'),
-            project(':pep-workflow')
+            project(':pep-workflow'),
+            project(':pep-dev-tools')
 }
 task cleanDist(type: Delete) {
     delete 'build/libs'
