@@ -121,7 +121,7 @@ tomcat 的 docker 镜像需使用 [docker-tomcat](https://github.com/propersoft-
 
 * **同步** 修改前端、后端、API 等版本号
 
-> 后端修改 build.gradle 中的 `version` 和 core-utils.properties 中的 `core.version` 值
+> 后端修改 build.gradle 中的 `version` 和 core.properties 中的 `core.version` 值
 
 > 接口文档调整 API 仓库的 `api.raml` 和 `package.json` 中的版本号
 
