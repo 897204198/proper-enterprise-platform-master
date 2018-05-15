@@ -1,7 +1,7 @@
 # ignore duplicated configurations in pep-test module
 subprojects/pep-dev/pep-test/src/main/resources/conf/
 subprojects/pep-dev/pep-test/src/main/resources/spring/
-
+subprojects/pep-dev/pep-test/src/main/resources/liquibase/
 
 # ignore temp files and folders
 .DS_Store
@@ -27,6 +27,10 @@ init_mongo_for_proper_dfs.js
 *.ipr
 *.iws
 out/
+.ideaDataSources/
 
 # ignore MANIFEST.MF
 MANIFEST.MF
+
+# ignore liquibase db changelog default folder
+db/

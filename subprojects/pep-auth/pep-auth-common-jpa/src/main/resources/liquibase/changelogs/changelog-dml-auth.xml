@@ -1,0 +1,1226 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="alphahinex (generated)" id="1525327864421-6">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-auth"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="lock"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;0"/>
+            <column name="NAME" value="权限管理"/>
+            <column name="ROUTE" value="auth"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="1"/>
+            <column name="PARENT_ID"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-auth-users"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="solution"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;1"/>
+            <column name="NAME" value="用户管理"/>
+            <column name="ROUTE" value="auth/user"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="0"/>
+            <column name="PARENT_ID" value="pep-auth"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-auth-functions"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="bars"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;1"/>
+            <column name="NAME" value="功能管理"/>
+            <column name="ROUTE" value="auth/func"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="1"/>
+            <column name="PARENT_ID" value="pep-auth"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-auth-roles"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="skin"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;1"/>
+            <column name="NAME" value="角色管理"/>
+            <column name="ROUTE" value="auth/role"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="2"/>
+            <column name="PARENT_ID" value="pep-auth"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-auth-user-groups"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="team"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;1"/>
+            <column name="NAME" value="用户组管理"/>
+            <column name="ROUTE" value="auth/group"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="3"/>
+            <column name="PARENT_ID" value="pep-auth"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="alphahinex (generated)" id="1525327864421-8">
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-menus-r"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="检索菜单"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/menus"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-menus-c"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="creat"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="创建菜单"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/menus"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-menus-u"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="edit"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新多个菜单状态"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/menus"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-menus-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="删除多个菜单"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/menus"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-menus-menu-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="获得菜单"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/menus/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-menus-menu-u"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="update"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新菜单"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/menus/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-menus-menu-resource-c"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="add"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="菜单添加资源"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/menus/*/resource/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-menus-menu-resource-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="菜单删除资源"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/menus/*/resource/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-menus-menu-resources-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得菜单的资源集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/menus/*/resources"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-menus-menu-roles-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得菜单的角色集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/menus/*/roles"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-menus-parents-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得可选父菜单的集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/menus/parents"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-resources-c"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="creat"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="创建资源"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/resources"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-resources-u"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="update"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新多个资源状态"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/resources"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-resources-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="删除多个资源"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/resources"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-resources-resource-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="获得资源"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/resources/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-resources-resource-u"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="update"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新资源"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/resources/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-resources-resource-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="删除资源"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/resources/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-resources-resource-menus-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得资源的菜单集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/resources/*/menus"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-resources-resource-roles-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得资源的角色集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/resources/*/roles"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-r"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="检索角色"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-c"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="creat"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="创建角色"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-u"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="update"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新多个角色状态"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="删除多个角色"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-role-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="获得角色"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-role-u"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="update"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新角色"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-role-menus-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得角色的菜单集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles/*/menus"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-role-menus-c"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="add"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="角色添加菜单"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles/*/menus"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-role-menus-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="角色删除菜单"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles/*/menus"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-role-resources-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得角色的资源集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles/*/resources"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-role-resources-c"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="add"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="角色添加资源"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles/*/resources"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-role-resources-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="角色删除资源"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles/*/resources"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-role-users-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得角色的用户集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles/*/users"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-role-user-groups-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得角色的用户组集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles/*/user-groups"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-roles-parents-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得可选父角色的集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/roles/parents"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-r"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="get"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="检索用户"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-c"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="add"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="创建用户"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-u"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="edit"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新多个用户状态"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="删除多个用户"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-user-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="获得用户"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-user-u"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="update"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新用户"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-user-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="删除用户"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-user-role-c"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="add"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="用户添加角色"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users/*/role/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-user-role-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="用户删除角色"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users/*/role/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-user-roles-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得用户的角色集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users/*/roles"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-user-groups-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得用户的用户组集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users/*/user-groups"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-query-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="按用户名或显示名或手机号检索用户集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users/query"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-r"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="检索用户组"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-c"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="add"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="创建用户组"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-u"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="update"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新多个用户组状态"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="删除多个用户组"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-group-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="get"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="获得用户组"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-group-u"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="update"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新用户组"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-group-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="删除用户组"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-group-role-c"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="add"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="用户组添加角色"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups/*/role/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-group-role-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="用户组删除角色"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups/*/role/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-group-roles-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="find"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得用户组的角色集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups/*/roles"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-group-user-c"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="add"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="用户组添加用户"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups/*/user/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-group-user-d"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="delete"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="用户组删除用户"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups/*/user/*"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-user-groups-group-users-g"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="get"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="取得用户组的用户集合"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/user-groups/*/users"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="alphahinex (generated)" id="1525327864421-7">
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-r"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-c"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-u"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-user-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-user-u"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-user-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-user-role-c"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-user-role-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-user-roles-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-user-groups-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-users"/>
+            <column name="RES_ID" value="pep-auth-users-query-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-menus-r"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-menus-c"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-menus-u"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-menus-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-menus-menu-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-menus-menu-u"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-menus-menu-resource-c"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-menus-menu-resource-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-menus-menu-resources-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-menus-menu-roles-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-menus-parents-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-resources-c"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-resources-u"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-resources-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-resources-resource-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-resources-resource-u"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-resources-resource-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-resources-resource-menus-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-functions"/>
+            <column name="RES_ID" value="pep-auth-resources-resource-roles-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-r"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-c"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-u"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-role-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-role-u"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-role-menus-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-role-menus-c"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-role-menus-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-role-resources-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-role-resources-c"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-role-resources-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-role-users-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-role-user-groups-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-roles"/>
+            <column name="RES_ID" value="pep-auth-roles-parents-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-r"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-c"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-u"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-group-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-group-u"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-group-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-group-role-c"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-group-role-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-group-roles-g"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-group-user-c"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-group-user-d"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" value="pep-auth-user-groups"/>
+            <column name="RES_ID" value="pep-auth-user-groups-group-users-g"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="alphahinex (generated)" id="1525327864421-9">
+        <insert tableName="PEP_AUTH_USERS">
+            <column name="PEP_DTYPE" value="UserEntity"/>
+            <column name="ID" value="pep-sysadmin"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="EMAIL"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="NAME" value="超级管理员"/>
+            <column name="PASSWORD" value="e10adc3949ba59abbe56e057f20f883e"/>
+            <column name="PHONE"/>
+            <column name="SUPERUSER" value="Y"/>
+            <column name="USERNAME" value="admin"/>
+        </insert>
+    </changeSet>
+    <changeSet author="alphahinex (generated)" id="1525327864421-11">
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_auth_menu_type_app"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="MENU_TYPE"/>
+            <column name="DD_CODE" value="0"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="应用"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_auth_menu_type_page"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="MENU_TYPE"/>
+            <column name="DD_CODE" value="1"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="页面"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_auth_menu_type_function"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="MENU_TYPE"/>
+            <column name="DD_CODE" value="2"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="功能"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_auth_resource_type_method"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="RESOURCE_TYPE"/>
+            <column name="DD_CODE" value="0"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="方法"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

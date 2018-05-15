@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="alphahinex" id="pep-sys-data-dic-1">
+        <createTable tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DD_CATALOG" type="VARCHAR(255)"/>
+            <column name="DD_CODE" type="VARCHAR(255)"/>
+            <column defaultValue="N" name="IS_DEFAULT" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DD_NAME" type="VARCHAR(255)"/>
+            <column name="DD_ORDER" type="INT(10)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="alphahinex" id="pep-sys-rules-1">
+        <createTable tableName="PEP_SYS_RULES">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CATALOGUE" type="VARCHAR(255)"/>
+            <column name="RULE_DESCRIPTION" type="VARCHAR(4000)"/>
+            <column name="RULE_HOWTOUSE" type="VARCHAR(4000)"/>
+            <column name="RULE_NAME" type="VARCHAR(255)"/>
+            <column name="RULE" type="VARCHAR(4000)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="alphahinex (generated)" id="pep-sys-rules-2">
+        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_C7" tableName="PEP_SYS_RULES"/>
+    </changeSet>
+    <changeSet author="alphahinex (generated)" id="pep-sys-data-dic-2">
+        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_E" tableName="PEP_SYS_DATA_DIC"/>
+    </changeSet>
+</databaseChangeLog>

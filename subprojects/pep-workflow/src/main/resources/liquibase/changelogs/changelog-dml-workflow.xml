@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="alphahinex" id="menus-1">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-workflow"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="database"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;0"/>
+            <column name="NAME" value="流程设置"/>
+            <column name="ROUTE" value="workflow"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="0"/>
+            <column name="PARENT_ID"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-workflow-designer"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="share-alt"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;1"/>
+            <column name="NAME" value="流程设计"/>
+            <column name="ROUTE" value="workflow/designer"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="0"/>
+            <column name="PARENT_ID" value="pep-workflow"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="alphahinex" id="resources-1">
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="7E0960C6B1CC44959DCFB5E36D63F3E2"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="流程模型"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/workflow/service/model/*/json"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="7E0960C6B1CC44959DCFB5E36D63F3E3"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="流程"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/workflow/**"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="20151229164416"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="流程模型列表"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/workflow/service/repository/models"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="20151229164555"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER"/>
+            <column name="METHOD" value="POST"/>
+            <column name="NAME" value="创建流程模型"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/workflow/service/repository/models/**"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="20151229164625"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="查询流程模型"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/workflow/service/repository/models/**"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="20151229164700"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新流程模型"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/workflow/service/repository/models/**"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="20151229164730"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER"/>
+            <column name="METHOD" value="DELETE"/>
+            <column name="NAME" value="删除流程模型"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/workflow/service/repository/models/**"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="20160120164230"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER"/>
+            <column name="METHOD" value="GET"/>
+            <column name="NAME" value="流程实例列表"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/workflow/service/runtime/process-instances"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="alphahinex" id="data-dic-1">
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_workflow_model_status_deployed"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="ModelStatus"/>
+            <column name="DD_CODE" value="DEPLOYED"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="已部署"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_workflow_model_status_undeployed"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="ModelStatus"/>
+            <column name="DD_CODE" value="UN_DEPLOYED"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="未部署"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

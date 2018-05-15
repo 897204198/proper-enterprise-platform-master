@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="alphahinex (generated)" id="1525327864421-10">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="001"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="username"/>
+            <column name="COLUMN_DESC" value="用户名"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authusers"/>
+            <column name="SEARCH_COLUMN" value="username"/>
+            <column name="TABLE_NAME" value="pep_auth_users"/>
+            <column name="URL" value="/auth/users"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="002"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="name"/>
+            <column name="COLUMN_DESC" value="用户显示名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authusers"/>
+            <column name="SEARCH_COLUMN" value="name"/>
+            <column name="TABLE_NAME" value="pep_auth_users"/>
+            <column name="URL" value="/auth/users"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="003"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="email"/>
+            <column name="COLUMN_DESC" value="电子邮箱"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authusers"/>
+            <column name="SEARCH_COLUMN" value="email"/>
+            <column name="TABLE_NAME" value="pep_auth_users"/>
+            <column name="URL" value="/auth/users"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="004"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="phone"/>
+            <column name="COLUMN_DESC" value="手机号码"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authusers"/>
+            <column name="SEARCH_COLUMN" value="phone"/>
+            <column name="TABLE_NAME" value="pep_auth_users"/>
+            <column name="URL" value="/auth/users"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="005"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="userEnable"/>
+            <column name="COLUMN_DESC" value="状态"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authusers"/>
+            <column name="SEARCH_COLUMN" value="enable"/>
+            <column name="TABLE_NAME" value="pep_auth_users"/>
+            <column name="URL" value="/auth/users"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="006"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="name"/>
+            <column name="COLUMN_DESC" value="菜单名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authmenus"/>
+            <column name="SEARCH_COLUMN" value="name"/>
+            <column name="TABLE_NAME" value="pep_auth_menus"/>
+            <column name="URL" value="/auth/menus"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="007"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="description"/>
+            <column name="COLUMN_DESC" value="菜单名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authmenus"/>
+            <column name="SEARCH_COLUMN" value="description"/>
+            <column name="TABLE_NAME" value="pep_auth_menus"/>
+            <column name="URL" value="/auth/menus"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="008"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="route"/>
+            <column name="COLUMN_DESC" value="标识"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authmenus"/>
+            <column name="SEARCH_COLUMN" value="route"/>
+            <column name="TABLE_NAME" value="pep_auth_menus"/>
+            <column name="URL" value="/auth/menus"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="019"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="menuEnable"/>
+            <column name="COLUMN_DESC" value="状态"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authmenus"/>
+            <column name="SEARCH_COLUMN" value="enable"/>
+            <column name="TABLE_NAME" value="pep_auth_menus"/>
+            <column name="URL" value="/auth/menus"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="010"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="parentId"/>
+            <column name="COLUMN_DESC" value="父节点id"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authmenus"/>
+            <column name="SEARCH_COLUMN" value="parent_id"/>
+            <column name="TABLE_NAME" value="pep_auth_menus"/>
+            <column name="URL" value="/auth/menus"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="011"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="name"/>
+            <column name="COLUMN_DESC" value="名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authroles"/>
+            <column name="SEARCH_COLUMN" value="name"/>
+            <column name="TABLE_NAME" value="pep_auth_roles"/>
+            <column name="URL" value="/auth/roles"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="012"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="description"/>
+            <column name="COLUMN_DESC" value="功能描述说明"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authroles"/>
+            <column name="SEARCH_COLUMN" value="description"/>
+            <column name="TABLE_NAME" value="pep_auth_roles"/>
+            <column name="URL" value="/auth/roles"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="013"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="parentId"/>
+            <column name="COLUMN_DESC" value="父节点id"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authroles"/>
+            <column name="SEARCH_COLUMN" value="parent_id"/>
+            <column name="TABLE_NAME" value="pep_auth_roles"/>
+            <column name="URL" value="/auth/roles"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="014"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="roleEnable"/>
+            <column name="COLUMN_DESC" value="状态"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authroles"/>
+            <column name="SEARCH_COLUMN" value="enable"/>
+            <column name="TABLE_NAME" value="pep_auth_roles"/>
+            <column name="URL" value="/auth/roles"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="015"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="name"/>
+            <column name="COLUMN_DESC" value="用户组名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authusergroups"/>
+            <column name="SEARCH_COLUMN" value="name"/>
+            <column name="TABLE_NAME" value="pep_auth_usergroups"/>
+            <column name="URL" value="/auth/user-groups"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="016"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="description"/>
+            <column name="COLUMN_DESC" value="描述说明"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authusergroups"/>
+            <column name="SEARCH_COLUMN" value="description"/>
+            <column name="TABLE_NAME" value="pep_auth_usergroups"/>
+            <column name="URL" value="/auth/user-groups"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="017"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="userGroupEnable"/>
+            <column name="COLUMN_DESC" value="状态"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="authusergroups"/>
+            <column name="SEARCH_COLUMN" value="enable"/>
+            <column name="TABLE_NAME" value="pep_auth_usergroups"/>
+            <column name="URL" value=" /auth/user-groups"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="alphahinex" id="data-dic-1">
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_day"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="DATE_TYPE"/>
+            <column name="DD_CODE" value="day"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="日"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_tian"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="DATE_TYPE"/>
+            <column name="DD_CODE" value="day"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="天"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_week"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="DATE_TYPE"/>
+            <column name="DD_CODE" value="week"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="周"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_month"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="DATE_TYPE"/>
+            <column name="DD_CODE" value="month"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="月"/>
+            <column name="DD_ORDER" valueNumeric="3"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_quarter"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="DATE_TYPE"/>
+            <column name="DD_CODE" value="quarter"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="季"/>
+            <column name="DD_ORDER" valueNumeric="4"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_jidu"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="DATE_TYPE"/>
+            <column name="DD_CODE" value="quarter"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="季度"/>
+            <column name="DD_ORDER" valueNumeric="5"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_year"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="DATE_TYPE"/>
+            <column name="DD_CODE" value="year"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="年"/>
+            <column name="DD_ORDER" valueNumeric="6"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_qian"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="TIME_AXIS"/>
+            <column name="DD_CODE" value="-2"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="前"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_zuo"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="TIME_AXIS"/>
+            <column name="DD_CODE" value="-1"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="昨"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_shang"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="TIME_AXIS"/>
+            <column name="DD_CODE" value="-1"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="上"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_qu"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="TIME_AXIS"/>
+            <column name="DD_CODE" value="-1"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="去"/>
+            <column name="DD_ORDER" valueNumeric="3"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_jin"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="TIME_AXIS"/>
+            <column name="DD_CODE" value="0"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="今"/>
+            <column name="DD_ORDER" valueNumeric="4"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_ben"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="TIME_AXIS"/>
+            <column name="DD_CODE" value="0"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="本"/>
+            <column name="DD_ORDER" valueNumeric="5"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_zhe"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="TIME_AXIS"/>
+            <column name="DD_CODE" value="0"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="这"/>
+            <column name="DD_ORDER" valueNumeric="6"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_ming"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="TIME_AXIS"/>
+            <column name="DD_CODE" value="1"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="明"/>
+            <column name="DD_ORDER" valueNumeric="7"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_xia"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="TIME_AXIS"/>
+            <column name="DD_CODE" value="1"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="下"/>
+            <column name="DD_ORDER" valueNumeric="8"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="search_hou"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="TIME_AXIS"/>
+            <column name="DD_CODE" value="2"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="后"/>
+            <column name="DD_ORDER" valueNumeric="9"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

@@ -18,8 +18,8 @@ versions.spring_integration = '4.3.9.RELEASE'
 versions.spring_security    = '4.2.3.RELEASE'
 
 configurations.all {
-    //Don't cache snapshots, need to check work or not
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//    //Don't cache snapshots, need to check work or not
+//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 
     resolutionStrategy.force 'xml-apis:xml-apis:1.4.01'
 
@@ -171,7 +171,7 @@ libraries.junit = 'junit:junit:4.12'
 //libraries.jsp_api = 'javax.servlet.jsp:jsp-api:2.2'
 
 //libraries.jstl = 'jstl:jstl:1.2'
-libraries.liquibase="org.liquibase:liquibase-core:3.5.3"
+libraries.liquibase="org.liquibase:liquibase-core:3.6.1"
 libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:${versions.logback}") {
     dependency "ch.qos.logback:logback-core:${versions.logback}"
 }

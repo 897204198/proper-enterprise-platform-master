@@ -1,5 +1,6 @@
 dependencies {
     compile libraries.druid,
+            libraries.liquibase,
             libraries.spring_context_support
 
     compile project(':pep-core-jpa')

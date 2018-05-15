@@ -10,12 +10,14 @@ dependencies {
             libraries.spring_test,
             libraries.spring_tx
 
-    runtime libraries.h2
+    runtime libraries.h2,
+            libraries.liquibase
 }
 
 task syncCtx(type: Copy) {
     file('src/main/resources/conf').deleteDir()
     file('src/main/resources/spring').deleteDir()
+    file('src/main/resources/liquibase').deleteDir()
 
     copy {
         from project(':pep-configs').file('src/main/resources/conf')
@@ -25,6 +27,11 @@ task syncCtx(type: Copy) {
     copy {
         from project(':pep-configs').file('src/main/resources/spring')
         into 'src/main/resources/spring'
+    }
+
+    copy {
+        from project(':pep-configs').file('src/main/resources/liquibase')
+        into 'src/main/resources/liquibase'
     }
 }
 

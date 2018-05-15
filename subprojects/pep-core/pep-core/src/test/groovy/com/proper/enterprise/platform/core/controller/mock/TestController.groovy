@@ -60,4 +60,18 @@ class TestController extends BaseController {
         return responseOfGet([])
     }
 
+    @GetMapping(path = "/get")
+    ResponseEntity<String> getString(@RequestParam String str) {
+        responseOfGet(str)
+    }
+
+    @GetMapping(path = "/list")
+    ResponseEntity<List<MockEntity>> getList() {
+        List<MockEntity> list = new ArrayList<>()
+        list.add(new MockEntity('u1','p1'))
+        list.add(new MockEntity('u2','p2'))
+        list.add(new MockEntity('u3','p3'))
+        responseOfGet(list)
+    }
+
 }
