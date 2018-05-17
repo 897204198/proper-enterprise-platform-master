@@ -1,4 +1,5 @@
 package com.proper.enterprise.platform.core.mongo.controller
+
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.mongo.service.MongoShellService
@@ -71,6 +72,13 @@ class MongoShellControllerTest extends AbstractTest {
     }
 
     @Test
+    public void testQuery() {
+        def doc = insertOne()
+        def newDoc = Document.parse(query(getId(doc)))
+        assert doc.getObjectId().toString() == newDoc.getObjectId().toString()
+    }
+
+    @Test
     public void normalQuery() {
         int times = 5
         times.times {
@@ -110,11 +118,11 @@ class MongoShellControllerTest extends AbstractTest {
 
     private def getDataTrunk(String url) {
         def res = get(url, HttpStatus.OK).response.contentAsString
-        JSONUtil.parse(res, DataTrunk.class)
+        return JSONUtil.parse(res, DataTrunk.class)
     }
 
-    private static def getFirstTimestamp(List<String> strings) {
-        Document.parse(strings[0]).get('timestamp')
+    private static def getFirstTimestamp(List<Document> documents) {
+        documents[0].get('timestamp')
     }
 
 }

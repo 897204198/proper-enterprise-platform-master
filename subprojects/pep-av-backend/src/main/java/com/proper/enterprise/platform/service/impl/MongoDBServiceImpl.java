@@ -66,10 +66,10 @@ public class MongoDBServiceImpl implements IMongoDBService {
         }
         String[] query = new String[2];
         if (!setMap.isEmpty()) {
-            query[0] = "$set: {" + setMap.toString() + "}";
+            query[0] = "$set:" + JSONUtil.toJSONIgnoreException(setMap);
         }
         if (!unsetMap.isEmpty()) {
-            query[1] = "$unset: {" + unsetMap.toString() + "}";
+            query[1] = "$unset:" + JSONUtil.toJSONIgnoreException(unsetMap);
         }
         // TODO
         mongoDAO.updateById(collection, objectId, "{" + StringUtil.join(query, ",") + "}");
