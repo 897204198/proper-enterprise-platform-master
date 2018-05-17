@@ -64,13 +64,6 @@ public class UserEntity extends BaseEntity implements User {
     @Column
     private String name = " ";
 
-    /**
-     * 用户状态
-     */
-    @Type(type = "yes_no")
-    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    private boolean enable = true;
-
     @Column(insertable = false, updatable = false)
     protected String pepDtype;
 
@@ -151,16 +144,6 @@ public class UserEntity extends BaseEntity implements User {
     @Override
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public boolean isEnable() {
-        return enable;
-    }
-
-    @Override
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -52,13 +51,6 @@ public class RoleEntity extends BaseEntity implements Role {
 
     @Transient
     private Collection<? extends Resource> resources = new ArrayList<>();
-
-    /**
-     * 用户状态
-     */
-    @Type(type = "yes_no")
-    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    private boolean enable = true;
 
     @ManyToMany(mappedBy = "roleEntities")
     private Collection<UserEntity> userEntities = new ArrayList<>();
@@ -125,16 +117,6 @@ public class RoleEntity extends BaseEntity implements Role {
     @Override
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Override
-    public boolean isEnable() {
-        return enable;
-    }
-
-    @Override
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     @Override

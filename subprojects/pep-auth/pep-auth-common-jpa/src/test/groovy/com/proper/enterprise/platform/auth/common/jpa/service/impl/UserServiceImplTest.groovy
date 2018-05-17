@@ -53,7 +53,7 @@ class UserServiceImplTest extends AbstractTest {
     void addAndDeleteRoleTest() {
         UserEntity user = new UserEntity();
         user.setName("user1")
-        user.setUsername("username")
+        user.setUsername("usernameTTT")
         user.setPassword("pwd1")
         user = userService.save(user)
 
@@ -261,7 +261,7 @@ class UserServiceImplTest extends AbstractTest {
         UserEntity userEntitw = new UserEntity()
         userEntitw.setName("user1")
         userEntitw.setId("userId")
-        userEntitw.setUsername("username")
+        userEntitw.setUsername("usernameqqq")
         userEntitw.setPassword("pwd1")
         userEntitw.setCreateUserId("00000")
         userEntitw.setEnable(true)
@@ -278,7 +278,7 @@ class UserServiceImplTest extends AbstractTest {
         UserEntity user = new UserEntity()
         user.setName("user1")
         user.setId("userId")
-        user.setUsername("username")
+        user.setUsername("username1")
         user.setPassword("pwd1")
         user.setCreateUserId("00000")
         user.setEnable(false)

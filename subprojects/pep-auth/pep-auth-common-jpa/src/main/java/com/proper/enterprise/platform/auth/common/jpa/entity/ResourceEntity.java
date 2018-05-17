@@ -10,7 +10,6 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.persistence.*;
@@ -50,13 +49,6 @@ public class ResourceEntity extends BaseEntity implements Resource {
      */
     @Convert(converter = DataDicLiteConverter.class)
     private DataDicLite resourceType;
-
-    /**
-     * 菜单状态
-     */
-    @Type(type = "yes_no")
-    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    private boolean enable = true;
 
     @Transient
     private Collection<? extends Menu> menus = new ArrayList<>();
@@ -142,14 +134,6 @@ public class ResourceEntity extends BaseEntity implements Resource {
 
     public void setResourceType(DataDicLite resourceType) {
         this.resourceType = resourceType;
-    }
-
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     public String getIdentifier() {

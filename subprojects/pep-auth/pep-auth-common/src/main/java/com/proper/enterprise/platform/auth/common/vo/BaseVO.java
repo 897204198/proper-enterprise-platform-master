@@ -35,6 +35,8 @@ public class BaseVO implements IBase {
     @JsonIgnore
     protected String lastModifyTime = DateUtil.getTimestamp(true);
 
+    private boolean enable = true;
+
     @Override
     public String getId() {
         return id;
@@ -85,4 +87,14 @@ public class BaseVO implements IBase {
         this.lastModifyTime = lastModifyTime;
     }
 
+
+    @Override
+    public boolean isEnable() {
+        return enable;
+    }
+
+    @Override
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
 }

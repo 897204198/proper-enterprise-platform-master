@@ -9,7 +9,6 @@ import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,13 +57,6 @@ public class MenuEntity extends BaseEntity implements Menu {
      */
     @Convert(converter = DataDicLiteConverter.class)
     private DataDicLite menuType;
-
-    /**
-     * 菜单状态
-     */
-    @Type(type = "yes_no")
-    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    private boolean enable = true;
 
     /**
      * 标识
@@ -259,16 +251,6 @@ public class MenuEntity extends BaseEntity implements Menu {
     @Override
     public void setMenuType(DataDicLite menuType) {
         this.menuType = menuType;
-    }
-
-    @Override
-    public boolean isEnable() {
-        return enable;
-    }
-
-    @Override
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     @Override

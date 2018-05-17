@@ -31,8 +31,8 @@ public class BaseDocument implements IBase {
     protected String lastModifyTime = DateUtil.getTimestamp(true);
 
     @JsonIgnore
-    @Field("V")
-    protected boolean valid = true;
+    @Field("EA")
+    protected boolean enable = true;
 
     @Override
     public String getId() {
@@ -84,4 +84,13 @@ public class BaseDocument implements IBase {
         this.lastModifyTime = lastModifyTime;
     }
 
+    @Override
+    public boolean isEnable() {
+        return enable;
+    }
+
+    @Override
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
 }

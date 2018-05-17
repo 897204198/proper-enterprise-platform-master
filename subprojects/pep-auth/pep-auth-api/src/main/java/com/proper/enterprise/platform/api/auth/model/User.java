@@ -84,20 +84,6 @@ public interface User extends IBase {
     void setPhone(String phone);
 
     /**
-     * 获取用户状态是否可用
-     *
-     * @return 用户状态是否可用
-     */
-    boolean isEnable();
-
-    /**
-     * 设置用户状态是否可用
-     *
-     * @param enable 用户状态是否可用
-     */
-    void setEnable(boolean enable);
-
-    /**
      * 为用户增加一个角色
      *
      * @param role 角色

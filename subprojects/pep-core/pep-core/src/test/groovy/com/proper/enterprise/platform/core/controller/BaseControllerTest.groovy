@@ -99,7 +99,8 @@ class BaseControllerTest extends AbstractTest {
     void ignorePropertyInEntity() {
         def r = get('/core/test/json/entity', HttpStatus.OK).getResponse().getContentAsString()
         def m = JSONUtil.parse(r, Map.class)
-        assert m.size() == 3
+        assert m.size() == 4
+        assert m.get("enable")
         assert m.containsKey('id')
         assert m.containsKey('lastModifyTime')
         assert m.containsKey('entityC2')

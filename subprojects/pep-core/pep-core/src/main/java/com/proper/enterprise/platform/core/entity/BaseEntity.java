@@ -5,6 +5,8 @@ import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.listener.HistoricalEntityListener;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 
 /**
@@ -51,6 +53,10 @@ public class BaseEntity implements IBase {
     @JsonIgnore
     @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT '2017-02-20 00:00:00'")
     protected String lastModifyTime;
+
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    private boolean enable = true;
 
 
     @Override
@@ -103,4 +109,11 @@ public class BaseEntity implements IBase {
         this.lastModifyTime = lastModifyTime;
     }
 
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
 }

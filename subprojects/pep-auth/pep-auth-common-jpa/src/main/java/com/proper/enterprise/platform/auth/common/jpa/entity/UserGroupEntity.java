@@ -7,7 +7,6 @@ import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -54,13 +53,6 @@ public class UserGroupEntity extends BaseEntity implements UserGroup {
      */
     @Transient
     private Collection<? extends Role> roles = new ArrayList<>();
-
-    /**
-     * 用户组状态
-     */
-    @Type(type = "yes_no")
-    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    private boolean enable = true;
 
     @ManyToMany(mappedBy = "userGroupEntities")
     private Collection<UserEntity> userEntities = new ArrayList<>();
@@ -127,16 +119,6 @@ public class UserGroupEntity extends BaseEntity implements UserGroup {
     @Override
     public void remove(Role role) {
         roleGroupEntities.remove(role);
-    }
-
-    @Override
-    public boolean isEnable() {
-        return enable;
-    }
-
-    @Override
-    public void setEnable(boolean enable) {
-        this.enable = enable;
     }
 
     @Override
