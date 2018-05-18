@@ -1,8 +1,11 @@
 package com.proper.enterprise.platform.workflow.controller;
 
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.workflow.service.BPMService;
+import org.flowable.engine.common.api.FlowableException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 
 import java.util.Map;
 
@@ -35,6 +38,15 @@ public abstract class BaseBPMController extends BaseController {
      */
     protected Object getVariableAfterProcessDoneWithoutCache(String procDefKey, Map<String, Object> inputs, String output) {
         return bpmService.getVariableAfterProcessDoneWithoutCache(procDefKey, inputs, output);
+    }
+
+    @Override
+    protected HttpHeaders handleHeaders(Exception ex) {
+        HttpHeaders headers = super.handleHeaders(ex);
+        if (ex instanceof FlowableException) {
+            headers.set(PEPConstants.RESPONSE_HEADER_ERROR_TYPE, PEPConstants.RESPONSE_BUSINESS_ERROR);
+        }
+        return headers;
     }
 
     @Override

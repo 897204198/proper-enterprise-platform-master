@@ -164,20 +164,20 @@ public abstract class BaseController extends QuerySupport {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex, WebRequest request) {
         HttpStatus status = handleStatus(ex, request);
+        HttpHeaders headers = handleHeaders(ex);
         String body = handleBody(ex);
         LOGGER.trace("Controller throws exception", ex);
-        LOGGER.debug("Handle controller's exception to {}:{}", status, body);
-        HttpHeaders headers = handleHeaders();
+        LOGGER.debug("Handle controller's exception to {}:{}:{}", status, headers, body);
+        return new ResponseEntity<>(body, headers, status);
+    }
+
+    protected HttpHeaders handleHeaders(Exception ex) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.valueOf(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
         headers.set(PEPConstants.RESPONSE_HEADER_ERROR_TYPE, PEPConstants.RESPONSE_SYSTEM_ERROR);
         if (ex instanceof ErrMsgException) {
             headers.set(PEPConstants.RESPONSE_HEADER_ERROR_TYPE, PEPConstants.RESPONSE_BUSINESS_ERROR);
         }
-        return new ResponseEntity<>(body, headers, status);
-    }
-
-    protected HttpHeaders handleHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.valueOf(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
         return headers;
     }
 
