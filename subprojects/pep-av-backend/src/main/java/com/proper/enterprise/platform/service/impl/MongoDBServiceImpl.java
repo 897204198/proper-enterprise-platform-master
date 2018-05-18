@@ -49,12 +49,18 @@ public class MongoDBServiceImpl implements IMongoDBService {
     @Override
     public UpdateResult updateById(JsonNode root, String collection, String objectId) throws Exception {
         Iterator<String> iter = root.fieldNames();
-        Map<String, String> setMap = new HashMap<>();
-        Map<String, String> unsetMap = new HashMap<>();
+        Map<String, Object> setMap = new HashMap<>();
+        Map<String, Object> unsetMap = new HashMap<>();
         while (iter.hasNext()) {
             String field = iter.next();
             if (field.startsWith("_")) {
                 continue;
+            }
+            if (root.get(field).isNumber()) {
+                setMap.put(field, root.get(field).numberValue());
+            }
+            if (root.get(field).isBoolean()) {
+                setMap.put(field, root.get(field).booleanValue());
             }
             if (root.get(field).isTextual()) {
                 LOGGER.debug("Set {} to {}", field, root.get(field).textValue());

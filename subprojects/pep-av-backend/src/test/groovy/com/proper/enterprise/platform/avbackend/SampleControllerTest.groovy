@@ -40,12 +40,15 @@ class SampleControllerTest extends AbstractTest {
     void update() {
         def document = [:]
         document['name'] = 'test'
+        document['enable'] = true
         CreateReturnModel returnModel = createDocument(collectionName, document)
         document['name'] = 'test1'
+        document['enable'] = false
         putDocument(collectionName, document, returnModel.getObjectId())
         QueryReturnModel queryReturnModel = queryDocument(collectionName, null)
         List<Map> list = queryReturnModel.getResults()
         assert list.get(0).get("name") == 'test1'
+        assert list.get(0).get("enable") == false
         deleteDocument(collectionName, returnModel.getObjectId())
     }
 
