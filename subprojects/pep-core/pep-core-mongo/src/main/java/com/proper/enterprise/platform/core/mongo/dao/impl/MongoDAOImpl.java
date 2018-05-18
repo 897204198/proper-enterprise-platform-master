@@ -78,12 +78,17 @@ public class MongoDAOImpl implements MongoDAO {
 
     @Override
     public List<Document> query(String collection, String query, int limit, String sort) throws Exception {
+        return query(collection, query, 0, limit, sort);
+    }
+
+    @Override
+    public List<Document> query(String collection, String query, int skip, int limit, String sort) throws Exception {
         MongoCollection<Document> col = mongoDatabase.getCollection(collection);
         FindIterable<Document> findIter = col.find();
-
         if (StringUtil.isNotNull(query)) {
             findIter.filter(Document.parse(query));
         }
+        findIter.skip(skip);
         if (limit > 0) {
             findIter.limit(limit);
         }

@@ -18,6 +18,8 @@ public interface IMongoDBService {
 
     List<Document> query(JsonNode root, String collection) throws Exception;
 
+    long count(JsonNode root, String collection) throws Exception;
+
     Document queryById(String id, String collection) throws Exception;
 
     void droptable(String collection) throws Exception;

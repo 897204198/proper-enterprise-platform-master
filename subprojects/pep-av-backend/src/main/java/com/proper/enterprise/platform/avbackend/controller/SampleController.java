@@ -34,10 +34,9 @@ public class SampleController {
     }
 
     @RequestMapping(value = "/classes/{collection}", method = RequestMethod.POST)
-    @ResponseBody
-    // TODO RESTFul 响应处理 response body 外还要有不同的响应码表示状态，参考 BaseController 和 UsersController
+    @ResponseBody// TODO RESTFul 响应处理 response body 外还要有不同的响应码表示状态，参考 BaseController 和 UsersController
     Map<String, Object> createOrQuery(@PathVariable String collection, @RequestBody String objectStr,
-            HttpServletRequest request, HttpServletResponse res) {
+                                        HttpServletRequest request, HttpServletResponse res) {
         String url = request.getRequestURI();
         return handler(collection, null, objectStr, url);
     }
@@ -45,7 +44,7 @@ public class SampleController {
     @RequestMapping(value = "/classes/{collection}/{objectIds}", method = RequestMethod.POST)
     @ResponseBody
     Map<String, Object> delOrUpdate(@PathVariable String collection, @PathVariable String objectIds,
-            @RequestBody String objectStr, HttpServletRequest request, HttpServletResponse response) {
+                                    @RequestBody String objectStr, HttpServletRequest request, HttpServletResponse response) {
         String url = request.getRequestURI();
         return handler(collection, objectIds, objectStr, url);
     }
@@ -98,10 +97,22 @@ public class SampleController {
     }
 
     private Map<String, Object> doQuery(JsonNode root, String collection, String url) throws Exception {
-        List<Document> docs = mongoDBService.query(root, collection);
         Map<String, Object> result = new HashMap<String, Object>();
+        if (needCount(root)) {
+            long count = mongoDBService.count(root, collection);
+            result.put("count", count);
+            return result;
+        }
+        List<Document> docs = mongoDBService.query(root, collection);
         result.put("results", docs);
         return result;
+    }
+
+    private boolean needCount(JsonNode root) {
+        if (root.has("count")) {
+            return true;
+        }
+        return false;
     }
 
 }

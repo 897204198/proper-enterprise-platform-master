@@ -86,6 +86,7 @@ public class MongoDBServiceImpl implements IMongoDBService {
         LOGGER.debug("Where node: {}", whereNode);
         LOGGER.debug("limit is {}", limit);
         LOGGER.debug("orders are {}", order);
+        int skip = root.has("skip") ? root.get("skip").asInt() : 0;
         String wherestr = whereNode.toString();
         if (wherestr.indexOf("objectId") > 0) {
             String objectId = whereNode.get("objectId").toString();
@@ -103,7 +104,20 @@ public class MongoDBServiceImpl implements IMongoDBService {
                 }
             }
         }
-        return mongoDAO.query(collection, wherestr, limit, JSONUtil.toJSON(sort));
+
+        return mongoDAO.query(collection, wherestr, skip, limit, JSONUtil.toJSON(sort));
+    }
+
+    @Override
+    public long count(JsonNode root, String collection) throws Exception {
+        JsonNode whereNode = root.get("where");
+        String wherestr = whereNode.toString();
+        if (wherestr.indexOf("objectId") > 0) {
+            String objectId = whereNode.get("objectId").toString();
+            wherestr = wherestr.replaceAll("objectId", "_id");
+            wherestr = wherestr.replaceAll(objectId, "ObjectId(" + objectId + ")");
+        }
+        return mongoDAO.count(collection, wherestr);
     }
 
     @Override
