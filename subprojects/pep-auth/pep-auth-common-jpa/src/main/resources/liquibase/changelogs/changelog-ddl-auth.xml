@@ -250,22 +250,22 @@
         </createTable>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-70">
-        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_4" tableName="PEP_AUTH_USERGROUPS"/>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_USERGROUPS" tableName="PEP_AUTH_USERGROUPS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-73">
-        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_5" tableName="PEP_AUTH_DATARESTRAINS"/>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_DATARESTRAINS" tableName="PEP_AUTH_DATARESTRAINS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-77">
-        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_6" tableName="PEP_AUTH_MENUS"/>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_MENUS" tableName="PEP_AUTH_MENUS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-78">
-        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_65" tableName="PEP_AUTH_ROLES"/>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_ROLES" tableName="PEP_AUTH_ROLES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-79">
-        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_65F" tableName="PEP_AUTH_USERS"/>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_USERS" tableName="PEP_AUTH_USERS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-101">
-        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_C" tableName="PEP_AUTH_RESOURCES"/>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_RESOURCES" tableName="PEP_AUTH_RESOURCES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-133">
         <addUniqueConstraint columnNames="NAME" constraintName="UK_OUTKYSGOE2LWKWJH4IME9RUAQ" tableName="PEP_AUTH_DATARESTRAINS"/>
@@ -451,5 +451,13 @@
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-324">
         <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="PEP_AUTH_USERS_ROLES" constraintName="FK_SSDW7RMQ5DTPK72E2IHQRV5U3" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERS"/>
+    </changeSet>
+
+    <changeSet author="alphahinex (generated)" id="1526805844587-1">
+        <addColumn tableName="PEP_AUTH_DATARESTRAINS">
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

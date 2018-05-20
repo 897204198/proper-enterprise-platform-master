@@ -171,7 +171,7 @@ libraries.junit = 'junit:junit:4.12'
 //libraries.jsp_api = 'javax.servlet.jsp:jsp-api:2.2'
 
 //libraries.jstl = 'jstl:jstl:1.2'
-libraries.liquibase="org.liquibase:liquibase-core:3.6.1"
+libraries.liquibase='com.proper.enterprise.platform:liquibase-core:3.6.1-SNAPSHOT'
 libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:${versions.logback}") {
     dependency "ch.qos.logback:logback-core:${versions.logback}"
 }

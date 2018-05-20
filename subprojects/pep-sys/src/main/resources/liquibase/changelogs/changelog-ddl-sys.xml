@@ -53,9 +53,24 @@
         </createTable>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="pep-sys-rules-2">
-        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_C7" tableName="PEP_SYS_RULES"/>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_SYS_RULES" tableName="PEP_SYS_RULES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="pep-sys-data-dic-2">
-        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_E" tableName="PEP_SYS_DATA_DIC"/>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_SYS_DATA_DIC" tableName="PEP_SYS_DATA_DIC"/>
+    </changeSet>
+
+    <changeSet author="alphahinex (generated)" id="1526805844587-3">
+        <addColumn tableName="PEP_SYS_DATA_DIC">
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="alphahinex (generated)" id="1526805844587-4">
+        <addColumn tableName="PEP_SYS_RULES">
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

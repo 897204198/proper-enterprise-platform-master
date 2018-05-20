@@ -67,10 +67,10 @@ liquibase {
         }
         diffDev {
             changeLogFile     'db/dev-diff.xml'
-            url               liquibaseUrl
+            url               liquibaseOldUrl
             username          liquibaseUsername
             password          liquibasePassword
-            referenceUrl      liquibaseOldUrl
+            referenceUrl      liquibaseUrl
             referenceUsername liquibaseUsername
             referencePassword liquibasePassword
         }

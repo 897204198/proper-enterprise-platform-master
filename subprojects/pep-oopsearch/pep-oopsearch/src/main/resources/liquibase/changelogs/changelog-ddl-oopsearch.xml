@@ -27,6 +27,14 @@
         </createTable>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-97">
-        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_A" tableName="PEP_OOPSEARCH_CONFIG"/>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_OOPSEARCH_CONFIG" tableName="PEP_OOPSEARCH_CONFIG"/>
+    </changeSet>
+
+    <changeSet author="alphahinex (generated)" id="1526805844587-2">
+        <addColumn tableName="PEP_OOPSEARCH_CONFIG">
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>
