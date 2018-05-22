@@ -10,7 +10,7 @@ import javax.persistence.Table;
  * 支付宝网页支付退款Entity.
  */
 @Entity
-@Table(name = "PEP_WEBPAY_ALI_REFUNDINFO")
+@Table(name = "PEP_PAY_WEB_ALI_REFUNDINFO")
 @CacheEntity
 public class AliwebRefundEntity extends BaseEntity {
 

@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * 支付宝网页异步通知记录表.
  */
 @Entity
-@Table(name = "PEP_WEBPAY_ALI_PAYINFO")
+@Table(name = "PEP_PAY_WEB_ALI_PAYINFO")
 @CacheEntity
 public class AliwebEntity extends BaseEntity {
 
