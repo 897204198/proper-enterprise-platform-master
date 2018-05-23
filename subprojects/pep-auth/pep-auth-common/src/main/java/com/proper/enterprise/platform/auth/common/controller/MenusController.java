@@ -1,7 +1,6 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
@@ -24,7 +23,6 @@ public class MenusController extends BaseController {
     private MenuService service;
 
     @GetMapping
-    @AuthcIgnore
     @JsonView(MenuVO.Single.class)
     public ResponseEntity get(String name, String description, String route,
                               @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable, String parentId) {

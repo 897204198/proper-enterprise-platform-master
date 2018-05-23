@@ -1,6 +1,5 @@
-package com.proper.enterprise.platform.auth.common.jpa.filter
+package com.proper.enterprise.platform.core.filter
 
-import com.proper.enterprise.platform.auth.common.filter.AllowCrossOriginFilter
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
@@ -29,12 +28,12 @@ class AllowCrossOriginFilterTest extends AbstractTest {
 
     def checkResponse(MvcResult result) {
         HttpServletResponse response = result.getResponse()
-        assert response.getHeader('Access-Control-Allow-Credentials') == ConfCenter.get("auth.access_control.allow_credentials")
-        assert response.getHeader('Access-Control-Allow-Headers') == ConfCenter.get("auth.access_control.allow_headers")
-        assert response.getHeader('Access-Control-Allow-Methods') == ConfCenter.get("auth.access_control.allow_methods")
-        assert response.getHeader('Access-Control-Allow-Origin') == ConfCenter.get("auth.access_control.allow_origin")
-        assert response.getHeader('Access-Control-Expose-Headers') == ConfCenter.get("auth.access_control.expose_headers")
-        assert response.getHeader('Access-Control-Max-Age') == ConfCenter.get("auth.access_control.max_age")
+        assert response.getHeader('Access-Control-Allow-Credentials') == ConfCenter.get("core.access_control.allow_credentials")
+        assert response.getHeader('Access-Control-Allow-Headers') == ConfCenter.get("core.access_control.allow_headers")
+        assert response.getHeader('Access-Control-Allow-Methods') == ConfCenter.get("core.access_control.allow_methods")
+        assert response.getHeader('Access-Control-Allow-Origin') == ConfCenter.get("core.access_control.allow_origin")
+        assert response.getHeader('Access-Control-Expose-Headers') == ConfCenter.get("core.access_control.expose_headers")
+        assert response.getHeader('Access-Control-Max-Age') == ConfCenter.get("core.access_control.max_age")
     }
 
 }

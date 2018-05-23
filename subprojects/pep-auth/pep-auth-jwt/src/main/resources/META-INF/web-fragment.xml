@@ -4,12 +4,6 @@
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
                                   http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"
               version="3.0" metadata-complete="true">
-    <name>jwt</name>
-    <ordering>
-        <after>
-            <name>allowCrossOrigin</name>
-        </after>
-    </ordering>
     <filter>
         <filter-name>jwtVerifyFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
