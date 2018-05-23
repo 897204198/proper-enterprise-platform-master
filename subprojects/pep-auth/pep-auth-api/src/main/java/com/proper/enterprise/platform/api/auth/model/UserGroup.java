@@ -55,20 +55,6 @@ public interface UserGroup extends IBase {
     void setSeq(int seq);
 
     /**
-     * 获取用户组状态
-     *
-     * @return 用户组状态
-     */
-    boolean isEnable();
-
-    /**
-     * 设定用户组状态
-     *
-     * @param enable 用户组状态
-     */
-    void setEnable(boolean enable);
-
-    /**
      * 向用户组中添加一个用户
      *
      * @param user 用户

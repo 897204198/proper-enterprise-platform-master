@@ -10,9 +10,11 @@ import com.proper.enterprise.platform.core.security.util.SecurityUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
+import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.PersistenceException;
 import java.util.*;
 
 @Service
@@ -28,9 +30,6 @@ public class UserServiceImpl implements UserService {
     private UserGroupService userGroupService;
 
     @Autowired
-    private PasswordEncryptService pwdService;
-
-    @Autowired
     private MenuService menuService;
 
     @Autowired
@@ -39,6 +38,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ResourceService resourceService;
 
+    @Autowired
+    private PasswordEncryptService pwdService;
+
     @Override
     public User getCurrentUser() {
         return userDao.getCurrentUserByUserId(SecurityUtil.getCurrentUserId());
@@ -46,57 +48,50 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
+        validateUserName(user);
+        if (null == user.getEnable()) {
+            user.setEnable(true);
+        }
+        if (StringUtil.isNotEmpty(user.getId())) {
+            User userOld = this.get(user.getId());
+            if (null == userOld || !user.getPassword().equals(userOld.getPassword())) {
+                user.setPassword(pwdService.encrypt(user.getPassword()));
+            }
+            return userDao.save(user);
+        }
+        user.setPassword(pwdService.encrypt(user.getPassword()));
         return userDao.save(user);
     }
 
     @Override
     public void save(User... users) {
+        for (User user : users) {
+            validateUserName(user);
+        }
         userDao.save(users);
     }
 
     @Override
-    public User save(String userId, Map<String, Object> map) {
-        User user = this.get(userId);
-        user.setName(String.valueOf(map.get("name")));
-        user.setEmail(String.valueOf(map.get("email")));
-        user.setPhone(String.valueOf(map.get("phone")));
-        user.setPassword(pwdService.encrypt(String.valueOf(map.get("password"))));
-        user.setEnable((boolean) map.get("enable"));
-        return this.save(user);
-    }
-
-    @Override
-    public User saveOrUpdateUser(User user) {
-        String id = user.getId();
-        User newUser = userDao.getNewUser();
-        if (StringUtil.isNotBlank(id)) {
-            newUser = this.get(id, EnableEnum.ALL);
+    public User update(User user) {
+        validateUserName(user);
+        User userOld = this.get(user.getId());
+        if (null == userOld) {
+            throw new PersistenceException("entity not persist");
         }
-        String username = user.getUsername();
-        if (StringUtil.isNotBlank(username)) {
-            newUser.setUsername(user.getUsername());
+        if (!user.getPassword().equals(userOld.getPassword())) {
+            user.setPassword(pwdService.encrypt(user.getPassword()));
         }
-        newUser.setPassword(user.getPassword());
-        newUser.setName(user.getName());
-        newUser.setEmail(user.getEmail());
-        newUser.setPhone(user.getPhone());
-        newUser.setEnable(user.isEnable());
-        return this.save(newUser);
+        return userDao.updateForSelective(user);
     }
 
     @Override
     public User get(String id) {
-        return userDao.get(id);
+        return userDao.findOne(id);
     }
 
     @Override
-    public User get(String id, EnableEnum enable) {
-        return userDao.get(id, enable);
-    }
-
-    @Override
-    public User getByUsername(String username) {
-        return userDao.getByUsername(username);
+    public User getByUsername(String username, EnableEnum enableEnum) {
+        return userDao.getByUsername(username, enableEnum);
     }
 
     @Override
@@ -105,64 +100,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(User user) {
-        User userEntity = userDao.get(user.getId());
-        if (userEntity == null || !userEntity.isEnable()) {
-            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
+    public boolean deleteByIds(String ids) {
+        if (StringUtil.isNotNull(ids)) {
+            String[] idArr = ids.split(",");
+            List<String> idList = new ArrayList<>();
+            Collections.addAll(idList, idArr);
+            return userDao.deleteByIds(idList);
         }
-        if (userEntity.isSuperuser()) {
-            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.delete.role.super.failed"));
-        }
-        if (userEntity.getRoles().size() > 0 || userEntity.getUserGroups().size() > 0) {
-            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.delete.role.relation.failed"));
-        }
-        userEntity.setEnable(false);
-        userDao.save(userEntity);
+        return false;
     }
 
     @Override
-    public Collection<? extends Menu> getMenus() {
-        return menuService.getMenus();
-    }
-
-    @Override
-    public Collection<? extends Menu> getMenus(String userId) {
+    public Collection<? extends Menu> getUserMenus(String userId, EnableEnum menuEnable) {
         return menuService.getMenus(get(userId));
     }
 
     @Override
-    public Collection<? extends Menu> getMenusByUsername(String username) {
-        return menuService.getMenus(getByUsername(username));
-    }
-
-    @Override
-    public Collection<? extends Resource> getResources(String userId) {
+    public Collection<? extends Resource> getUserResources(String userId, EnableEnum resourceEnable) {
         User user = get(userId);
-        if (user.isSuperuser()) {
-            return resourceService.find();
+        if (null == user) {
+            return new ArrayList<>();
         }
-        if (!user.isEnable()) {
-            return Collections.emptyList();
+        //超级管理员 拥有全部资源
+        if (user.getSuperuser()) {
+            return resourceService.findAll(resourceEnable);
         }
-        Set<Resource> resources = new HashSet<>(filterDisable(user.getRoles()));
-        for (UserGroup userGroup : user.getUserGroups()) {
-            if (userGroup.isEnable()) {
-                resources.addAll(filterDisable(userGroup.getRoles()));
-            }
+        Collection<Resource> resources = new HashSet<>();
+        //获得用户启用角色的资源
+        Collection<Role> roles = (Collection<Role>) roleService.getFilterRoles(user.getRoles());
+        if (CollectionUtil.isNotEmpty(roles)) {
+            resources.addAll(roleService.getRoleResources(roles, resourceEnable));
         }
-        return resources;
-    }
-
-    private Set<Resource> filterDisable(Collection<? extends Role> roles) {
-        Set<Resource> resources = new HashSet<>();
-        for (Role role : roles) {
-            if (role.isEnable()) {
-                for (Resource resource : role.getResources()) {
-                    if (resource.isEnable()) {
-                        resources.add(resource);
-                    }
-                }
-            }
+        //获得用户启用用户组的资源
+        Collection<UserGroup> groups = (Collection<UserGroup>) userGroupService.getFilterGroups(user.getUserGroups());
+        if (CollectionUtil.isNotEmpty(groups)) {
+            resources.addAll(userGroupService.getGroupResources(groups, resourceEnable));
         }
         return resources;
     }
@@ -176,13 +148,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<? extends User> getUsersByCondition(String condition) {
-        return userDao.getUsersByCondition(condition);
+    public Collection<? extends User> getUsersByOrCondition(String condition, EnableEnum enable) {
+        return userDao.getUsersByOrCondition(condition, enable);
     }
 
     @Override
-    public Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, EnableEnum enable) {
-        return userDao.getUsersByCondition(userName, name, email, phone, enable);
+    public Collection<? extends User> getUsersByAndCondition(String userName, String name, String email, String phone, EnableEnum enable) {
+        return userDao.getUsersByAndCondition(userName, name, email, phone, enable);
     }
 
     @Override
@@ -192,99 +164,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean deleteByIds(String ids) {
-        if (StringUtil.isNotNull(ids)) {
-            String[] idArr = ids.split(",");
-            List<String> idList = new ArrayList<>();
-            Collections.addAll(idList, idArr);
-            Collection<? extends User> collection = userDao.findAll(idList);
-            for (User userEntity : collection) {
-                if (userEntity.isSuperuser()) {
-                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.delete.role.super.failed"));
-                }
-                if (userEntity.getRoles().size() > 0 || userEntity.getUserGroups().size() > 0) {
-                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.delete.role.relation.failed"));
-                }
-            }
-            userDao.delete(collection);
-            return collection.size() > 0;
-        }
-        return false;
-    }
-
-    @Override
     public Collection<? extends User> updateEnable(Collection<String> idList, boolean enable) {
-        Collection<User> resourceList = new HashSet<>();
-        for (String id : idList) {
-            resourceList.add(userDao.findById(id));
+        if (CollectionUtil.isEmpty(idList)) {
+            return new ArrayList<>();
         }
-        for (User resource : resourceList) {
-            resource.setEnable(enable);
+        Collection<? extends User> users = userDao.findAll(idList);
+        for (User user : users) {
+            user.setEnable(enable);
         }
-        return userDao.save(resourceList);
+        return userDao.save(users);
     }
 
     @Override
     public User addUserRole(String userId, String roleId) {
-        User user = this.get(userId, EnableEnum.ENABLE);
-        if (roleService.userHasTheRole(user, roleId) == null) {
-            Role role = roleService.get(roleId);
-            if (role != null) {
-                user.add(role);
-                user = this.save(user);
-            }
-        }
-        return user;
+        return userDao.addUserRole(userId, roleId);
     }
 
     @Override
     public User deleteUserRole(String userId, String roleId) {
-        User user = this.get(userId, EnableEnum.ENABLE);
-        Role role = roleService.userHasTheRole(user, roleId);
-        if (role != null) {
-            user.remove(role);
-            user = this.save(user);
-            return user;
-        }
-        return null;
-    }
-
-    @Override
-    public User groupHasTheUser(UserGroup userGroup, String userId) {
-        Collection users = null;
-        if (userGroup != null) {
-            users = userGroup.getUsers();
-        }
-        if (users != null && StringUtil.isNotBlank(userId) && users.size() > 0) {
-            Iterator iterator = users.iterator();
-            while (iterator.hasNext()) {
-                User user = (User) iterator.next();
-                if (userId.equals(user.getId())) {
-                    return user;
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Collection<? extends User> getFilterUsers(Collection<? extends User> users) {
-        return getFilterUsers(users, EnableEnum.ENABLE);
+        return userDao.deleteUserRole(userId, roleId);
     }
 
     @Override
     public Collection<? extends User> getFilterUsers(Collection<? extends User> users, EnableEnum userEnable) {
+        if (EnableEnum.ALL == userEnable) {
+            return users;
+        }
         Collection<User> result = new HashSet<>();
         for (User user : users) {
-            if (EnableEnum.ALL == userEnable) {
+            if (EnableEnum.ENABLE == userEnable && user.getEnable()) {
                 result.add(user);
                 continue;
             }
-            if (EnableEnum.ENABLE == userEnable && user.isEnable()) {
-                result.add(user);
-                continue;
-            }
-            if (EnableEnum.DISABLE == userEnable && !user.isEnable()) {
+            if (EnableEnum.DISABLE == userEnable && !user.getEnable()) {
                 result.add(user);
             }
         }
@@ -293,12 +205,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends UserGroup> getUserGroups(String userId) {
-        return getUserGroups(userId, EnableEnum.ALL, EnableEnum.ENABLE);
+        return getUserGroups(userId, EnableEnum.ENABLE);
     }
 
     @Override
-    public Collection<? extends UserGroup> getUserGroups(String userId, EnableEnum userEnable, EnableEnum userGroupEnable) {
-        User user = this.get(userId, userEnable);
+    public Collection<? extends UserGroup> getUserGroups(String userId, EnableEnum userGroupEnable) {
+        User user = this.get(userId);
         if (user == null) {
             return new ArrayList<>();
         }
@@ -307,15 +219,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Collection<? extends Role> getUserRoles(String userId) {
-        return getUserRoles(userId, EnableEnum.ALL, EnableEnum.ENABLE);
+        return getUserRoles(userId, EnableEnum.ENABLE);
     }
 
-    public Collection<? extends Role> getUserRoles(String userId, EnableEnum userEnable, EnableEnum roleEnable) {
-        User user = this.get(userId, userEnable);
+    public Collection<? extends Role> getUserRoles(String userId, EnableEnum roleEnable) {
+        User user = this.get(userId);
         if (user == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
         }
         return roleService.getFilterRoles(user.getRoles(), roleEnable);
+    }
+
+    private void validateUserName(User user) {
+        User haveUser = this.getByUsername(user.getUsername(), EnableEnum.ALL);
+        if (null != haveUser && !haveUser.getId().equals(user.getId())) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.user.username.duplicated"));
+        }
     }
 
 }

@@ -48,20 +48,6 @@ public interface Role extends IBase {
     void setDescription(String description);
 
     /**
-     * 获得角色状态是否可用
-     *
-     * @return 角色状态是否可用
-     */
-    boolean isEnable();
-
-    /**
-     * 设置角色状态是否可用
-     *
-     * @param enable 角色状态是否可用
-     */
-    void setEnable(boolean enable);
-
-    /**
      * 获得上级角色
      *
      * @return 上级角色
@@ -73,7 +59,7 @@ public interface Role extends IBase {
      *
      * @param role 上级角色
      */
-    void setParent(Role role);
+    void addParent(Role role);
 
     /**
      * 获得角色拥有的用户集合
@@ -108,14 +94,14 @@ public interface Role extends IBase {
      *
      * @param menus 菜单集合
      */
-    void add(Collection<? extends Menu>  menus);
+    void add(Collection<? extends Menu> menus);
 
     /**
      * 角色删除菜单集合
      *
      * @param menus 菜单集合
      */
-    void remove(Collection<? extends Menu>  menus);
+    void remove(Collection<? extends Menu> menus);
 
     /**
      * 角色添加资源集合
@@ -132,7 +118,5 @@ public interface Role extends IBase {
     void removeResources(Collection<? extends Resource> resources);
 
     String getParentId();
-
-    void setParentId(String parentId);
 
 }

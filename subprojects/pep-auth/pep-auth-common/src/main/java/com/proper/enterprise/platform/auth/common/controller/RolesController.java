@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
-import com.proper.enterprise.platform.auth.common.vo.RoleVO;
+import com.proper.enterprise.platform.auth.common.vo.*;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,23 +21,27 @@ public class RolesController extends BaseController {
     private RoleService roleService;
 
     @GetMapping
+    @JsonView(RoleVO.Single.class)
     public ResponseEntity<?> get(String name, String description, String parentId,
                                  @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(isPageSearch() ? roleService.findRolesPagniation(name, description, parentId, roleEnable) :
-                roleService.getByCondition(name, description, parentId, roleEnable));
+        return isPageSearch() ? responseOfGet(roleService.findRolesPagniation(name, description, parentId, roleEnable),
+            RoleVO.class, RoleVO.Single.class) :
+            responseOfGet(roleService.findRolesLike(name, description, parentId, roleEnable), RoleVO.class, RoleVO.Single.class);
     }
 
     @PostMapping
-    public ResponseEntity<Role> create(@RequestBody RoleVO roleReq) {
-        return responseOfPost(roleService.saveOrUpdateRole(roleReq));
+    @JsonView(RoleVO.Single.class)
+    public ResponseEntity<RoleVO> create(@RequestBody RoleVO roleReq) {
+        return responseOfPost(roleService.save(roleReq), RoleVO.class, RoleVO.Single.class);
     }
 
     @SuppressWarnings("unchecked")
     @PutMapping
-    public ResponseEntity<Collection<? extends Role>> updateEnable(@RequestBody Map<String, Object> reqMap) {
+    @JsonView(RoleVO.Single.class)
+    public ResponseEntity<Collection<RoleVO>> updateEnable(@RequestBody Map<String, Object> reqMap) {
         Collection<String> idList = (Collection<String>) reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
-        return responseOfPut(roleService.updateEnable(idList, enable));
+        return responseOfPut(roleService.updateEnable(idList, enable), RoleVO.class, RoleVO.Single.class);
     }
 
     @DeleteMapping
@@ -46,32 +50,32 @@ public class RolesController extends BaseController {
     }
 
     @GetMapping(path = "/{roleId}")
-    public ResponseEntity<Role> find(@PathVariable String roleId) {
-        return responseOfGet(roleService.get(roleId, EnableEnum.ALL));
+    @JsonView(RoleVO.Single.class)
+    public ResponseEntity<RoleVO> find(@PathVariable String roleId) {
+        return responseOfGet(roleService.get(roleId), RoleVO.class, RoleVO.Single.class);
     }
 
     @PutMapping(path = "/{roleId}")
-    public ResponseEntity<Role> update(@PathVariable String roleId, @RequestBody RoleVO roleReq) {
-        Role role = roleService.get(roleId, EnableEnum.ALL);
-        if (role != null) {
-            roleReq.setId(roleId);
-            role = roleService.saveOrUpdateRole(roleReq);
-        }
-        return responseOfPut(role);
+    @JsonView(RoleVO.Single.class)
+    public ResponseEntity<RoleVO> update(@PathVariable String roleId, @RequestBody RoleVO roleReq) {
+        roleReq.setId(roleId);
+        return responseOfPut(roleService.update(roleReq), RoleVO.class, RoleVO.Single.class);
     }
 
     @GetMapping(path = "/{roleId}/menus")
-    public ResponseEntity<Collection<? extends Menu>> getRoleMenus(@PathVariable String roleId,
-                                                                   @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable) {
-        return responseOfGet(roleService.getRoleMenus(roleId, EnableEnum.ALL, menuEnable));
+    @JsonView(value = MenuVO.Single.class)
+    public ResponseEntity<Collection<MenuVO>> getRoleMenus(@PathVariable String roleId,
+                                                           @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable) {
+        return responseOfGet(roleService.getRoleMenus(roleId, menuEnable), MenuVO.class, MenuVO.Single.class);
     }
 
 
     @SuppressWarnings("unchecked")
     @PostMapping(path = "/{roleId}/menus")
-    public ResponseEntity<Role> addRoleMenus(@PathVariable String roleId, @RequestBody Map<String, Object> reqMap) {
-        List<String> ids = (List<String>)reqMap.get("ids");
-        return responseOfPost(roleService.addRoleMenus(roleId, ids));
+    @JsonView(RoleVO.RoleWithMenu.class)
+    public ResponseEntity<RoleVO> addRoleMenus(@PathVariable String roleId, @RequestBody Map<String, Object> reqMap) {
+        List<String> ids = (List<String>) reqMap.get("ids");
+        return responseOfPost(roleService.addRoleMenus(roleId, ids), RoleVO.class, RoleVO.RoleWithMenu.class);
     }
 
     @DeleteMapping("/{roleId}/menus")
@@ -80,16 +84,18 @@ public class RolesController extends BaseController {
     }
 
     @GetMapping(path = "/{roleId}/resources")
-    public ResponseEntity<Collection<? extends Resource>> getRoleResources(@PathVariable String roleId,
-                                                                           @RequestParam(defaultValue = "ENABLE") EnableEnum resourceEnable) {
-        return responseOfGet(roleService.getRoleResources(roleId, EnableEnum.ALL, resourceEnable));
+    @JsonView(ResourceVO.Single.class)
+    public ResponseEntity<Collection<ResourceVO>> getRoleResources(@PathVariable String roleId,
+                                                                   @RequestParam(defaultValue = "ENABLE") EnableEnum resourceEnable) {
+        return responseOfGet(roleService.getRoleResources(roleId, resourceEnable), ResourceVO.class, ResourceVO.Single.class);
     }
 
     @SuppressWarnings("unchecked")
     @PostMapping(path = "/{roleId}/resources")
-    public ResponseEntity<Role> addRoleResources(@PathVariable String roleId, @RequestBody Map<String, Object> reqMap) {
-        List<String> ids = (List<String>)reqMap.get("ids");
-        return responseOfPost(roleService.addRoleResources(roleId, ids));
+    @JsonView(RoleVO.RoleWithResource.class)
+    public ResponseEntity<RoleVO> addRoleResources(@PathVariable String roleId, @RequestBody Map<String, Object> reqMap) {
+        List<String> ids = (List<String>) reqMap.get("ids");
+        return responseOfPost(roleService.addRoleResources(roleId, ids), RoleVO.class, RoleVO.RoleWithResource.class);
     }
 
     @DeleteMapping("/{roleId}/resources")
@@ -98,19 +104,22 @@ public class RolesController extends BaseController {
     }
 
     @GetMapping(path = "/{roleId}/users")
-    public ResponseEntity<Collection<? extends User>> getRoleUsers(@PathVariable String roleId,
-                                                                   @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
-        return responseOfGet(roleService.getRoleUsers(roleId, EnableEnum.ALL, userEnable));
+    @JsonView(value = UserVO.Single.class)
+    public ResponseEntity<Collection<UserVO>> getRoleUsers(@PathVariable String roleId,
+                                                           @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
+        return responseOfGet(roleService.getRoleUsers(roleId, EnableEnum.ALL, userEnable), UserVO.class, UserVO.Single.class);
     }
 
     @GetMapping(path = "/{roleId}/user-groups")
-    public ResponseEntity<Collection<? extends UserGroup>> getRoleUserGroups(@PathVariable String roleId,
-                                                                             @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
-        return responseOfGet(roleService.getRoleUserGroups(roleId, EnableEnum.ALL, userGroupEnable));
+    @JsonView(value = UserGroupVO.Single.class)
+    public ResponseEntity<Collection<UserGroupVO>> getRoleUserGroups(@PathVariable String roleId,
+                                                                     @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
+        return responseOfGet(roleService.getRoleUserGroups(roleId, EnableEnum.ALL, userGroupEnable), UserGroupVO.class, UserGroupVO.Single.class);
     }
 
     @GetMapping(path = "/{roleId}/parents")
-    public ResponseEntity<Collection<? extends Role>> getMenuParents(@PathVariable String roleId) {
-        return responseOfGet(roleService.getRoleParents(roleId));
+    @JsonView(value = RoleVO.Single.class)
+    public ResponseEntity<Collection<RoleVO>> getMenuParents(@PathVariable String roleId) {
+        return responseOfGet(roleService.findRoleParents(roleId), RoleVO.class, RoleVO.Single.class);
     }
 }

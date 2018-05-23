@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.AuthcService;
 import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
@@ -20,7 +21,7 @@ public class AuthcServiceImpl implements AuthcService {
 
     @Override
     public boolean authenticate(String username, String pwd) {
-        User user = userService.getByUsername(username);
+        User user = userService.getByUsername(username, EnableEnum.ENABLE);
         return user != null
             && pwdService.encrypt(pwd).equals(user.getPassword());
     }

@@ -24,5 +24,5 @@ public interface IPushApiServiceRequest {
      * @throws Exception 请求异常
      */
     String requestServiceServer(final String baseUrl, final String methodName, Map<String, Object> params,
-            int timeout) throws Exception;
+                                int timeout) throws Exception;
 }

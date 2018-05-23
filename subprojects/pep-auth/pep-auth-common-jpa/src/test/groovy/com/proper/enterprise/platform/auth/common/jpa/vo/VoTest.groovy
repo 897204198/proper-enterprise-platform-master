@@ -1,7 +1,6 @@
 package com.proper.enterprise.platform.auth.common.jpa.vo
 
 import com.proper.enterprise.platform.api.auth.model.DataRestrain
-import com.proper.enterprise.platform.auth.common.vo.BaseVO
 import com.proper.enterprise.platform.auth.common.vo.DataRestrainVO
 import com.proper.enterprise.platform.auth.common.vo.MenuVO
 import com.proper.enterprise.platform.auth.common.vo.ResourceVO
@@ -22,17 +21,6 @@ class VoTest extends AbstractTest{
     void test() {
         coverBean(new DataRestrainVO())
 
-        BaseVO baseVO = new BaseVO()
-        baseVO.setId("id")
-        baseVO.setCreateTime("creatTime")
-        baseVO.setCreateUserId("creatUserId")
-        baseVO.setLastModifyTime("time1")
-        baseVO.setLastModifyUserId("lastUserId")
-        baseVO.getId() == "id"
-        baseVO.getCreateTime() == "creatTime"
-        baseVO.getCreateUserId() == "creatUserId"
-        baseVO.getLastModifyTime() == "time1"
-        baseVO.getLastModifyUserId() == "lastUserId"
 
         MenuVO menuVO1 = new MenuVO()
         MenuVO menuVO = new MenuVO()
@@ -60,11 +48,11 @@ class VoTest extends AbstractTest{
 
         ResourceVO resourceVO = new ResourceVO()
         resourceVO.setName("resource")
-        resourceVO.setURL("url")
+        resourceVO.addURL("url")
         resourceVO.setMethod(RequestMethod.GET)
         resourceVO.setEnable(true)
         resourceVO.getName() == "resource"
-        resourceVO.getURL() == "url"
+        resourceVO.addURL() == "url"
         resourceVO.getMethod() == RequestMethod.GET
         resourceVO.enable == true
         DataRestrain dataRestrain = new DataRestrainVO()

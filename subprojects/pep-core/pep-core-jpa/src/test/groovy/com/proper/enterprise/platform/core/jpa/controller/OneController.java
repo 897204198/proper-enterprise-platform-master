@@ -27,7 +27,7 @@ public class OneController extends BaseController {
 
     @PutMapping
     public ResponseEntity<OneEntity> put(@RequestBody OneEntity oneEntity) {
-        return responseOfPut(oneService.save(oneEntity));
+        return responseOfPut(oneService.updateForSelective(oneEntity));
     }
 
     @GetMapping

@@ -6,42 +6,30 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.service.BaseService;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface RoleDao extends BaseService<Role, String> {
 
     Role getNewRole();
 
-    Role get(String id);
-
-    Role get(String id, EnableEnum enableEnum);
-
-    Collection<? extends Role> getByName(String name);
-
     Role save(Role role);
 
-    Role findById(String id);
+    Role updateForSelective(Role role);
 
-    Collection<? extends Role> findAllByNameLike(String name);
+    Collection<? extends Role> findRoles(Collection<String> idList);
 
-    Collection<? extends Role> findAll(Collection<String> idList);
+    Collection<? extends Role> findRoles(EnableEnum enable);
 
-    Collection<? extends Role> getByCondition(String name, String description, String parentId, EnableEnum enable);
+    Collection<? extends Role> findRoles(String name, EnableEnum enable);
+
+    Collection<? extends Role> findRolesByParentId(List<String> parentIds);
+
+    Collection<? extends Role> findRolesLike(String name, EnableEnum enable);
+
+    Collection<? extends Role> findRolesLike(String name, String description, String parentId, EnableEnum enable);
 
     DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable);
 
-    Collection<? extends Role> findAllByEnableTrue();
-
-    /**
-     * 获取当前节点的父节点集合
-     */
-    Collection<? extends Role> getParentRolesByCurrentRoleId(String currentRoleId);
-
-    /**
-     * 检测是否有经过当前角色的循环继承
-     *
-     * @param currentRole 当前用户
-     * @return 有则返回真，没有返回假
-     */
-    boolean hasCircleInheritForCurrentRole(Role currentRole);
+    Collection<? extends Role> findParentRoles(String currentRoleId);
 
 }

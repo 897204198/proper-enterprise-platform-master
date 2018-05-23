@@ -9,6 +9,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.servlet.http.Cookie;
@@ -22,13 +24,14 @@ import java.io.IOException;
  *
  * @author Hinex
  */
+@Service
 public class JWTService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTService.class);
 
     private static final String AUTH_HEADER = "Authorization";
     protected static final String TOKEN_FLAG = "X-PEP-TOKEN";
-
+    @Autowired
     private APISecret secret;
 
     public void setSecret(APISecret secret) {

@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
-import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
 import org.hibernate.annotations.GenericGenerator;
@@ -29,6 +29,7 @@ public class MenuEntity extends BaseEntity implements Menu {
     /**
      * 菜单名称
      */
+    @Column(unique = true, nullable = false)
     private String name;
 
     /**
@@ -144,7 +145,11 @@ public class MenuEntity extends BaseEntity implements Menu {
     }
 
     @Override
-    public void setParent(Menu parent) {
+    public void addParent(Menu parent) {
+        if (null == parent) {
+            this.parent = null;
+            return;
+        }
         if (parent instanceof MenuEntity) {
             this.parent = (MenuEntity) parent;
         } else {
@@ -176,21 +181,33 @@ public class MenuEntity extends BaseEntity implements Menu {
 
     @Override
     public void addChild(Menu menu) {
+        if (null == children) {
+            children = new ArrayList<>();
+        }
         children.add((MenuEntity) menu);
     }
 
     @Override
     public void removeChild(Menu menu) {
+        if (null == children) {
+            return;
+        }
         children.remove(menu);
     }
 
     @Override
     public void add(Resource resource) {
+        if (null == resourceEntities) {
+            resourceEntities = new ArrayList<>();
+        }
         resourceEntities.add((ResourceEntity) resource);
     }
 
     @Override
     public void remove(Resource resource) {
+        if (null == resourceEntities) {
+            return;
+        }
         resourceEntities.remove(resource);
     }
 
@@ -201,6 +218,9 @@ public class MenuEntity extends BaseEntity implements Menu {
 
     @Override
     public boolean isLeaf() {
+        if (null == getChildren()) {
+            return true;
+        }
         return getChildren().isEmpty();
     }
 
@@ -273,5 +293,29 @@ public class MenuEntity extends BaseEntity implements Menu {
     @Override
     public void setMenuCode(String menuCode) {
         this.menuCode = menuCode;
+    }
+
+    public void setParent(MenuEntity parent) {
+        this.parent = parent;
+    }
+
+    public void setChildren(Collection<MenuEntity> children) {
+        this.children = children;
+    }
+
+    public Collection<ResourceEntity> getResourceEntities() {
+        return resourceEntities;
+    }
+
+    public void setResourceEntities(Collection<ResourceEntity> resourceEntities) {
+        this.resourceEntities = resourceEntities;
+    }
+
+    public Collection<RoleEntity> getRoleEntities() {
+        return roleEntities;
+    }
+
+    public void setRoleEntities(Collection<RoleEntity> roleEntities) {
+        this.roleEntities = roleEntities;
     }
 }

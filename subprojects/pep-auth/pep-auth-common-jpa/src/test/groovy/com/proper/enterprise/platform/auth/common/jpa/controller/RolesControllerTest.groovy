@@ -1,11 +1,15 @@
 package com.proper.enterprise.platform.auth.common.jpa.controller
 
+import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.api.auth.service.RoleService
+import com.proper.enterprise.platform.api.auth.service.UserGroupService
+import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.*
+import com.proper.enterprise.platform.auth.common.vo.RoleVO
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
@@ -20,11 +24,11 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.web.bind.annotation.RequestMethod
 
 @Sql(["/com/proper/enterprise/platform/auth/common/jpa/roles.sql",
-      "/com/proper/enterprise/platform/auth/common/jpa/menus.sql",
-      "/com/proper/enterprise/platform/auth/common/jpa/users.sql",
-      "/com/proper/enterprise/platform/auth/common/jpa/usergroups.sql",
-      "/com/proper/enterprise/platform/auth/common/jpa/resources.sql"
-    ])
+    "/com/proper/enterprise/platform/auth/common/jpa/menus.sql",
+    "/com/proper/enterprise/platform/auth/common/jpa/users.sql",
+    "/com/proper/enterprise/platform/auth/common/jpa/usergroups.sql",
+    "/com/proper/enterprise/platform/auth/common/jpa/resources.sql"
+])
 class RolesControllerTest extends AbstractTest {
 
     @Autowired
@@ -34,9 +38,15 @@ class RolesControllerTest extends AbstractTest {
     @Autowired
     UserRepository userRepository
     @Autowired
+    UserService userService
+    @Autowired
     MenuRepository menuRepository
     @Autowired
+    ResourceService resourceService
+    @Autowired
     ResourceRepository resourceRepository
+    @Autowired
+    UserGroupService userGroupService
     @Autowired
     UserGroupRepository userGroupRepository
     @Autowired
@@ -47,7 +57,7 @@ class RolesControllerTest extends AbstractTest {
     @Test
     @NoTx
     void rolesUnionTest() {
-        mockUser('test1','t1', 'pwd')
+        mockUser('test1', 't1', 'pwd')
         def roles = JSONUtil.parse(get('/auth/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert roles.size() == 2
         assert roles.get(0).enable
@@ -91,7 +101,7 @@ class RolesControllerTest extends AbstractTest {
         assert role.get('description') == 'updateReq_test_description'
         assert role.get('name') == 'updateReq_test_name'
         assert role.get('parentId') == 'role1'
-        assert role.get('parentName') == 'testrole'
+        assert role.get('parentName') == 'testrole1'
 
         // role add menu
         def addReq = ['ids': ['a1', 'a2']]
@@ -136,16 +146,16 @@ class RolesControllerTest extends AbstractTest {
         assert resList.size() == 0
 
         delete('/auth/roles?ids=' + id, HttpStatus.NO_CONTENT)
-        get('/auth/roles/' + id,  HttpStatus.OK).getResponse().getContentAsString() == ''
+        get('/auth/roles/' + id, HttpStatus.OK).getResponse().getContentAsString() == ''
 
-        def parents = JSONUtil.parse(get('/auth/roles/' + id  +'/parents',  HttpStatus.OK)
+        def parents = JSONUtil.parse(get('/auth/roles/' + id + '/parents', HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
         assert parents.size() == 0
 
     }
 
     @Test
-    void testGetMenuParents(){
+    void testGetMenuParents() {
         mockUser('test1', 't1', 'pwd')
 
         RoleEntity roleEntity1 = new RoleEntity()
@@ -166,33 +176,34 @@ class RolesControllerTest extends AbstractTest {
         req['name'] = 'req_test_name'
         req['description'] = 'req_test_description'
         req['enable'] = true
-        def role = JSONUtil.parse(post('/auth/roles', JSONUtil.toJSON(req), HttpStatus.CREATED).getResponse().getContentAsString(), Map.class)
-        def id = role.get('id')
-
-        def parents = JSONUtil.parse(get('/auth/roles/' + id  +'/parents',  HttpStatus.OK)
+        RoleVO roleVO=new RoleVO()
+        roleVO.setName("req_test_name")
+        roleVO.setDescription("req_test_description")
+        roleVO.setEnable(true)
+        def role = JSONUtil.parse(post('/auth/roles', JSONUtil.toJSON(roleVO), HttpStatus.CREATED).getResponse().getContentAsString(), Map.class)
+        def parents = JSONUtil.parse(get('/auth/roles/' + roleEntity3.getId() + '/parents', HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
         assert parents.size() == 2
 
     }
 
     @Test
-    void addOrDeleteRoleMenusErro(){
-        mockUser('test1','t1', 'pwd')
+    void addOrDeleteRoleMenusErro() {
+        mockUser('test1', 't1', 'pwd')
         def id = "id"
         def addReq = ['ids': ['a4', 'a5']]
         assert post('/auth/roles/' + id + '/menus', JSONUtil.toJSON(addReq), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
-           i18NService.getMessage("pep.auth.common.role.get.failed")
+            i18NService.getMessage("pep.auth.common.role.get.failed")
         assert delete('/auth/roles/' + id + '/menus?ids=a1,a2', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
             i18NService.getMessage("pep.auth.common.role.get.failed")
 
-        get('/auth/roles/' + id + '/menus', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
-            i18NService.getMessage("pep.auth.common.role.get.failed")
-
+        List list = JSONUtil.parse(get('/auth/roles/' + id + '/menus', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert list.size() == 0
     }
 
     @Test
     @NoTx
-    void testGetRoleUsersAndGroups(){
+    void testGetRoleUsersAndGroups() {
         mockUser('test1', 't1', 'pwd')
 
         RoleEntity roleEntity = new RoleEntity()
@@ -201,57 +212,57 @@ class RolesControllerTest extends AbstractTest {
 
         UserEntity userEntity = new UserEntity('u11', 'p11')
         userEntity.add(roleEntity)
-        userEntity = userRepository.save(userEntity)
+        userEntity = userService.save(userEntity)
 
         UserEntity userEntity1 = new UserEntity('u22', 'p22')
         userEntity1.add(roleEntity)
-        userEntity1 = userRepository.save(userEntity1)
+        userEntity1 = userService.save(userEntity1)
 
         UserEntity userEntity2 = new UserEntity('u33', 'p33')
         userEntity2.add(roleEntity)
-        userEntity2 = userRepository.save(userEntity2)
+        userEntity2 = userService.save(userEntity2)
 
         UserGroupEntity userGroupEntity = new UserGroupEntity()
         userGroupEntity.setName('tempgroup')
         userGroupEntity.add(userEntity)
         userGroupEntity.add(userEntity1)
-        userGroupEntity = userGroupRepository.save(userGroupEntity)
+        userGroupEntity = userGroupService.save(userGroupEntity)
 
         UserGroupEntity userGroupEntity1 = new UserGroupEntity()
         userGroupEntity1.setName('tempgroup1')
         userGroupEntity1.add(userEntity1)
         userGroupEntity1.add(userEntity2)
-        userGroupEntity1 = userGroupRepository.save(userGroupEntity1)
+        userGroupEntity1 = userGroupService.save(userGroupEntity1)
 
         def result = JSONUtil.parse(get('/auth/roles/' + roleEntity.getId() + '/users', HttpStatus.OK).getResponse().getContentAsString(),
             List.class)
         assert result.size() == 3
-        assert get('/auth/roles/sdlfjsdf/users', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common" +
-            ".role.get.failed")
+        List list = JSONUtil.parse(get('/auth/roles/sdlfjsdf/users', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert list.size() == 0
     }
 
     @Test
-    void testGetResources(){
-        mockUser('test1','t1', 'pwd')
+    void testGetResources() {
+        mockUser('test1', 't1', 'pwd')
 
         ResourceEntity resourceEntity = new ResourceEntity()
         resourceEntity.setName('res11')
-        resourceEntity.setURL('/auto/**')
+        resourceEntity.addURL('/auto/**')
         resourceEntity.setMethod(RequestMethod.GET)
-        resourceEntity = resourceRepository.saveAndFlush(resourceEntity)
+        resourceEntity = resourceService.save(resourceEntity)
 
         ResourceEntity resourceEntity1 = new ResourceEntity()
         resourceEntity1.setName('res22')
-        resourceEntity1.setURL('/user/**')
+        resourceEntity1.addURL('/user/**')
         resourceEntity1.setMethod(RequestMethod.POST)
         resourceEntity1.setEnable(false)
-        resourceEntity1 = resourceRepository.saveAndFlush(resourceEntity1)
+        resourceEntity1 = resourceService.save(resourceEntity1)
 
         ResourceEntity resourceEntity2 = new ResourceEntity()
         resourceEntity2.setName('ress33')
-        resourceEntity2.setURL('/group/**')
+        resourceEntity2.addURL('/group/**')
         resourceEntity2.setMethod(RequestMethod.PUT)
-        resourceEntity2 = resourceRepository.saveAndFlush(resourceEntity2)
+        resourceEntity2 = resourceService.save(resourceEntity2)
 
         Collection<ResourceEntity> collection = new HashSet<>()
         collection.add(resourceEntity)
@@ -265,20 +276,20 @@ class RolesControllerTest extends AbstractTest {
 
         def result = JSONUtil.parse(get('/auth/roles/' + roleEntity.getId() + '/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert result.size() == 2
-        assert get('/auth/roles/sdjflsdkj/resources', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
+        assert JSONUtil.parse(get('/auth/roles/sdjflsdkj/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class).size() == 0
 
 
         ResourceEntity resourceEntity3 = new ResourceEntity()
         resourceEntity3.setName('ress44')
-        resourceEntity3.setURL('/auto')
+        resourceEntity3.addURL('/auto')
         resourceEntity3.setMethod(RequestMethod.DELETE)
-        resourceEntity3 = resourceRepository.saveAndFlush(resourceEntity3)
+        resourceEntity3 = resourceService.save(resourceEntity3)
 
         ResourceEntity resourceEntity4 = new ResourceEntity()
         resourceEntity4.setName('ress55')
-        resourceEntity4.setURL('/auto/*')
+        resourceEntity4.addURL('/auto/*')
         resourceEntity4.setMethod(RequestMethod.PUT)
-        resourceEntity4 = resourceRepository.saveAndFlush(resourceEntity4)
+        resourceEntity4 = resourceService.save(resourceEntity4)
 
         def reqMap = ['ids': [resourceEntity3.getId() + ',' + resourceEntity4.getId()]]
         result = JSONUtil.parse(post('/auth/roles/' + roleEntity.getId() + '/resources', JSONUtil.toJSON(reqMap), HttpStatus.CREATED).getResponse()
@@ -287,20 +298,20 @@ class RolesControllerTest extends AbstractTest {
         assert post('/auth/roles/sdfsdf/resources', JSONUtil.toJSON(reqMap), HttpStatus.INTERNAL_SERVER_ERROR).getResponse()
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
 
-        assert delete('/auth/roles/' + roleEntity.getId() + '/resources?ids='+reqMap.get('ids').join(','), HttpStatus.NO_CONTENT)
-        assert delete('/auth/roles/sdfasdf/resources?ids='+reqMap.get('ids').join(','), HttpStatus.INTERNAL_SERVER_ERROR).getResponse()
+        assert delete('/auth/roles/' + roleEntity.getId() + '/resources?ids=' + reqMap.get('ids').join(','), HttpStatus.NO_CONTENT)
+        assert delete('/auth/roles/sdfasdf/resources?ids=' + reqMap.get('ids').join(','), HttpStatus.INTERNAL_SERVER_ERROR).getResponse()
             .getContentAsString() == i18NService.getMessage("pep.auth.common.role.get.failed")
     }
 
     @Test
-    void testIsOrNotPage(){
-        mockUser('test1','t1', 'pwd')
+    void testIsOrNotPage() {
+        mockUser('test1', 't1', 'pwd')
         def resAllPage = JSONUtil.parse(get('/auth/roles?name=testrole&description=des&roleEnable=&pageNo=1&pageSize=2',
-                HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert resAllPage.count == 1
         assert resAllPage.data.size() == 1
         def resAllCollect = JSONUtil.parse(get('/auth/roles?name=testrole&description=des&roleEnable=&',
-                HttpStatus.OK).getResponse().getContentAsString(), ArrayList.class)
+            HttpStatus.OK).getResponse().getContentAsString(), ArrayList.class)
         assert resAllCollect.size() == 1
     }
 

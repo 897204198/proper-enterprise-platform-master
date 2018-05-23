@@ -11,7 +11,8 @@ dependencies {
             libraries.spring_tx
 
     runtime libraries.h2,
-            libraries.liquibase
+            libraries.liquibase,
+            project(':pep-core-jpa')
 }
 
 task syncCtx(type: Copy) {

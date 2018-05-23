@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
-import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -20,11 +20,15 @@ import java.util.Collection;
 public class UserEntity extends BaseEntity implements User {
 
     public UserEntity() {
+        this.superuser = false;
+        super.setEnable(true);
     }
 
     public UserEntity(String username, String password) {
         this.username = username;
         this.password = password;
+        this.superuser = false;
+        super.setEnable(true);
     }
 
     /**
@@ -50,7 +54,7 @@ public class UserEntity extends BaseEntity implements User {
      */
     @Type(type = "yes_no")
     @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
-    private boolean superuser;
+    private Boolean superuser;
 
     /**
      * 用户手机号
@@ -72,7 +76,7 @@ public class UserEntity extends BaseEntity implements User {
         joinColumns = @JoinColumn(name = "USER_ID"),
         inverseJoinColumns = @JoinColumn(name = "ROLE_ID"),
         uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "ROLE_ID"}))
-    private Collection<RoleEntity> roleEntities = new ArrayList<>();
+    private Collection<RoleEntity> roleEntities;
 
     @Override
     public int hashCode() {
@@ -89,12 +93,47 @@ public class UserEntity extends BaseEntity implements User {
         joinColumns = @JoinColumn(name = "USER_ID"),
         inverseJoinColumns = @JoinColumn(name = "USER_GROUP_ID"),
         uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "USER_GROUP_ID"}))
-    private Collection<UserGroupEntity> userGroupEntities = new ArrayList<>();
+    private Collection<UserGroupEntity> userGroupEntities;
 
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + "]";
     }
+
+
+    public String getPepDtype() {
+        return pepDtype;
+    }
+
+    public void setPepDtype(String pepDtype) {
+        this.pepDtype = pepDtype;
+    }
+
+    @Override
+    public Boolean getSuperuser() {
+        return superuser;
+    }
+
+    public void setSuperuser(Boolean superuser) {
+        this.superuser = superuser;
+    }
+
+    public Collection<RoleEntity> getRoleEntities() {
+        return roleEntities;
+    }
+
+    public void setRoleEntities(Collection<RoleEntity> roleEntities) {
+        this.roleEntities = roleEntities;
+    }
+
+    public Collection<UserGroupEntity> getUserGroupEntities() {
+        return userGroupEntities;
+    }
+
+    public void setUserGroupEntities(Collection<UserGroupEntity> userGroupEntities) {
+        this.userGroupEntities = userGroupEntities;
+    }
+
 
     @Override
     public String getUsername() {
@@ -148,40 +187,35 @@ public class UserEntity extends BaseEntity implements User {
 
     @Override
     public void add(Role role) {
+        if (null == roleEntities) {
+            roleEntities = new ArrayList<>();
+        }
         roleEntities.add((RoleEntity) role);
     }
 
     @Override
     public void add(UserGroup userGroup) {
+        if (null == userGroupEntities) {
+            userGroupEntities = new ArrayList<>();
+        }
         userGroupEntities.add((UserGroupEntity) userGroup);
     }
 
     @Override
     public void remove(Role role) {
+        if (null == roleEntities) {
+            return;
+        }
         roleEntities.remove(role);
     }
 
 
     @Override
     public void remove(UserGroup userGroup) {
+        if (null == userGroupEntities) {
+            return;
+        }
         userGroupEntities.remove(userGroup);
-    }
-
-    @Override
-    public boolean isSuperuser() {
-        return superuser;
-    }
-
-    public void setSuperuser(boolean superuser) {
-        this.superuser = superuser;
-    }
-
-    public String getPepDtype() {
-        return pepDtype;
-    }
-
-    public void setPepDtype(String pepDtype) {
-        this.pepDtype = pepDtype;
     }
 
     @Override

@@ -10,17 +10,15 @@ public interface MenuService {
 
     Menu get(String id);
 
-    Menu get(String id, EnableEnum enableEnum);
-
     Menu save(Menu menu);
 
     /**
-     * 保存或更新菜单信息
+     * 更新菜单信息
      *
      * @param menuReq 保存菜单对象
      * @return 菜单信息
      */
-    Menu saveOrUpdateMenu(Menu menuReq);
+    Menu update(Menu menuReq);
 
     /**
      * 根据当前用户获得用户拥有的所有角色权限范围内的菜单集合，
@@ -54,14 +52,6 @@ public interface MenuService {
      * 根据菜单集合获取过滤后的菜单包括父菜单
      */
     Collection<? extends Menu> getFilterMenusAndParent(Collection<? extends Menu> menus);
-
-    /**
-     * 根据菜单ID列表获取菜单列表
-     *
-     * @param ids 菜单ID列表
-     * @return 菜单列表
-     */
-    Collection<? extends Menu> getByIds(Collection<String> ids);
 
     /**
      * 某资源是否能够被某用户访问

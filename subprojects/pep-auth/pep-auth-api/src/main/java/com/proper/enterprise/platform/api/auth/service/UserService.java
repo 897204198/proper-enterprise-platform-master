@@ -6,7 +6,6 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 用户服务接口
@@ -16,50 +15,70 @@ import java.util.Map;
  */
 public interface UserService {
 
-    User save(User user);
-
-    void save(User... users);
-
-    User save(String userId, Map<String, Object> user);
-
     /**
-     * 保存或更新用户信息
+     * 保存用户
      *
-     * @param user 请求用户对象
+     * @param user 保存用户信息
      * @return 用户信息
      */
-    User saveOrUpdateUser(User user);
+    User save(User user);
 
-    User getCurrentUser();
+    /**
+     * 保存用户
+     *
+     * @param users 保存用户集合
+     */
+    void save(User... users);
 
-    User get(String id);
-
-    User get(String id, EnableEnum enable);
-
-    User getByUsername(String username);
-
+    /**
+     * 删除用户
+     *
+     * @param id 用户id
+     * @return 是否删除
+     */
     boolean delete(String id);
 
-    void delete(User user);
+    /**
+     * 批量删除用户
+     *
+     * @param ids 以 , 分隔的待删除用户ID列表
+     * @return 是否删除
+     */
+    boolean deleteByIds(String ids);
 
     /**
-     * 获得当前登录用户权限范围内菜单集合
+     * 更新用户
      *
-     * @return 菜单集合
+     * @param user 更新用户信息
+     * @return 用户细信息
      */
-    Collection<? extends Menu> getMenus();
-
-    Collection<? extends Menu> getMenus(String userId);
-
-    Collection<? extends Menu> getMenusByUsername(String username);
+    User update(User user);
 
     /**
-     * 获得某用户所拥有的资源集合
+     * 获取当前用户
+     * 用户为启用状态
      *
-     * @param  userId 用户 ID
-     * @return 资源集合
+     * @return 用户信息
      */
-    Collection<? extends Resource> getResources(String userId);
+    User getCurrentUser();
+
+    /**
+     * 根据Id获取用户
+     * 启用+停用
+     *
+     * @param id 用户id
+     * @return 用户信息
+     */
+    User get(String id);
+
+    /**
+     * 根据用户账号获取用户
+     *
+     * @param username   用户账号
+     * @param enableEnum 是否启用
+     * @return 用户信息
+     */
+    User getByUsername(String username, EnableEnum enableEnum);
 
     /**
      * 通过用户id集合查询用户
@@ -70,15 +89,16 @@ public interface UserService {
     Collection<? extends User> getUsersByIds(List<String> ids);
 
     /**
-     * 通过用户名,显示名,手机号模糊查询用户列表
+     * 按照查询条件获取用户信息列表 ||
      *
-     * @param condition 输入信息
-     * @return 用户列表
+     * @param condition 用户名 or 用户显示名 or 用户邮箱 or 用户手机号
+     * @param enable    用户可用/不可用
+     * @return 用户信息列表
      */
-    Collection<? extends User> getUsersByCondition(String condition);
+    Collection<? extends User> getUsersByOrCondition(String condition, EnableEnum enable);
 
     /**
-     * 按照查询条件获取用户信息列表
+     * 按照查询条件获取用户信息列表 &&
      *
      * @param userName 用户名
      * @param name     用户显示名
@@ -87,10 +107,10 @@ public interface UserService {
      * @param enable   用户可用/不可用
      * @return 用户信息列表
      */
-    Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, EnableEnum enable);
+    Collection<? extends User> getUsersByAndCondition(String userName, String name, String email, String phone, EnableEnum enable);
 
     /**
-     * 按照查询条件获取用户信息列表
+     * 按照查询条件获取用户信息列表 &&
      *
      * @param userName 用户名
      * @param name     用户显示名
@@ -102,18 +122,11 @@ public interface UserService {
     DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable);
 
     /**
-     * 删除多条用户数据
+     * 更新启用禁用
      *
-     * @param ids 以 , 分隔的待删除用户ID列表
-     */
-    boolean deleteByIds(String ids);
-
-    /**
-     * 更新资源状态
-     *
-     * @param idList 资源ID列表
-     * @param enable 资源状态
-     * @return 结果
+     * @param idList 用户id集合
+     * @param enable 是否启用
+     * @return 更新用的用户集合
      */
     Collection<? extends User> updateEnable(Collection<String> idList, boolean enable);
 
@@ -135,6 +148,23 @@ public interface UserService {
      */
     User deleteUserRole(String userId, String roleId);
 
+
+    /**
+     * 获得当前登录用户权限范围内菜单集合
+     *
+     * @return 菜单集合
+     */
+    Collection<? extends Menu> getUserMenus(String userId, EnableEnum menuEnable);
+
+    /**
+     * 获得某用户所拥有的资源集合
+     *
+     * @param userId         用户 ID
+     * @param resourceEnable 资源是否启用
+     * @return 资源集合
+     */
+    Collection<? extends Resource> getUserResources(String userId, EnableEnum resourceEnable);
+
     /**
      * 获取指定用户的用户组集合
      *
@@ -146,11 +176,11 @@ public interface UserService {
     /**
      * 获取指定用户的用户组集合
      *
-     * @param userId     用户ID
-     * @param userEnable 用户默认全查
+     * @param userId          用户ID
+     * @param userGroupEnable 角色默认为启用
      * @return 用户组集合
      */
-    Collection<? extends UserGroup> getUserGroups(String userId, EnableEnum userEnable, EnableEnum userGroupEnable);
+    Collection<? extends UserGroup> getUserGroups(String userId, EnableEnum userGroupEnable);
 
     /**
      * 获取指定用户角色集合
@@ -164,28 +194,10 @@ public interface UserService {
      * 获取指定用户角色集合
      *
      * @param userId     用户ID
-     * @param userEnable 用户默认全查
      * @param roleEnable 角色默认为启用
      * @return 角色集合
      */
-    Collection<? extends Role> getUserRoles(String userId, EnableEnum userEnable, EnableEnum roleEnable);
-
-    /**
-     * 检测用户组是否含有此用户
-     *
-     * @param userGroup 待检测用户组
-     * @param userId    待检测用户ID
-     * @return 有则返回那个user对象，没有则返回null
-     */
-    User groupHasTheUser(UserGroup userGroup, String userId);
-
-    /**
-     * 根据传入的用户集合，获取合法的用户集合(过滤掉valid、enable为false的)
-     *
-     * @param users 待检测的用户集合
-     * @return 返回合法的用户集合
-     */
-    Collection<? extends User> getFilterUsers(Collection<? extends User> users);
+    Collection<? extends Role> getUserRoles(String userId, EnableEnum roleEnable);
 
     /**
      * 根据传入的用户集合，获取合法的用户集合(过滤掉valid、enable为false的)

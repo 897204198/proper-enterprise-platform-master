@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.ResourceDao
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.model.Menu
 import com.proper.enterprise.platform.api.auth.model.Resource
+import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.auth.common.dictionary.ResourceType
 import com.proper.enterprise.platform.auth.common.jpa.entity.DataRestrainEntity
@@ -38,6 +39,9 @@ class ResourcesControllerTest extends AbstractTest {
 
     @Autowired
     ResourceService resourceService
+
+    @Autowired
+    MenuService menuService
 
     @Autowired
     I18NService i18NService
@@ -119,7 +123,7 @@ class ResourcesControllerTest extends AbstractTest {
         Collection<String> idd = new HashSet<>()
         idd.add(id)
         idd.add(id1)
-        Collection<Resource> resources = resourceService.getByIds(idd)
+        Collection<Resource> resources = resourceService.findAll(idd, EnableEnum.ALL)
         assert resources.size() == 0
     }
 
@@ -148,10 +152,10 @@ class ResourcesControllerTest extends AbstractTest {
 
     @NoTx
     @Test
-    void testGetResourceMenus(){
+    void testGetResourceMenus() {
         ResourceEntity resourceEntity = new ResourceEntity()
         resourceEntity.setName('resource')
-        resourceEntity.setURL("/aa")
+        resourceEntity.addURL("/aa")
         resourceEntity.setIdentifier("edit")
         resourceEntity = resourceService.save(resourceEntity)
 
@@ -159,26 +163,24 @@ class ResourcesControllerTest extends AbstractTest {
         menuEntity.setName('menu1')
         menuEntity.setRoute("route1")
         menuEntity.add(resourceEntity)
-        menuEntity = menuRepository.save(menuEntity)
+        menuEntity = menuService.save(menuEntity)
 
-        def value = JSONUtil.parse(get('/auth/resources/'+ resourceEntity.getId() + '/menus', HttpStatus.OK).getResponse().getContentAsString(), java
-                .lang.Object.class)
+        def value = JSONUtil.parse(get('/auth/resources/' + resourceEntity.getId() + '/menus', HttpStatus.OK).getResponse().getContentAsString(), java
+            .lang.Object.class)
         assert value.size() == 1
         assert value.get(0).name == "menu1"
 
-        assert resourceDao.get(resourceEntity.getId(), EnableEnum.DISABLE) == null
-
-        delete('/auth/resources?ids='+ resourceEntity.getId(), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage(" pep.auth.common.resource.delete.relation.menu")
+        delete('/auth/resources?ids=' + resourceEntity.getId(), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage(" pep.auth.common.resource.delete.relation.menu")
         menuRepository.deleteAll()
         resourceDao.deleteAll()
     }
 
     @NoTx
     @Test
-    void testSaveOrUpdateResource(){
+    void testSaveOrUpdateResource() {
         ResourceEntity resourceEntity = new ResourceEntity()
         resourceEntity.setName('resource')
-        resourceEntity.setURL("/aa")
+        resourceEntity.addURL("/aa")
         resourceEntity.setIdentifier("edit")
         resourceEntity = resourceService.save(resourceEntity)
 
@@ -205,8 +207,8 @@ class ResourcesControllerTest extends AbstractTest {
         reqMap['enable'] = true
         reqMap['method'] = 'POST'
         reqMap['identifier'] = 'edit'
-        put('/auth/resources/'+ resourceEntity.getId(), JSONUtil.toJSON(reqMap), HttpStatus.OK)
-        def resource = JSONUtil.parse(get('/auth/resources/'+ resourceEntity.getId(), HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        put('/auth/resources/' + resourceEntity.getId(), JSONUtil.toJSON(reqMap), HttpStatus.OK)
+        def resource = JSONUtil.parse(get('/auth/resources/' + resourceEntity.getId(), HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert resource.get('url') == '/test/aa'
         assert resource.get('enable')
 

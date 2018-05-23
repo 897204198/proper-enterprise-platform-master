@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.sys.bizrule.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
-import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,51 +1,84 @@
 package com.proper.enterprise.platform.auth.common.vo;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 
-import java.util.ArrayList;
+import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
+import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.view.BaseView;
+
 import java.util.Collection;
 
+@POJORelevance(relevanceDOClassName = "com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity")
 public class UserVO extends BaseVO implements User {
+
+    public UserVO() {
+
+    }
+
+    public UserVO(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.superuser = false;
+        super.setEnable(true);
+    }
+
+    private static final String USER_ENTITY_PATH = "com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity";
+
+    public interface Single extends BaseView {
+
+    }
 
     /**
      * 用户名，唯一
      */
+    @JsonView(value = {Single.class})
     private String username;
 
     /**
      * 密码
      */
+    @JsonView(value = {Single.class})
     private String password;
 
     /**
      * 邮箱，用于找回密码
      */
+    @JsonView(value = {Single.class})
     private String email;
 
     /**
      * 是否为超级用户
      */
-    private boolean superuser;
+    @JsonView(value = {Single.class})
+    private Boolean superuser;
 
     /**
      * 用户手机号
      */
+    @JsonView(value = {Single.class})
     private String phone;
 
     /**
      * 用户显示名称
      */
-    private String name = " ";
+    @JsonView(value = {Single.class})
+    private String name;
 
-    /**
-     * 用户状态
-     */
-    private boolean enable = true;
     protected String pepDtype;
-    private Collection<? extends Role> roles = new ArrayList<>();
-    private Collection<? extends UserGroup> userGroups = new ArrayList<>();
+
+    @POJOConverter(fromClassName = USER_ENTITY_PATH,
+        fieldName = "roleEntities",
+        targetClassName = USER_ENTITY_PATH)
+    private Collection<RoleVO> roles;
+
+    @POJOConverter(fromClassName = USER_ENTITY_PATH,
+        fieldName = "userGroupEntities",
+        targetClassName = USER_ENTITY_PATH)
+    private Collection<UserGroupVO> userGroups;
 
     @Override
     public int hashCode() {
@@ -93,6 +126,15 @@ public class UserVO extends BaseVO implements User {
     }
 
     @Override
+    public Boolean getSuperuser() {
+        return superuser;
+    }
+
+    public void setSuperuser(Boolean superuser) {
+        this.superuser = superuser;
+    }
+
+    @Override
     public String getPhone() {
         return phone;
     }
@@ -113,17 +155,8 @@ public class UserVO extends BaseVO implements User {
     }
 
     @Override
-    public boolean isEnable() {
-        return enable;
-    }
-
-    @Override
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    @Override
     public void add(Role role) {
+
     }
 
     @Override
@@ -133,20 +166,12 @@ public class UserVO extends BaseVO implements User {
 
     @Override
     public void remove(Role role) {
+
     }
 
     @Override
     public void remove(UserGroup userGroup) {
 
-    }
-
-    @Override
-    public boolean isSuperuser() {
-        return superuser;
-    }
-
-    public void setSuperuser(boolean superuser) {
-        this.superuser = superuser;
     }
 
     public String getPepDtype() {
@@ -158,12 +183,20 @@ public class UserVO extends BaseVO implements User {
     }
 
     @Override
-    public Collection<? extends UserGroup> getUserGroups() {
-        return new ArrayList<>();
+    public Collection<RoleVO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<RoleVO> roles) {
+        this.roles = roles;
     }
 
     @Override
-    public Collection<? extends Role> getRoles() {
-        return new ArrayList<>();
+    public Collection<UserGroupVO> getUserGroups() {
+        return userGroups;
+    }
+
+    public void setUserGroups(Collection<UserGroupVO> userGroups) {
+        this.userGroups = userGroups;
     }
 }

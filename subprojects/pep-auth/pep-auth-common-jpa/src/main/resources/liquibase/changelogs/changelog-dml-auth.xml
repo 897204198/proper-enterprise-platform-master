@@ -1223,4 +1223,40 @@
             <column name="DD_ORDER" valueNumeric="0"/>
         </insert>
     </changeSet>
+    <changeSet id="20180522-1" author="zhangjianlin">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-form"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="form"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;0"/>
+            <column name="NAME" value="表单管理"/>
+            <column name="ROUTE" value="form"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="1"/>
+            <column name="PARENT_ID"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-form-custom"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="file"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;0"/>
+            <column name="NAME" value="表单自定义"/>
+            <column name="ROUTE" value="form/template"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="1"/>
+            <column name="PARENT_ID" value="pep-form"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

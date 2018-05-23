@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.core.api
 
-import com.proper.enterprise.platform.core.entity.BaseEntity
+import com.proper.enterprise.platform.core.controller.mock.DO
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -23,8 +23,8 @@ class IBaseSpec extends Specification {
         obj.getLastModifyUserId() == user
 
         where:
-        clz              | time                  | user | id
-        BaseEntity.class | '2016-06-08 10:42:00' | 'a'  | '1'
+        clz      | time                  | user | id
+        DO.class | '2016-06-08 10:42:00' | 'a'  | '1'
     }
 
 }

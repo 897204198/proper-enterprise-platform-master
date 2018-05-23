@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserGroupRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -33,36 +34,24 @@ public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepo
     }
 
     @Override
-    public UserGroup get(String id) {
-        return repository.findOne(id);
+    public Collection<? extends UserGroup> findAll(Collection<String> idList) {
+        if (CollectionUtil.isNotEmpty(idList)) {
+            return repository.findAll(idList);
+        }
+        return new ArrayList<>();
     }
 
     @Override
-    public UserGroup get(String id, EnableEnum enable) {
+    public UserGroup findByName(String name, EnableEnum enable) {
         switch (enable) {
             case ALL:
-                return repository.findOne(id);
+                return repository.findByName(name);
             case DISABLE:
-                return repository.findByIdAndEnable(id, false);
+                return repository.findByNameAndEnable(name, false);
             case ENABLE:
             default:
-                return repository.findByIdAndEnable(id, true);
+                return repository.findByNameAndEnable(name, true);
         }
-    }
-
-    @Override
-    public Collection<? extends UserGroup> findAll(Collection<String> idList) {
-        return repository.findAll(idList);
-    }
-
-    @Override
-    public UserGroup findByName(String name) {
-        return repository.findByName(name);
-    }
-
-    @Override
-    public UserGroup findById(String id) {
-        return repository.findOne(id);
     }
 
     @Override
@@ -72,7 +61,12 @@ public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepo
 
     @Override
     public UserGroup save(UserGroup group) {
-        return repository.save((UserGroupEntity) group);
+        return super.save(group);
+    }
+
+    @Override
+    public UserGroup updateForSelective(UserGroup group) {
+        return super.updateForSelective(group);
     }
 
     @Override
@@ -105,4 +99,6 @@ public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepo
         };
         return specification;
     }
+
+
 }

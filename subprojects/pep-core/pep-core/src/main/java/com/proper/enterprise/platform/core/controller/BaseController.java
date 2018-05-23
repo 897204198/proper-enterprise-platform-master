@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.support.QuerySupport;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +21,7 @@ import java.util.List;
 
 /**
  * REST Controller 的基类
- *
+ * <p>
  * 用于响应各类 method 的请求
  */
 public abstract class BaseController extends QuerySupport {
@@ -31,21 +32,25 @@ public abstract class BaseController extends QuerySupport {
      * 返回 POST 请求的响应
      * 创建实体成功时返回 201 Created 状态及被创建的实体
      *
-     * @param  entity 被创建的实体
-     * @param  <T>    实体类型
+     * @param entity 被创建的实体
+     * @param <T>    实体类型
      * @return POST 请求的响应
      */
     protected <T> ResponseEntity<T> responseOfPost(T entity) {
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
+    protected <T, S> ResponseEntity<T> responseOfPost(S entity, Class<T> classType, Class... showType) {
+        return new ResponseEntity<>(BeanUtil.convertToVO(entity, classType, showType), HttpStatus.CREATED);
+    }
+
     /**
      * 返回 POST 请求的响应
      * 创建实体成功时返回 201 Created 状态及被创建的实体
      *
-     * @param  entity  被创建的实体
-     * @param  headers 响应头信息
-     * @param  <T>     实体类型
+     * @param entity  被创建的实体
+     * @param headers 响应头信息
+     * @param <T>     实体类型
      * @return POST 请求的响应
      */
     protected <T> ResponseEntity<T> responseOfPost(T entity, MultiValueMap<String, String> headers) {
@@ -57,12 +62,25 @@ public abstract class BaseController extends QuerySupport {
      * 查询到结果时返回 200 OK 状态及查询结果
      * 没有查到结果时返回 200 OK 状态
      *
-     * @param  entity 查询结果
-     * @param  <T>    结果对象类型
+     * @param entity 查询结果
+     * @param <T>    结果对象类型
      * @return GET 请求的响应
      */
     protected <T> ResponseEntity<T> responseOfGet(T entity) {
         return responseOKWithOrWithoutContent(entity, null);
+    }
+
+
+    protected <T, S> ResponseEntity<T> responseOfGet(S entity, Class<T> classType, Class... showType) {
+        return responseOKWithOrWithoutContent(BeanUtil.convertToVO(entity, classType, showType), null);
+    }
+
+    protected <T, S> ResponseEntity<DataTrunk<T>> responseOfGet(DataTrunk<S> entity, Class<T> classType, Class... showType) {
+        return responseOKWithOrWithoutContent(BeanUtil.convertToVO(entity, classType, showType), null);
+    }
+
+    protected <T, S> ResponseEntity<Collection<T>> responseOfGet(Collection<S> entity, Class<T> classType, Class... showType) {
+        return responseOKWithOrWithoutContent(BeanUtil.convertToVO(entity, classType, showType), null);
     }
 
     /**
@@ -85,9 +103,9 @@ public abstract class BaseController extends QuerySupport {
      * 查询到结果时返回 200 OK 状态及查询结果
      * 没有查到结果时返回 200 OK 状态
      *
-     * @param  list  结果集数据集合
-     * @param  count 数据总数
-     * @param  <T>   DataTrunk 保存的对象类型
+     * @param list  结果集数据集合
+     * @param count 数据总数
+     * @param <T>   DataTrunk 保存的对象类型
      * @return GET 请求的响应
      */
     protected <T> ResponseEntity<DataTrunk<T>> responseOfGet(List<T> list, long count) {
@@ -115,12 +133,20 @@ public abstract class BaseController extends QuerySupport {
      * 查询到要更新的实体并更新成功时返回 200 OK 状态及更新后的实体
      * 没有查到结果时返回 200 OK 状态
      *
-     * @param  entity 更新后的实体
-     * @param  <T>    更新的实体类型
+     * @param entity 更新后的实体
+     * @param <T>    更新的实体类型
      * @return PUT 请求的响应
      */
     protected <T> ResponseEntity<T> responseOfPut(T entity) {
         return responseOKWithOrWithoutContent(entity, null);
+    }
+
+    protected <T, S> ResponseEntity<T> responseOfPut(S entity, Class<T> classType, Class... showType) {
+        return responseOKWithOrWithoutContent(BeanUtil.convertToVO(entity, classType, showType), null);
+    }
+
+    protected <T, S> ResponseEntity<Collection<T>> responseOfPut(Collection<S> collection, Class<T> classType, Class... showType) {
+        return responseOKWithOrWithoutContent(BeanUtil.convertToVO(collection, classType, showType), null);
     }
 
     /**
@@ -154,7 +180,7 @@ public abstract class BaseController extends QuerySupport {
      * 查询到要删除的对象并删除成功时返回 204 NO_CONTENT 状态
      * 没有查到结果时返回 404 Not found 状态
      *
-     * @param  exist  是否成功删除对象
+     * @param exist 是否成功删除对象
      * @return DELETE 请求的响应
      */
     protected ResponseEntity responseOfDelete(boolean exist) {
@@ -182,7 +208,8 @@ public abstract class BaseController extends QuerySupport {
     }
 
     protected HttpStatus handleStatus(Exception ex, WebRequest request) {
-        ResponseEntityExceptionHandler handler = new ResponseEntityExceptionHandler() { };
+        ResponseEntityExceptionHandler handler = new ResponseEntityExceptionHandler() {
+        };
         ResponseEntity res = handler.handleException(ex, request);
         return res.getStatusCode();
     }

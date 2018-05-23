@@ -1,17 +1,13 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.model.UserGroup;
-import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.auth.common.vo.RoleVO;
+import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
 import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.core.exception.ErrMsgException;
-import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,78 +21,11 @@ public class UsersController extends BaseController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordEncryptService pwdService;
-
-    @Autowired
-    private I18NService i18NService;
-
-    @GetMapping
-    public ResponseEntity<?> getUser(String username, String name, String email, String phone,
-                                     @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
-        return responseOfGet(isPageSearch() ? userService.findUsersPagniation(username, name, email, phone, userEnable) :
-            userService.getUsersByCondition(username, name, email, phone, userEnable));
-    }
-
-    @SuppressWarnings("unchecked")
-    @PutMapping
-    public ResponseEntity<Collection<? extends User>> updateEnable(@RequestBody Map<String, Object> reqMap) {
-        Collection<String> idList = (Collection<String>) reqMap.get("ids");
-        boolean enable = (boolean) reqMap.get("enable");
-        return responseOfPut(userService.updateEnable(idList, enable));
-    }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody UserVO userVO) {
-        userVO.setPassword(pwdService.encrypt(userVO.getPassword()));
-        User user;
-        try {
-            user = userService.saveOrUpdateUser(userVO);
-        } catch (DataIntegrityViolationException e) {
-            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.username.duplicated"));
-        }
-        return responseOfPost(user);
-    }
-
-    @DeleteMapping
-    public ResponseEntity deleteByIds(@RequestParam String ids) {
-        return responseOfDelete(userService.deleteByIds(ids));
-    }
-
-    /**
-     * 取得指定用户ID的用户信息
-     */
-    @GetMapping(path = "/{userId}")
-    public ResponseEntity<User> get(@PathVariable String userId) {
-        return responseOfGet(userService.get(userId, EnableEnum.ALL));
-    }
-
-    /**
-     * 更新指定用户ID的用户信息
-     */
-    @PutMapping(path = "/{userId}")
-    public ResponseEntity<User> update(@PathVariable String userId, @RequestBody UserVO userVO) {
-        User user = userService.get(userId, EnableEnum.ALL);
-        if (user != null) {
-            userVO.setId(userId);
-            if (!user.getPassword().equals(userVO.getPassword())) {
-                userVO.setPassword(pwdService.encrypt(userVO.getPassword()));
-            }
-        }
-        try {
-            user = userService.saveOrUpdateUser(userVO);
-        } catch (DataIntegrityViolationException e) {
-            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.username.duplicated"));
-        }
-        return responseOfPut(user);
-    }
-
-    /**
-     * 删除指定用户ID的用户信息
-     */
-    @DeleteMapping(path = "/{userId}")
-    public ResponseEntity delete(@PathVariable String userId) {
-        return responseOfDelete(userService.delete(userId));
+    @JsonView(UserVO.Single.class)
+    public ResponseEntity<UserVO> create(@RequestBody UserVO userVO) {
+        return responseOfPost(userService.save(userVO), UserVO.class, UserVO.Single.class);
     }
 
     /**
@@ -112,6 +41,29 @@ public class UsersController extends BaseController {
         return responseOfPost("");
     }
 
+    @DeleteMapping
+    public ResponseEntity deleteByIds(@RequestParam String ids) {
+        return responseOfDelete(userService.deleteByIds(ids));
+    }
+
+    /**
+     * 删除指定用户ID的用户信息
+     */
+    @DeleteMapping(path = "/{userId}")
+    public ResponseEntity delete(@PathVariable String userId) {
+        return responseOfDelete(userService.delete(userId));
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @PutMapping
+    @JsonView(UserVO.Single.class)
+    public ResponseEntity<Collection<UserVO>> updateEnable(@RequestBody Map<String, Object> reqMap) {
+        Collection<String> idList = (Collection<String>) reqMap.get("ids");
+        boolean enable = (boolean) reqMap.get("enable");
+        return responseOfPut(userService.updateEnable(idList, enable), UserVO.class, UserVO.Single.class);
+    }
+
     /**
      * 删除用户的权限
      *
@@ -124,20 +76,55 @@ public class UsersController extends BaseController {
         return responseOfDelete(userService.deleteUserRole(userId, roleId) != null);
     }
 
-    @GetMapping(path = "/{userId}/user-groups")
-    public ResponseEntity<Collection<? extends UserGroup>> getUserGroups(@PathVariable String userId,
-                                                                         @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
-        return responseOfGet(userService.getUserGroups(userId, EnableEnum.ALL, userGroupEnable));
+    /**
+     * 更新指定用户ID的用户信息
+     */
+    @PutMapping(path = "/{userId}")
+    @JsonView(UserVO.Single.class)
+    public ResponseEntity<UserVO> update(@PathVariable String userId, @RequestBody UserVO userVO) {
+        userVO.setId(userId);
+        return responseOfPut(userService.update(userVO), UserVO.class, UserVO.Single.class);
     }
 
-    @GetMapping(path = "/{userId}/roles")
-    public ResponseEntity<Collection<? extends Role>> getUserRoles(@PathVariable String userId,
-                                                                   @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(userService.getUserRoles(userId, EnableEnum.ALL, roleEnable));
+
+    /**
+     * 取得指定用户ID的用户信息
+     */
+    @GetMapping(path = "/{userId}")
+    @JsonView(UserVO.Single.class)
+    public ResponseEntity<UserVO> get(@PathVariable String userId) {
+        return responseOfGet(userService.get(userId), UserVO.class, UserVO.Single.class);
+    }
+
+    @GetMapping
+    @JsonView(UserVO.Single.class)
+    public ResponseEntity<?> getUsers(String username, String name, String email, String phone,
+                                      @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
+        return isPageSearch() ? responseOfGet(userService.findUsersPagniation(username, name, email, phone, userEnable),
+            UserVO.class, UserVO.Single.class) :
+            responseOfGet(userService.getUsersByAndCondition(username, name, email, phone, userEnable), UserVO.class, UserVO.Single.class);
     }
 
     @GetMapping(path = "/query")
-    public ResponseEntity<Collection<? extends User>> queryUser(@RequestParam String condition) {
-        return responseOfGet(userService.getUsersByCondition(condition));
+    @JsonView(UserVO.Single.class)
+    public ResponseEntity<Collection<UserVO>> getUsers(@RequestParam String condition,
+                                                       @RequestParam(defaultValue = "ENABLE") EnableEnum enable) {
+        return responseOfGet(userService.getUsersByOrCondition(condition, enable), UserVO.class, UserVO.Single.class);
     }
+
+    @GetMapping(path = "/{userId}/user-groups")
+    @JsonView(UserGroupVO.Single.class)
+    public ResponseEntity<Collection<UserGroupVO>> getUserGroups(@PathVariable String userId,
+                                                                 @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
+        return responseOfGet(userService.getUserGroups(userId, userGroupEnable), UserGroupVO.class, UserGroupVO.Single.class);
+    }
+
+    @GetMapping(path = "/{userId}/roles")
+    @JsonView(RoleVO.Single.class)
+    public ResponseEntity<Collection<RoleVO>> getUserRoles(@PathVariable String userId,
+                                                           @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
+        return responseOfGet(userService.getUserRoles(userId, roleEnable), RoleVO.class, RoleVO.Single.class);
+    }
+
+
 }

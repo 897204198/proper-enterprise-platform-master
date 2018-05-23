@@ -47,6 +47,7 @@ class TestController extends BaseController {
         e.setCreateTime(DateUtil.timestamp)
         e.setLastModifyUserId('ELU')
         e.setLastModifyTime(DateUtil.timestamp)
+        e.setEnable(true)
         responseOfGet(e)
     }
 

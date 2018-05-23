@@ -1,13 +1,18 @@
 package com.proper.enterprise.platform.auth.common.jpa.dao.impl;
 
+import com.proper.enterprise.platform.api.auth.dao.RoleDao;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +36,9 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
     @Autowired
     private UserRepository userRepo;
 
+    @Autowired
+    private RoleDao roleDao;
+
     @Override
     public UserRepository getRepository() {
         return userRepo;
@@ -38,17 +46,20 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
 
     @Override
     public User save(User user) {
-        return userRepo.save((UserEntity) user);
+        if (null == user.getSuperuser()) {
+            UserEntity userEntity = (UserEntity) user;
+            userEntity.setSuperuser(false);
+        }
+        return super.save(user);
     }
 
     @Override
     public void save(User... users) {
-        List<UserEntity> entities = new ArrayList<>(users.length);
         for (User user : users) {
-            entities.add((UserEntity) user);
+            this.save(user);
         }
-        userRepo.save(entities);
     }
+
 
     @Override
     public User getNewUser() {
@@ -57,60 +68,116 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
 
     @Override
     public Collection<? extends User> findAll(Collection<String> idList) {
-        return userRepo.findAll(idList);
+        if (CollectionUtil.isNotEmpty(idList)) {
+            return userRepo.findAll(idList);
+        }
+        return new ArrayList<>();
     }
 
     @Override
-    public User findById(String id) {
-        return userRepo.findOne(id);
-    }
-
-    @Override
-    public User get(String id) {
-        LOGGER.debug("Get user with {} from DB", id);
-        return userRepo.findByIdAndEnable(id, true);
-    }
-
-    @Override
-    public User get(String id, EnableEnum enable) {
-        switch (enable) {
+    public User getByUsername(String username, EnableEnum enableEnum) {
+        LOGGER.debug("GetByUsername with username {} from DB", username);
+        switch (enableEnum) {
             case ALL:
-                return userRepo.findOne(id);
+                return userRepo.findByUsername(username);
             case DISABLE:
-                return userRepo.findByIdAndEnable(id, false);
+                return userRepo.findByUsernameAndEnable(username, false);
             case ENABLE:
             default:
-                return userRepo.findByIdAndEnable(id, true);
+                return userRepo.findByUsernameAndEnable(username, true);
         }
     }
 
     @Override
-    public User getByUsername(String username) {
-        LOGGER.debug("GetByUsername with username {} from DB", username);
-        return userRepo.findByUsernameAndEnableTrue(username);
-    }
-
-    @Override
     public User getCurrentUserByUserId(String userId) {
-        LOGGER.debug("GetByUserId with userId {} from DB", userId);
         return userRepo.findByIdAndEnableTrue(userId);
     }
 
     @Override
-    public Collection<? extends User> getUsersByCondition(String condition) {
-        condition = "%".concat(condition).concat("%");
-        return userRepo.findByUsernameLikeOrNameLikeOrPhoneLikeAndEnableTrueOrderByName(condition, condition, condition);
+    public Collection<? extends User> getUsersByOrCondition(String condition, EnableEnum enable) {
+        Specification<User> specification = new Specification<User>() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
+                List<Predicate> predicates = new ArrayList<>();
+                Predicate predicateOr = null;
+                if (StringUtil.isNotNull(condition)) {
+                    predicateOr = cb.or(cb.like(root.get("username"), "%".concat(condition).concat("%")),
+                        cb.like(root.get("name"), "%".concat(condition).concat("%")),
+                        cb.like(root.get("phone"), "%".concat(condition).concat("%")));
+                }
+                Predicate predicateAnd = null;
+                if (null != enable && EnableEnum.ALL != enable) {
+                    predicateAnd = cb.and(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
+                }
+                if (null != predicateOr) {
+                    predicates.add(predicateOr);
+                }
+                if (null != predicateAnd) {
+                    predicates.add(predicateAnd);
+                }
+                return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        };
+        return this.findAll(specification, new Sort(Sort.Direction.DESC, "lastModifyTime"));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends User> getUsersByCondition(String userName, String name, String email, String phone, EnableEnum enable) {
-        return this.findAll(buildUserSpecification(userName, name, email, phone, enable), new Sort(Sort.Direction.ASC, "name"));
+    public Collection<? extends User> getUsersByAndCondition(String userName, String name, String email, String phone, EnableEnum enable) {
+        return this.findAll(buildUserSpecification(userName, name, email, phone, enable),
+            new Sort(Sort.Direction.DESC, "lastModifyTime"));
     }
 
     @Override
     public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable) {
-        return this.findPage(buildUserSpecification(userName, name, email, phone, enable), new Sort(Sort.Direction.ASC, "name"));
+        return this.findPage(buildUserSpecification(userName, name, email, phone, enable),
+            new Sort(Sort.Direction.DESC, "lastModifyTime"));
+    }
+
+    @Override
+    public User addUserRole(String userId, String roleId) {
+        User user = this.findOne(userId);
+        if (null == hasRole(user, roleId)) {
+            Role role = roleDao.findOne(roleId);
+            if (role != null) {
+                user.add(role);
+                user = this.save(user);
+            }
+        }
+        return user;
+    }
+
+    @Override
+    public User deleteUserRole(String userId, String roleId) {
+        User user = this.findOne(userId);
+        Role role = hasRole(user, roleId);
+        if (null != role) {
+            user.remove(role);
+            user = this.save(user);
+            return user;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean deleteByIds(Collection<String> ids) {
+        Collection<? extends User> collection = userRepo.findAll(ids);
+        for (User userEntity : collection) {
+            if (userEntity.getSuperuser()) {
+                throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.user.delete.role.super.failed"));
+            }
+        }
+        this.delete(collection);
+        return collection.size() > 0;
+    }
+
+    @Override
+    public User updateForSelective(User user) {
+        if (null == user.getSuperuser()) {
+            UserEntity userEntity = (UserEntity) user;
+            userEntity.setSuperuser(false);
+        }
+        return super.updateForSelective(user);
     }
 
     private Specification<User> buildUserSpecification(String userName, String name, String email, String phone, EnableEnum enable) {
@@ -139,8 +206,19 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
         return specification;
     }
 
-    @Override
-    public void deleteAll() {
-        userRepo.deleteAll();
+
+    private Role hasRole(User user, String roleId) {
+        if (user == null) {
+            return null;
+        }
+        Collection<Role> roles = (Collection<Role>) user.getRoles();
+        if (roles != null && roles.size() > 0 && StringUtil.isNotBlank(roleId)) {
+            for (Role role : roles) {
+                if (roleId.equals(role.getId())) {
+                    return role;
+                }
+            }
+        }
+        return null;
     }
 }

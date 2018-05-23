@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.*
+import com.proper.enterprise.platform.auth.common.vo.UserVO
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
@@ -25,7 +26,7 @@ import org.springframework.test.context.jdbc.Sql
 class UsersControllerTest extends AbstractTest {
 
     private static final String URI = '/auth/users'
-    private static UserEntity userEntity = new UserEntity('user1', 'pwd1')
+    private static UserVO userEntity = new UserVO('user1', 'pwd1')
 
     @Autowired
     RoleService roleService
@@ -57,13 +58,13 @@ class UsersControllerTest extends AbstractTest {
     @Test
     void newCheckCRUD() {
         mockUser('test1', 't1', 'pwd')
-        UserEntity user = postAndReturn(URI, userEntity)
+        UserVO user = postAndReturn(URI, userEntity)
         assert user.getUsername() == 'user1'
         def resAll = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&pageNo=1&pageSize=10',
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert resAll.count == 4
         assert resAll.data[0].get("username") == 'user1'
-        UserEntity userDisable = new UserEntity('user3', 'pwd1')
+        UserVO userDisable = new UserVO('user3', 'pwd1')
         userDisable.setEnable(false)
         postAndReturn(URI, userDisable)
         def resAllDisEnable = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&userEnable=DISABLE&pageNo=1&pageSize=10',
@@ -88,20 +89,12 @@ class UsersControllerTest extends AbstractTest {
         def value = put(URI + '/' + user.getId(), JSONUtil.toJSON(user), HttpStatus.OK).getResponse().getContentAsString()
         assert value.contains(pwdService.encrypt('w1'))
 
-        //添加用户组
-        UserGroupEntity userGroupEntity = new UserGroupEntity()
-        userGroupEntity.setName('group1')
-        userGroupEntity.setSeq(1)
-        userGroupEntity.setEnable(true)
-        userGroupEntity.add(user)
-        userGroupEntity = userGroupService.save(userGroupEntity)
-
         def result = get(URI + '/' + user.getId(), HttpStatus.OK).getResponse().getContentAsString()
         result = (Map) JSONUtil.parse(result, java.lang.Object.class)
         assert result.get("name") == 'new value'
 
 
-        UserEntity userEntity1 = postAndReturn(URI, new UserEntity('user2', 'pwd2'))
+        UserVO userEntity1 = postAndReturn(URI, new UserVO('user2', 'pwd2'))
         result = delete(URI + '/' + userEntity1.getId(), HttpStatus.NO_CONTENT).getResponse().getContentAsString()
         assert result == ''
 
@@ -116,6 +109,7 @@ class UsersControllerTest extends AbstractTest {
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/users.sql")
     @Test
+    @NoTx
     void userDetailTest() {
         mockUser('test1', 't1', 'pwd')
         def userReq = [:]
@@ -161,11 +155,6 @@ class UsersControllerTest extends AbstractTest {
         def resAll = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&pageNo=1&pageSize=2',
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert resAll.count == 3
-        assert resAll.data[0].get("username") == 't3'
-        assert resAll.data[0].get("name") == 'a'
-        assert resAll.data[1].get("username") == 't2'
-        assert resAll.data[1].get("name") == 'b'
-
         def resFullCondictions = JSONUtil.parse(get('/auth/users?userName=t1&name=c&phone=12345678901&email=test1@test.com&enable=Y&pageNo=1&pageSize=2',
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert resFullCondictions.count == 1
@@ -193,18 +182,18 @@ class UsersControllerTest extends AbstractTest {
         reqMap['ids'] = ['test3']
         reqMap['enable'] = false
         put('/auth/users', JSONUtil.toJSON(reqMap), HttpStatus.OK)
-        def value = JSONUtil.parse(get('/auth/users/'+ user2.id, HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
+        def value = JSONUtil.parse(get('/auth/users/' + user2.id, HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
         assert !value.enable
 
         def reqMap1 = [:]
         reqMap1['ids'] = ['test3']
         reqMap1['enable'] = true
         put('/auth/users', JSONUtil.toJSON(reqMap1), HttpStatus.OK)
-        def value1 = JSONUtil.parse(get('/auth/users/'+ user2.id, HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
+        def value1 = JSONUtil.parse(get('/auth/users/' + user2.id, HttpStatus.OK).getResponse().getContentAsString(), UserEntity.class)
         assert value1.enable
 
         def res = JSONUtil.parse(get('/auth/users?userName=t3&name=a&phone=12345678903&email=test3@test.com&enable=Y&pageNo=1&pageSize=2',
-                HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert res.count == 1
 
     }
@@ -280,12 +269,21 @@ class UsersControllerTest extends AbstractTest {
         // all query
         list = JSONUtil.parse(get('/auth/users/query?condition=', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert list.size() == 3
-        assert list.get(0).username == 't3'
-        assert list.get(1).username == 't2'
-        assert list.get(2).username == 't1'
     }
 
     @Test
+    void testGetUserRoles() {
+        RoleEntity roleEntity = new RoleEntity()
+        roleEntity.setName('role1')
+        roleEntity = roleService.save(roleEntity)
+        RoleEntity roleEntity2 = new RoleEntity()
+        roleEntity2.setName('role2')
+        roleEntity = roleService.save(roleEntity2)
+
+    }
+
+    @Test
+    @NoTx
     void testGetUserGroups() {
 
         RoleEntity roleEntity = new RoleEntity()
@@ -323,25 +321,26 @@ class UsersControllerTest extends AbstractTest {
         userEntity1.add(userGroupEntity)
         userEntity1.add(userGroupEntity1)
         userEntity1.add(userGroupEntity2)
-        userEntity1 = userRepository.saveAndFlush(userEntity1)
+        userEntity1 = userService.save(userEntity1)
 
         mockUser(userEntity1.getId(), userEntity1.getUsername(), userEntity1.getPassword())
 
         UserEntity userEntity2 = new UserEntity('user2', 'pwd2')
         userEntity2.setName('name2')
         userEntity2.setPhone('15439392930')
-        userEntity2 = userRepository.save(userEntity2)
+        userEntity2 = userService.save(userEntity2)
 
         UserEntity userEntity3 = new UserEntity('user3', 'pwd3')
         userEntity3.setName('name3')
         userEntity3.setPhone('15443935852')
-        userEntity3 = userRepository.save(userEntity3)
+        userEntity3 = userService.save(userEntity3)
 
         UserEntity userEntity4 = new UserEntity('user4', 'pwd4')
         userEntity4.setName('name4')
         userEntity4.setPhone('15897535483')
-        userEntity4 = userRepository.save(userEntity4)
-
+        userEntity4 = userService.save(userEntity4)
+        def resAll = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&pageNo=1&pageSize=10',
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
 
 
         def result = JSONUtil.parse(get('/auth/users/' + userEntity1.getId() + '/user-groups', HttpStatus.OK).getResponse().getContentAsString(),
@@ -417,8 +416,8 @@ class UsersControllerTest extends AbstractTest {
 
     @After
     void tearDown() {
-        userGroupRepository.deleteAll()
         userRepository.deleteAll()
+        userGroupRepository.deleteAll()
         roleRepository.deleteAll()
         menuRepository.deleteAll()
         resourceRepository.deleteAll()

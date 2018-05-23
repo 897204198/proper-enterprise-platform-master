@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.view.BaseView;
 import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 
@@ -15,6 +17,7 @@ import java.util.Collections;
  *
  * @param <T> 存放的数据类型
  */
+
 public class DataTrunk<T> implements Serializable {
 
     /**
@@ -27,7 +30,8 @@ public class DataTrunk<T> implements Serializable {
      */
     private long count;
 
-    public DataTrunk() { }
+    public DataTrunk() {
+    }
 
     public DataTrunk(Collection<T> data, long count) {
         this.data = data;
@@ -61,6 +65,7 @@ public class DataTrunk<T> implements Serializable {
         }
     }
 
+    @JsonView(value = {BaseView.class})
     public Collection<T> getData() {
         return data;
     }
@@ -69,6 +74,7 @@ public class DataTrunk<T> implements Serializable {
         this.data = data;
     }
 
+    @JsonView(value = {BaseView.class})
     public long getCount() {
         return count;
     }

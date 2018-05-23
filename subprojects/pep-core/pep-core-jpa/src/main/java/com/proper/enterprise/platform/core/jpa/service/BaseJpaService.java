@@ -1,7 +1,8 @@
 package com.proper.enterprise.platform.core.jpa.service;
 
-import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.service.BaseService;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,9 @@ import java.util.List;
  * @param <T>  泛型
  * @param <ID> 主键泛型
  */
-public interface BaseJpaService<T, ID extends Serializable> extends BaseService<T, ID> {
+public interface BaseJpaService<T extends IBase, ID extends Serializable> extends BaseService<T, ID> {
+
+    <S extends T> S updateForSelective(S var1);
 
     long count(Specification<T> spec);
 

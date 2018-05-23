@@ -2,11 +2,9 @@ package com.proper.enterprise.platform.auth.common.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.model.DataRestrain;
-import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
-import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
-import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
 import org.hibernate.annotations.GenericGenerator;
@@ -32,6 +30,7 @@ public class ResourceEntity extends BaseEntity implements Resource {
     /**
      * 名称
      */
+    @Column(nullable = false, unique = true)
     private String name;
 
     /**
@@ -50,12 +49,6 @@ public class ResourceEntity extends BaseEntity implements Resource {
     @Convert(converter = DataDicLiteConverter.class)
     private DataDicLite resourceType;
 
-    @Transient
-    private Collection<? extends Menu> menus = new ArrayList<>();
-
-    @Transient
-    private Collection<? extends Role> roles = new ArrayList<>();
-
     /**
      * 标识
      */
@@ -68,14 +61,17 @@ public class ResourceEntity extends BaseEntity implements Resource {
         joinColumns = @JoinColumn(name = "RESOURCE_ID"),
         inverseJoinColumns = @JoinColumn(name = "DATARESTRAIN_ID"),
         uniqueConstraints = @UniqueConstraint(columnNames = {"RESOURCE_ID", "DATARESTRAIN_ID"}))
-    private Collection<DataRestrainEntity> dataRestrainEntities = new ArrayList<>();
+    private Collection<DataRestrainEntity> dataRestrainEntities;
 
     @ManyToMany(mappedBy = "resourceEntities")
-    private Collection<MenuEntity> menuEntities = new ArrayList<>();
+    private Collection<MenuEntity> menuEntities;
 
     @ManyToMany(mappedBy = "resourcesEntities")
-    private Collection<RoleEntity> roleEntities = new ArrayList<>();
+    private Collection<RoleEntity> roleEntities;
     private String resourceCode;
+
+    @Transient
+    private Boolean extend;
 
     public String getName() {
         return name;
@@ -85,23 +81,23 @@ public class ResourceEntity extends BaseEntity implements Resource {
         this.name = name;
     }
 
-    public String getURL() {
+    public String findURL() {
         return url;
     }
 
-    public void setURL(String url) {
+    public void addURL(String url) {
         this.url = url;
     }
 
     @Override
     @JsonIgnore
-    public Collection<? extends DataRestrain> getDataRestrains() {
+    public Collection<DataRestrainEntity> getDataRestrains() {
         return dataRestrainEntities;
     }
 
     @Override
-    public Collection<DataRestrain> getDataRestrains(String tableName) {
-        Collection<DataRestrain> dataList = new ArrayList<>();
+    public Collection<DataRestrainEntity> getDataRestrains(String tableName) {
+        Collection<DataRestrainEntity> dataList = new ArrayList<>();
         for (DataRestrainEntity set : dataRestrainEntities) {
             if (tableName.equals(set.getTableName())) {
                 dataList.add(set);
@@ -112,11 +108,17 @@ public class ResourceEntity extends BaseEntity implements Resource {
 
     @Override
     public void add(DataRestrain restrain) {
+        if (null == dataRestrainEntities) {
+            dataRestrainEntities = new ArrayList<>();
+        }
         dataRestrainEntities.add((DataRestrainEntity) restrain);
     }
 
     @Override
     public void remove(DataRestrain restrain) {
+        if (null == dataRestrainEntities) {
+            dataRestrainEntities = new ArrayList<>();
+        }
         dataRestrainEntities.remove(restrain);
     }
 
@@ -146,13 +148,13 @@ public class ResourceEntity extends BaseEntity implements Resource {
 
     @Override
     @JsonIgnore
-    public Collection<? extends Menu> getMenus() {
+    public Collection<MenuEntity> getMenus() {
         return menuEntities;
     }
 
     @Override
     @JsonIgnore
-    public Collection<? extends Role> getRoles() {
+    public Collection<RoleEntity> getRoles() {
         return roleEntities;
     }
 
@@ -164,5 +166,45 @@ public class ResourceEntity extends BaseEntity implements Resource {
     @Override
     public void setResourceCode(String resourceCode) {
         this.resourceCode = resourceCode;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Collection<DataRestrainEntity> getDataRestrainEntities() {
+        return dataRestrainEntities;
+    }
+
+    public void setDataRestrainEntities(Collection<DataRestrainEntity> dataRestrainEntities) {
+        this.dataRestrainEntities = dataRestrainEntities;
+    }
+
+    public Collection<MenuEntity> getMenuEntities() {
+        return menuEntities;
+    }
+
+    public void setMenuEntities(Collection<MenuEntity> menuEntities) {
+        this.menuEntities = menuEntities;
+    }
+
+    public Collection<RoleEntity> getRoleEntities() {
+        return roleEntities;
+    }
+
+    public void setRoleEntities(Collection<RoleEntity> roleEntities) {
+        this.roleEntities = roleEntities;
+    }
+
+    public Boolean getExtend() {
+        return extend;
+    }
+
+    public void setExtend(Boolean extend) {
+        this.extend = extend;
     }
 }

@@ -32,7 +32,7 @@ public class BaseDocument implements IBase {
 
     @JsonIgnore
     @Field("EA")
-    protected boolean enable = true;
+    protected Boolean enable;
 
     @Override
     public String getId() {
@@ -85,12 +85,12 @@ public class BaseDocument implements IBase {
     }
 
     @Override
-    public boolean isEnable() {
+    public Boolean getEnable() {
         return enable;
     }
 
     @Override
-    public void setEnable(boolean enable) {
+    public void setEnable(Boolean enable) {
         this.enable = enable;
     }
 }

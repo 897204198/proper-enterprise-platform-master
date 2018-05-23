@@ -1,12 +1,13 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
-import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
+import com.proper.enterprise.platform.auth.common.vo.MenuVO;
 import com.proper.enterprise.platform.auth.common.vo.ResourceVO;
+import com.proper.enterprise.platform.auth.common.vo.RoleVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,35 +25,38 @@ public class ResourcesController extends BaseController {
 
     @SuppressWarnings("unchecked")
     @PutMapping
-    public ResponseEntity<Collection<? extends Resource>> updateEnable(@RequestBody Map<String, Object> reqMap) throws Exception {
+    @JsonView(ResourceVO.Single.class)
+    public ResponseEntity<Collection<ResourceVO>> updateEnable(@RequestBody Map<String, Object> reqMap) {
         Collection<String> idList = (Collection<String>) reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
-        return responseOfPut(resourceService.updateEnable(idList, enable));
+        return responseOfPut(resourceService.updateEnable(idList, enable), ResourceVO.class, ResourceVO.Single.class);
     }
 
     @DeleteMapping
-    public ResponseEntity deleteResource(@RequestParam String ids) throws Exception {
+    public ResponseEntity deleteResource(@RequestParam String ids) {
         return responseOfDelete(resourceService.deleteByIds(ids));
     }
 
     @AuthcIgnore // TODO necessary?
     @GetMapping(path = "/{resourceId}")
-    public ResponseEntity<Resource> find(@PathVariable String resourceId) throws Exception {
-        return responseOfGet(resourceService.get(resourceId, EnableEnum.ALL));
+    @JsonView(ResourceVO.Single.class)
+    public ResponseEntity<ResourceVO> find(@PathVariable String resourceId) {
+        return responseOfGet(resourceService.get(resourceId), ResourceVO.class, ResourceVO.Single.class);
     }
 
     @PutMapping(path = "/{resourceId}")
-    public ResponseEntity<Resource> update(@PathVariable String resourceId, @RequestBody ResourceVO resourceReq) throws Exception {
-        Resource resource = resourceService.get(resourceId, EnableEnum.ALL);
+    @JsonView(ResourceVO.Single.class)
+    public ResponseEntity<ResourceVO> update(@PathVariable String resourceId, @RequestBody ResourceVO resourceReq) {
+        Resource resource = resourceService.get(resourceId);
         if (resource != null) {
             resourceReq.setId(resourceId);
-            resource = resourceService.saveOrUpdateResource(resourceReq);
+            resource = resourceService.update(resourceReq);
         }
-        return responseOfPut(resource);
+        return responseOfPut(resource, ResourceVO.class, ResourceVO.Single.class);
     }
 
     @DeleteMapping(path = "/{resourceId}")
-    public ResponseEntity delete(@PathVariable String resourceId) throws Exception {
+    public ResponseEntity delete(@PathVariable String resourceId) {
         Resource resource = resourceService.get(resourceId);
         if (resource != null) {
             resourceService.delete(resource);
@@ -61,14 +65,16 @@ public class ResourcesController extends BaseController {
     }
 
     @GetMapping(path = "/{resourceId}/menus")
-    public ResponseEntity<Collection<? extends Menu>> getResourceMenus(@PathVariable String resourceId,
-                                                                       @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable) {
-        return responseOfGet(resourceService.getResourceMenus(resourceId, EnableEnum.ALL, menuEnable));
+    @JsonView(MenuVO.Single.class)
+    public ResponseEntity<Collection<MenuVO>> getResourceMenus(@PathVariable String resourceId,
+                                                               @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable) {
+        return responseOfGet(resourceService.getResourceMenus(resourceId, menuEnable), MenuVO.class, MenuVO.Single.class);
     }
 
     @GetMapping(path = "/{resourceId}/roles")
-    public ResponseEntity<Collection<? extends Role>> getResourceRoles(@PathVariable String resourceId,
-                                                                       @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(resourceService.getResourceRoles(resourceId, EnableEnum.ALL, roleEnable));
+    @JsonView(RoleVO.Single.class)
+    public ResponseEntity<Collection<RoleVO>> getResourceRoles(@PathVariable String resourceId,
+                                                               @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
+        return responseOfGet(resourceService.getResourceRoles(resourceId, roleEnable), RoleVO.class, RoleVO.Single.class);
     }
 }

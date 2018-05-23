@@ -9,23 +9,4 @@
 
     <context:property-placeholder location="classpath:conf/auth/jwt/auth-jwt.properties" ignore-unresolvable="true" />
 
-    <bean id="apiSecret" class="com.proper.enterprise.platform.auth.service.APISecret" />
-
-    <bean id="authzService" class="com.proper.enterprise.platform.auth.jwt.authz.AuthzService">
-        <property name="ignorePatterns" value="${auth.jwt.ignorePatterns}" />
-        <property name="resourceService" ref="resourceServiceImpl" />
-        <property name="menuService" ref="menuServiceImpl" />
-    </bean>
-
-    <bean id="jwtService" class="com.proper.enterprise.platform.auth.service.JWTService">
-        <property name="secret" ref="apiSecret" />
-    </bean>
-
-    <bean id="jwtVerifyFilter" class="com.proper.enterprise.platform.auth.jwt.filter.JWTVerifyFilter">
-        <property name="jwtService" ref="jwtService" />
-        <property name="authzService" ref="authzService" />
-        <property name="handlerHolder" ref="handlerHolder" />
-        <property name="hasContext" value="${auth.jwt.hasContext}" />
-    </bean>
-
 </beans>

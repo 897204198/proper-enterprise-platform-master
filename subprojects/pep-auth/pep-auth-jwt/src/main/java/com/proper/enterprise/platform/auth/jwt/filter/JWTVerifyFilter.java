@@ -1,12 +1,15 @@
 package com.proper.enterprise.platform.auth.jwt.filter;
 
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
-import com.proper.enterprise.platform.auth.jwt.authz.AuthzService;
+import com.proper.enterprise.platform.api.auth.service.AuthzService;
 import com.proper.enterprise.platform.auth.service.HandlerHolder;
 import com.proper.enterprise.platform.auth.service.JWTService;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.*;
@@ -17,16 +20,21 @@ import java.io.IOException;
 /**
  * Filter request to verify JWT with it
  */
+@Service("jwtVerifyFilter")
 public class JWTVerifyFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTVerifyFilter.class);
 
+    @Autowired
     private JWTService jwtService;
 
+    @Autowired
     private AuthzService authzService;
 
+    @Autowired
     private HandlerHolder handlerHolder;
 
+    @Value("${auth.jwt.hasContext}")
     private boolean hasContext;
 
     public void setJwtService(JWTService jwtService) {

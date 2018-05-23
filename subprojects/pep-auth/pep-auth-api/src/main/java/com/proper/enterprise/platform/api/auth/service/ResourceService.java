@@ -18,25 +18,22 @@ public interface ResourceService {
      * @param resource 请求资源对象
      * @return 资源信息
      */
-    Resource saveOrUpdateResource(Resource resource);
+    Resource update(Resource resource);
 
     Resource get(String id);
 
-    Resource get(String id, EnableEnum enable);
-
     Resource get(String url, RequestMethod method);
 
-    Collection<? extends Resource> getByIds(Collection<String> ids);
+    Collection<? extends Resource> findAll(Collection<String> ids, EnableEnum resourceEnable);
 
     /**
-     * 根据传入的资源集合，过滤掉非法的(valid、enable是false)
+     * 查询所有资源
      *
-     * @param resources 待过滤的资源集合
-     * @return 返回过滤后的资源集合
+     * @param enableEnum 启用停用All为全部 默认启用
+     * @return 资源集合
      */
-    Collection<? extends Resource> getFilterResources(Collection<? extends Resource> resources);
+    Collection<? extends Resource> findAll(EnableEnum enableEnum);
 
-    Collection<Resource> find();
 
     void delete(Resource resource);
 
@@ -60,20 +57,25 @@ public interface ResourceService {
      * 获取指定资源菜单集合
      *
      * @param resourceId 资源ID
-     * @param resourceEnable 资源状态
      * @param menuEnable 菜单状态
      * @return 菜单集合
      */
-    Collection<? extends Menu> getResourceMenus(String resourceId, EnableEnum resourceEnable, EnableEnum menuEnable);
+    Collection<? extends Menu> getResourceMenus(String resourceId, EnableEnum menuEnable);
 
     /**
      * 获取指定资源角色集合
      *
      * @param resourceId 资源ID
-     * @param resourceEnable 资源状态
      * @param roleEnable 角色状态
      * @return 角色集合
      */
-    Collection<? extends Role> getResourceRoles(String resourceId, EnableEnum resourceEnable, EnableEnum roleEnable);
+    Collection<? extends Role> getResourceRoles(String resourceId, EnableEnum roleEnable);
 
+    /**
+     * 根据传入的资源集合，过滤掉非法的(valid、enable是false)
+     *
+     * @param resources 待过滤的资源集合
+     * @return 返回过滤后的资源集合
+     */
+    Collection<? extends Resource> getFilterResources(Collection<? extends Resource> resources, EnableEnum resourceEnable);
 }

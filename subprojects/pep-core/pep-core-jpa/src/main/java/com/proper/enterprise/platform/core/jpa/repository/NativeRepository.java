@@ -46,4 +46,12 @@ public class NativeRepository {
         return query.executeUpdate();
     }
 
+    public int executeJpqlUpdate(String sql, Map<String, Object> params) {
+        Query query = em.createQuery(sql);
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        return query.executeUpdate();
+    }
+
 }

@@ -3,10 +3,7 @@ package com.proper.enterprise.platform.auth.common.service.impl;
 import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.dao.ResourceDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.Menu;
-import com.proper.enterprise.platform.api.auth.model.Resource;
-import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
@@ -19,6 +16,7 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.sort.BeanComparator;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
+import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -63,64 +61,37 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Menu get(String id) {
-        Menu menu = menuDao.get(id);
-        try {
-            if (menu != null) {
-                if (menu.isEnable()) {
-                    return menu;
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.warn("Menu is Null!", menu);
-        }
-        return null;
+        return menuDao.get(id);
     }
 
-    @Override
-    public Menu get(String id, EnableEnum enable) {
-        return menuDao.get(id, enable);
-    }
-
-    @Override
-    public Collection<? extends Menu> getByIds(Collection<String> ids) {
-        Collection<Menu> menuList = new ArrayList<>();
-        Collection<? extends Menu> menus = menuDao.getByIds(ids);
-        for (Menu menu : menus) {
-            if (menu.isEnable()) {
-                menuList.add(menu);
-            }
-        }
-        return menuList;
-    }
 
     @Override
     public Menu save(Menu menu) {
+        if (null == menu.getEnable()) {
+            menu.setEnable(true);
+        }
+        validate(menu);
+        String parentId = menu.getParentId();
+        if (StringUtil.isNotNull(parentId) && !parentId.equals(DEFAULT_VALUE)) {
+            menu.addParent(this.get(parentId));
+        }
         return menuDao.save(menu);
     }
 
     @Override
-    public Menu saveOrUpdateMenu(Menu menuReq) {
-        String id = menuReq.getId();
-        Menu menuInfo = menuDao.getNewMenuEntity();
-        // 更新
-        if (StringUtil.isNotNull(id)) {
-            menuInfo = this.get(id, EnableEnum.ALL);
-        }
-        menuInfo.setIcon(menuReq.getIcon());
-        menuInfo.setName(menuReq.getName());
-        menuInfo.setRoute(menuReq.getRoute());
-        menuInfo.setEnable(menuReq.isEnable());
-        menuInfo.setDescription(menuReq.getDescription());
+    public Menu update(Menu menuReq) {
+        validate(menuReq);
         String parentId = menuReq.getParentId();
+        //todo 这块需要确认一下 这个-1到底是怎么定的
         if (StringUtil.isNotNull(parentId) && !parentId.equals(DEFAULT_VALUE)) {
-            menuInfo.setParent(this.get(parentId));
+            menuReq.addParent(this.get(parentId));
+            menuDao.save(menuReq);
         }
-        menuInfo.setSequenceNumber(menuReq.getSequenceNumber());
         String menuCode = menuReq.getMenuCode();
         if (StringUtil.isNotNull(menuCode)) {
-            menuInfo.setMenuType(dataDicService.get("MENU_TYPE", menuCode));
+            menuReq.setMenuType(dataDicService.get("MENU_TYPE", menuCode));
         }
-        return menuDao.save(menuInfo);
+        return menuDao.updateForSelective(menuReq);
     }
 
     @Override
@@ -131,17 +102,32 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @SuppressWarnings("unchecked")
     public Collection<? extends Menu> getMenus(User user) {
-        if (user.isSuperuser()) {
+        if (user.getSuperuser()) {
             return menuDao.findAll(new Sort("parent", "sequenceNumber"));
         }
-        return menuDao.getMenus(user);
+        List<Menu> result = new ArrayList<>(0);
+        if (user.getEnable()) {
+            Set<Menu> menus = new HashSet<>();
+            menus = addRoleMenus(user.getRoles(), menus);
+            if (CollectionUtil.isNotEmpty(user.getUserGroups())) {
+                for (UserGroup userGroup : user.getUserGroups()) {
+                    if (userGroup.getEnable()) {
+                        menus = addRoleMenus(userGroup.getRoles(), menus);
+                    }
+                }
+            }
+            result = new ArrayList<>(menus.size());
+            result.addAll(menus);
+            result.sort(new BeanComparator("parent", "sequenceNumber"));
+        }
+        return result;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Collection<? extends Menu> getMenus(String name, String description, String route, EnableEnum enable, String parentId) {
         List<Menu> menus = new ArrayList<>();
-        Collection<? extends Menu> filterMenus = menuDao.getMenuByCondition(name, description, route, enable, parentId);
+        Collection<? extends Menu> filterMenus = menuDao.findAll(name, description, route, enable, parentId);
         Collection<? extends Menu> roleMenus = getMenus();
         for (Menu menu : roleMenus) {
             if (filterMenus.contains(menu)) {
@@ -162,13 +148,13 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Collection<? extends Menu> getMenuByCondition(String name, String description, String route, EnableEnum enable, String parentId) {
-        return menuDao.getMenuByCondition(name, description, route, enable, parentId);
+        return menuDao.findAll(name, description, route, enable, parentId);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public DataTrunk<? extends Menu> findMenusPagniation(String name, String description, String route, EnableEnum enable, String parentId) {
-        return menuDao.findMenusPagniation(name, description, route, enable, parentId);
+        return menuDao.findPage(name, description, route, enable, parentId);
     }
 
 
@@ -176,7 +162,7 @@ public class MenuServiceImpl implements MenuService {
     public Collection<? extends Menu> getFilterMenusAndParent(Collection<? extends Menu> menus) {
         Collection<Menu> result = new HashSet<>();
         for (Menu menu : menus) {
-            if (menu.isEnable()) {
+            if (menu.getEnable()) {
                 result.add(menu);
                 if (menu.getParent() != null) {
                     result.add(menu.getParent());
@@ -200,17 +186,18 @@ public class MenuServiceImpl implements MenuService {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.failed"));
                 }
                 // 菜单存在资源
-                if (menu.getResources().size() > 0) {
+                // TODO: 2018/5/20 待确认，存在资源我觉得可以删
+                /* if (menu.getResources().size() > 0) {
                     for (Resource resource : menu.getResources()) {
-                        if (resource.isEnable()) {
+                        if (resource.getEnable()) {
                             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.resource"));
                         }
                     }
-                }
+                }*/
                 // 菜单存在角色
                 if (menu.getRoles().size() > 0) {
                     for (Role role : menu.getRoles()) {
-                        if (role.isEnable()) {
+                        if (role.getEnable()) {
                             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.role"));
                         }
                     }
@@ -227,7 +214,7 @@ public class MenuServiceImpl implements MenuService {
         Collection<Menu> menus = new HashSet<>();
         Collection<? extends Menu> list = menuDao.findAll();
         for (Menu menuEntity : list) {
-            if (!menuEntity.isEnable()) {
+            if (!menuEntity.getEnable()) {
                 continue;
             }
             if (!menus.contains(menuEntity)) {
@@ -245,11 +232,12 @@ public class MenuServiceImpl implements MenuService {
     public Collection<? extends Menu> updateEnable(Collection<String> idList, boolean enable) {
         Collection<? extends Menu> menuList = menuDao.findAll(idList);
         for (Menu menu : menuList) {
-            Collection<? extends Menu> list = getMenuByCondition(null, null, null, EnableEnum.ENABLE, menu.getId());
-            if (list.size() != 0) {
+            // TODO: 2018/5/18 待确认  父菜单被禁用了 那子菜单是否也被禁用 之前的逻辑看起来是 有子菜单的菜单 不允许启用禁用 看起来并不合理
+            /* Collection<? extends Menu> list = getMenuByCondition(null, null, null, EnableEnum.ENABLE, menu.getId());
+            if (CollectionUtil.isEmpty(list)) {
                 LOGGER.debug("{} has parent menu {}, dont update!", menu.getName(), menu.getParent());
                 throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.parent"));
-            }
+            }*/
             menu.setEnable(enable);
         }
         return menuDao.save(menuList);
@@ -259,14 +247,14 @@ public class MenuServiceImpl implements MenuService {
     public Resource addResourceOfMenu(String menuId, Resource resourceReq) {
         Resource resource = resourceDao.getNewResourceEntity();
         resource.setName(resourceReq.getName());
-        resource.setURL(resourceReq.getURL());
-        resource.setEnable(resourceReq.isEnable());
+        resource.addURL(resourceReq.findURL());
+        resource.setEnable(resourceReq.getEnable());
         resource.setMethod(resourceReq.getMethod());
         String resourceCode = resourceReq.getResourceCode();
         if (StringUtil.isNotNull(resourceCode)) {
             resource.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
         }
-        Menu menu = this.get(menuId, EnableEnum.ENABLE);
+        Menu menu = this.get(menuId);
         if (menu != null) {
             Collection<? extends Resource> collection = menu.getResources();
             for (Resource res : collection) {
@@ -280,7 +268,7 @@ public class MenuServiceImpl implements MenuService {
             resource.setIdentifier(resourceReq.getIdentifier());
         }
         Resource resourcesOfSave = resourceDao.save(resource);
-        Menu menus = this.get(menuId, EnableEnum.ENABLE);
+        Menu menus = this.get(menuId);
         if (menus != null) {
             menus.add(resourcesOfSave);
             menuDao.save(menus);
@@ -290,7 +278,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Collection<? extends Resource> getMenuResources(String menuId, EnableEnum menuEnable, EnableEnum resourceEnable) {
-        Menu menu = this.get(menuId, EnableEnum.ALL);
+        Menu menu = this.get(menuId);
         if (menu != null) {
             return menu.getResources();
         }
@@ -299,7 +287,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Collection<? extends Role> getMenuRoles(String menuId, EnableEnum menuEnable, EnableEnum roleEnable) {
-        Menu menu = this.get(menuId, menuEnable);
+        Menu menu = this.get(menuId);
         if (menu != null) {
             return roleService.getFilterRoles(menu.getRoles());
         }
@@ -319,7 +307,7 @@ public class MenuServiceImpl implements MenuService {
         }
 
         // resource 是否有效
-        if (!resource.isEnable()) {
+        if (!resource.getEnable()) {
             return false;
         }
 
@@ -341,7 +329,7 @@ public class MenuServiceImpl implements MenuService {
             }
         }
 
-        Collection<? extends Resource> userResources = userService.getResources(userId);
+        Collection<? extends Resource> userResources = userService.getUserResources(userId, EnableEnum.ENABLE);
         if (CollectionUtil.isEmpty(userResources)) {
             return false;
         }
@@ -349,13 +337,32 @@ public class MenuServiceImpl implements MenuService {
         return hasMenu && hasResource;
     }
 
+
+    private Set<Menu> addRoleMenus(Collection<? extends Role> roles, Set<Menu> menus) {
+        if (null == roles) {
+            return menus;
+        }
+        for (Role role : roles) {
+            if (role.getEnable()) {
+                Collection<? extends Menu> userMenus = roleService.getRoleMenus(role.getId(), EnableEnum.ENABLE);
+                for (Menu menu : userMenus) {
+                    if (menu.getEnable()) {
+                        menus.add(menu);
+                    }
+                }
+            }
+        }
+        return menus;
+    }
+
+
     private boolean shouldIgnore(Resource resource) {
         List<String> ignorePatterns = new ArrayList<>();
-        String path = resource.getMethod().toString().concat(":").concat(resource.getURL());
+        String path = resource.getMethod().toString().concat(":").concat(resource.findURL());
         Collections.addAll(ignorePatterns, patterns.split(","));
         for (String pattern : ignorePatterns) {
             if (matcher.match(pattern, path)) {
-                LOGGER.debug("{} {} is match {}", resource.getMethod().toString(), resource.getURL(), pattern);
+                LOGGER.debug("{} {} is match {}", resource.getMethod().toString(), resource.findURL(), pattern);
                 return true;
             }
         }
@@ -368,14 +375,14 @@ public class MenuServiceImpl implements MenuService {
         Collection<MenuVO> menusResources = new ArrayList<>();
         Collection<? extends Menu> menuEntity = this.getMenus();
         for (Menu menu : menuEntity) {
-            if (menu.isEnable()) {
+            if (menu.getEnable()) {
                 MenuVO detail = new MenuVO();
                 BeanUtils.copyProperties(menu, detail);
                 detail.setParentId(menu.getParentId());
                 Collection<ResourceVO> resList = new ArrayList<>();
                 Collection<Resource> resourceList = (Collection<Resource>) menu.getResources();
                 for (Resource resource : resourceList) {
-                    if (resource != null && resource.isEnable()) {
+                    if (resource != null && resource.getEnable()) {
                         ResourceVO resourceDetail = new ResourceVO();
                         BeanUtils.copyProperties(resource, resourceDetail);
                         resList.add(resourceDetail);
@@ -386,5 +393,31 @@ public class MenuServiceImpl implements MenuService {
             }
         }
         return menusResources;
+    }
+
+    private void validate(Menu menu) {
+        menuDao.findAll(null, null, menu.getRoute(), EnableEnum.ALL, null);
+        if (StringUtil.isEmpty(menu.getRoute())) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.menu.route.empty"));
+        }
+        if (StringUtil.isEmpty(menu.getName())) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.menu.name.empty"));
+        }
+        Collection<? extends Menu> oldNameMenus = menuDao.findAllEq(menu.getName());
+        if (oldNameMenus.size() > 0) {
+            for (Menu nameMenu : oldNameMenus) {
+                if (!nameMenu.getId().equals(menu.getId())) {
+                    throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.menu.name.duplicated"));
+                }
+            }
+        }
+        Collection<? extends Menu> oldRouteMenus = menuDao.findAllEq(menu.getName());
+        if (oldRouteMenus.size() > 0) {
+            for (Menu routeMenu : oldRouteMenus) {
+                if (!routeMenu.getId().equals(menu.getId())) {
+                    throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.menu.route.duplicated"));
+                }
+            }
+        }
     }
 }

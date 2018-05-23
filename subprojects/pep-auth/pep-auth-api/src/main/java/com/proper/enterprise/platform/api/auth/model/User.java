@@ -6,7 +6,7 @@ import java.util.Collection;
 
 /**
  * 用户
- *
+ * <p>
  * 用户即系统中的账号，需要设定用户名、密码及邮箱。
  * 系统账号来源应支持多种形式，以适应单点登录需求。
  * 根据角色规则，可查看用户所拥有的角色，可为用户分配没有角色规则的普通角色。
@@ -117,7 +117,14 @@ public interface User extends IBase {
      *
      * @return 返回 true 时代表是超级用户
      */
-    boolean isSuperuser();
+    Boolean getSuperuser();
+
+    /**
+     * 设置是否为超级用户
+     *
+     * @param superuser true 是 false否
+     */
+    void setSuperuser(Boolean superuser);
 
     /**
      * 获得用户所属的用户组

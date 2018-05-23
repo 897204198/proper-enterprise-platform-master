@@ -1,11 +1,14 @@
 package com.proper.enterprise.platform.core.jpa.entity;
 
-import com.proper.enterprise.platform.core.entity.BaseEntity;
 import javax.persistence.*;
 
 @Entity
 @Table(name = "ManyEntity")
 public class ManyEntity extends BaseEntity {
+
+    public ManyEntity() {
+        super.setEnable(true);
+    }
 
     @Column
     private Integer test;

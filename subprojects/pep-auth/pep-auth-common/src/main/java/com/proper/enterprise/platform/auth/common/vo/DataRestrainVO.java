@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.vo;
 
 import com.proper.enterprise.platform.api.auth.model.DataRestrain;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
 
 import javax.persistence.Column;
 

@@ -28,13 +28,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * A {@link org.springframework.cache.CacheManager} implementation
+ * A {@link CacheManager} implementation
  * backed by Redisson instance.
  *
  * @author Nikita Koksharov
  *
- * Copy from {@link org.redisson.spring.cache.RedissonSpringCacheManager} v3.5.3
- * Extend {@link RedissonSpringCacheManager#afterPropertiesSet()} to support {@link com.proper.enterprise.platform.api.cache.CacheDuration}
+ * Copy from {@link RedissonSpringCacheManager} v3.5.3
+ * Extend {@link RedissonSpringCacheManager#afterPropertiesSet()} to support {@link CacheDuration}
  */
 public class RedisCacheManager implements CacheManager, ResourceLoaderAware, InitializingBean {
 

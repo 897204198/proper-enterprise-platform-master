@@ -6,7 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Component;
 
+@Component
 public class APISecret {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APISecret.class);

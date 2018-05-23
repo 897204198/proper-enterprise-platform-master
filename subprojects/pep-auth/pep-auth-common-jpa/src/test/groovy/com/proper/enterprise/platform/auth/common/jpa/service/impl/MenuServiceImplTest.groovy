@@ -2,16 +2,12 @@ package com.proper.enterprise.platform.auth.common.jpa.service.impl
 
 import com.proper.enterprise.platform.api.auth.dao.MenuDao
 import com.proper.enterprise.platform.api.auth.dao.ResourceDao
-import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.ResourceService
-import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity
-import com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
-import org.springframework.web.bind.annotation.RequestMethod
 
 @Sql([
     "/com/proper/enterprise/platform/auth/common/jpa/resources.sql",
@@ -27,6 +23,9 @@ class MenuServiceImplTest extends AbstractTest {
 
     @Autowired
     MenuService service
+
+    @Autowired
+    MenuDao dao
 
     @Autowired
     ResourceService resourceService
@@ -71,7 +70,7 @@ class MenuServiceImplTest extends AbstractTest {
         // could access the resource with a role having it
         assert service.accessible(resourceService.get('test-u'), 'test2')
         // 资源停用且未删除时，仍受访问控制约束
-        assert !service.accessible(resourceService.get('test-enable', EnableEnum.ALL), 'test2')
+        assert !service.accessible(resourceService.get('test-enable'), 'test2')
         // 资源删除后按未定义资源处理，不受访问控制
         //assert service.accessible(resourceService.get('test-valid'), 'test2')
         // normal user could not access resource without authorization
@@ -87,37 +86,6 @@ class MenuServiceImplTest extends AbstractTest {
 
         assert !service.accessible(resourceDao.get('test-enable'), 'test1')
         //assert !service.accessible(resourceDao.get('test-valid'), 'test1')
-    }
-
-    @Test
-    void testGetByIds(){
-        Collection<String> ids = new HashSet<>()
-        ids.add("id1")
-        ids.add("id2")
-        assert service.getByIds(ids).size() == 0
-        assert resourceService.getByIds(ids).size() == 0
-
-        MenuEntity menuEntity = new MenuEntity()
-        menuEntity.setName('menu')
-        menuEntity.setRoute("route")
-        menuEntity = service.save(menuEntity)
-
-        ids.clear()
-        ids.add(menuEntity.getId())
-        assert service.getByIds(ids).size() == 1
-        assert menuDao.get(menuEntity.getId(), EnableEnum.DISABLE) == null
-
-        ResourceEntity resourceEntity = new ResourceEntity()
-        resourceEntity.setName('res1')
-        resourceEntity.setMethod(RequestMethod.GET)
-        resourceEntity.setURL('/auto')
-        resourceEntity = resourceService.save(resourceEntity)
-
-        ids.clear()
-        ids.add(resourceEntity.getId())
-        assert resourceService.getByIds(ids).size() == 1
-
-        menuDao.deleteAll()
     }
 
 }

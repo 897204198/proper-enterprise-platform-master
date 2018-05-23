@@ -1,9 +1,12 @@
 package com.proper.enterprise.platform.auth.common.vo;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.model.DataRestrain;
-import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
-import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
+import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,34 +15,63 @@ import javax.persistence.Convert;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@POJORelevance(relevanceDOClassName = "com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity")
 public class ResourceVO extends BaseVO implements Resource {
+    private static final String RESOURCE_ENTITY_PATH = "com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity";
+
+    public ResourceVO() {
+    }
+
+    public interface Single extends BaseView {
+
+    }
 
     /**
      * 名称
      */
+    @JsonView(value = {Single.class})
     private String name;
     /**
      * 权限对应的Url地址
      */
+    @JsonView(value = {Single.class})
     private String url;
+
+    @JsonView(value = {Single.class})
     private RequestMethod method = RequestMethod.GET;
     /**
      * 菜单类别数据字典
      */
     @Convert(converter = DataDicLiteConverter.class)
+    @JsonView(value = {Single.class})
     private DataDicLite resourceType;
-    /**
-     * 菜单状态
-     */
-    private boolean enable = true;
-    private Collection<? extends Menu> menus = new ArrayList<>();
-    private Collection<? extends Role> roles = new ArrayList<>();
+
+    @POJOConverter(fromClassName = RESOURCE_ENTITY_PATH,
+        fieldName = "menus",
+        targetClassName = RESOURCE_ENTITY_PATH)
+    private Collection<MenuVO> menus;
+
+    @POJOConverter(fromClassName = RESOURCE_ENTITY_PATH,
+        fieldName = "roles",
+        targetClassName = RESOURCE_ENTITY_PATH)
+    private Collection<RoleVO> roles;
     /**
      * 标识
      */
+    @JsonView(value = {Single.class})
     private String identifier;
-    private Collection<DataRestrainVO> dataRestrainEntities = new ArrayList<>();
+
+
+    @POJOConverter(fromClassName = RESOURCE_ENTITY_PATH,
+        fieldName = "dataRestrainEntities",
+        targetClassName = RESOURCE_ENTITY_PATH)
+    private Collection<DataRestrainVO> dataRestrainEntities;
+
+    @JsonView(value = {Single.class})
     private String resourceCode;
+
+    @JsonView(value = {Single.class})
+    private Boolean extend;
 
     public String getName() {
         return name;
@@ -49,21 +81,21 @@ public class ResourceVO extends BaseVO implements Resource {
         this.name = name;
     }
 
-    public String getURL() {
+    public String findURL() {
         return url;
     }
 
-    public void setURL(String url) {
+    public void addURL(String url) {
         this.url = url;
     }
 
     @Override
-    public Collection<? extends DataRestrain> getDataRestrains() {
+    public Collection<DataRestrainVO> getDataRestrains() {
         return dataRestrainEntities;
     }
 
     @Override
-    public Collection<DataRestrain> getDataRestrains(String tableName) {
+    public Collection<DataRestrainVO> getDataRestrains(String tableName) {
         return new ArrayList<>();
     }
 
@@ -98,16 +130,6 @@ public class ResourceVO extends BaseVO implements Resource {
     }
 
     @Override
-    public boolean isEnable() {
-        return enable;
-    }
-
-    @Override
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    @Override
     public String getIdentifier() {
         return identifier;
     }
@@ -118,22 +140,16 @@ public class ResourceVO extends BaseVO implements Resource {
     }
 
     @Override
-    public Collection<? extends Menu> getMenus() {
+    public Collection<MenuVO> getMenus() {
         return menus;
     }
 
-    public void setMenus(Collection<? extends Menu> menus) {
-        this.menus = menus;
-    }
 
     @Override
-    public Collection<? extends Role> getRoles() {
+    public Collection<RoleVO> getRoles() {
         return roles;
     }
 
-    public void setRoles(Collection<? extends Role> roles) {
-        this.roles = roles;
-    }
 
     @Override
     public String getResourceCode() {
@@ -143,5 +159,37 @@ public class ResourceVO extends BaseVO implements Resource {
     @Override
     public void setResourceCode(String resourceCode) {
         this.resourceCode = resourceCode;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setMenus(Collection<MenuVO> menus) {
+        this.menus = menus;
+    }
+
+    public void setRoles(Collection<RoleVO> roles) {
+        this.roles = roles;
+    }
+
+    public Collection<DataRestrainVO> getDataRestrainEntities() {
+        return dataRestrainEntities;
+    }
+
+    public void setDataRestrainEntities(Collection<DataRestrainVO> dataRestrainEntities) {
+        this.dataRestrainEntities = dataRestrainEntities;
+    }
+
+    public Boolean getExtend() {
+        return extend;
+    }
+
+    public void setExtend(Boolean extend) {
+        this.extend = extend;
     }
 }

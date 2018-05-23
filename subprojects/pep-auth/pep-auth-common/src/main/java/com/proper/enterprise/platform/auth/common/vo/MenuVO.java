@@ -1,87 +1,124 @@
 package com.proper.enterprise.platform.auth.common.vo;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
-import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
+import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
-
+@POJORelevance(relevanceDOClassName = "com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity")
 public class MenuVO extends BaseVO implements Menu {
 
-    private boolean leaf;
+    private static final String MENU_ENTITY_PATH = "com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity";
 
-    public void setLeaf(boolean leaf) {
-        this.leaf = leaf;
+    public interface Single extends BaseView {
+
     }
 
+    public interface MenuWithResource extends Single, ResourceVO.Single {
+
+    }
+
+    public MenuVO() {
+    }
+
+    @JsonView(value = {Single.class})
+    private boolean leaf;
+
+
+    @JsonView(value = {Single.class})
     private Menu application;
 
     /**
      * 菜单名称
      */
+    @JsonView(value = {Single.class})
     private String name;
 
     /**
      * 前端路径
      */
+    @JsonView(value = {Single.class})
     private String route;
 
     /**
      * 父菜单
      */
-    private Menu parent;
+    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
+        fieldName = "parent",
+        targetClassName = MENU_ENTITY_PATH)
+    private MenuVO parent;
 
     /**
      * 上级菜单 id
      */
+    @JsonView(value = {Single.class})
     private String parentId;
 
     /**
      * 菜单类型编码
      */
+    @JsonView(value = {Single.class})
     private String menuCode;
 
     /**
      * 子菜单集合
      */
-    private Collection<MenuVO> children = new ArrayList<>();
+    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
+        fieldName = "children",
+        targetClassName = MENU_ENTITY_PATH)
+    private Collection<MenuVO> children;
 
-    private Collection<? extends Role> roles = new ArrayList<>();
+    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
+        fieldName = "roleEntities",
+        targetClassName = MENU_ENTITY_PATH)
+    private Collection<RoleVO> roles;
 
-    private Collection<? extends Resource> resources = new ArrayList<>();
+    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
+        fieldName = "resourceEntities",
+        targetClassName = MENU_ENTITY_PATH)
+    @JsonView(value = {MenuWithResource.class})
+    private Collection<ResourceVO> resources;
 
     /**
      * 菜单同级排序号
      */
+    @JsonView(value = {Single.class})
     private int sequenceNumber;
 
     /**
      * 菜单图标样式名称
      */
+    @JsonView(value = {Single.class})
     private String icon;
 
     /**
      * 描述说明
      */
+    @JsonView(value = {Single.class})
     private String description;
 
     /**
      * 菜单类别数据字典
      */
+    @JsonView(value = {Single.class})
     private DataDicLite menuType;
-
-    /**
-     * 菜单状态
-     */
-    private boolean enable = true;
 
     /**
      * 标识
      */
+    @JsonView(value = {Single.class})
     private String identifier;
+
+    public void setLeaf(boolean leaf) {
+        this.leaf = this.isLeaf();
+    }
 
     @Override
     public String getName() {
@@ -128,11 +165,17 @@ public class MenuVO extends BaseVO implements Menu {
         return parent;
     }
 
+    public void setParent(MenuVO parent) {
+        this.parent = parent;
+    }
+
     @Override
-    public void setParent(Menu parent) {
-        if (parent != null) {
-            this.parent = parent;
+    public void addParent(Menu parent) {
+        if (parent == null) {
+            this.parent = null;
+            return;
         }
+        this.parent = (MenuVO) parent;
     }
 
     @Override
@@ -180,7 +223,10 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public boolean isLeaf() {
-        return leaf;
+        if (CollectionUtil.isEmpty(getChildren()) && CollectionUtil.isEmpty(resources)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -229,32 +275,18 @@ public class MenuVO extends BaseVO implements Menu {
     }
 
     @Override
-    public boolean isEnable() {
-        return enable;
-    }
-
-    @Override
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    @Override
     public Collection<MenuVO> getChildren() {
-        return null;
+        return children;
     }
 
     @Override
-    public Collection<? extends Role> getRoles() {
+    public Collection<RoleVO> getRoles() {
         return roles;
     }
 
     @Override
-    public Collection<? extends Resource> getResources() {
+    public Collection<ResourceVO> getResources() {
         return resources;
-    }
-
-    public void setResources(Collection<? extends Resource> resources) {
-        this.resources = resources;
     }
 
     @Override
@@ -267,11 +299,15 @@ public class MenuVO extends BaseVO implements Menu {
         this.menuCode = menuCode;
     }
 
-    public void setRoles(Collection<? extends Role> roles) {
+    public void setChildren(Collection<MenuVO> children) {
+        this.children = children;
+    }
+
+    public void setRoles(Collection<RoleVO> roles) {
         this.roles = roles;
     }
 
-    public void setChildren(Collection<MenuVO> children) {
-        this.children = children;
+    public void setResources(Collection<ResourceVO> resources) {
+        this.resources = resources;
     }
 }

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.jwt.controller;
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
@@ -26,7 +27,7 @@ class JWTTokenController extends BaseController {
     public ResponseEntity<String> encode(@RequestBody JWTHeader header) throws Exception {
         User user;
         if (StringUtil.isBlank(header.getId()) && StringUtil.isNotBlank(header.getName())) {
-            user = userService.getByUsername(header.getName());
+            user = userService.getByUsername(header.getName(), EnableEnum.ENABLE);
             if (user != null) {
                 header.setId(user.getId());
             }

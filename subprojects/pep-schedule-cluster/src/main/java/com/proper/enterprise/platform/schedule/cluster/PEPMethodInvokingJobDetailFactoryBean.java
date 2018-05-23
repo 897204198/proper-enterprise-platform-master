@@ -57,7 +57,7 @@ public class PEPMethodInvokingJobDetailFactoryBean extends ArgumentConvertingMet
     /**
      * Set the group of the job.
      * <p>Default is the default group of the Scheduler.
-     * @see org.quartz.Scheduler#DEFAULT_GROUP
+     * @see Scheduler#DEFAULT_GROUP
      */
     public void setGroup(String group) {
         this.group = group;

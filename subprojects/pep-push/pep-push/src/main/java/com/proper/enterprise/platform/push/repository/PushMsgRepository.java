@@ -18,10 +18,10 @@ public interface PushMsgRepository extends BaseJpaRepository<PushMsgEntity, Stri
     List<PushMsgEntity> findByAppkeyAndMsgidIn(String appkey, List<String> lstMsgids);
 
     List<PushMsgEntity> findByAppkeyAndDeviceAndUseridAndMstatus(String appkey, PushDeviceEntity device, String uid,
-            PushMsgStatus unsend);
+                                                                 PushMsgStatus unsend);
 
-    Page<PushMsgEntity> findByAppkeyAndMstatusAndSendCountLessThanEqualAndDevicePushMode(String appkey,
-            PushMsgStatus unsend, int maxSendCount, PushMode pushMode, Pageable pageable);
+    Page<PushMsgEntity> findByAppkeyAndMstatusAndSendCountLessThanEqualAndDevicePushMode(String appkey, PushMsgStatus unsend, int maxSendCount,
+                                                                                         PushMode pushMode, Pageable pageable);
 
     @Modifying
     @Query("delete from PushMsgEntity m where m.appkey=:appkey and  m.createTime <= :date2")

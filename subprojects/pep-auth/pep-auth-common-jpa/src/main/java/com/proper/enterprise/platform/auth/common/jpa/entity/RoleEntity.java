@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.auth.common.jpa.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
-import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 
 import javax.persistence.*;
@@ -15,12 +15,13 @@ import java.util.Collection;
 @CacheEntity
 public class RoleEntity extends BaseEntity implements Role {
 
-    public RoleEntity() { }
+    public RoleEntity() {
+    }
 
     /**
      * 名称
      */
-    @Column
+    @Column(nullable = false, unique = true)
     private String name;
 
     /**
@@ -33,55 +34,35 @@ public class RoleEntity extends BaseEntity implements Role {
      * 父菜单
      */
     @ManyToOne
-    @JoinColumn(name = "PARENT_ID")
+    @JoinColumn(name = "PARENT_ID", foreignKey = @ForeignKey(name = "null"))
     @JsonIgnore
     private RoleEntity parent;
 
     @Transient
     private String parentId;
 
-    @Transient
-    private Collection<? extends Menu> menus = new ArrayList<>();
-
-    @Transient
-    private Collection<? extends User> users = new ArrayList<>();
-
-    @Transient
-    private Collection<? extends UserGroup> userGroups = new ArrayList<>();
-
-    @Transient
-    private Collection<? extends Resource> resources = new ArrayList<>();
-
     @ManyToMany(mappedBy = "roleEntities")
-    private Collection<UserEntity> userEntities = new ArrayList<>();
+    private Collection<UserEntity> userEntities;
 
     @ManyToMany(mappedBy = "roleGroupEntities")
-    private Collection<UserGroupEntity> userGroupEntities = new ArrayList<>();
+    private Collection<UserGroupEntity> userGroupEntities;
 
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_ROLES_MENUS",
-            joinColumns = @JoinColumn(name = "ROLE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "MENU_ID"),
-            uniqueConstraints = @UniqueConstraint(columnNames = {"ROLE_ID", "MENU_ID"}))
-    private Collection<MenuEntity> menuEntities = new ArrayList<>();
+        joinColumns = @JoinColumn(name = "ROLE_ID"),
+        inverseJoinColumns = @JoinColumn(name = "MENU_ID"),
+        uniqueConstraints = @UniqueConstraint(columnNames = {"ROLE_ID", "MENU_ID"}))
+    private Collection<MenuEntity> menuEntities;
 
     @ManyToMany
     @JoinTable(name = "PEP_AUTH_ROLES_RESOURCES",
         joinColumns = @JoinColumn(name = "ROLE_ID"),
         inverseJoinColumns = @JoinColumn(name = "RESOURCE_ID"),
         uniqueConstraints = @UniqueConstraint(columnNames = {"ROLE_ID", "RESOURCE_ID"}))
-    private Collection<ResourceEntity> resourcesEntities = new ArrayList<>();
+    private Collection<ResourceEntity> resourcesEntities;
 
     public String getParentId() {
-        return parent != null ? parent.getId() : parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getParentName() {
-        return parent != null ? parent.getName() : "";
+        return parentId;
     }
 
     @Override
@@ -125,10 +106,12 @@ public class RoleEntity extends BaseEntity implements Role {
     }
 
     @Override
-    public void setParent(Role parent) {
-        if (parent instanceof RoleEntity) {
-            this.parent = (RoleEntity) parent;
+    public void addParent(Role parent) {
+        if (null == parent) {
+            this.parent = null;
+            return;
         }
+        this.parent = (RoleEntity) parent;
     }
 
     @Override
@@ -157,23 +140,75 @@ public class RoleEntity extends BaseEntity implements Role {
 
     @Override
     public void add(Collection<? extends Menu> menus) {
+        if (null == menuEntities) {
+            menuEntities = new ArrayList<>();
+        }
         menuEntities.addAll(CollectionUtil.convert(menus));
     }
 
     @Override
     @SuppressWarnings({"SuspiciousMethodCalls"})
     public void remove(Collection<? extends Menu> menus) {
+        if (null == menuEntities) {
+            menuEntities = new ArrayList<>();
+        }
         menuEntities.removeAll(CollectionUtil.convert(menus));
     }
 
     @Override
     public void addResources(Collection<? extends Resource> resources) {
+        if (null == resourcesEntities) {
+            resourcesEntities = new ArrayList<>();
+        }
         resourcesEntities.addAll(CollectionUtil.convert(resources));
     }
 
     @Override
     @SuppressWarnings({"SuspiciousMethodCalls"})
     public void removeResources(Collection<? extends Resource> resources) {
+        if (null == resourcesEntities) {
+            resourcesEntities = new ArrayList<>();
+        }
         resourcesEntities.removeAll(CollectionUtil.convert(resources));
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public void setParent(RoleEntity parent) {
+        this.parent = parent;
+    }
+
+    public Collection<UserEntity> getUserEntities() {
+        return userEntities;
+    }
+
+    public void setUserEntities(Collection<UserEntity> userEntities) {
+        this.userEntities = userEntities;
+    }
+
+    public Collection<UserGroupEntity> getUserGroupEntities() {
+        return userGroupEntities;
+    }
+
+    public void setUserGroupEntities(Collection<UserGroupEntity> userGroupEntities) {
+        this.userGroupEntities = userGroupEntities;
+    }
+
+    public Collection<MenuEntity> getMenuEntities() {
+        return menuEntities;
+    }
+
+    public void setMenuEntities(Collection<MenuEntity> menuEntities) {
+        this.menuEntities = menuEntities;
+    }
+
+    public Collection<ResourceEntity> getResourcesEntities() {
+        return resourcesEntities;
+    }
+
+    public void setResourcesEntities(Collection<ResourceEntity> resourcesEntities) {
+        this.resourcesEntities = resourcesEntities;
     }
 }

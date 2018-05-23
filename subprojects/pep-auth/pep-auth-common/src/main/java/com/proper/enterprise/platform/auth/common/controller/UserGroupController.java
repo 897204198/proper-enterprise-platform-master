@@ -1,13 +1,13 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
-import com.proper.enterprise.platform.api.auth.model.Role;
-import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.api.auth.service.UserGroupService;
+import com.proper.enterprise.platform.auth.common.vo.RoleVO;
 import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
+import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,22 +23,26 @@ public class UserGroupController extends BaseController {
     private UserGroupService service;
 
     @GetMapping
+    @JsonView(value = {UserGroupVO.Single.class})
     public ResponseEntity<?> getGroups(String name, String description, @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
-        return responseOfGet(isPageSearch() ? service.getGroupsPagniation(name, description, userGroupEnable)
-            : service.getGroups(name, description, userGroupEnable));
+        return isPageSearch() ? responseOfGet(service.getGroupsPagniation(name, description, userGroupEnable),
+            UserGroupVO.class, UserGroupVO.Single.class)
+            : responseOfGet(service.getGroups(name, description, userGroupEnable), UserGroupVO.class, UserGroupVO.Single.class);
     }
 
     @SuppressWarnings("unchecked")
     @PutMapping
-    public ResponseEntity<Collection<? extends UserGroup>> updateEnable(@RequestBody Map<String, Object> reqMap) {
+    @JsonView(value = {UserGroupVO.Single.class})
+    public ResponseEntity<Collection<UserGroupVO>> updateEnable(@RequestBody Map<String, Object> reqMap) {
         Collection<String> idList = (Collection<String>) reqMap.get("ids");
         boolean enable = (boolean) reqMap.get("enable");
-        return responseOfPut(service.updateEnable(idList, enable));
+        return responseOfPut(service.updateEnable(idList, enable), UserGroupVO.class, UserGroupVO.Single.class);
     }
 
     @PostMapping
-    public ResponseEntity<UserGroup> create(@RequestBody UserGroupVO userGroupVO) {
-        return responseOfPost(service.saveOrUpdateUserGroup(userGroupVO));
+    @JsonView(value = {UserGroupVO.Single.class})
+    public ResponseEntity<UserGroupVO> create(@RequestBody UserGroupVO userGroupVO) {
+        return responseOfPost(service.save(userGroupVO), UserGroupVO.class, UserGroupVO.Single.class);
     }
 
     @DeleteMapping
@@ -47,33 +51,31 @@ public class UserGroupController extends BaseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserGroup> get(@PathVariable String id) {
-        return responseOfGet(service.get(id, EnableEnum.ALL));
+    @JsonView(value = {UserGroupVO.Single.class})
+    public ResponseEntity<UserGroupVO> get(@PathVariable String id) {
+        return responseOfGet(service.get(id, EnableEnum.ALL), UserGroupVO.class, UserGroupVO.Single.class);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserGroup> update(@PathVariable String id,
-                                            @RequestBody UserGroupVO userGroupVO) {
+    @JsonView(value = {UserGroupVO.Single.class})
+    public ResponseEntity<UserGroupVO> update(@PathVariable String id, @RequestBody UserGroupVO userGroupVO) {
         UserGroup group = service.get(id, EnableEnum.ALL);
         if (group != null) {
             userGroupVO.setId(id);
         }
-        return responseOfPut(service.saveOrUpdateUserGroup(userGroupVO));
+        return responseOfPut(service.update(userGroupVO), UserGroupVO.class, UserGroupVO.Single.class);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable String id) {
         UserGroup group = service.get(id);
-        if (group != null && CollectionUtil.isEmpty(group.getUsers())) {
-            service.delete(group);
-            return responseOfDelete(true);
-        }
-        return responseOfDelete(false);
+        return responseOfDelete(service.delete(group));
     }
 
     @PostMapping("/{id}/role/{roleId}")
-    public ResponseEntity<UserGroup> addUserGroupRole(@PathVariable String id, @PathVariable String roleId) {
-        return responseOfPost(service.saveUserGroupRole(id, roleId));
+    @JsonView(value = {UserGroupVO.GroupWithRole.class})
+    public ResponseEntity<UserGroupVO> addUserGroupRole(@PathVariable String id, @PathVariable String roleId) {
+        return responseOfPost(service.saveUserGroupRole(id, roleId), UserGroupVO.class, UserGroupVO.GroupWithRole.class);
     }
 
     @DeleteMapping("/{id}/role/{roleId}")
@@ -82,9 +84,10 @@ public class UserGroupController extends BaseController {
     }
 
     @GetMapping(path = "/{id}/roles")
-    public ResponseEntity<Collection<? extends Role>> getGroupRoles(@PathVariable String id,
-                                                                    @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(service.getGroupRoles(id, EnableEnum.ALL, roleEnable));
+    @JsonView(value = {RoleVO.Single.class})
+    public ResponseEntity<Collection<RoleVO>> getGroupRoles(@PathVariable String id,
+                                                            @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
+        return responseOfGet(service.getGroupRoles(id, EnableEnum.ALL, roleEnable), RoleVO.class, RoleVO.Single.class);
     }
 
     /**
@@ -95,8 +98,9 @@ public class UserGroupController extends BaseController {
      * @return 结果
      */
     @PostMapping(path = "/{groupId}/user/{userId}")
-    public ResponseEntity<UserGroup> addUserGroup(@PathVariable String groupId, @PathVariable String userId) {
-        return responseOfPost(service.addGroupUser(groupId, userId));
+    @JsonView(value = {UserGroupVO.Single.class})
+    public ResponseEntity<UserGroupVO> addUserGroup(@PathVariable String groupId, @PathVariable String userId) {
+        return responseOfPost(service.addGroupUser(groupId, userId), UserGroupVO.class, UserGroupVO.Single.class);
     }
 
     /**
@@ -123,19 +127,21 @@ public class UserGroupController extends BaseController {
     }
 
     @GetMapping(path = "/{id}/users")
-    public ResponseEntity<Collection<? extends User>> getGroupUsers(@PathVariable String id,
-                                                                    @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
-        return responseOfGet(service.getGroupUsers(id, EnableEnum.ALL, userEnable));
+    @JsonView(value = {UserVO.Single.class})
+    public ResponseEntity<Collection<UserVO>> getGroupUsers(@PathVariable String id,
+                                                            @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
+        return responseOfGet(service.getGroupUsers(id, EnableEnum.ALL, userEnable), UserVO.class, UserVO.Single.class);
     }
 
     @PutMapping(path = "/{id}/users")
-    public ResponseEntity<UserGroup> addGroupUserByUserIds(@PathVariable String id, @RequestBody Map<String, String> reqMap) {
+    @JsonView(value = {UserGroupVO.Single.class})
+    public ResponseEntity<UserGroupVO> addGroupUserByUserIds(@PathVariable String id, @RequestBody Map<String, String> reqMap) {
         String ids = reqMap.get("ids");
         List<String> idsList = new ArrayList<>();
         if (StringUtils.isNotEmpty(ids)) {
             idsList = Arrays.asList(ids.split(","));
         }
-        return responseOfGet(service.addGroupUserByUserIds(id, idsList));
+        return responseOfGet(service.addGroupUserByUserIds(id, idsList), UserGroupVO.class, UserGroupVO.Single.class);
     }
 
 }

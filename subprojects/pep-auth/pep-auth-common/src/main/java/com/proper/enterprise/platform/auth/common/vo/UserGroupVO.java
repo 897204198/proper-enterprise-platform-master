@@ -1,44 +1,69 @@
 package com.proper.enterprise.platform.auth.common.vo;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
+import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
+import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.view.BaseView;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
+@POJORelevance(relevanceDOClassName = "com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity")
 public class UserGroupVO extends BaseVO implements UserGroup {
+    public interface Single extends BaseView {
+
+    }
+
+    public interface GroupWithRole extends Single {
+
+    }
+
+    private static final String USER_GROUP_ENTITY_PATH = "com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity";
 
     /**
      * 用户组名称
      */
+    @JsonView(value = {Single.class})
     private String name;
 
     /**
      * 描述
      */
+    @JsonView(value = {Single.class})
     private String description;
 
     /**
      * 顺序
      */
+    @JsonView(value = {Single.class})
     private int seq;
 
     /**
      * 用户组内用户列信息列表
      */
-    private Collection<? extends User> users = new ArrayList<>();
+    @POJOConverter(fromClassName = USER_GROUP_ENTITY_PATH,
+        fieldName = "userEntities",
+        targetClassName = USER_GROUP_ENTITY_PATH)
+    private Collection<UserVO> users;
 
     /**
      * 用户组内角色列信息列表
      */
-    private Collection<? extends Role> roles = new ArrayList<>();
+    @POJOConverter(fromClassName = USER_GROUP_ENTITY_PATH,
+        fieldName = "roleGroupEntities",
+        targetClassName = USER_GROUP_ENTITY_PATH)
+    @JsonView(value = GroupWithRole.class)
+    private Collection<RoleVO> roles;
 
     /**
      * 用户组状态
      */
-    private boolean enable = true;
+    @JsonView(value = {Single.class})
+    private Boolean enable;
 
     @Override
     public String getName() {
@@ -71,6 +96,16 @@ public class UserGroupVO extends BaseVO implements UserGroup {
     }
 
     @Override
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    @Override
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
+
+    @Override
     public void add(User user) {
 
     }
@@ -97,22 +132,20 @@ public class UserGroupVO extends BaseVO implements UserGroup {
     }
 
     @Override
-    public boolean isEnable() {
-        return enable;
+    public Collection<UserVO> getUsers() {
+        return users;
     }
 
     @Override
-    public void setEnable(boolean enable) {
-        this.enable = enable;
+    public Collection<RoleVO> getRoles() {
+        return roles;
     }
 
-    @Override
-    public Collection<? extends User> getUsers() {
-        return new ArrayList<>();
+    public void setUsers(Collection<UserVO> users) {
+        this.users = users;
     }
 
-    @Override
-    public Collection<? extends Role> getRoles() {
-        return new ArrayList<>();
+    public void setRoles(Collection<RoleVO> roles) {
+        this.roles = roles;
     }
 }

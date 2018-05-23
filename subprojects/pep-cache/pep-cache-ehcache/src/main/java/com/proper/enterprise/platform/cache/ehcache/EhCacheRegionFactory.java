@@ -56,7 +56,7 @@ import java.util.Set;
  * @author Alex Snaps
  *
  * Copy from {@link org.hibernate.cache.ehcache.EhCacheRegionFactory} v4.3.10.Final
- * Extend {@link EhCacheRegionFactory#start(Settings, Properties)} to support {@link com.proper.enterprise.platform.api.cache.CacheDuration}
+ * Extend {@link EhCacheRegionFactory#start(Settings, Properties)} to support {@link CacheDuration}
  */
 public class EhCacheRegionFactory extends AbstractEhcacheRegionFactory {
     //CHECKSTYLE:OFF

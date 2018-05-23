@@ -13,6 +13,7 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
+import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
@@ -43,70 +44,75 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public Resource save(Resource resource) {
+        setDefault(resource);
+        validateParam(resource);
         return resourceDao.save(resource);
     }
 
     @Override
-    public Resource saveOrUpdateResource(Resource resourceReq) {
-        String id = resourceReq.getId();
+    public Resource update(Resource resourceReq) {
+        // TODO: 2018/5/21 这段代码有点迷惑  资源挂菜单应该是在菜单方面做 为啥更新资源的时候要在资源这做校验
+        /*String id = resourceReq.getId();
         Resource resource = resourceDao.getNewResourceEntity();
         // 更新
         if (StringUtil.isNotNull(id)) {
-            resource = this.get(id, EnableEnum.ALL);
+            resource = this.get(id);
         }
         resource.setName(resourceReq.getName());
-        resource.setURL(resourceReq.getURL());
-        resource.setEnable(resourceReq.isEnable());
+        resource.addURL(resourceReq.findURL());
+        resource.setEnable(resourceReq.getEnable());
         resource.setMethod(resourceReq.getMethod());
         Collection<? extends Menu> collection = resourceReq.getMenus();
-        for (Menu menus : collection) {
-            if (menus != null) {
-                Collection<? extends Resource> resources = menus.getResources();
-                for (Resource resource1 : resources) {
-                    String identification = resource1.getIdentifier();
-                    if (!resourceReq.getIdentifier().equals(identification)) {
-                        continue;
-                    } else {
-                        throw new ErrMsgException("pep.auth.common.menu.param");
+        if (CollectionUtil.isNotEmpty(collection)) {
+            for (Menu menus : collection) {
+                if (menus != null) {
+                    Collection<? extends Resource> resources = menus.getResources();
+                    for (Resource resource1 : resources) {
+                        String identification = resource1.getIdentifier();
+                        if (!resourceReq.getIdentifier().equals(identification)) {
+                            continue;
+                        } else {
+                            throw new ErrMsgException("pep.auth.common.menu.param");
+                        }
                     }
+                    resource.setIdentifier(resourceReq.getIdentifier());
                 }
-                resource.setIdentifier(resourceReq.getIdentifier());
             }
-        }
+        }*/
+        setDefault(resourceReq);
         String resourceCode = resourceReq.getResourceCode();
         if (StringUtil.isNotNull(resourceCode)) {
-            resource.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
+            resourceReq.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
         }
-        return resourceDao.save(resource);
+        return resourceDao.updateForSelective(resourceReq);
     }
 
     @Override
     public Resource get(String id) {
-        Resource resource = resourceDao.get(id);
-        if (resource != null && resource.isEnable()) {
-            return resource;
-        }
-        return null;
-    }
-
-    @Override
-    public Resource get(String id, EnableEnum enable) {
-        return resourceDao.get(id, enable);
+        return resourceDao.get(id);
     }
 
     @Override
     public Resource get(String url, RequestMethod method) {
         StringBuffer strbuf = new StringBuffer();
         strbuf = strbuf.append(method.toString()).append(":").append(url);
-        return getBestMatch(find(), strbuf.toString());
+        return getBestMatch(findAll(EnableEnum.ALL), strbuf.toString());
     }
 
     @Override
-    public Collection<? extends Resource> getByIds(Collection<String> ids) {
+    public Collection<? extends Resource> findAll(Collection<String> ids, EnableEnum resourceEnable) {
         Collection<Resource> resourceList = new ArrayList<>();
         Collection<? extends Resource> resources = resourceDao.findAll(ids);
         for (Resource resource : resources) {
-            if (resource.isEnable()) {
+            if (resourceEnable == EnableEnum.ALL) {
+                resourceList.add(resource);
+                continue;
+            }
+            if (resourceEnable == EnableEnum.ENABLE && resource.getEnable()) {
+                resourceList.add(resource);
+                continue;
+            }
+            if (resourceEnable == EnableEnum.DISABLE && !resource.getEnable()) {
                 resourceList.add(resource);
             }
         }
@@ -114,30 +120,28 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    public Collection<? extends Resource> findAll(EnableEnum enableEnum) {
+        return resourceDao.findAll(enableEnum);
+    }
+
+    @Override
     public void delete(Resource resource) {
+        validateDel(resource);
         resourceDao.delete(resource);
     }
 
     @Override
-    public Collection<? extends Resource> getFilterResources(Collection<? extends Resource> resources) {
+    public Collection<? extends Resource> getFilterResources(Collection<? extends Resource> resources, EnableEnum resourceEnable) {
         Collection<Resource> result = new HashSet<>();
         for (Resource resource : resources) {
-            if (!resource.isEnable()) {
+            if (resourceEnable == EnableEnum.ENABLE && !resource.getEnable()
+                || resourceEnable == EnableEnum.DISABLE && resource.getEnable()
+                || null == resourceEnable) {
                 continue;
             }
             result.add(resource);
         }
         return result;
-    }
-
-    @Override
-    public Collection<Resource> find() {
-        Collection<? extends Resource> resources = resourceDao.findAll();
-        Collection<Resource> collection = new ArrayList<>(resources.size());
-        for (Resource resource : resources) {
-            collection.add(resource);
-        }
-        return collection;
     }
 
     @Override
@@ -149,22 +153,7 @@ public class ResourceServiceImpl implements ResourceService {
             Collections.addAll(idList, idArr);
             Collection<? extends Resource> list = resourceDao.findAll(idList);
             for (Resource resource : list) {
-                // 资源存在菜单
-                if (resource.getMenus().size() > 0) {
-                    for (Menu menu : resource.getMenus()) {
-                        if (menu.isEnable()) {
-                            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.menu"));
-                        }
-                    }
-                }
-                // 资源存在角色
-                if (resource.getRoles().size() > 0) {
-                    for (Role role : resource.getRoles()) {
-                        if (role.isEnable()) {
-                            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.role"));
-                        }
-                    }
-                }
+                validateDel(resource);
             }
             resourceDao.delete(list);
             ret = true;
@@ -176,9 +165,6 @@ public class ResourceServiceImpl implements ResourceService {
     public Collection<? extends Resource> updateEnable(Collection<String> idList, boolean enable) {
         Collection<? extends Resource> resourceList = resourceDao.findAll(idList);
         for (Resource resource : resourceList) {
-            if (!resource.isEnable()) {
-                throw new ErrMsgException("pep.auth.common.resource.used");
-            }
             resource.setEnable(enable);
         }
         resourceDao.save(resourceList);
@@ -186,13 +172,13 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public Collection<? extends Menu> getResourceMenus(String resourceId, EnableEnum resourceEnable, EnableEnum menuEnable) {
+    public Collection<? extends Menu> getResourceMenus(String resourceId, EnableEnum menuEnable) {
         Collection<Menu> filterMenus = new ArrayList<>();
-        Resource resource = this.get(resourceId, resourceEnable);
+        Resource resource = this.get(resourceId);
         if (resource != null) {
             Collection<? extends Menu> menus = resource.getMenus();
             for (Menu menu : menus) {
-                if (menu.isEnable()) {
+                if (menu.getEnable()) {
                     filterMenus.add(menu);
                 }
             }
@@ -201,8 +187,8 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public Collection<? extends Role> getResourceRoles(String resourceId, EnableEnum resourceEnable, EnableEnum menuEnable) {
-        Resource resource = this.get(resourceId, resourceEnable);
+    public Collection<? extends Role> getResourceRoles(String resourceId, EnableEnum menuEnable) {
+        Resource resource = this.get(resourceId);
         if (resource != null) {
             return roleService.getFilterRoles(resource.getRoles());
         }
@@ -222,16 +208,16 @@ public class ResourceServiceImpl implements ResourceService {
      * @param signature resources.method+":"+resources.url
      * @return 最佳匹配资源
      */
-    public Resource getBestMatch(Collection<Resource> resources, String signature) {
+    public Resource getBestMatch(Collection<? extends Resource> resources, String signature) {
         if (resources != null) {
-            Iterator<Resource> it = resources.iterator();
+            Iterator<? extends Resource> it = resources.iterator();
             Resource returnRes = null;
             AntPathMatcher matcher = new AntPathMatcher();
 
             while (it.hasNext()) {
                 Resource resource = it.next();
                 StringBuffer strBuf = new StringBuffer();
-                strBuf = strBuf.append(resource.getMethod().toString()).append(":").append(resource.getURL());
+                strBuf = strBuf.append(resource.getMethod().toString()).append(":").append(resource.findURL());
 
                 if (matcher.match(strBuf.toString(), signature)) {
                     // 如果直接可以匹配上（无*） 直接返回
@@ -245,7 +231,7 @@ public class ResourceServiceImpl implements ResourceService {
 
                         StringBuffer oldstrbuf = new StringBuffer();
                         oldstrbuf = oldstrbuf.append(resource.getMethod().toString()).append(":")
-                                .append(returnRes.getURL());
+                            .append(returnRes.findURL());
                         // 比较本次值与返回值*的位置 *位置越靠后，越符合匹配值
                         if (strBuf.indexOf("*") >= oldstrbuf.indexOf("*")) {
                             // 特殊情况 如果* 位置相同 把长度更长的赋值给返回值
@@ -264,6 +250,43 @@ public class ResourceServiceImpl implements ResourceService {
             return returnRes;
         } else {
             return null;
+        }
+    }
+
+    private void setDefault(Resource resource) {
+        if (null == resource.getEnable()) {
+            resource.setEnable(true);
+        }
+    }
+
+    private void validateParam(Resource resource) {
+        if (StringUtil.isEmpty(resource.getName())) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.resource.name.empty"));
+        }
+        Collection<? extends Resource> oldResources = resourceDao.findAll(resource.getName(), EnableEnum.ALL);
+        for (Resource oldResource : oldResources) {
+            if (null != oldResource && !oldResource.getId().equals(resource.getId())) {
+                throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.resource.name.duplicate"));
+            }
+        }
+    }
+
+    private void validateDel(Resource resource) {
+        // 资源存在菜单
+        if (resource.getMenus().size() > 0) {
+            for (Menu menu : resource.getMenus()) {
+                if (menu.getEnable()) {
+                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.menu"));
+                }
+            }
+        }
+        // 资源存在角色
+        if (resource.getRoles().size() > 0) {
+            for (Role role : resource.getRoles()) {
+                if (role.getEnable()) {
+                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.resource.delete.relation.role"));
+                }
+            }
         }
     }
 }

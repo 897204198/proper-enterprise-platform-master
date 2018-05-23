@@ -9,19 +9,15 @@ import java.util.Collection;
 
 public interface UserGroupDao extends BaseService<UserGroup, String> {
 
-    UserGroup get(String id);
-
-    UserGroup get(String id, EnableEnum enable);
-
     UserGroup getNewUserGroup();
 
     UserGroup save(UserGroup group);
 
+    UserGroup updateForSelective(UserGroup group);
+
     Collection<? extends UserGroup> findAll(Collection<String> idList);
 
-    UserGroup findByName(String name);
-
-    UserGroup findById(String id);
+    UserGroup findByName(String name, EnableEnum enable);
 
     Collection<? extends UserGroup> getGroups(String name, String description, EnableEnum enable);
 

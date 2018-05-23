@@ -5,27 +5,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
  * 为响应增加允许跨域访问头的过滤器
- *
+ * <p>
  * 此过滤器按设计初衷应该定义在本模块的 web-fragment.xml 中，但会引起 web 应用使用 gretty 插件发布时的无端异常
  * 故采用 servlet 3.0 的注解方式定义
  */
-@WebFilter(filterName = "allowCrossOriginFilter", urlPatterns = "/*")
+@Service("allowCrossOriginFilter")
 public class AllowCrossOriginFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AllowCrossOriginFilter.class);
 
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException { }
+    public void init(FilterConfig filterConfig) throws ServletException {
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -52,6 +53,7 @@ public class AllowCrossOriginFilter implements Filter {
     }
 
     @Override
-    public void destroy() { }
+    public void destroy() {
+    }
 
 }

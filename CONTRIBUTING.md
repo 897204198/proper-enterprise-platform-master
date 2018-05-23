@@ -89,7 +89,8 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
     public class UserEntity extends BaseEntity implements User
     ```
     > 字段属性采用驼峰式命名，数据库字段名自动转换为蛇形命名。`boolean` 类型的字段需统一设定 `@Type(type = "yes_no")` 注解。
-
+    > 类属性必须使用包装数据类型，不要设定任何属性默认，必须自己显式地进行赋值，任何 NPE 问题，或者入库检查，都由使用者来保证。
+    
 * 实体间关系按照 JPA 规范通过注解指定。为避免关系的初始数据重复插入，需在定义关系时定义唯一性约束，如：
    ```
    // UserEntity
@@ -132,6 +133,7 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
 
     }
     ```
+* JPA Repository提供updateForSelective，更新单表非空字段
 
 * 单元测试：与被测试的类相同路径，被测试类名称为测试类名前缀，基于 `Junit` 的测试以 `Test` 为后缀，基于 `Spock` 的测试以 `Spec` 为后缀。需要 Spring Context 的测试需继承 `AbstractTest` 基类，如：
 

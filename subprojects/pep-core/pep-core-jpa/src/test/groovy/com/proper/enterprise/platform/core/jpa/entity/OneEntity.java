@@ -1,7 +1,5 @@
 package com.proper.enterprise.platform.core.jpa.entity;
 
-import com.proper.enterprise.platform.core.entity.BaseEntity;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +8,15 @@ import java.util.List;
 @Table(name = "OneEntity")
 public class OneEntity extends BaseEntity {
 
+    public OneEntity() {
+        super.setEnable(true);
+    }
+
     @Column
     private Integer test;
+
+    @Column
+    private Integer change;
 
     @OneToMany(mappedBy = "oneEntity")
     private List<ManyEntity> manyEntities;
@@ -31,6 +36,15 @@ public class OneEntity extends BaseEntity {
 
     public void setManyEntities(List<ManyEntity> manyEntities) {
         this.manyEntities = manyEntities;
+    }
+
+    public Integer getChange() {
+        return change;
+    }
+
+    public OneEntity setChange(Integer change) {
+        this.change = change;
+        return this;
     }
 
     public OneEntity add(ManyEntity manyEntity) {

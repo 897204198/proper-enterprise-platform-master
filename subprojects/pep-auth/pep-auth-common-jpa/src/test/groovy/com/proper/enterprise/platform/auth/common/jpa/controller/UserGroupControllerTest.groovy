@@ -1,12 +1,15 @@
 package com.proper.enterprise.platform.auth.common.jpa.controller
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.model.UserGroup
+import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserGroupService
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.*
+import com.proper.enterprise.platform.auth.common.vo.UserGroupVO
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
@@ -37,6 +40,9 @@ class UserGroupControllerTest extends AbstractTest {
     private RoleRepository roleRepo
 
     @Autowired
+    private RoleService roleService
+
+    @Autowired
     MenuRepository menuRepository
     @Autowired
     ResourceRepository resourceRepository
@@ -49,8 +55,8 @@ class UserGroupControllerTest extends AbstractTest {
 
     @Test
     @Sql(["/com/proper/enterprise/platform/auth/common/jpa/users.sql",
-          "/com/proper/enterprise/platform/auth/common/jpa/roles.sql"
-        ])
+        "/com/proper/enterprise/platform/auth/common/jpa/roles.sql"
+    ])
     @NoTx
     void userGroupUnionTest() {
 
@@ -73,7 +79,7 @@ class UserGroupControllerTest extends AbstractTest {
         def g1 = JSONUtil.parse(post(URI,
             JSONUtil.toJSON(group1), HttpStatus.CREATED).getResponse().getContentAsString(), Map.class)
 
-        assert post(URI,JSONUtil.toJSON(group1), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.usergroup.name.duplicate")
+        assert post(URI, JSONUtil.toJSON(group1), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == i18NService.getMessage("pep.auth.common.usergroup.name.duplicate")
         assert g1.get('id') != null
         assert g2.get('id') != null
 
@@ -101,7 +107,7 @@ class UserGroupControllerTest extends AbstractTest {
         updateReq['ids'] = [id1, id2]
         updateReq['enable'] = false
         put(URI, JSONUtil.toJSON(updateReq), HttpStatus.OK)
-        query = JSONUtil.parse(get(URI+"?userGroupEnable=DISABLE", HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        query = JSONUtil.parse(get(URI + "?userGroupEnable=DISABLE", HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert query.size() == 2
         assert !query.get(0).enable
         assert !query.get(1).enable
@@ -116,18 +122,18 @@ class UserGroupControllerTest extends AbstractTest {
         assert single.get('enable')
         assert single.get('seq') == 1
 
-        def u1 = userService.getByUsername('t1')
-        def u2 = userService.getByUsername('t2')
+        def u1 = userService.getByUsername('t1', EnableEnum.ALL)
+        def u2 = userService.getByUsername('t2', EnableEnum.ALL)
 
         post(URI + '/' + id1 + '/user/' + u1.id, '', HttpStatus.CREATED)
         post(URI + '/' + id1 + '/user/' + u2.id, '', HttpStatus.CREATED)
 
         // add role to group and check could find the group from role
-        post(URI + '/' + id1 + '/role/role1', '', HttpStatus.CREATED)
+        UserGroupVO groupVO = JSONUtil.parse(post(URI + '/' + id1 + '/role/role1', '', HttpStatus.CREATED).getResponse().getContentAsString(), UserGroupVO.class)
         def groups = resOfGet('/auth/roles/role1/user-groups', HttpStatus.OK)
         assert groups.size() > 0
         assert groups.get(0).name == 'group-1'
-
+        def mm = get(URI + '/' + id1, HttpStatus.OK).getResponse().getContentAsString()
         single = JSONUtil.parse(get(URI + '/' + id1, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert single.size() == 5
         assert single.get("id") == id1
@@ -145,7 +151,7 @@ class UserGroupControllerTest extends AbstractTest {
         userGroupEntity.setName("gourp-22221")
         userGroupEntity.setSeq(3)
         userGroupEntity.setDescription("ddddd")
-        userGroupEntity = userGroupRepository.saveAndFlush(userGroupEntity)
+        userGroupEntity = userGroupService.save(userGroupEntity)
 
         Map<String, Object> reqMap = new HashMap<>()
         reqMap.put("name", "group-212121212")
@@ -166,22 +172,26 @@ class UserGroupControllerTest extends AbstractTest {
         UserGroupEntity userGroupEntity1 = new UserGroupEntity()
         userGroupEntity1.setName('lastgroup')
         userGroupEntity1.add(userEntitys)
-        userGroupEntity1 = userGroupRepository.saveAndFlush(userGroupEntity1)
+        userGroupEntity1 = userGroupService.save(userGroupEntity1)
         userGroupEntity1.remove(userEntity)
-        userGroupEntity1 = userGroupRepository.saveAndFlush(userGroupEntity1)
+        userGroupEntity1 = userGroupService.save(userGroupEntity1)
 
         assert delete(URI + '?ids=' + userGroupEntity1.getId(), HttpStatus.NO_CONTENT).getResponse().getContentAsString() == ''
     }
 
     @NoTx
     @Test
-    void testDeleteUsersOfUserGroup(){
+    void testDeleteUsersOfUserGroup() {
         mockUser('test1', 't1', 'pwd')
 
         UserEntity userEntity = new UserEntity('u11', 'p11')
+        userEntity.setEnable(true)
+        userEntity.setSuperuser(true)
         userEntity = userRepo.save(userEntity)
 
         UserEntity userEntity2 = new UserEntity('u22', 'p11')
+        userEntity2.setEnable(true)
+        userEntity2.setSuperuser(true)
         userEntity2 = userRepo.save(userEntity2)
 
         UserGroup userGroupEntity = new UserGroupEntity()
@@ -191,17 +201,17 @@ class UserGroupControllerTest extends AbstractTest {
         userGroupEntity.setSeq(2)
         userGroupEntity.add(userEntity)
         userGroupEntity.add(userEntity2)
-        userGroupEntity = userGroupRepository.save(userGroupEntity)
+        userGroupEntity = userGroupService.save(userGroupEntity)
 
-        delete(URI + '/'+ userGroupEntity.getId()+ '/users?ids=' +userEntity.getId() + ',' + userEntity2.getId(), HttpStatus.NO_CONTENT)
-                .getResponse().getContentAsString() == ''
+        delete(URI + '/' + userGroupEntity.getId() + '/users?ids=' + userEntity.getId() + ',' + userEntity2.getId(), HttpStatus.NO_CONTENT)
+            .getResponse().getContentAsString() == ''
     }
 
     @Test
     void testGetUsersAndRoles() {
         RoleEntity roleEntity = new RoleEntity()
         roleEntity.setName('role11')
-        roleEntity = roleRepo.saveAndFlush(roleEntity)
+        roleEntity = roleService.save(roleEntity)
 
         UserEntity userEntity = new UserEntity('u11', 'p11')
         userEntity.setSuperuser(true)
@@ -213,7 +223,7 @@ class UserGroupControllerTest extends AbstractTest {
         userGroupEntity.setName('group11')
         userGroupEntity.add(roleEntity)
         userGroupEntity.add(userEntity)
-        userGroupEntity = userGroupRepository.saveAndFlush(userGroupEntity)
+        userGroupEntity = userGroupService.save(userGroupEntity)
 
         def result = get(URI + '/' + userGroupEntity.getId() + '/roles', HttpStatus.OK).getResponse().getContentAsString()
         List list = JSONUtil.parse(result, List.class)
@@ -230,36 +240,36 @@ class UserGroupControllerTest extends AbstractTest {
     void testGetGroupRolesAndUsers() {
         UserEntity userEntity = new UserEntity('u', 'p')
         userEntity.setSuperuser(true)
-        userEntity = userRepo.saveAndFlush(userEntity)
+        userEntity = userService.save(userEntity)
 
         mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
 
         RoleEntity roleEntity = new RoleEntity()
         roleEntity.setName('role')
-        roleEntity = roleRepo.saveAndFlush(roleEntity)
+        roleEntity = roleService.save(roleEntity)
 
         RoleEntity roleEntity1 = new RoleEntity()
         roleEntity1.setName('role1')
         roleEntity1.setEnable(false)
-        roleEntity1 = roleRepo.saveAndFlush(roleEntity1)
+        roleEntity1 = roleService.save(roleEntity1)
 
         RoleEntity roleEntity2 = new RoleEntity()
         roleEntity2.setName('role2')
-        roleEntity2 = roleRepo.saveAndFlush(roleEntity2)
+        roleEntity2 = roleService.save(roleEntity2)
 
         RoleEntity roleEntity3 = new RoleEntity()
         roleEntity3.setName('role3')
-        roleEntity3 = roleRepo.saveAndFlush(roleEntity3)
+        roleEntity3 = roleService.save(roleEntity3)
 
-        UserEntity userEntity1 = new UserEntity('u1','p1')
-        userEntity1 = userRepo.saveAndFlush(userEntity1)
+        UserEntity userEntity1 = new UserEntity('u1', 'p1')
+        userEntity1 = userService.save(userEntity1)
 
         UserEntity userEntity2 = new UserEntity('u2', 'p2')
         userEntity2.setEnable(false)
-        userEntity2 = userRepo.saveAndFlush(userEntity2)
+        userEntity2 = userService.save(userEntity2)
 
         UserEntity userEntity3 = new UserEntity('u3', 'p3')
-        userEntity3 = userRepo.saveAndFlush(userEntity3)
+        userEntity3 = userService.save(userEntity3)
 
         UserGroupEntity userGroupEntity = new UserGroupEntity()
         userGroupEntity.setName('group')
@@ -270,7 +280,7 @@ class UserGroupControllerTest extends AbstractTest {
         userGroupEntity.add(userEntity1)
         userGroupEntity.add(userEntity2)
         userGroupEntity.add(userEntity3)
-        userGroupEntity = userGroupRepository.saveAndFlush(userGroupEntity)
+        userGroupEntity = userGroupService.save(userGroupEntity)
 
         def result = JSONUtil.parse(get('/auth/user-groups/' + userGroupEntity.getId() + '/roles', HttpStatus.OK).getResponse().getContentAsString
             (), List.class)

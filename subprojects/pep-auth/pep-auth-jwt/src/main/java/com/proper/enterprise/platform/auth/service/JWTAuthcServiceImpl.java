@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.service;
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
@@ -22,11 +23,11 @@ public class JWTAuthcServiceImpl implements JWTAuthcService {
 
     @Override
     public String getUserToken(String username) throws IOException {
-        User user = userService.getByUsername(username);
+        User user = userService.getByUsername(username, EnableEnum.ENABLE);
         JWTHeader header = composeJWTHeader(user);
         JWTPayload payload = composeJWTPayload(user);
         // Allow superuser to login on multi endpoint
-        if (!user.isSuperuser()) {
+        if (!user.getSuperuser()) {
             jwtService.clearToken(header);
         }
         return jwtService.generateToken(header, payload);
@@ -43,13 +44,13 @@ public class JWTAuthcServiceImpl implements JWTAuthcService {
     @Override
     public JWTPayload composeJWTPayload(User user) {
         JWTPayloadImpl payload = new JWTPayloadImpl();
-        payload.setHasRole(user.isSuperuser() || CollectionUtil.isNotEmpty(user.getRoles()));
+        payload.setHasRole(user.getSuperuser() || CollectionUtil.isNotEmpty(user.getRoles()));
         return payload;
     }
 
     @Override
     public void clearUserToken(String username) {
-        User user = userService.getByUsername(username);
+        User user = userService.getByUsername(username, EnableEnum.ALL);
         jwtService.clearToken(composeJWTHeader(user));
     }
 

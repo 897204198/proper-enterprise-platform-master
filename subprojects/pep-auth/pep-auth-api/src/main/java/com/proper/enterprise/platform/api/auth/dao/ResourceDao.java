@@ -10,13 +10,17 @@ public interface ResourceDao extends BaseService<Resource, String> {
 
     Resource save(Resource resource);
 
+    Resource updateForSelective(Resource resource);
+
+    Collection<? extends Resource> findAll(EnableEnum enableEnum);
+
+    Collection<? extends Resource> findAll(String name, EnableEnum enableEnum);
+
+    Collection<? extends Resource> findAll(Collection<String> ids);
+
     Resource getNewResourceEntity();
 
     Resource get(String id);
-
-    Resource get(String id, EnableEnum enable);
-
-    Collection<? extends Resource> findAll(Collection<String> ids);
 
     void deleteAll();
 }

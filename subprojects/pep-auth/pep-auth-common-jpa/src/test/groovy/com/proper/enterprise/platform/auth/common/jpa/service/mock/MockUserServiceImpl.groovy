@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.jpa.service.mock
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.model.User
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.service.impl.UserServiceImpl
@@ -25,7 +26,7 @@ class MockUserServiceImpl extends UserServiceImpl implements SecurityService {
             def mockUser = getMockUser()
             def user
             if (mockUser != null) {
-                user = this.getByUsername(mockUser.username)
+                user = this.getByUsername(mockUser.username,EnableEnum.ALL)
                 if (user == null) {
                     user = new UserEntity(mockUser.username, mockUser.password)
                     user.id = mockUser.id

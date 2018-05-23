@@ -1,9 +1,11 @@
 package com.proper.enterprise.platform.auth.common.jpa.listener
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +27,7 @@ class HistoricalListenerTest extends AbstractTest {
         def user = new UserEntity('hinex', 'hinex_password')
         service.save(user)
 
-        def result = service.getByUsername('hinex')
+        def result = service.getByUsername('hinex', EnableEnum.ALL)
         assert result.getCreateUserId() == MOCK_USER_ID
         assert result.getLastModifyUserId() == MOCK_USER_ID
     }
@@ -36,18 +38,19 @@ class HistoricalListenerTest extends AbstractTest {
         def user2 = new UserEntity('hinex2', 'hinex_password2')
         service.save(user1, user2)
 
-        assert service.getByUsername('hinex1').getCreateUserId() == MOCK_USER_ID
-        assert service.getByUsername('hinex2').getLastModifyUserId() == MOCK_USER_ID
+        assert service.getByUsername('hinex1', EnableEnum.ALL).getCreateUserId() == MOCK_USER_ID
+        assert service.getByUsername('hinex2', EnableEnum.ALL).getLastModifyUserId() == MOCK_USER_ID
     }
 
     @Test
+    @NoTx
     void onlyUpdateLastModify() {
-        service.save new UserEntity('u1', 'p1')
-        def user = service.getByUsername 'u1'
+        service.save(new UserEntity('u1Last', 'p1'))
+        def user = service.getByUsername('u1Last', EnableEnum.ALL)
 
         user.setPassword('abc')
         service.save(user)
-        user = service.getByUsername 'u1'
+        user = service.getByUsername('u1Last', EnableEnum.ALL)
 
         assert user.getLastModifyTime() > user.getCreateTime()
     }
@@ -59,7 +62,7 @@ class HistoricalListenerTest extends AbstractTest {
 
         service.save(new UserEntity('hinex', 'hinex_password'))
 
-        def result = service.getByUsername('hinex')
+        def result = service.getByUsername('hinex', EnableEnum.ALL)
         assert result.getCreateUserId() == MOCK_USER_ID
         assert result.getLastModifyUserId() == MOCK_USER_ID
 

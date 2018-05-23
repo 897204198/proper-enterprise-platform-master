@@ -4,5 +4,7 @@ dependencies {
 
     runtime libraries.mongodb_driver
 
-    testCompile project(':pep-test')
+    testCompile project(':pep-test'),
+                libraries.spring_data_jpa,
+                libraries.hibernate_entitymanager
 }

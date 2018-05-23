@@ -1,46 +1,81 @@
 package com.proper.enterprise.platform.auth.common.vo;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.model.*;
+import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
+import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.view.BaseView;
 
-import javax.persistence.Transient;
-import java.util.ArrayList;
 import java.util.Collection;
 
+@POJORelevance(relevanceDOClassName = "com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity")
 public class RoleVO extends BaseVO implements Role {
+
+    public interface Single extends BaseView {
+
+    }
+
+    public interface RoleWithMenu extends Single, MenuVO.Single {
+
+    }
+
+    public interface RoleWithResource extends Single, ResourceVO.Single {
+
+    }
+
+    public RoleVO() {
+    }
+
+    private static final String ROLE_ENTITY_PATH = "com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity";
     /**
      * 名称
      */
+    @JsonView(value = {UserGroupVO.GroupWithRole.class, Single.class})
     private String name;
 
     /**
-     * 权限描述
+     * 权限描述UserEntity
      */
+    @JsonView(value = {UserGroupVO.GroupWithRole.class, Single.class})
     private String description;
 
     /**
      * 父菜单
      */
+    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
+        fieldName = "parent",
+        targetClassName = ROLE_ENTITY_PATH)
+    @JsonView(value = UserGroupVO.GroupWithRole.class)
     private RoleVO parent;
 
-    @Transient
+    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
+        fieldName = "parent", fromHandleBy = RoleVoFromHandler.class)
+    @JsonView(value = {UserGroupVO.GroupWithRole.class, Single.class})
     private String parentId;
 
-    @Transient
-    private Collection<? extends Menu> menus = new ArrayList<>();
+    @JsonView(value = {UserGroupVO.GroupWithRole.class, Single.class})
+    private String parentName;
 
-    @Transient
-    private Collection<? extends User> users = new ArrayList<>();
+    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
+        fieldName = "menuEntities",
+        targetClassName = ROLE_ENTITY_PATH)
+    private Collection<MenuVO> menus;
 
-    @Transient
-    private Collection<? extends UserGroup> userGroups = new ArrayList<>();
+    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
+        fieldName = "userEntities",
+        targetClassName = ROLE_ENTITY_PATH)
+    private Collection<UserVO> users;
 
-    @Transient
-    private Collection<? extends Resource> resources = new ArrayList<>();
+    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
+        fieldName = "userGroupEntities",
+        targetClassName = ROLE_ENTITY_PATH)
+    private Collection<UserGroupVO> userGroups;
 
-    /**
-     * 用户状态
-     */
-    private boolean enable = true;
+    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
+        fieldName = "resourcesEntities",
+        targetClassName = ROLE_ENTITY_PATH)
+    private Collection<ResourceVO> resources;
 
     public String getParentId() {
         return parentId;
@@ -86,46 +121,40 @@ public class RoleVO extends BaseVO implements Role {
     }
 
     @Override
-    public boolean isEnable() {
-        return enable;
-    }
-
-    @Override
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    @Override
     public Role getParent() {
         return parent;
     }
 
+    public void setParent(RoleVO parent) {
+        this.parent = parent;
+    }
+
     @Override
-    public void setParent(Role parent) {
+    public void addParent(Role parent) {
         if (parent instanceof RoleVO) {
             this.parent = (RoleVO) parent;
         }
     }
 
     @Override
-    public Collection<? extends Menu> getMenus() {
+    public Collection<MenuVO> getMenus() {
         return menus;
     }
 
     @Override
-    public Collection<? extends User> getUsers() {
+    public Collection<UserVO> getUsers() {
         return users;
     }
 
 
     @Override
-    public Collection<? extends UserGroup> getUserGroups() {
+    public Collection<UserGroupVO> getUserGroups() {
         return userGroups;
     }
 
 
     @Override
-    public Collection<? extends Resource> getResources() {
+    public Collection<ResourceVO> getResources() {
         return resources;
     }
 
@@ -143,5 +172,29 @@ public class RoleVO extends BaseVO implements Role {
 
     @Override
     public void removeResources(Collection<? extends Resource> resources) {
+    }
+
+    public String getParentName() {
+        return parentName;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
+
+    public void setResources(Collection<ResourceVO> resources) {
+        this.resources = resources;
+    }
+
+    public void setMenus(Collection<MenuVO> menus) {
+        this.menus = menus;
+    }
+
+    public void setUsers(Collection<UserVO> users) {
+        this.users = users;
+    }
+
+    public void setUserGroups(Collection<UserGroupVO> userGroups) {
+        this.userGroups = userGroups;
     }
 }

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.jpa.service
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository
@@ -29,14 +30,15 @@ class UserServiceTest extends AbstractTest {
     @Test
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/users.sql")
     public void checkSuperuser() {
-        assert userService.getByUsername('t1').isSuperuser()
-        assert !userService.getByUsername('t2').isSuperuser()
-        assert !userService.getByUsername('t3').isSuperuser()
+        assert userService.getByUsername('t1',EnableEnum.ALL).getSuperuser()
+        assert !userService.getByUsername('t2',EnableEnum.ALL).getSuperuser()
+        assert !userService.getByUsername('t3',EnableEnum.ALL).getSuperuser()
     }
 
     @Test
     public void testUserCache() {
         def u1 = new UserEntity('u1','p1')
+        u1.setEnable(true)
         userService.save(u1)
         println 'After @CachePut on save method, should not query from DB'
         assert u1.id != null

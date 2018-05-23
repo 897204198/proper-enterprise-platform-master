@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,7 +78,7 @@ public class PEPRemoteIdmServiceImpl implements RemoteIdmService {
 
     @Override
     public List<RemoteUser> findUsersByNameFilter(String filter) {
-        Collection<? extends User> users = userService.getUsersByCondition(filter);
+        Collection<? extends User> users = userService.getUsersByOrCondition(filter, EnableEnum.ENABLE);
         List<RemoteUser> remoteUsers = RemoteUserConvert.convert(users);
         JsonNode json = null;
         try {
@@ -129,7 +130,7 @@ public class PEPRemoteIdmServiceImpl implements RemoteIdmService {
         } else {
             roleNameFilter = "%" + roleNameFilter + "%";
         }
-        Collection roles = roleService.getByCondition(roleNameFilter, null, null, EnableEnum.ENABLE);
+        Collection roles = roleService.findRolesLike(roleNameFilter, null, null, EnableEnum.ENABLE);
         Iterator iterator = roles.iterator();
         List<RemoteRole> list = new ArrayList<>();
         while (iterator.hasNext()) {

@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.api.auth.service;
 
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
+import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
@@ -80,7 +81,7 @@ public interface UserGroupService {
      *
      * @param group 用户组
      */
-    void delete(UserGroup group);
+    boolean delete(UserGroup group);
 
     /**
      * 删除多条用户组数据
@@ -88,6 +89,14 @@ public interface UserGroupService {
      * @param ids 以 , 分隔的待删除用户组ID列表
      */
     boolean deleteByIds(String ids);
+
+    /**
+     * 更新用户组
+     *
+     * @param userGroup 更新用户组信息
+     * @return 用户细信息
+     */
+    UserGroup update(UserGroup userGroup);
 
     /**
      * 更新菜单状态
@@ -106,14 +115,6 @@ public interface UserGroupService {
      * @return 用户组
      */
     UserGroup saveUserGroupRole(String groupId, String roleId);
-
-    /**
-     * 保存或更新用户组
-     *
-     * @param userGroup 请求用户组对象
-     * @return 保存或更新后的用户组信息信息
-     */
-    UserGroup saveOrUpdateUserGroup(UserGroup userGroup);
 
     /**
      * 获取指定用户组角色集合
@@ -154,7 +155,7 @@ public interface UserGroupService {
      * 从用户组中删除多条用户
      *
      * @param groupId 用户组ID
-     * @param ids  用户 ids
+     * @param ids     用户 ids
      * @return 用户组
      */
     UserGroup deleteGroupUsers(String groupId, String ids);
@@ -163,7 +164,7 @@ public interface UserGroupService {
      * 用户组批量添加用户
      *
      * @param groupId 用户组ID
-     * @param ids 用户ID集合
+     * @param ids     用户ID集合
      * @return 用户组
      */
     UserGroup addGroupUserByUserIds(String groupId, List<String> ids);
@@ -175,6 +176,22 @@ public interface UserGroupService {
      * @return 用户集合
      */
     Collection<? extends User> getGroupUsers(String groupId, EnableEnum userGroupEnable, EnableEnum userEnable);
+
+    /**
+     * 获取指定用户组集合的资源集合
+     *
+     * @param userGroups 用户组集合
+     * @return 用户集合
+     */
+    Collection<? extends Resource> getGroupResources(Collection<UserGroup> userGroups, EnableEnum resourceEnable);
+
+    /**
+     * 获取指定用户组的资源集合
+     *
+     * @param userGroup 用户组
+     * @return 用户集合
+     */
+    Collection<? extends Resource> getGroupResources(UserGroup userGroup, EnableEnum resourceEnable);
 
     /**
      * 创建更新用户组信息

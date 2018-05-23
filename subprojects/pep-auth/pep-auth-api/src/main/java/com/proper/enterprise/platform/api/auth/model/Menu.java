@@ -64,7 +64,7 @@ public interface Menu extends IBase, Comparable<Menu> {
      *
      * @param menu 上级菜单
      */
-    void setParent(Menu menu);
+    void addParent(Menu menu);
 
     /**
      * 获得菜单所属应用，即最上级的菜单
@@ -205,20 +205,6 @@ public interface Menu extends IBase, Comparable<Menu> {
      * @param menuType 菜单类型
      */
     void setMenuType(DataDicLite menuType);
-
-    /**
-     * 获取菜单状态是否可用
-     *
-     * @return 用户菜单是否可用
-     */
-    boolean isEnable();
-
-    /**
-     * 设置菜单状态是否可用
-     *
-     * @param enable 用户菜单是否可用
-     */
-    void setEnable(boolean enable);
 
     /**
      * 获取菜单CODE

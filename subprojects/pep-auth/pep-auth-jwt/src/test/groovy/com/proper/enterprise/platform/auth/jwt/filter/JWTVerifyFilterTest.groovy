@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.auth.jwt.filter
 import com.proper.enterprise.platform.api.auth.dao.MenuDao
 import com.proper.enterprise.platform.api.auth.dao.ResourceDao
 import com.proper.enterprise.platform.api.auth.dao.UserDao
-import com.proper.enterprise.platform.auth.jwt.authz.AuthzService
+import com.proper.enterprise.platform.api.auth.service.AuthzService
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
 import com.proper.enterprise.platform.auth.service.JWTService
@@ -67,7 +67,6 @@ class JWTVerifyFilterTest extends AbstractTest {
 
     @Test
     void testIgnorePattern() {
-        authzService.setIgnorePatterns('PUT:/jwt/filter/ignore/method,*/workflow/**')
         put('/jwt/filter/ignore/method', '', HttpStatus.OK)
         get('/workflow/designer/index.html', HttpStatus.NOT_FOUND)
     }

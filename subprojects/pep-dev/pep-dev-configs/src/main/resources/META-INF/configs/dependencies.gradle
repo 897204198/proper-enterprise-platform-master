@@ -8,7 +8,7 @@ versions.groovy             = '2.4.15'
 versions.hibernate          = '4.3.10.Final'
 versions.jackson            = '2.8.1'
 //versions.jcaptcha         = '1.0'
-versions.logback            = '1.1.3'
+versions.logback            = '1.2.3'
 versions.mongo              = '3.2.2'
 versions.quartz             = '2.2.1'
 versions.slf4j              = '1.7.21'
@@ -36,6 +36,7 @@ configurations.all {
             'guava': '20.0',
             'javassist': '3.19.0-GA',
             'jcl-over-slf4j': versions.slf4j,
+            'logback': versions.logback ,
             // xalan < 2.7.0 的版本会导致与 spring-ws 的冲突
             // http://stackoverflow.com/questions/12467186/java-spring-ws-org-springframework-ws-soap-saaj-saajsoapenvelopeexception-could/13156775#13156775
             'xalan': '2.7.2'
@@ -175,6 +176,7 @@ libraries.liquibase='com.proper.enterprise.platform:liquibase-core:3.6.1-SNAPSHO
 libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:${versions.logback}") {
     dependency "ch.qos.logback:logback-core:${versions.logback}"
 }
+//libraries.lombok = "org.projectlombok:lombok:1.16.20"
 
 libraries.mongodb_driver = "org.mongodb:mongodb-driver:${versions.mongo}"
 
@@ -225,6 +227,7 @@ libraries.spring_tx = "org.springframework:spring-tx:${versions.spring}"
 libraries.spring_webmvc = "org.springframework:spring-webmvc:${versions.spring}"
 libraries.spring_jms = "org.springframework:spring-jms:${versions.spring}"
 
+libraries.spring_data_commons = 'org.springframework.data:spring-data-commons'
 libraries.spring_data_jpa = 'org.springframework.data:spring-data-jpa'
 libraries.spring_data_mongodb = 'org.springframework.data:spring-data-mongodb'
 libraries.spring_data_neo4j= 'org.springframework.data:spring-data-neo4j'

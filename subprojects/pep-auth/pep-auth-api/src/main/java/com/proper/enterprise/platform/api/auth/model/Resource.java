@@ -22,14 +22,14 @@ public interface Resource extends IBase {
      *
      * @return URL
      */
-    String getURL();
+    String findURL();
 
     /**
      * 设置资源的 URL
      *
      * @param url URL
      */
-    void setURL(String url);
+    void addURL(String url);
 
     /**
      * 获得资源的 Method
@@ -72,7 +72,7 @@ public interface Resource extends IBase {
      * @param tableName 表名
      * @return 数据约束集合
      */
-    Collection<DataRestrain> getDataRestrains(String tableName);
+    Collection<? extends DataRestrain> getDataRestrains(String tableName);
 
     /**
      * 为资源添加一个数据约束
@@ -117,20 +117,6 @@ public interface Resource extends IBase {
     void setResourceType(DataDicLite resourceType);
 
     /**
-     * 获得资源状态是否可用
-     *
-     * @return 资源类别
-     */
-    boolean isEnable();
-
-    /**
-     * 设置资源是否可用
-     *
-     * @param enable 资源是否可用
-     */
-    void setEnable(boolean enable);
-
-    /**
      * 获得资源标识
      *
      * @return 资源标识
@@ -157,4 +143,11 @@ public interface Resource extends IBase {
      * @param resourceCode 资源编码
      */
     void setResourceCode(String resourceCode);
+
+    /**
+     * 是否为继承来的资源 true是 false否
+     */
+    Boolean getExtend();
+
+    void setExtend(Boolean extend);
 }

@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.sys.datadic.entity;
 
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
-import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;

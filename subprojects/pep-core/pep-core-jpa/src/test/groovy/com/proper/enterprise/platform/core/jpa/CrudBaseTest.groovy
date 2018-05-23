@@ -1,20 +1,20 @@
 package com.proper.enterprise.platform.core.jpa
 
 import com.proper.enterprise.platform.test.AbstractTest
-import com.proper.enterprise.platform.core.jpa.entity.AEntity
-import com.proper.enterprise.platform.core.jpa.repository.ARepository
+import com.proper.enterprise.platform.core.jpa.entity.AOEntity
+import com.proper.enterprise.platform.core.jpa.repository.AORepository
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 class CrudBaseTest extends AbstractTest {
 
     @Autowired
-    ARepository repository
+    AORepository repository
 
     String id
 
     void create() {
-        AEntity user = new AEntity()
+        AOEntity user = new AOEntity()
         user.setUsername('中文')
         user.setPassword('testpassword')
         repository.save(user)
@@ -22,7 +22,7 @@ class CrudBaseTest extends AbstractTest {
     }
 
     void retrieve() {
-        AEntity user = repository.findOne(id)
+        AOEntity user = repository.findOne(id)
 
         // check set values
         assert user.createUserId > ''
@@ -33,13 +33,13 @@ class CrudBaseTest extends AbstractTest {
     }
 
     void update() {
-        AEntity user = repository.findOne(id)
+        AOEntity user = repository.findOne(id)
         user.description = 'desc of user1'
         repository.save(user)
     }
 
     void updateCheck() {
-        AEntity user = repository.findOne(id)
+        AOEntity user = repository.findOne(id)
         assert user.description == 'desc of user1'
     }
 

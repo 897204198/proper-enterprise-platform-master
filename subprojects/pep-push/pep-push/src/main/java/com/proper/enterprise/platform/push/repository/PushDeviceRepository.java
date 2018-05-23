@@ -19,11 +19,11 @@ public interface PushDeviceRepository extends BaseRepository<PushDeviceEntity, S
     Page<PushDeviceEntity> findByAppkeyAndDevicetypeAndMstatus(String appkey, PushDeviceType devicetype,
                                                                PushDeviceStatus mstatus, Pageable pageable);
 
-    List<PushDeviceEntity> findByAppkeyAndDevicetypeAndPushModeAndMstatusAndUseridIn(String appkey,
-            PushDeviceType devicetype, PushMode pushMode, PushDeviceStatus mstatus, Collection<String> lstUids);
+    List<PushDeviceEntity> findByAppkeyAndDevicetypeAndPushModeAndMstatusAndUseridIn(String appkey, PushDeviceType devicetype, PushMode pushMode,
+                                                                                     PushDeviceStatus mstatus, Collection<String> lstUids);
 
-    List<PushDeviceEntity> findByAppkeyAndDevicetypeAndPushModeAndMstatusAndDeviceidIn(String appkey,
-            PushDeviceType deviceType, PushMode pushMode, PushDeviceStatus valid, List<String> lstDeviceids);
+    List<PushDeviceEntity> findByAppkeyAndDevicetypeAndPushModeAndMstatusAndDeviceidIn(String appkey, PushDeviceType deviceType, PushMode pushMode,
+                                                                                       PushDeviceStatus valid, List<String> lstDeviceids);
 
     List<PushDeviceEntity> findByAppkeyAndUserid(String appkey, String userid);
 }

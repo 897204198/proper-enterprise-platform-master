@@ -5,17 +5,17 @@ import com.proper.enterprise.platform.push.common.model.enums.PushMode;
 
 /**
  * 移动客户端调用的公用的相关的接口
- * 
+ *
  * @author shen
  *
  */
 public interface CommonPushClientRequestService {
     /**
      * 移动客户端向服务端注册设备及userid与deviceceid的绑定设备与取消绑定
-     * 
+     *
      * 如果userid在数据库中不存在，则新增userid到用户表 如果deiviceid不为空，则更新或新增设备信息到设备表
      * 如果userid为空，则取消用户与设备的相互绑定 如果userid不为空，则绑定用户与设备
-     * 
+     *
      * @param userid
      *            用户id
      * @param deviceid
@@ -41,5 +41,5 @@ public interface CommonPushClientRequestService {
      *            不会出现多台设备同时接收消息的情况。
      */
     public void saveStartpush(String userid, String deviceid, String pushToken, String userOtherInfo, String appkey,
-            PushDeviceType deviceType, PushMode pushMode, String deviceOtherInfo, boolean unbindOtherDevice);
+                              PushDeviceType deviceType, PushMode pushMode, String deviceOtherInfo, boolean unbindOtherDevice);
 }

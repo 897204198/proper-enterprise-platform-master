@@ -5,5 +5,4 @@ import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
 
 public interface MenuRepository extends BaseJpaRepository<MenuEntity, String> {
 
-    MenuEntity findByIdAndEnable(String id, boolean enable);
 }

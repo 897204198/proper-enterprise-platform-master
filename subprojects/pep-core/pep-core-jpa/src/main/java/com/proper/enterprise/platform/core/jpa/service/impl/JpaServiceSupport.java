@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.jpa.service.impl;
 
+import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
 import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,8 +21,16 @@ import java.util.List;
  * @param <R>   repository泛型
  * @param <IDT> ID泛型
  */
-public abstract class JpaServiceSupport<T, R extends BaseJpaRepository, IDT extends Serializable>
+public abstract class JpaServiceSupport<T extends IBase, R extends BaseJpaRepository, IDT extends Serializable>
     extends ServiceSupport<T, R, IDT> implements BaseJpaService<T, IDT> {
+
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <S extends T> S updateForSelective(S var1) {
+        return (S) getRepository().updateForSelective(var1);
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <S extends T> long count(Example<S> var1) {
