@@ -14,12 +14,18 @@ class MongoRepositoryTest extends AbstractTest {
 
     @Test
     public void testSaveAndQuery() {
+        mockUser("user1", "isMock")
         def cus = new Customer('fn', 'ln')
         customerRepository.save(cus)
         def newCus = customerRepository.findByLastName('ln').first()
 
         assert cus.firstName == newCus.firstName
         assert cus.lastName == newCus.lastName
+        assert cus.createUserId == 'user1'
+
+        mockUser("user2", "isMock")
+        customerRepository.save(cus)
+        assert cus.lastModifyUserId == 'user2'
     }
 
     @After

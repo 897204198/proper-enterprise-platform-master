@@ -33,11 +33,11 @@ class BaseDocumentTest extends AbstractTest {
         def id = mock.getId()
         def doc = dao.queryById('mock', id)
 
-        assert doc.containsKey('CT')
+        assert doc.get('CT')
         assert doc.getString('LT') == mock.getLastModifyTime()
-        assert !doc.containsKey('CU')
-        assert mock.getCreateUserId() == null
-        assert mock.getLastModifyUserId() == null
+        assert doc.get('CU') == "PEP_SYS"
+        assert mock.getCreateUserId() == "PEP_SYS"
+        assert mock.getLastModifyUserId() == "PEP_SYS"
         assert doc.getString('docC1') == 'c1'
         assert doc.getString('C2') == 'c2'
 
