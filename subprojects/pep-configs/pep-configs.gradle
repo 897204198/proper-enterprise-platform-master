@@ -3,10 +3,4 @@ dependencies {
             libraries.liquibase,
             libraries.spring_context_support
 
-    compile project(':pep-core-jpa')
-
-    testCompile project(':pep-test')
-
-    testRuntime project(':pep-auth-jwt'),
-                project(':pep-auth-common-jpa')
 }
