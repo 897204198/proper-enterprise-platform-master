@@ -27,7 +27,7 @@ public class MenusController extends BaseController {
     public ResponseEntity get(String name, String description, String route,
                               @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable, String parentId) {
         return isPageSearch() ? responseOfGet(service.findMenusPagniation(name, description, route, menuEnable, parentId),
-                MenuVO.class, MenuVO.Single.class)
+            MenuVO.class, MenuVO.Single.class)
             : responseOfGet(service.getMenus(name, description, route, menuEnable, parentId), MenuVO.class, MenuVO.Single.class);
     }
 
@@ -90,8 +90,8 @@ public class MenusController extends BaseController {
 
     @GetMapping(path = "/parents")
     @JsonView(MenuVO.Single.class)
-    public ResponseEntity<Collection<MenuVO>> getMenuParents() {
-        return responseOfGet(service.getMenuParents(), MenuVO.class, MenuVO.Single.class);
+    public ResponseEntity<Collection<MenuVO>> getMenuParents(@RequestParam(defaultValue = "ALL") EnableEnum menuEnable) {
+        return responseOfGet(service.getMenuParents(menuEnable), MenuVO.class, MenuVO.Single.class);
     }
 
     @PostMapping(path = "/{menuId}/resources")

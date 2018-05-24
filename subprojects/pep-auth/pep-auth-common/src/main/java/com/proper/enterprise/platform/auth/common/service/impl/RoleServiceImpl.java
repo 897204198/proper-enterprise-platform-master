@@ -70,12 +70,18 @@ public class RoleServiceImpl implements RoleService {
             Collection<? extends Role> list = roleDao.findAll(idList);
             for (Role roleEntity : list) {
                 validateBeforeDelete(roleEntity);
+                if (CollectionUtil.isNotEmpty(roleEntity.getUserGroups())) {
+                    throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.role.has.usergroup"));
+                }
+                if (CollectionUtil.isNotEmpty(roleEntity.getUsers())) {
+                    throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.role.has.user"));
+                }
             }
             Collection<? extends Role> childRoles = roleDao.findRolesByParentId(idList);
-            for (Role childRole : childRoles) {
-                childRole.addParent(null);
-                roleDao.save(childRole);
+            if (CollectionUtil.isNotEmpty(childRoles)) {
+                throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.role.has.role"));
             }
+
             roleDao.delete(list);
             ret = true;
         }

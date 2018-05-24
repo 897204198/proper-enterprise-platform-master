@@ -103,7 +103,7 @@ public interface MenuService {
      *
      * @return 父节点列表
      */
-    Collection<? extends Menu> getMenuParents();
+    Collection<? extends Menu> getMenuParents(EnableEnum menuEnable);
 
     /**
      * 更新菜单状态

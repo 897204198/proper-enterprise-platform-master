@@ -70,18 +70,15 @@ public class UserGroupServiceImpl implements UserGroupService {
             for (String id : idList) {
                 UserGroup tempGroup = userGroupDao.findOne(id);
                 if (tempGroup == null) {
-                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.get.failed"));
-                }
-                if (CollectionUtil.isNotEmpty(tempGroup.getRoles())) {
-                    throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.delete.relation.role"));
+                    continue;
                 }
                 if (CollectionUtil.isNotEmpty(tempGroup.getUsers())) {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.usergroup.delete.relation.user"));
                 }
                 list.add(tempGroup);
+                ret = true;
             }
             userGroupDao.delete(list);
-            ret = true;
         }
         return ret;
     }
@@ -206,23 +203,24 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
         user.remove(userGroup);
         userService.save(user);
+        userGroup.remove(user);
         return userGroup;
     }
 
     @Override
     public UserGroup deleteGroupUsers(String groupId, String ids) {
-        UserGroup userGroup = get(groupId, EnableEnum.ENABLE);
-        if (userGroup == null) {
-            throw new ErrMsgException("can't save beacuse userGropu not find");
-        }
+        UserGroup userGroup = get(groupId, EnableEnum.ALL);
         if (StringUtil.isNotNull(ids)) {
-            Collection<User> menuList = new ArrayList<>();
             String[] idArr = ids.split(",");
             for (String id : idArr) {
-                menuList.add(userService.get(id));
+                User user = userService.get(id);
+                if (null == user) {
+                    continue;
+                }
+                user.remove(userGroup);
+                userService.save(user);
+                userGroup.remove(user);
             }
-            userGroup.removeAllUsers(menuList);
-            userGroup = this.save(userGroup);
         }
         return userGroup;
     }

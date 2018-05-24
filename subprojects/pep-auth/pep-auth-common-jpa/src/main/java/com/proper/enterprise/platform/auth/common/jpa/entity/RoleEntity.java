@@ -34,7 +34,7 @@ public class RoleEntity extends BaseEntity implements Role {
      * 父菜单
      */
     @ManyToOne
-    @JoinColumn(name = "PARENT_ID", foreignKey = @ForeignKey(name = "null"))
+    @JoinColumn(name = "PARENT_ID")
     @JsonIgnore
     private RoleEntity parent;
 

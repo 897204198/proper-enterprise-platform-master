@@ -162,7 +162,7 @@ class MenusControllerTest extends AbstractTest {
 
         def parents = JSONUtil.parse(get('/auth/menus/parents', HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
-        assert parents.size() == 6
+        assert parents.size() == 3
         assert parents.get(0).size() == 13
 
     }
@@ -200,6 +200,7 @@ class MenusControllerTest extends AbstractTest {
         menu.setId("9999")
         menu.setIdentifier("edit")
         menu.setMenuCode("a")
+        menu.setSequenceNumber(0)
 
         ResourceEntity resourceEntity = new ResourceEntity()
         menu.remove(resourceEntity)

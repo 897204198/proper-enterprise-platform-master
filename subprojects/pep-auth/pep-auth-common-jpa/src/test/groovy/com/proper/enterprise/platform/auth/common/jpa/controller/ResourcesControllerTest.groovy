@@ -189,14 +189,14 @@ class ResourcesControllerTest extends AbstractTest {
         menuEntity.setRoute("route1")
         menuEntity.setEnable(true)
         menuEntity.add(resourceEntity)
-        menuEntity = menuRepository.save(menuEntity)
+        menuEntity = menuService.save(menuEntity)
 
         MenuEntity menuEntity1 = new MenuEntity()
         menuEntity1.setName('menu2')
         menuEntity1.setRoute("route2")
         menuEntity1.setEnable(true)
         menuEntity1.add(resourceEntity)
-        menuEntity1 = menuRepository.save(menuEntity1)
+        menuEntity1 = menuService.save(menuEntity1)
 
         Collection<? extends Menu> collection = new HashSet<>()
         collection.add(menuEntity)

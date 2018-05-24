@@ -41,7 +41,7 @@ public class MenuEntity extends BaseEntity implements Menu {
     /**
      * 菜单同级排序号
      */
-    private int sequenceNumber;
+    private Integer sequenceNumber;
 
     /**
      * 菜单图标样式名称
@@ -97,6 +97,9 @@ public class MenuEntity extends BaseEntity implements Menu {
     @ManyToMany(mappedBy = "menuEntities")
     private Collection<RoleEntity> roleEntities = new ArrayList<>();
 
+    @Transient
+    private String parentId;
+
     private String menuCode;
 
     @Override
@@ -120,12 +123,11 @@ public class MenuEntity extends BaseEntity implements Menu {
     }
 
     @Override
-    public int getSequenceNumber() {
+    public Integer getSequenceNumber() {
         return sequenceNumber;
     }
 
-    @Override
-    public void setSequenceNumber(int sequenceNumber) {
+    public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
 
@@ -160,7 +162,7 @@ public class MenuEntity extends BaseEntity implements Menu {
 
     @Override
     public String getParentId() {
-        return parent == null ? null : parent.getId();
+        return parentId;
     }
 
     @Override
@@ -317,5 +319,9 @@ public class MenuEntity extends BaseEntity implements Menu {
 
     public void setRoleEntities(Collection<RoleEntity> roleEntities) {
         this.roleEntities = roleEntities;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 }

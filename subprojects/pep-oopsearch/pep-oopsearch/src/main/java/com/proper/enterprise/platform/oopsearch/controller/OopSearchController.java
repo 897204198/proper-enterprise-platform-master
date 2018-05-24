@@ -3,8 +3,10 @@ package com.proper.enterprise.platform.oopsearch.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
+import com.proper.enterprise.platform.api.auth.service.AuthzService;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.security.service.SecurityService;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.oopsearch.api.document.OOPSearchDocument;
 import com.proper.enterprise.platform.oopsearch.api.serivce.SearchConfigService;
@@ -37,6 +39,12 @@ public class OopSearchController extends BaseController {
     @Autowired
     private SearchConfigService searchConfigService;
 
+    @Autowired
+    private AuthzService authzService;
+
+    @Autowired
+    private SecurityService securityService;
+
     @GetMapping("/inverse")
     public ResponseEntity<List<OOPSearchDocument>> searchInfo(@RequestParam String data, @RequestParam String moduleName) {
         List<OOPSearchDocument> docs = (List<OOPSearchDocument>) searchService.getSearchInfo(data, moduleName);
@@ -64,6 +72,16 @@ public class OopSearchController extends BaseController {
                 } else {
                     stringBuffer.append("&").append(key).append("=").append(value);
                 }
+            }
+            if (!authzService.accessible(url,
+                request.getMethod(), false, securityService.getCurrentUserId())) {
+                HttpServletResponse resp = response;
+                resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                resp.setHeader("WWW-Authenticate",
+                    "Bearer realm=\"pep\", "
+                        + "error=\"invalid_auth\", "
+                        + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHORIZATION\"");
+                return;
             }
             request.getRequestDispatcher(stringBuffer.toString()).forward(request, response);
         } catch (Exception e) {

@@ -1,8 +1,11 @@
 import groovy.transform.Field
 
 //static param
+@Field charset="utf-8"
 @Field rootPackageName = "com.proper.enterprise"
 @Field singleEntityPackageName = "entity"
+@Field singleapiPackageName = "api"
+@Field singleVOPackageName = "vo"
 @Field singleRepositoryPackageName = "repository"
 @Field singleControllerPackageName = "controller"
 @Field singleServicePackageName = "service"
@@ -12,6 +15,10 @@ import groovy.transform.Field
 @Field parentPath = ""
 @Field haveParentPath = false
 @Field haveBusiness = false
+@Field apiPath
+@Field apiPackageName
+@Field voPath
+@Field voPackageName
 @Field entityPath
 @Field entityPackageName
 @Field repositoryPath
@@ -29,6 +36,7 @@ import groovy.transform.Field
 @Field testMockPackageName
 @Field testPropertiesPath
 @Field testSpringPath
+@Field liquibasePath
 /**
  * 模块类型 jpa，neo4j，mongo
  * 目前仅支持jpa代码生成
@@ -84,9 +92,17 @@ import groovy.transform.Field
  */
 @Field repositoryName
 /**
+ * 接口名
+ */
+@Field apiName
+/**
  * entity名
  */
 @Field entityName
+/**
+ * VO名
+ */
+@Field voName
 
 task buildCode << {
     initProjectParam()
@@ -94,6 +110,7 @@ task buildCode << {
     mkProcess()
     initBusinessParam()
     mkBusinessDir()
+    mkLiquibase()
     mkJava()
     mkTestDir()
     mkTest()
@@ -127,6 +144,7 @@ def initProjectParam() {
     this.testProGroovyPath = "$subProjRoot/src/test/groovy/com/proper/enterprise/${projectGenerator.path}/${modelPackagePath}" + (haveBusiness ? "/${businessName}" : "")
     this.testPropertiesPath = "$subProjRoot/src/test/resources/conf/$modelPackagePath"
     this.testSpringPath = "$subProjRoot/src/test/resources/spring/$modelPackagePath"
+    this.liquibasePath = "$subProjRoot/src/main/resources/liquibase/changelogs"
 }
 
 def parseModelPackage() {
@@ -148,6 +166,10 @@ def parseBusinessPackage() {
 }
 
 def initBusinessParam() {
+    this.apiPath = projectPackagePath + "/${singleapiPackageName}"
+    this.apiPackageName = "${projectPackageName}.${singleapiPackageName}"
+    this.voPath = projectPackagePath + "/${singleVOPackageName}"
+    this.voPackageName = "${projectPackageName}.${singleVOPackageName}"
     this.entityPath = projectPackagePath + "/${singleEntityPackageName}"
     this.entityPackageName = "${projectPackageName}.${singleEntityPackageName}"
     this.repositoryPath = projectPackagePath + "/${singleRepositoryPackageName}"
@@ -164,7 +186,8 @@ def initBusinessParam() {
     this.implName = "jpa" == this.modelDAOType ? toFirstUpperCase("${businessName}ServiceImpl") : ""
     this.repositoryName = "jpa" == this.modelDAOType ? toFirstUpperCase("${businessName}Repository") : ""
     this.entityName = "jpa" == this.modelDAOType ? toFirstUpperCase("${businessName}Entity") : ""
-
+    this.apiName = toFirstUpperCase("${businessName}")
+    this.voName = toFirstUpperCase("${businessName}VO")
     this.testControllerPath = "${testProGroovyPath}/${singleControllerPackageName}"
     this.testMockPath = "${testProGroovyPath}/mock"
     this.testMockPackageName = "${projectPackageName}.mock"
@@ -179,14 +202,18 @@ def mkProcessDir() {
     mkdir("$subProjRoot/src/test/resources")
     mkdir(testPropertiesPath)
     mkdir(testSpringPath)
+    mkdir(liquibasePath)
 }
 
 def mkBusinessDir() {
+    mkdir(voPath)
+    mkdir(apiPath)
     mkdir(entityPath)
     mkdir(repositoryPath)
     mkdir(servicePath)
     mkdir(implPath)
     mkdir(controllerPath)
+
 }
 
 def mkTestDir() {
@@ -211,11 +238,52 @@ Proper Enterprise Platform""")
 }
 
 def mkJava() {
+    mkApi()
+    mkVO()
     mkEntity()
     mkRepository()
     mkService()
     mkImpl()
     mkController()
+}
+
+def mkLiquibase(){
+
+    //dml
+    file("$liquibasePath/changelog-dml-${modelResourceName}.xml").withWriter(charset) {
+        it.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
+            "<databaseChangeLog xmlns=\"http://www.liquibase.org/xml/ns/dbchangelog\" xmlns:ext=\"http://www.liquibase.org/xml/ns/dbchangelog-ext\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd\">\n" +
+            "<!--数据变更-->\n" +
+            "</databaseChangeLog>")
+    }
+    file("$liquibasePath/changelog-ddl-${modelResourceName}.xml").withWriter(charset) {
+        it.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
+            "<databaseChangeLog xmlns=\"http://www.liquibase.org/xml/ns/dbchangelog\"\n" +
+            "                   xmlns:ext=\"http://www.liquibase.org/xml/ns/dbchangelog-ext\"\n" +
+            "                   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "                   xsi:schemaLocation=\"http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd\">\n" +
+            "    <changeSet author=\"generator (generated)\" id=\"1525327863683-40\">\n" +
+            "        <createTable tableName=\"${businessDataTableName.toString().toUpperCase()}\">\n" +
+            "            <column name=\"ID\" type=\"VARCHAR(255)\">\n" +
+            "                <constraints nullable=\"false\"/>\n" +
+            "            </column>\n" +
+            "            <column defaultValue=\"2017-02-20 00:00:00\" name=\"CREATE_TIME\" type=\"VARCHAR(255)\">\n" +
+            "                <constraints nullable=\"false\"/>\n" +
+            "            </column>\n" +
+            "            <column defaultValue=\"PEP\" name=\"CREATE_USER_ID\" type=\"VARCHAR(255)\">\n" +
+            "                <constraints nullable=\"false\"/>\n" +
+            "            </column>\n" +
+            "            <column defaultValue=\"2017-02-20 00:00:00\" name=\"LAST_MODIFY_TIME\" type=\"VARCHAR(255)\">\n" +
+            "                <constraints nullable=\"false\"/>\n" +
+            "            </column>\n" +
+            "            <column defaultValue=\"PEP\" name=\"LAST_MODIFY_USER_ID\" type=\"VARCHAR(255)\">\n" +
+            "                <constraints nullable=\"false\"/>\n" +
+            "            </column>\n" +
+            "            <column name=\"TEST\" type=\"INT(10)\"/>\n" +
+            "        </createTable>\n" +
+            "    </changeSet>\n" +
+            "</databaseChangeLog>")
+    }
 }
 
 def mkTest() {
@@ -230,10 +298,10 @@ def mkControllerTest() {
 }
 
 def mkResourceTest() {
-    file("$testPropertiesPath/${modelResourceName}.properties").withWriter {
+    file("$testPropertiesPath/${modelResourceName}.properties").withWriter(charset) {
         it.write("#test 中的配置文件仅在单元测试环境中有效，若想全局代码有效将单元测试中的源文件及目录一同粘贴到main下resources")
     }
-    file("$testSpringPath/applicationContext-${modelResourceName}.xml").withWriter {
+    file("$testSpringPath/applicationContext-${modelResourceName}.xml").withWriter(charset) {
         it.write("""<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -274,19 +342,73 @@ def mkRepository() {
     }
 }
 
+
+def mkApi() {
+    file("${apiPath}/${apiName}.java").withWriter(charset) {
+        it.write("""package ${apiPackageName};
+
+import com.proper.enterprise.platform.core.api.IBase;
+
+public interface ${apiName} extends IBase {
+
+    Integer getTest();
+
+    ${apiName} setTest(Integer test);
+}""")
+    }
+}
+
 def mkEntity() {
     if ("jpa" == modelDAOType) {
         mkJpaEntity()
     }
 }
 
+def mkVO() {
+    file("${voPath}/${voName}.java").withWriter(charset) {
+        it.write("""package ${voPackageName};
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
+import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.view.BaseView;
+import ${apiPackageName}.${apiName};
+import ${entityPackageName}.${entityName};
+
+@POJORelevance(relevanceDO = ${entityName}.class)
+public class ${voName} extends BaseVO implements ${apiName} {
+
+    public ${voName}(){}
+    
+    public interface Single extends BaseView {}
+
+    @POJOConverter(fromBy = ${entityName}.class,
+        fieldName = "test",
+        targetBy = ${entityName}.class)
+    @JsonView(Single.class)
+    private Integer test;
+
+    public Integer getTest() {
+        return test;
+    }
+
+    public ${voName} setTest(Integer test) {
+        this.test = test;
+        return this;
+    }
+}""")
+    }
+}
+
 //===================================================== jpa ==============================================================
 def mkJpaController() {
-    file("${controllerPath}/${controllerName}.java").withWriter {
+    file("${controllerPath}/${controllerName}.java").withWriter(charset) {
         it.write("""package ${controllerPackageName};
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.controller.BaseController;
-import ${entityPackageName}.${entityName};
+import ${voPackageName}.${voName};
 import ${servicePackageName}.${serviceName};
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -300,8 +422,11 @@ public class ${controllerName} extends BaseController {
     private ${serviceName} ${toFirstLowerCase(serviceName)};
 
     @PostMapping
-    public ResponseEntity<${entityName}> post(@RequestBody ${entityName} ${toFirstLowerCase(entityName)}) {
-        return responseOfPost(${toFirstLowerCase(serviceName)}.save(${toFirstLowerCase(entityName)}));
+    @JsonView(${voName}.Single.class)
+    public ResponseEntity<${voName}> post(@RequestBody ${voName} ${toFirstLowerCase(voName)}) {
+        return responseOfPost(${toFirstLowerCase(serviceName)}.save(${toFirstLowerCase(voName)}), ${voName}.class, ${
+            voName
+        }.Single.class);
     }
 
     @DeleteMapping
@@ -310,28 +435,31 @@ public class ${controllerName} extends BaseController {
     }
 
     @PutMapping
-    public ResponseEntity<${entityName}> put(@RequestBody ${entityName} ${toFirstLowerCase(entityName)}) {
-        return responseOfPut(${toFirstLowerCase(serviceName)}.save(${toFirstLowerCase(entityName)}));
+    @JsonView(${voName}.Single.class)
+    public ResponseEntity<${voName}> put(@RequestBody ${voName} ${toFirstLowerCase(voName)}) {
+        return responseOfPut(${toFirstLowerCase(serviceName)}.updateForSelective(${toFirstLowerCase(voName)}), ${
+            voName
+        }.class, ${voName}.Single.class);
     }
 
     @GetMapping
+    @JsonView(${voName}.Single.class)
     public ResponseEntity<?> get() {
-        return responseOfGet(isPageSearch() ? ${toFirstLowerCase(serviceName)}.findPage() : ${
-            toFirstLowerCase(serviceName)
-        }.findAll());
+        return isPageSearch() ? responseOfGet(${toFirstLowerCase(serviceName)}.findPage(), ${voName}.class, ${voName}.Single.class)
+            : responseOfGet(${toFirstLowerCase(serviceName)}.findAll(), ${voName}.class, ${voName}.Single.class);
     }
 }""")
     }
 }
 
 def mkJpaControllerTest() {
-    file("${testControllerPath}/${controllerName}Test.groovy").withWriter {
+    file("${testControllerPath}/${controllerName}Test.groovy").withWriter(charset) {
         it.write("""package ${controllerPackageName}
 
 import org.junit.Test
 import org.springframework.http.HttpStatus
 import com.proper.enterprise.platform.core.entity.DataTrunk
-import ${entityPackageName}.${entityName}
+import ${voPackageName}.${voName}
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 
@@ -343,7 +471,7 @@ class ${controllerName}Test extends AbstractTest {
     @Test
     void "post"() {
         mockUser('test1', 't1', 'pwd')
-        ${entityName} result = postAndReturn(URL, new ${entityName}())
+        ${voName} result = postAndReturn(URL, new ${voName}())
         expect:
         assert null != result.getId()
     }
@@ -352,19 +480,19 @@ class ${controllerName}Test extends AbstractTest {
     void "delete"() {
         mockUser('test1', 't1', 'pwd')
         delete(URL + "?id=1", HttpStatus.NOT_FOUND)
-        ${entityName} result = postAndReturn(URL, new ${entityName}())
+        ${voName} result = postAndReturn(URL, new ${voName}())
         delete(URL + "?id=" + result.getId(), HttpStatus.NO_CONTENT)
     }
 
     @Test
     void "put"() {
         mockUser('test1', 't1', 'pwd')
-        ${entityName} entity = new ${entityName}()
-        entity.setTest(1)
-        ${entityName} result = postAndReturn(URL, entity)
+        ${voName} vo = new ${voName}()
+        vo.setTest(1)
+        ${voName} result = postAndReturn(URL, vo)
         result.setTest(2)
-        ${entityName} result2 = JSONUtil.parse(put(URL, JSONUtil.toJSON(result), HttpStatus.OK)
-            .getResponse().getContentAsString(), ${entityName}.class)
+        ${voName} result2 = JSONUtil.parse(put(URL, JSONUtil.toJSON(result), HttpStatus.OK)
+            .getResponse().getContentAsString(), ${voName}.class)
         expect:
         assert 2 == result2.getTest()
     }
@@ -372,14 +500,14 @@ class ${controllerName}Test extends AbstractTest {
     @Test
     void "get"() {
         mockUser('test1', 't1', 'pwd')
-        ${entityName} entity1 = new ${entityName}().setTest(1)
-        ${entityName} entity2 = new ${entityName}().setTest(2)
-        ${entityName} entity3 = new ${entityName}().setTest(3)
-        postAndReturn(URL, entity1)
-        postAndReturn(URL, entity2)
-        postAndReturn(URL, entity3)
-        List<${entityName}> list = JSONUtil.parse(get(URL, HttpStatus.OK).getResponse().getContentAsString(), List)
-        DataTrunk<${entityName}> page = JSONUtil.parse(get(URL + "?pageNo=1&pageSize=1", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk)
+        ${voName} vo1 = new ${voName}().setTest(1)
+        ${voName} vo2 = new ${voName}().setTest(2)
+        ${voName} vo3 = new ${voName}().setTest(3)
+        postAndReturn(URL, vo1)
+        postAndReturn(URL, vo2)
+        postAndReturn(URL, vo3)
+        List<${voName}> list = JSONUtil.parse(get(URL, HttpStatus.OK).getResponse().getContentAsString(), List)
+        DataTrunk<${voName}> page = JSONUtil.parse(get(URL + "?pageNo=1&pageSize=1", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk)
         expect:
         assert 3 == list.size()
         assert 3 == page.count
@@ -390,31 +518,31 @@ class ${controllerName}Test extends AbstractTest {
 }
 
 def mkJpaService() {
-    file("${servicePath}/${serviceName}.java").withWriter {
+    file("${servicePath}/${serviceName}.java").withWriter(charset) {
         it.write("""package ${servicePackageName};
 
 import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
-import ${entityPackageName}.${entityName};
+import ${apiPackageName}.${apiName};
 
-public interface ${serviceName} extends BaseJpaService<${entityName}, String> {
+public interface ${serviceName} extends BaseJpaService<${apiName}, String> {
 
 }""")
     }
 }
 
 def mkJpaImpl() {
-    file("${implPath}/${implName}.java").withWriter {
+    file("${implPath}/${implName}.java").withWriter(charset) {
         it.write("""package ${implPackageName};
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
-import ${entityPackageName}.${entityName};
+import ${apiPackageName}.${apiName};
 import ${repositoryPackageName}.${repositoryName};
 import ${servicePackageName}.${serviceName};
 
 @Service
-public class ${implName} extends JpaServiceSupport<${entityName}, ${repositoryName}, String> implements ${serviceName} {
+public class ${implName} extends JpaServiceSupport<${apiName}, ${repositoryName}, String> implements ${serviceName} {
 
     @Autowired
     private ${repositoryName} ${toFirstLowerCase(businessName)}Repository;
@@ -428,15 +556,17 @@ public class ${implName} extends JpaServiceSupport<${entityName}, ${repositoryNa
 }
 
 def mkJpaEntity() {
-    file("${entityPath}/${entityName}.java").withWriter {
+    file("${entityPath}/${entityName}.java").withWriter(charset) {
         it.write("""package ${entityPackageName};
 
-import com.proper.enterprise.platform.core.entity.BaseEntity;
+import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
+import ${apiPackageName}.${apiName};
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "${businessDataTableName.toString().toUpperCase()}")
-public class ${entityName} extends BaseEntity {
+public class ${entityName} extends BaseEntity implements ${apiName} {
 
     public ${entityName}(){}
 
@@ -456,7 +586,7 @@ public class ${entityName} extends BaseEntity {
 }
 
 def mkJpaRepository() {
-    file("${repositoryPath}/${repositoryName}.java").withWriter {
+    file("${repositoryPath}/${repositoryName}.java").withWriter(charset) {
         it.write("""package ${repositoryPackageName};
 
 import ${entityPackageName}.${entityName};

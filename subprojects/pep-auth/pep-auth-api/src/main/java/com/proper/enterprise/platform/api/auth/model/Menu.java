@@ -134,14 +134,14 @@ public interface Menu extends IBase, Comparable<Menu> {
      *
      * @return 排序号
      */
-    int getSequenceNumber();
+    Integer getSequenceNumber();
 
     /**
      * 设置菜单排序号
      *
      * @param sequenceNumber 排序号
      */
-    void setSequenceNumber(int sequenceNumber);
+    void setSequenceNumber(Integer sequenceNumber);
 
     /**
      * 设置菜单图标样式名称

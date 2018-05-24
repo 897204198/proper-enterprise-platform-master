@@ -28,7 +28,11 @@ public class JPAUtil {
         Assert.notNull(source, "Source must not be null");
         List<String> notNullValueColumns = new ArrayList<>();
         for (Field field : BeanUtil.getAllFields(source.getClass())) {
-            if (null == field.getAnnotation(Column.class)) {
+            if (null != field.getAnnotation(Transient.class)
+                || null != field.getAnnotation(ManyToMany.class)
+                || null != field.getAnnotation(ManyToOne.class)
+                || null != field.getAnnotation(OneToMany.class)
+                || null != field.getAnnotation(OneToOne.class)) {
                 continue;
             }
             PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(source.getClass(), field.getName());

@@ -41,6 +41,22 @@ public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String>
     }
 
     @Override
+    public Collection<? extends Menu> findParents(EnableEnum enable) {
+        Specification<Menu> specification = new Specification<Menu>() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
+                List<Predicate> predicates = new ArrayList<>();
+                if (null != enable && EnableEnum.ALL != enable) {
+                    predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
+                }
+                predicates.add(cb.isNull(root.get("parent").get("id")));
+                return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        };
+        return findAll(specification, new Sort("parent", "sequenceNumber"));
+    }
+
+    @Override
     public Collection<? extends Menu> findAllEq(String name) {
         Specification<Menu> specification = new Specification<Menu>() {
             @Override

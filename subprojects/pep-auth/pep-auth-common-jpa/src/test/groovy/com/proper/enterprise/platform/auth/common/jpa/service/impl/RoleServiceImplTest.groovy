@@ -179,7 +179,7 @@ class RoleServiceImplTest extends AbstractTest {
         roleEntity1.setParent(roleEntity)
         roleEntity1 = roleService.save(roleEntity1)
 
-        delete('/auth/roles?ids=' + roleEntity.getId(), HttpStatus.NO_CONTENT)
+        assert delete('/auth/roles?ids=' + roleEntity.getId(), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()==I18NUtil.getMessage("pep.auth.common.role.has.role")
         roleService.findAll()
     }
 

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet author="alphahinex (generated)" id="1525327863683-40">
         <createTable tableName="PEP_AUTH_DATARESTRAINS">
             <column name="ID" type="VARCHAR(255)">
@@ -268,13 +271,16 @@
         <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_RESOURCES" tableName="PEP_AUTH_RESOURCES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-133">
-        <addUniqueConstraint columnNames="NAME" constraintName="UK_OUTKYSGOE2LWKWJH4IME9RUAQ" tableName="PEP_AUTH_DATARESTRAINS"/>
+        <addUniqueConstraint columnNames="NAME" constraintName="UK_OUTKYSGOE2LWKWJH4IME9RUAQ"
+                             tableName="PEP_AUTH_DATARESTRAINS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-134">
-        <addUniqueConstraint columnNames="ROUTE" constraintName="UK_RBVJ8E5FVAFV4HRKD95VQYEY" tableName="PEP_AUTH_MENUS"/>
+        <addUniqueConstraint columnNames="ROUTE" constraintName="UK_RBVJ8E5FVAFV4HRKD95VQYEY"
+                             tableName="PEP_AUTH_MENUS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-135">
-        <addUniqueConstraint columnNames="USERNAME" constraintName="UK_SBQ9GVGCOYTAE85479WEDP2T6" tableName="PEP_AUTH_USERS"/>
+        <addUniqueConstraint columnNames="USERNAME" constraintName="UK_SBQ9GVGCOYTAE85479WEDP2T6"
+                             tableName="PEP_AUTH_USERS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-231">
         <createIndex indexName="FK_20RYJP4LCS64HSTSJA4AK8RBU_INDEX_E" tableName="PEP_AUTH_ROLES_RESOURCES">
@@ -363,7 +369,8 @@
         </createIndex>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-253">
-        <createIndex indexName="UK_4BIWJDMUJPCRWVWWXNYTVSEW5_INDEX_5" tableName="PEP_AUTH_RESOURCES_DATARESTRAINS" unique="true">
+        <createIndex indexName="UK_4BIWJDMUJPCRWVWWXNYTVSEW5_INDEX_5" tableName="PEP_AUTH_RESOURCES_DATARESTRAINS"
+                     unique="true">
             <column name="RESOURCE_ID"/>
             <column name="DATARESTRAIN_ID"/>
         </createIndex>
@@ -375,7 +382,8 @@
         </createIndex>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-255">
-        <createIndex indexName="UK_86B8X34F6EV8EDHCDIHMN39F3_INDEX_E" tableName="PEP_AUTH_ROLES_RESOURCES" unique="true">
+        <createIndex indexName="UK_86B8X34F6EV8EDHCDIHMN39F3_INDEX_E" tableName="PEP_AUTH_ROLES_RESOURCES"
+                     unique="true">
             <column name="ROLE_ID"/>
             <column name="RESOURCE_ID"/>
         </createIndex>
@@ -387,7 +395,8 @@
         </createIndex>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-257">
-        <createIndex indexName="UK_G6VCQW7KBWG7ES8QASQO8ON3L_INDEX_B" tableName="PEP_AUTH_MENUS_RESOURCES" unique="true">
+        <createIndex indexName="UK_G6VCQW7KBWG7ES8QASQO8ON3L_INDEX_B" tableName="PEP_AUTH_MENUS_RESOURCES"
+                     unique="true">
             <column name="MENU_ID"/>
             <column name="RES_ID"/>
         </createIndex>
@@ -405,52 +414,100 @@
         </createIndex>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-303">
-        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_ROLES_RESOURCES" constraintName="FK_20RYJP4LCS64HSTSJA4AK8RBU" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
+        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_ROLES_RESOURCES"
+                                 constraintName="FK_20RYJP4LCS64HSTSJA4AK8RBU" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-304">
-        <addForeignKeyConstraint baseColumnNames="MENU_ID" baseTableName="PEP_AUTH_ROLES_MENUS" constraintName="FK_2DNGCM8XXLR1L98JMJ4MFJSF4" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_MENUS"/>
+        <addForeignKeyConstraint baseColumnNames="MENU_ID" baseTableName="PEP_AUTH_ROLES_MENUS"
+                                 constraintName="FK_2DNGCM8XXLR1L98JMJ4MFJSF4" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_MENUS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-305">
-        <addForeignKeyConstraint baseColumnNames="USER_GROUP_ID" baseTableName="PEP_AUTH_USERS_GROUPS" constraintName="FK_4TRHE953BOEKSYCCL7X4YKPGW" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERGROUPS"/>
+        <addForeignKeyConstraint baseColumnNames="USER_GROUP_ID" baseTableName="PEP_AUTH_USERS_GROUPS"
+                                 constraintName="FK_4TRHE953BOEKSYCCL7X4YKPGW" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERGROUPS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-306">
-        <addForeignKeyConstraint baseColumnNames="RES_ID" baseTableName="PEP_AUTH_MENUS_RESOURCES" constraintName="FK_5IXGA28WN1HC3UD4HJMFMG8AG" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_RESOURCES"/>
+        <addForeignKeyConstraint baseColumnNames="RES_ID" baseTableName="PEP_AUTH_MENUS_RESOURCES"
+                                 constraintName="FK_5IXGA28WN1HC3UD4HJMFMG8AG" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_RESOURCES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-307">
-        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="PEP_AUTH_USERS_GROUPS" constraintName="FK_8N8PULRA7T0MJ3TND29DYLWP0" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERS"/>
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="PEP_AUTH_USERS_GROUPS"
+                                 constraintName="FK_8N8PULRA7T0MJ3TND29DYLWP0" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-308">
-        <addForeignKeyConstraint baseColumnNames="PARENT_ID" baseTableName="PEP_AUTH_ROLES" constraintName="FK_A2YCH177P0ICCMGHNH5J946GS" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
+        <addForeignKeyConstraint baseColumnNames="PARENT_ID" baseTableName="PEP_AUTH_ROLES"
+                                 constraintName="FK_A2YCH177P0ICCMGHNH5J946GS" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-309">
-        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_USERS_ROLES" constraintName="FK_ADT0X8V29ABPQFAB7YHGJO4GA" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
+        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_USERS_ROLES"
+                                 constraintName="FK_ADT0X8V29ABPQFAB7YHGJO4GA" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-310">
-        <addForeignKeyConstraint baseColumnNames="RESOURCE_ID" baseTableName="PEP_AUTH_RESOURCES_DATARESTRAINS" constraintName="FK_FUE44EM3GVTKFQVY4IKBVWAT" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_RESOURCES"/>
+        <addForeignKeyConstraint baseColumnNames="RESOURCE_ID" baseTableName="PEP_AUTH_RESOURCES_DATARESTRAINS"
+                                 constraintName="FK_FUE44EM3GVTKFQVY4IKBVWAT" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_RESOURCES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-311">
-        <addForeignKeyConstraint baseColumnNames="RESOURCE_ID" baseTableName="PEP_AUTH_ROLES_RESOURCES" constraintName="FK_IFBIVK33AAHFS3RDUQLI3K6GF" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_RESOURCES"/>
+        <addForeignKeyConstraint baseColumnNames="RESOURCE_ID" baseTableName="PEP_AUTH_ROLES_RESOURCES"
+                                 constraintName="FK_IFBIVK33AAHFS3RDUQLI3K6GF" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_RESOURCES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-312">
-        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_ROLES_MENUS" constraintName="FK_M9KUPHKKTWNBMLXGWPCKK93S7" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
+        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_ROLES_MENUS"
+                                 constraintName="FK_M9KUPHKKTWNBMLXGWPCKK93S7" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-313">
-        <addForeignKeyConstraint baseColumnNames="DATARESTRAIN_ID" baseTableName="PEP_AUTH_RESOURCES_DATARESTRAINS" constraintName="FK_MPERD18U77Q34SEYCYNXSF32X" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_DATARESTRAINS"/>
+        <addForeignKeyConstraint baseColumnNames="DATARESTRAIN_ID" baseTableName="PEP_AUTH_RESOURCES_DATARESTRAINS"
+                                 constraintName="FK_MPERD18U77Q34SEYCYNXSF32X" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_DATARESTRAINS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-314">
-        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_GROUPS_ROLES" constraintName="FK_OAJII6MODSO2K8T4HGV03FNOO" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
+        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_GROUPS_ROLES"
+                                 constraintName="FK_OAJII6MODSO2K8T4HGV03FNOO" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-315">
-        <addForeignKeyConstraint baseColumnNames="PARENT_ID" baseTableName="PEP_AUTH_MENUS" constraintName="FK_QBJRKVVQ5R6D1CAVG0UFF4VX3" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_MENUS"/>
+        <addForeignKeyConstraint baseColumnNames="PARENT_ID" baseTableName="PEP_AUTH_MENUS"
+                                 constraintName="FK_QBJRKVVQ5R6D1CAVG0UFF4VX3" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_MENUS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-316">
-        <addForeignKeyConstraint baseColumnNames="MENU_ID" baseTableName="PEP_AUTH_MENUS_RESOURCES" constraintName="FK_QJ6WU0LNH065V6GAONCYAA32A" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_MENUS"/>
+        <addForeignKeyConstraint baseColumnNames="MENU_ID" baseTableName="PEP_AUTH_MENUS_RESOURCES"
+                                 constraintName="FK_QJ6WU0LNH065V6GAONCYAA32A" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_MENUS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-323">
-        <addForeignKeyConstraint baseColumnNames="GROUP_ID" baseTableName="PEP_AUTH_GROUPS_ROLES" constraintName="FK_RUUK0QM979HC72093WFA9QG6P" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERGROUPS"/>
+        <addForeignKeyConstraint baseColumnNames="GROUP_ID" baseTableName="PEP_AUTH_GROUPS_ROLES"
+                                 constraintName="FK_RUUK0QM979HC72093WFA9QG6P" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERGROUPS"/>
     </changeSet>
     <changeSet author="alphahinex (generated)" id="1525327863683-324">
-        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="PEP_AUTH_USERS_ROLES" constraintName="FK_SSDW7RMQ5DTPK72E2IHQRV5U3" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERS"/>
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="PEP_AUTH_USERS_ROLES"
+                                 constraintName="FK_SSDW7RMQ5DTPK72E2IHQRV5U3" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERS"/>
     </changeSet>
 
     <changeSet author="alphahinex (generated)" id="1526805844587-1">
@@ -459,5 +516,17 @@
                 <constraints nullable="false"/>
             </column>
         </addColumn>
+    </changeSet>
+    <changeSet author="zhangjl" id="20180524-changebyauth-refactor">
+        <addUniqueConstraint tableName="PEP_AUTH_MENUS" columnNames="NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_RESOURCES" columnNames="NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_ROLES" columnNames="NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_USERS" columnNames="USERNAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_USERGROUPS" columnNames="NAME"/>
+        <addNotNullConstraint tableName="PEP_AUTH_MENUS" catalogName="addNotNull" columnName="NAME" schemaName="public"  columnDataType="string"/>
+        <addNotNullConstraint tableName="PEP_AUTH_RESOURCES" catalogName="addNotNull" columnName="NAME" schemaName="public"  columnDataType="string"/>
+        <addNotNullConstraint tableName="PEP_AUTH_ROLES" catalogName="addNotNull" columnName="NAME" schemaName="public"  columnDataType="string"/>
+        <addNotNullConstraint tableName="PEP_AUTH_USERS" catalogName="addNotNull" columnName="USERNAME" schemaName="public"  columnDataType="string"/>
+        <addNotNullConstraint tableName="PEP_AUTH_USERGROUPS" catalogName="addNotNull" columnName="NAME" schemaName="public"  columnDataType="string"/>
     </changeSet>
 </databaseChangeLog>

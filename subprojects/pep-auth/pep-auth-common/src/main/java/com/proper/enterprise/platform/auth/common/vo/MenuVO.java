@@ -6,7 +6,6 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
 import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
-import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 
@@ -29,6 +28,8 @@ public class MenuVO extends BaseVO implements Menu {
     }
 
     @JsonView(value = {Single.class})
+    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
+        fieldName = "children", fromHandleBy = MenuVoFromHandler.class)
     private boolean leaf;
 
 
@@ -59,6 +60,8 @@ public class MenuVO extends BaseVO implements Menu {
      * 上级菜单 id
      */
     @JsonView(value = {Single.class})
+    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
+        fieldName = "parentId", fromHandleBy = MenuVoFromHandler.class)
     private String parentId;
 
     /**
@@ -90,7 +93,7 @@ public class MenuVO extends BaseVO implements Menu {
      * 菜单同级排序号
      */
     @JsonView(value = {Single.class})
-    private int sequenceNumber;
+    private Integer sequenceNumber;
 
     /**
      * 菜单图标样式名称
@@ -117,7 +120,7 @@ public class MenuVO extends BaseVO implements Menu {
     private String identifier;
 
     public void setLeaf(boolean leaf) {
-        this.leaf = this.isLeaf();
+        this.leaf = leaf;
     }
 
     @Override
@@ -141,12 +144,12 @@ public class MenuVO extends BaseVO implements Menu {
     }
 
     @Override
-    public int getSequenceNumber() {
+    public Integer getSequenceNumber() {
         return sequenceNumber;
     }
 
     @Override
-    public void setSequenceNumber(int sequenceNumber) {
+    public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
 
@@ -223,10 +226,7 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public boolean isLeaf() {
-        if (CollectionUtil.isEmpty(getChildren()) && CollectionUtil.isEmpty(resources)) {
-            return true;
-        }
-        return false;
+        return leaf;
     }
 
     @Override

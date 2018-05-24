@@ -70,6 +70,9 @@ public class MenuServiceImpl implements MenuService {
         if (null == menu.getEnable()) {
             menu.setEnable(true);
         }
+        if (null == menu.getSequenceNumber()) {
+            menu.setSequenceNumber(0);
+        }
         validate(menu);
         String parentId = menu.getParentId();
         if (StringUtil.isNotNull(parentId) && !parentId.equals(DEFAULT_VALUE)) {
@@ -210,34 +213,14 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public Collection<? extends Menu> getMenuParents() {
-        Collection<Menu> menus = new HashSet<>();
-        Collection<? extends Menu> list = menuDao.findAll();
-        for (Menu menuEntity : list) {
-            if (!menuEntity.getEnable()) {
-                continue;
-            }
-            if (!menus.contains(menuEntity)) {
-                if (menuEntity.getParent() != null) {
-                    menus.add(menuEntity.getParent());
-                } else {
-                    menus.add(menuEntity);
-                }
-            }
-        }
-        return menus;
+    public Collection<? extends Menu> getMenuParents(EnableEnum menuEnable) {
+        return menuDao.findParents(menuEnable);
     }
 
     @Override
     public Collection<? extends Menu> updateEnable(Collection<String> idList, boolean enable) {
         Collection<? extends Menu> menuList = menuDao.findAll(idList);
         for (Menu menu : menuList) {
-            // TODO: 2018/5/18 待确认  父菜单被禁用了 那子菜单是否也被禁用 之前的逻辑看起来是 有子菜单的菜单 不允许启用禁用 看起来并不合理
-            /* Collection<? extends Menu> list = getMenuByCondition(null, null, null, EnableEnum.ENABLE, menu.getId());
-            if (CollectionUtil.isEmpty(list)) {
-                LOGGER.debug("{} has parent menu {}, dont update!", menu.getName(), menu.getParent());
-                throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.parent"));
-            }*/
             menu.setEnable(enable);
         }
         return menuDao.save(menuList);

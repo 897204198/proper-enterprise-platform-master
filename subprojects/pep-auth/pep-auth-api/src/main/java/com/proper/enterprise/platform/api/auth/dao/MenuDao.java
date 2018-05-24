@@ -13,6 +13,8 @@ public interface MenuDao extends BaseService<Menu, String> {
 
     Menu getNewMenuEntity();
 
+    Collection<? extends Menu> findParents(EnableEnum menuEnable);
+
     Collection<? extends Menu> findAllEq(String name);
 
     Collection<? extends Menu> findAll(String name, String description, String route, EnableEnum enable, String parentId);
