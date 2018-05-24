@@ -523,10 +523,10 @@
         <addUniqueConstraint tableName="PEP_AUTH_ROLES" columnNames="NAME"/>
         <addUniqueConstraint tableName="PEP_AUTH_USERS" columnNames="USERNAME"/>
         <addUniqueConstraint tableName="PEP_AUTH_USERGROUPS" columnNames="NAME"/>
-        <addNotNullConstraint tableName="PEP_AUTH_MENUS" catalogName="addNotNull" columnName="NAME" schemaName="public"  columnDataType="string"/>
-        <addNotNullConstraint tableName="PEP_AUTH_RESOURCES" catalogName="addNotNull" columnName="NAME" schemaName="public"  columnDataType="string"/>
-        <addNotNullConstraint tableName="PEP_AUTH_ROLES" catalogName="addNotNull" columnName="NAME" schemaName="public"  columnDataType="string"/>
-        <addNotNullConstraint tableName="PEP_AUTH_USERS" catalogName="addNotNull" columnName="USERNAME" schemaName="public"  columnDataType="string"/>
-        <addNotNullConstraint tableName="PEP_AUTH_USERGROUPS" catalogName="addNotNull" columnName="NAME" schemaName="public"  columnDataType="string"/>
+        <addNotNullConstraint tableName="PEP_AUTH_MENUS" columnName="NAME" columnDataType="VARCHAR(255)"/>
+        <addNotNullConstraint tableName="PEP_AUTH_RESOURCES" columnName="NAME" columnDataType="VARCHAR(255)"/>
+        <addNotNullConstraint tableName="PEP_AUTH_ROLES" columnName="NAME" columnDataType="VARCHAR(255)"/>
+        <addNotNullConstraint tableName="PEP_AUTH_USERS" columnName="USERNAME" columnDataType="VARCHAR(255)"/>
+        <addNotNullConstraint tableName="PEP_AUTH_USERGROUPS" columnName="NAME" columnDataType="VARCHAR(255)"/>
     </changeSet>
 </databaseChangeLog>
