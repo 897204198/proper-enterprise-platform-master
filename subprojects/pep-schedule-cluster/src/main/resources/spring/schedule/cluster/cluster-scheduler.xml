@@ -4,6 +4,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <bean id="pepJobList" class="com.proper.enterprise.platform.core.factory.ComposeListFactoryBean">
+        <constructor-arg name="listBeanNamePattern" value="pepJobList.+"/>
+    </bean>
+
     <bean id="pepSchedulerFactory" name="pepSchedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
         <property name="applicationContextSchedulerContextKey" value="applicationContext"/>
         <property name="dataSource" ref="dataSource" />

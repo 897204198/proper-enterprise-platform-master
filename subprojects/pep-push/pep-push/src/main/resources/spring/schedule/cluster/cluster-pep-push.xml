@@ -7,7 +7,7 @@
                            http://www.springframework.org/schema/util
                            http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <util:list id="pepJobList">
+    <util:list id="pepJobListPush">
         <!-- 清空指定天数之前的历史消息定时任务 -->
         <bean id="pushClearOldMsgsScheduleTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
             <property name="jobDetail">

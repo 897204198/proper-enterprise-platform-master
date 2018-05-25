@@ -7,7 +7,7 @@
                            http://www.springframework.org/schema/util
                            http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <util:list id="pepJobList">
+    <util:list id="pepJobListOopsearchH2">
         <bean id="h2SyncJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
             <property name="jobDetail">
                 <bean class="com.proper.enterprise.platform.schedule.cluster.PEPMethodInvokingJobDetailFactoryBean">

@@ -7,7 +7,7 @@
                            http://www.springframework.org/schema/util
                            http://www.springframework.org/schema/util/spring-util.xsd" profile="test">
 
-    <bean id="pepJobList" primary="true" class="java.util.ArrayList">
+    <bean id="pepJobListTest" primary="true" class="java.util.ArrayList">
         <constructor-arg>
             <util:list>
                 <bean id="simpleTrigger1" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
