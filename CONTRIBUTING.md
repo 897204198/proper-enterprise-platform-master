@@ -140,9 +140,11 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
     ```
     class CrudBaseTest extends AbstractTest
     ```
-* 建表：Hibernate 按照 JPA 的注解自动创建
-* 初始化数据：sql 语句放在对应模块 `src/main/resources/sql/*.sql`，系统运行时自动执行
+* 建表及初始化数据：通过 Liquibase 的 Change Log 执行数据库建表语句及初始化数据，具体使用方式可参照 [说明文档](https://oopstorm.github.io/2018/05/15/2018-05-15-liquibase-with-gradle/)。
+Change Log 文件放在对应模块的 `src/main/resources/liquibase/changelogs` 路径下，为保证 DDL 优先于 DML 执行，命名规范为 `changelog-ddl-*.xml` 和 `changelog-dml-*.xml`。
+
 * 异常不允许直接 `printStackTrace`，应记录到日志中
+
 * 记录日志时，应采用 `Slf4j` 推荐的方式，避免日志信息通过 `+` 拼接
 
     ```
