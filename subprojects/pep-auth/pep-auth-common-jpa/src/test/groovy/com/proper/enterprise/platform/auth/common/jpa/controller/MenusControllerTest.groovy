@@ -7,6 +7,8 @@ import com.proper.enterprise.platform.auth.common.dictionary.MenuType
 import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.*
+import com.proper.enterprise.platform.auth.common.vo.MenuVO
+import com.proper.enterprise.platform.auth.common.vo.ResourceVO
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
@@ -359,5 +361,46 @@ class MenusControllerTest extends AbstractTest {
         menu['enable'] = true
         def res = post('/auth/menus', JSONUtil.toJSON(menu), HttpStatus.INTERNAL_SERVER_ERROR).response
         assert res.getHeader(PEPConstants.RESPONSE_HEADER_ERROR_TYPE) == PEPConstants.RESPONSE_BUSINESS_ERROR
+    }
+
+    @Test
+    @NoTx
+    void menuTreeHaveResourceTest() {
+        mockUser("test", "test", "test", true)
+        def menuParent = [:]
+        menuParent['icon'] = 'test_icon'
+        menuParent['name'] = 'test_name1'
+        menuParent['route'] = '/ccc2/ddd'
+        menuParent['enable'] = true
+        menuParent['sequenceNumber'] = 55
+        menuParent['menuCode'] = '1'
+        MenuVO menuParentVO = JSONUtil.parse(post('/auth/menus', JSONUtil.toJSON(menuParent), HttpStatus.CREATED).getResponse().getContentAsString(), MenuVO.class)
+        def menuChildren = [:]
+        menuChildren['icon'] = 'test_icon'
+        menuChildren['name'] = 'test_name2'
+        menuChildren['route'] = '/ccc/ddd/eee'
+        menuChildren['enable'] = true
+        menuChildren['sequenceNumber'] = 55
+        menuChildren['menuCode'] = '1'
+        menuChildren['parentId'] = menuParentVO.getId()
+        MenuVO menuChildrenVO = JSONUtil.parse(post('/auth/menus', JSONUtil.toJSON(menuChildren), HttpStatus.CREATED).getResponse().getContentAsString(), MenuVO.class)
+        ResourceVO resourceVO = new ResourceVO()
+        resourceVO.setName('resource')
+        resourceVO.addURL("/aa")
+        resourceVO.setIdentifier("edit")
+
+        post('/auth/menus/' + menuChildrenVO.getId() + "/resources", JSONUtil.toJSON(resourceVO), HttpStatus.CREATED)
+        List<MenuVO> menuVOs = JSONUtil.parse(get('/auth/menus/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert menuVOs.size() > 0
+        boolean validate = false
+        for (MenuVO menuVO : menuVOs) {
+            if ("/ccc/ddd/eee".equals(menuVO.getRoute())) {
+                assert menuVO.getParentId() == menuParentVO.getId()
+                List<ResourceVO> resourceVOs = menuVO.getResources()
+                assert resourceVOs.get(0).name == resourceVO.getName()
+                validate = true
+            }
+        }
+        assert validate
     }
 }

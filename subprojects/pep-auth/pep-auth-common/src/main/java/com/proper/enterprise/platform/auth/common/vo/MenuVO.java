@@ -34,7 +34,7 @@ public class MenuVO extends BaseVO implements Menu {
 
 
     @JsonView(value = {Single.class})
-    private Menu application;
+    private MenuVO application;
 
     /**
      * 菜单名称
@@ -54,6 +54,7 @@ public class MenuVO extends BaseVO implements Menu {
     @POJOConverter(fromClassName = MENU_ENTITY_PATH,
         fieldName = "parent",
         targetClassName = MENU_ENTITY_PATH)
+    @JsonView(value = {MenuWithResource.class})
     private MenuVO parent;
 
     /**
@@ -76,6 +77,7 @@ public class MenuVO extends BaseVO implements Menu {
     @POJOConverter(fromClassName = MENU_ENTITY_PATH,
         fieldName = "children",
         targetClassName = MENU_ENTITY_PATH)
+    @JsonView(value = {MenuWithResource.class})
     private Collection<MenuVO> children;
 
     @POJOConverter(fromClassName = MENU_ENTITY_PATH,
@@ -195,7 +197,7 @@ public class MenuVO extends BaseVO implements Menu {
         return application;
     }
 
-    public void setApplication(Menu application) {
+    public void setApplication(MenuVO application) {
         this.application = application;
     }
 

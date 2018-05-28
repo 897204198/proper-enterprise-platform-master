@@ -240,12 +240,14 @@ public class MenuServiceImpl implements MenuService {
         Menu menu = this.get(menuId);
         if (menu != null) {
             Collection<? extends Resource> collection = menu.getResources();
-            for (Resource res : collection) {
-                String identification = res.getIdentifier();
-                if (resourceReq.getIdentifier() != null && !resourceReq.getIdentifier().equals(identification)) {
-                    continue;
-                } else {
-                    throw new ErrMsgException("pep.auth.common.menu.param");
+            if (CollectionUtil.isNotEmpty(collection)) {
+                for (Resource res : collection) {
+                    String identification = res.getIdentifier();
+                    if (resourceReq.getIdentifier() != null && !resourceReq.getIdentifier().equals(identification)) {
+                        continue;
+                    } else {
+                        throw new ErrMsgException("pep.auth.common.menu.param");
+                    }
                 }
             }
             resource.setIdentifier(resourceReq.getIdentifier());
@@ -361,7 +363,10 @@ public class MenuServiceImpl implements MenuService {
             if (menu.getEnable()) {
                 MenuVO detail = new MenuVO();
                 BeanUtils.copyProperties(menu, detail);
-                detail.setParentId(menu.getParentId());
+                if (null != menu.getParent()) {
+                    detail.setParentId(menu.getParent().getId());
+                }
+
                 Collection<ResourceVO> resList = new ArrayList<>();
                 Collection<Resource> resourceList = (Collection<Resource>) menu.getResources();
                 for (Resource resource : resourceList) {
