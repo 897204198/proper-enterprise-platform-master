@@ -100,14 +100,10 @@ public class AppVersionManagerController extends BaseController {
     @DeleteMapping(path = "/{version}")
     public ResponseEntity invalid(@PathVariable long version) {
         AppVersionDocument releaseApp = appVersionService.getLatestReleaseVersionOnlyValid();
-        if (releaseApp.getVer() == version) {
+        if (releaseApp != null && releaseApp.getVer() == version) {
             return responseOfDelete(false);
         }
         AppVersionDocument app = appVersionService.inValidByVersion(version);
-        boolean result = false;
-        if (!app.isValid()) {
-            result = true;
-        }
-        return responseOfDelete(result);
+        return responseOfDelete(app != null && !app.isValid());
     }
 }

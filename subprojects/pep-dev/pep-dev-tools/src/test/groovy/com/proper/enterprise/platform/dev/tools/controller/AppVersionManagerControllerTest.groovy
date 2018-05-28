@@ -38,6 +38,10 @@ class AppVersionManagerControllerTest extends AbstractTest {
     @Test
     void invalid() {
         delete(prefix + "/300010", HttpStatus.NO_CONTENT)
+
+        tearDown()
+        cacheManager.getCache('pep.sys.AppVersion').clear()
+        delete(prefix + "/300010", HttpStatus.NOT_FOUND)
     }
 
     @Test

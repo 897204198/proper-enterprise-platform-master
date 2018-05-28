@@ -59,11 +59,11 @@ public class AppVersionServiceImpl implements AppVersionService {
     @Override
     public AppVersionDocument inValidByVersion(long version) {
         AppVersionDocument app = appVersionRepository.findByVer(version);
-        if (app.isValid()) {
+        if (app != null && app.isValid()) {
             app.setValid(false);
-            app = appVersionRepository.save(app);
+            return appVersionRepository.save(app);
         }
-        return app;
+        return null;
     }
 
     @Override
