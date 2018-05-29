@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.workflow;
 
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.workflow.enums.ProcDefDeployType;
 import com.proper.enterprise.platform.workflow.service.DeployService;
 import org.flowable.app.domain.editor.AbstractModel;
 import org.flowable.app.service.api.ModelService;
@@ -25,14 +26,8 @@ public class ProcDefInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcDefInitializer.class);
 
-    /**
-     * 是否更新流程定义，支持三个值：
-     * create-drop：删除之前的部署后重新部署，流程定义版本应该始终为 1
-     * true：       不删除之前的部署，直接重新部署，流程定义的版本会随着部署次数增加
-     * false：      不进行流程定义的更新
-     */
-    @Value("${workflow.procDefUpdate}")
-    private String procDefUpdate;
+    @Value("${workflow.procDef.deployType}")
+    private ProcDefDeployType deployType;
 
     /**
      * Ant 风格的路径匹配,可使用逗号间隔多个路径模式
@@ -40,25 +35,35 @@ public class ProcDefInitializer {
     @Value("${workflow.procDefLocations}")
     private String procDefLocations;
 
-    @Autowired
     private DeployService deployService;
 
+    private ModelService modelService;
+
+    private static boolean deployed;
+
     @Autowired
-    protected ModelService modelService;
+    public ProcDefInitializer(DeployService deployService, ModelService modelService) {
+        this.deployService = deployService;
+        this.modelService = modelService;
+    }
 
     public static final String DEPLOY_NAME = "PEP system processes";
 
     @PostConstruct
     public void init() throws IOException {
-        if ("false".equals(procDefUpdate)) {
+        if (ProcDefDeployType.NONE.equals(deployType)) {
             return;
         }
         cleanIfNecessary();
+        if (hasDeployed() && ProcDefDeployType.ONCE.equals(deployType)) {
+            return;
+        }
         deployService.deployFromResourcePattern(DEPLOY_NAME, procDefLocations);
+        setDeployed();
     }
 
     private void cleanIfNecessary() {
-        if ("create-drop".equals(procDefUpdate)) {
+        if (ProcDefDeployType.DROP_CREATE.equals(deployType)) {
             List<Deployment> deploymentList = deployService.findByName(DEPLOY_NAME);
             if (CollectionUtil.isNotEmpty(deploymentList)) {
                 for (Deployment deployment : deploymentList) {
@@ -89,6 +94,18 @@ public class ProcDefInitializer {
     @PreDestroy
     public void shutdown() {
         cleanIfNecessary();
+    }
+
+    private static boolean hasDeployed() {
+        return deployed;
+    }
+
+    private static void setDeployed() {
+        deployed = true;
+    }
+
+    public static void resetDeployed() {
+        deployed = false;
     }
 
 }

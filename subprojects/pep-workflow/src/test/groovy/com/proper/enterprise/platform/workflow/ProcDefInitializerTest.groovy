@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.workflow
 
 import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.workflow.enums.ProcDefDeployType
 import com.proper.enterprise.platform.workflow.service.DeployService
 import org.flowable.app.domain.editor.AbstractModel
 import org.flowable.app.domain.editor.Model
@@ -44,7 +45,7 @@ class ProcDefInitializerTest extends AbstractTest {
     @Test
     void checkProcDefUpdate() {
         // First deploy when initial procDefInitializer bean
-        pdi.procDefUpdate = 'true'
+        pdi.deployType = ProcDefDeployType.OVERRIDE
         // deploy twice
         2.times {
             pdi.init()
@@ -56,14 +57,14 @@ class ProcDefInitializerTest extends AbstractTest {
         for (int i = 0; i < list.size(); i++) {
             models[3 * i].comment == list[i].name + list[i].id
         }
-        pdi.procDefUpdate = 'false'
+        pdi.deployType = ProcDefDeployType.NONE
         2.times {
             pdi.init()
             pdi.shutdown()
         }
         assert queryDeployment().size() == 3
 
-        pdi.procDefUpdate = 'create-drop'
+        pdi.deployType = ProcDefDeployType.DROP_CREATE
         pdi.init()
         assert queryDeployment().size() == 1
         pdi.shutdown()
@@ -72,5 +73,29 @@ class ProcDefInitializerTest extends AbstractTest {
         pdi.shutdown()
         assert queryDeployment().size() == 0
         assert queryModel().size() == 0
+
+        pdi.deployType = ProcDefDeployType.ONCE
+        pdi.init()
+        assert queryDeployment().size() == 0
+        assert queryModel().size() == 0
     }
+
+    @Test
+    void onlyDeployOnce() {
+        // Clean deployments
+        pdi.deployType = ProcDefDeployType.DROP_CREATE
+        pdi.shutdown()
+
+        ProcDefInitializer.resetDeployed()
+        assert queryDeployment().size() == 0
+        pdi.deployType = ProcDefDeployType.ONCE
+        pdi.init()
+        assert queryDeployment().size() == 1
+        pdi.shutdown()
+        assert queryDeployment().size() == 1
+
+        pdi.init()
+        assert queryDeployment().size() == 1
+    }
+
 }
