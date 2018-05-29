@@ -50,5 +50,4 @@
             </util:list>
         </constructor-arg>
     </bean>
-
 </beans>

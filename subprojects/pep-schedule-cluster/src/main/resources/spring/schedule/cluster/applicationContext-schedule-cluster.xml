@@ -10,22 +10,16 @@
                            http://www.springframework.org/schema/jdbc
                            http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
-    <context:property-placeholder location="classpath:conf/schedule/cluster/schedule-cluster.properties" ignore-unresolvable="true"/>
+    <context:property-placeholder location="classpath:conf/schedule/cluster/schedule-cluster.properties"
+                                  ignore-unresolvable="true"/>
 
-    <beans profile="dev, test">
+    <beans profile="test">
         <jdbc:initialize-database ignore-failures="ALL">
             <jdbc:script location="classpath*:sql/schedule/cluster/quartz_tables_h2.sql" encoding="UTF-8"/>
         </jdbc:initialize-database>
-
-        <import resource="classpath*:spring/schedule/cluster/cluster-*.xml" />
+        <import resource="classpath*:spring/schedule/cluster/cluster-*.xml"/>
     </beans>
-
-    <beans profile="production">
-        <jdbc:initialize-database ignore-failures="ALL">
-            <jdbc:script location="classpath*:sql/schedule/cluster/quartz_tables_mysql_innodb.sql" encoding="UTF-8"/>
-        </jdbc:initialize-database>
-
-        <import resource="classpath*:spring/schedule/cluster/cluster-*.xml" />
+    <beans profile="dev,production">
+        <import resource="classpath*:spring/schedule/cluster/cluster-*.xml"/>
     </beans>
-
 </beans>

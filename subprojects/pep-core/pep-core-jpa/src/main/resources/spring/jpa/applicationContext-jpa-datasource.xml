@@ -5,7 +5,7 @@
                            http://www.springframework.org/schema/beans/spring-beans.xsd"
        default-lazy-init="true">
 
-    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+    <bean id="dataSource" class="com.proper.enterprise.platform.core.jpa.datasource.PEPDatasource" init-method="init" destroy-method="close">
         <!-- 基本属性 url、user、password -->
         <property name="url" value="${database.url}"/>
         <property name="username" value="${database.username}"/>
@@ -15,7 +15,7 @@
         <property name="minIdle" value="${database.maxPoolSize}"/>
         <property name="maxActive" value="${database.maxPoolSize}"/>
         <property name="defaultAutoCommit" value="${database.autoCommit}"/>
-        <property name="driverClassName" value="${database.driverClassName}"/>
+        <property name="databaseType" value="${database.type}"/>
         <!-- 配置获取连接等待超时的时间 -->
         <property name="maxWait" value="60000"/>
         <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
@@ -28,7 +28,7 @@
 
     <bean id="pepLiquibase" class="liquibase.integration.spring.SpringLiquibase" lazy-init="false">
         <property name="dataSource" ref="dataSource"/>
-        <property name="changeLog" value="classpath*:liquibase/changelog.xml"/>
+        <property name="changeLog" value="classpath:liquibase/changelog.xml"/>
         <property name="contexts" value="${database.liquibase.profile}"/>
     </bean>
 

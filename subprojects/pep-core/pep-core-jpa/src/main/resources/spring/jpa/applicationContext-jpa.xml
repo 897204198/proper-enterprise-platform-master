@@ -12,7 +12,7 @@
         <property name="locations" value="classpath*:conf/**/jpa-cache.properties" />
         <property name="properties">
             <value>
-                hibernate.dialect             = ${hibernate.dialect}
+                hibernate.dialect             = #{dataSource.dialect}
                 hibernate.ejb.naming_strategy = ${hibernate.ejb.naming_strategy}
                 hibernate.format_sql          = ${hibernate.format_sql}
                 hibernate.generate_statistics = ${hibernate.generate_statistics}

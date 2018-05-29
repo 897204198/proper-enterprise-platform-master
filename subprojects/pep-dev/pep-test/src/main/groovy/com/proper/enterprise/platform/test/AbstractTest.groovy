@@ -37,11 +37,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 包含测试常用的模拟对象、方法等
  */
 @Transactional(transactionManager = "jpaTransactionManager")
+@ContextConfiguration("/spring/applicationContext.xml")
 @WebAppConfiguration
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SqlConfig(encoding = "UTF-8")
-@ContextConfiguration("/spring/applicationContext.xml")
 abstract class AbstractTest {
 
     @Autowired

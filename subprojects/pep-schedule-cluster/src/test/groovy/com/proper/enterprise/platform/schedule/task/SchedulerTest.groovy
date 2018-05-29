@@ -1,10 +1,11 @@
-package com.proper.enterprise.platform.core.task
+package com.proper.enterprise.platform.schedule.task
 
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.Scheduled
+
 
 class SchedulerTest extends AbstractTest {
 
@@ -38,6 +39,7 @@ class SchedulerTest extends AbstractTest {
         sleep(500)
         assert annoCount > 0
     }
+
 
     @Scheduled(fixedDelay = 50L)
     void addOne() {

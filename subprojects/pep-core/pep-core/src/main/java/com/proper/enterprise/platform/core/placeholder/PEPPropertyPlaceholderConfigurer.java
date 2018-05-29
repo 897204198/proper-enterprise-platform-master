@@ -26,7 +26,11 @@ public class PEPPropertyPlaceholderConfigurer extends Properties {
             this.load(resource.getInputStream());
         }
         for (String name : names.split(",")) {
-            this.setProperty(name, getEnumerableProperty(this.getProperty(name)));
+            String pep = getEnumerableProperty(this.getProperty(name));
+            if (null == pep) {
+                continue;
+            }
+            this.setProperty(name, pep);
         }
     }
 

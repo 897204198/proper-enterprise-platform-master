@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%5p %40.40c:%4L - %m%n</pattern>
-		</encoder>
-	</appender>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%5p %40.40c:%4L - %m%n</pattern>
+        </encoder>
+    </appender>
 
-	<logger name="com.proper" level="trace" />
+    <logger name="com.proper" level="trace" />
 
     <!-- Map url to controller -->
-	<logger name="org.springframework.web.servlet.mvc.method.annotation" level="trace" />
+    <logger name="org.springframework.web.servlet.mvc.method.annotation" level="trace" />
 
-	<root level="error">
-		<appender-ref ref="console" />
-	</root>
+    <root level="error">
+        <appender-ref ref="console" />
+    </root>
 
 </configuration>

@@ -10,8 +10,10 @@ dependencies {
             libraries.spring_test,
             libraries.spring_tx
 
-    runtime libraries.h2,
-            libraries.liquibase,
-            project(':pep-core-jpa'),
+    runtime project(':pep-core-jpa'),
             project(':pep-configs')
+
+    runtime libraries.h2
+
 }
+

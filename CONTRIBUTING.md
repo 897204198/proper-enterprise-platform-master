@@ -167,9 +167,9 @@ Change Log 文件放在对应模块的 `src/main/resources/liquibase/changelogs`
 
 平台开发及测试环境（profile）默认使用 h2 数据库作为关系型数据源，生产环境默认使用 mysql 数据源。
 
-当在开发环境需要调整数据源时，需调整如下三处内容：
+当在开发环境需要调整数据源时，需调整如下两处内容：
 
-1. datasource-dev.properties 中选择需要使用的数据源
+1. config.properties 中选择需要使用的数据源
 1. pep-webapp.gradle 中添加所需数据源的驱动作为运行时依赖，并选择相应数据源的 oopsearch 同步组件
 
     例如将默认的 h2 数据源修改为 mysql 时，需将
@@ -185,10 +185,6 @@ Change Log 文件放在对应模块的 `src/main/resources/liquibase/changelogs`
     runtime libraries.mysql,
             project(':pep-oopsearch-sync-mysql')
     ```
-
-1. applicationContext-schedule-cluster.xml 中调整不同环境下 quartz 所使用的建表脚本。
-   默认情况下，开发和测试环境使用 h2 的建表语句，生产环境下使用 mysql 的建表语句
-
 
 开放问题
 -------

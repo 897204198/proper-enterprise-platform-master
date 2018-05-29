@@ -7,17 +7,14 @@
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder ignore-unresolvable="true"
-                                  location="classpath:conf/workflow/workflow.properties" />
-
     <beans profile="dev">
         <context:property-placeholder ignore-unresolvable="true"
-                                      location="classpath:conf/workflow/workflow-dev.properties" />
+                                      location="classpath:conf/jpa/datasource-dev.properties"/>
     </beans>
 
     <beans profile="production">
         <context:property-placeholder ignore-unresolvable="true"
-                                      location="classpath:conf/workflow/workflow-production.properties" />
+                                      location="classpath:conf/jpa/datasource-production.properties" />
     </beans>
 
 </beans>
