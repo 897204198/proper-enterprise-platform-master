@@ -283,7 +283,7 @@ public class MenuEntity extends BaseEntity implements Menu {
 
     @Override
     @JsonIgnore
-    public Collection<? extends Resource> getResources() {
+    public Collection<ResourceEntity> getResources() {
         return resourceEntities;
     }
 

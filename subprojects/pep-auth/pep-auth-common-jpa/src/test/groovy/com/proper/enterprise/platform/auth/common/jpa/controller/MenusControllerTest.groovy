@@ -241,6 +241,7 @@ class MenusControllerTest extends AbstractTest {
     }
 
     @Test
+    @NoTx
     void testMenuResources() {
         mockUser('test1', 't1', 'pwd', true)
 
@@ -268,7 +269,7 @@ class MenusControllerTest extends AbstractTest {
 
         menuEntity.add(resourceEntity1)
         menuEntity.add(resourceEntity2)
-        menuRepository.save(menuEntity)
+        menuEntity = menuRepository.save(menuEntity)
 
         def res = JSONUtil.parse(get('/auth/menus/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert res.size() == 15
@@ -276,6 +277,22 @@ class MenusControllerTest extends AbstractTest {
         assert res.get(2).resources.size() == 1
         assert res.get(2).resources.name.get(0) == 'name11'
         assert !res.contains('name22')
+
+        MenuEntity parentEntity = new MenuEntity()
+        parentEntity.setName("123")
+        parentEntity.setSequenceNumber(1)
+        parentEntity.setRoute("123")
+        parentEntity = menuRepository.save(parentEntity)
+        MenuVO menuVO = JSONUtil.parse(get('/auth/menus/' + menuEntity.getId(), HttpStatus.OK).getResponse().getContentAsString(), MenuVO.class)
+        menuVO.setParentId(parentEntity.getId())
+        MenuVO updateVO = JSONUtil.parse(put('/auth/menus/' + menuVO.getId(), JSONUtil.toJSON(menuVO), HttpStatus.OK).getResponse().getContentAsString(), MenuVO.class)
+        List<MenuVO> menuVOs = JSONUtil.parse(get('/auth/menus/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        for (MenuVO menu : menuVOs) {
+            if ("/bbc".equals(menu.getRoute())) {
+                assert menu.getParentId() == parentEntity.getId()
+                assert menu.getResources().size() == 1
+            }
+        }
     }
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/datadics.sql")

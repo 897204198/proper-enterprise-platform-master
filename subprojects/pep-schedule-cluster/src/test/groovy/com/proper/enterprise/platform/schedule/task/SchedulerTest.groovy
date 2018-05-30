@@ -7,6 +7,7 @@ import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.Scheduled
 
 
+
 class SchedulerTest extends AbstractTest {
 
     def taskCount = 0, annoCount = 0

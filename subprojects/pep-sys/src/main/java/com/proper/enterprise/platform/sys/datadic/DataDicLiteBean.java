@@ -1,15 +1,22 @@
 package com.proper.enterprise.platform.sys.datadic;
 
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 
 public class DataDicLiteBean implements DataDicLite {
 
     private String catalog;
     private String code;
+    private String name;
 
     public DataDicLiteBean(String catalog, String code) {
         this.catalog = catalog;
         this.code = code;
+        DataDic dataDic = DataDicUtil.get(catalog, code);
+        if (null == dataDic || StringUtil.isNull(dataDic.getName())) {
+            return;
+        }
+        this.name = dataDic.getName();
     }
 
     @Override
@@ -54,4 +61,8 @@ public class DataDicLiteBean implements DataDicLite {
         this.code = code;
     }
 
+
+    public String getName() {
+        return name;
+    }
 }

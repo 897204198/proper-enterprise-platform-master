@@ -19,26 +19,37 @@ public interface DataDicLite extends Serializable {
 
     /**
      * 获得数据字典类别
+     *
      * @return 数据字典类别
      */
     String getCatalog();
 
     /**
      * 设置数据字典类别
+     *
      * @param catalog 类别
      */
     void setCatalog(String catalog);
 
     /**
      * 获得编码
+     *
      * @return 编码
      */
     String getCode();
 
     /**
      * 设置编码
+     *
      * @param code 编码
      */
     void setCode(String code);
+
+    /**
+     * 获得name
+     *
+     * @return name
+     */
+    String getName();
 
 }

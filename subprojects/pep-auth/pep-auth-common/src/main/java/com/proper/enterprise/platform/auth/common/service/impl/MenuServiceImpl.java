@@ -85,16 +85,17 @@ public class MenuServiceImpl implements MenuService {
     public Menu update(Menu menuReq) {
         validate(menuReq);
         String parentId = menuReq.getParentId();
-        //todo 这块需要确认一下 这个-1到底是怎么定的
-        if (StringUtil.isNotNull(parentId) && !parentId.equals(DEFAULT_VALUE)) {
-            menuReq.addParent(this.get(parentId));
-            menuDao.save(menuReq);
-        }
         String menuCode = menuReq.getMenuCode();
         if (StringUtil.isNotNull(menuCode)) {
             menuReq.setMenuType(dataDicService.get("MENU_TYPE", menuCode));
         }
-        return menuDao.updateForSelective(menuReq);
+
+        Menu updateMenu = menuDao.updateForSelective(menuReq);
+        if (StringUtil.isNotNull(parentId) && !parentId.equals(DEFAULT_VALUE)) {
+            updateMenu.addParent(this.get(parentId));
+            menuDao.save(updateMenu);
+        }
+        return updateMenu;
     }
 
     @Override
@@ -189,14 +190,6 @@ public class MenuServiceImpl implements MenuService {
                     throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.failed"));
                 }
                 // 菜单存在资源
-                // TODO: 2018/5/20 待确认，存在资源我觉得可以删
-                /* if (menu.getResources().size() > 0) {
-                    for (Resource resource : menu.getResources()) {
-                        if (resource.getEnable()) {
-                            throw new ErrMsgException(i18NService.getMessage("pep.auth.common.menu.delete.relation.resource"));
-                        }
-                    }
-                }*/
                 // 菜单存在角色
                 if (menu.getRoles().size() > 0) {
                     for (Role role : menu.getRoles()) {
@@ -283,22 +276,26 @@ public class MenuServiceImpl implements MenuService {
     public boolean accessible(Resource resource, String userId) {
         // 资源未定义，无需授权即可访问
         if (resource == null) {
+            LOGGER.debug("unknow resource");
             return true;
         }
 
         // 资源被定义到了忽略列表中，无需授权即可访问
         if (shouldIgnore(resource)) {
+            LOGGER.debug("resource ignore resourceId:{}", resource.getId());
             return true;
         }
 
         // resource 是否有效
         if (!resource.getEnable()) {
+            LOGGER.debug("resource disEnable resourceId:{}", resource.getId());
             return false;
         }
 
         Collection<? extends Menu> menus = resource.getMenus();
         // 资源未被定义到菜单下时，无需授权即可访问
         if (CollectionUtil.isEmpty(menus)) {
+            LOGGER.debug("resource unMenu resourceId:{}", resource.getId());
             return true;
         }
 
@@ -310,6 +307,7 @@ public class MenuServiceImpl implements MenuService {
         boolean hasMenu = false;
         for (Menu menu : menus) {
             if (userMenus.contains(menu)) {
+                LOGGER.debug("resource pass resourceId:{}", resource.getId());
                 hasMenu = true;
             }
         }

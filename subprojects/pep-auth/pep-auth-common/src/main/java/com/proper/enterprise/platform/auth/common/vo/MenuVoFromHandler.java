@@ -15,5 +15,8 @@ public class MenuVoFromHandler implements FromHandler<MenuVO, Menu> {
         if (null != menu.getParent()) {
             menuVO.setParentId(menu.getParent().getId());
         }
+        if (null != menu.getMenuType()) {
+            menuVO.setMenuCode(menu.getMenuType().getCode());
+        }
     }
 }
