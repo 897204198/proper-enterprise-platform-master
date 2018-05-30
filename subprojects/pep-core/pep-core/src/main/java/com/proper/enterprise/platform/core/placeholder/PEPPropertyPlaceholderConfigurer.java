@@ -13,6 +13,7 @@ import java.util.UUID;
 
 public class PEPPropertyPlaceholderConfigurer extends Properties {
 
+    private boolean exist;
     private String location;
     private String names;
 
@@ -23,7 +24,13 @@ public class PEPPropertyPlaceholderConfigurer extends Properties {
         }
         Resource[] resources = resolver.getResources(location);
         for (Resource resource : resources) {
-            this.load(resource.getInputStream());
+            if (resource.exists()) {
+                this.load(resource.getInputStream());
+                this.exist = true;
+            }
+        }
+        if (!exist) {
+            return;
         }
         for (String name : names.split(",")) {
             String pep = getEnumerableProperty(this.getProperty(name));

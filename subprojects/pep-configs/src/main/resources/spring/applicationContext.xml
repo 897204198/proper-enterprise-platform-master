@@ -18,7 +18,7 @@
 
     <!--init configs-->
     <context:property-placeholder ignore-unresolvable="true" location="classpath:conf/pep/pep.properties" local-override="true"/>
-    <context:property-placeholder ignore-unresolvable="true" properties-ref="pepPropertyPlaceholderConfigurer"
+    <context:property-placeholder ignore-unresolvable="true" ignore-resource-not-found="true" properties-ref="pepPropertyPlaceholderConfigurer"
                                   location="classpath:conf/config.properties" local-override="true"/>
     <bean id="pepPropertyPlaceholderConfigurer"
           class="com.proper.enterprise.platform.core.placeholder.PEPPropertyPlaceholderConfigurer" init-method="init">
