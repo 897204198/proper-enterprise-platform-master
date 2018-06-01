@@ -1,6 +1,10 @@
 package com.proper.enterprise.platform.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.POJONode;
 import com.mongodb.client.result.UpdateResult;
 import com.proper.enterprise.platform.api.service.IMongoDBService;
 import com.proper.enterprise.platform.core.mongo.dao.MongoDAO;
@@ -21,6 +25,9 @@ import java.util.Map;
 public class MongoDBServiceImpl implements IMongoDBService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBServiceImpl.class);
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Autowired
     MongoDAO mongoDAO;
@@ -93,12 +100,7 @@ public class MongoDBServiceImpl implements IMongoDBService {
         LOGGER.debug("limit is {}", limit);
         LOGGER.debug("orders are {}", order);
         int skip = root.has("skip") ? root.get("skip").asInt() : 0;
-        String wherestr = whereNode.toString();
-        if (wherestr.indexOf("objectId") > 0) {
-            String objectId = whereNode.get("objectId").toString();
-            wherestr = wherestr.replaceAll("objectId", "_id");
-            wherestr = wherestr.replaceAll(objectId, "ObjectId(" + objectId + ")");
-        }
+        whereNode = handleId(whereNode);
         Map<String, Integer> sort = new HashMap<>();
         if (StringUtil.isNotNull(order)) {
             String[] orders = order.split(",");
@@ -110,8 +112,7 @@ public class MongoDBServiceImpl implements IMongoDBService {
                 }
             }
         }
-
-        return mongoDAO.query(collection, wherestr, skip, limit, JSONUtil.toJSON(sort));
+        return mongoDAO.query(collection, whereNode.toString(), skip, limit, JSONUtil.toJSON(sort));
     }
 
     @Override
@@ -134,6 +135,28 @@ public class MongoDBServiceImpl implements IMongoDBService {
     @Override
     public void droptable(String collection) throws Exception {
         mongoDAO.drop(collection);
+    }
+
+    private JsonNode handleId(JsonNode whereNode) {
+        if (whereNode.path("_id").path("$in").isArray()) {
+            ArrayNode idCondition = (ArrayNode) whereNode.path("_id").path("$in");
+            ArrayNode idConditionRep = objectMapper.createArrayNode();
+            for (JsonNode node : idCondition) {
+                StringBuffer objectIdBuf = new StringBuffer();
+                objectIdBuf.append("ObjectId('").append(node.textValue()).append("')");
+                idConditionRep.add(new POJONode(objectIdBuf.toString()));
+            }
+            ObjectNode objectNode = (ObjectNode) whereNode.path("_id");
+            objectNode.replace("$in", idConditionRep);
+        }
+        if (whereNode.has("objectId")) {
+            StringBuffer objectIdBuf = new StringBuffer();
+            objectIdBuf.append("ObjectId('").append(whereNode.get("objectId").textValue()).append("')");
+            ObjectNode objectNode = (ObjectNode) whereNode;
+            objectNode.remove("objectId");
+            objectNode.putPOJO("_id", new POJONode(objectIdBuf));
+        }
+        return whereNode;
     }
 
 }

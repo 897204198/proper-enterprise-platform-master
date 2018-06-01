@@ -95,7 +95,24 @@ class SampleControllerTest extends AbstractTest {
         QueryReturnModel equalQueryModel = queryDocument(collectionName, equalQuery)
         List<Document> eqlist = equalQueryModel.getResults()
         assert eqlist.get(0).get("name") == 'test3'
-
+        /*queryOne*/
+        Map queryOne = new HashMap()
+        queryOne.put("objectId", returnModel1.getObjectId())
+        QueryReturnModel queryOneModel = queryDocument(collectionName, queryOne)
+        List<Document> queryOneList = queryOneModel.getResults()
+        assert queryOneList.size() == 1
+        assert queryOneList.get(0).get("name") == "test"
+        /*in*/
+        Map inQuery = new HashMap()
+        Map ids = new HashMap()
+        List<String> idsAttr = new ArrayList<>()
+        idsAttr.add(returnModel1.getObjectId())
+        idsAttr.add(returnModel2.getObjectId())
+        ids.put("\$in", idsAttr)
+        inQuery.put("_id", ids)
+        QueryReturnModel inQueryModel = queryDocument(collectionName, inQuery)
+        List<Document> inlist = inQueryModel.getResults()
+        assert inlist.size() == 2
         deleteDocument(collectionName, returnModel1.getObjectId() + ","
             + returnModel2.getObjectId() + "," + returnModel3.objectId)
     }
