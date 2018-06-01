@@ -2,11 +2,12 @@ package com.proper.enterprise.platform.oopsearch.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.service.AuthzService;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.security.service.SecurityService;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.oopsearch.api.document.OOPSearchDocument;
 import com.proper.enterprise.platform.oopsearch.api.serivce.SearchConfigService;
@@ -16,17 +17,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-@AuthcIgnore
 @RestController
 @RequestMapping("/search")
 public class OopSearchController extends BaseController {
@@ -52,40 +60,97 @@ public class OopSearchController extends BaseController {
     }
 
     @GetMapping("/query")
-    public void query(HttpServletRequest request, HttpServletResponse response, String req, String moduleName) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public void query(HttpServletRequest request, HttpServletResponse response, String restPath, String req, String moduleName) {
+        String url = searchConfigService.getURL(moduleName.replace("$", "/"));
+        try {
+            url = handleRestUrl(url, restPath, response);
+        } catch (HttpRequestMethodNotSupportedException e) {
+            return;
+        }
+        if (!accessible(url, request, response)) {
+            return;
+        }
+        url = handleOOPSearchParam(url, req);
+        try {
+            request.getRequestDispatcher(url).forward(request, response);
+        } catch (ServletException | IOException e) {
+            logger.error("oopSearch forward error", e);
+            throw new ErrMsgException("oopSearch forward error");
+        }
+    }
+
+    private String handleOOPSearchParam(String url, String req) {
         if (StringUtil.isEmpty(req)) {
-            req = "[{}]";
+            return url;
         }
         try {
             req = URLDecoder.decode(req, PEPConstants.DEFAULT_CHARSET.toString());
-            JsonNode jl = objectMapper.readValue(req, JsonNode.class);
-            String url = searchConfigService.getURL(moduleName.replace("$", "/"));
-            Assert.notNull(url, "CAN NOT GET URL WITH THE MODULENAME");
-            StringBuffer stringBuffer = new StringBuffer(url);
-            for (int i = 0; i < jl.size(); i++) {
-                JsonNode jn = jl.get(i);
-                String key = jn.findValue("key").asText();
-                String value = jn.findValue("value").asText();
-                if (i == 0) {
-                    stringBuffer.append("?").append(key).append("=").append(value);
-                } else {
-                    stringBuffer.append("&").append(key).append("=").append(value);
-                }
-            }
-            if (!authzService.accessible(url,
-                request.getMethod(), false, securityService.getCurrentUserId())) {
-                HttpServletResponse resp = response;
-                resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                resp.setHeader("WWW-Authenticate",
-                    "Bearer realm=\"pep\", "
-                        + "error=\"invalid_auth\", "
-                        + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHORIZATION\"");
-                return;
-            }
-            request.getRequestDispatcher(stringBuffer.toString()).forward(request, response);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            logger.error("oopSearch decode req error,req:{}", req, e);
+            throw new ErrMsgException("oopSearch decode req error");
         }
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jl;
+        try {
+            jl = objectMapper.readValue(req, JsonNode.class);
+        } catch (IOException e) {
+            logger.error("oopSearch config req error,req:{}", req, e);
+            throw new ErrMsgException("oopSearch config req error");
+        }
+        Assert.notNull(url, "CAN NOT GET URL WITH THE MODULENAME");
+        StringBuffer stringBuffer = new StringBuffer(url);
+        for (int i = 0; i < jl.size(); i++) {
+            JsonNode jn = jl.get(i);
+            String key = jn.findValue("key").asText();
+            String value = jn.findValue("value").asText();
+            if (i == 0) {
+                stringBuffer.append("?").append(key).append("=").append(value);
+            } else {
+                stringBuffer.append("&").append(key).append("=").append(value);
+            }
+        }
+        return stringBuffer.toString();
+    }
+
+    private String handleRestUrl(String url, String restPath, HttpServletResponse response) throws HttpRequestMethodNotSupportedException {
+        Map<String, String> restPathMap = new HashMap<>();
+        if (StringUtil.isNotEmpty(restPath)) {
+            try {
+                restPathMap = JSONUtil.parse(URLDecoder.decode(restPath, PEPConstants.DEFAULT_CHARSET.toString()), Map.class);
+            } catch (IOException e) {
+                logger.error("oopSearch parse restPath error,restPath:{}", restPath, e);
+                throw new ErrMsgException("oopSearch parse restPath error");
+            }
+        }
+        String re = "(\\{.+?\\})";
+        Pattern p = Pattern.compile(re);
+        Matcher m = p.matcher(url);
+        while (m.find()) {
+            String key = m.group();
+            if (StringUtil.isEmpty(key)) {
+                continue;
+            }
+            String realKey = key.replaceAll("\\{", "").replaceAll("\\}", "");
+            String value = restPathMap.get(realKey);
+            if (null == value) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                throw new HttpRequestMethodNotSupportedException("oopsearch config rest error,path:{} value is null", realKey);
+            }
+            url = url.replaceAll(realKey, value);
+        }
+        return url.replaceAll("\\{", "").replaceAll("\\}", "");
+    }
+
+    private boolean accessible(String url, HttpServletRequest request, HttpServletResponse response) {
+        if (!authzService.accessible(url, request.getMethod(), false, securityService.getCurrentUserId())) {
+            HttpServletResponse resp = response;
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            resp.setHeader("WWW-Authenticate",
+                "Bearer realm=\"pep\", "
+                    + "error=\"invalid_auth\", "
+                    + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHORIZATION\"");
+            return false;
+        }
+        return true;
     }
 }

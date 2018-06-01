@@ -15,7 +15,6 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
-
 import java.text.SimpleDateFormat
 
 class OopSearchControllerTest extends AbstractTest {
@@ -40,7 +39,8 @@ class OopSearchControllerTest extends AbstractTest {
     @Sql([
         "/sql/oopsearch/001-datadics.sql",
         "/sql/oopsearch/demoUserConfigData.sql",
-        "/sql/oopsearch/demoDeptConfigData.sql"
+        "/sql/oopsearch/demoDeptConfigData.sql",
+        "/sql/oopsearch/testControllerEntity.sql"
     ])
     void testSearchServiceImpl() {
         initDemoUserData()
@@ -56,13 +56,27 @@ class OopSearchControllerTest extends AbstractTest {
         // 张一 张二 张三
         assert query.size() == 3
 
+        String restPath = java.net.URLEncoder.encode("{\"myName2\":\"myName\",\"id\":\"123456\"}", "UTF-8")
+        String req = java.net.URLEncoder.encode("[{\"key\":\"createTime\",\"value\":\"2018-05-05\",\"operate\":\"like\",\"table\":\"TEST_CONTROLLER_ENTITY\"}]", "UTF-8")
+        //rest参数没对上404
+        get("/search/query" + "?restPath=" + restPath + "&req=" + req + "&moduleName=testcontroller", HttpStatus.NOT_FOUND)
+        //req解析异常
+        String restPath3 = java.net.URLEncoder.encode("{\"myName\":\"myName\",\"id\":\"123456\"}", "UTF-8")
+        String req3 = java.net.URLEncoder.encode("REQ: [{\"key\":\"createTime\",\"value\":\"2018-05-05\",\"operate\":\"like\",\"table\":\"TEST_CONTROLLER_ENTITY\"}]", "GBK")
+        get("/search/query" + "?restPath=" + restPath3 + "&req=" + req3 + "&moduleName=testcontroller", HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()=="oopSearch config req error"
+
+        //restPath解析异常
+        String restPath4 = java.net.URLEncoder.encode("{\"myName\":\"myName\",\"id\":\"123456", "UTF-8")
+        String req4 = java.net.URLEncoder.encode("REQ: [{\"key\":\"createTime\",\"value\":\"2018-05-05\",\"operate\":\"like\",\"table\":\"TEST_CONTROLLER_ENTITY\"}]", "GBK")
+        get("/search/query" + "?restPath=" + restPath4 + "&req=" + req4 + "&moduleName=testcontroller", HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()=="oopSearch parse restPath error"
+
         searchConfigRepository.deleteAll()
         demoUserRepository.deleteAll()
         demoDeptRepository.deleteAll()
     }
 
     @Before
-    void initMongo(){
+    void initMongo() {
         syncMongoRepository.deleteAll()
     }
 
