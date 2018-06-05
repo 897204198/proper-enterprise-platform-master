@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.sys.datadic;
 
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 
 public class DataDicLiteBean implements DataDicLite {
@@ -8,6 +9,8 @@ public class DataDicLiteBean implements DataDicLite {
     private String catalog;
     private String code;
     private String name;
+    private DataDicTypeEnum dataDicType;
+    private Boolean enable;
 
     public DataDicLiteBean(String catalog, String code) {
         this.catalog = catalog;
@@ -17,6 +20,7 @@ public class DataDicLiteBean implements DataDicLite {
             return;
         }
         this.name = dataDic.getName();
+        this.enable = dataDic.getEnable();
     }
 
     @Override
@@ -64,5 +68,25 @@ public class DataDicLiteBean implements DataDicLite {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public DataDicTypeEnum getDataDicType() {
+        return dataDicType;
+    }
+
+    @Override
+    public void setDataDicType(DataDicTypeEnum dataDicType) {
+        this.dataDicType = dataDicType;
+    }
+
+    @Override
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    @Override
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
     }
 }

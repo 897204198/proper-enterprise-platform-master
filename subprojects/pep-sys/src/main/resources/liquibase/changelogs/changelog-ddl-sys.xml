@@ -73,4 +73,28 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet author="DELL (generated)" id="1527845640178-1">
+        <addColumn tableName="pep_sys_data_dic">
+            <column defaultValue="SYSTEM" name="dd_type" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="DELL (generated)" id="1527845640178-2">
+        <addUniqueConstraint columnNames="dd_catalog, dd_code" constraintName="UK_CATALOG_CODE" tableName="pep_sys_data_dic"/>
+    </changeSet>
+    <changeSet author="DELL (generated)" id="1527845640178-3">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="dd_catalog" tableName="pep_sys_data_dic"/>
+    </changeSet>
+    <changeSet author="DELL (generated)" id="1527845640178-4">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="dd_code" tableName="pep_sys_data_dic"/>
+   </changeSet>
+    <changeSet author="DELL (generated)" id="1527845640178-5">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="dd_name" tableName="pep_sys_data_dic"/>
+    </changeSet>
+    <changeSet author="DELL (generated)" id="1527845640178-6">
+        <addNotNullConstraint columnDataType="int(10)" columnName="dd_order" tableName="pep_sys_data_dic"/>
+        <addDefaultValue columnDataType="int(10)" columnName="dd_order" defaultValueNumeric="1" tableName="pep_sys_data_dic"/>
+    </changeSet>
 </databaseChangeLog>

@@ -36,7 +36,7 @@ class DataDicLiteConverterTest extends AbstractTest {
         assert null == dataDicEntity2
     }
 
-    
+
     @Test
     @Sql("/com/proper/enterprise/platform/sys/datadics.sql")
     void testConvertWithName() {
@@ -48,6 +48,6 @@ class DataDicLiteConverterTest extends AbstractTest {
         DataDic dataDic2 = DataDicUtil.get("ModelStatus", "NO_NAME")
         assert dataDic2.getCatalog() == "ModelStatus"
         assert dataDic2.getCode() == "NO_NAME"
-        assert dataDic2.getName() == null
+        assert dataDic2.getName() == ""
     }
 }

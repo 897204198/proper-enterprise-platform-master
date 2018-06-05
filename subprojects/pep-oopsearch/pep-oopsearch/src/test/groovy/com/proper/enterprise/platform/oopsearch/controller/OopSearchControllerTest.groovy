@@ -37,7 +37,6 @@ class OopSearchControllerTest extends AbstractTest {
     @Test
     @NoTx
     @Sql([
-        "/sql/oopsearch/001-datadics.sql",
         "/sql/oopsearch/demoUserConfigData.sql",
         "/sql/oopsearch/demoDeptConfigData.sql",
         "/sql/oopsearch/testControllerEntity.sql"

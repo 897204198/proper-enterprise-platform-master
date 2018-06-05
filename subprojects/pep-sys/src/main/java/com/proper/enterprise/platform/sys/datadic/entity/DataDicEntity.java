@@ -5,26 +5,28 @@ import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
+import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "PEP_SYS_DATA_DIC")
+@Table(name = "PEP_SYS_DATA_DIC",
+    uniqueConstraints = {@UniqueConstraint(name = "UK_CATALOG_CODE", columnNames = {"DD_CATALOG", "DD_CODE"})})
 @CacheEntity
 public class DataDicEntity extends BaseEntity implements DataDic {
 
-    @Column(name = "DD_CATALOG")
+    @Column(nullable = false, name = "DD_CATALOG")
     private String catalog;
-    @Column(name = "DD_CODE")
+    @Column(nullable = false, name = "DD_CODE")
     private String code;
-    @Column(name = "DD_NAME")
+    @Column(nullable = false, name = "DD_NAME")
     private String name;
-    @Column(name = "DD_ORDER")
+    @Column(nullable = false, name = "DD_ORDER", columnDefinition = "int(5) DEFAULT 1")
     private int order;
-
+    @Column(nullable = false, name = "DD_TYPE", columnDefinition = "VARCHAR(8) DEFAULT 'SYSTEM'")
+    @Enumerated(EnumType.STRING)
+    private DataDicTypeEnum dataDicType;
     /**
      * 是否为默认项
      */
@@ -32,7 +34,8 @@ public class DataDicEntity extends BaseEntity implements DataDic {
     @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
     protected boolean isDefault;
 
-    public DataDicEntity() { }
+    public DataDicEntity() {
+    }
 
     public DataDicEntity(String catalog, String code, String name, int order) {
         this.catalog = catalog;
@@ -117,4 +120,11 @@ public class DataDicEntity extends BaseEntity implements DataDic {
         this.isDefault = dft;
     }
 
+    public DataDicTypeEnum getDataDicType() {
+        return dataDicType;
+    }
+
+    public void setDataDicType(DataDicTypeEnum dataDicType) {
+        this.dataDicType = dataDicType;
+    }
 }

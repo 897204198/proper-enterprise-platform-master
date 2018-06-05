@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.sys.datadic;
 
 import com.proper.enterprise.platform.core.utils.ConfCenter;
+import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
 
 import java.io.Serializable;
 
@@ -51,5 +52,33 @@ public interface DataDicLite extends Serializable {
      * @return name
      */
     String getName();
+
+    /**
+     * 获得字典类型
+     *
+     * @return 字典类型
+     */
+    DataDicTypeEnum getDataDicType();
+
+    /**
+     * 设置字典类型
+     *
+     * @param dataDicType 字典类型
+     */
+    void setDataDicType(DataDicTypeEnum dataDicType);
+
+    /**
+     * 获得启用停用
+     *
+     * @return true启用 false停用
+     */
+    Boolean getEnable();
+
+    /**
+     * 设置启用停用
+     *
+     * @param enable true启用 false停用 默认启用
+     */
+    void setEnable(Boolean enable);
 
 }
