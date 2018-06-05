@@ -14,33 +14,37 @@ OOPSEARCH
 下面以`authusers`模块为例进行具体内容讲解。
 ### 初始化`PEP_OOPSEARCH_CONFIG`表数据
 ```
-INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('001', 'authusers', 'pep_auth_users', 'id', 'string', 'id', 'authusers_user_id', '/authusers');
-INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('002', 'authusers', 'pep_auth_users', 'username', 'string', 'username', 'authusers_username', '/authusers');
-INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('003', 'authusers', 'pep_auth_users', 'name', 'string', 'name', 'authusers_name', '/authusers');
-INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('004', 'authusers', 'pep_auth_users', 'email', 'string', 'email', 'authusers_email', '/authusers');
-INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('005', 'authusers', 'pep_auth_users', 'phone', 'string', 'phone', 'authusers_phone', '/authusers');
-INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('006', 'authusers', 'pep_auth_users', 'enable', 'string', 'enable', 'authusers_enable', '/authusers');
-INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('007', 'authusers', 'pep_auth_usergroups', 'id', 'string', 'id', 'authusergroups_id', '/authusers');
-INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('008', 'authusers', 'pep_auth_usergroups', 'name', 'string', 'name', 'authusergroups_name', '/authusers');
-INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('009', 'authusers', 'pep_auth_usergroups', 'description', 'string', 'description', 'authusergroups_description', '/authusers');
-INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('010', 'authusers', 'pep_auth_usergroups', 'enable', 'string', 'enable', 'authusergroups_enable', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('001', 'authusers', 'pep_auth_users', 'id', 'string', 'id', 'authusersUserId', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('002', 'authusers', 'pep_auth_users', 'username', 'string', 'username', 'authusersUsername', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('003', 'authusers', 'pep_auth_users', 'name', 'string', 'name', 'authusersName', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('004', 'authusers', 'pep_auth_users', 'email', 'string', 'email', 'authusersEmail', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('005', 'authusers', 'pep_auth_users', 'phone', 'string', 'phone', 'authusersPhone', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('006', 'authusers', 'pep_auth_users', 'enable', 'string', 'enable', 'authusersEnable', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('007', 'authusers', 'pep_auth_usergroups', 'id', 'string', 'id', 'authusergroupsId', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('008', 'authusers', 'pep_auth_usergroups', 'name', 'string', 'name', 'authusergroupsName', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('009', 'authusers', 'pep_auth_usergroups', 'description', 'string', 'description', 'authusergroupsDescription', '/authusers');
+INSERT INTO pep_oopsearch_config (id, module_name, table_name, search_column, column_type, column_desc, column_alias, url) VALUES ('010', 'authusers', 'pep_auth_usergroups', 'enable', 'string', 'enable', 'authusergroupsEnable', '/authusers');
 COMMIT;
 
 ```
 
->注意：目前配置模块的页面开发尚未完成。后续会使用页面来进行配置信息的管理。
-`module_name`与`url`为一对一关系；
-`module_name`与`table_name`为一对多关系；
-`table_name`与`search_column`为一对多关系；
-`search_column`与`column_type`、`column_desc`、`column_alias`为一对一关系
-字段含义
-`module_name`:模块名称
-`table_name`:查询使用到的表名
-`search_column`:查询的字段名
-`column_type`:查询字段的类型(string、num、date)
-`column_desc`:查询字段的描述(在输入框输入内容后下方显示数据中的描述内容)
-`column_alias`:查询字段别名(为了区分多表同名字段设置)
-`url`:模块请求跳转的业务url
+>注意：目前配置模块的页面开发尚未完成。后续会使用页面来进行配置信息的管理。  
+`module_name`与`url`为一对一关系；  
+`module_name`与`table_name`为一对多关系；  
+`table_name`与`search_column`为一对多关系；  
+`search_column`与`column_type`、`column_desc`、`column_alias`为一对一关系  
+
+>字段含义:  
+`module_name`:模块名称  
+`table_name`:查询使用到的表名  
+`search_column`:查询的字段名  
+`column_type`:查询字段的类型(string、num、date)  
+`column_desc`:查询字段的描述(在输入框输入内容后下方显示数据中的描述内容)  
+`column_alias`:查询字段别名(为了区分多表同名字段设置)。该字段内容即为RESTFul接口调用的参数名称。  
+例如：  
+column_alias 设置为 userId，那么在调用的方法中，应有一个对应变量接收该设置。比如：public void someMethod(**String userId**){...}。  
+多条记录中的column_alias，则对应多个变量名称。且应该保证相同RESTFul接口调用的column_alias内容唯一。  
+`url`:模块请求跳转的业务url  
 
 ### Controller中的调用
 当点击查询按钮时，请求会经过oopsearch模块，根据`PEP_OOPSEARCH_CONFIG`表中`module_name`字段找到对应的`url`进行跳转。后续查询具体操作由业务调用者自行处理。

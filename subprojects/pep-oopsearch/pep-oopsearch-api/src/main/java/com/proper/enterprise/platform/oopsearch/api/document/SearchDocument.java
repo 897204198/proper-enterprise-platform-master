@@ -1,7 +1,6 @@
 package com.proper.enterprise.platform.oopsearch.api.document;
 
 import com.proper.enterprise.platform.core.mongo.document.BaseDocument;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -10,8 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "search_column")
 public class SearchDocument extends BaseDocument implements OOPSearchDocument {
 
-    // 内容
-    @Indexed
+    // 查询内容
     private String con;
 
     // 字段

@@ -69,7 +69,7 @@ public abstract class AbstractSearchConfigs {
                                  String extendByMonth,
                                  String extendByDay) {
         this.searchTables = searchTables.toLowerCase();
-        this.searchColumns = searchColumns.toLowerCase();
+        this.searchColumns = searchColumns;
         this.limit = limit;
         this.extendByYear = extendByYear;
         this.extendByMonth = extendByMonth;
