@@ -1,0 +1,101 @@
+package com.proper.enterprise.platform.file.vo;
+
+import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.file.api.File;
+import com.proper.enterprise.platform.file.entity.FileEntity;
+
+@POJORelevance(relevanceDO = FileEntity.class)
+public class FileVO extends BaseVO implements File {
+
+    public FileVO(){}
+
+    /**
+     * 文件名称
+     */
+    private String fileName;
+
+    /**
+     * 文件描述
+     */
+    private String fileDescription;
+
+    /**
+     * 所属模块
+     */
+    private String fileModule;
+
+    /**
+     * 文件大小
+     */
+    private Long fileSize;
+
+    /**
+     * 文件类型
+     */
+    private String fileType;
+    /**
+     * 文件路径
+     */
+    private String filePath;
+
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
+
+    @Override
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    @Override
+    public String getFileDescription() {
+        return fileDescription;
+    }
+
+    @Override
+    public void setFileDescription(String fileDescription) {
+        this.fileDescription = fileDescription;
+    }
+
+    @Override
+    public String getFileModule() {
+        return fileModule;
+    }
+
+    @Override
+    public void setFileModule(String fileModule) {
+        this.fileModule = fileModule;
+    }
+
+    @Override
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    @Override
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    @Override
+    public String getFileType() {
+        return fileType;
+    }
+
+    @Override
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    @Override
+    public String getFilePath() {
+        return filePath;
+    }
+
+    @Override
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+}

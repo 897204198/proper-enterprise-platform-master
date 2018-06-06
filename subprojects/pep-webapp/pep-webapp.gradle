@@ -62,6 +62,8 @@ dependencies {
             project(':pep-oopsearch-config'),
             project(':pep-oopsearch'),
             project(':pep-workflow'),
+            project(':pep-file'),
+            project(':pep-dfs-mongo'),
             project(':pep-dev-tools')
 }
 task cleanDist(type: Delete) {

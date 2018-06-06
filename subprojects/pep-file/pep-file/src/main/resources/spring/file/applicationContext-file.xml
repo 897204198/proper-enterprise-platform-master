@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:property-placeholder ignore-unresolvable="true"
+                                  location="classpath:conf/file/file.properties"/>
+    <!-- 文件上传 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding">
+            <!--文件默认编码-->
+            <value>${core.default_charset}</value>
+        </property>
+        <property name="maxUploadSize">
+            <!-- 上传文件大小限制-->
+            <value>${file.upload.maxsize}</value>
+        </property>
+    </bean>
+</beans>
