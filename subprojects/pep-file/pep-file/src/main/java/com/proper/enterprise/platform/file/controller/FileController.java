@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.file.controller;
 
+import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.file.vo.FileVO;
 import com.proper.enterprise.platform.file.service.FileService;
@@ -41,7 +42,7 @@ public class FileController extends BaseController {
             : responseOfGet(fileService.findAll(), FileVO.class);
     }
 
-
+    @AuthcIgnore
     @GetMapping(path = "/download/{id}")
     public void download(@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
         fileService.download(id, request, response);
