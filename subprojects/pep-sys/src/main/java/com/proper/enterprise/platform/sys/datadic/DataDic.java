@@ -42,13 +42,14 @@ public interface DataDic extends DataDicLite, IBase {
      *
      * @return 是或否
      */
-    boolean isDefault();
+
+    Boolean getDeft();
 
     /**
      * 设置是否为默认项目
      *
-     * @param dft 是或否
+     * @param deft 是或否
      */
-    void setDefault(boolean dft);
+    void setDeft(Boolean deft);
 
 }

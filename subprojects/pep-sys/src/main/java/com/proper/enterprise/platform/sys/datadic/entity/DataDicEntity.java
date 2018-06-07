@@ -31,8 +31,8 @@ public class DataDicEntity extends BaseEntity implements DataDic {
      * 是否为默认项
      */
     @Type(type = "yes_no")
-    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
-    protected boolean isDefault;
+    @Column(nullable = false, name = "IS_DEFAULT", columnDefinition = "CHAR(1) DEFAULT 'N'")
+    protected Boolean deft;
 
     public DataDicEntity() {
     }
@@ -110,14 +110,13 @@ public class DataDicEntity extends BaseEntity implements DataDic {
         this.order = order;
     }
 
-    @Override
-    public boolean isDefault() {
-        return isDefault;
+
+    public Boolean getDeft() {
+        return deft;
     }
 
-    @Override
-    public void setDefault(boolean dft) {
-        this.isDefault = dft;
+    public void setDeft(Boolean deft) {
+        this.deft = deft;
     }
 
     public DataDicTypeEnum getDataDicType() {

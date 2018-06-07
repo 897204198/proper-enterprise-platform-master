@@ -10,7 +10,7 @@ class DataDicEntityTest extends AbstractTest{
     void  test(){
         DataDicEntity data = new DataDicEntity()
         DataDic dic = new DataDicEntity()
-        data.isDefault()
+        data.getDeft()
         data.getOrder()
         data.getName()
         data.equals(data)

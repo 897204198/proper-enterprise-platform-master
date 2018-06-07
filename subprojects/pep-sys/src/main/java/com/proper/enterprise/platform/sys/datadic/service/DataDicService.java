@@ -45,7 +45,7 @@ public interface DataDicService extends BaseJpaService<DataDic, String> {
      * @param dataDicType 数据字典类型
      * @return 数据字典集合
      */
-    Collection<? extends DataDic> find(DataDicTypeEnum dataDicType);
+    Collection<? extends DataDic> find(String catalog, String code, String name, DataDicTypeEnum dataDicType, EnableEnum enable);
 
     /**
      * 根据类型获得全部数据字典
@@ -53,7 +53,7 @@ public interface DataDicService extends BaseJpaService<DataDic, String> {
      * @param dataDicType 数据字典类型
      * @return 数据字典集合
      */
-    DataTrunk<? extends DataDic> findPage(DataDicTypeEnum dataDicType);
+    DataTrunk<? extends DataDic> findPage(String catalog, String code, String name, DataDicTypeEnum dataDicType, EnableEnum enable);
 
     /**
      * 根据分类及编码获得数据字典节点

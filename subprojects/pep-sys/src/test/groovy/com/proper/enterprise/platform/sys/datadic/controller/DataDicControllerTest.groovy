@@ -20,7 +20,7 @@ class DataDicControllerTest extends AbstractTest {
     @Test
     void testSave() {
         DataDicEntity dataDic1 = new DataDicEntity()
-        dataDic1.setDefault(true)
+        dataDic1.setDeft(true)
         post(datadicUrl, JSONUtil.toJSON(dataDic1), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == I18NUtil.getMessage("pep.sys.datadic.catalog.empty")
         dataDic1.setCatalog("catalog")
         post(datadicUrl, JSONUtil.toJSON(dataDic1), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == I18NUtil.getMessage("pep.sys.datadic.code.empty")
@@ -39,7 +39,7 @@ class DataDicControllerTest extends AbstractTest {
         dataDic2.setCatalog("catalog")
         dataDic2.setCode("code1")
         dataDic2.setName("name")
-        dataDic2.setDefault(true)
+        dataDic2.setDeft(true)
         DataDicEntity saveDic2 = postAndReturn(datadicUrl, dataDic2)
     }
 
@@ -53,8 +53,9 @@ class DataDicControllerTest extends AbstractTest {
         DataDicEntity queryDataDic = JSONUtil.parse(get(datadicUrl + "/catalog/catalog/code/code", HttpStatus.OK).getResponse().getContentAsString(), DataDicEntity.class)
         assert saveDic.getId() == queryDataDic.getId()
         saveDic.setName("name2")
-        DataDicEntity updateDic = putAndReturn(datadicUrl, saveDic, HttpStatus.CREATED)
+        DataDicEntity updateDic = putAndReturn(datadicUrl, saveDic, HttpStatus.OK)
         DataDicEntity queryUpdateDataDic = JSONUtil.parse(get(datadicUrl + "/catalog/catalog/code/code", HttpStatus.OK).getResponse().getContentAsString(), DataDicEntity.class)
+        assert get(datadicUrl + "/catalog/catalog/code/code", HttpStatus.OK).getResponse().getContentAsString().contains("deft")
         assert updateDic.getName() == queryUpdateDataDic.getName()
     }
 
@@ -66,10 +67,10 @@ class DataDicControllerTest extends AbstractTest {
         dataDic1.setCode("code")
         dataDic1.setName("name")
         DataDicEntity saveDic = postAndReturn(datadicUrl, dataDic1)
-        DataDicEntity queryDataDic = JSONUtil.parse(get(datadicUrl + "/id/" + saveDic.getId(), HttpStatus.OK).getResponse().getContentAsString(), DataDicEntity.class)
+        DataDicEntity queryDataDic = JSONUtil.parse(get(datadicUrl + "/" + saveDic.getId(), HttpStatus.OK).getResponse().getContentAsString(), DataDicEntity.class)
         assert saveDic.getId() == queryDataDic.getId()
         delete(datadicUrl + "?ids=" + saveDic.getId(), HttpStatus.NO_CONTENT)
-        assert "" == get(datadicUrl + "/id/" + saveDic.getId(), HttpStatus.OK).getResponse().getContentAsString()
+        assert "" == get(datadicUrl + "/" + saveDic.getId(), HttpStatus.OK).getResponse().getContentAsString()
     }
 
 
@@ -79,7 +80,7 @@ class DataDicControllerTest extends AbstractTest {
         dataDic1.setCatalog("catalog")
         dataDic1.setCode("code")
         dataDic1.setName("name")
-        dataDic1.setDefault(true)
+        dataDic1.setDeft(true)
         DataDicEntity dataDic2 = new DataDicEntity()
         dataDic2.setCatalog("catalog")
         dataDic2.setCode("code2")

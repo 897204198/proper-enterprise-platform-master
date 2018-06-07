@@ -20,7 +20,7 @@ class DataDicLiteConverterTest extends AbstractTest {
         dataDicEntity.setName("name")
         dataDicEntity.setCode("code")
         dataDicEntity.setCatalog("catalog")
-        dataDicEntity.setDefault(true)
+        dataDicEntity.setDeft(true)
         dataDicEntity.setOrder(1)
         assert "catalog" + separator + "code" == dataDicLiteConverter.convertToDatabaseColumn(dataDicEntity)
         assert null == dataDicLiteConverter.convertToDatabaseColumn(null)

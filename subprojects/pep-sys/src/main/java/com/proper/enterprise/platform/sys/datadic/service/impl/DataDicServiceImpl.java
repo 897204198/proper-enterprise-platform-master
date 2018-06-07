@@ -69,24 +69,43 @@ public class DataDicServiceImpl extends JpaServiceSupport<DataDic, DataDicReposi
     }
 
     @Override
-    public Collection<? extends DataDic> find(DataDicTypeEnum dataDicType) {
-        return findAll(buildSpec(dataDicType));
+    public Collection<? extends DataDic> find(String catalog, String code, String name, DataDicTypeEnum dataDicType, EnableEnum enable) {
+        return findAll(buildQuerySpec(catalog, code, name, dataDicType, enable));
     }
 
     @Override
-    public DataTrunk<? extends DataDic> findPage(DataDicTypeEnum dataDicType) {
-        return findPage(buildSpec(dataDicType));
+    public DataTrunk<? extends DataDic> findPage(String catalog, String code, String name, DataDicTypeEnum dataDicType, EnableEnum enable) {
+        return findPage(buildQuerySpec(catalog, code, name, dataDicType, enable));
     }
 
-    private Specification<DataDic> buildSpec(DataDicTypeEnum dataDicType) {
-        return (root, query, cb) -> {
+
+    private Specification<DataDic> buildQuerySpec(String catalog, String code, String name, DataDicTypeEnum dataDicType, EnableEnum enable) {
+        if (null == enable) {
+            enable = EnableEnum.ALL;
+        }
+        EnableEnum finalEnable = enable;
+        Specification<DataDic> specification = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
+            if (StringUtil.isNotEmpty(catalog)) {
+                predicates.add(cb.and(cb.equal(root.get("catalog"), catalog)));
+            }
+            if (StringUtil.isNotEmpty(code)) {
+                predicates.add(cb.and(cb.equal(root.get("code"), code)));
+            }
+            if (StringUtil.isNotEmpty(name)) {
+                predicates.add(cb.and(cb.equal(root.get("name"), name)));
+            }
             if (null != dataDicType) {
                 predicates.add(cb.and(cb.equal(root.get("dataDicType"), dataDicType)));
             }
+            if (EnableEnum.ALL != finalEnable) {
+                predicates.add(cb.and(cb.equal(root.get("enable"), finalEnable == EnableEnum.ENABLE)));
+            }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
+        return specification;
     }
+
 
     @Override
     public DataDic get(String catalog, String code) {
@@ -125,7 +144,7 @@ public class DataDicServiceImpl extends JpaServiceSupport<DataDic, DataDicReposi
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.and(cb.equal(root.get("catalog"), catalog)));
             predicates.add(cb.and(cb.equal(root.get("enable"), true)));
-            predicates.add(cb.and(cb.equal(root.get("isDefault"), true)));
+            predicates.add(cb.and(cb.equal(root.get("deft"), true)));
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
         List<DataDic> defaults = this.findAll(specification);
@@ -142,6 +161,9 @@ public class DataDicServiceImpl extends JpaServiceSupport<DataDic, DataDicReposi
         }
         if (null == dataDic.getEnable()) {
             dataDic.setEnable(true);
+        }
+        if (null == dataDic.getDeft()) {
+            dataDic.setDeft(false);
         }
         validate(dataDic);
         return repository.save((DataDicEntity) dataDic);

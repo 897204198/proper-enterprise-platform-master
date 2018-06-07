@@ -26,7 +26,7 @@ public class DataDicController extends BaseController {
     @PutMapping(path = "/{id}")
     public ResponseEntity<DataDic> put(@PathVariable String id, @RequestBody DataDicEntity dataDicEntity) {
         dataDicEntity.setId(id);
-        return responseOfPost(dataDicService.updateForSelective(dataDicEntity));
+        return responseOfPut(dataDicService.update(dataDicEntity));
     }
 
     @DeleteMapping
@@ -35,12 +35,12 @@ public class DataDicController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<?> get(DataDicTypeEnum dataDicType) {
-        return isPageSearch() ? responseOfGet(dataDicService.findPage(dataDicType))
-            : responseOfGet(dataDicService.find(dataDicType));
+    public ResponseEntity<?> get(String catalog, String code, String name, DataDicTypeEnum dataDicType, EnableEnum enable) {
+        return isPageSearch() ? responseOfGet(dataDicService.findPage(catalog, code, name, dataDicType, enable))
+            : responseOfGet(dataDicService.find(catalog, code, name, dataDicType, enable));
     }
 
-    @GetMapping(path = "/id/{id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<DataDic> get(@PathVariable String id) {
         return responseOfGet(dataDicService.findOne(id));
     }

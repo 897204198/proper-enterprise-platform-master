@@ -63,6 +63,9 @@ public class MongoDBServiceImpl implements IMongoDBService {
             if (field.startsWith("_")) {
                 continue;
             }
+            if (root.get(field).isArray()) {
+                setMap.put(field, root.get(field));
+            }
             if (root.get(field).isNumber()) {
                 setMap.put(field, root.get(field).numberValue());
             }
