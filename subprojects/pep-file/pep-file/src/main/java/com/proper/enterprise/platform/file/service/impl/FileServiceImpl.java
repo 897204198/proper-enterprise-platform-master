@@ -107,12 +107,12 @@ public class FileServiceImpl extends JpaServiceSupport<File, FileRepository, Str
         BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
         OutputStream outputStream = response.getOutputStream();
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
-        String fileName = java.net.URLEncoder.encode(file.getFileName(), charset);
+        String fileName = file.getFileName();
         String userAgent = request.getHeader("User-Agent").toLowerCase();
         if (userAgent.contains("firefox")) {
             fileName = new String(file.getFileName().getBytes(charset), "ISO-8859-1");
         }
-        response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+        response.setHeader("Content-disposition", "attachment;filename=" + java.net.URLEncoder.encode(fileName, charset));
         int bytesRead;
         byte[] buffer = new byte[8192];
         while ((bytesRead = bufferedInputStream.read(buffer, 0, 8192)) != -1) {
