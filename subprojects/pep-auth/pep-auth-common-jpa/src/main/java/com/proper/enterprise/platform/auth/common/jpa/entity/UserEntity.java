@@ -95,6 +95,9 @@ public class UserEntity extends BaseEntity implements User {
         uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "USER_GROUP_ID"}))
     private Collection<UserGroupEntity> userGroupEntities;
 
+    @Column
+    private String avatar;
+
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + "]";
@@ -228,5 +231,13 @@ public class UserEntity extends BaseEntity implements User {
     @JsonIgnore
     public Collection<? extends Role> getRoles() {
         return roleEntities;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

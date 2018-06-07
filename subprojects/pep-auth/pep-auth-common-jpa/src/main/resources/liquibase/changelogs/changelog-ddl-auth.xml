@@ -529,4 +529,9 @@
         <addNotNullConstraint tableName="PEP_AUTH_USERS" columnName="USERNAME" columnDataType="VARCHAR(255)"/>
         <addNotNullConstraint tableName="PEP_AUTH_USERGROUPS" columnName="NAME" columnDataType="VARCHAR(255)"/>
     </changeSet>
+    <changeSet id="20180607-1" author="zhangjianlin">
+        <addColumn tableName="PEP_AUTH_USERS">
+            <column name="avatar" type="VARCHAR(255)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

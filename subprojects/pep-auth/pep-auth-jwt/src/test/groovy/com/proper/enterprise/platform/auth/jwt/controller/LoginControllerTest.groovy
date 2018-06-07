@@ -41,7 +41,7 @@ class LoginControllerTest extends AbstractTest {
             .getResponse().getContentAsString(), HashMap)
         assert DEFAULT_USER == currentUserMap.get("userId")
         assert '超级管理员' == currentUserMap.get("name")
-        assert 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png' == currentUserMap.get("avatar")
+        assert 'avatar' == currentUserMap.get("avatar")
         assert '12' == currentUserMap.get("notifyCount")
     }
 

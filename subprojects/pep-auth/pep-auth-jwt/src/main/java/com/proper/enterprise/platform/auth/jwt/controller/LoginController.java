@@ -54,7 +54,7 @@ public class LoginController {
         Map<String, String> currentUserMap = new HashMap<>();
         User user = userService.getCurrentUser();
         currentUserMap.put("name", user.getName());
-        currentUserMap.put("avatar", "https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png");
+        currentUserMap.put("avatar", user.getAvatar());
         currentUserMap.put("userId", user.getId());
         currentUserMap.put("notifyCount", "12");
         return new ResponseEntity<>(currentUserMap, HttpStatus.OK);

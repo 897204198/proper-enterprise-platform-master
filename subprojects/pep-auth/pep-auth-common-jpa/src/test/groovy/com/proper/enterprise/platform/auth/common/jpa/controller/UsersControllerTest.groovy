@@ -119,7 +119,7 @@ class UsersControllerTest extends AbstractTest {
         userReq['email'] = 'td_email'
         userReq['phone'] = '12345678901'
         userReq['enable'] = true
-
+        userReq['avatar'] = 'avatar'
         post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED)
 
         def res = JSONUtil.parse(get('/auth/users?userNametd_username=&name=td_name&phone=12345678901&email=&enable=&pageNo=1&pageSize=2',
@@ -128,12 +128,13 @@ class UsersControllerTest extends AbstractTest {
         assert res.count == 1
         assert res.data[0].get('username') == 'td_username'
 
+
         def id = res.data[0].get('id')
 
         def user = JSONUtil.parse(get(URI + '/' + id, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert user.get('phone') == '12345678901'
         assert user.get('name') == 'td_name'
-
+        assert user.get('avatar') == 'avatar'
         def upUser = [:]
         upUser['name'] = 'up_name'
         upUser['password'] = 'up_password'

@@ -79,6 +79,11 @@ public class UserVO extends BaseVO implements User {
         fieldName = "userGroupEntities",
         targetClassName = USER_ENTITY_PATH)
     private Collection<UserGroupVO> userGroups;
+    /**
+     * 用户头像
+     */
+    @JsonView(value = {Single.class})
+    private String avatar;
 
     @Override
     public int hashCode() {
@@ -198,5 +203,13 @@ public class UserVO extends BaseVO implements User {
 
     public void setUserGroups(Collection<UserGroupVO> userGroups) {
         this.userGroups = userGroups;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

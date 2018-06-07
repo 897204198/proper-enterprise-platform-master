@@ -140,4 +140,18 @@ public interface User extends IBase {
      */
     Collection<? extends Role> getRoles();
 
+    /**
+     * 获得头像
+     *
+     * @return 头像Id
+     */
+    String getAvatar();
+
+    /**
+     * 设置头像
+     *
+     * @param avatar 头像Id
+     */
+    void setAvatar(String avatar);
+
 }
