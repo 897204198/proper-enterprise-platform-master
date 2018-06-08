@@ -64,6 +64,15 @@ public class UsersController extends BaseController {
         return responseOfPut(userService.updateEnable(idList, enable), UserVO.class, UserVO.Single.class);
     }
 
+    @SuppressWarnings("unchecked")
+    @PutMapping(path = "/{userId}/password/{oldPassword}/{password}")
+    @JsonView(UserVO.Single.class)
+    public ResponseEntity<UserVO> changePassword(@PathVariable String userId, @PathVariable String oldPassword,
+                                                 @PathVariable String password) {
+        return responseOfPut(userService.changePassword(userId, oldPassword, password),
+            UserVO.class, UserVO.Single.class);
+    }
+
     /**
      * 删除用户的权限
      *

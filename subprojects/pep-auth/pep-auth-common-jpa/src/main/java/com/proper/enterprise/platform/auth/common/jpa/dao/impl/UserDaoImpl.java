@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
@@ -43,6 +44,9 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
     public UserRepository getRepository() {
         return userRepo;
     }
+
+    @Autowired
+    private PasswordEncryptService pwdService;
 
     @Override
     public User save(User user) {
@@ -132,6 +136,16 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
     public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable) {
         return this.findPage(buildUserSpecification(userName, name, email, phone, enable),
             new Sort(Sort.Direction.DESC, "lastModifyTime"));
+    }
+
+    @Override
+    public User changePassword(String userId, String oldPassword, String password) {
+        User user = this.findOne(userId);
+        if (!pwdService.encrypt(oldPassword).equals(user.getPassword())) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.user.change.password.oldpassword.error"));
+        }
+        user.setPassword(pwdService.encrypt(password));
+        return this.updateForSelective(user);
     }
 
     @Override

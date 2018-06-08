@@ -14,6 +14,7 @@ import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
+import com.proper.enterprise.platform.sys.i18n.I18NUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import groovy.json.JsonSlurper
@@ -413,6 +414,22 @@ class UsersControllerTest extends AbstractTest {
         userReq['enable'] = true
         def res = post(URI, JSONUtil.toJSON(userReq), HttpStatus.INTERNAL_SERVER_ERROR).response
         assert res.getHeader(PEPConstants.RESPONSE_HEADER_ERROR_TYPE) == PEPConstants.RESPONSE_BUSINESS_ERROR
+    }
+
+    @Test
+    void changePassword() {
+        def userReq = [:]
+        userReq['username'] = 'user_dup'
+        userReq['name'] = 'name'
+        userReq['password'] = 'password'
+        userReq['email'] = 'email'
+        userReq['phone'] = '123'
+        userReq['enable'] = true
+        UserVO userVO = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString, UserVO.class)
+        assert userVO.getPassword() == pwdService.encrypt('password')
+        put(URI + '/' + userVO.getId() + "/password/" + "123" + "/" + "456", '', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == I18NUtil.getMessage("pep.auth.common.user.change.password.oldpassword.error")
+        UserVO changeVO = JSONUtil.parse(put(URI + '/' + userVO.getId() + "/password/" + "password" + "/" + "456", '', HttpStatus.OK).getResponse().getContentAsString(), UserVO.class)
+        assert changeVO.getPassword() == pwdService.encrypt('456')
     }
 
     @After

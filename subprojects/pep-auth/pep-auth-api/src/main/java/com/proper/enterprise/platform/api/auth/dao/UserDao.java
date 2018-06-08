@@ -56,4 +56,5 @@ public interface UserDao extends BaseService<User, String> {
 
     DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable);
 
+    User changePassword(String userId, String oldPassword, String password);
 }

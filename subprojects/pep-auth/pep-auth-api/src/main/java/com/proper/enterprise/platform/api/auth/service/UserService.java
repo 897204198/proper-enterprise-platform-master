@@ -55,6 +55,16 @@ public interface UserService {
     User update(User user);
 
     /**
+     * 修改密码
+     *
+     * @param userId      用户id
+     * @param oldPassword 原密码
+     * @param password    新密码
+     * @return 用户信息
+     */
+    User changePassword(String userId, String oldPassword, String password);
+
+    /**
      * 获取当前用户
      * 用户为启用状态
      *
