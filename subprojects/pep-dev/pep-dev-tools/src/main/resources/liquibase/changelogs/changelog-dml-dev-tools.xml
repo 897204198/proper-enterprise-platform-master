@@ -122,7 +122,7 @@
             <column name="MENU_CODE"/>
             <column name="MENU_TYPE"/>
             <column name="NAME" value="Tomcat日志"/>
-            <column name="ROUTE" value="log/tomcatLog"/>
+            <column name="ROUTE" value="devtools/tomcatLog"/>
             <column name="SEQUENCE_NUMBER" valueNumeric="5"/>
             <column name="PARENT_ID" value="pep-devtools"/>
         </insert>
