@@ -105,7 +105,7 @@ subprojects {
 
     group = 'com.proper.enterprise.platform'
     // Needs to change version code in core.properties TOGETHER!!
-    version = '0.4.3'
+    version = '0.4.4-SNAPSHOT'
 
     test {
         reports.html.enabled = false
