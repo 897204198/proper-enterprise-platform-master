@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.dev.tools.controller
 
 import com.proper.enterprise.platform.app.document.AppVersionDocument
 import com.proper.enterprise.platform.app.repository.AppVersionRepository
+import com.proper.enterprise.platform.app.service.AppVersionService
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.After
@@ -10,12 +11,16 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.MvcResult
 
+@Sql
 class AppVersionManagerControllerTest extends AbstractTest {
 
     @Autowired
     private AppVersionRepository repository
+    @Autowired
+    private AppVersionService service
     @Autowired
     private CacheManager cacheManager
 
@@ -26,17 +31,16 @@ class AppVersionManagerControllerTest extends AbstractTest {
         long version = 300000
         for (int i = 0; i <= 16; i++) {
             AppVersionDocument appVersionDocument = new AppVersionDocument()
-            appVersionDocument.setVer(++version)
+            appVersionDocument.setVersion(++version + '')
             appVersionDocument.setNote("第" + version + "版的解释说明")
-            appVersionDocument.setUrl("http://test.com/" + version)
-            MvcResult result = post(prefix, JSONUtil.toJSON(appVersionDocument), HttpStatus.CREATED)
-            AppVersionDocument reapp = JSONUtil.parse(result.getResponse().getContentAsString(), AppVersionDocument.class)
-            assert appVersionDocument.getVer() == reapp.getVer()
+            appVersionDocument.setAndroidURL("http://test.com/" + version)
+            appVersionDocument.setIosURL("itunes://test.com/" + version)
+            service.saveOrUpdate(appVersionDocument)
         }
     }
 
     @Test
-    void invalid() {
+    void delete() {
         delete(prefix + "/300010", HttpStatus.NO_CONTENT)
 
         tearDown()
@@ -45,61 +49,58 @@ class AppVersionManagerControllerTest extends AbstractTest {
     }
 
     @Test
-    void getVersionInfosByPageVersionNull() {
-        MvcResult result = get(prefix + "?pageNo=1&pageSize=10", HttpStatus.OK)
-        Map<String, Object> map = JSONUtil.parse(result.getResponse().getContentAsString(), Map.class)
-        List<AppVersionDocument> list = (List<AppVersionDocument>) map.get("data")
-        assert map.get("count") == 17
-        assert list.size() == 10
-    }
-
-    @Test
-    void getgetVersionInfosByPageVersionNotNull() {
-        MvcResult result = get(prefix + "?version=300005&pageNo=1&pageSize=10", HttpStatus.OK)
-        Map<String, Object> map = JSONUtil.parse(result.getResponse().getContentAsString(), Map.class)
-        List<AppVersionDocument> list = (List<AppVersionDocument>) map.get("data")
-        assert map.get("count") == 1
-        assert list.size() == 1
-    }
-
-    @Test
-    void getVersionInfosByNoPage() {
-        MvcResult result = get(prefix, HttpStatus.OK)
-        Map<String, Object> map = JSONUtil.parse(result.getResponse().getContentAsString(), Map.class)
-        assert map.get("count") == 17
-    }
-
-    @Test
     void updateVersionInfo() {
         long updatever = 300001
-        MvcResult appresult = get("/sys/app/versions/" + updatever, HttpStatus.OK)
-        AppVersionDocument app = JSONUtil.parse(appresult.getResponse().getContentAsString(), AppVersionDocument.class)
-        app.setNote("这是更新后的内容信息")
-        MvcResult result = put("$prefix/" + updatever, JSONUtil.toJSON(app), HttpStatus.OK)
+        def app = resOfGet("/app/versions/" + updatever, HttpStatus.OK)
+        app.note = "这是更新后的内容信息"
+        MvcResult result = put(prefix, JSONUtil.toJSON(app), HttpStatus.OK)
         AppVersionDocument app1 = JSONUtil.parse(result.getResponse().getContentAsString(), AppVersionDocument.class)
-        assert app.getNote() == app1.getNote()
+        assert app.note == app1.getNote()
+    }
+
+    @Test
+    void saveThenReleaseThenUpdate() {
+        AppVersionDocument ver = new AppVersionDocument('vt1', '.apk', 'abc')
+        post(prefix, JSONUtil.toJSON(ver), HttpStatus.CREATED)
+
+        post("$prefix/latest", JSONUtil.toJSON(ver), HttpStatus.CREATED)
+        assert repository.findAll().findAll {it.version == 'vt1'}.size() == 1
+
+        put(prefix, JSONUtil.toJSON(ver), HttpStatus.OK)
+        assert repository.find().findAll().get(17).version == 'vt1'
+        assert repository.find().findAll().get(17).released == true
     }
 
     @Test
     void updateReleaseVersionInfoTest() {
+        mockUser('test1', 't1')
         cacheManager.getCache('pep.sys.AppVersion').clear()
-        MvcResult releaseapp = get("/sys/app/versions/latest", HttpStatus.OK)
-        AppVersionDocument originalapp = JSONUtil.parse(releaseapp.getResponse().getContentAsString(), AppVersionDocument.class)
+
+        assert resOfGet("/app/versions/latest", HttpStatus.OK) == ''
 
         AppVersionDocument newreleaseapp = new AppVersionDocument()
-        newreleaseapp.setVer(300005)
+        newreleaseapp.setVersion('300005')
 
-        MvcResult releaseapp1 = put(prefix + "/latest", JSONUtil.toJSON(newreleaseapp), HttpStatus.OK)
+        MvcResult releaseapp1 = post(prefix + "/latest", JSONUtil.toJSON(newreleaseapp), HttpStatus.CREATED)
         AppVersionDocument nowapp = JSONUtil.parse(releaseapp1.getResponse().getContentAsString(), AppVersionDocument.class)
 
-        assert originalapp.getVer() != nowapp.getVer()
-        assert nowapp.getVer() == newreleaseapp.getVer()
+        assert nowapp.getVersion() == '300005'
+        assert nowapp.getVersion() == newreleaseapp.getVersion()
     }
 
     @Test
-    void initGetLatestVersion() {
-        tearDown()
-        resOfGet("$prefix/latest", HttpStatus.OK)
+    void list() {
+        def v05 = new AppVersionDocument('000500', '*.apk', 'abcdef')
+        def v05003 = new AppVersionDocument('0005000003', '*.apk', 'xcv')
+
+        post("$prefix/latest", JSONUtil.toJSON(v05), HttpStatus.CREATED)
+        post("$prefix/latest", JSONUtil.toJSON(v05003), HttpStatus.CREATED)
+
+        def list = resOfGet(prefix, HttpStatus.OK)
+        assert list.size() > 0
+        assert list[0].androidUrl > ''
+        assert list[0].iosUrl == null
+        assert list[0].ver == '0005000003'
     }
 
     @After

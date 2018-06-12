@@ -1,109 +1,77 @@
 package com.proper.enterprise.platform.dev.tools.controller;
 
-import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.app.document.AppVersionDocument;
 import com.proper.enterprise.platform.app.service.AppVersionService;
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/admin/app/versions")
 public class AppVersionManagerController extends BaseController {
 
-    @Autowired
     private AppVersionService appVersionService;
 
-    /**
-     * APP端，用来获取最新发布版信息
-     *
-     * @author sunshuai
-     */
-    @AuthcIgnore
-    @GetMapping("/latest")
-    public ResponseEntity<AppVersionDocument> getLatestReleaseVersionInfoByVer(Long current) {
-        AppVersionDocument latestVersionDocument = appVersionService.getLatestReleaseVersionOnlyValid();
-        long currentVersion = current == null ? -1 : current;
-        long latestVersion = latestVersionDocument == null ? -1 : latestVersionDocument.getVer();
-        return responseOfGet(latestVersion > currentVersion ? latestVersionDocument : null);
+    @Autowired
+    public AppVersionManagerController(AppVersionService appVersionService) {
+        this.appVersionService = appVersionService;
     }
 
     /**
-     * APP端，用来获取指定版本的版本信息
+     * 添加新的版本，版本号需唯一
      *
-     * @author sunshuai
-     */
-    @GetMapping("/{version}")
-    public ResponseEntity<AppVersionDocument> getCertainVersionInfo(@PathVariable long version) {
-        AppVersionDocument doc = appVersionService.getCertainVersion(version);
-        return responseOfGet(doc);
-    }
-
-    /**
-     * 更新发布版，将当前版设定为发布版
-     *
-     * @author sunshuai
-     */
-    @PutMapping(path = "/latest")
-    public ResponseEntity<AppVersionDocument> updateReleaseVersionInfo(@RequestBody AppVersionDocument appVersionDocument) {
-        return responseOfPut(appVersionService.releaseAPP(appVersionDocument));
-    }
-
-    /**
-     * 根据页数、每页显示数量获取版本信息
-     *
-     * @author sunshuai
-     */
-    @GetMapping
-    public ResponseEntity<DataTrunk<AppVersionDocument>> getVersionInfosByPage(Long version, Integer pageNo, Integer pageSize) {
-        if (version != null) {
-            AppVersionDocument doc = appVersionService.getCertainVersion(version);
-            List<AppVersionDocument> lists = new ArrayList<>();
-            lists.add(doc);
-            return responseOfGet(lists, lists.size());
-        } else {
-            return responseOfGet(appVersionService.getVersionInfosByPage(pageNo, pageSize));
-        }
-    }
-
-    /**
-     * 创建一条APP版本信息(不管数据库中是否包含了此条信息，都会增加一条新的)
-     *
-     * @author sunshuai
+     * @param  appVersionDocument 版本信息
+     * @return 返回添加后的版本信息
      */
     @PostMapping
     public ResponseEntity<AppVersionDocument> create(@RequestBody AppVersionDocument appVersionDocument) {
-        return responseOfPost(appVersionService.save(appVersionDocument));
+        return responseOfPost(appVersionService.saveOrUpdate(appVersionDocument));
     }
 
     /**
-     * 根据版本号，修改对应的版本信息，包括版本号、url、note
+     * 更新版本信息
      *
-     * @author sunshuai
+     * @param  appVersionDocument 版本信息
+     * @return 更新后的版本信息
      */
-    @PutMapping("/{version}")
-    public ResponseEntity<AppVersionDocument> update(@PathVariable long version, @RequestBody AppVersionDocument appVersionDocument) {
-        appVersionDocument.setVer(version);
-        return responseOfPut(appVersionService.updateVersionInfo(appVersionDocument));
+    @PutMapping
+    public ResponseEntity<AppVersionDocument> update(@RequestBody AppVersionDocument appVersionDocument) {
+        return responseOfPut(appVersionService.saveOrUpdate(appVersionDocument));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AppVersionDocument>> list() {
+        return responseOfGet(appVersionService.list());
     }
 
     /**
-     * 设定当前版本为无效版本
+     * 删除某版本
      *
-     * @author sunshuai
+     * @param  version 版本号
+     * @return 删除响应
      */
     @DeleteMapping(path = "/{version}")
-    public ResponseEntity invalid(@PathVariable long version) {
-        AppVersionDocument releaseApp = appVersionService.getLatestReleaseVersionOnlyValid();
-        if (releaseApp != null && releaseApp.getVer() == version) {
+    public ResponseEntity delete(@PathVariable String version) {
+        AppVersionDocument ver = appVersionService.get(version);
+        if (ver == null) {
             return responseOfDelete(false);
         }
-        AppVersionDocument app = appVersionService.inValidByVersion(version);
-        return responseOfDelete(app != null && !app.isValid());
+        appVersionService.delete(ver);
+        return responseOfDelete(true);
     }
+
+    /**
+     * 保存并发布版本
+     *
+     * @param  appVersionDocument 版本信息
+     * @return 发布的版本信息
+     */
+    @PostMapping(path = "/latest")
+    public ResponseEntity<AppVersionDocument> saveAndRelease(@RequestBody AppVersionDocument appVersionDocument) {
+        return responseOfPost(appVersionService.release(appVersionDocument));
+    }
+
 }

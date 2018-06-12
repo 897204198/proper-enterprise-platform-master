@@ -2,7 +2,8 @@ dependencies {
     compile project(':pep-app'),
             project(':pep-core-jpa')
 
-    testCompile project(':pep-test')
+    testCompile project(':pep-test'),
+                project(':pep-auth-common-jpa')
 
     testRuntime project(':pep-cache-ehcache')
 }

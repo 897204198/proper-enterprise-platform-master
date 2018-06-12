@@ -1,19 +1,21 @@
 package com.proper.enterprise.platform.app.service.impl;
 
+import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.api.cache.CacheDuration;
 import com.proper.enterprise.platform.app.document.AppVersionDocument;
 import com.proper.enterprise.platform.app.repository.AppVersionRepository;
 import com.proper.enterprise.platform.app.service.AppVersionService;
-import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 @Service
 @CacheConfig(cacheNames = "pep.sys.AppVersion")
@@ -22,76 +24,61 @@ public class AppVersionServiceImpl implements AppVersionService {
 
     private static final String CACHE_KEY = "'latestVer'";
 
+    private AppVersionRepository repo;
+
+    private UserService userService;
+
     @Autowired
-    private AppVersionRepository appVersionRepository;
+    public AppVersionServiceImpl(AppVersionRepository repo, UserService userService) {
+        this.repo = repo;
+        this.userService = userService;
+    }
 
     @Override
-    public AppVersionDocument save(AppVersionDocument appVersion) {
-        return appVersionRepository.save(appVersion);
+    public AppVersionDocument saveOrUpdate(AppVersionDocument appVersion) {
+        AppVersionDocument version = repo.findByVersion(appVersion.getVersion());
+        if (version == null) {
+            version = appVersion;
+        } else {
+            version.setAndroidURL(appVersion.getAndroidURL());
+            version.setIosURL(appVersion.getIosURL());
+            version.setNote(appVersion.getNote());
+        }
+        return repo.save(version);
     }
 
     @Override
     @CachePut(key = CACHE_KEY)
-    public AppVersionDocument releaseAPP(AppVersionDocument appVersionDocument) {
-        AppVersionDocument app = appVersionRepository.findByVer(appVersionDocument.getVer());
-        if (app != null) {
-            return app;
-        } else {
-            return appVersionRepository.save(appVersionDocument);
+    public AppVersionDocument release(AppVersionDocument appVersionDocument) {
+        AppVersionDocument version = repo.findByVersion(appVersionDocument.getVersion());
+        if (version == null) {
+            version = appVersionDocument;
         }
+        version.setReleased(true);
+        version.setPublisherId(userService.getCurrentUser().getId());
+        version.setPublishTime(DateUtil.toTimestamp(new Date()));
+        return repo.save(version);
     }
 
     @Override
-    public AppVersionDocument updateVersionInfo(AppVersionDocument appVersionDocument) {
-        AppVersionDocument app = this.getCertainVersion(appVersionDocument.getVer());
-        if (app != null) {
-            app.setNote(appVersionDocument.getNote());
-            app.setVer(appVersionDocument.getVer());
-            app.setUrl(appVersionDocument.getUrl());
-            app.setLastModifyUserId(appVersionDocument.getLastModifyUserId());
-            app.setLastModifyTime(appVersionDocument.getLastModifyTime());
-            return appVersionRepository.save(app);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public AppVersionDocument inValidByVersion(long version) {
-        AppVersionDocument app = appVersionRepository.findByVer(version);
-        if (app != null && app.isValid()) {
-            app.setValid(false);
-            return appVersionRepository.save(app);
-        }
-        return null;
+    @CacheEvict(key = CACHE_KEY)
+    public void delete(AppVersionDocument version) {
+        repo.delete(version);
     }
 
     @Override
     @Cacheable(key = CACHE_KEY)
-    public AppVersionDocument getLatestReleaseVersionOnlyValid() {
-        AppVersionDocument version = appVersionRepository.findTopByValidTrueOrderByVerDesc();
-        return version;
+    public AppVersionDocument getLatestRelease() {
+        return repo.findTopByReleasedTrueOrderByCreateTimeDesc();
     }
 
     @Override
-    public AppVersionDocument getCertainVersion(long version) {
-        return appVersionRepository.findByVer(version);
+    public AppVersionDocument get(String version) {
+        return repo.findByVersion(version);
     }
 
     @Override
-    public DataTrunk<AppVersionDocument> getVersionInfosByPage(Integer pageNo, Integer pageSize) {
-        DataTrunk<AppVersionDocument> retObj = new DataTrunk<>();
-        Sort sort = new Sort(Sort.Direction.DESC, "ver");
-        if (pageNo == null || pageSize == null) {
-            retObj.setCount(appVersionRepository.countByValidTrue());
-            retObj.setData(appVersionRepository.findAllByValidTrue(sort));
-        } else {
-            Pageable pageable = new PageRequest(pageNo - 1, pageSize, sort);
-            Page<AppVersionDocument> pageApps = appVersionRepository.findAllByValidTrue(pageable);
-            retObj.setCount(appVersionRepository.countByValidTrue());
-            retObj.setData(pageApps.getContent());
-        }
-        return retObj;
+    public List<AppVersionDocument> list() {
+        return repo.findAll(new Sort(Sort.Direction.DESC, "createTime"));
     }
-
 }

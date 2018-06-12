@@ -3,7 +3,8 @@ dependencies {
             project(':pep-cache-api'),
             project(':pep-core-mongo')
 
-    testCompile project(':pep-auth-common'),
-            project(':pep-test')
+    testCompile project(':pep-test'),
+                project(':pep-auth-common-jpa')
+
     testRuntime project(':pep-cache-ehcache')
 }

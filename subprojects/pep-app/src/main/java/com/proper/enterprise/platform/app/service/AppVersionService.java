@@ -1,52 +1,40 @@
 package com.proper.enterprise.platform.app.service;
 
 import com.proper.enterprise.platform.app.document.AppVersionDocument;
-import com.proper.enterprise.platform.core.entity.DataTrunk;
+
+import java.util.List;
 
 public interface AppVersionService {
 
-    AppVersionDocument save(AppVersionDocument appVersion);
+    AppVersionDocument saveOrUpdate(AppVersionDocument appVersion);
 
     /**
-     * 手动调用指定的版本为发布版, 如果指定的版本，库里有则直接改成发布版，如果没有，则先添加，然后改成发布版
+     * 保存并发布版本
      *
-     * @author sunshuai
+     * @param appVersionDocument 版本信息
      */
-    AppVersionDocument releaseAPP(AppVersionDocument appVersionDocument);
+    AppVersionDocument release(AppVersionDocument appVersionDocument);
 
     /**
-     * 更新版本信息
+     * 删除一个版本
      *
-     * @author sunshuai
+     * @param version 版本号
      */
-    AppVersionDocument updateVersionInfo(AppVersionDocument appVersionDocument);
+    void delete(AppVersionDocument version);
 
     /**
-     * 根据版本号设置版本为无效版
-     *
-     * @author sunshuai
+     * 获取最新的有效发布版本
      */
-    AppVersionDocument inValidByVersion(long version);
-
-    /**
-     * 获取最近的发布版信息, 只包含有效版本
-     *
-     * @author sunshuai
-     */
-    AppVersionDocument getLatestReleaseVersionOnlyValid();
+    AppVersionDocument getLatestRelease();
 
     /**
      * 根据版本号，获取对应版本信息，并忽略是否为有效版本
      *
-     * @author sunshuai
+     * @param  version 版本号
+     * @return 版本信息
      */
-    AppVersionDocument getCertainVersion(long version);
+    AppVersionDocument get(String version);
 
-    /**
-     * 根据当前页数(pageNo)，每页显示数量(pageSize)，获取范围内的版本信息列表
-     *
-     * @author sunshuai
-     */
-    DataTrunk<AppVersionDocument> getVersionInfosByPage(Integer pageNo, Integer pageSize);
+    List<AppVersionDocument> list();
 
 }
