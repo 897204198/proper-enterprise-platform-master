@@ -9,8 +9,9 @@ pep-mysql:
     - MYSQL_DATABASE=pep
     - MYSQL_USER=pep
     - MYSQL_PASSWORD=pep
+# Could deploy mongo shard cluster using https://github.com/propersoft-cn/docker-mongo-shard-cluster
 pep-mongo:
-  image: mongo
+  image: mongo:3.6.5
   entrypoint: /code/devops/current/mongoEp.sh
   volumes:
     - ./mongo/data:/data/db
@@ -31,7 +32,7 @@ pep-server:
     - pep-mysql:mysql
     - pep-redis:redis
   environment:
-    - JAVA_OPTS=-server -XX:PermSize=512m -XX:MaxPermSize=2048m -Xms512m -Xmx4096m
+    - JAVA_OPTS=-server -Xms512m -Xmx4096m
 pep-nginx:
   image: nginx
   volumes:
@@ -39,4 +40,4 @@ pep-nginx:
   links:
     - pep-server:pep
   ports:
-    - "9090:80"
+    - "8080:80"
