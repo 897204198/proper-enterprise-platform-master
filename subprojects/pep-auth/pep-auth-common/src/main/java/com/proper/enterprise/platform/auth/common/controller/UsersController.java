@@ -3,10 +3,12 @@ package com.proper.enterprise.platform.auth.common.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.auth.common.vo.ChangePasswordParam;
 import com.proper.enterprise.platform.auth.common.vo.RoleVO;
 import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
 import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.security.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,11 +67,11 @@ public class UsersController extends BaseController {
     }
 
     @SuppressWarnings("unchecked")
-    @PutMapping(path = "/{userId}/password/{oldPassword}/{password}")
+    @PutMapping(path = "/password")
     @JsonView(UserVO.Single.class)
-    public ResponseEntity<UserVO> changePassword(@PathVariable String userId, @PathVariable String oldPassword,
-                                                 @PathVariable String password) {
-        return responseOfPut(userService.changePassword(userId, oldPassword, password),
+    public ResponseEntity<UserVO> changePassword(@RequestBody ChangePasswordParam changePasswordParam) {
+        return responseOfPut(userService.changePassword(SecurityUtil.getCurrentUserId(),
+            changePasswordParam.getOldPassword(), changePasswordParam.getPassword()),
             UserVO.class, UserVO.Single.class);
     }
 
