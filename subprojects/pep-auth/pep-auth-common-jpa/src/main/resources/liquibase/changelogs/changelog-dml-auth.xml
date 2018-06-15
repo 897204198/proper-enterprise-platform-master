@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet author="alphahinex (generated)" id="1525327864421-6">
         <insert tableName="PEP_AUTH_MENUS">
             <column name="ID" value="pep-auth"/>
@@ -1291,6 +1294,25 @@
             <column name="NAME" value="数据字典配置"/>
             <column name="ROUTE" value="system/dictionary"/>
             <column name="SEQUENCE_NUMBER" valueNumeric="0"/>
+            <column name="PARENT_ID" value="pep-system"/>
+        </insert>
+    </changeSet>
+    <changeSet author="zjl" id="pep-menus-add-oopsearch-menu">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-system-oopsearch-config"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="setting"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;1"/>
+            <column name="NAME" value="oopsearch配置"/>
+            <column name="ROUTE" value="/system/oopsearchConfig"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="1"/>
             <column name="PARENT_ID" value="pep-system"/>
         </insert>
     </changeSet>
