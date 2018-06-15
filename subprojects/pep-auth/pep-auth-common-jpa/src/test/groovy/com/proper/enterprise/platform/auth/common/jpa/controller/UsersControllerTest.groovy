@@ -418,6 +418,7 @@ class UsersControllerTest extends AbstractTest {
 
     @Test
     void changePassword() {
+
         def userReq = [:]
         userReq['username'] = 'user_dup'
         userReq['name'] = 'name'
@@ -427,8 +428,14 @@ class UsersControllerTest extends AbstractTest {
         userReq['enable'] = true
         UserVO userVO = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString, UserVO.class)
         assert userVO.getPassword() == pwdService.encrypt('password')
-        put(URI + '/' + userVO.getId() + "/password/" + "123" + "/" + "456", '', HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == I18NUtil.getMessage("pep.auth.common.user.change.password.oldpassword.error")
-        UserVO changeVO = JSONUtil.parse(put(URI + '/' + userVO.getId() + "/password/" + "password" + "/" + "456", '', HttpStatus.OK).getResponse().getContentAsString(), UserVO.class)
+        mockUser(userVO.getId(), userVO.getUsername())
+        def changePassword = [:]
+        changePassword['oldPassword'] = "123"
+        changePassword['password'] = "456"
+        put(URI + "/password", JSONUtil.toJSON(changePassword), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == I18NUtil.getMessage("pep.auth.common.user.change.password.oldpassword.error")
+        changePassword['oldPassword'] = "password"
+        changePassword['password'] = "456"
+        UserVO changeVO = JSONUtil.parse(put(URI + "/password/", JSONUtil.toJSON(changePassword), HttpStatus.OK).getResponse().getContentAsString(), UserVO.class)
         assert changeVO.getPassword() == pwdService.encrypt('456')
     }
 
