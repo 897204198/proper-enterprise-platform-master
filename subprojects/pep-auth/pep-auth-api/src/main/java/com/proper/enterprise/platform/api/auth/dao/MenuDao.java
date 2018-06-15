@@ -11,8 +11,6 @@ public interface MenuDao extends BaseService<Menu, String> {
 
     Menu get(String id);
 
-    Menu getNewMenuEntity();
-
     Collection<? extends Menu> findParents(EnableEnum menuEnable);
 
     Collection<? extends Menu> findAllEq(String name);

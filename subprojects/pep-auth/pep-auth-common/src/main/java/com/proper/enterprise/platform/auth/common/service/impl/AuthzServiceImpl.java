@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-
 @Service
 public class AuthzServiceImpl implements AuthzService {
 
@@ -24,18 +23,33 @@ public class AuthzServiceImpl implements AuthzService {
 
     private static PathMatcher matcher = new AntPathMatcher();
 
-    @Autowired
     private ResourceService resourceService;
 
-    @Autowired
     private MenuService menuService;
 
     @Value("${auth.ignorePatterns}")
     private String patterns;
 
+    @Value("${auth.hasContext}")
+    private boolean hasContext;
+
+    public void setPatterns(String patterns) {
+        this.patterns = patterns;
+    }
+
+    public void setHasContext(boolean hasContext) {
+        this.hasContext = hasContext;
+    }
+
+    @Autowired
+    public AuthzServiceImpl(MenuService menuService, ResourceService resourceService) {
+        this.menuService = menuService;
+        this.resourceService = resourceService;
+    }
+
     @Override
-    public boolean shouldIgnore(String url, String method, boolean hasContext) {
-        String path = method + ":" + getMappingUrl(url, hasContext);
+    public boolean shouldIgnore(String url, String method) {
+        String path = method + ":" + getMappingUrl(url);
         LOGGER.debug("Request is {}", path);
         if (StringUtils.isEmpty(patterns)) {
             return false;
@@ -50,12 +64,12 @@ public class AuthzServiceImpl implements AuthzService {
     }
 
     @Override
-    public boolean accessible(String url, String method, boolean hasContext, String userId) {
-        Resource resource = resourceService.get(getMappingUrl(url, hasContext), RequestMethod.valueOf(method));
+    public boolean accessible(String url, String method, String userId) {
+        Resource resource = resourceService.get(getMappingUrl(url), RequestMethod.valueOf(method));
         return menuService.accessible(resource, userId);
     }
 
-    private String getMappingUrl(String url, boolean hasContext) {
+    private String getMappingUrl(String url) {
         String result = "";
         try {
             result = new URI(hasContext ? url.substring(url.indexOf("/", 1)) : url).getPath();
@@ -64,4 +78,5 @@ public class AuthzServiceImpl implements AuthzService {
         }
         return result;
     }
+
 }

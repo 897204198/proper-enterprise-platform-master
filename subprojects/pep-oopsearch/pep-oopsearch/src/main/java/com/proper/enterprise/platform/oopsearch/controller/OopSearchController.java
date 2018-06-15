@@ -142,7 +142,7 @@ public class OopSearchController extends BaseController {
     }
 
     private boolean accessible(String url, HttpServletRequest request, HttpServletResponse response) {
-        if (!authzService.accessible(url, request.getMethod(), false, securityService.getCurrentUserId())) {
+        if (!authzService.accessible(url, request.getMethod(), securityService.getCurrentUserId())) {
             HttpServletResponse resp = response;
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             resp.setHeader("WWW-Authenticate",

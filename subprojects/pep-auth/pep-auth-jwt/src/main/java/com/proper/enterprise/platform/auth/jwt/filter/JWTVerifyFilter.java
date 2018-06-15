@@ -8,7 +8,6 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 
@@ -25,32 +24,17 @@ public class JWTVerifyFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTVerifyFilter.class);
 
-    @Autowired
     private JWTService jwtService;
 
-    @Autowired
     private AuthzService authzService;
 
-    @Autowired
     private HandlerHolder handlerHolder;
 
-    @Value("${auth.jwt.hasContext}")
-    private boolean hasContext;
-
-    public void setJwtService(JWTService jwtService) {
+    @Autowired
+    public JWTVerifyFilter(JWTService jwtService, AuthzService authzService, HandlerHolder handlerHolder) {
         this.jwtService = jwtService;
-    }
-
-    public void setAuthzService(AuthzService authzService) {
         this.authzService = authzService;
-    }
-
-    public void setHandlerHolder(HandlerHolder handlerHolder) {
         this.handlerHolder = handlerHolder;
-    }
-
-    public void setHasContext(boolean hasContext) {
-        this.hasContext = hasContext;
     }
 
     @Override
@@ -71,11 +55,10 @@ public class JWTVerifyFilter implements Filter {
         if (StringUtil.isNotNull(token) && jwtService.verify(token)) {
             LOGGER.trace("JWT verfiy succeed.");
             String userId = jwtService.getHeader(token).getId();
-            if (authzService.accessible(req.getRequestURI(), req.getMethod(), hasContext, userId)) {
+            if (authzService.accessible(req.getRequestURI(), req.getMethod(), userId)) {
                 LOGGER.trace("Current user with {} could access {}:{}, invoke next filter in filter chain.",
                     token, req.getMethod(), req.getRequestURI());
                 filterChain.doFilter(request, response);
-                return;
             } else {
                 LOGGER.trace("Current user with {} could NOT access {}:{}!", token, req.getMethod(), req.getRequestURI());
                 HttpServletResponse resp = (HttpServletResponse) response;
@@ -137,7 +120,7 @@ public class JWTVerifyFilter implements Filter {
     }
 
     private boolean inIgnorePatterns(HttpServletRequest req) {
-        boolean ignore = authzService.shouldIgnore(req.getRequestURI(), req.getMethod(), hasContext);
+        boolean ignore = authzService.shouldIgnore(req.getRequestURI(), req.getMethod());
         if (ignore) {
             LOGGER.debug("Not need JWT of this url({}) caused by settings of AuthzService.ignorePatterns.", req.getRequestURI());
         }
@@ -145,6 +128,6 @@ public class JWTVerifyFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig arg0) throws ServletException { }
+    public void init(FilterConfig arg0) { }
 
 }

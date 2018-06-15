@@ -38,7 +38,6 @@ class JWTVerifyFilterTest extends AbstractTest {
     @Before
     void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).addFilter(jwtVerifyFilter, '/*').build()
-        jwtVerifyFilter.setHasContext(false)
     }
 
     @Test

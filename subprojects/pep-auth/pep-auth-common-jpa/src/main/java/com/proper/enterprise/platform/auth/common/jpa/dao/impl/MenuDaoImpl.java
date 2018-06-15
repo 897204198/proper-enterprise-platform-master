@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.auth.common.jpa.dao.impl;
 import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
-import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
@@ -17,7 +16,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Service
 public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String> implements MenuDao {
@@ -33,11 +34,6 @@ public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String>
     @Override
     public Menu get(String id) {
         return repository.findOne(id);
-    }
-
-    @Override
-    public Menu getNewMenuEntity() {
-        return new MenuEntity();
     }
 
     @Override
