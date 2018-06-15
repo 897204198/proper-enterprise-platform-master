@@ -70,7 +70,7 @@ public class UsersController extends BaseController {
     @PutMapping(path = "/password")
     @JsonView(UserVO.Single.class)
     public ResponseEntity<UserVO> changePassword(@RequestBody ChangePasswordParam changePasswordParam) {
-        return responseOfPut(userService.changePassword(SecurityUtil.getCurrentUserId(),
+        return responseOfPut(userService.updateChangePassword(SecurityUtil.getCurrentUserId(),
             changePasswordParam.getOldPassword(), changePasswordParam.getPassword()),
             UserVO.class, UserVO.Single.class);
     }

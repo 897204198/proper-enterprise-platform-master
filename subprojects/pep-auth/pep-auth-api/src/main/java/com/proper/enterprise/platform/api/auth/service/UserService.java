@@ -62,7 +62,7 @@ public interface UserService {
      * @param password    新密码
      * @return 用户信息
      */
-    User changePassword(String userId, String oldPassword, String password);
+    User updateChangePassword(String userId, String oldPassword, String password);
 
     /**
      * 获取当前用户
