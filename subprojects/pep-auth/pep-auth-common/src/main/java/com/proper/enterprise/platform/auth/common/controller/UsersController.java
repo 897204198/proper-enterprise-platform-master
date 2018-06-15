@@ -69,7 +69,7 @@ public class UsersController extends BaseController {
     @JsonView(UserVO.Single.class)
     public ResponseEntity<UserVO> changePassword(@PathVariable String userId, @PathVariable String oldPassword,
                                                  @PathVariable String password) {
-        return responseOfPut(userService.changePassword(userId, oldPassword, password),
+        return responseOfPut(userService.updateChangePassword(userId, oldPassword, password),
             UserVO.class, UserVO.Single.class);
     }
 
