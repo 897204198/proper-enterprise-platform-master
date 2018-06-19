@@ -130,23 +130,28 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @SuppressWarnings("unchecked")
     public Collection<? extends Menu> getMenus(String name, String description, String route, EnableEnum enable, String parentId) {
-        List<Menu> menus = new ArrayList<>();
+        Set<Menu> menus = new HashSet<>();
         Collection<? extends Menu> filterMenus = menuDao.findAll(name, description, route, enable, parentId);
         Collection<? extends Menu> roleMenus = getMenus();
         for (Menu menu : roleMenus) {
             if (filterMenus.contains(menu)) {
-                menus.add(menu);
-                if (parentId == null) {
-                    while (menu.getParent() != null) {
-                        menu = menu.getParent();
-                        if (!menus.contains(menu)) {
-                            menus.add(menu);
-                        }
-                    }
-                }
+                menus.addAll(recursionMenu(menu, menus, enable));
             }
         }
-        menus.sort(new BeanComparator("parent", "sequenceNumber"));
+        List<Menu> returnMenus = new ArrayList<>(menus);
+        returnMenus.sort(new BeanComparator("parent", "sequenceNumber"));
+        return returnMenus;
+    }
+
+    private Set<Menu> recursionMenu(Menu menu, Set<Menu> menus, EnableEnum enableEnum) {
+        menus.add(menu);
+        if (menu.getParent() != null) {
+            if (EnableEnum.ALL == enableEnum
+                || EnableEnum.ENABLE == enableEnum && menu.getEnable()
+                || EnableEnum.DISABLE == enableEnum && !menu.getEnable()) {
+                menus.addAll(recursionMenu(menu.getParent(), menus, enableEnum));
+            }
+        }
         return menus;
     }
 

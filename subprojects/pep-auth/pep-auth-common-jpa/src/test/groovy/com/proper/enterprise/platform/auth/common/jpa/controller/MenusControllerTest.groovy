@@ -2,13 +2,16 @@ package com.proper.enterprise.platform.auth.common.jpa.controller
 
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.ResourceService
+import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.dictionary.MenuType
 import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity
+import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.*
 import com.proper.enterprise.platform.auth.common.vo.MenuVO
 import com.proper.enterprise.platform.auth.common.vo.ResourceVO
+import com.proper.enterprise.platform.auth.common.vo.UserVO
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
@@ -58,6 +61,9 @@ class MenusControllerTest extends AbstractTest {
     private MenuService menusService
     @Autowired
     private I18NService i18NService
+
+    @Autowired
+    RoleService roleService
 
     @Test
     @NoTx
@@ -419,5 +425,55 @@ class MenusControllerTest extends AbstractTest {
             }
         }
         assert validate
+    }
+
+
+    @Test
+    void testLevel3Menu() {
+        def menu1 = [:]
+        menu1['icon'] = 'test_icon'
+        menu1['name'] = 'test_Level_1'
+        menu1['route'] = '/bbb/ccc'
+        menu1['enable'] = true
+        menu1['sequenceNumber'] = 55
+        menu1['menuCode'] = '1'
+        MenuVO menuVO1 = JSONUtil.parse(post('/auth/menus', JSONUtil.toJSON(menu1), HttpStatus.CREATED).response.contentAsString, MenuVO.class)
+        def menu2 = [:]
+        menu2['icon'] = 'test_icon'
+        menu2['name'] = 'test_Level_2'
+        menu2['route'] = '/bbb/ccc/ddd'
+        menu2['enable'] = true
+        menu2['sequenceNumber'] = 55
+        menu2['menuCode'] = '1'
+        menu2['parentId'] = menuVO1.getId()
+        MenuVO menuVO2 = JSONUtil.parse(post('/auth/menus', JSONUtil.toJSON(menu2), HttpStatus.CREATED).response.contentAsString, MenuVO.class)
+        def menu3 = [:]
+        menu3['icon'] = 'test_icon'
+        menu3['name'] = 'test_Level_3'
+        menu3['route'] = '/bbb/ccc/ddd/eee'
+        menu3['enable'] = true
+        menu3['sequenceNumber'] = 55
+        menu3['menuCode'] = '1'
+        menu3['parentId'] = menuVO2.getId()
+        MenuVO menuVO3 = JSONUtil.parse(post('/auth/menus', JSONUtil.toJSON(menu3), HttpStatus.CREATED).response.contentAsString, MenuVO.class)
+        RoleEntity roleEntity = new RoleEntity()
+        roleEntity.setName('menurole')
+        roleEntity = roleService.save(roleEntity)
+        def addReq = ['ids': [menuVO3.getId()]]
+        post('/auth/roles/' + roleEntity.getId() + '/menus', JSONUtil.toJSON(addReq), HttpStatus.CREATED)
+        def userReq = [:]
+        userReq['username'] = 'td_username'
+        userReq['name'] = 'td_name'
+        userReq['password'] = 'td_password'
+        userReq['email'] = 'td_email'
+        userReq['phone'] = '12345678901'
+        userReq['enable'] = true
+        userReq['avatar'] = 'avatar'
+        UserVO userVO = JSONUtil.parse(post("/auth/users", JSONUtil.toJSON(userReq), HttpStatus.CREATED).getResponse().getContentAsString(), UserVO.class)
+        post('/auth/users/' + userVO.getId() + '/role/' + roleEntity.getId(), JSONUtil.toJSON(addReq), HttpStatus.CREATED)
+
+        mockUser(userVO.getId(), userVO.getUsername(), userVO.getPassword())
+        def res = resOfGet('/auth/menus', HttpStatus.OK)
+        assert res.size() == 3
     }
 }
