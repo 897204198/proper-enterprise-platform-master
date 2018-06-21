@@ -1,11 +1,12 @@
 dependencies {
-    compile project(':pep-oopsearch-api'),
+    compile project(':pep-oopsearch-config'),
+            project(':pep-cache-api'),
+            project(':pep-schedule-cluster'),
             project(':pep-auth-api'),
             project(':pep-auth-common')
 
     testCompile project(':pep-test')
     testCompile project(':pep-auth-common-jpa')
-    testRuntime project(':pep-cache-ehcache'),
-                project(':pep-oopsearch-config')
+    testRuntime project(':pep-cache-ehcache')
 
 }

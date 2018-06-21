@@ -1,7 +1,5 @@
 package com.proper.enterprise.platform.oopsearch.config.conf;
 
-import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;
-
 public class ModuleSearchConfig extends AbstractSearchConfigs {
 
     /**

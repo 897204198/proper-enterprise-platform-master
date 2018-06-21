@@ -37,4 +37,11 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="zjl (generated)" id="add-data-base-type-2">
+        <addColumn tableName="PEP_OOPSEARCH_CONFIG">
+            <column defaultValue="RDB" name="DATA_BASE_TYPE" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

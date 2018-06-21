@@ -78,8 +78,10 @@ public class UserServiceImpl implements UserService {
         if (null == userOld) {
             throw new PersistenceException("entity not persist");
         }
-        if (!user.getPassword().equals(userOld.getPassword())) {
-            user.setPassword(pwdService.encrypt(user.getPassword()));
+        if (null != user.getPassword()) {
+            if (!user.getPassword().equals(userOld.getPassword())) {
+                user.setPassword(pwdService.encrypt(user.getPassword()));
+            }
         }
         return userDao.updateForSelective(user);
     }

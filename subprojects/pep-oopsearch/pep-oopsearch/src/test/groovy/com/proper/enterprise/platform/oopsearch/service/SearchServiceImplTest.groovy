@@ -1,11 +1,9 @@
 package com.proper.enterprise.platform.oopsearch.service
 
-import com.proper.enterprise.platform.oopsearch.api.document.OOPSearchDocument
-import com.proper.enterprise.platform.oopsearch.api.entity.SearchConfigEntity
-import com.proper.enterprise.platform.oopsearch.api.repository.SearchConfigRepository
-import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
+import com.proper.enterprise.platform.oopsearch.document.OOPSearchDocument
+import com.proper.enterprise.platform.oopsearch.config.repository.SearchConfigRepository
+import com.proper.enterprise.platform.oopsearch.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService
-import com.proper.enterprise.platform.oopsearch.api.serivce.SearchService
 import com.proper.enterprise.platform.oopsearch.entity.DemoUserEntity
 import com.proper.enterprise.platform.oopsearch.repository.DemoUserRepository
 import com.proper.enterprise.platform.test.AbstractTest

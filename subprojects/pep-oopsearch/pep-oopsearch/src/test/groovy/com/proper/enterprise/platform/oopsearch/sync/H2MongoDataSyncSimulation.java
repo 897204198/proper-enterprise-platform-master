@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.oopsearch.sync;
 
-import com.proper.enterprise.platform.oopsearch.api.sync.AbstractMongoDataSync;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +11,7 @@ import java.util.List;
 
 
 @Service
-public class H2MongoDataSyncSimulation extends AbstractMongoDataSync {
+public class H2MongoDataSyncSimulation extends AbstractMongoDataSyncORM {
     private static final Logger LOGGER = LoggerFactory.getLogger(H2MongoDataSyncSimulation.class);
 
     @Value("database.url")

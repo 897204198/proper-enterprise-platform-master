@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.oopsearch.config.service
 
-import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs
-import com.proper.enterprise.platform.oopsearch.api.repository.SearchConfigRepository
-import com.proper.enterprise.platform.oopsearch.api.serivce.SearchConfigService
+import com.proper.enterprise.platform.oopsearch.api.enums.DataBaseType
+import com.proper.enterprise.platform.oopsearch.config.conf.AbstractSearchConfigs
 import com.proper.enterprise.platform.oopsearch.config.repository.DemoUserRepository
+import com.proper.enterprise.platform.oopsearch.config.repository.SearchConfigRepository
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +24,7 @@ class SearchConfigServiceImplTest extends AbstractTest{
     @Sql("/sql/oopsearch/config/configData.sql")
     void testAll() {
         String moduleName = "demouser"
-        Map<String, Object> searchConfigBeans = searchConfigService.getSearchConfigs()
+        Map<String, Object> searchConfigBeans = searchConfigService.getSearchConfigs(DataBaseType.RDB)
         assert searchConfigBeans.size() == 1
 
         AbstractSearchConfigs searchConfigs = searchConfigService.getSearchConfig(moduleName)

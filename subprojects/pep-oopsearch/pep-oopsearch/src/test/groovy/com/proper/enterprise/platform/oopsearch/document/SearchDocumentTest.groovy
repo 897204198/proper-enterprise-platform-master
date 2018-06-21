@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.oopsearch.document
 
-import com.proper.enterprise.platform.oopsearch.api.document.SearchDocument
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <changeSet author="alphahinex (generated)" id="1525327864421-10">
         <insert tableName="PEP_OOPSEARCH_CONFIG">
@@ -252,7 +255,7 @@
             <column name="COLUMN_DESC" value="数据字典类型"/>
             <column name="COLUMN_TYPE" value="string"/>
             <column name="MODULE_NAME" value="systemdictionary"/>
-            <column name="SEARCH_COLUMN" value="DD_CATALOG"/>
+            <column name="SEARCH_COLUMN" value="dd_catalog"/>
             <column name="TABLE_NAME" value="pep_sys_data_dic"/>
             <column name="URL" value="/sys/datadic"/>
         </insert>
@@ -266,7 +269,7 @@
             <column name="COLUMN_DESC" value="数据字典编码"/>
             <column name="COLUMN_TYPE" value="string"/>
             <column name="MODULE_NAME" value="systemdictionary"/>
-            <column name="SEARCH_COLUMN" value="DD_CODE"/>
+            <column name="SEARCH_COLUMN" value="dd_code"/>
             <column name="TABLE_NAME" value="pep_sys_data_dic"/>
             <column name="URL" value="/sys/datadic"/>
         </insert>
@@ -280,7 +283,7 @@
             <column name="COLUMN_DESC" value="数据字典名称"/>
             <column name="COLUMN_TYPE" value="string"/>
             <column name="MODULE_NAME" value="systemdictionary"/>
-            <column name="SEARCH_COLUMN" value="DD_NAME"/>
+            <column name="SEARCH_COLUMN" value="dd_name"/>
             <column name="TABLE_NAME" value="pep_sys_data_dic"/>
             <column name="URL" value="/sys/datadic"/>
         </insert>

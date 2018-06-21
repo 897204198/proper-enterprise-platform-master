@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.oopsearch.sync.mysql.controller
 
-import com.proper.enterprise.platform.oopsearch.api.repository.SearchConfigRepository
-import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
+import com.proper.enterprise.platform.oopsearch.config.repository.SearchConfigRepository
+import com.proper.enterprise.platform.oopsearch.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.sync.mysql.entity.DemoDeptEntity
 import com.proper.enterprise.platform.oopsearch.sync.mysql.entity.DemoTestEntity
 import com.proper.enterprise.platform.oopsearch.sync.mysql.repository.DemoDeptRepository

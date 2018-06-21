@@ -1,10 +1,12 @@
 package com.proper.enterprise.platform.oopsearch.config.service.impl;
 
 import com.proper.enterprise.platform.core.utils.ConfCenter;
-import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;
-import com.proper.enterprise.platform.oopsearch.api.entity.SearchConfigEntity;
-import com.proper.enterprise.platform.oopsearch.api.repository.SearchConfigRepository;
-import com.proper.enterprise.platform.oopsearch.api.serivce.SearchConfigService;
+import com.proper.enterprise.platform.oopsearch.api.enums.DataBaseType;
+import com.proper.enterprise.platform.oopsearch.config.conf.AbstractSearchConfigs;
+
+import com.proper.enterprise.platform.oopsearch.config.entity.SearchConfigEntity;
+import com.proper.enterprise.platform.oopsearch.config.repository.SearchConfigRepository;
+import com.proper.enterprise.platform.oopsearch.config.service.SearchConfigService;
 import com.proper.enterprise.platform.oopsearch.config.conf.ModuleSearchConfig;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.slf4j.Logger;
@@ -27,14 +29,24 @@ public class SearchConfigServiceImpl implements SearchConfigService {
     @Override
     public AbstractSearchConfigs getSearchConfig(String moduleName) {
         List<SearchConfigEntity> result = searchConfigRepository.findByModuleName(moduleName);
-        if (result == null || result.size() == 0) {
+        return getSearchConfig(result);
+    }
+
+    @Override
+    public AbstractSearchConfigs getSearchConfig(String moduleName, DataBaseType dataBaseType) {
+        List<SearchConfigEntity> result = searchConfigRepository.findByModuleNameAndDataBaseType(moduleName, dataBaseType);
+        return getSearchConfig(result);
+    }
+
+    private AbstractSearchConfigs getSearchConfig(List<SearchConfigEntity> configs) {
+        if (configs == null || configs.size() == 0) {
             LOGGER.error("no search config result , maybe the moduleName is worry");
             return null;
         }
 
         Set<String> tablesSet = new HashSet<>();
         Set<String> columnsSet = new HashSet<>();
-        for (SearchConfigEntity entity : result) {
+        for (SearchConfigEntity entity : configs) {
             tablesSet.add(entity.getTableName());
             columnsSet.add(entity.getTableName() + ":" + entity.getSearchColumn() + ":" + entity.getColumnType()
                 + ":" + entity.getColumnDesc() + ":" + entity.getColumnAlias() + ":" + entity.getUrl());
@@ -66,10 +78,10 @@ public class SearchConfigServiceImpl implements SearchConfigService {
      * 获取配置信息类
      * 将数据库中的配置信息，转换为config配置类。
      *
-     * @return  config集合
+     * @return config集合
      * */
-    public Map<String, Object> getSearchConfigs() {
-        List<SearchConfigEntity> result = searchConfigRepository.findAll();
+    public Map<String, Object> getSearchConfigs(DataBaseType dataBaseType) {
+        List<SearchConfigEntity> result = searchConfigRepository.findByDataBaseType(dataBaseType);
         if (result == null || result.size() == 0) {
             LOGGER.error("no search config result , db is empty");
             return null;

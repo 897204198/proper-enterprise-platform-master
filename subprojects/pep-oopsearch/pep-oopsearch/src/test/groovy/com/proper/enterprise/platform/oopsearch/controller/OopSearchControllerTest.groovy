@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.oopsearch.controller
 
 import com.proper.enterprise.platform.core.utils.JSONUtil
-import com.proper.enterprise.platform.oopsearch.api.repository.SearchConfigRepository
-import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
+import com.proper.enterprise.platform.oopsearch.config.repository.SearchConfigRepository
+import com.proper.enterprise.platform.oopsearch.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService
 import com.proper.enterprise.platform.oopsearch.entity.DemoDeptEntity
 import com.proper.enterprise.platform.oopsearch.entity.DemoUserEntity

@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.oopsearch.sync.h2.service.impl;
 
-import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,10 +7,10 @@ import org.springframework.stereotype.Service;
 public class H2SyncJobService {
 
     @Autowired
-    private MongoDataSyncService mongoDataSyncService;
+    private H2MongoDataSync h2MongoDataSync;
 
     public void fullSyncMongo() {
-        mongoDataSyncService.fullSynchronization();
+        h2MongoDataSync.fullSynchronization();
     }
 
 }

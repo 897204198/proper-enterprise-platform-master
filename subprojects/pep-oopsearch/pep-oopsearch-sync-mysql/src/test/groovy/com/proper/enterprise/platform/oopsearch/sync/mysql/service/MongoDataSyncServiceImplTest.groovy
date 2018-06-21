@@ -1,10 +1,11 @@
 package com.proper.enterprise.platform.oopsearch.sync.mysql.service
 
-import com.proper.enterprise.platform.oopsearch.api.document.SearchDocument
+import com.proper.enterprise.platform.oopsearch.api.enums.SyncMethod
+import com.proper.enterprise.platform.oopsearch.document.SearchDocument
 import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel
 import com.proper.enterprise.platform.oopsearch.api.model.SyncDocumentModel
-import com.proper.enterprise.platform.oopsearch.api.repository.SyncMongoRepository
-import com.proper.enterprise.platform.oopsearch.api.serivce.MongoDataSyncService
+import com.proper.enterprise.platform.oopsearch.repository.SyncMongoRepository
+import com.proper.enterprise.platform.oopsearch.sync.SingleSync
 import com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl.MySQLMongoDataSync
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 class MongoDataSyncServiceImplTest extends AbstractTest{
 
     @Autowired
-    MongoDataSyncService mongoDataSyncService
+    SingleSync singleSync
 
     @Autowired
     SyncMongoRepository syncMongoRepository
@@ -31,18 +32,20 @@ class MongoDataSyncServiceImplTest extends AbstractTest{
         doc.setCona("张一")
         doc.setCol("username")
         doc.setDes("用户名")
-        mongoDataSyncService.singleSynchronization(doc, "insert")
+        doc.setMethod(SyncMethod.INSERT)
+        singleSync.singleSynchronization(doc)
         List<SearchDocument> result = syncMongoRepository.findAll()
         assert result.size() == 1
 
         doc.setConb("张一")
         doc.setCona("张二")
-        mongoDataSyncService.singleSynchronization(doc, "update")
+        doc.setMethod(SyncMethod.UPDATE)
+        singleSync.singleSynchronization(doc)
         result = syncMongoRepository.findAll()
         SearchDocument searchDocument = result.get(0)
         assert searchDocument.getCon() == "张二"
-
-        mongoDataSyncService.singleSynchronization(doc, "delete")
+        doc.setMethod(SyncMethod.DELETE)
+        singleSync.singleSynchronization(doc)
         result = syncMongoRepository.findAll()
         assert result.size() == 0
     }

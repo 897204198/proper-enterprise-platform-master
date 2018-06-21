@@ -1,12 +1,10 @@
 package com.proper.enterprise.platform.oopsearch.sync.mysql.conf;
 
-import com.proper.enterprise.platform.oopsearch.api.annotation.SearchConfig;
-import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;
+import com.proper.enterprise.platform.oopsearch.config.conf.AbstractSearchConfigs;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-@SearchConfig
 public class DemoDeptConfigs extends AbstractSearchConfigs {
 
     public DemoDeptConfigs(@Value("${search.dept.tables}") String searchTables,

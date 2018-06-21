@@ -1,11 +1,9 @@
 package com.proper.enterprise.platform.oopsearch.configs;
 
-import com.proper.enterprise.platform.oopsearch.api.annotation.SearchConfig;
-import com.proper.enterprise.platform.oopsearch.api.conf.AbstractSearchConfigs;
+import com.proper.enterprise.platform.oopsearch.config.conf.AbstractSearchConfigs;
 import org.springframework.stereotype.Component;
 
 @Component
-@SearchConfig
 public class MultiTableConfigTest extends AbstractSearchConfigs {
 
     public MultiTableConfigTest() {

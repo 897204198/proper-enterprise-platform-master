@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl;
 
-import com.proper.enterprise.platform.oopsearch.api.sync.AbstractMongoDataSync;
+import com.proper.enterprise.platform.oopsearch.sync.AbstractMongoDataSyncORM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service(value = "mySQLMongoDataSync")
-public class MySQLMongoDataSync extends AbstractMongoDataSync {
+public class MySQLMongoDataSync extends AbstractMongoDataSyncORM {
     private static final Logger LOGGER = LoggerFactory.getLogger(MySQLMongoDataSync.class);
 
     @Value("database.url")
