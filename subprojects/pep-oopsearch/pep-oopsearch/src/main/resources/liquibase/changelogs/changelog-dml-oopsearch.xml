@@ -255,7 +255,7 @@
             <column name="COLUMN_DESC" value="数据字典类型"/>
             <column name="COLUMN_TYPE" value="string"/>
             <column name="MODULE_NAME" value="systemdictionary"/>
-            <column name="SEARCH_COLUMN" value="dd_catalog"/>
+            <column name="SEARCH_COLUMN" value="DD_CATALOG"/>
             <column name="TABLE_NAME" value="pep_sys_data_dic"/>
             <column name="URL" value="/sys/datadic"/>
         </insert>
@@ -269,7 +269,7 @@
             <column name="COLUMN_DESC" value="数据字典编码"/>
             <column name="COLUMN_TYPE" value="string"/>
             <column name="MODULE_NAME" value="systemdictionary"/>
-            <column name="SEARCH_COLUMN" value="dd_code"/>
+            <column name="SEARCH_COLUMN" value="DD_CODE"/>
             <column name="TABLE_NAME" value="pep_sys_data_dic"/>
             <column name="URL" value="/sys/datadic"/>
         </insert>
@@ -283,9 +283,29 @@
             <column name="COLUMN_DESC" value="数据字典名称"/>
             <column name="COLUMN_TYPE" value="string"/>
             <column name="MODULE_NAME" value="systemdictionary"/>
-            <column name="SEARCH_COLUMN" value="dd_name"/>
+            <column name="SEARCH_COLUMN" value="DD_NAME"/>
             <column name="TABLE_NAME" value="pep_sys_data_dic"/>
             <column name="URL" value="/sys/datadic"/>
         </insert>
+    </changeSet>
+    <changeSet author="zjl" id="pep-sys-data-dic-20180621-1">
+        <update tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="SEARCH_COLUMN" value="dd_name"/>
+            <where>
+                ID='021'
+            </where>
+        </update>
+        <update tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="SEARCH_COLUMN" value="dd_code"/>
+            <where>
+                ID='020'
+            </where>
+        </update>
+        <update tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="SEARCH_COLUMN" value="dd_catalog"/>
+            <where>
+                ID='018'
+            </where>
+        </update>
     </changeSet>
 </databaseChangeLog>
