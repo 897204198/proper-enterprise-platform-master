@@ -187,10 +187,6 @@ public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String>
 
     @Override
     public User updateForSelective(User user) {
-        if (null == user.getSuperuser()) {
-            UserEntity userEntity = (UserEntity) user;
-            userEntity.setSuperuser(false);
-        }
         return super.updateForSelective(user);
     }
 

@@ -52,6 +52,9 @@ public class UserServiceImpl implements UserService {
         if (null == user.getEnable()) {
             user.setEnable(true);
         }
+        if (null == user.getSuperuser()) {
+            user.setSuperuser(false);
+        }
         if (StringUtil.isNotEmpty(user.getId())) {
             User userOld = this.get(user.getId());
             if (null == userOld || !user.getPassword().equals(userOld.getPassword())) {
