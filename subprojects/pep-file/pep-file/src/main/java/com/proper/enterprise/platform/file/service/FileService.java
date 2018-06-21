@@ -10,11 +10,11 @@ import java.io.IOException;
 
 public interface FileService extends BaseJpaService<File, String> {
 
-    File save(String modelName, MultipartFile file, String fileDescription) throws IOException;
+    File save(MultipartFile file) throws IOException;
 
     boolean deleteByIds(String ids) throws IOException;
 
-    File update(String id, MultipartFile file, String fileDescription) throws IOException;
+    File update(String id, MultipartFile file) throws IOException;
 
     void download(String id, HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

@@ -11,19 +11,14 @@ public class FileVO extends BaseVO implements File {
     public FileVO(){}
 
     /**
+     * 文件唯一标识
+     */
+    private String fileId;
+
+    /**
      * 文件名称
      */
     private String fileName;
-
-    /**
-     * 文件描述
-     */
-    private String fileDescription;
-
-    /**
-     * 所属模块
-     */
-    private String fileModule;
 
     /**
      * 文件大小
@@ -47,26 +42,6 @@ public class FileVO extends BaseVO implements File {
     @Override
     public void setFileName(String fileName) {
         this.fileName = fileName;
-    }
-
-    @Override
-    public String getFileDescription() {
-        return fileDescription;
-    }
-
-    @Override
-    public void setFileDescription(String fileDescription) {
-        this.fileDescription = fileDescription;
-    }
-
-    @Override
-    public String getFileModule() {
-        return fileModule;
-    }
-
-    @Override
-    public void setFileModule(String fileModule) {
-        this.fileModule = fileModule;
     }
 
     @Override
@@ -98,4 +73,13 @@ public class FileVO extends BaseVO implements File {
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
+
+    public String getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
+    }
+
 }

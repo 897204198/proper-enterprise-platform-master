@@ -36,4 +36,8 @@
             <column name="FILE_TYPE" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
+    <changeSet id="2018-06-20-delcol-modelanddescription" author="zjl">
+      <dropColumn tableName="PEP_FILE" columnName="FILE_MODULE"/>
+        <dropColumn tableName="PEP_FILE" columnName="FILE_DESCRIPTION"/>
+    </changeSet>
 </databaseChangeLog>

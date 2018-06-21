@@ -9,14 +9,6 @@ public interface File extends IBase {
 
     void setFileName(String fileName);
 
-    String getFileDescription();
-
-    void setFileDescription(String fileDescription);
-
-    String getFileModule();
-
-    void setFileModule(String fileModule);
-
     Long getFileSize();
 
     void setFileSize(Long fileSize);

@@ -19,17 +19,6 @@ public class FileEntity extends BaseEntity implements File {
     private String fileName;
 
     /**
-     * 文件描述
-     */
-    private String fileDescription;
-
-    /**
-     * 所属模块
-     */
-    @Column(nullable = false, unique = true)
-    private String fileModule;
-
-    /**
      * 文件大小
      */
     private Long fileSize;
@@ -50,22 +39,6 @@ public class FileEntity extends BaseEntity implements File {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
-    }
-
-    public String getFileDescription() {
-        return fileDescription;
-    }
-
-    public void setFileDescription(String fileDescription) {
-        this.fileDescription = fileDescription;
-    }
-
-    public String getFileModule() {
-        return fileModule;
-    }
-
-    public void setFileModule(String fileModule) {
-        this.fileModule = fileModule;
     }
 
     public Long getFileSize() {

@@ -9,25 +9,16 @@ import com.proper.enterprise.platform.file.entity.FileEntity;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
 import com.proper.enterprise.platform.file.api.File;
 import com.proper.enterprise.platform.file.repository.FileRepository;
 import com.proper.enterprise.platform.file.service.FileService;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class FileServiceImpl extends JpaServiceSupport<File, FileRepository, String> implements FileService {
@@ -53,16 +44,13 @@ public class FileServiceImpl extends JpaServiceSupport<File, FileRepository, Str
     }
 
     @Override
-    public File save(String modelName, MultipartFile file, String fileDescription) throws IOException {
-        createFilePath(modelName);
-        File fileEntity = buildFileEntity(file, modelName, fileDescription, true);
+    public File save(MultipartFile file) throws IOException {
+        File fileEntity = buildFileEntity(file, true);
         validMaxSize(fileEntity);
-        validSameName(fileEntity);
         fileEntity = this.save(fileEntity);
         dsfService.saveFile(file.getInputStream(), fileEntity.getFilePath());
         return fileEntity;
     }
-
 
     @Override
     public boolean deleteByIds(String ids) throws IOException {
@@ -82,15 +70,12 @@ public class FileServiceImpl extends JpaServiceSupport<File, FileRepository, Str
     }
 
     @Override
-    public File update(String id, MultipartFile file, String fileDescription) throws IOException {
+    public File update(String id, MultipartFile file) throws IOException {
         File updateFile = this.findOne(id);
         if (null == updateFile) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.upload.put.notfind"));
         }
-        if (null != file) {
-            return handleUpdateFile(file, updateFile, fileDescription);
-        }
-        return handleOnlyUpdateDesc(updateFile, fileDescription);
+        return handleUpdateFile(file, updateFile);
     }
 
 
@@ -120,51 +105,24 @@ public class FileServiceImpl extends JpaServiceSupport<File, FileRepository, Str
         bufferedOutputStream.close();
     }
 
-    private File handleUpdateFile(MultipartFile file, File oldFile, String fileDescription) throws IOException {
-        if (StringUtil.isNull(fileDescription)) {
-            fileDescription = oldFile.getFileDescription();
-        }
-        File updateFile = buildFileEntity(file, oldFile.getFileModule(), fileDescription, false);
+    private File handleUpdateFile(MultipartFile file, File oldFile) throws IOException {
+        File updateFile = buildFileEntity(file, false);
         updateFile.setId(oldFile.getId());
-        updateFile.setFilePath(buildUpdateFilePath(oldFile, updateFile));
+        updateFile.setFilePath(oldFile.getFilePath());
         validMaxSize(updateFile);
-        if (!updateFile.getFileName().equals(oldFile.getFileName())) {
-            validSameName(updateFile);
-        }
-        String oldFilePath = oldFile.getFilePath();
-        if (updateFile.getFilePath().equals(oldFile.getFilePath())) {
-            updateFile = super.updateForSelective(updateFile);
-            dsfService.saveFile(file.getInputStream(), updateFile.getFilePath(), true);
-            return updateFile;
-        }
         updateFile = super.updateForSelective(updateFile);
-        dsfService.deleteFile(oldFilePath);
-        dsfService.saveFile(file.getInputStream(), updateFile.getFilePath());
+        dsfService.saveFile(file.getInputStream(), updateFile.getFilePath(), true);
         return updateFile;
     }
 
-    private File handleOnlyUpdateDesc(File updateFile, String fileDescription) {
-        if (StringUtil.isNotNull(fileDescription)) {
-            updateFile.setFileDescription(fileDescription);
-        }
-        return super.updateForSelective(updateFile);
-    }
-
-    private String buildUpdateFilePath(File oldFile, File updateFile) {
-        String oldFilePath = oldFile.getFilePath();
-        return oldFilePath.replace(oldFile.getFileName(), "") + updateFile.getFileName();
-    }
-
-    private File buildFileEntity(MultipartFile file, String modelName, String fileDescription, boolean buildPath) {
+    private File buildFileEntity(MultipartFile file, boolean buildPath) {
         File fileEntity = new FileEntity();
-        fileEntity.setFileDescription(fileDescription);
+        fileEntity.setFileType(getFileType(file.getOriginalFilename()));
         if (buildPath) {
-            fileEntity.setFilePath(createFilePath(modelName) + file.getOriginalFilename());
+            fileEntity.setFilePath(createFilePath() + UUID.randomUUID() + "." + fileEntity.getFileType());
         }
         fileEntity.setFileSize(file.getSize());
         fileEntity.setFileName(file.getOriginalFilename());
-        fileEntity.setFileType(getFileType(file.getOriginalFilename()));
-        fileEntity.setFileModule(modelName);
         return fileEntity;
     }
 
@@ -172,8 +130,8 @@ public class FileServiceImpl extends JpaServiceSupport<File, FileRepository, Str
         return fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
     }
 
-    private String createFilePath(String modelName) {
-        return rootPath + java.io.File.separator + modelName + java.io.File.separator + DateUtil.toDateString(new Date()) + java.io.File.separator;
+    private String createFilePath() {
+        return rootPath + java.io.File.separator + DateUtil.toDateString(new Date()) + java.io.File.separator;
     }
 
     private void validMaxSize(File file) {
@@ -182,16 +140,4 @@ public class FileServiceImpl extends JpaServiceSupport<File, FileRepository, Str
         }
     }
 
-    private void validSameName(File file) {
-        Specification<File> specification = new Specification<File>() {
-            @Override
-            public Predicate toPredicate(Root<File> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                return cb.and(cb.equal(root.get("filePath"), file.getFilePath()));
-            }
-        };
-        List<File> files = this.findAll(specification);
-        if (files.size() > 0) {
-            throw new ErrMsgException(I18NUtil.getMessage("dfs.upload.valid.path.duplicated"));
-        }
-    }
 }
