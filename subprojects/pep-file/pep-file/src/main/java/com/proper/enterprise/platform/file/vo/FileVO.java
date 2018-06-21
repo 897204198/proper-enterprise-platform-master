@@ -10,10 +10,6 @@ public class FileVO extends BaseVO implements File {
 
     public FileVO(){}
 
-    /**
-     * 文件唯一标识
-     */
-    private String fileId;
 
     /**
      * 文件名称
@@ -72,14 +68,6 @@ public class FileVO extends BaseVO implements File {
     @Override
     public void setFilePath(String filePath) {
         this.filePath = filePath;
-    }
-
-    public String getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
     }
 
 }

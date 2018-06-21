@@ -40,7 +40,7 @@ public class FileController extends BaseController {
         fileService.download(id, request, response);
     }
 
-    @GetMapping(path = "/{id}/metainfo")
+    @GetMapping(path = "/{id}/meta")
     public ResponseEntity<FileVO> metainfo(@PathVariable String id) {
         return responseOfGet(fileService.findOne(id), FileVO.class);
     }
