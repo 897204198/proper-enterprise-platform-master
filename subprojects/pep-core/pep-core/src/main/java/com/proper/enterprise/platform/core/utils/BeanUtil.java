@@ -6,8 +6,12 @@ import com.proper.enterprise.platform.core.convert.ViewConvertElement;
 import com.proper.enterprise.platform.core.convert.enums.ConvertType;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.FatalBeanException;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -70,6 +74,144 @@ public class BeanUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * copy source的属性值至具有相同属性的target
+     *
+     * @param source           source
+     * @param target           target
+     * @param ignoreProperties 需要忽略的属性
+     */
+    public static void copyProperties(Object source, Object target, String... ignoreProperties) {
+        Assert.notNull(source, "Source must not be null");
+        Assert.notNull(target, "Target must not be null");
+        Class<?> actualEditable = target.getClass();
+        PropertyDescriptor[] targetPds = BeanUtils.getPropertyDescriptors(actualEditable);
+        List<String> ignoreList = ignoreProperties != null ? Arrays.asList(ignoreProperties) : null;
+        for (PropertyDescriptor targetPd : targetPds) {
+            Method writeMethod = targetPd.getWriteMethod();
+            if (writeMethod != null && (ignoreList == null || !ignoreList.contains(targetPd.getName()))) {
+                PropertyDescriptor sourcePd = BeanUtils.getPropertyDescriptor(source.getClass(), targetPd.getName());
+                if (sourcePd != null) {
+                    Method readMethod = sourcePd.getReadMethod();
+                    if (readMethod != null
+                        && ClassUtils.isAssignable(writeMethod.getParameterTypes()[0], readMethod.getReturnType())) {
+                        try {
+                            if (!Modifier.isPublic(readMethod.getDeclaringClass().getModifiers())) {
+                                readMethod.setAccessible(true);
+                            }
+                            if (!Modifier.isPublic(writeMethod.getDeclaringClass().getModifiers())) {
+                                writeMethod.setAccessible(true);
+                            }
+                            Object value = readMethod.invoke(source);
+                            //处理集合
+                            if (Collection.class.isAssignableFrom(sourcePd.getPropertyType())) {
+                                copyCollection(value, source, sourcePd, target, targetPd, ignoreProperties);
+                                continue;
+                            }
+                            //处理类型不一致  多用于bean类型不一致但是bean之间有相同属性
+                            if (targetPd.getPropertyType() != sourcePd.getPropertyType()) {
+                                copyBean(value, target, sourcePd, targetPd, ignoreProperties);
+                                continue;
+                            }
+                            writeMethod.invoke(target, value);
+                        } catch (Throwable ex) {
+                            throw new FatalBeanException(
+                                "Could not copy property '" + targetPd.getName() + "' from source to target", ex);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 处理bean类型不一致的copy
+     *
+     * @param value            source值
+     * @param target           目标对象
+     * @param targetPd         targetPd
+     * @param ignoreProperties 忽略的属性
+     * @throws InvocationTargetException 对象封装异常
+     * @throws IllegalAccessException    编译异常
+     */
+    private static void copyBean(Object value,
+                                 Object target, PropertyDescriptor sourcePd, PropertyDescriptor targetPd,
+                                 String... ignoreProperties) throws InvocationTargetException, IllegalAccessException {
+        Method writeMethod = targetPd.getWriteMethod();
+        if (null == value) {
+            return;
+        }
+        Object copy = BeanUtil.newInstance(targetPd.getPropertyType());
+        copyProperties(value, copy, handleIgnoreProperties(sourcePd.getName(), ignoreProperties));
+        writeMethod.invoke(target, copy);
+    }
+
+    private static String[] handleIgnoreProperties(String sourceFiledName, String[] ignoreProperties) {
+        if (ignoreProperties == null || ignoreProperties.length == 0) {
+            return null;
+        }
+        List<String> nextIgnoreProperties = new ArrayList<>();
+        for (String ignoreProperty : ignoreProperties) {
+            if (ignoreProperty.startsWith(sourceFiledName + ".")) {
+                nextIgnoreProperties.add(ignoreProperty.replaceFirst(sourceFiledName + "\\.", ""));
+            }
+        }
+        if (0 == nextIgnoreProperties.size()) {
+            return null;
+        }
+        return nextIgnoreProperties.toArray(new String[0]);
+    }
+
+    /**
+     * copy集合
+     *
+     * @param value            source集合值
+     * @param source           source类型
+     * @param sourcePd         sourcePd
+     * @param target           target类型
+     * @param targetPd         targetPd
+     * @param ignoreProperties 忽略的属性
+     * @throws InvocationTargetException 对象封装异常
+     * @throws IllegalAccessException    编译异常
+     */
+    private static void copyCollection(Object value, Object source,
+                                       PropertyDescriptor sourcePd, Object target,
+                                       PropertyDescriptor targetPd,
+                                       String... ignoreProperties) throws InvocationTargetException, IllegalAccessException {
+        Class sourceGenericityType = BeanUtil.getCollectionGenericityType(source.getClass(), sourcePd.getName());
+        Class targetGenericityType = BeanUtil.getCollectionGenericityType(target.getClass(), targetPd.getName());
+        Method writeMethod = targetPd.getWriteMethod();
+        if (null == value || sourceGenericityType == targetGenericityType) {
+            writeMethod.invoke(target, value);
+            return;
+        }
+        value = convertCollection((Collection) value, targetGenericityType, targetPd, handleIgnoreProperties(sourcePd.getName(), ignoreProperties));
+        writeMethod.invoke(target, value);
+    }
+
+    private static Collection convertCollection(Collection sources,
+                                                Class targetGenericityType,
+                                                PropertyDescriptor targetPd, String... ignoreProperties) {
+        if (CollectionUtil.isEmpty(sources)) {
+            return null;
+        }
+        Collection targets;
+        //特殊处理集合 目前支持Set,List的copy
+        if (Set.class.isAssignableFrom(targetPd.getPropertyType())) {
+            targets = new HashSet();
+        } else if (List.class.isAssignableFrom(targetPd.getPropertyType())) {
+            targets = new ArrayList();
+        } else {
+            return null;
+        }
+        for (Object source : sources) {
+            Object target = BeanUtil.newInstance(targetGenericityType);
+            copyProperties(source, target, ignoreProperties);
+            targets.add(target);
+        }
+        return targets;
     }
 
     public static <T, S> T convertToDO(S source, Class<T> classType) {
@@ -140,6 +282,17 @@ public class BeanUtil {
         ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
         Type type = parameterizedType.getActualTypeArguments()[0];
         return (Class) type;
+    }
+
+    /**
+     * 获取类集合属性的泛型的具体类型
+     *
+     * @param cls       目标类
+     * @param fieldName 属性名称
+     * @return 泛型的具体类型
+     */
+    public static Class getCollectionGenericityType(Class cls, String fieldName) {
+        return BeanUtil.getCollectionActualType(Objects.requireNonNull(BeanUtil.getField(cls, fieldName)));
     }
 
     /**
