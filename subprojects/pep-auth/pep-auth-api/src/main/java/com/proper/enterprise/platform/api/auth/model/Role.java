@@ -117,6 +117,10 @@ public interface Role extends IBase {
      */
     void removeResources(Collection<? extends Resource> resources);
 
+    /**
+     * 获取上级角色id
+     * @return 上级角色id
+     */
     String getParentId();
 
 }

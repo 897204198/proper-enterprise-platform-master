@@ -2,9 +2,9 @@ package com.proper.enterprise.platform.core.jpa.service.impl;
 
 import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
 import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
-import com.proper.enterprise.platform.core.service.impl.ServiceSupport;
+import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
+import com.proper.enterprise.platform.core.service.impl.AbstractServiceSupport;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -22,9 +22,8 @@ import java.util.List;
  * @param <R>   repository泛型
  * @param <IDT> ID泛型
  */
-public abstract class JpaServiceSupport<T extends IBase, R extends BaseJpaRepository, IDT extends Serializable>
-    extends ServiceSupport<T, R, IDT> implements BaseJpaService<T, IDT> {
-
+public abstract class AbstractJpaServiceSupport<T extends IBase, R extends BaseJpaRepository, IDT extends Serializable>
+    extends AbstractServiceSupport<T, R, IDT> implements BaseJpaService<T, IDT> {
 
     @Override
     @SuppressWarnings("unchecked")

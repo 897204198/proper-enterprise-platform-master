@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.constants;
 
-public final class AVbackConstants {
+public final class AvBackConstants {
 
-    private AVbackConstants() {
+    private AvBackConstants() {
     }
 
     public static final String CREATE_TIME = "CT";

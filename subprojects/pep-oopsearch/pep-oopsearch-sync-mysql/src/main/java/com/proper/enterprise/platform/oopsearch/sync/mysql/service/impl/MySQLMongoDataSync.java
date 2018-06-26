@@ -20,8 +20,9 @@ public class MySQLMongoDataSync extends AbstractMongoDataSyncORM {
     public List<String> getPrimaryKeys(String tableName) {
         String url = databaseUrl;
         List<String> primaryKeys = new ArrayList<>();
+        String jdbcType = "jdbc:mysql:";
         // 确保使用的是mysql数据源，避免数据源错误导致执行sql异常
-        if (url.toLowerCase().contains("jdbc:mysql:")) {
+        if (url.toLowerCase().contains(jdbcType)) {
             String sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = '"
                 + tableName + "' AND CONSTRAINT_NAME = 'PRIMARY' AND CONSTRAINT_SCHEMA = '"
                 + url.substring(url.lastIndexOf("/") + 1) + "'";

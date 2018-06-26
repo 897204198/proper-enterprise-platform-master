@@ -16,7 +16,9 @@ import java.util.List;
 @Service
 public class SingleSync {
 
-    // 操作mongo的mongoTemplate对象
+    /**
+     * 操作mongo的mongoTemplate对象
+     */
     @Autowired
     private MongoTemplate mongoTemplate;
 

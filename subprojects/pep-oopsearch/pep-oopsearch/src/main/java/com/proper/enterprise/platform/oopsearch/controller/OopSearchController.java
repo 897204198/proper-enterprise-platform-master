@@ -113,7 +113,7 @@ public class OopSearchController extends BaseController {
     }
 
     private String handleRestUrl(String url, String restPath, HttpServletResponse response) throws HttpRequestMethodNotSupportedException {
-        Map<String, String> restPathMap = new HashMap<>();
+        Map<String, String> restPathMap = new HashMap<>(16);
         if (StringUtil.isNotEmpty(restPath)) {
             try {
                 restPathMap = JSONUtil.parse(URLDecoder.decode(restPath, PEPConstants.DEFAULT_CHARSET.toString()), Map.class);

@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.core.jpa.curd.b.vo.BVO;
 import com.proper.enterprise.platform.core.jpa.curd.c.api.C;
 import com.proper.enterprise.platform.core.jpa.curd.c.vo.CVO;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 
 import java.util.ArrayList;
@@ -19,6 +20,12 @@ import java.util.List;
 
 @POJORelevance(relevanceDO = AEntity.class)
 public class AVO extends BaseVO implements A {
+
+    public String toString() {
+        String pepAVOStr = "";
+        pepAVOStr = JSONUtil.toJSONIgnoreException(this);
+        return pepAVOStr;
+    }
 
     public AVO() {
         super.setEnable(true);

@@ -8,22 +8,34 @@ import java.io.Serializable;
  * */
 public class SearchColumnModel implements Serializable {
 
-    // 字段
+    /**
+     * 字段
+     */
     private String column;
 
-    // 表名
+    /**
+     * 表名
+     */
     private String table;
 
-    // 字段类型
+    /**
+     * 字段类型
+     */
     private String type;
 
-    // 字段描述
+    /**
+     * 字段描述
+     */
     private String descColumn;
 
-    // 字段别名
+    /**
+     * 字段别名
+     */
     private String columnAlias;
 
-    // 请求url
+    /**
+     * 请求url
+     */
     private String url;
 
 
@@ -91,18 +103,34 @@ public class SearchColumnModel implements Serializable {
         this.descColumn = descColumn;
     }
 
+    /**
+     * 获取字段别名
+     * @return 字段别名
+     * */
     public String getColumnAlias() {
         return columnAlias;
     }
 
+    /**
+     * 赋值字段别名
+     * @param  columnAlias 字段别名
+     * */
     public void setColumnAlias(String columnAlias) {
         this.columnAlias = columnAlias;
     }
 
+    /**
+     * 获取访问路径
+     * @return 访问路径
+     * */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * 赋值访问路径
+     * @param  url 访问路径
+     * */
     public void setUrl(String url) {
         this.url = url;
     }

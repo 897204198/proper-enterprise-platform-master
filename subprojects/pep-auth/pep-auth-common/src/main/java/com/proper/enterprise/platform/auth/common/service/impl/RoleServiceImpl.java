@@ -363,7 +363,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Map<String, Object> getUserGroupRolesByUserId(String userId) {
-        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>(16);
         User user = userService.get(userId);
         Collection groups = user.getUserGroups();
         Iterator iterator = groups.iterator();

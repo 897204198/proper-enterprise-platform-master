@@ -357,7 +357,6 @@ public class BinlogExecutor {
             LOGGER.error("search config is null");
             return;
         }
-        // Map<String, Object> searchConfigBeans = PEPApplicationContext.getApplicationContext().getBeansWithAnnotation(SearchConfig.class);
         for (Map.Entry<String, Object> entry : searchConfigBeans.entrySet()) {
             AbstractSearchConfigs tempSearchConfig = (AbstractSearchConfigs) entry.getValue();
             List<String> tableNameList = tempSearchConfig.getTableNameList();

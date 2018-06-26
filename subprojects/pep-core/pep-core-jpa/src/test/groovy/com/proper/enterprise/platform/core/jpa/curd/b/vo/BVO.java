@@ -8,11 +8,18 @@ import com.proper.enterprise.platform.core.jpa.curd.b.api.B;
 import com.proper.enterprise.platform.core.jpa.curd.b.entity.BEntity;
 import com.proper.enterprise.platform.core.jpa.curd.c.vo.CVO;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 
 import java.util.List;
 
 @POJORelevance(relevanceDO = BEntity.class)
 public class BVO extends BaseVO implements B {
+
+    public String toString() {
+        String pepBVOStr = "";
+        pepBVOStr = JSONUtil.toJSONIgnoreException(this);
+        return pepBVOStr;
+    }
 
     public BVO() {
         super.setEnable(true);

@@ -188,6 +188,8 @@ libraries.neo4j_driver = 'org.neo4j.driver:neo4j-java-driver:1.5.0'
 libraries.okhttp = 'com.squareup.okhttp3:okhttp:3.4.1'
 libraries.oracle_driver = 'com.oracle:ojdbc6:1.0'
 
+libraries.p3c_pmd = 'com.alibaba.p3c:p3c-pmd:1.3.5'
+
 libraries.pinyin4j = 'com.belerweb:pinyin4j:2.5.0'
 
 //libraries.poi = 'org.apache.poi:poi:3.7'

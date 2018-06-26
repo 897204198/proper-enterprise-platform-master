@@ -80,6 +80,7 @@ public interface UserGroupService {
      * 已经被引用（使用）的用户组不能删除
      *
      * @param group 用户组
+     * @return true or false
      */
     boolean delete(UserGroup group);
 
@@ -87,6 +88,7 @@ public interface UserGroupService {
      * 删除多条用户组数据
      *
      * @param ids 以 , 分隔的待删除用户组ID列表
+     * @return true or false
      */
     boolean deleteByIds(String ids);
 
@@ -120,6 +122,8 @@ public interface UserGroupService {
      * 获取指定用户组角色集合
      *
      * @param groupId 用户组ID
+     * @param userGroupEnable 是否可用
+     * @param roleEnable 是否可用
      * @return 角色集合
      */
     Collection<? extends Role> getGroupRoles(String groupId, EnableEnum userGroupEnable, EnableEnum roleEnable);
@@ -173,6 +177,8 @@ public interface UserGroupService {
      * 获取指定用户组的用户集合
      *
      * @param groupId 用户组ID
+     * @param userGroupEnable 是否可用
+     * @param userEnable 是否可用
      * @return 用户集合
      */
     Collection<? extends User> getGroupUsers(String groupId, EnableEnum userGroupEnable, EnableEnum userEnable);
@@ -181,6 +187,7 @@ public interface UserGroupService {
      * 获取指定用户组集合的资源集合
      *
      * @param userGroups 用户组集合
+     * @param resourceEnable 是否可用
      * @return 用户集合
      */
     Collection<? extends Resource> getGroupResources(Collection<UserGroup> userGroups, EnableEnum resourceEnable);
@@ -189,6 +196,7 @@ public interface UserGroupService {
      * 获取指定用户组的资源集合
      *
      * @param userGroup 用户组
+     * @param resourceEnable 是否可用
      * @return 用户集合
      */
     Collection<? extends Resource> getGroupResources(UserGroup userGroup, EnableEnum resourceEnable);

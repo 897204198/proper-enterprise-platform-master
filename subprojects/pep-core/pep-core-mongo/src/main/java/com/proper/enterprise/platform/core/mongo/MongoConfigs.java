@@ -39,6 +39,10 @@ public class MongoConfigs extends AbstractMongoConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoConfigs.class);
 
+    private static final String COMMA =  ",";
+
+    private static final String MATCH =  "^.+:\\d+(,.+:\\d+)*";
+
     @Value("${mongodb.host}")
     private String host;
     @Value("${mongodb.port}")
@@ -74,9 +78,9 @@ public class MongoConfigs extends AbstractMongoConfiguration {
             credentialList = singletonList(MongoCredential.createCredential(username, "admin", password.toCharArray()));
         }
         List<ServerAddress> serverAddresses = new ArrayList<>();
-        if (StringUtil.isNotNull(replicaSet) && replicaSet.matches("^.+:\\d+(,.+:\\d+)*")) {
+        if (StringUtil.isNotNull(replicaSet) && replicaSet.matches(MATCH)) {
             String[] address;
-            for (String pair : replicaSet.split(",")) {
+            for (String pair : replicaSet.split(COMMA)) {
                 address = pair.split(":");
                 serverAddresses.add(new ServerAddress(address[0], Integer.parseInt(address[1])));
             }

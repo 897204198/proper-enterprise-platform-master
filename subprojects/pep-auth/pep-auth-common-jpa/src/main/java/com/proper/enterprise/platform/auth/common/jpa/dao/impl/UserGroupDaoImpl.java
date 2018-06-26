@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserGroupRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class UserGroupDaoImpl extends JpaServiceSupport<UserGroup, UserGroupRepository, String> implements UserGroupDao {
+public class UserGroupDaoImpl extends AbstractJpaServiceSupport<UserGroup, UserGroupRepository, String> implements UserGroupDao {
 
     @Autowired
     private UserGroupRepository repository;

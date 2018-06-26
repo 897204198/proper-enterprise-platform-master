@@ -11,10 +11,14 @@ public class JWTHeader implements Serializable {
 
     private static final long serialVersionUID = PEPConstants.VERSION;
 
-    // User ID
+    /**
+     * User ID
+     */
     private String id;
 
-    // User name
+    /**
+     * User name
+     */
     private String name;
 
     public JWTHeader() { }

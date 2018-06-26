@@ -14,6 +14,10 @@ public abstract class AbstractConcreteDataDic {
         return dataDicService.get(getCatalog(), code);
     }
 
+    /**
+     * 获取Catalog
+     * @return Catalog
+     */
     protected abstract String getCatalog();
 
     public Collection<? extends DataDic> getAll() {

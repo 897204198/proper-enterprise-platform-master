@@ -33,6 +33,7 @@ public class AliPayResServiceImpl implements AliPayResService {
      * @param res 对象
      * @throws Exception 参数获取异常
      */
+    @Override
     public Object convertMap2AliPayRes(String strRes, String responseKey, Object res) throws Exception {
         LOGGER.debug("strRes:{}", strRes);
         Map<String, Object> queryMap = JSONUtil.parse(strRes, Map.class);
@@ -46,7 +47,7 @@ public class AliPayResServiceImpl implements AliPayResService {
         }
         Field[] fields = res.getClass().getDeclaredFields();
         for (Field field : fields) {
-            if (field.getName().equals("serialVersionUID") || field.getName().equals("$jacocoData")) {
+            if ("serialVersionUID".equals(field.getName()) || "$jacocoData".equals(field.getName())) {
                 continue;
             }
             PropertyDescriptor pd = new PropertyDescriptor(field.getName(), res.getClass());
@@ -64,6 +65,7 @@ public class AliPayResServiceImpl implements AliPayResService {
      * @return 服务器ATN结果 验证结果集： invalid命令参数不对 出现这个错误，请检测返回处理中partner和key是否为空 true
      *         返回正确信息 false 请检查防火墙或者是服务器阻止端口问题以及验证时间是否超过一分钟
      */
+    @Override
     public String checkUrl(String urlvalue) throws IOException {
         return new String(HttpClient.get(urlvalue).getBody(), PEPConstants.DEFAULT_CHARSET);
     }

@@ -70,4 +70,13 @@ public class FileVO extends BaseVO implements File {
         this.filePath = filePath;
     }
 
+    @Override
+    public String toString() {
+        return "FileVO{"
+            + "fileName='" + fileName + '\''
+            + ", fileSize=" + fileSize
+            + ", fileType='" + fileType + '\''
+            + ", filePath='" + filePath + '\''
+            + '}';
+    }
 }

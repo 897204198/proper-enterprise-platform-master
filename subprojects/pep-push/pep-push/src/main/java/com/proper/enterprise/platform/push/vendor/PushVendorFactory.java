@@ -61,7 +61,7 @@ public class PushVendorFactory {
         return service;
     }
 
-    /*
+    /**
      * 生成发送推送对应的缓存的key，用于mapSendConnections
      */
     public String getKey(String appkey, PushDeviceType devicetype, PushMode pushMode) {

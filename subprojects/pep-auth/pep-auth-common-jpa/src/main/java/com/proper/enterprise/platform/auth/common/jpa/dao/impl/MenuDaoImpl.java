@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -21,7 +21,9 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String> implements MenuDao {
+public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository, String> implements MenuDao {
+
+    private static final String SUPER_PARENTID = "-1";
 
     @Autowired
     private MenuRepository repository;
@@ -95,9 +97,9 @@ public class MenuDaoImpl extends JpaServiceSupport<Menu, MenuRepository, String>
                 if (null != enable && EnableEnum.ALL != enable) {
                     predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
                 }
-                if (StringUtil.isNotNull(parentId) && !"-1".equals(parentId)) {
+                if (StringUtil.isNotNull(parentId) && !SUPER_PARENTID.equals(parentId)) {
                     predicates.add(cb.equal(root.get("parent").get("id"), parentId));
-                } else if ("-1".equals(parentId)) {
+                } else if (SUPER_PARENTID.equals(parentId)) {
                     predicates.add(cb.isNull(root.get("parent").get("id")));
                 }
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));

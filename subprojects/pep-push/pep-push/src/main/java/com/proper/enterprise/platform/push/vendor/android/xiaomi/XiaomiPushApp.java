@@ -64,26 +64,30 @@ public class XiaomiPushApp extends BasePushApp {
         boolean result = false;
 
         Message.Builder msgBuilder = new Message.Builder().title(msg.getMtitle()).description(msg.getMcontent())
-            .restrictedPackageName(theAppPackage).notifyType(1) // 使用默认提示音提示
+            .restrictedPackageName(theAppPackage)
+            // 使用默认提示音提示
+            .notifyType(1)
             .notifyId(notifyId);
 
         if (isCmdMessage(msg)) {
-            msgBuilder.passThrough(1); // 消息使用透传消息
+            // 消息使用透传消息
+            msgBuilder.passThrough(1);
         } else {
             Integer badgeNumber = getBadgeNumber(msg);
             // 通知栏消息且有应用角标
             if (badgeNumber != null) {
                 Map<String, Object> newCustomMap = new HashMap<>(msg.getMcustomDatasMap());
-                newCustomMap.put("_proper_mpage", "badge"); // 系统消息类型：设置角标
+                // 系统消息类型：设置角标
+                newCustomMap.put("_proper_mpage", "badge");
                 // 需要手机端自己生成一个notification通知
                 //因为在小米手机的设置角标接口里，角标接口是与通知栏消息绑定在一起的，需要程序自己发送notification,并带上角标数
                 newCustomMap.put("_proper_badge_type", "notification");
-                if (newCustomMap.containsKey("uri")) {
-                    newCustomMap.remove("uri");
-                }
-                msg.setMcustomDatasMap(newCustomMap); // 更新mcustoms
+                newCustomMap.remove("uri");
+                // 更新mcustoms
+                msg.setMcustomDatasMap(newCustomMap);
             } else {
-                msgBuilder.passThrough(0); // 消息使用通知栏
+                // 消息使用通知栏
+                msgBuilder.passThrough(0);
             }
         }
 
@@ -101,7 +105,8 @@ public class XiaomiPushApp extends BasePushApp {
                 result = doSendMsg(msg, toMsg);
             } catch (Exception ex) {
                 LOGGER.error("error xiaomi push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), ex);
-                result = false; // 第二次发送失败才真的发送失败
+                // 第二次发送失败才真的发送失败
+                result = false;
             }
         }
         return result;
@@ -120,11 +125,8 @@ public class XiaomiPushApp extends BasePushApp {
                 result = true;
             } else {
                 LOGGER.info("error xiaomi push log step6 content:{},msg{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), rsp);
-                // 先不设设备的状态无效，这里有判断失误的情况。
-                // if(rsp.getErrorCode().getValue()==20301){
-                // pushService.onPushTokenInvalid(msg);
-                // }
-                result = false; // 发送消息失败
+                // 发送消息失败
+                result = false;
             }
             LOGGER.info("Response：{}", rsp);
             msg.setMresponse(JSONUtil.toJSON(rsp));

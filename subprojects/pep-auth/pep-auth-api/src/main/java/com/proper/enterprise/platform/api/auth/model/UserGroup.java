@@ -91,6 +91,7 @@ public interface UserGroup extends IBase {
 
     /**
      * 从组中移除全部用户
+     * @param users 用户集合
      */
     void removeAllUsers(Collection<? extends User> users);
 

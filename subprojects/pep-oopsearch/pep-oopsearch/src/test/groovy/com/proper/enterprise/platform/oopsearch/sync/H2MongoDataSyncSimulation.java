@@ -21,8 +21,9 @@ public class H2MongoDataSyncSimulation extends AbstractMongoDataSyncORM {
     public List<String> getPrimaryKeys(String tableName) {
         String url = databaseUrl;
         List<String> primaryKeys = new ArrayList<>();
+        String jdbcType = "jdbc:h2:";
         // 确保使用的是mysql数据源，避免数据源错误导致执行sql异常
-        if (url.toLowerCase().contains("jdbc:h2:")) {
+        if (url.toLowerCase().contains(jdbcType)) {
             String sql = "SELECT COLUMN_LIST FROM INFORMATION_SCHEMA.CONSTRAINTS WHERE TABLE_NAME = '"
                 + tableName.toUpperCase() + "' AND CONSTRAINT_TYPE = 'PRIMARY KEY'";
             List<Object> resultList = null;

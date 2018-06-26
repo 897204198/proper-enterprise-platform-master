@@ -1,9 +1,17 @@
 package com.proper.enterprise.platform.core.annotation.transform.pojo.domain;
 
+import com.proper.enterprise.platform.core.utils.JSONUtil;
+
 import java.util.List;
 
 
 public class ADO extends BaseEntity {
+
+    public String toString() {
+        String pepADOStr = "";
+        pepADOStr = JSONUtil.toJSONIgnoreException(this);
+        return pepADOStr;
+    }
 
     public ADO() {
     }

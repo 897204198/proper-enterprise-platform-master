@@ -16,6 +16,8 @@ import java.util.*;
 @Service("mongoSyncMongoNotice")
 public class NoticeServiceImpl implements Notice {
 
+    private static final String SET_KEY = "$set";
+
     @Autowired
     private SyncCacheService mongoSyncService;
 
@@ -70,15 +72,15 @@ public class NoticeServiceImpl implements Notice {
 
     private Set<Map.Entry<String, Object>> getInsertCols(DBObject op) {
         Document colDoc = Document.parse(op.get("o").toString());
-        if (null != colDoc.get("$set")) {
-            return (Set<Map.Entry<String, Object>>) colDoc.get("$set");
+        if (null != colDoc.get(SET_KEY)) {
+            return (Set<Map.Entry<String, Object>>) colDoc.get(SET_KEY);
         }
         return colDoc.entrySet();
     }
 
     private Document getUpdateCols(DBObject op) {
         Document colDoc = Document.parse(op.get("o").toString());
-        return (Document) colDoc.get("$set");
+        return (Document) colDoc.get(SET_KEY);
     }
 
     private String getCollectName(DBObject op) {
@@ -87,9 +89,10 @@ public class NoticeServiceImpl implements Notice {
     }
 
     private String getObjectId(DBObject op) {
+        String o2Key = "o2";
         //update handle
-        if (null != op.get("o2")) {
-            return Document.parse(op.get("o2").toString()).getObjectId("_id").toString();
+        if (null != op.get(o2Key)) {
+            return Document.parse(op.get(o2Key).toString()).getObjectId("_id").toString();
         }
         return Document.parse(op.get("o").toString()).getObjectId("_id").toString();
     }

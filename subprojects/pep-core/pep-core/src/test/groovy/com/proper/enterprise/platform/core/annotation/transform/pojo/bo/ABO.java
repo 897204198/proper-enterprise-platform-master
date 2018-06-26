@@ -1,11 +1,17 @@
 package com.proper.enterprise.platform.core.annotation.transform.pojo.bo;
 
 import com.proper.enterprise.platform.core.annotation.transform.pojo.domain.BaseEntity;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 
 import java.util.List;
 
-
 public class ABO extends BaseEntity {
+
+    public String toString() {
+        String pepABOStr = "";
+        pepABOStr = JSONUtil.toJSONIgnoreException(this);
+        return pepABOStr;
+    }
 
     private Integer test;
 

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
-import com.proper.enterprise.platform.api.service.IMongoDBService;
-import com.proper.enterprise.platform.constants.AVbackConstants;
+import com.proper.enterprise.platform.api.service.MongoDataBaseService;
+import com.proper.enterprise.platform.constants.AvBackConstants;
 import com.proper.enterprise.platform.core.security.util.SecurityUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import org.bson.Document;
@@ -29,8 +29,18 @@ public class SampleController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SampleController.class);
 
+    private static final String METHOD_DELETE = "DELETE";
+
+    private static final String METHOD_PUT = "PUT";
+
+    private static final String METHOD_GET = "GET";
+
+    private static final String FILE_NAME_WHERE = "where";
+
+    private static final String FILE_NAME_COUNT = "count";
+
     @Autowired
-    private IMongoDBService mongoDBService;
+    private MongoDataBaseService mongoDBService;
 
     public SampleController() {
         LOGGER.info("------------load SampleController-----------------");
@@ -39,7 +49,11 @@ public class SampleController {
 
     @RequestMapping(value = "/classes/{collection}", method = RequestMethod.POST)
     @ResponseBody
-    // TODO RESTFul 响应处理 response body 外还要有不同的响应码表示状态，参考 BaseController 和 UsersController
+
+    /**
+     * TODO
+     * RESTFul 响应处理 response body 外还要有不同的响应码表示状态，参考 BaseController 和 UsersController
+     */
     Map<String, Object> createOrQuery(@PathVariable String collection, @RequestBody String objectStr,
                                       HttpServletRequest request, HttpServletResponse res) {
         String url = request.getRequestURI();
@@ -60,11 +74,11 @@ public class SampleController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(objectStr);
-            if (innerMethod(root, "DELETE")) {
+            if (innerMethod(root, METHOD_DELETE)) {
                 return doDelete(collection, objectId, url);
-            } else if (innerMethod(root, "PUT")) {
+            } else if (innerMethod(root, METHOD_PUT)) {
                 return doPut(root, collection, objectId, url);
-            } else if (root.has("where") && innerMethod(root, "GET")) {
+            } else if (root.has(FILE_NAME_WHERE) && innerMethod(root, METHOD_GET)) {
                 return doQuery(root, collection, url);
             } else {
                 return doCreate(root, collection);
@@ -83,38 +97,38 @@ public class SampleController {
     private Map<String, Object> doDelete(String collection, String objectIds, String url) throws Exception {
 
         mongoDBService.delete(collection, objectIds);
-        return new HashMap<String, Object>();
+        return new HashMap<String, Object>(3);
 
     }
 
     private Map<String, Object> doPut(JsonNode root, String collection, String objectId, String url) throws Exception {
         // TODO delete 返回个空 map 能说通，put 也返回空 map？
         ObjectNode node = root.deepCopy();
-        node.put(AVbackConstants.LAST_MODIFY_TIME, DateUtil.getTimestamp());
-        node.put(AVbackConstants.LAST_MODIFY_USER_ID, SecurityUtil.getCurrentUserId());
+        node.put(AvBackConstants.LAST_MODIFY_TIME, DateUtil.getTimestamp());
+        node.put(AvBackConstants.LAST_MODIFY_USER_ID, SecurityUtil.getCurrentUserId());
         mongoDBService.updateById(node, collection, objectId);
-        return new HashMap<String, Object>();
+        return new HashMap<String, Object>(5);
     }
 
     private Map<String, Object> doCreate(JsonNode root, String collection) throws Exception {
         ObjectNode node = root.deepCopy();
-        node.put(AVbackConstants.CREATE_TIME, DateUtil.getTimestamp());
-        node.put(AVbackConstants.LAST_MODIFY_TIME, DateUtil.getTimestamp());
-        node.put(AVbackConstants.CREATE_USER_ID, SecurityUtil.getCurrentUserId());
-        node.put(AVbackConstants.LAST_MODIFY_USER_ID, SecurityUtil.getCurrentUserId());
+        node.put(AvBackConstants.CREATE_TIME, DateUtil.getTimestamp());
+        node.put(AvBackConstants.LAST_MODIFY_TIME, DateUtil.getTimestamp());
+        node.put(AvBackConstants.CREATE_USER_ID, SecurityUtil.getCurrentUserId());
+        node.put(AvBackConstants.LAST_MODIFY_USER_ID, SecurityUtil.getCurrentUserId());
 
         Document doc = mongoDBService.insertOne(node, collection);
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<String, Object>(3);
         result.put("objectId", doc.getObjectId("_id").toHexString());
         result.put("createdAt", ISO8601Utils.format(new Date(), true));
         return result;
     }
 
     private Map<String, Object> doQuery(JsonNode root, String collection, String url) throws Exception {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<String, Object>(3);
         if (needCount(root)) {
             long count = mongoDBService.count(root, collection);
-            result.put("count", count);
+            result.put(FILE_NAME_COUNT, count);
             return result;
         }
         List<Document> docs = mongoDBService.query(root, collection);
@@ -123,7 +137,7 @@ public class SampleController {
     }
 
     private boolean needCount(JsonNode root) {
-        if (root.has("count")) {
+        if (root.has(FILE_NAME_COUNT)) {
             return true;
         }
         return false;

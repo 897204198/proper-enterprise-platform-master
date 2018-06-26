@@ -45,7 +45,8 @@ public class BinlogMonitor {
     @Scheduled(fixedDelay = 1000L)
     public void syncMysqlBinlog() {
         String url = databaseUrl.toLowerCase();
-        if (!url.contains("mysql")) {
+        String mysqlUrlKey = "mysql";
+        if (!url.contains(mysqlUrlKey)) {
             return;
         }
         String[] temp = (url.substring(url.indexOf("//"), url.lastIndexOf("/")).substring(2)).split(":");

@@ -119,7 +119,7 @@ public class ProperPayController extends BaseController {
         properInfo.setTotalFee(totalFee);
         properRepo.save(properInfo);
 
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>(3);
         params.put("orderNo", orderNo);
         params.put("tradeNo", properInfo.getTradeNo());
         params.put("notifyTime", properInfo.getNotifyTime());
@@ -127,7 +127,7 @@ public class ProperPayController extends BaseController {
         NoticeService noticeService = payFactory.newNoticeService("proper");
         noticeService.saveNoticeProcessAsync(params);
 
-        Map<String, Object> res = new HashMap<>();
+        Map<String, Object> res = new HashMap<>(1);
         res.put("resultCode", "SUCCESS");
         LOGGER.debug("-----------Ali async notice--------end------------");
         return responseOfPost(res);

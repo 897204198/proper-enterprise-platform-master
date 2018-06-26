@@ -184,9 +184,8 @@ public class EhCacheRegionFactory extends AbstractEhcacheRegionFactory {
             ttl = entry.getValue().ttl() / 1000;
             config.setTimeToIdleSeconds(tti);
             config.setTimeToLiveSeconds(ttl);
-            config.setCopyOnWrite(true);
             // 不能将 copyOnRead 设置为 true，否则会影响缓存的 TTI，详见 ExpireTest#testTTI
-            //config.setCopyOnRead(true);
+            config.setCopyOnWrite(true);
             LOGGER.debug("Load {} with {}s ttl and {}s max idle time.", cacheName, ttl, tti);
             configuration.addCache(config);
         }

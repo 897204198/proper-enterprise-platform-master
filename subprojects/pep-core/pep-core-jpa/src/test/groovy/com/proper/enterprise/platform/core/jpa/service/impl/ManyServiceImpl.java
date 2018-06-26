@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ManyServiceImpl extends JpaServiceSupport<ManyEntity, ManyRepository, String> implements ManyService {
+public class ManyServiceImpl extends AbstractJpaServiceSupport<ManyEntity, ManyRepository, String> implements ManyService {
 
     @Autowired
     private ManyRepository manyRepository;

@@ -1,10 +1,18 @@
 package com.proper.enterprise.platform.core.annotation.transform.pojo.bo;
 
 import com.proper.enterprise.platform.core.annotation.transform.pojo.domain.BaseEntity;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class BBO extends BaseEntity {
+
+    public String toString() {
+        String pepBBOStr = "";
+        pepBBOStr = JSONUtil.toJSONIgnoreException(this);
+        return pepBBOStr;
+    }
 
     private Integer test;
 

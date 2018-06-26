@@ -39,83 +39,113 @@ public class CommonPushClientRequestServiceImpl implements CommonPushClientReque
             throw new PushException("appkey:" + appkey + " is not valid!");
         }
         if (StringUtil.isNotEmpty(userid)) {
-            PushUserEntity user = userRepo.findByAppkeyAndUserid(appkey, userid);
-            if (user == null) {
-                user = new PushUserEntity();
-                user.setAppkey(appkey);
-                user.setOtherInfo(userOtherInfo);
-                user.setUserid(userid);
-                userRepo.save(user);
-            } else {
-                //更新用户信息
-                boolean needSave = false;
-                if (StringUtil.isNotEmpty(userOtherInfo)) {
-                    if (!StringUtil.equals(user.getOtherInfo(), userOtherInfo)) {
-                        user.setOtherInfo(userOtherInfo);
-                        needSave = true;
-                    }
-                }
-                if (needSave) {
-                    userRepo.save(user);
-                }
-            }
-            // 如果解绑其它设备
-            if (unbindOtherDevice) {
-                List<PushDeviceEntity> list = deviceRepo.findByAppkeyAndUserid(appkey, userid);
-                if (CollectionUtil.isNotEmpty(list)) {
-                    for (PushDeviceEntity d : list) {
-                        d.setUserid("");
-                        LOGGER.info("unbindOtherDevice of user:" + userid + " of device " + d.getDeviceid()
-                                + " devicetype:" + d.getDevicetype());
-                    }
-                    deviceRepo.save(list);
-                }
-            }
+            saveUser(userid, userOtherInfo, appkey, unbindOtherDevice);
         }
 
         if (StringUtil.isNotEmpty(deviceid)) {
-            PushDeviceEntity device = null;
-            device = deviceRepo.findByAppkeyAndDeviceid(appkey, deviceid);
-            // 如果设备不存在，则创建
-            if (device == null) {
-                device = new PushDeviceEntity();
-                device.setAppkey(appkey);
-                device.setDeviceid(deviceid);
-                device.setDevicetype(deviceType);
-                device.setMstatus(PushDeviceStatus.VALID);
-                device.setOtherInfo(deviceOtherInfo);
-                device.setPushMode(pushMode);
-                device.setUserid(userid);
-                device.setPushToken(pushToken);
-                deviceRepo.save(device);
-            } else {
-                // 如果已存在device了
-                // 1.需要查看这个设备id上当前对应的userid是不是参数传进来的userid一致，如果不一致，则说明设备进行了帐号切换操作，修改为参数的userid
-                // 2.device_info有变动（手机端系统的升级，eg,ios8升到ios9），修改为参数对应的device_info
-                // 3.pushToken有变动，修改为参数对应的pushToken
-                boolean needSave = false;
-                if (!StringUtil.equals(device.getUserid(), userid)) {
-                    device.setUserid(userid);
-                    needSave = true;
-                }
-                if (!StringUtil.equals(device.getOtherInfo(), deviceOtherInfo)) {
-                    device.setOtherInfo(deviceOtherInfo);
-                    needSave = true;
-                }
-                if (!StringUtil.equals(device.getPushToken(), pushToken) || device.getPushMode() != pushMode) {
-                    device.setPushToken(pushToken);
-                    device.setPushMode(pushMode);
-                    device.setMstatus(PushDeviceStatus.VALID);
-                    needSave = true;
-                }
-
-                if (needSave) {
-                    deviceRepo.save(device);
-                }
-            }
+            saveDevice(userid, deviceid, pushToken, appkey, deviceType, pushMode, deviceOtherInfo);
 
         }
 
     }
 
+    /**
+     * 用户信息操作方法。
+     * 1.创建新用户
+     * 2.更新用户信息
+     * 3.解绑其他设备
+     *
+     * @param userid 用户id
+     * @param userOtherInfo 用户的其它信息,相当于备注
+     * @param appkey 应用标识
+     * @param unbindOtherDevice 是否解绑其他设备
+     */
+    private void saveUser(String userid, String userOtherInfo, String appkey, boolean unbindOtherDevice) {
+        PushUserEntity user = userRepo.findByAppkeyAndUserid(appkey, userid);
+        if (user == null) {
+            user = new PushUserEntity();
+            user.setAppkey(appkey);
+            user.setOtherInfo(userOtherInfo);
+            user.setUserid(userid);
+            userRepo.save(user);
+        } else {
+            //更新用户信息
+            boolean needSave = false;
+            if (StringUtil.isNotEmpty(userOtherInfo) && !StringUtil.equals(user.getOtherInfo(), userOtherInfo)) {
+                user.setOtherInfo(userOtherInfo);
+                needSave = true;
+            }
+            if (needSave) {
+                userRepo.save(user);
+            }
+        }
+        // 如果解绑其它设备
+        if (unbindOtherDevice) {
+            List<PushDeviceEntity> list = deviceRepo.findByAppkeyAndUserid(appkey, userid);
+            if (CollectionUtil.isNotEmpty(list)) {
+                for (PushDeviceEntity d : list) {
+                    d.setUserid("");
+                    LOGGER.info("unbindOtherDevice of user:" + userid + " of device " + d.getDeviceid()
+                            + " devicetype:" + d.getDevicetype());
+                }
+                deviceRepo.save(list);
+            }
+        }
+    }
+
+    /**
+     * 设备信息操作方法。
+     * 1.新增设备信息
+     * 2.重新绑定设备信息
+     *
+     * @param userid 用户id
+     * @param deviceid 设备id
+     * @param pushToken 推送的token,由手机端第三方推送框架产生，用于第三方推送惟一标识一台设备，用于向第三方式推送服务器推送消息
+     * @param appkey 应用标识
+     * @param deviceType 设备类型
+     * @param pushMode 推送方式
+     * @param deviceOtherInfo 设备的其它信息
+     */
+    private void saveDevice(String userid, String deviceid, String pushToken, String appkey, PushDeviceType deviceType,
+        PushMode pushMode, String deviceOtherInfo) {
+        PushDeviceEntity device = null;
+        device = deviceRepo.findByAppkeyAndDeviceid(appkey, deviceid);
+        // 如果设备不存在，则创建
+        if (device == null) {
+            device = new PushDeviceEntity();
+            device.setAppkey(appkey);
+            device.setDeviceid(deviceid);
+            device.setDevicetype(deviceType);
+            device.setMstatus(PushDeviceStatus.VALID);
+            device.setOtherInfo(deviceOtherInfo);
+            device.setPushMode(pushMode);
+            device.setUserid(userid);
+            device.setPushToken(pushToken);
+            deviceRepo.save(device);
+        } else {
+            // 如果已存在device了
+            // 1.需要查看这个设备id上当前对应的userid是不是参数传进来的userid一致，如果不一致，则说明设备进行了帐号切换操作，修改为参数的userid
+            // 2.device_info有变动（手机端系统的升级，eg,ios8升到ios9），修改为参数对应的device_info
+            // 3.pushToken有变动，修改为参数对应的pushToken
+            boolean needSave = false;
+            if (!StringUtil.equals(device.getUserid(), userid)) {
+                device.setUserid(userid);
+                needSave = true;
+            }
+            if (!StringUtil.equals(device.getOtherInfo(), deviceOtherInfo)) {
+                device.setOtherInfo(deviceOtherInfo);
+                needSave = true;
+            }
+            if (!StringUtil.equals(device.getPushToken(), pushToken) || device.getPushMode() != pushMode) {
+                device.setPushToken(pushToken);
+                device.setPushMode(pushMode);
+                device.setMstatus(PushDeviceStatus.VALID);
+                needSave = true;
+            }
+
+            if (needSave) {
+                deviceRepo.save(device);
+            }
+        }
+    }
 }

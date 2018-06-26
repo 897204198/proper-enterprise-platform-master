@@ -19,6 +19,8 @@ import java.util.List;
 @RequestMapping("/msc")
 public class MongoShellController extends BaseController {
 
+    private static final String COMMA = ",";
+
     @Autowired
     private MongoShellService service;
 
@@ -53,7 +55,7 @@ public class MongoShellController extends BaseController {
     @DeleteMapping("/{collection}/{ids}")
     public ResponseEntity deleteByIds(@PathVariable String collection, @PathVariable String ids) throws Exception {
         boolean exist;
-        if (ids.contains(",")) {
+        if (ids.contains(COMMA)) {
             List<Document> docs = service.deleteByIds(collection, ids.split(","));
             exist = !docs.isEmpty();
         } else {

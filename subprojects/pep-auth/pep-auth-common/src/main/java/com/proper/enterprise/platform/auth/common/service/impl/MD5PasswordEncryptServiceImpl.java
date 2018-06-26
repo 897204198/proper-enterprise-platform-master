@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.core.utils.digest.MD5;
 import org.springframework.stereotype.Service;
 
 @Service
-public class Md5PasswordEncryptServiceImpl implements PasswordEncryptService {
+public class MD5PasswordEncryptServiceImpl implements PasswordEncryptService {
 
     @Override
     public String encrypt(String password) {

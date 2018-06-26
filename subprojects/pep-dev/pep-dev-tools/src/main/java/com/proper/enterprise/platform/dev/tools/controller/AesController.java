@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/dev/aes")
-public class AESController extends BaseController {
+public class AesController extends BaseController {
 
     private AESStringConverter converter = new AESStringConverter();
 

@@ -86,7 +86,8 @@ public class ApnsPushApp extends BasePushApp {
             payloadBuilder.setAlertBody(msg.getMcontent());
             payloadBuilder.setAlertTitle(msg.getMtitle());
             payloadBuilder.addCustomProperty("customs", msg.getMcustomDatasMap());
-            payloadBuilder.setSoundFileName("default"); // 默认声音
+            // 默认声音
+            payloadBuilder.setSoundFileName("default");
             // 设置应用的角标数
             Integer badgeNumber = getBadgeNumber(msg);
             if (badgeNumber != null) {
@@ -114,7 +115,8 @@ public class ApnsPushApp extends BasePushApp {
                         "Notification rejected by the APNs gateway:{},msg:{}",
                         pushNotificationResponse.getRejectionReason(), JSONUtil.toJSONIgnoreException(msg));
                     pushService.onPushTokenInvalid(msg);
-                    result = false; // 发送消息失败
+                    // 发送消息失败
+                    result = false;
                     if (pushNotificationResponse.getTokenInvalidationTimestamp() != null) {
                         LOGGER.info("\t…and the token is invalid as of "
                             + pushNotificationResponse.getTokenInvalidationTimestamp());

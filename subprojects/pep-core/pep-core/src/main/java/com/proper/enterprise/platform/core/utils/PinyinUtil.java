@@ -29,7 +29,11 @@ public class PinyinUtil {
         format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
     }
 
-    //转换一个字符串
+    /**
+     * 转换一个字符串
+     * @param str str
+     * @return 字符串
+     */
     public static String quanpin(String str) {
         if (StringUtil.isNull(str)) {
             return "";
@@ -48,7 +52,11 @@ public class PinyinUtil {
         return sb.toString();
     }
 
-    //转换单个字符
+    /**
+     * 转换单个字符
+     * @param c c
+     * @return 字符串
+     */
     private static String getCharacterPinYin(char c) {
         String[] pinyin = null;
         try {

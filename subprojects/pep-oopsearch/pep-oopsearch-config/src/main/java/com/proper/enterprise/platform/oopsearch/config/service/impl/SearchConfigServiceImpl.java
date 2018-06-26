@@ -91,7 +91,7 @@ public class SearchConfigServiceImpl implements SearchConfigService {
         String extendByMonth = i18NService.getMessage("search.extendDateMonth");
         String extendByDay = i18NService.getMessage("search.extendDateDay");
 
-        Map<String, List<Set<String>>> searchConfigsMap = new HashMap<>();
+        Map<String, List<Set<String>>> searchConfigsMap = new HashMap<>(16);
         for (SearchConfigEntity entity : result) {
             String moduleName = entity.getModuleName();
             if (searchConfigsMap.containsKey(moduleName)) {
@@ -117,7 +117,7 @@ public class SearchConfigServiceImpl implements SearchConfigService {
             }
         }
 
-        Map<String, Object> searchConfigs = new HashMap<>();
+        Map<String, Object> searchConfigs = new HashMap<>(16);
 
         for (Map.Entry<String, List<Set<String>>> entry : searchConfigsMap.entrySet()) {
             List<Set<String>> tempList = entry.getValue();

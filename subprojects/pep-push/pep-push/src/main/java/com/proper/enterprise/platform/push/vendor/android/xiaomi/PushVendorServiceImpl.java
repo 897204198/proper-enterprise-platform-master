@@ -44,7 +44,8 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
         // 向指定的设备推送数据。
         for (PushMsgEntity dm : lstMsgs) {
             LOGGER.info("xiaomi push log step5 content:{},msg:{}", dm.getMcontent(), JSONUtil.toJSONIgnoreException(dm));
-            dm.setSendCount(dm.getSendCount() + 1); // 发送次数+1
+            // 发送次数+1
+            dm.setSendCount(dm.getSendCount() + 1);
             // 向手机端推送一条消息，手机端收到消息后，请求web服务器,再获取消息内容
             boolean r = pushApp.pushOneMsg(dm, notifyId1);
             if (r) {

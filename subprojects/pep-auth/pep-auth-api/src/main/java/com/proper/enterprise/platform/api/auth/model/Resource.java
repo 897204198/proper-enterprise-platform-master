@@ -146,8 +146,13 @@ public interface Resource extends IBase {
 
     /**
      * 是否为继承来的资源 true是 false否
+     * @return true or false
      */
     Boolean getExtend();
 
+    /**
+     * 是否为继承来的资源 true是 false否
+     * @param extend true false
+     */
     void setExtend(Boolean extend);
 }

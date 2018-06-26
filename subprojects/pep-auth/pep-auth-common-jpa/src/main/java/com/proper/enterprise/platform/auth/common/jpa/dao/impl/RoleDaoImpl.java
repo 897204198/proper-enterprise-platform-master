@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.RoleRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Service
-public class RoleDaoImpl extends JpaServiceSupport<Role, RoleRepository, String> implements RoleDao {
+public class RoleDaoImpl extends AbstractJpaServiceSupport<Role, RoleRepository, String> implements RoleDao {
 
     @Autowired
     private RoleRepository roleRepository;

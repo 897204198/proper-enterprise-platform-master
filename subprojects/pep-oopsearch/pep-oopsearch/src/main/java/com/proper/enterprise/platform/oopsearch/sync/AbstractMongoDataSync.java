@@ -47,7 +47,7 @@ public abstract class AbstractMongoDataSync implements MongoDataSyncService {
      * @return 表名字段关系集合对象
      */
     protected Map<String, List<SearchColumnModel>> getTableColumnMap(Map<String, Object> searchConfigBeans) {
-        Map<String, List<SearchColumnModel>> tableColumnMap = new HashMap<>();
+        Map<String, List<SearchColumnModel>> tableColumnMap = new HashMap<>(16);
         for (Map.Entry<String, Object> entry : searchConfigBeans.entrySet()) {
             AbstractSearchConfigs tempSearchConfig = (AbstractSearchConfigs) entry.getValue();
             Map<String, List<SearchColumnModel>> tempTableColumnMap = tempSearchConfig.getSearchTableColumnMap();

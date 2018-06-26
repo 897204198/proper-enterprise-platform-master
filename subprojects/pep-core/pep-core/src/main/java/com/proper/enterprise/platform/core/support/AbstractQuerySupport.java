@@ -8,7 +8,9 @@ import org.springframework.data.domain.Sort;
 
 import javax.servlet.http.HttpServletRequest;
 
-public abstract class QuerySupport {
+public abstract class AbstractQuerySupport {
+
+    private static final String ZERO = "0";
 
     public boolean isPageSearch() {
         String pageNo = RequestUtil.getCurrentRequest().getParameter("pageNo");
@@ -52,7 +54,7 @@ public abstract class QuerySupport {
         if (StringUtils.isEmpty(pageSize)) {
             throw new ErrMsgException("missing pageSize to buildPage");
         }
-        if ("0".equals(pageNo)) {
+        if (ZERO.equals(pageNo)) {
             throw new ErrMsgException("pageNo cant be 0");
         }
         return new PageRequest(Integer.parseInt(pageNo) - 1, Integer.parseInt(pageSize), sort);

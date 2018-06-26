@@ -2,6 +2,7 @@ apply plugin: 'checkstyle'
 apply plugin: 'codenarc'
 apply plugin: 'findbugs'
 apply plugin: 'jacoco'
+apply plugin: 'pmd'
 
 def configDir = new File(pepDevConfRoot, 'configs/quality')
 
@@ -54,6 +55,29 @@ tasks.withType(Checkstyle) {
 }
 
 tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+tasks.withType(Pmd) {
+    exclude "**/$excludeFlowable/**"
+    exclude "**/$excludeGzipFromJetty/**"
+
+    ruleSetFiles = files(
+        "$configDir/pmd/ali-comment.xml",
+        "$configDir/pmd/ali-concurrent.xml",
+        "$configDir/pmd/ali-constant.xml",
+        "$configDir/pmd/ali-exception.xml",
+        "$configDir/pmd/ali-flowcontrol.xml",
+        "$configDir/pmd/ali-naming.xml",
+        "$configDir/pmd/ali-oop.xml",
+        "$configDir/pmd/ali-orm.xml",
+        "$configDir/pmd/ali-other.xml",
+        "$configDir/pmd/ali-set.xml"
+    )
+
     reports {
         xml.enabled = false
         html.enabled = true

@@ -56,7 +56,7 @@ public class AliwebController extends BaseController {
         boolean ret = false;
 
         // 获取支付宝POST过来反馈信息
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>(16);
         Map<String, String[]> requestParams = request.getParameterMap();
         for (Map.Entry<String, String[]> entry : requestParams.entrySet()) {
             String name = entry.getKey();
@@ -78,15 +78,17 @@ public class AliwebController extends BaseController {
                     // 保存异步通知结果
                     AliwebEntity aliwebInfo = aliwebService.getAliwebNoticeInfo(params);
                     if (aliwebInfo != null) {
-                        if (StringUtil.isEmpty(requestParams.get("sign")[0])) {
+                        String signStr = requestParams.get("sign")[0];
+                        String signTypeStr = requestParams.get("sign_type")[0];
+                        if (StringUtil.isEmpty(signStr)) {
                             aliwebInfo.setSign("unknow_sign");
                         } else {
-                            aliwebInfo.setSign(requestParams.get("sign")[0]);
+                            aliwebInfo.setSign(signStr);
                         }
-                        if (StringUtil.isEmpty(requestParams.get("sign_type")[0])) {
+                        if (StringUtil.isEmpty(signTypeStr)) {
                             aliwebInfo.setSign("unknow_sign_type");
                         } else {
-                            aliwebInfo.setSignType(requestParams.get("sign_type")[0]);
+                            aliwebInfo.setSignType(signTypeStr);
                         }
                         // 输出异步通知结果到log
                         PayUtils.logEntity(aliwebInfo);

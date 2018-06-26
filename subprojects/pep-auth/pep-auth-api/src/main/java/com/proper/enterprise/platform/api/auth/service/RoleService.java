@@ -36,6 +36,7 @@ public interface RoleService {
      * 已经使用的角色不能删除
      *
      * @param role 角色
+     * @return true or false
      */
     boolean delete(Role role);
 
@@ -43,6 +44,7 @@ public interface RoleService {
      * 删除多条角色数据
      *
      * @param ids 以 , 分隔的待删除角色ID列表
+     * @return true or false
      */
     boolean deleteByIds(String ids);
 
@@ -60,6 +62,7 @@ public interface RoleService {
      * 系统使用角色 ID 作为角色唯一标识，允许存在同名的角色
      *
      * @param name 角色名称
+     * @param enable 是否可用
      * @return 角色集合
      */
     Collection<? extends Role> findRoles(String name, EnableEnum enable);
@@ -67,8 +70,9 @@ public interface RoleService {
     /**
      * 根据角色名字获取相近的角色集合
      * 系统使用角色 ID 作为角色唯一标识，允许存在同名的角色
-     *
-     * @author sunshuai
+     * @param name 角色名称
+     * @param enable 是否可用
+     * @return 角色集合
      */
     Collection<? extends Role> findRolesLike(String name, EnableEnum enable);
 
@@ -97,7 +101,7 @@ public interface RoleService {
 
     /**
      * 获取角色父节点列表
-     *
+     * @param roleId 角色id
      * @return 父节点列表
      */
     Collection<? extends Role> findRoleParents(String roleId);
@@ -132,6 +136,7 @@ public interface RoleService {
      * 获取指定角色菜单集合
      *
      * @param roleId 角色ID
+     * @param menuEnable 是否可用
      * @return 菜单集合
      */
     Collection<? extends Menu> getRoleMenus(String roleId, EnableEnum menuEnable);
@@ -158,6 +163,7 @@ public interface RoleService {
      * 获取指定角色资源集合
      *
      * @param roleId 角色ID
+     * @param resourceEnable 是否可用
      * @return 资源集合
      */
     Collection<? extends Resource> getRoleResources(String roleId, EnableEnum resourceEnable);
@@ -173,7 +179,7 @@ public interface RoleService {
 
     /**
      * 根据当前角色ID，获取它的父角色链表，继承关系从前往后排列
-     *
+     * @param currentRoleId 当前角色id
      * @return 返回父角色链表，从前往后依次父角色、父角色的父角色。。。。
      */
     Collection<? extends Role> findParentRoles(String currentRoleId);
@@ -200,6 +206,8 @@ public interface RoleService {
      * 获取指定角色用户集合
      *
      * @param roleId 角色ID
+     * @param roleEnable  是否可用
+     * @param resourceEnable  是否可用
      * @return 用户集合
      */
     Collection<? extends User> getRoleUsers(String roleId, EnableEnum roleEnable, EnableEnum resourceEnable);
@@ -208,6 +216,8 @@ public interface RoleService {
      * 获取指定角色用户组集合
      *
      * @param roleId 角色ID
+     * @param roleEnable  是否可用
+     * @param userGroupEnable  是否可用
      * @return 用户组集合
      */
     Collection<? extends UserGroup> getRoleUserGroups(String roleId, EnableEnum roleEnable, EnableEnum userGroupEnable);
@@ -215,7 +225,7 @@ public interface RoleService {
 
     /**
      * 通过用户ID，获取对应的用户组，拥有的角色
-     *
+     * @param userId 用户id
      * @return 返回map类型，key为角色ID，value为角色对象
      */
     Map<String, Object> getUserGroupRolesByUserId(String userId);

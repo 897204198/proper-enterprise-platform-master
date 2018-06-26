@@ -15,11 +15,13 @@ public class APISecret {
 
     private static final String CACHE_NAME = "apiSecrets";
 
+    private static final Integer CYCLE_INDEX = 3;
+
     @Cacheable(value = CACHE_NAME)
     public String getAPISecret(String key) {
         LOGGER.debug("Generate new API secret for key: {}", key);
         String apiSecret = key;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < CYCLE_INDEX; i++) {
             apiSecret = md5Base64(apiSecret + System.nanoTime());
         }
         return apiSecret;

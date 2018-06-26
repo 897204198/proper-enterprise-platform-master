@@ -15,40 +15,64 @@ import java.util.*;
  * */
 public abstract class AbstractSearchConfigs {
 
-    // logger
+    /**
+     * logger
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSearchConfigs.class);
 
-    // 查询表名
+    /**
+     * 查询表名
+     */
     private String searchTables;
 
-    // 查询字段
+    /**
+     * 查询字段
+     */
     private String searchColumns;
 
-    // 查询最大条数
+    /**
+     * 查询最大条数
+     */
     private int limit;
 
-    // 对于年份，输入内容，可以被识别的内容
+    /**
+     * 对于年份，输入内容，可以被识别的内容
+     */
     private String extendByYear;
 
-    // 对于月份，输入内容，可以被识别的内容
+    /**
+     * 对于月份，输入内容，可以被识别的内容
+     */
     private String extendByMonth;
 
-    // 对于天，输入内容，可以被识别的内容
+    /**
+     * 对于天，输入内容，可以被识别的内容
+     */
     private String extendByDay;
 
-    // 可识别年份文字描述数组
+    /**
+     * 可识别年份文字描述数组
+     */
     private String[] extendByYearArr;
 
-    // 可识别月份文字描述数组
+    /**
+     * 可识别月份文字描述数组
+     */
     private String[] extendByMonthArr;
 
-    // 可识别天文字描述数组
+    /**
+     * 可识别天文字描述数组
+     */
     private String[] extendByDayArr;
 
-    // 表名数组
+    /**
+     * 表名数组
+     */
     private List<String> tableNameList;
 
-    // 表名与查询字段对象对应关系集合
+    /**
+     * 表名与查询字段对象对应关系集合
+     */
     private Map<String, List<SearchColumnModel>> searchTableColumnMap;
 
     private Map<String, Map<String, SearchColumnModel>> searchTableColumn;
@@ -89,7 +113,7 @@ public abstract class AbstractSearchConfigs {
         String[] columnArrs = searchColumns.split(",");
         for (String tableName : tableNameArr) {
             List<SearchColumnModel> columnList = new ArrayList<>();
-            Map<String, SearchColumnModel> columnMap = new HashMap<>();
+            Map<String, SearchColumnModel> columnMap = new HashMap<>(16);
             for (String columnArr : columnArrs) {
                 String[] searchColumnArr = columnArr.split(":");
                 if (searchColumnArr[0].equalsIgnoreCase(tableName)) {
@@ -140,7 +164,7 @@ public abstract class AbstractSearchConfigs {
      * */
     @SuppressWarnings("unchecked")
     public Map<String, List<SearchColumnModel>> getSearchTableColumnMap() {
-        Map<String, List<SearchColumnModel>> copySearchTableColumnMap = new HashMap<>();
+        Map<String, List<SearchColumnModel>> copySearchTableColumnMap = new HashMap<>(searchTableColumnMap.size());
         try {
             copySearchTableColumnMap = SerializationUtil.deepClone((HashMap)searchTableColumnMap);
         } catch (IOException e) {

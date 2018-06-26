@@ -31,7 +31,7 @@ public class SignAdapter extends XmlAdapter<String, WechatOrderReq> {
         Field[] fields = clz.getDeclaredFields();
         Set<String> set = new TreeSet<>();
         for (Field field : fields) {
-            if (!field.getName().equals("sign") && !field.getName().startsWith("$")) {
+            if (!"sign".equals(field.getName()) && !field.getName().startsWith("$")) {
                 set.add(field.getName());
             }
         }
@@ -41,7 +41,7 @@ public class SignAdapter extends XmlAdapter<String, WechatOrderReq> {
         for (String fieldName : set) {
             value = clz.getMethod("get" + StringUtil.capitalize(fieldName)).invoke(t);
             if (value != null) {
-                if (fieldName.equals("papackage")) {
+                if ("papackage".equals(fieldName)) {
                     sb.append("package").append("=").append(value).append("&");
                 } else {
                     sb.append(StringUtil.camelToSnake(fieldName)).append("=").append(value).append("&");

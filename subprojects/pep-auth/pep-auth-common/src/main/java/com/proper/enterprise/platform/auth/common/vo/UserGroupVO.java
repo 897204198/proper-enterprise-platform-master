@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
 import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 
 import java.util.Collection;
@@ -40,7 +41,7 @@ public class UserGroupVO extends BaseVO implements UserGroup {
      * 顺序
      */
     @JsonView(value = {Single.class})
-    private int seq;
+    private Integer seq;
 
     /**
      * 用户组内用户列信息列表
@@ -147,5 +148,10 @@ public class UserGroupVO extends BaseVO implements UserGroup {
 
     public void setRoles(Collection<RoleVO> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJSONIgnoreException(this);
     }
 }

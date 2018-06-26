@@ -225,14 +225,17 @@ public class PEPRemoteIdmServiceImpl implements RemoteIdmService {
         user.setEmail(json.get("email").asText());
         user.setFullName(json.get("fullName").asText());
 
-        if (json.has("groups")) {
-            for (JsonNode groupNode : json.get("groups")) {
+        String groupsKey = "groups";
+        String privilegesKey = "privileges";
+
+        if (json.has(groupsKey)) {
+            for (JsonNode groupNode : json.get(groupsKey)) {
                 user.getGroups().add(new RemoteGroup(groupNode.get("id").asText(), groupNode.get("name").asText()));
             }
         }
 
-        if (json.has("privileges")) {
-            for (JsonNode privilegeNode : json.get("privileges")) {
+        if (json.has(privilegesKey)) {
+            for (JsonNode privilegeNode : json.get(privilegesKey)) {
                 user.getPrivileges().add(privilegeNode.asText());
             }
         }

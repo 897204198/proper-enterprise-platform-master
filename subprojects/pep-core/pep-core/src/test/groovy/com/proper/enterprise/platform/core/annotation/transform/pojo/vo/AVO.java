@@ -1,12 +1,19 @@
 package com.proper.enterprise.platform.core.annotation.transform.pojo.vo;
 
-import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
 import com.proper.enterprise.platform.core.annotation.transform.pojo.bo.ABO;
+import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 
 import java.util.Collection;
 
 public class AVO extends BaseVO {
+
+    public String toString() {
+        String pepAVOStr = "";
+        pepAVOStr = JSONUtil.toJSONIgnoreException(this);
+        return pepAVOStr;
+    }
 
     @POJOConverter(fromBy = ABO.class, fieldName = "test", targetBy = ABO.class)
     private Integer test;

@@ -31,7 +31,8 @@ public class ConvertElement<T> {
     }
 
     private void init(Object source, Class<T> classType, ConvertType type) {
-        if (null == type || !ConvertType.TARGET_TYPE.equals(type) && !ConvertType.FROM_TYPE.equals(type)) {
+        boolean isTypeIllegal = null == type || !ConvertType.TARGET_TYPE.equals(type) && !ConvertType.FROM_TYPE.equals(type);
+        if (isTypeIllegal) {
             throw new FatalBeanException("type is illegality when convert init");
         }
         if (null == classType) {
@@ -214,8 +215,8 @@ public class ConvertElement<T> {
     private boolean handleSpecial() {
         //获得特殊处理的处理器  若from拿fromHandleBy否则拿targetHandleBy
         Class<? extends TransFormHandler> transFormHandlerClass = ConvertType.FROM_TYPE.equals(type)
-            ? getCurrentPojoConverter().fromHandleBy()
-            : getCurrentPojoConverter().targetHandleBy();
+                ? getCurrentPojoConverter().fromHandleBy()
+                : getCurrentPojoConverter().targetHandleBy();
         if (transFormHandlerClass != FromHandler.class && transFormHandlerClass != TargetHandler.class) {
             TransFormHandler transFormHandler = BeanUtil.newInstance(transFormHandlerClass);
             if (null != transFormHandler) {
@@ -232,12 +233,12 @@ public class ConvertElement<T> {
 
     protected Field getReadField() {
         Field readField = ConvertType.FROM_TYPE.equals(type)
-            ? BeanUtil.getField(from.getClass(), getCurrentPojoConverter().fieldName())
-            : getCurrentField();
+                ? BeanUtil.getField(from.getClass(), getCurrentPojoConverter().fieldName())
+                : getCurrentField();
         if (null == readField) {
             throw new FatalBeanException("can't find readField:" + (ConvertType.FROM_TYPE.equals(type)
-                ? getCurrentPojoConverter().fieldName()
-                : getCurrentField().getName()));
+                    ? getCurrentPojoConverter().fieldName()
+                    : getCurrentField().getName()));
         }
         return readField;
     }

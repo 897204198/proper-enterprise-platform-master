@@ -10,7 +10,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
-import com.proper.enterprise.platform.dfs.api.common.DFSServiceSupport;
+import com.proper.enterprise.platform.dfs.api.common.AbstractDFSServiceSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,11 +22,11 @@ import java.io.InputStream;
 
 
 /**
- * GridFS implementation of DFSServiceSupport
+ * GridFS implementation of AbstractDFSServiceSupport
  *
  */
 @Service
-public class DFSGridFSImpl extends DFSServiceSupport {
+public class DFSGridFSImpl extends AbstractDFSServiceSupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DFSGridFSImpl.class);
 
@@ -60,7 +60,10 @@ public class DFSGridFSImpl extends DFSServiceSupport {
         LOGGER.info("Create GridFS instance.");
     }
 
-    // TODO: 2018/6/5 mongo需要手动关闭
+
+    /**
+     * mongo需要手动关闭
+     */
     @PreDestroy
     public void destroy() {
         LOGGER.debug("Prepare to close MongoDB client ...");

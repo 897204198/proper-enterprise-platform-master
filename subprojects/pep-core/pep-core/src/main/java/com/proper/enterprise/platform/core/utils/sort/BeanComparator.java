@@ -13,7 +13,14 @@ import java.util.Map;
 public class BeanComparator implements Comparator, Serializable {
 
     public enum Order {
+        /**
+         * 顺序--正序
+         */
         ASC,
+
+        /**
+         * 顺序--倒序
+         */
         DESC
     }
 

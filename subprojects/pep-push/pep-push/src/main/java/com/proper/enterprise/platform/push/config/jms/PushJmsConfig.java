@@ -91,7 +91,12 @@ public class PushJmsConfig {
         return factory;
     }
 
-    @Bean // Serialize message content to json using TextMessage
+    /**
+     * Serialize message content to json using TextMessage
+     *
+     * @return MessageConverter
+     */
+    @Bean
     public MessageConverter pushJacksonJmsMessageConverter() {
         if (isNoJms()) {
             return null;

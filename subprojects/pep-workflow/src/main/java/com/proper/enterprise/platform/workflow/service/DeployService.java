@@ -223,7 +223,7 @@ public class DeployService {
     }
 
     private Map<String, StartEvent> processNoneStartEvents(BpmnModel bpmnModel) {
-        Map<String, StartEvent> startEventMap = new HashMap<>();
+        Map<String, StartEvent> startEventMap = new HashMap<>(16);
         for (Process process : bpmnModel.getProcesses()) {
             for (FlowElement flowElement : process.getFlowElements()) {
                 if (flowElement instanceof StartEvent) {
@@ -245,10 +245,8 @@ public class DeployService {
         for (FlowElement flowElement : flowElements) {
             if (flowElement instanceof UserTask) {
                 UserTask userTask = (UserTask) flowElement;
-                if ("$INITIATOR".equals(userTask.getAssignee())) {
-                    if (startEventMap.get(process.getId()) != null) {
-                        userTask.setAssignee("${" + startEventMap.get(process.getId()).getInitiator() + "}");
-                    }
+                if ("$INITIATOR".equals(userTask.getAssignee()) && startEventMap.get(process.getId()) != null) {
+                    userTask.setAssignee("${" + startEventMap.get(process.getId()).getInitiator() + "}");
                 }
 
             } else if (flowElement instanceof SubProcess) {

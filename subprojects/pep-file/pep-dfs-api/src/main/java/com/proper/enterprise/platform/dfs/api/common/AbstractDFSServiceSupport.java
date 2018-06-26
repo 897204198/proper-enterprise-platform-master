@@ -13,9 +13,9 @@ import java.io.InputStream;
  * Implementations of {@link DFSService} should extends this abstract class and override all abstract methods.
  *
  */
-public abstract class DFSServiceSupport implements DFSService {
+public abstract class AbstractDFSServiceSupport implements DFSService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DFSServiceSupport.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDFSServiceSupport.class);
 
     @Override
     public void saveFile(InputStream is, String filePath) throws IOException {
@@ -36,8 +36,19 @@ public abstract class DFSServiceSupport implements DFSService {
         is.close();
     }
 
+    /**
+     * 保存文件
+     * @param is 文件流程
+     * @param filePath 文件路径
+     * @throws IOException io异常
+     */
     protected abstract void doSaveFile(InputStream is, String filePath) throws IOException;
 
+    /**
+     * 文件是否存在
+     * @param filePath 文件
+     * @return 成功true 失败false
+     */
     public abstract boolean exists(String filePath);
 
     @Override
@@ -52,6 +63,12 @@ public abstract class DFSServiceSupport implements DFSService {
         }
     }
 
+    /**
+     * 获取文件流
+     * @param filePath 文件路径
+     * @return 文件流程
+     * @throws IOException io异常
+     */
     protected abstract InputStream doGetFile(String filePath) throws IOException;
 
     @Override
@@ -65,6 +82,10 @@ public abstract class DFSServiceSupport implements DFSService {
         return true;
     }
 
+    /**
+     * 删除文件
+     * @param filePath 文件路径
+     */
     protected abstract void doDeleteFile(String filePath);
 
 }

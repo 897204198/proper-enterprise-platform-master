@@ -75,7 +75,7 @@ public class PEPModelServiceImpl implements PEPModelService {
     }
 
     private Map<String, PEPProcessDefinitionVO> getProcessDefinitionsByKey(Set<String> modelKeys) {
-        Map<String, PEPProcessDefinitionVO> returnMap = new HashMap<>();
+        Map<String, PEPProcessDefinitionVO> returnMap = new HashMap<>(16);
         Set<String> deploymentIds = new HashSet<>();
         List<ProcessDefinition> processDefinitions = repositoryService
             .createNativeProcessDefinitionQuery()
@@ -104,7 +104,7 @@ public class PEPModelServiceImpl implements PEPModelService {
 
 
     private Map<String, Deployment> getDeploymentByIds(Set<String> deploymentIds) {
-        Map<String, Deployment> deploymentMap = new HashMap<>();
+        Map<String, Deployment> deploymentMap = new HashMap<>(16);
         List<Deployment> deployments = repositoryService
             .createNativeDeploymentQuery()
             .sql("SELECT * FROM ACT_RE_DEPLOYMENT WHERE " + getInSql("ID_",

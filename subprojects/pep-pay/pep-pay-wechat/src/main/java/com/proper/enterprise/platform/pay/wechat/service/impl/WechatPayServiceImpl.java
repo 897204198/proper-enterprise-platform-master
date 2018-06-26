@@ -39,6 +39,7 @@ import java.util.Date;
 public class WechatPayServiceImpl extends AbstractPayImpl implements PayService, WechatPayService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WechatPayServiceImpl.class);
+    private static final String STR_SUCCESS = "SUCCESS";
 
     @Autowired
     Marshaller marshaller;
@@ -96,7 +97,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
         WechatOrderReq uoReq = (WechatOrderReq) req;
         try {
             uoReq.setNonceStr(RandomStringUtils.randomAlphabetic(WechatConstants.WECHAT_PAY_RANDOM_LEN));
-            uoReq.setSpbillCreateIp("127.0.0.1");
+            uoReq.setSpbillCreateIp(WechatConstants.WECHAT_SPBILL_CREATE_IP);
             // 微信支付异步通知地址
             uoReq.setNotifyUrl(WechatConstants.WECHAT_PAY_URL_NOTICE);
             // 请求微信API接口
@@ -106,7 +107,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
             WechatPayRes payObj = new WechatPayRes();
             LOGGER.debug("return_msg:" + res.getReturnMsg());
             // 以下字段在return_code为SUCCESS的时候有返回
-            if ("SUCCESS".equals(res.getReturnCode()) && "SUCCESS".equals(res.getResultCode())) {
+            if (STR_SUCCESS.equals(res.getReturnCode()) && STR_SUCCESS.equals(res.getResultCode())) {
                 LOGGER.debug("result_code:SUCCESS");
                 // 返回给请求客户端处理结果
                 resObj.setResultCode(PayResType.SUCCESS);
@@ -221,7 +222,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
             // 输出LOG
             PayUtils.logEntity(res);
             // 以下字段在return_code为SUCCESS的时候有返回
-            if ("SUCCESS".equalsIgnoreCase(res.getReturnCode()) && "SUCCESS".equalsIgnoreCase(res.getResultCode())) {
+            if (STR_SUCCESS.equalsIgnoreCase(res.getReturnCode()) && STR_SUCCESS.equalsIgnoreCase(res.getResultCode())) {
                 // 保存退款信息
                 WechatRefundEntity oldRefundInfo = this.findByRefundNo(res.getOutRefundNo());
                 if (oldRefundInfo == null) {

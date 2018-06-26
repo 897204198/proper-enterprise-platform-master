@@ -10,7 +10,7 @@ import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.file.api.File;
 import com.proper.enterprise.platform.file.repository.FileRepository;
 import com.proper.enterprise.platform.file.service.FileService;
@@ -21,7 +21,9 @@ import java.io.*;
 import java.util.*;
 
 @Service
-public class FileServiceImpl extends JpaServiceSupport<File, FileRepository, String> implements FileService {
+public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileRepository, String> implements FileService {
+
+    private static final Integer LENGTH = 8192;
 
     @Value("${file.upload.maxsize}")
     private long maxSize;
@@ -94,8 +96,8 @@ public class FileServiceImpl extends JpaServiceSupport<File, FileRepository, Str
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
         response.setHeader("Content-disposition", "attachment;filename=" + java.net.URLEncoder.encode(file.getFileName(), charset));
         int bytesRead;
-        byte[] buffer = new byte[8192];
-        while ((bytesRead = bufferedInputStream.read(buffer, 0, 8192)) != -1) {
+        byte[] buffer = new byte[LENGTH];
+        while ((bytesRead = bufferedInputStream.read(buffer, 0, LENGTH)) != -1) {
             bufferedOutputStream.write(buffer, 0, bytesRead);
         }
         bufferedOutputStream.flush();

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.POJONode;
 import com.mongodb.client.result.UpdateResult;
-import com.proper.enterprise.platform.api.service.IMongoDBService;
+import com.proper.enterprise.platform.api.service.MongoDataBaseService;
 import com.proper.enterprise.platform.core.mongo.dao.MongoDAO;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -22,9 +22,15 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class MongoDBServiceImpl implements IMongoDBService {
+public class MongoDataBaseServiceImpl implements MongoDataBaseService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MongoDataBaseServiceImpl.class);
+
+    private static final String OBJECTID = "objectId";
+
+    private static final String FILE_NAME_IN = "$in";
+
+    private static final String ID = "_id";
 
     @Autowired
     ObjectMapper objectMapper;
@@ -32,13 +38,10 @@ public class MongoDBServiceImpl implements IMongoDBService {
     @Autowired
     MongoDAO mongoDAO;
 
-    // --------------------------------------增方法--------------------------------------
     @Override
     public Document insertOne(JsonNode root, String collection) {
         return mongoDAO.insertOne(collection, root.toString());
     }
-
-    // --------------------------------------删方法--------------------------------------
 
     @Override
     public int delete(String collection, String objectIds) throws Exception {
@@ -47,17 +50,16 @@ public class MongoDBServiceImpl implements IMongoDBService {
 
     }
 
+    @Override
     public Document deleteById(String collection, String objectIds) throws Exception {
         return mongoDAO.deleteById(collection, objectIds);
     }
 
-    // --------------------------------------改方法--------------------------------------
-
     @Override
     public UpdateResult updateById(JsonNode root, String collection, String objectId) throws Exception {
         Iterator<String> iter = root.fieldNames();
-        Map<String, Object> setMap = new HashMap<>();
-        Map<String, Object> unsetMap = new HashMap<>();
+        Map<String, Object> setMap = new HashMap<>(4);
+        Map<String, Object> unsetMap = new HashMap<>(2);
         while (iter.hasNext()) {
             String field = iter.next();
             if (field.startsWith("_")) {
@@ -92,8 +94,6 @@ public class MongoDBServiceImpl implements IMongoDBService {
         return null;
     }
 
-    // --------------------------------------查方法--------------------------------------
-
     @Override
     public List<Document> query(JsonNode root, String collection) throws Exception {
         JsonNode whereNode = root.get("where");
@@ -104,7 +104,7 @@ public class MongoDBServiceImpl implements IMongoDBService {
         LOGGER.debug("orders are {}", order);
         int skip = root.has("skip") ? root.get("skip").asInt() : 0;
         whereNode = handleId(whereNode);
-        Map<String, Integer> sort = new HashMap<>();
+        Map<String, Integer> sort = new HashMap<>(2);
         if (StringUtil.isNotNull(order)) {
             String[] orders = order.split(",");
             for (String o : orders) {
@@ -122,9 +122,9 @@ public class MongoDBServiceImpl implements IMongoDBService {
     public long count(JsonNode root, String collection) throws Exception {
         JsonNode whereNode = root.get("where");
         String wherestr = whereNode.toString();
-        if (wherestr.indexOf("objectId") > 0) {
-            String objectId = whereNode.get("objectId").toString();
-            wherestr = wherestr.replaceAll("objectId", "_id");
+        if (wherestr.indexOf(OBJECTID) > 0) {
+            String objectId = whereNode.get(OBJECTID).toString();
+            wherestr = wherestr.replaceAll(OBJECTID, ID);
             wherestr = wherestr.replaceAll(objectId, "ObjectId(" + objectId + ")");
         }
         return mongoDAO.count(collection, wherestr);
@@ -141,23 +141,23 @@ public class MongoDBServiceImpl implements IMongoDBService {
     }
 
     private JsonNode handleId(JsonNode whereNode) {
-        if (whereNode.path("_id").path("$in").isArray()) {
-            ArrayNode idCondition = (ArrayNode) whereNode.path("_id").path("$in");
+        if (whereNode.path(ID).path(FILE_NAME_IN).isArray()) {
+            ArrayNode idCondition = (ArrayNode) whereNode.path(ID).path(FILE_NAME_IN);
             ArrayNode idConditionRep = objectMapper.createArrayNode();
             for (JsonNode node : idCondition) {
                 StringBuffer objectIdBuf = new StringBuffer();
                 objectIdBuf.append("ObjectId('").append(node.textValue()).append("')");
                 idConditionRep.add(new POJONode(objectIdBuf.toString()));
             }
-            ObjectNode objectNode = (ObjectNode) whereNode.path("_id");
-            objectNode.replace("$in", idConditionRep);
+            ObjectNode objectNode = (ObjectNode) whereNode.path(ID);
+            objectNode.replace(FILE_NAME_IN, idConditionRep);
         }
-        if (whereNode.has("objectId")) {
+        if (whereNode.has(OBJECTID)) {
             StringBuffer objectIdBuf = new StringBuffer();
-            objectIdBuf.append("ObjectId('").append(whereNode.get("objectId").textValue()).append("')");
+            objectIdBuf.append("ObjectId('").append(whereNode.get(OBJECTID).textValue()).append("')");
             ObjectNode objectNode = (ObjectNode) whereNode;
-            objectNode.remove("objectId");
-            objectNode.putPOJO("_id", new POJONode(objectIdBuf));
+            objectNode.remove(OBJECTID);
+            objectNode.putPOJO(ID, new POJONode(objectIdBuf));
         }
         return whereNode;
     }

@@ -55,6 +55,7 @@ public interface AliPayService {
      *
      * @param params 通知返回来的参数数组
      * @return 验证结果
+     * @throws Exception 验证异常
      */
     boolean verify(Map<String, String> params) throws Exception;
 

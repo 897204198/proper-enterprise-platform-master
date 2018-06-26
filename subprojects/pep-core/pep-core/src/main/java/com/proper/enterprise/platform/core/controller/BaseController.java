@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.core.controller;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
-import com.proper.enterprise.platform.core.support.QuerySupport;
+import com.proper.enterprise.platform.core.support.AbstractQuerySupport;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ import java.util.List;
  * <p>
  * 用于响应各类 method 的请求
  */
-public abstract class BaseController extends QuerySupport {
+public abstract class BaseController extends AbstractQuerySupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseController.class);
 

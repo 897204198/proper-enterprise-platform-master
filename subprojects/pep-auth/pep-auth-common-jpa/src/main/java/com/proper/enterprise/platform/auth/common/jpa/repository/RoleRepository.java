@@ -7,5 +7,11 @@ import java.util.Collection;
 
 public interface RoleRepository extends BaseJpaRepository<RoleEntity, String> {
 
+    /**
+     * 通过名称获取角色
+     * @param name 名称
+     * @param enable enable
+     * @return 角色集合
+     */
     Collection<RoleEntity> findByNameAndEnable(String name, boolean enable);
 }

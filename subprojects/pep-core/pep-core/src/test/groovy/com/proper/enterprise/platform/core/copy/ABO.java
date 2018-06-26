@@ -3,11 +3,18 @@ package com.proper.enterprise.platform.core.copy;
 import com.proper.enterprise.platform.core.copy.api.A;
 import com.proper.enterprise.platform.core.copy.api.B;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ABO implements A {
+
+    public String toString() {
+        String pepABOStr = "";
+        pepABOStr = JSONUtil.toJSONIgnoreException(this);
+        return pepABOStr;
+    }
 
     private String name;
 

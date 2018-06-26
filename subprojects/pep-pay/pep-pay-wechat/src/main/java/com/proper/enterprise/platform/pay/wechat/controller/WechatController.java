@@ -44,6 +44,7 @@ import java.util.Map;
 public class WechatController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WechatController.class);
+    private static final String STR_SUCCESS = "SUCCESS";
 
     @Autowired
     Map<String, Unmarshaller> unmarshallerMap;
@@ -124,8 +125,8 @@ public class WechatController extends BaseController {
             noticeRes.getTransactionId(), noticeRes.getTotalFee());
 
         // 进行签名验证操作
-        if (wechatPayService.isValid(noticeRes) && "SUCCESS".equalsIgnoreCase(noticeRes.getReturnCode())
-            && "SUCCESS".equalsIgnoreCase(noticeRes.getResultCode())) {
+        if (wechatPayService.isValid(noticeRes) && STR_SUCCESS.equalsIgnoreCase(noticeRes.getReturnCode())
+            && STR_SUCCESS.equalsIgnoreCase(noticeRes.getResultCode())) {
             LOGGER.debug("sign_verify:SUCCESS & result_code:SUCCESS");
             // 保存异步通知信息flag
             boolean saveNoticeFlag = false;

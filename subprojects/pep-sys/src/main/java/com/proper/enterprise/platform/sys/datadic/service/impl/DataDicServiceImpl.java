@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.enums.EnableEnum;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheQuery;
-import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class DataDicServiceImpl extends JpaServiceSupport<DataDic, DataDicRepository, String> implements DataDicService {
+public class DataDicServiceImpl extends AbstractJpaServiceSupport<DataDic, DataDicRepository, String> implements DataDicService {
 
     @Autowired
     private DataDicRepository repository;

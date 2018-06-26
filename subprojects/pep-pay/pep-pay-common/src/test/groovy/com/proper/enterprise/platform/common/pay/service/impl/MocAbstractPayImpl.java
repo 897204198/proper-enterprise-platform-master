@@ -90,7 +90,8 @@ public class MocAbstractPayImpl extends AbstractPayImpl implements PayService {
     protected  <T extends PayResultRes, R extends OrderReq> T savePrepayImpl(R req) throws Exception {
         PayResultRes res = new PayResultRes();
         OrderReqTest reqTest = (OrderReqTest)req;
-        if (reqTest.getValue().equals("12345678901234567890")) {
+        String reqValue = "12345678901234567890";
+        if (reqValue.equals(reqTest.getValue())) {
             res.setResultCode(PayResType.SUCCESS);
             res.setResultMsg("success");
         } else {

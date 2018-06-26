@@ -3,9 +3,16 @@ package com.proper.enterprise.platform.core.jpa.copy.vo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.jpa.copy.api.CopyA;
 import com.proper.enterprise.platform.core.jpa.copy.api.CopyB;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 
 public class CopyAVO implements CopyA {
+
+    public String toString() {
+        String pepCopyAVO = "";
+        pepCopyAVO = JSONUtil.toJSONIgnoreException(this);
+        return pepCopyAVO;
+    }
 
     public interface AwithB extends BaseView {
 

@@ -75,7 +75,7 @@ public class MenuServiceImpl implements MenuService {
         }
         validate(menu);
         String parentId = menu.getParentId();
-        if (StringUtil.isNotNull(parentId) && !parentId.equals(DEFAULT_VALUE)) {
+        if (StringUtil.isNotNull(parentId) && !DEFAULT_VALUE.equals(parentId)) {
             menu.addParent(this.get(parentId));
         }
         return menuDao.save(menu);
@@ -91,7 +91,7 @@ public class MenuServiceImpl implements MenuService {
         }
 
         Menu updateMenu = menuDao.updateForSelective(menuReq);
-        if (StringUtil.isNotNull(parentId) && !parentId.equals(DEFAULT_VALUE)) {
+        if (StringUtil.isNotNull(parentId) && !DEFAULT_VALUE.equals(parentId)) {
             updateMenu.addParent(this.get(parentId));
             menuDao.save(updateMenu);
         }
@@ -145,12 +145,12 @@ public class MenuServiceImpl implements MenuService {
 
     private Set<Menu> recursionMenu(Menu menu, Set<Menu> menus, EnableEnum enableEnum) {
         menus.add(menu);
-        if (menu.getParent() != null) {
-            if (EnableEnum.ALL == enableEnum
-                || EnableEnum.ENABLE == enableEnum && menu.getEnable()
-                || EnableEnum.DISABLE == enableEnum && !menu.getEnable()) {
-                menus.addAll(recursionMenu(menu.getParent(), menus, enableEnum));
-            }
+        Boolean isHaveParent = menu.getParent() != null;
+        Boolean isEnable = EnableEnum.ALL == enableEnum
+            || EnableEnum.ENABLE == enableEnum && menu.getEnable()
+            || EnableEnum.DISABLE == enableEnum && !menu.getEnable();
+        if (isHaveParent && isEnable) {
+            menus.addAll(recursionMenu(menu.getParent(), menus, enableEnum));
         }
         return menus;
     }

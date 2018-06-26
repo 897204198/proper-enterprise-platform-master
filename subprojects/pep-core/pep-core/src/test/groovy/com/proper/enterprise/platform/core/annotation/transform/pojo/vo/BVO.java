@@ -1,13 +1,19 @@
 package com.proper.enterprise.platform.core.annotation.transform.pojo.vo;
 
-import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
 import com.proper.enterprise.platform.core.annotation.transform.pojo.bo.BBO;
+import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 
 import java.util.List;
 
 public class BVO extends BaseVO {
 
+    public String toString() {
+        String pepBVOStr = "";
+        pepBVOStr = JSONUtil.toJSONIgnoreException(this);
+        return pepBVOStr;
+    }
 
     private Integer test;
 

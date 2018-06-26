@@ -7,7 +7,13 @@ import java.sql.SQLException;
 public class PEPDatasource extends DruidDataSource {
 
     private enum DataBaseType {
+        /**
+         * MYSQL 数据库
+         */
         MYSQL,
+        /**
+         * H2 数据库
+         */
         H2
     }
 

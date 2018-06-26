@@ -75,6 +75,12 @@ public abstract class AbstractPushVendorService {
         this.pushParams = pushParams;
     }
 
+    /**
+     * 推送消息
+     *
+     * @param lstMsgs 消息集合
+     * @return int
+     */
     public abstract int pushMsg(List<PushMsgEntity> lstMsgs);
 
     /**

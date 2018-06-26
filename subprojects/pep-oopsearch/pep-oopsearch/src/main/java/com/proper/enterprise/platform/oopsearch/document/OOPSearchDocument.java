@@ -65,12 +65,28 @@ public interface OOPSearchDocument {
      * */
     void setPri(String pri);
 
+    /**
+     * 获取字段别名
+     * @return 字段别名
+     * */
     String getAli();
 
+    /**
+     * 赋值字段别名
+     * @param  ali 字段别名
+     * */
     void setAli(String ali);
 
+    /**
+     * 获取访问路径
+     * @return 访问路径
+     * */
     String getUrl();
 
+    /**
+     * 赋值访问路径
+     * @param  url 访问路径
+     * */
     void setUrl(String url);
 
 }

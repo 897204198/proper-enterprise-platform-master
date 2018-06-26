@@ -12,6 +12,7 @@ public interface NoticeService<T> {
      * 为了使异步通知能够尽快得到响应,请各个异步通知实现Service各自加上@Async注解
      *
      * @param t 处理对象
+     * @throws Exception 异常
      */
     void saveNoticeProcessAsync(T t) throws Exception;
 

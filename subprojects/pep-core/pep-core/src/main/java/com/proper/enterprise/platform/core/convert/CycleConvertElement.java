@@ -55,13 +55,12 @@ public class CycleConvertElement<T> extends ConvertElement<T> {
 
     @Override
     public Object readValue() {
-        if (Iterable.class.isAssignableFrom(getWriteField().getType())) {
-            if (IBase.class.isAssignableFrom(BeanUtil.getCollectionActualType(getWriteField()))) {
-                if (havePath(getTarget().getClass(), BeanUtil.getCollectionActualType(getWriteField()), this.getPathMap())) {
-                    return null;
-                }
-                recordPath(getTarget().getClass(), BeanUtil.getCollectionActualType(getWriteField()), this.getPathMap());
+        if (Iterable.class.isAssignableFrom(getWriteField().getType())
+            && IBase.class.isAssignableFrom(BeanUtil.getCollectionActualType(getWriteField()))) {
+            if (havePath(getTarget().getClass(), BeanUtil.getCollectionActualType(getWriteField()), this.getPathMap())) {
+                return null;
             }
+            recordPath(getTarget().getClass(), BeanUtil.getCollectionActualType(getWriteField()), this.getPathMap());
         }
         if (IBase.class.isAssignableFrom(getWriteField().getType())) {
             if (havePath(getTarget().getClass(), getWriteField().getType(), this.getPathMap())) {

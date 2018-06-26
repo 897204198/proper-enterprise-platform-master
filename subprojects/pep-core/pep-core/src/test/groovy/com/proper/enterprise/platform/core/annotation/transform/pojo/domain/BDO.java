@@ -1,13 +1,19 @@
 package com.proper.enterprise.platform.core.annotation.transform.pojo.domain;
 
+import com.proper.enterprise.platform.core.utils.JSONUtil;
+
 import java.util.List;
 
 
 public class BDO extends BaseEntity {
+    public String toString() {
+        String pepBDOStr = "";
+        pepBDOStr = JSONUtil.toJSONIgnoreException(this);
+        return pepBDOStr;
+    }
 
     public BDO() {
     }
-
 
     private Integer test;
 

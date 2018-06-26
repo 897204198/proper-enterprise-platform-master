@@ -21,6 +21,10 @@ public class SearchServiceImpl implements SearchService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchServiceImpl.class);
 
+    private static final Pattern PATTERN_YEAR = Pattern.compile("^\\d{4}$");
+    private static final Pattern PATTERN_MONTH = Pattern.compile("^\\d{4}[-|\\/|\\.]\\d{1,2}$");
+    private static final Pattern PATTERN_DAY = Pattern.compile("^\\d{4}[-|\\/|\\.]\\d{1,2}[-|\\/|\\.]\\d{1,2}$");
+
     @Autowired
     SearchMongoRepository searchMongoRepository;
 
@@ -49,15 +53,12 @@ public class SearchServiceImpl implements SearchService {
 
     public void filterDate(List<SearchDocument> resultList, String input, AbstractSearchConfigs searchConfigs) {
         List<SearchColumnModel> searchColumnList = searchConfigs.getSearchColumnListByType("date");
-        Pattern patternYear = Pattern.compile("^\\d{4}$");
-        Pattern patternMonth = Pattern.compile("^\\d{4}[-|\\/|\\.]\\d{1,2}$");
-        Pattern patternDay = Pattern.compile("^\\d{4}[-|\\/|\\.]\\d{1,2}[-|\\/|\\.]\\d{1,2}$");
         String[] extendArr = new String[0];
-        if (patternYear.matcher(input).matches()) {
+        if (PATTERN_YEAR.matcher(input).matches()) {
             extendArr = searchConfigs.getExtendByYearArr();
-        } else if (patternMonth.matcher(input).matches()) {
+        } else if (PATTERN_MONTH.matcher(input).matches()) {
             extendArr = searchConfigs.getExtendByMonthArr();
-        } else if (patternDay.matcher(input).matches()) {
+        } else if (PATTERN_DAY.matcher(input).matches()) {
             extendArr = searchConfigs.getExtendByDayArr();
         } else {
             return;

@@ -8,9 +8,16 @@ import com.proper.enterprise.platform.core.jpa.curd.b.vo.BVO;
 import com.proper.enterprise.platform.core.jpa.curd.c.api.C;
 import com.proper.enterprise.platform.core.jpa.curd.c.entity.CEntity;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 
 @POJORelevance(relevanceDOClassName = "com.proper.enterprise.platform.core.jpa.curd.c.entity.CEntity")
 public class CVO extends BaseVO implements C {
+
+    public String toString() {
+        String pepCVOStr = "";
+        pepCVOStr = JSONUtil.toJSONIgnoreException(this);
+        return pepCVOStr;
+    }
 
     public CVO() {
         super.setEnable(true);

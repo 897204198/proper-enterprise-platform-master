@@ -48,6 +48,7 @@ import java.util.Set;
 public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService, AliwebPayService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AliwebPayServiceImpl.class);
+    private static final String ALI_REQUEST_CODE = "10000";
 
     @Autowired
     PayFactory payFactory;
@@ -215,7 +216,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
             refund.setRefundNo(refundNo);
 
             AliwebRefundEntity oldRefund = findByRefundNo(refundNo);
-            if (refund.getCode().equals("10000") && oldRefund == null) {
+            if (ALI_REQUEST_CODE.equals(refund.getCode()) && oldRefund == null) {
                 save(refund);
             }
         } catch (Exception e) {
@@ -319,25 +320,25 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
                 String paramName = StringUtil.camelToSnake(fieldName);
                 value = params.get(paramName);
                 // 交易状态 0:未知
-                if (paramName.equals("trade_status") && StringUtil.isNull(params.get("trade_status"))) {
+                if ("trade_status".equals(paramName) && StringUtil.isNull(params.get("trade_status"))) {
                     aliwebpayinfo.setTradeStatus(AliwebConstants.ALI_WEBPAY_NOTICE_TARDESTATUS_UNKONWN);
                     // 本次交易支付的订单金额，单位为人民币（元）
-                } else if (paramName.equals("total_amount") && StringUtil.isNull(params.get("total_amount"))) {
+                } else if ("total_amount".equals(paramName) && StringUtil.isNull(params.get("total_amount"))) {
                     aliwebpayinfo.setTotalAmount("0");
                     // 商家在交易中实际收到的款项，单位为元
-                } else if (paramName.equals("receipt_amount") && StringUtil.isNull(params.get("receipt_amount"))) {
+                } else if ("receipt_amount".equals(paramName) && StringUtil.isNull(params.get("receipt_amount"))) {
                     aliwebpayinfo.setReceiptAmount("0");
                     // 用户在交易中支付的可开发票的金额
-                } else if (paramName.equals("invoice_amount") && StringUtil.isNull(params.get("invoice_amount"))) {
+                } else if ("invoice_amount".equals(paramName) && StringUtil.isNull(params.get("invoice_amount"))) {
                     aliwebpayinfo.setInvoiceAmount("0");
                     // 用户在交易中支付的金额
-                } else if (paramName.equals("buyer_pay_amount") && StringUtil.isNull(params.get("buyer_pay_amount"))) {
+                } else if ("buyer_pay_amount".equals(paramName) && StringUtil.isNull(params.get("buyer_pay_amount"))) {
                     aliwebpayinfo.setBuyerPayAmount("0");
                     // 使用集分宝支付的金额
-                } else if (paramName.equals("point_amount") && StringUtil.isNull(params.get("point_amount"))) {
+                } else if ("point_amount".equals(paramName) && StringUtil.isNull(params.get("point_amount"))) {
                     aliwebpayinfo.setPointAmount("0");
                     // 总退款金额
-                } else if (paramName.equals("refund_fee") && StringUtil.isNull(params.get("refund_fee"))) {
+                } else if ("refund_fee".equals(paramName) && StringUtil.isNull(params.get("refund_fee"))) {
                     aliwebpayinfo.setRefundFee("0");
                     // 其他情况
                 } else {

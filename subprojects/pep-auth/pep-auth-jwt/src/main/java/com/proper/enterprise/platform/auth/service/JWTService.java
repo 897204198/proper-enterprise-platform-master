@@ -31,6 +31,9 @@ public class JWTService {
 
     private static final String AUTH_HEADER = "Authorization";
     protected static final String TOKEN_FLAG = "X-PEP-TOKEN";
+    private static final String BEARER = "Bearer";
+    private static final String POINT_SYMBOL = ".";
+
     @Autowired
     private APISecret secret;
 
@@ -52,8 +55,8 @@ public class JWTService {
             token = request.getHeader(TOKEN_FLAG);
         }
         LOGGER.trace("Request {} token header!", StringUtil.isNotNull(token) ? "has" : "DOES NOT HAVE");
-        if (StringUtil.isNotNull(token) && token.contains("Bearer")) {
-            token = token.replace("Bearer", "").trim();
+        if (StringUtil.isNotNull(token) && token.contains(BEARER)) {
+            token = token.replace(BEARER, "").trim();
         }
         return token;
     }
@@ -94,7 +97,7 @@ public class JWTService {
     }
 
     public boolean verify(String token) throws IOException {
-        if (StringUtil.isNull(token) || !token.contains(".")) {
+        if (StringUtil.isNull(token) || !token.contains(POINT_SYMBOL)) {
             LOGGER.debug("Token should NOT NULL!");
             return false;
         }
@@ -106,7 +109,7 @@ public class JWTService {
 
         JWTHeader header = getHeader(token);
         String apiSecret = secret.getAPISecret(header.getId());
-        if (!sign.equals(hmacSha256Base64(apiSecret, headerBase64 + "." + payloadBase64))) {
+        if (!sign.equals(hmacSha256Base64(apiSecret, headerBase64 + POINT_SYMBOL + payloadBase64))) {
             LOGGER.debug("Token is INVALID or EXPIRED! Sign is {}", sign);
             return false;
         }

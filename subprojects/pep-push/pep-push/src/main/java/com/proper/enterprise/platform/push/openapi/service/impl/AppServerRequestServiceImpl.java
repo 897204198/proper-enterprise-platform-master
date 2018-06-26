@@ -89,10 +89,8 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
 
             PushDeviceType deviceType = Enum.valueOf(PushDeviceType.class, strDeviceType.trim());
             // 传入的deviceType不为空，则只发送指定设备类型的消息
-            if (deviceType0 != null) {
-                if (deviceType != deviceType0) {
-                    continue;
-                }
+            if (deviceType0 != null && deviceType != deviceType0) {
+                continue;
             }
             Pageable pageable = new PageRequest(0, dbBatchSize);
             do {
@@ -197,9 +195,12 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
         dbmsg.setSendCount(0);
         // 添加全局统一的自定义键值对
         Map<String, Object> maps = dbmsg.getMcustomDatasMap();
-        maps.put("_proper_userid", d.getUserid()); // userid
-        maps.put("_proper_title", msg.getTitle()); // 消息标题
-        maps.put("_proper_content", msg.getContent()); // 消息正文
+        // userid
+        maps.put("_proper_userid", d.getUserid());
+        // 消息标题
+        maps.put("_proper_title", msg.getTitle());
+        // 消息正文
+        maps.put("_proper_content", msg.getContent());
         dbmsg.setMcustomDatasMap(maps);
         return dbmsg;
     }

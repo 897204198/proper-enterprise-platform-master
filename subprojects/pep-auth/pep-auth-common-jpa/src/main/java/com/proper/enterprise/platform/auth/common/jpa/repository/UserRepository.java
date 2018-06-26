@@ -14,8 +14,19 @@ public interface UserRepository extends BaseJpaRepository<UserEntity, String> {
     @CacheQuery
     UserEntity findByIdAndEnableTrue(String userId);
 
+    /**
+     * 通过用户名查询用户
+     * @param username 用户名
+     * @param enable enable
+     * @return 用户
+     */
     UserEntity findByUsernameAndEnable(String username, boolean enable);
 
+    /**
+     * 通过用户名查询用户
+     * @param username 用户名
+     * @return 用户
+     */
     UserEntity findByUsername(String username);
 
 }

@@ -40,7 +40,7 @@ public class ViewConvertElement<T> extends CycleConvertElement<T> {
         if (null == getFrom()) {
             return null;
         }
-        Map<String, Boolean> ignoreFileName = new HashMap<>();
+        Map<String, Boolean> ignoreFileName = new HashMap<>(1);
         if (ConvertType.FROM_TYPE == getType()) {
             for (Field field : getAnnotationFields()) {
                 if (null != getShowTypes() && getShowTypes().length > 0) {

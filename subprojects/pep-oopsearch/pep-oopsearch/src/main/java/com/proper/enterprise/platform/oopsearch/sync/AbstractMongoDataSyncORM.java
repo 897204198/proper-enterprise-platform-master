@@ -24,18 +24,27 @@ public abstract class AbstractMongoDataSyncORM extends AbstractMongoDataSync {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMongoDataSyncORM.class);
 
-    // 数据源config
+    /**
+     * 数据源config
+     */
     @Value("database.url")
     private String databaseUrl;
 
-    // 同步mongo所使用的repository
+    /**
+     * 同步mongo所使用的repository
+     */
     @Autowired
     private SyncMongoRepository syncMongoRepository;
 
-    // 本地化repository
+    /**
+     * 本地化repository
+     */
     @Autowired
     public NativeRepository nativeRepository;
 
+    /**
+     * 查询配置信息service
+     */
     @Autowired
     private SearchConfigService searchConfigService;
 
@@ -54,37 +63,11 @@ public abstract class AbstractMongoDataSyncORM extends AbstractMongoDataSync {
         List<SearchDocument> documentList = new ArrayList<>();
         for (Map.Entry<String, List<SearchColumnModel>> tableColumnEntry : tableColumnMap.entrySet()) {
             StringBuffer querySql = new StringBuffer();
-            querySql.append("SELECT ");
-            // 取出该表将要查询的字段
             List<SearchColumnModel> searchColumnList = tableColumnEntry.getValue();
-            if (searchColumnList.size() == 0) {
-                LOGGER.error("can not find search column");
-            }
-            for (int j = 0; j < searchColumnList.size(); j++) {
-                SearchColumnModel searchColumn = searchColumnList.get(j);
-                String columnName = searchColumn.getColumn();
-                querySql.append(columnName + ",");
-            }
-            // 获取主键
-            String tableName = tableColumnEntry.getKey();
-            List<String> primaryKeys = getPrimaryKeys(tableName);
-            if (primaryKeys.size() > 0) {
-                String url = databaseUrl;
-                String[] temp = url.split(";")[0].split("/");
-                String schema = temp[temp.length - 1];
-                querySql.append(" CONCAT( '").append(schema).append("|").append(tableName).append("|',");
-                for (int k = 0; k < primaryKeys.size(); k++) {
-                    querySql.append(primaryKeys.get(k) + ",'|',");
-                }
-                querySql.delete(querySql.length() - ",'|',".length(), querySql.length());
-                querySql.append(") AS pri ");
-            } else {
-                querySql.deleteCharAt(querySql.length() - 1);
-            }
-
-            querySql.append(" FROM " + tableName);
+            // 获取查询sql语句
+            getQuerySql(tableColumnEntry, searchColumnList, querySql);
             List<Map<String, Object>> resultList = nativeRepository.executeEntityMapQuery(querySql.toString());
-            Map<String, List<String>> contextFilterMap = new HashMap<>();
+            Map<String, List<String>> contextFilterMap = new HashMap<>(16);
             for (Map<String, Object> resultMap : resultList) {
                 String priValue = "";
                 Set<Map.Entry<String, Object>> entrySet = resultMap.entrySet();
@@ -146,6 +129,46 @@ public abstract class AbstractMongoDataSyncORM extends AbstractMongoDataSync {
             syncMongoRepository.deleteAllByTabIn(getConfigTables(DataBaseType.RDB));
             syncMongoRepository.save(documentList);
         }
+    }
+
+    /**
+     * 获取查询sql语句
+     * example: SELECT columnA, CONCAT( 'dbname|tablename|', ID ) AS pri FROM tablename
+     *
+     * @param tableColumnEntry 表名字段关系集合
+     * @param searchColumnList 查询字段列表
+     * @param querySql 查询sql语句
+     */
+    private void getQuerySql(Map.Entry<String, List<SearchColumnModel>> tableColumnEntry, List<SearchColumnModel> searchColumnList,
+                             StringBuffer querySql) {
+        querySql.append("SELECT ");
+        // 取出该表将要查询的字段
+        if (searchColumnList.size() == 0) {
+            LOGGER.error("can not find search column");
+        }
+        for (int j = 0; j < searchColumnList.size(); j++) {
+            SearchColumnModel searchColumn = searchColumnList.get(j);
+            String columnName = searchColumn.getColumn();
+            querySql.append(columnName + ",");
+        }
+        // 获取主键
+        String tableName = tableColumnEntry.getKey();
+        List<String> primaryKeys = getPrimaryKeys(tableName);
+        if (primaryKeys.size() > 0) {
+            String url = databaseUrl;
+            String[] temp = url.split(";")[0].split("/");
+            String schema = temp[temp.length - 1];
+            querySql.append(" CONCAT( '").append(schema).append("|").append(tableName).append("|',");
+            for (int k = 0; k < primaryKeys.size(); k++) {
+                querySql.append(primaryKeys.get(k) + ",'|',");
+            }
+            querySql.delete(querySql.length() - ",'|',".length(), querySql.length());
+            querySql.append(") AS pri ");
+        } else {
+            querySql.deleteCharAt(querySql.length() - 1);
+        }
+
+        querySql.append(" FROM " + tableName);
     }
 
 }

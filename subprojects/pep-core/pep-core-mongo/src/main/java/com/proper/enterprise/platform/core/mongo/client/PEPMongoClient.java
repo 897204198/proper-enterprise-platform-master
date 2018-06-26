@@ -16,13 +16,15 @@ public class PEPMongoClient extends MongoClient {
     @Value("${mongodb.destory}")
     private String destory;
 
+    private static final String DROP = "drop";
+
     public PEPMongoClient(final List<ServerAddress> seeds, final List<MongoCredential> credentialsList) {
         super(seeds, credentialsList, new MongoClientOptions.Builder().build());
     }
 
     @PreDestroy
     public void preDestory() {
-        if (StringUtil.isNotEmpty(destory) && "drop".equals(destory)) {
+        if (StringUtil.isNotEmpty(destory) && DROP.equals(destory)) {
             this.dropDatabase(databaseName);
         }
     }

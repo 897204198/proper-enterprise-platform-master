@@ -13,9 +13,10 @@ import java.util.List;
 public interface SearchConfigRepository extends BaseRepository<SearchConfigEntity, String> {
 
     /**
-     * 重写findAll方法，并设置CacheQuery，确保在配置信息数据不变动的情况下，
+     * 根据数据库类型获取数据，并设置CacheQuery，确保在配置信息数据不变动的情况下，
      * 使用缓存查找数据。减少对db的连接使用次数，提高性能。
      *
+     * @param dataBaseType 数据库类型
      * @return 配置信息集合
      */
     @CacheQuery
@@ -34,6 +35,7 @@ public interface SearchConfigRepository extends BaseRepository<SearchConfigEntit
      * 根据模块名称及数据库类型，查找配置信息方法
      *
      * @param moduleName 模块名称
+     * @param dataBaseType 数据库类型
      * @return 配置信息集合
      */
     @CacheQuery

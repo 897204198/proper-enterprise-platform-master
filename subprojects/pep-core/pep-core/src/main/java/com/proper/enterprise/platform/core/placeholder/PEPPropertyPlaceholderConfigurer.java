@@ -16,6 +16,7 @@ public class PEPPropertyPlaceholderConfigurer extends Properties {
     private boolean exist;
     private String location;
     private String names;
+    private static final String COMMA = ",";
 
     public void init() throws IOException {
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
@@ -32,7 +33,7 @@ public class PEPPropertyPlaceholderConfigurer extends Properties {
         if (!exist) {
             return;
         }
-        for (String name : names.split(",")) {
+        for (String name : names.split(COMMA)) {
             String pep = getEnumerableProperty(this.getProperty(name));
             if (null == pep) {
                 continue;
@@ -80,7 +81,14 @@ public class PEPPropertyPlaceholderConfigurer extends Properties {
     }
 
     private enum PlaceholderEnum {
+        /**
+         * 自动生成uuid
+         */
         UUID_SUFFIX("random.uuid"),
+
+        /**
+         * 自动生成32位uuid
+         */
         UUID_32_SUFFIX("random.uuid32");
 
         PlaceholderEnum(String name) {

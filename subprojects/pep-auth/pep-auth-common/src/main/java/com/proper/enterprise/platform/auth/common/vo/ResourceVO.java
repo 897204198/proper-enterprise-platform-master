@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
 import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
@@ -38,7 +39,7 @@ public class ResourceVO extends BaseVO implements Resource {
     private String url;
 
     @JsonView(value = {Single.class})
-    private RequestMethod method = RequestMethod.GET;
+    private RequestMethod method;
     /**
      * 菜单类别数据字典
      */
@@ -111,6 +112,9 @@ public class ResourceVO extends BaseVO implements Resource {
 
     @Override
     public RequestMethod getMethod() {
+        if (null == this.method) {
+            return RequestMethod.GET;
+        }
         return method;
     }
 
@@ -191,5 +195,10 @@ public class ResourceVO extends BaseVO implements Resource {
 
     public void setExtend(Boolean extend) {
         this.extend = extend;
+    }
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJSONIgnoreException(this);
     }
 }

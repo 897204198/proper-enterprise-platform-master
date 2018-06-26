@@ -91,7 +91,8 @@ public class BeanUtil {
         List<String> ignoreList = ignoreProperties != null ? Arrays.asList(ignoreProperties) : null;
         for (PropertyDescriptor targetPd : targetPds) {
             Method writeMethod = targetPd.getWriteMethod();
-            if (writeMethod != null && (ignoreList == null || !ignoreList.contains(targetPd.getName()))) {
+            boolean ignoreRes = ignoreList == null || !ignoreList.contains(targetPd.getName());
+            if (writeMethod != null && ignoreRes) {
                 PropertyDescriptor sourcePd = BeanUtils.getPropertyDescriptor(source.getClass(), targetPd.getName());
                 if (sourcePd != null) {
                     Method readMethod = sourcePd.getReadMethod();
@@ -241,10 +242,10 @@ public class BeanUtil {
     public static <T, S> T convert(S source, Class<T> classType, ConvertType convertType,
                                    boolean ignoreCycle, boolean ignoreWithView, Class... showType) {
         if (ignoreWithView) {
-            return new ViewConvertElement<>(source, classType, convertType, new HashMap<>(), showType).convert();
+            return new ViewConvertElement<>(source, classType, convertType, new HashMap<>(1), showType).convert();
         }
         if (ignoreCycle) {
-            return new CycleConvertElement<>(source, classType, convertType, new HashMap<>()).convert();
+            return new CycleConvertElement<>(source, classType, convertType, new HashMap<>(1)).convert();
         }
         return new ConvertElement<>(source, classType, convertType).convert();
     }

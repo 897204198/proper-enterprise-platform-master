@@ -24,38 +24,26 @@
 
 package com.proper.enterprise.platform.cache.ehcache;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Properties;
-
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
-
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.ehcache.EhCacheMessageLogger;
 import org.hibernate.cache.ehcache.internal.nonstop.NonstopAccessStrategyFactory;
-import org.hibernate.cache.ehcache.internal.regions.EhcacheCollectionRegion;
-import org.hibernate.cache.ehcache.internal.regions.EhcacheEntityRegion;
-import org.hibernate.cache.ehcache.internal.regions.EhcacheNaturalIdRegion;
-import org.hibernate.cache.ehcache.internal.regions.EhcacheQueryResultsRegion;
-import org.hibernate.cache.ehcache.internal.regions.EhcacheTimestampsRegion;
+import org.hibernate.cache.ehcache.internal.regions.*;
 import org.hibernate.cache.ehcache.internal.strategy.EhcacheAccessStrategyFactory;
 import org.hibernate.cache.ehcache.internal.strategy.EhcacheAccessStrategyFactoryImpl;
 import org.hibernate.cache.ehcache.internal.util.HibernateEhcacheUtils;
 import org.hibernate.cache.ehcache.management.impl.ProviderMBeanRegistrationHelper;
-import org.hibernate.cache.spi.CacheDataDescription;
-import org.hibernate.cache.spi.CollectionRegion;
-import org.hibernate.cache.spi.EntityRegion;
-import org.hibernate.cache.spi.NaturalIdRegion;
-import org.hibernate.cache.spi.QueryResultsRegion;
-import org.hibernate.cache.spi.RegionFactory;
-import org.hibernate.cache.spi.TimestampsRegion;
+import org.hibernate.cache.spi.*;
 import org.hibernate.cache.spi.access.AccessType;
 import org.hibernate.cfg.Settings;
 import org.hibernate.service.spi.InjectService;
-
 import org.jboss.logging.Logger;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Properties;
 
 /**
  * Abstract implementation of an Ehcache specific RegionFactory.
@@ -243,6 +231,7 @@ abstract class AbstractEhcacheRegionFactory implements RegionFactory {
      * <p/>
      * This is a Hibernate 3.5 method.
      */
+    @Override
     public AccessType getDefaultAccessType() {
         return AccessType.READ_WRITE;
     }

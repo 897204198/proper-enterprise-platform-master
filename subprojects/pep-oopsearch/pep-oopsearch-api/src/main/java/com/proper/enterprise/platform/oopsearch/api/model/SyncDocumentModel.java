@@ -9,36 +9,59 @@ import com.proper.enterprise.platform.oopsearch.api.enums.SyncMethod;
  */
 public class SyncDocumentModel {
 
-    // 更新前内容
+    /**
+     * 更新前内容
+     */
     private String conb;
 
-    // 更新后内容
+    /**
+     * 更新后内容
+     */
     private String cona;
 
-    // 字段
+    /**
+     * 字段
+     */
     private String col;
 
-    // 表名
+    /**
+     * 表名
+     */
     private String tab;
 
-    // 描述
+    /**
+     * 描述
+     */
     private String des;
 
-    // 主键内容拼接字符串
+    /**
+     * 主键内容拼接字符串
+     */
     private String pri;
 
-    // 是否已处理 false:未处理 true:已处理
+    /**
+     * 是否已处理 false:未处理 true:已处理
+     */
     private boolean process;
 
-    // 字段别名
+    /**
+     * 字段别名
+     */
     private String alias;
 
-    // 调用url
+    /**
+     * 调用url
+     */
     private String url;
 
-    //数据类型
+    /**
+     * 数据类型
+     */
     private DataBaseType dataBaseType;
-    //同步方法
+
+    /**
+     * 同步方法
+     */
     private SyncMethod method;
 
     /**
@@ -167,34 +190,74 @@ public class SyncDocumentModel {
         this.process = process;
     }
 
+    /**
+     * 获取别名
+     *
+     * @return 别名
+     */
     public String getAlias() {
         return alias;
     }
 
+    /**
+     * 赋值别名
+     *
+     * @param  alias 别名
+     */
     public void setAlias(String alias) {
         this.alias = alias;
     }
 
+    /**
+     * 获取访问路径
+     *
+     * @return 访问路径
+     */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * 赋值访问路径
+     *
+     * @param  url 访问路径
+     */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * 获取数据类型
+     *
+     * @return 数据类型
+     */
     public DataBaseType getDataBaseType() {
         return dataBaseType;
     }
 
+    /**
+     * 赋值数据类型
+     *
+     * @param dataBaseType 数据类型
+     */
     public void setDataBaseType(DataBaseType dataBaseType) {
         this.dataBaseType = dataBaseType;
     }
 
+    /**
+     * 获取同步方法
+     *
+     * @return 同步方法
+     */
     public SyncMethod getMethod() {
         return method;
     }
 
+    /**
+     * 赋值同步方法
+     *
+     * @param method 同步方法
+     */
     public void setMethod(SyncMethod method) {
         this.method = method;
     }

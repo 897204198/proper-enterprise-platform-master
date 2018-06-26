@@ -140,6 +140,9 @@ subprojects {
         testRuntime libraries.aspectjweaver,
                     libraries.servlet_api,
                     libraries.spring_context_support
+
+        compileOnly libraries.p3c_pmd
+        testCompileOnly libraries.p3c_pmd
     }
 
     uploadArchives {

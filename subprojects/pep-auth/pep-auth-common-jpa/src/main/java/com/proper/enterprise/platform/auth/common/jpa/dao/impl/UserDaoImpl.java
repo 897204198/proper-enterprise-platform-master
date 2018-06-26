@@ -10,7 +10,7 @@ import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
-import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class UserDaoImpl extends JpaServiceSupport<User, UserRepository, String> implements UserDao {
+public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository, String> implements UserDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDaoImpl.class);
 

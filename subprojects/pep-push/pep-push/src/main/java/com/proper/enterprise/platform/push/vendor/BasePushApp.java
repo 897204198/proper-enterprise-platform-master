@@ -22,7 +22,8 @@ public class BasePushApp {
         Map<String, Object> customs = msg.getMcustomDatasMap();
         if (customs != null) {
             Object pushType = customs.get("_proper_pushtype");
-            if (pushType != null && "cmd".equals(pushType)) {
+            String cmdPush = "cmd";
+            if (pushType != null && cmdPush.equals(pushType)) {
                 return true;
             }
         }

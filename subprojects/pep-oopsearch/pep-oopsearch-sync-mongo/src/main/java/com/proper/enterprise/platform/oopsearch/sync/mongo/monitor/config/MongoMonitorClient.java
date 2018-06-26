@@ -20,7 +20,9 @@ public class MongoMonitorClient {
     private MongoMonitorClient() {
     }
 
+    private static final String COMMA_SYMBOL = ",";
     public static final String TIME_DB_NAME = "monitor_time_d";
+
 
     private MongoClient hostMongo;
     private Map<String, MongoClient> shardSetClients;
@@ -65,7 +67,7 @@ public class MongoMonitorClient {
 
     private void initClient() {
         List<ServerAddress> serverAddresses = new ArrayList<>();
-        for (String address : host.split(",")) {
+        for (String address : host.split(COMMA_SYMBOL)) {
             serverAddresses.add(new ServerAddress(address + ":" + port));
         }
         this.hostMongo = new MongoClient(serverAddresses, getMongoCredential(userName, password));
@@ -93,7 +95,7 @@ public class MongoMonitorClient {
         public Map<String, MongoClient> findShardSets(MongoClient mongoS) {
             DBCursor find = mongoS.getDB("admin").getSisterDB("config")
                 .getCollection("shards").find();
-            Map<String, MongoClient> shardSets = new HashMap<>();
+            Map<String, MongoClient> shardSets = new HashMap<>(16);
             while (find.hasNext()) {
                 DBObject next = find.next();
                 String key = (String) next.get("_id");
@@ -114,7 +116,7 @@ public class MongoMonitorClient {
         private List<ServerAddress> buildServerAddressList(DBObject next) {
             List<ServerAddress> hosts = new ArrayList<>();
             for (String host : Arrays
-                .asList(((String) next.get("host")).split("/")[1].split(","))) {
+                .asList(((String) next.get("host")).split("/")[1].split(COMMA_SYMBOL))) {
                 hosts.add(new ServerAddress(host));
             }
             return hosts;

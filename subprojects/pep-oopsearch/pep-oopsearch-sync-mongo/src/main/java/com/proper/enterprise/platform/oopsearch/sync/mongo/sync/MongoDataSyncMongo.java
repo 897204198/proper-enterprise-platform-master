@@ -21,11 +21,15 @@ public class MongoDataSyncMongo extends AbstractMongoDataSync {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDataSyncMongo.class);
 
-    // 同步mongo所使用的repository
+    /**
+     * 同步mongo所使用的repository
+     */
     @Autowired
     private SyncMongoRepository syncMongoRepository;
 
-    // 本地化repository
+    /**
+     * 本地化repository
+     */
     @Autowired
     protected MongoShellService mongoShellService;
 

@@ -51,34 +51,6 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public Resource update(Resource resourceReq) {
-        // TODO: 2018/5/21 这段代码有点迷惑  资源挂菜单应该是在菜单方面做 为啥更新资源的时候要在资源这做校验
-        /*String id = resourceReq.getId();
-        Resource resource = resourceDao.getNewResourceEntity();
-        // 更新
-        if (StringUtil.isNotNull(id)) {
-            resource = this.get(id);
-        }
-        resource.setName(resourceReq.getName());
-        resource.addURL(resourceReq.findURL());
-        resource.setEnable(resourceReq.getEnable());
-        resource.setMethod(resourceReq.getMethod());
-        Collection<? extends Menu> collection = resourceReq.getMenus();
-        if (CollectionUtil.isNotEmpty(collection)) {
-            for (Menu menus : collection) {
-                if (menus != null) {
-                    Collection<? extends Resource> resources = menus.getResources();
-                    for (Resource resource1 : resources) {
-                        String identification = resource1.getIdentifier();
-                        if (!resourceReq.getIdentifier().equals(identification)) {
-                            continue;
-                        } else {
-                            throw new ErrMsgException("pep.auth.common.menu.param");
-                        }
-                    }
-                    resource.setIdentifier(resourceReq.getIdentifier());
-                }
-            }
-        }*/
         setDefault(resourceReq);
         String resourceCode = resourceReq.getResourceCode();
         if (StringUtil.isNotNull(resourceCode)) {
@@ -133,13 +105,14 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Collection<? extends Resource> getFilterResources(Collection<? extends Resource> resources, EnableEnum resourceEnable) {
         Collection<Resource> result = new HashSet<>();
+        boolean shouldFilter;
         for (Resource resource : resources) {
-            if (resourceEnable == EnableEnum.ENABLE && !resource.getEnable()
+            shouldFilter = resourceEnable == EnableEnum.ENABLE && !resource.getEnable()
                 || resourceEnable == EnableEnum.DISABLE && resource.getEnable()
-                || null == resourceEnable) {
-                continue;
+                || null == resourceEnable;
+            if (!shouldFilter) {
+                result.add(resource);
             }
-            result.add(resource);
         }
         return result;
     }

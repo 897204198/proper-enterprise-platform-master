@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OneServiceImpl extends JpaServiceSupport<OneEntity, OneRepository, String> implements OneService {
+public class OneServiceImpl extends AbstractJpaServiceSupport<OneEntity, OneRepository, String> implements OneService {
 
     @Autowired
     private OneRepository oneRepository;

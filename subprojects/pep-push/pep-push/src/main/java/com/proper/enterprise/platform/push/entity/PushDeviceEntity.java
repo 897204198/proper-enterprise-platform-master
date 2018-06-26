@@ -28,7 +28,9 @@ public class PushDeviceEntity extends BaseEntity implements PushDevice {
     private String otherInfo;
     @Enumerated(EnumType.STRING)
     private PushMode pushMode;
-    // 推送标识
+    /**
+     * 推送标识
+     */
     private String pushToken;
     @Enumerated(EnumType.ORDINAL)
     private PushDeviceStatus mstatus;

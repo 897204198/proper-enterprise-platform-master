@@ -45,6 +45,7 @@ import java.util.*;
 public class AliPayServiceImpl extends AbstractPayImpl implements PayService, AliPayService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AliPayServiceImpl.class);
+    private static final String ALI_REQUEST_CODE = "10000";
 
     @Autowired
     PayFactory payFactory;
@@ -136,7 +137,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
     @Override
     protected <T> T getPayQueryRes(String outTradeNo) {
         AliPayTradeQueryRes res = new AliPayTradeQueryRes();
-        Map<String, String> bizContentMap = new HashMap<String, String>();
+        Map<String, String> bizContentMap = new HashMap<String, String>(1);
         bizContentMap.put("out_trade_no", outTradeNo);
         String method = ConfCenter.get("pay.ali.tradeQueryMethod");
         String responseKey = "alipay_trade_query_response";
@@ -171,7 +172,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
     protected <T> T saveRefundProcess(T refundBody) throws Exception {
         AliRefundReq aliRefundReq = (AliRefundReq) refundBody;
         AliRefundEntity refund = new AliRefundEntity();
-        Map<String, String> bizContentMap = new HashMap<String, String>();
+        Map<String, String> bizContentMap = new HashMap<String, String>(3);
         // 订单号
         bizContentMap.put("out_trade_no", aliRefundReq.getOutTradeNo());
         // 退款单号
@@ -188,7 +189,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
             res = (AliRefundRes) result;
             BeanUtils.copyProperties(res, refund);
             AliRefundEntity oldRefund =  findByRefundNo(refundNo);
-            if (refund.getCode().equals("10000") && oldRefund == null) {
+            if (ALI_REQUEST_CODE.equals(refund.getCode()) && oldRefund == null) {
                 save(refund);
             }
         } else {
@@ -208,7 +209,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
     @Override
     protected <T> T getRefundQueryRes(String orderNo, String refundNo) {
         AliRefundTradeQueryRes res = new AliRefundTradeQueryRes();
-        Map<String, String> bizContentMap = new HashMap<String, String>();
+        Map<String, String> bizContentMap = new HashMap<String, String>(2);
         bizContentMap.put("out_trade_no", orderNo);
         bizContentMap.put("out_request_no", refundNo);
         String method = ConfCenter.get("pay.ali.tradeRefundQueryMethod");
@@ -280,19 +281,17 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
         // responsetTxt的结果不是true，与服务器设置问题、合作身份者ID、notify_id一分钟失效有关
         // isSign不是true，与安全校验码、请求时的参数格式（如：带自定义参数等）、编码格式有关
         String responseTxt = "false";
-        if (params.get("notify_id") != null) {
-            String notifyId = params.get("notify_id");
+        String notifyId = params.get("notify_id");
+        if (notifyId != null) {
             responseTxt = verifyResponse(notifyId);
         }
         LOGGER.debug("Verify Ali notice info!Result:{}", responseTxt);
-        String sign = "";
-        if (params.get("sign") != null) {
-            sign = params.get("sign");
-        }
+        String sign = params.get("sign");
+        sign = sign != null ? sign : "";
         boolean isSign = getSignVeryfy(params, sign);
         LOGGER.debug("Verify Ali notice signature!Result:{}", isSign);
 
-        return isSign && responseTxt.equals("true");
+        return isSign && "true".equals(responseTxt);
     }
 
     /**
@@ -357,19 +356,19 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
                 String paramName = StringUtil.camelToSnake(fieldName);
                 value = params.get(paramName);
                 // 交易状态 0:未知
-                if (paramName.equals("trade_status") && StringUtil.isNull(params.get("trade_status"))) {
+                if ("trade_status".equals(paramName) && StringUtil.isNull(params.get("trade_status"))) {
                     alipayinfo.setTradeStatus(AliConstants.ALI_PAY_NOTICE_TARDESTATUS_UNKONWN);
                     // 交易金额
-                } else if (paramName.equals("total_fee") && StringUtil.isNull(params.get("total_fee"))) {
+                } else if ("total_fee".equals(paramName) && StringUtil.isNull(params.get("total_fee"))) {
                     alipayinfo.setTotalFee("0");
                     // 购买数量
-                } else if (paramName.equals("quantity") && StringUtil.isNull(params.get("quantity"))) {
+                } else if ("quantity".equals(paramName) && StringUtil.isNull(params.get("quantity"))) {
                     alipayinfo.setTotalFee("1");
                     // 商品单价
-                } else if (paramName.equals("price") && StringUtil.isNull(params.get("price"))) {
+                } else if ("price".equals(paramName) && StringUtil.isNull(params.get("price"))) {
                     alipayinfo.setTotalFee("0");
                     // 退款状态 0:未知
-                } else if (paramName.equals("refund_status") && StringUtil.isNull(params.get("refund_status"))) {
+                } else if ("refund_status".equals(paramName) && StringUtil.isNull(params.get("refund_status"))) {
                     alipayinfo.setRefundStatus(AliConstants.ALI_PAY_NOTICE_TARDESTATUS_UNKONWN);
                     // 其他情况
                 } else {
@@ -402,7 +401,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
             if (!StringUtil.startsWith(fieldName, "$")) {
                 value = clz.getMethod("get" + StringUtil.capitalize(fieldName)).invoke(t);
                 if (value != null) {
-                    if (fieldName.equals("inputCharset")) {
+                    if ("inputCharset".equals(fieldName)) {
                         sb.append("&_").append(StringUtil.camelToSnake(fieldName)).append("=").append("\"")
                                 .append(value).append("\"");
                     } else {
@@ -446,7 +445,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
         LOGGER.debug("Ali's notice value to be signed:{}", preSignStr);
         LOGGER.debug("Ali's sign:{}", sign);
         // 获得签名验证结果
-        return AliConstants.ALI_PAY_SIGN_TYPE.equals("RSA")
+        return "RSA".equals(AliConstants.ALI_PAY_SIGN_TYPE)
                 && rsa.verifySign(preSignStr, sign, AliConstants.ALI_PAY_RSA_PUBLIC);
     }
 
@@ -457,7 +456,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
      * @return 去掉空值与签名参数后的新签名参数组
      */
     public Map<String, String> paraFilter(Map<String, String> array) {
-        Map<String, String> result = new HashMap<>();
+        Map<String, String> result = new HashMap<>(16);
         if (array == null || array.size() <= 0) {
             return result;
         }
@@ -509,7 +508,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
             String responseKey = "alipay_data_dataservice_bill_downloadurl_query_response";
 
             AliBillRes aliBillRes = new AliBillRes();
-            Map<String, String> bizContentMap = new HashMap<>();
+            Map<String, String> bizContentMap = new HashMap<>(2);
             if (StringUtil.isEmpty(billReq.getBillType())) {
                 bizContentMap.put("bill_type", "trade");
             } else {
@@ -520,7 +519,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
             Object result = getAliRequestRes(aliBillRes, bizContentMap, method, responseKey);
             if (result != null) {
                 aliBillRes = (AliBillRes) result;
-                if ("10000".equals(aliBillRes.getCode())) {
+                if (ALI_REQUEST_CODE.equals(aliBillRes.getCode())) {
                     LOGGER.info("{}Ali pay bill download url：{}", dft.format(billReq.getDate()), ((AliBillRes) result).getBillDownloadUrl());
                     return (T) aliBillRes;
                 } else {

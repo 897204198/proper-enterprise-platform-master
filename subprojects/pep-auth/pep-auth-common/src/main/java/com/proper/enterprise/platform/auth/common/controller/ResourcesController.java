@@ -37,7 +37,12 @@ public class ResourcesController extends BaseController {
         return responseOfDelete(resourceService.deleteByIds(ids));
     }
 
-    @AuthcIgnore // TODO necessary?
+    /**
+     *取得指定资源ID的资源信息
+     * @param resourceId 指定资源ID
+     * @return 资源信息
+     */
+    @AuthcIgnore
     @GetMapping(path = "/{resourceId}")
     @JsonView(ResourceVO.Single.class)
     public ResponseEntity<ResourceVO> find(@PathVariable String resourceId) {

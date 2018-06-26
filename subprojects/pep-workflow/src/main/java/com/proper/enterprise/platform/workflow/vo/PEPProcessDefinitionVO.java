@@ -1,13 +1,19 @@
 package com.proper.enterprise.platform.workflow.vo;
 
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import org.flowable.engine.repository.ProcessDefinition;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
+import java.io.IOException;
 import java.util.Date;
 
 public class PEPProcessDefinitionVO {
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(PEPModelVO.class);
+
     private String key;
-    private int version;
+    private Integer version;
     private String deploymentId;
     private Date deploymentTime;
 
@@ -52,5 +58,16 @@ public class PEPProcessDefinitionVO {
 
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
+    }
+
+    @Override
+    public String toString() {
+        String pepProcessDefinitionVOStr = "";
+        try {
+            pepProcessDefinitionVOStr = JSONUtil.toJSON(this);
+        } catch (IOException e) {
+            LOGGER.error("PEPProcessDefinitionVO error , vo is null", e);
+        }
+        return pepProcessDefinitionVOStr;
     }
 }

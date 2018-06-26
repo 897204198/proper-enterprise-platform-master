@@ -111,7 +111,7 @@ public class AliController extends BaseController {
         boolean ret = false;
 
         // 获取支付宝POST过来反馈信息
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>(16);
         Map<String, String[]> requestParams = request.getParameterMap();
         for (Map.Entry<String, String[]> entry : requestParams.entrySet()) {
             String name = entry.getKey();
@@ -126,7 +126,8 @@ public class AliController extends BaseController {
         // 退款状态
         String refundStatus = request.getParameter("refund_status");
         // 获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
-        if (aliService.verify(params) && StringUtil.isNotNull(outTradeNo)) { // 验证成功
+        // 验证成功
+        if (aliService.verify(params) && StringUtil.isNotNull(outTradeNo)) {
             // 取得交易状态
             if (StringUtil.isNull(refundStatus)
                 && tradeStatus.equals(AliConstants.ALI_PAY_NOTICE_TARDESTATUS_TRADE_SUCCESS)) {

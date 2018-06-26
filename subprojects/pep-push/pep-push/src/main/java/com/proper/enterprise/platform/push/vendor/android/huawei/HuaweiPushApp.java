@@ -29,12 +29,21 @@ import java.util.*;
  */
 public class HuaweiPushApp extends BasePushApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(HuaweiPushApp.class);
+    private static final String MSG_SUCCESS = "Success";
     private String theAppid;
     private String theAppSecret;
     private NSPClient client;
     private String accessToken;
-    private String apiUrl; //应用级消息下发API
-    private long tokenExpiredTime;  //accessToken的过期时间
+
+    /**
+     * 应用级消息下发API
+     */
+    private String apiUrl;
+
+    /**
+     * accessToken的过期时间
+     */
+    private long tokenExpiredTime;
 
 
     public String getTheAppid() {
@@ -71,7 +80,8 @@ public class HuaweiPushApp extends BasePushApp {
                 result = doPushMsg(msg);
             } catch (Exception e1) {
                 LOGGER.error("error huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), e1);
-                result = false; // 第二次发送失败才真的发送失败
+                // 第二次发送失败才真的发送失败
+                result = false;
             }
         }
         return result;
@@ -138,7 +148,7 @@ public class HuaweiPushApp extends BasePushApp {
         boolean rtn = false;
         try {
             PushRet result = JSONUtil.parse(rsp, PushRet.class);
-            if ("Success".equals(result.getMsg())) {
+            if (MSG_SUCCESS.equals(result.getMsg())) {
                 LOGGER.info("success huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
                 rtn = true;
             } else {
@@ -149,11 +159,13 @@ public class HuaweiPushApp extends BasePushApp {
             Integer badgeNumber = getBadgeNumber(msg);
             //角标不为空，且当前消息为通知栏消息，则发送一条透传消息，设置应用角标
             if (badgeNumber != null && !isCmdMessage(msg)) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("_proper_mpage", "badge"); //系统消息类型：设置角标
-                data.put("_proper_badge", badgeNumber); //应用角标数
+                Map<String, Object> data = new HashMap<>(2);
+                //系统消息类型：设置角标
+                data.put("_proper_mpage", "badge");
+                //应用角标数
+                data.put("_proper_badge", badgeNumber);
                 String badgeResponse = doPushCmd(msg.getPushToken(), data);
-                Map<String, Object> mapResponse = new HashMap<>();
+                Map<String, Object> mapResponse = new HashMap<>(2);
                 mapResponse.put("_proper_badge", badgeResponse);
                 mapResponse.put("_proper_response", rsp);
                 msg.setMresponse(JSONUtil.toJSON(mapResponse));
@@ -170,7 +182,7 @@ public class HuaweiPushApp extends BasePushApp {
         try {
             msg.setMresponse(rsp);
             PushRet result = JSONUtil.parse(rsp, PushRet.class);
-            if ("Success".equals(result.getMsg())) {
+            if (MSG_SUCCESS.equals(result.getMsg())) {
                 LOGGER.info("success huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
                 return true;
             } else {
@@ -189,8 +201,11 @@ public class HuaweiPushApp extends BasePushApp {
         }
     }
 
-
-    //获取下发通知消息的认证Token
+    /**
+     * 获取下发通知消息的认证Token
+     *
+     * @throws IOException 异常
+     */
     private void getClient() throws IOException {
         String tokenUrl = "https://login.cloud.huawei.com/oauth2/v2/token";
         apiUrl = "https://api.push.hicloud.com/pushsend.do";
@@ -272,8 +287,7 @@ public class HuaweiPushApp extends BasePushApp {
         JSONObject extJson = new JSONObject();
         //设置消息标签，如果带了这个标签，会在回执中推送给CP用于检测某种类型消息的到达率和状态
         extJson.put("biTag", "Trump");
-        //自定义推送消息在通知栏的图标,value为一个公网可以访问的URL
-        //ext.put("icon", "https://avatars2.githubusercontent.com/u/17904702?s=200&v=4");
+        // TODO 自定义推送消息在通知栏的图标可在 extJson 中加入 icon 属性，value 为一个公网可以访问的URL
         hps.put("ext", extJson);
 
         JSONObject payload = new JSONObject();
@@ -367,8 +381,17 @@ public class HuaweiPushApp extends BasePushApp {
     }
 
     enum PushType {
+        /**
+         * chat
+         */
         chat,
+        /**
+         * video
+         */
         video,
+        /**
+         * other
+         */
         other
     }
 

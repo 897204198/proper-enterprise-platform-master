@@ -51,7 +51,7 @@ public class LoginController {
 
     @RequestMapping(value = "/auth/login/user", method = RequestMethod.GET)
     public ResponseEntity<Map<String, String>> getCurrentUser() {
-        Map<String, String> currentUserMap = new HashMap<>();
+        Map<String, String> currentUserMap = new HashMap<>(4);
         User user = userService.getCurrentUser();
         currentUserMap.put("name", user.getName());
         currentUserMap.put("avatar", user.getAvatar());

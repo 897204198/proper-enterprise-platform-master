@@ -9,9 +9,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service("pay_notice_ali")
-public class MocAbstractNoticeImplTest implements NoticeService<PayResultRes> {
+public class MocAbstractNoticeImpl implements NoticeService<PayResultRes> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MocAbstractNoticeImplTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MocAbstractNoticeImpl.class);
 
     /**
      * 实现类

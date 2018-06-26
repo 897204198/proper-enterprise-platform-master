@@ -161,7 +161,8 @@ public interface UserService {
 
     /**
      * 获得当前登录用户权限范围内菜单集合
-     *
+     * @param userId 用户id
+     * @param menuEnable 是否可用
      * @return 菜单集合
      */
     Collection<? extends Menu> getUserMenus(String userId, EnableEnum menuEnable);
@@ -213,6 +214,7 @@ public interface UserService {
      * 根据传入的用户集合，获取合法的用户集合(过滤掉valid、enable为false的)
      *
      * @param users 待检测的用户集合
+     * @param userEnable 是否可用
      * @return 返回合法的用户集合
      */
     Collection<? extends User> getFilterUsers(Collection<? extends User> users, EnableEnum userEnable);

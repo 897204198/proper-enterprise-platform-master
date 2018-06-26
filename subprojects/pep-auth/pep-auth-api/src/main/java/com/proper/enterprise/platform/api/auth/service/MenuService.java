@@ -8,8 +8,18 @@ import java.util.Collection;
 
 public interface MenuService {
 
+    /**
+     * 获取菜单
+     * @param id 菜单id;
+     * @return 菜单;
+     */
     Menu get(String id);
 
+    /**
+     * 新增菜单;
+     * @param menu 菜单;
+     * @return 菜单;
+     */
     Menu save(Menu menu);
 
     /**
@@ -41,15 +51,21 @@ public interface MenuService {
 
     /**
      * 根据当前用户以及查询条件获得用户拥有的所有角色权限范围内的菜单集合，
-     * 需去重，并按 parent 和 sequence number 排序
-     * 用户可直接被赋予某角色，也可通过隶属某用户组且用户组拥有某角色而获得角色权限
-     *
-     * @return 菜单集合
+     *       需去重，并按 parent 和 sequence number 排序
+     *       用户可直接被赋予某角色，也可通过隶属某用户组且用户组拥有某角色而获得角色权限
+     * @param name 菜单名称
+     * @param description 菜单描述
+     * @param route 菜单路径
+     * @param enable 是否可用
+     * @param parentId 上级菜单id
+     * @return 菜单结婚
      */
     Collection<? extends Menu> getMenus(String name, String description, String route, EnableEnum enable, String parentId);
 
     /**
      * 根据菜单集合获取过滤后的菜单包括父菜单
+     * @param menus 菜单集合
+     * @return 菜单集合
      */
     Collection<? extends Menu> getFilterMenusAndParent(Collection<? extends Menu> menus);
 
@@ -93,14 +109,14 @@ public interface MenuService {
 
     /**
      * 删除多条菜单数据
-     *
-     * @param ids 以 , 分隔的待删除菜单ID列表
+     * @param  ids 以 , 分隔的待删除菜单ID列表
+     * @return true or false
      */
     boolean deleteByIds(String ids);
 
     /**
      * 获取父节点列表
-     *
+     * @param menuEnable  标记字段
      * @return 父节点列表
      */
     Collection<? extends Menu> getMenuParents(EnableEnum menuEnable);
@@ -116,7 +132,9 @@ public interface MenuService {
 
     /**
      * 菜单添加资源
-     * @return 菜单
+     * @param menuId 菜单id
+     * @param resourceReq 资源
+     * @return 资源信息
      */
     Resource addResourceOfMenu(String menuId, Resource resourceReq);
 
@@ -132,8 +150,9 @@ public interface MenuService {
 
     /**
      * 获取指定菜单角色集合
-     *
-     * @param menuId 菜单ID
+     * @param menuId 菜单id
+     * @param menuEnable 是否可用
+     * @param resourceEnable 是否可用
      * @return 角色集合
      */
     Collection<? extends Role> getMenuRoles(String menuId, EnableEnum menuEnable, EnableEnum resourceEnable);

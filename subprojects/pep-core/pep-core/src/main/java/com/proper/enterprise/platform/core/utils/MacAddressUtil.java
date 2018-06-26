@@ -61,10 +61,9 @@ public class MacAddressUtil {
                     String s = Integer.toHexString(macByte & 0xFF);
                     sb.append(s.length() == 1 ? 0 + s : s);
                 }
-                if (sb.toString().length() > MAC_LENGTH) {
-                    continue;
+                if (sb.toString().length() <= MAC_LENGTH) {
+                    return sb.toString();
                 }
-                return sb.toString();
             }
             return null;
         } catch (Exception e) {

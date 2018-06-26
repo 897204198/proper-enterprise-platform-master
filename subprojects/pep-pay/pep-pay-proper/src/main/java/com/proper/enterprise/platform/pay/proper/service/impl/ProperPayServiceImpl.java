@@ -197,7 +197,7 @@ public class ProperPayServiceImpl extends AbstractPayImpl implements PayService,
     }
 
     /**
-     * 通过订模拟支付订单号查询模拟支付信息
+     * 通过模拟支付订单号查询模拟支付信息
      *
      * @param tradeNo 模拟支付订单号
      * @return Proper

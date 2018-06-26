@@ -6,6 +6,11 @@ package com.proper.enterprise.platform.api.auth.service;
  */
 public interface PasswordEncryptService {
 
+    /**
+     * 对密码进行加密
+     * @param password 密码
+     * @return 加密后的密码
+     */
     String encrypt(String password);
 
 }

@@ -48,7 +48,9 @@ public class WechatPayResServiceImpl implements WechatPayResService {
             response = HttpClient.post(url, MediaType.APPLICATION_FORM_URLENCODED, requestXML);
         }
         //对账单 获取成功 返回为 文本表格 格式
-        if ("unmarshallWechatBillRes".equals(beanId) && 200 == response.getStatusCode().value()) {
+        String beanIdStr = "unmarshallWechatBillRes";
+        int statusCode = 200;
+        if (beanIdStr.equals(beanId) && statusCode == response.getStatusCode().value()) {
             return (T)response;
         } else {
             Object res = unmarshallerMap.get(beanId).unmarshal(

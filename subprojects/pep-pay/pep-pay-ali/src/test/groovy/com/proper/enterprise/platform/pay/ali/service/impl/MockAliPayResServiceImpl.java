@@ -24,8 +24,14 @@ public class MockAliPayResServiceImpl extends AliPayResServiceImpl implements Al
 
     @Override
     public Object convertMap2AliPayRes(String strRes, String responseKey, Object res) throws Exception {
+        // 统一收单线下交易查询键值
+        String queryResStr = "alipay_trade_query_response";
+        // 统一收单交易退款查询键值
+        String refundQueryResStr = "alipay_trade_fastpay_refund_query_response";
+        // 统一收单交易退款接口键值
+        String refundResStr = "alipay_trade_refund_response";
         // 统一收单线下交易查询
-        if (responseKey.equals("alipay_trade_query_response")) {
+        if (queryResStr.equals(responseKey)) {
             strRes = "{\"alipay_trade_query_response\":{\"code\":\"10000\",\"msg\":\"Success\",\"buyer_logon_id\":\"dre***@gmail.com\","
                 + "\"buyer_pay_amount\":\"0.00\",\"buyer_user_id\":\"2088902928162096\",\"invoice_amount\":\"0.00\","
                 + "\"open_id\":\"20881007251907009745429510918909\",\"out_trade_no\":\"201512191483583349219\","
@@ -34,14 +40,14 @@ public class MockAliPayResServiceImpl extends AliPayResServiceImpl implements Al
                 + "\"sign\":\"io1ljN3iWahN6PesvlI4AYdEf5jQRX/05IOFu1duD+lifrPN1CdMS86Yf784fYAqPbhGBl8b6eC9NrnyUOZijmW38UX1Rg19Wt"
                 + "7rqHK9KDBTDUWLK7q51v7FpxNg9aIiZdCSvfenuMZAyIWusQgx9iOXopaHpr03MtpErhHAxmY=\"}";
             // 统一收单交易退款查询
-        } else if (responseKey.equals("alipay_trade_fastpay_refund_query_response")) {
+        } else if (refundQueryResStr.equals(responseKey)) {
             strRes = "{\"alipay_trade_fastpay_refund_query_response\":{\"code\":\"10000\",\"msg\":\"Success\","
                 + "\"out_request_no\":\"20151219148358334921901\",\"out_trade_no\":\"201512191483583349219\","
                 + "\"refund_amount\":\"0.01\",\"total_amount\":\"0.05\",\"trade_no\":\"2017010521001004090235281478\"},"
                 + "\"sign\":\"p9d/1izYNTQxdxbNJ0tprJqT2tsc6dc40k68KyyYLV5UY1E4qgbvbZc+EkHVVPy7wooPSF9gl7aGAYGy7mI2YjabZAt3WKPjctsqTWLCmr"
                 + "CB9m49lSL1uv/hr9YyktHkmh3z4aj0AoAcqPKDulyJyzJtDdVrLAZg7vKu06dNbCA=\"}";
             // 统一收单交易退款接口
-        } else if (responseKey.equals("alipay_trade_refund_response")) {
+        } else if (refundResStr.equals(responseKey)) {
             strRes = "{\"alipay_trade_refund_response\":{\"code\":\"10000\",\"msg\":\"Success\",\"buyer_logon_id\":\"dre***@gmail.com\","
                 + "\"buyer_user_id\":\"2088902928162096\",\"fund_change\":\"Y\",\"gmt_refund_pay\":\"2017-01-05 11:08:09\","
                 + "\"open_id\":\"20881007251907009745429510918909\",\"out_trade_no\":\"201512191483583349219\","
@@ -61,7 +67,7 @@ public class MockAliPayResServiceImpl extends AliPayResServiceImpl implements Al
         }
         Field[] fields = res.getClass().getDeclaredFields();
         for (Field field : fields) {
-            if (field.getName().equals("serialVersionUID") || field.getName().equals("$jacocoData")) {
+            if ("serialVersionUID".equals(field.getName()) || "$jacocoData".equals(field.getName())) {
                 continue;
             }
             PropertyDescriptor pd = new PropertyDescriptor(field.getName(), res.getClass());

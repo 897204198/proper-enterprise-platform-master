@@ -21,6 +21,8 @@ public class AuthzServiceImpl implements AuthzService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthzService.class);
 
+    private static final String SPLIT_SYMBOL = ",";
+
     private static PathMatcher matcher = new AntPathMatcher();
 
     private ResourceService resourceService;
@@ -54,7 +56,7 @@ public class AuthzServiceImpl implements AuthzService {
         if (StringUtils.isEmpty(patterns)) {
             return false;
         }
-        for (String pattern : patterns.split(",")) {
+        for (String pattern : patterns.split(SPLIT_SYMBOL)) {
             if (matcher.match(pattern, path)) {
                 LOGGER.debug("{} {} is match {}", method, url, pattern);
                 return true;

@@ -7,13 +7,13 @@ import com.proper.enterprise.platform.core.jpa.curd.c.api.C;
 import com.proper.enterprise.platform.core.jpa.curd.c.entity.CEntity;
 import com.proper.enterprise.platform.core.jpa.curd.c.repository.CRepository;
 import com.proper.enterprise.platform.core.jpa.curd.c.service.CService;
-import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class CServiceImpl extends JpaServiceSupport<C, CRepository, String> implements CService {
+public class CServiceImpl extends AbstractJpaServiceSupport<C, CRepository, String> implements CService {
 
     @Autowired
     private CRepository crepository;

@@ -21,6 +21,11 @@ public abstract class AbstractPayImpl implements PayService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPayImpl.class);
 
+    /**
+     * 小数点后最多两位并且大于零正则表达式
+     */
+    private static Pattern decimalPattern = Pattern.compile("^([1-9]\\d*)?$");
+
     @Autowired
     private PayBusinessService payBusinessService;
 
@@ -118,6 +123,7 @@ public abstract class AbstractPayImpl implements PayService {
      * @param refundBody 各种支付方式退款请求对象
      * @param <T> 各种支付方式退款结果泛型
      * @return 各种支付方式退款结果
+     * @throws Exception 异常
      */
     protected abstract <T> T saveRefundProcess(T refundBody) throws Exception;
 
@@ -190,11 +196,10 @@ public abstract class AbstractPayImpl implements PayService {
             // 校验金额
         } else {
             BigDecimal bigDecimal = new BigDecimal(req.getTotalFee());
-            // 小数点后最多两位并且大于零正则表达式
-            Pattern pattern = Pattern.compile("^([1-9]\\d*)?$");
-            Matcher matcher = pattern.matcher(String.valueOf(bigDecimal));
+            // 小数点后最多两位并且大于零
+            Matcher matcher = decimalPattern.matcher(String.valueOf(bigDecimal));
             // 校验金额小于0 或 不满足小数点后最多两位并且大于零
-            if (bigDecimal.compareTo(new BigDecimal("0")) <= 0 || !matcher.matches()) {
+            if (bigDecimal.compareTo(BigDecimal.ZERO) <= 0 || !matcher.matches()) {
                 resObj.setResultCode(PayResType.MONEYERROR);
                 resObj.setResultMsg(PayConstants.APP_PAY_MONEY_ERR);
             } else {
@@ -223,6 +228,11 @@ public abstract class AbstractPayImpl implements PayService {
 
     /**
      * 获取对账单
+     *
+     * @param billBodyReq 请求参数
+     * @param <T> 对账单类型
+     * @return 对账单
+     * @throws Exception 异常
      */
     protected abstract <T> T getBillProcess(BillReq billBodyReq) throws Exception;
 }

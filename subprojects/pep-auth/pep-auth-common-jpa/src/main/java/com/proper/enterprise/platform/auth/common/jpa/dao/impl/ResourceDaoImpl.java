@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.ResourceRepository;
-import com.proper.enterprise.platform.core.jpa.service.impl.JpaServiceSupport;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class ResourceDaoImpl extends JpaServiceSupport<Resource, ResourceRepository, String> implements ResourceDao {
+public class ResourceDaoImpl extends AbstractJpaServiceSupport<Resource, ResourceRepository, String> implements ResourceDao {
 
     @Autowired
     private ResourceRepository resourceRepository;

@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
 import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 
@@ -30,7 +31,7 @@ public class MenuVO extends BaseVO implements Menu {
     @JsonView(value = {Single.class})
     @POJOConverter(fromClassName = MENU_ENTITY_PATH,
         fieldName = "children", fromHandleBy = MenuVoFromHandler.class)
-    private boolean leaf;
+    private Boolean leaf;
 
 
     @JsonView(value = {Single.class})
@@ -311,5 +312,10 @@ public class MenuVO extends BaseVO implements Menu {
 
     public void setResources(Collection<ResourceVO> resources) {
         this.resources = resources;
+    }
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJSONIgnoreException(this);
     }
 }

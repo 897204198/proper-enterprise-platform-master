@@ -113,13 +113,15 @@ public class HttpClient extends ClientUtil {
      * @throws UnsupportedEncodingException 不支持的字符集
      */
     public static String getFormUrlEncodedData(Map<String, Object> params, String encode) throws UnsupportedEncodingException {
-        StringBuffer stringBuffer = new StringBuffer(); // 存储封装好的请求体信息
+        // 存储封装好的请求体信息
+        StringBuffer stringBuffer = new StringBuffer();
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             stringBuffer.append(entry.getKey()).append("=")
                 .append(URLEncoder.encode(entry.getValue().toString(), encode)).append("&");
         }
         if (stringBuffer.length() > 0) {
-            stringBuffer.deleteCharAt(stringBuffer.length() - 1); // 删除最后的一个"&"
+            // 删除最后的一个"&"
+            stringBuffer.deleteCharAt(stringBuffer.length() - 1);
         }
         return stringBuffer.toString();
     }

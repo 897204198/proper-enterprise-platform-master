@@ -26,7 +26,8 @@ public class HttpsClient extends ClientUtil {
         Assert.notEmpty(certificates, "Expected non-empty set of trusted certificates");
 
         KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-        keyStore.load(null, password.toCharArray()); // By convention, 'null' creates an empty key store.
+        // By convention, 'null' creates an empty key store.
+        keyStore.load(null, password.toCharArray());
         int index = 0;
         for (Certificate certificate : certificates) {
             String certificateAlias = Integer.toString(index++);

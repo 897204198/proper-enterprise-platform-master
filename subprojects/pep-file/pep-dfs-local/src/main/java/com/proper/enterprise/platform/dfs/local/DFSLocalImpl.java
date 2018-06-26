@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.dfs.local;
 
-import com.proper.enterprise.platform.dfs.api.common.DFSServiceSupport;
+import com.proper.enterprise.platform.dfs.api.common.AbstractDFSServiceSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 
 /**
- * Local file system implementation of DFSServiceSupport
+ * Local file system implementation of AbstractDFSServiceSupport
  *
  */
 @Service
-public class DFSLocalImpl extends DFSServiceSupport {
+public class DFSLocalImpl extends AbstractDFSServiceSupport {
 
     @Value("${dfs.local.buffersize}")
     private int bufferSize;

@@ -40,10 +40,8 @@ public class AppVersionController extends BaseController {
         AppVersionDocument latestVersion = service.getLatestRelease();
         if (StringUtil.isNotBlank(current)) {
             AppVersionDocument currentVersion = service.get(current);
-            if (currentVersion != null && latestVersion != null) {
-                if (currentVersion.getCreateTime().equals(latestVersion.getCreateTime())) {
-                    latestVersion = null;
-                }
+            if (currentVersion != null && latestVersion != null && currentVersion.getCreateTime().equals(latestVersion.getCreateTime())) {
+                latestVersion = null;
             }
         }
         return responseOfGet(latestVersion);

@@ -37,24 +37,55 @@ public class PushMsgEntity extends BaseEntity implements PushMsg {
     private String msgid;
     @Column(nullable = false)
     private String userid;
-    @Column(nullable = false, length = 1000)
-    private String mcontent; // 消息正文
-    private String mtitle; // 消息标题
-    @Column(nullable = false, length = 1500)
-    private String mcustoms; // 消息的附加信息，json 字符串
-    @Enumerated(EnumType.ORDINAL)
-    private PushMsgStatus mstatus; // 消息状态，是否发送
-    private Date msendedDate; // 消息成功发送日期
 
-    private Integer sendCount; // 消息发送次数
+    /**
+     * 消息正文
+     */
+    @Column(nullable = false, length = 1000)
+    private String mcontent;
+
+    /**
+     * 消息标题
+     */
+    private String mtitle;
+
+    /**
+     * 消息的附加信息，json 字符串
+     */
+    @Column(nullable = false, length = 1500)
+    private String mcustoms;
+
+    /**
+     * 消息状态，是否发送
+     */
+    @Enumerated(EnumType.ORDINAL)
+    private PushMsgStatus mstatus;
+
+    /**
+     * 消息成功发送日期
+     */
+    private Date msendedDate;
+
+    /**
+     * 消息发送次数
+     */
+    private Integer sendCount;
 
     @OneToOne
     @JoinColumn(name = "DEVICE_PK_ID")
     private PushDeviceEntity device;
     private static final int MAX_MRESPONSE_LENGTH = 1000;
+
+    /**
+     * 最后一次推送服务器返回的信息
+     */
     @Column(length = MAX_MRESPONSE_LENGTH)
-    private String mresponse; // 最后一次推送服务器返回的信息
-    private String pushToken; // 最后一次推送消息时的唯一标识
+    private String mresponse;
+
+    /**
+     * 最后一次推送消息时的唯一标识
+     */
+    private String pushToken;
 
     public String getMtitle() {
         return mtitle;
@@ -163,7 +194,7 @@ public class PushMsgEntity extends BaseEntity implements PushMsg {
             LOGGER.error("PushMsgEntity.getMcustomDatasMap error!", e);
         }
         if (map == null) {
-            map = new HashMap<String, Object>();
+            map = new HashMap<String, Object>(0);
         }
         return map;
     }

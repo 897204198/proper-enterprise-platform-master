@@ -57,7 +57,7 @@ public class AntPatternReloadableResourceBundleMessageSource extends ReloadableR
         }
 
         if (localeMap == null) {
-            localeMap = new ConcurrentHashMap<>();
+            localeMap = new ConcurrentHashMap<>(1);
             Map<Locale, List<String>> existing = this.cachedFilenames.putIfAbsent(basenamePattern, localeMap);
             if (existing != null) {
                 localeMap = existing;

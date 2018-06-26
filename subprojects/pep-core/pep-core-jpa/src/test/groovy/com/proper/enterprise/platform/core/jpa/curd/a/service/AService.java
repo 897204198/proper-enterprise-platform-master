@@ -7,12 +7,33 @@ import java.util.Collection;
 
 public interface AService extends BaseJpaService<A, String> {
 
+    /**
+     * 保存
+     * @param a a
+     * @return A
+     */
     A save(A a);
 
+    /**
+     * 添加
+     * @param aid aid
+     * @param bid bid
+     * @return A
+     */
     A addB(String aid, String bid);
 
+    /**
+     * 添加
+     * @param aid aid
+     * @param cid cid
+     * @return A
+     */
     A addC(String aid, String cid);
 
+    /**
+     * 用B查找所有
+     * @return 返回集合
+     */
     Collection<A> findAllWithB();
 
 

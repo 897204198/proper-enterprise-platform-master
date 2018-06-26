@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.core.service.impl;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.repository.BaseRepository;
 import com.proper.enterprise.platform.core.service.BaseService;
-import com.proper.enterprise.platform.core.support.QuerySupport;
+import com.proper.enterprise.platform.core.support.AbstractQuerySupport;
 import org.springframework.data.domain.*;
 
 import java.io.Serializable;
@@ -16,8 +16,13 @@ import java.util.Collection;
  * @param <R>   repository泛型
  * @param <IDT> ID泛型
  */
-public abstract class ServiceSupport<T, R extends BaseRepository, IDT extends Serializable> extends QuerySupport implements BaseService<T, IDT> {
+public abstract class AbstractServiceSupport<T, R extends BaseRepository, IDT extends Serializable> extends AbstractQuerySupport
+        implements BaseService<T, IDT> {
 
+    /**
+     * getRepository()
+     * @return repository泛型
+     */
     public abstract R getRepository();
 
     @Override
