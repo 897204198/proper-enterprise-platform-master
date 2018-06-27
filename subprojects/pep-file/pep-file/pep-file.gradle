@@ -1,10 +1,6 @@
 dependencies {
-    compile project(':pep-core-jpa'),
-            project(':pep-dfs-api'),
-            project(':pep-auth-jwt'),
-            project(':pep-sys')
+    implementation project(':pep-core'),
+                   project(':pep-dfs-api')
 
-    testCompile project(':pep-auth-common'),
-                project(':pep-test')
-    testRuntime project(':pep-cache-ehcache')
+    runtime libraries.commons_fileupload
 }

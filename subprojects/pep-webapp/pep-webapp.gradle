@@ -33,8 +33,7 @@ dependencies {
 
     compile project(':pep-auth-api')
 
-    runtime libraries.commons_fileupload,
-            libraries.jackson_databind,
+    runtime libraries.jackson_databind,
             libraries.spring_orm,
             libraries.spring_webmvc
 

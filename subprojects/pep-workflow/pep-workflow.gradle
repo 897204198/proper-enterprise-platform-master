@@ -13,11 +13,10 @@ dependencies {
             project(':pep-cache-api'),
             project(':pep-core-jpa')
 
-    runtime libraries.flowable_web_designer
+    runtime libraries.commons_fileupload,
+            libraries.flowable_web_designer
 
     runtime project(':pep-auth-jwt')
-
-    testRuntime libraries.commons_fileupload
 
     testCompile project(':pep-auth-common-jpa'),
                 project(':pep-cache-ehcache'),
