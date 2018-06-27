@@ -24,7 +24,7 @@ public class RolesController extends BaseController {
     @JsonView(RoleVO.Single.class)
     public ResponseEntity<?> get(String name, String description, String parentId,
                                  @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return isPageSearch() ? responseOfGet(roleService.findRolesPagniation(name, description, parentId, roleEnable),
+        return isPageSearch() ? responseOfGet(roleService.findRolesPagination(name, description, parentId, roleEnable),
             RoleVO.class, RoleVO.Single.class) :
             responseOfGet(roleService.findRolesLike(name, description, parentId, roleEnable), RoleVO.class, RoleVO.Single.class);
     }

@@ -30,7 +30,7 @@ public interface UserGroupService {
      * @param enable      用户组状态
      * @return 用户组集合 分页
      */
-    DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, EnableEnum enable);
+    DataTrunk<? extends UserGroup> getGroupsPagination(String name, String description, EnableEnum enable);
 
     /**
      * 根据传入的用户组集合，获取合法的用户组(过滤掉valid、enable为false的用户组)

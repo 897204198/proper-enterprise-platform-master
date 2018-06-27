@@ -133,7 +133,7 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
     }
 
     @Override
-    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable) {
+    public DataTrunk<? extends User> findUsersPagination(String userName, String name, String email, String phone, EnableEnum enable) {
         return this.findPage(buildUserSpecification(userName, name, email, phone, enable),
             new Sort(Sort.Direction.DESC, "lastModifyTime"));
     }

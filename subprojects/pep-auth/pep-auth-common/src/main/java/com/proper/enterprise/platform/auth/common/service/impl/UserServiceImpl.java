@@ -167,8 +167,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable) {
-        return userDao.findUsersPagniation(userName, name, email, phone, enable);
+    public DataTrunk<? extends User> findUsersPagination(String userName, String name, String email, String phone, EnableEnum enable) {
+        return userDao.findUsersPagination(userName, name, email, phone, enable);
     }
 
     @Override

@@ -85,7 +85,7 @@ public interface RoleDao extends BaseService<Role, String> {
      * @param enable 是否可用
      * @return 角色集合
      */
-    DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable);
+    DataTrunk<? extends Role> findRolesPagination(String name, String description, String parentId, EnableEnum enable);
 
     /**
      * 通过roleid获取上级角色

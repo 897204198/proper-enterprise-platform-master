@@ -99,7 +99,7 @@ public class MockUserDAO implements UserDao {
     }
 
     @Override
-    public DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable) {
+    public DataTrunk<? extends User> findUsersPagination(String userName, String name, String email, String phone, EnableEnum enable) {
         return null;
     }
 

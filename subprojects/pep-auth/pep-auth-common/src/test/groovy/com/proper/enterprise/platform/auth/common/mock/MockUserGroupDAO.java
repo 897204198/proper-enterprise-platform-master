@@ -69,7 +69,7 @@ public class MockUserGroupDAO implements UserGroupDao {
     }
 
     @Override
-    public DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, EnableEnum enable) {
+    public DataTrunk<? extends UserGroup> getGroupsPagination(String name, String description, EnableEnum enable) {
         return null;
     }
 

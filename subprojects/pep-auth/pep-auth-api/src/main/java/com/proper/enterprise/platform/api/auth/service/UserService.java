@@ -129,7 +129,7 @@ public interface UserService {
      * @param enable   用户可用/不可用/全部
      * @return 用户信息列表 分页
      */
-    DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable);
+    DataTrunk<? extends User> findUsersPagination(String userName, String name, String email, String phone, EnableEnum enable);
 
     /**
      * 更新启用禁用

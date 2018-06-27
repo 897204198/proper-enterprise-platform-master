@@ -108,7 +108,7 @@ public interface UserDao extends BaseService<User, String> {
      * @param enable 是否可用
      * @return  用户集合
      */
-    DataTrunk<? extends User> findUsersPagniation(String userName, String name, String email, String phone, EnableEnum enable);
+    DataTrunk<? extends User> findUsersPagination(String userName, String name, String email, String phone, EnableEnum enable);
 
     /**
      * 用户修改密码

@@ -105,7 +105,7 @@ public interface MenuService {
      * @param parentId    父菜单ID
      * @return 获取菜单信息列表
      */
-    DataTrunk<? extends Menu> findMenusPagniation(String name, String description, String route, EnableEnum enable, String parentId);
+    DataTrunk<? extends Menu> findMenusPagination(String name, String description, String route, EnableEnum enable, String parentId);
 
     /**
      * 删除多条菜单数据

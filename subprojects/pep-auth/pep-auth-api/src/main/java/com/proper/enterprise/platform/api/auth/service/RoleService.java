@@ -96,7 +96,7 @@ public interface RoleService {
      * @param enable      是否可用
      * @return 角色信息列表 分页
      */
-    DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable);
+    DataTrunk<? extends Role> findRolesPagination(String name, String description, String parentId, EnableEnum enable);
 
 
     /**

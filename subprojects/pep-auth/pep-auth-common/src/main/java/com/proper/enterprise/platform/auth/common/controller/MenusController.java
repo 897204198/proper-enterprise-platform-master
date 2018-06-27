@@ -26,7 +26,7 @@ public class MenusController extends BaseController {
     @JsonView(MenuVO.Single.class)
     public ResponseEntity get(String name, String description, String route,
                               @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable, String parentId) {
-        return isPageSearch() ? responseOfGet(service.findMenusPagniation(name, description, route, menuEnable, parentId),
+        return isPageSearch() ? responseOfGet(service.findMenusPagination(name, description, route, menuEnable, parentId),
             MenuVO.class, MenuVO.Single.class)
             : responseOfGet(service.getMenus(name, description, route, menuEnable, parentId), MenuVO.class, MenuVO.Single.class);
     }

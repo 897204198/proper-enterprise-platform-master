@@ -65,7 +65,7 @@ public class MockRoleDAO implements RoleDao {
     }
 
     @Override
-    public DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable) {
+    public DataTrunk<? extends Role> findRolesPagination(String name, String description, String parentId, EnableEnum enable) {
         return null;
     }
 

@@ -162,7 +162,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<? extends Menu> findMenusPagniation(String name, String description, String route, EnableEnum enable, String parentId) {
+    public DataTrunk<? extends Menu> findMenusPagination(String name, String description, String route, EnableEnum enable, String parentId) {
         return menuDao.findPage(name, description, route, enable, parentId);
     }
 

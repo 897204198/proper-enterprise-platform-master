@@ -21,7 +21,7 @@ class SearchConfigServiceImplTest extends AbstractTest{
     SearchConfigRepository searchConfigRepository
 
     @Test
-    @Sql("/sql/oopsearch/config/configData.sql")
+    @Sql("/com/proper/enterprise/platform/oopsearch/config/configData.sql")
     void testAll() {
         String moduleName = "demouser"
         Map<String, Object> searchConfigBeans = searchConfigService.getSearchConfigs(DataBaseType.RDB)
@@ -30,5 +30,7 @@ class SearchConfigServiceImplTest extends AbstractTest{
         AbstractSearchConfigs searchConfigs = searchConfigService.getSearchConfig(moduleName)
         assert searchConfigs != null
 
+        String url = searchConfigService.getURL(moduleName);
+        assert url == '/demouser'
     }
 }

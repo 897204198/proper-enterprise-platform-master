@@ -1,19 +1,10 @@
-package com.proper.enterprise.platform.oopsearch.config.entity;
+package com.proper.enterprise.platform.oopsearch.api.vo;
 
-import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
-import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.oopsearch.api.enums.DataBaseType;
 
-import javax.persistence.*;
-
-
-/**
- * searchConfig对应的entity
- */
-@Entity
-@Table(name = "PEP_OOPSEARCH_CONFIG")
-@CacheEntity
-public class SearchConfigEntity extends BaseEntity {
+public class SearchConfigVO extends BaseVO {
 
     /**
      * 模块名称
@@ -35,6 +26,9 @@ public class SearchConfigEntity extends BaseEntity {
      */
     private String columnAlias;
 
+    /**
+     * 字段类型
+     */
     private String columnType;
 
     /**
@@ -47,8 +41,6 @@ public class SearchConfigEntity extends BaseEntity {
      */
     private String url;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "VARCHAR(10) DEFAULT 'RDB'")
     private DataBaseType dataBaseType;
 
     public String getModuleName() {
@@ -67,20 +59,20 @@ public class SearchConfigEntity extends BaseEntity {
         this.tableName = tableName;
     }
 
-    public String getColumnAlias() {
-        return columnAlias;
-    }
-
-    public void setColumnAlias(String columnAlias) {
-        this.columnAlias = columnAlias;
-    }
-
     public String getSearchColumn() {
         return searchColumn;
     }
 
     public void setSearchColumn(String searchColumn) {
         this.searchColumn = searchColumn;
+    }
+
+    public String getColumnAlias() {
+        return columnAlias;
+    }
+
+    public void setColumnAlias(String columnAlias) {
+        this.columnAlias = columnAlias;
     }
 
     public String getColumnType() {
@@ -113,5 +105,10 @@ public class SearchConfigEntity extends BaseEntity {
 
     public void setDataBaseType(DataBaseType dataBaseType) {
         this.dataBaseType = dataBaseType;
+    }
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJSONIgnoreException(this);
     }
 }

@@ -108,8 +108,8 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
-    public DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, EnableEnum enable) {
-        return userGroupDao.getGroupsPagniation(name, description, enable);
+    public DataTrunk<? extends UserGroup> getGroupsPagination(String name, String description, EnableEnum enable) {
+        return userGroupDao.getGroupsPagination(name, description, enable);
     }
 
     @Override

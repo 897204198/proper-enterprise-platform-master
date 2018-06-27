@@ -1,7 +1,13 @@
 package com.proper.enterprise.platform.oopsearch.config.service.impl;
 
+import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.enums.EnableEnum;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.ConfCenter;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.oopsearch.api.enums.DataBaseType;
+import com.proper.enterprise.platform.oopsearch.api.vo.SearchConfigVO;
 import com.proper.enterprise.platform.oopsearch.config.conf.AbstractSearchConfigs;
 
 import com.proper.enterprise.platform.oopsearch.config.entity.SearchConfigEntity;
@@ -11,20 +17,33 @@ import com.proper.enterprise.platform.oopsearch.config.conf.ModuleSearchConfig;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class SearchConfigServiceImpl implements SearchConfigService {
+public class SearchConfigServiceImpl extends AbstractJpaServiceSupport<SearchConfigVO, SearchConfigRepository, String>
+    implements SearchConfigService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchConfigServiceImpl.class);
 
-    @Autowired
-    SearchConfigRepository searchConfigRepository;
+    private SearchConfigRepository searchConfigRepository;
+
+    private I18NService i18NService;
 
     @Autowired
-    I18NService i18NService;
+    public SearchConfigServiceImpl(SearchConfigRepository searchConfigRepository, I18NService i18NService) {
+        this.searchConfigRepository = searchConfigRepository;
+        this.i18NService = i18NService;
+    }
+
+    @Override
+    public SearchConfigRepository getRepository() {
+        return searchConfigRepository;
+    }
 
     @Override
     public AbstractSearchConfigs getSearchConfig(String moduleName) {
@@ -152,5 +171,85 @@ public class SearchConfigServiceImpl implements SearchConfigService {
             return null;
         }
         return result.get(0).getUrl();
+    }
+
+    @Override
+    public DataTrunk<SearchConfigVO> findSearchConfigPagination(String name, String url, String tableName,
+                                                                String searchColumn, String columnAlias, String columnDesc,
+                                                                EnableEnum configEnable) {
+        Page<SearchConfigEntity> result = searchConfigRepository.findSearchConfigPagination(wrap(name), wrap(url), wrap(tableName),
+            wrap(searchColumn), wrap(columnAlias), wrap(columnDesc),
+            configEnable == null ? null : EnableEnum.ENABLE.equals(configEnable), this.getPageRequest());
+        List<SearchConfigVO> resVOs = new ArrayList<>();
+        for (SearchConfigEntity res : result.getContent()) {
+            SearchConfigVO searchConfigVO = new SearchConfigVO();
+            BeanUtils.copyProperties(res, searchConfigVO);
+            resVOs.add(searchConfigVO);
+        }
+        Page<SearchConfigVO> pageVO = new PageImpl<>(resVOs, this.getPageRequest(), result.getTotalElements());
+        return new DataTrunk<>(pageVO);
+    }
+
+    private String wrap(String str) {
+        return "%" + (StringUtil.isBlank(str) ? "" : str) + "%";
+    }
+
+    @Override
+    public SearchConfigVO updateSearchConfig(String id, SearchConfigVO searchConfigVO) {
+        try {
+            searchConfigVO.setId(id);
+            SearchConfigEntity searchConfigEntity = new SearchConfigEntity();
+            BeanUtils.copyProperties(searchConfigVO, searchConfigEntity);
+            BeanUtils.copyProperties(searchConfigRepository.updateForSelective(searchConfigEntity), searchConfigVO);
+            return searchConfigVO;
+        } catch (Exception e) {
+            throw new ErrMsgException("Failed to save config");
+        }
+    }
+
+    /**
+     * 新增OopSearch配置信息
+     * @param searchConfigVO 对应的vo
+     */
+    @Override
+    public SearchConfigVO add(SearchConfigVO searchConfigVO) {
+        if (null != searchConfigVO) {
+            checkParam(searchConfigVO);
+            SearchConfigEntity searchConfigEntity = new SearchConfigEntity();
+            BeanUtils.copyProperties(searchConfigVO, searchConfigEntity);
+            BeanUtils.copyProperties(searchConfigRepository.save(searchConfigEntity), searchConfigVO);
+            return searchConfigVO;
+        }
+        throw new ErrMsgException("searchConfigEntity is null");
+
+    }
+
+    private void checkParam(SearchConfigVO searchConfigVO) {
+        if (StringUtil.isBlank(searchConfigVO.getColumnDesc())
+            || StringUtil.isBlank(searchConfigVO.getColumnAlias())
+            || StringUtil.isBlank(searchConfigVO.getSearchColumn())
+            || StringUtil.isBlank(searchConfigVO.getTableName())
+            || StringUtil.isBlank(searchConfigVO.getModuleName())
+            || StringUtil.isBlank(searchConfigVO.getUrl())) {
+            throw new ErrMsgException("searchConfigEntity Param is null or ' ' ");
+        }
+    }
+
+    /**
+     * 删除OopSearch配置信息
+     * @param ids ID
+     * @return true or false
+     */
+    @Override
+    public boolean deleteByIds(String ids) {
+        if (StringUtil.isNotBlank(ids)) {
+            String[] idArr = ids.split(",");
+            List<String> idList = new ArrayList<>();
+            Collections.addAll(idList, idArr);
+            Collection<SearchConfigEntity> all = searchConfigRepository.findAll(idList);
+            searchConfigRepository.delete(all);
+            return all.size() > 0;
+        }
+        return false;
     }
 }

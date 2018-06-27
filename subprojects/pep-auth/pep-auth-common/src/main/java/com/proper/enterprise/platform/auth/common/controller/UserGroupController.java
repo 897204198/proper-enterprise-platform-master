@@ -25,7 +25,7 @@ public class UserGroupController extends BaseController {
     @GetMapping
     @JsonView(value = {UserGroupVO.Single.class})
     public ResponseEntity<?> getGroups(String name, String description, @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
-        return isPageSearch() ? responseOfGet(service.getGroupsPagniation(name, description, userGroupEnable),
+        return isPageSearch() ? responseOfGet(service.getGroupsPagination(name, description, userGroupEnable),
             UserGroupVO.class, UserGroupVO.Single.class)
             : responseOfGet(service.getGroups(name, description, userGroupEnable), UserGroupVO.class, UserGroupVO.Single.class);
     }

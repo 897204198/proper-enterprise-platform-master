@@ -106,7 +106,7 @@ public class RoleDaoImpl extends AbstractJpaServiceSupport<Role, RoleRepository,
 
 
     @Override
-    public DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable) {
+    public DataTrunk<? extends Role> findRolesPagination(String name, String description, String parentId, EnableEnum enable) {
         return this.findPage(buildRolesSpecification(name, description, parentId, enable), new Sort("name"));
     }
 

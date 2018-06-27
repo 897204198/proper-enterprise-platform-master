@@ -120,8 +120,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<? extends Role> findRolesPagniation(String name, String description, String parentId, EnableEnum enable) {
-        return roleDao.findRolesPagniation(name, description, parentId, enable);
+    public DataTrunk<? extends Role> findRolesPagination(String name, String description, String parentId, EnableEnum enable) {
+        return roleDao.findRolesPagination(name, description, parentId, enable);
     }
 
 

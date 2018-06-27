@@ -60,5 +60,5 @@ public interface UserGroupDao extends BaseService<UserGroup, String> {
      * @param enable 是否可用;
      * @return  用户组集合;
      */
-    DataTrunk<? extends UserGroup> getGroupsPagniation(String name, String description, EnableEnum enable);
+    DataTrunk<? extends UserGroup> getGroupsPagination(String name, String description, EnableEnum enable);
 }

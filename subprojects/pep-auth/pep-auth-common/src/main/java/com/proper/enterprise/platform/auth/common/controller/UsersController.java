@@ -112,7 +112,7 @@ public class UsersController extends BaseController {
     @JsonView(UserVO.Single.class)
     public ResponseEntity<?> getUsers(String username, String name, String email, String phone,
                                       @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
-        return isPageSearch() ? responseOfGet(userService.findUsersPagniation(username, name, email, phone, userEnable),
+        return isPageSearch() ? responseOfGet(userService.findUsersPagination(username, name, email, phone, userEnable),
             UserVO.class, UserVO.Single.class) :
             responseOfGet(userService.getUsersByAndCondition(username, name, email, phone, userEnable), UserVO.class, UserVO.Single.class);
     }
