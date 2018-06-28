@@ -49,6 +49,9 @@ public class ABO implements A {
 
 
     public void setBs(List<B> bs) {
+        if (null == bs) {
+            return;
+        }
         this.bs = new ArrayList<>(CollectionUtil.convert(bs));
     }
 }

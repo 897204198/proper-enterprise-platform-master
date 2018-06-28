@@ -78,12 +78,28 @@ public class BeanUtil {
 
     /**
      * copy source的属性值至具有相同属性的target
+     * 支持同属性不同类型的copy
+     * 支持集合copy 集合支持list，set
      *
      * @param source           source
      * @param target           target
      * @param ignoreProperties 需要忽略的属性
      */
     public static void copyProperties(Object source, Object target, String... ignoreProperties) {
+        copyProperties(source, target, false, ignoreProperties);
+    }
+
+    /**
+     * copy source的属性值至具有相同属性的target
+     * 支持同属性不同类型的copy
+     * 支持集合copy 集合支持list，set
+     *
+     * @param source           source
+     * @param target           target
+     * @param ignoreNull       是否忽略空属性 默认false
+     * @param ignoreProperties 需要忽略的属性
+     */
+    public static void copyProperties(Object source, Object target, boolean ignoreNull, String... ignoreProperties) {
         Assert.notNull(source, "Source must not be null");
         Assert.notNull(target, "Target must not be null");
         Class<?> actualEditable = target.getClass();
@@ -106,6 +122,9 @@ public class BeanUtil {
                                 writeMethod.setAccessible(true);
                             }
                             Object value = readMethod.invoke(source);
+                            if (null == value && ignoreNull) {
+                                continue;
+                            }
                             //处理集合
                             if (Collection.class.isAssignableFrom(sourcePd.getPropertyType())) {
                                 copyCollection(value, source, sourcePd, target, targetPd, ignoreProperties);
@@ -165,18 +184,6 @@ public class BeanUtil {
         return nextIgnoreProperties.toArray(new String[0]);
     }
 
-    /**
-     * copy集合
-     *
-     * @param value            source集合值
-     * @param source           source类型
-     * @param sourcePd         sourcePd
-     * @param target           target类型
-     * @param targetPd         targetPd
-     * @param ignoreProperties 忽略的属性
-     * @throws InvocationTargetException 对象封装异常
-     * @throws IllegalAccessException    编译异常
-     */
     private static void copyCollection(Object value, Object source,
                                        PropertyDescriptor sourcePd, Object target,
                                        PropertyDescriptor targetPd,
@@ -250,6 +257,47 @@ public class BeanUtil {
         return new ConvertElement<>(source, classType, convertType).convert();
     }
 
+    /**
+     * 类型转换
+     *
+     * @param source           源对象
+     * @param targetCls        目标对象类型
+     * @param ignoreProperties 忽略属性
+     * @param <T>              目标对象泛型
+     * @return 目标对象实例
+     */
+    public static <T> T convert(Object source, Class<T> targetCls, String... ignoreProperties) {
+        Assert.notNull(source, "Source must not be null");
+        T t = newInstance(targetCls);
+        copyProperties(source, t, false, ignoreProperties);
+        return t;
+    }
+
+    /**
+     * 集合类型转换
+     *
+     * @param sources          源对象集合
+     * @param targetCls        目标对象类型
+     * @param ignoreProperties 忽略属性
+     * @param <T>              目标对象泛型
+     * @return 目标对象实例集合
+     */
+    public static <T> Collection<T> convert(Collection sources, Class<T> targetCls, String... ignoreProperties) {
+        Assert.notNull(sources, "Source must not be null");
+        // 区分list和set，其余按照list处理
+        Collection<T> targets;
+        if (Set.class.isAssignableFrom(sources.getClass())) {
+            targets = new HashSet();
+        } else {
+            targets = new ArrayList();
+        }
+        for (Object source : sources) {
+            targets.add(convert(source, targetCls, ignoreProperties));
+        }
+        return targets;
+    }
+
+    @Deprecated
     public static <T, S> Collection<T> convert(Collection<S> collection, Class<T> classType, ConvertType convertType,
                                                boolean ignoreCycle, boolean ignoreWithView, Class... showType) {
         if (null == collection) {
