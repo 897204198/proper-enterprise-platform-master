@@ -308,4 +308,104 @@
             </where>
         </update>
     </changeSet>
+    <changeSet author="fm" id="pep-oopsearch-config-20180627-1">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="022"/>
+            <column name="CREATE_TIME" value="2017-06-27 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-06-27 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="name"/>
+            <column name="COLUMN_DESC" value="模块名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="systemconfig"/>
+            <column name="SEARCH_COLUMN" value="MODULE_NAME"/>
+            <column name="TABLE_NAME" value="pep_oopsearch_config"/>
+            <column name="URL" value="/oopsearch/config"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="023"/>
+            <column name="CREATE_TIME" value="2017-06-27 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-06-27 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="url"/>
+            <column name="COLUMN_DESC" value="URL"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="systemconfig"/>
+            <column name="SEARCH_COLUMN" value="URL"/>
+            <column name="TABLE_NAME" value="pep_oopsearch_config"/>
+            <column name="URL" value="/oopsearch/config"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="024"/>
+            <column name="CREATE_TIME" value="2017-06-27 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-06-27 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="tableName"/>
+            <column name="COLUMN_DESC" value="表名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="systemconfig"/>
+            <column name="SEARCH_COLUMN" value="TABLE_NAME"/>
+            <column name="TABLE_NAME" value="pep_oopsearch_config"/>
+            <column name="URL" value="/oopsearch/config"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="025"/>
+            <column name="CREATE_TIME" value="2017-06-27 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-06-27 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="searchColumn"/>
+            <column name="COLUMN_DESC" value="字段名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="systemconfig"/>
+            <column name="SEARCH_COLUMN" value="SEARCH_COLUMN"/>
+            <column name="TABLE_NAME" value="pep_oopsearch_config"/>
+            <column name="URL" value="/oopsearch/config"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="026"/>
+            <column name="CREATE_TIME" value="2017-06-27 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-06-27 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="columnAlias"/>
+            <column name="COLUMN_DESC" value="别名"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="systemconfig"/>
+            <column name="SEARCH_COLUMN" value="COLUMN_ALIAS"/>
+            <column name="TABLE_NAME" value="pep_oopsearch_config"/>
+            <column name="URL" value="/oopsearch/config"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="027"/>
+            <column name="CREATE_TIME" value="2017-06-27 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-06-27 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="columnDesc"/>
+            <column name="COLUMN_DESC" value="描述"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="systemconfig"/>
+            <column name="SEARCH_COLUMN" value="COLUMN_DESC"/>
+            <column name="TABLE_NAME" value="pep_oopsearch_config"/>
+            <column name="URL" value="/oopsearch/config"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="028"/>
+            <column name="CREATE_TIME" value="2017-06-27 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-06-27 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="configEnable"/>
+            <column name="COLUMN_DESC" value="状态"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="systemconfig"/>
+            <column name="SEARCH_COLUMN" value="ENABLE"/>
+            <column name="TABLE_NAME" value="pep_oopsearch_config"/>
+            <column name="URL" value="/oopsearch/config"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
