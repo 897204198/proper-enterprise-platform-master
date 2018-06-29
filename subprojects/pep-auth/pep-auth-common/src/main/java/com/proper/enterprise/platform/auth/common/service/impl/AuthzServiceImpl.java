@@ -4,7 +4,6 @@ import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.api.auth.service.AuthzService;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +14,12 @@ import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @Service
 public class AuthzServiceImpl implements AuthzService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthzService.class);
-
-    private static final String SPLIT_SYMBOL = ",";
 
     private static PathMatcher matcher = new AntPathMatcher();
 
@@ -29,14 +27,14 @@ public class AuthzServiceImpl implements AuthzService {
 
     private MenuService menuService;
 
-    @Value("${auth.ignorePatterns}")
-    private String patterns;
+    @javax.annotation.Resource(name = "ignorePatternsList")
+    private List<String> ignoreList;
 
     @Value("${auth.hasContext}")
     private boolean hasContext;
 
-    public void setPatterns(String patterns) {
-        this.patterns = patterns;
+    public void setIgnoreList(List ignoreList) {
+        this.ignoreList = ignoreList;
     }
 
     public void setHasContext(boolean hasContext) {
@@ -53,10 +51,11 @@ public class AuthzServiceImpl implements AuthzService {
     public boolean shouldIgnore(String url, String method) {
         String path = method + ":" + getMappingUrl(url);
         LOGGER.debug("Request is {}", path);
-        if (StringUtils.isEmpty(patterns)) {
+        boolean notExistList = null == ignoreList || ignoreList.size() == 0;
+        if (notExistList) {
             return false;
         }
-        for (String pattern : patterns.split(SPLIT_SYMBOL)) {
+        for (String pattern : ignoreList) {
             if (matcher.match(pattern, path)) {
                 LOGGER.debug("{} {} is match {}", method, url, pattern);
                 return true;

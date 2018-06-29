@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
@@ -54,8 +53,8 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     private I18NService i18NService;
 
-    @Value("${auth.ignorePatterns}")
-    private String patterns;
+    @javax.annotation.Resource(name = "ignorePatternsListAuthIgnore")
+    private List<String> ignorePatternsList;
 
     private static PathMatcher matcher = new AntPathMatcher();
 
@@ -345,10 +344,8 @@ public class MenuServiceImpl implements MenuService {
 
 
     private boolean shouldIgnore(Resource resource) {
-        List<String> ignorePatterns = new ArrayList<>();
         String path = resource.getMethod().toString().concat(":").concat(resource.findURL());
-        Collections.addAll(ignorePatterns, patterns.split(","));
-        for (String pattern : ignorePatterns) {
+        for (String pattern : ignorePatternsList) {
             if (matcher.match(pattern, path)) {
                 LOGGER.debug("{} {} is match {}", resource.getMethod().toString(), resource.findURL(), pattern);
                 return true;

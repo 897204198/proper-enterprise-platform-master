@@ -6,6 +6,8 @@
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <import resource="classpath*:spring/auth/common/auth-common-*.xml"/>
+
     <beans>
         <context:property-placeholder ignore-unresolvable="true"
                                       location="classpath:conf/auth/common/auth-common.properties"/>

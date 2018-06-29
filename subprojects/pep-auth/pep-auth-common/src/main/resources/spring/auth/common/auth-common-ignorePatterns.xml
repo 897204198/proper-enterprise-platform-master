@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- ANT path pattern, start with HTTP method, such as: GET:/**/bar, *:/foo/** -->
+    <bean id="ignorePatternsList" class="com.proper.enterprise.platform.core.factory.ComposeListFactoryBean">
+        <constructor-arg name="listBeanNamePattern" value="ignorePatternsList.+"/>
+    </bean>
+
+    <util:list id="ignorePatternsListAuthIgnore">
+        <value>GET:/auth/menus</value>
+    </util:list>
+</beans>

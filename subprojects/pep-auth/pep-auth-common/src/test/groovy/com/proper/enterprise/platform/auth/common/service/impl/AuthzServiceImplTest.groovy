@@ -6,6 +6,8 @@ import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
+import javax.annotation.Resource
+
 class AuthzServiceImplTest extends AbstractTest {
 
     @Autowired
@@ -18,17 +20,17 @@ class AuthzServiceImplTest extends AbstractTest {
     void shouldIgnoreTest() {
         def service = new AuthzServiceImpl(menuService, resourceService)
 
-        def patterns = [
-            'GET:/auth/resources',
-            'GET:/workflow/service/model/*/json',
-            'GET:/auth/resources/*/*/xml',
-            'GET:/workflow/service/model/3*/json',
-            'GET:/workflow/*.html',
-            'POST:/auth/login',
-            'PUT:/jwt/filter/ignore/method',
-            '*/workflow/**'
-        ]
-        service.setPatterns(patterns.join(","))
+        def ignoreList = []
+        ignoreList[0] = 'GET:/auth/resources'
+        ignoreList[1] = 'GET:/workflow/service/model/*/json'
+        ignoreList[2] = 'GET:/auth/resources/*/*/xml'
+        ignoreList[3] = 'GET:/workflow/service/model/3*/json'
+        ignoreList[4] = 'GET:/workflow/*.html'
+        ignoreList[5] = 'POST:/auth/login'
+        ignoreList[6] = 'PUT:/jwt/filter/ignore/method'
+        ignoreList[7] = '*/workflow/**'
+
+        service.setIgnoreList(ignoreList)
 
         service.setHasContext(false)
         assert service.shouldIgnore('/workflow/service/model/50/json', 'GET')
@@ -44,6 +46,15 @@ class AuthzServiceImplTest extends AbstractTest {
         service.setHasContext(true)
         assert service.shouldIgnore('/pep/auth/login', 'POST')
         assert !service.shouldIgnore('/pep/auth/login', 'GET')
+    }
+
+    @Resource(name = "ignorePatternsList")
+    private  List ignorePatternsList;
+
+    @Test
+    void hasBeanList() {
+        assert ignorePatternsList.size() == 1
+        assert "GET:/auth/menus" == ignorePatternsList.get(0)
     }
 
 }
