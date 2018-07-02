@@ -10,8 +10,11 @@
 
     <context:property-placeholder location="classpath:conf/pay/ali/pay-ali.properties" ignore-unresolvable="true"/>
 
-    <bean id="aliRSA" class="com.proper.enterprise.platform.core.utils.cipher.RSA">
-        <constructor-arg name="signAlgorithm" value="${pay.ali.signAlgo}"/>
+    <bean id="aliRSAPay" class="com.proper.enterprise.platform.core.utils.cipher.RSA">
+        <constructor-arg name="signAlgorithm" value="${pay.ali.signAlgoForPay}"/>
     </bean>
 
+    <bean id="aliRSARefund" class="com.proper.enterprise.platform.core.utils.cipher.RSA">
+        <constructor-arg name="signAlgorithm" value="${pay.ali.signAlgoForRefund}"/>
+    </bean>
 </beans>
