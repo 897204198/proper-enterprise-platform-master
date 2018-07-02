@@ -472,7 +472,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
         LOGGER.debug("Ali's notice value to be signed:{}", preSignStr);
         LOGGER.debug("Ali's sign:{}", sign);
         // 获得签名验证结果
-        return AliConstants.ALI_PAY_SIGN_TYPE_PAY.equals("RSA")
+        return "RSA".equals(AliConstants.ALI_PAY_SIGN_TYPE_PAY)
                 && rsaPay.verifySign(preSignStr, sign, AliConstants.ALI_PAY_RSA_PUBLIC);
     }
 
