@@ -25,10 +25,10 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
 
     private static final Integer LENGTH = 8192;
 
-    @Value("${file.upload.maxsize}")
+    @Value("${dfs.upload.maxsize}")
     private long maxSize;
 
-    @Value("${file.upload.rootpath}")
+    @Value("${dfs.upload.rootpath}")
     private String rootPath;
 
     @Value("${core.default_charset}")

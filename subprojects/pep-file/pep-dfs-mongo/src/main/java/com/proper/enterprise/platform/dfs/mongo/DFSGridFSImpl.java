@@ -36,7 +36,7 @@ public class DFSGridFSImpl extends AbstractDFSServiceSupport {
     @Value("${mongodb.port}")
     private int port;
 
-    @Value("${file.upload.rootpath}")
+    @Value("${dfs.upload.rootpath}")
     private String dbname;
 
     @Value("${dfs.mongo.bucket}")
