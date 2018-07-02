@@ -60,8 +60,12 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
     AliPayResService aliPayResService;
 
     @Autowired
-    @Qualifier("aliRSA")
-    RSA rsa;
+    @Qualifier("aliRSAPay")
+    RSA rsaPay;
+
+    @Autowired
+    @Qualifier("aliRSARefund")
+    RSA rsaRefund;
 
     //-------------------------重写抽象类中的共通处理函数-------------------START----------------
     /**
@@ -107,9 +111,9 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
             // 取得订单信息
             String orderInfo = getOrderInfo(uoReq, AliOrderReq.class);
             // 获取秘钥
-            String privateKey = AliConstants.ALI_PAY_RSA_PRIVATE;
+            String privateKey = AliConstants.ALI_PAY_RSA_PRIVATE_PAY;
             // 对订单信息进行签名
-            String sign = rsa.sign(orderInfo, privateKey);
+            String sign = rsaPay.sign(orderInfo, privateKey);
             sign = URLEncoder.encode(sign, PEPConstants.DEFAULT_CHARSET.name());
             // 完整的符合支付宝参数规范的订单信息
             final StringBuilder payInfo = new StringBuilder();
@@ -141,7 +145,13 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
         bizContentMap.put("out_trade_no", outTradeNo);
         String method = ConfCenter.get("pay.ali.tradeQueryMethod");
         String responseKey = "alipay_trade_query_response";
-        Object result = getAliRequestRes(res, bizContentMap, method, responseKey);
+        Object result = getAliRequestRes(res,
+                                         bizContentMap,
+                                         method,
+                                         responseKey,
+                                         AliConstants.ALI_PAY_RSA_PRIVATE_PAY,
+                                         AliConstants.ALI_PAY_SIGN_TYPE_PAY,
+                                         rsaPay);
         return (T)result;
     }
 
@@ -184,7 +194,13 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
         String method = ConfCenter.get("pay.ali.tradeRefundMethod");
         String responseKey = "alipay_trade_refund_response";
         AliRefundRes res = new AliRefundRes();
-        Object result = getAliRequestRes(res, bizContentMap, method, responseKey);
+        Object result = getAliRequestRes(res,
+                                         bizContentMap,
+                                         method,
+                                         responseKey,
+                                         AliConstants.ALI_PAY_RSA_PRIVATE_REFUND,
+                                         AliConstants.ALI_PAY_SIGN_TYPE_REFUND,
+                                         rsaRefund);
         if (result != null) {
             res = (AliRefundRes) result;
             BeanUtils.copyProperties(res, refund);
@@ -214,7 +230,13 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
         bizContentMap.put("out_request_no", refundNo);
         String method = ConfCenter.get("pay.ali.tradeRefundQueryMethod");
         String responseKey = "alipay_trade_fastpay_refund_query_response";
-        Object result = getAliRequestRes(res, bizContentMap, method, responseKey);
+        Object result = getAliRequestRes(res,
+                                         bizContentMap,
+                                         method,
+                                         responseKey,
+                                         AliConstants.ALI_PAY_RSA_PRIVATE_REFUND,
+                                         AliConstants.ALI_PAY_SIGN_TYPE_REFUND,
+                                         rsaRefund);
         return (T)result;
     }
     //-------------------------重写抽象类中的共通处理函数-----------------END------------------
@@ -303,8 +325,13 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
      * @param responseKey 响应结果关键字
      * @return 处理结果
      */
-    protected Object getAliRequestRes(Object res, Map<String, String> bizContentMap, String method, String responseKey) {
-        String privateKey = AliConstants.ALI_PAY_RSA_PRIVATE;
+    protected Object getAliRequestRes(Object res,
+                                      Map<String, String> bizContentMap,
+                                      String method,
+                                      String responseKey,
+                                      String privateKey,
+                                      String signType,
+                                      RSA rsa) {
         String appId = AliConstants.ALI_PAY_APPID;
         String tradeUrl = ConfCenter.get("pay.ali.tradeUrl");
         StringBuilder reqUrl = new StringBuilder();
@@ -318,7 +345,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
             paramStr.append(PEPConstants.DEFAULT_CHARSET.name());
             paramStr.append("&method=");
             paramStr.append(method);
-            paramStr.append("&sign_type=RSA");
+            paramStr.append("&sign_type=" + signType);
             paramStr.append("&timestamp=").append(DateUtil.toTimestamp(new Date()));
             paramStr.append("&version=1.0");
             String sign = rsa.sign(paramStr.toString(), privateKey);
@@ -445,8 +472,8 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
         LOGGER.debug("Ali's notice value to be signed:{}", preSignStr);
         LOGGER.debug("Ali's sign:{}", sign);
         // 获得签名验证结果
-        return "RSA".equals(AliConstants.ALI_PAY_SIGN_TYPE)
-                && rsa.verifySign(preSignStr, sign, AliConstants.ALI_PAY_RSA_PUBLIC);
+        return AliConstants.ALI_PAY_SIGN_TYPE_PAY.equals("RSA")
+                && rsaPay.verifySign(preSignStr, sign, AliConstants.ALI_PAY_RSA_PUBLIC);
     }
 
     /**
@@ -516,7 +543,13 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
             }
             bizContentMap.put("bill_date", dft.format(billReq.getDate()));
 
-            Object result = getAliRequestRes(aliBillRes, bizContentMap, method, responseKey);
+            Object result = getAliRequestRes(aliBillRes,
+                                             bizContentMap,
+                                             method,
+                                             responseKey,
+                                             AliConstants.ALI_PAY_RSA_PRIVATE_PAY,
+                                             AliConstants.ALI_PAY_SIGN_TYPE_PAY,
+                                             rsaPay);
             if (result != null) {
                 aliBillRes = (AliBillRes) result;
                 if (ALI_REQUEST_CODE.equals(aliBillRes.getCode())) {
