@@ -33,6 +33,7 @@ public class JWTService {
     protected static final String TOKEN_FLAG = "X-PEP-TOKEN";
     private static final String BEARER = "Bearer";
     private static final String POINT_SYMBOL = ".";
+    private static final String TOKEN = "token";
 
     @Autowired
     private APISecret secret;
@@ -45,6 +46,9 @@ public class JWTService {
         String token = getTokenFromHeader(request);
         if (StringUtil.isNull(token)) {
             token = getTokenFromCookie(request);
+        }
+        if (StringUtil.isNull(token)) {
+            token = getTokenFromReqParameter(request);
         }
         return token;
     }
@@ -73,6 +77,15 @@ public class JWTService {
             }
         }
         return null;
+    }
+
+    public String getTokenFromReqParameter(HttpServletRequest request) {
+        String token = request.getParameter(TOKEN);
+        if (StringUtil.isNull(token)) {
+            return null;
+        }
+        LOGGER.trace("Found token in Param! {}", token);
+        return token;
     }
 
     public String generateToken(JWTHeader header, JWTPayload payload) throws IOException {
