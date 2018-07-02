@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.core.utils.JSONUtil
+import com.proper.enterprise.platform.core.utils.cipher.RSA
 import com.proper.enterprise.platform.core.utils.http.HttpClient
 import com.proper.enterprise.platform.pay.ali.constants.AliConstants
 import com.proper.enterprise.platform.pay.ali.model.AliOrderReq
@@ -35,7 +36,7 @@ class MockAliPayServiceImpl extends AliPayServiceImpl {
         AliOrderReq uoReq = (AliOrderReq)req;
         uoReq.setNotifyUrl(AliConstants.ALI_PAY_NOTICE_URL);
         String orderInfo = getOrderInfo(uoReq, AliOrderReq.class);
-        String privateKey = AliConstants.ALI_PAY_RSA_PRIVATE;
+        String privateKey = AliConstants.ALI_PAY_RSA_PRIVATE_PAY;
         String sign = orderInfo;
         sign = URLEncoder.encode(sign, PEPConstants.DEFAULT_CHARSET.name());
         final StringBuilder payInfo = new StringBuilder();
@@ -48,7 +49,13 @@ class MockAliPayServiceImpl extends AliPayServiceImpl {
     }
 
     @Override
-    protected Object getAliRequestRes(Object res, Map<String, String> bizContentMap, String method, String responseKey) {
+    protected Object getAliRequestRes(Object res,
+                                      Map<String, String> bizContentMap,
+                                      String method,
+                                      String responseKey,
+                                      String privateKey,
+                                      String signType,
+                                      RSA rsa) {
         String appId = AliConstants.ALI_PAY_APPID;
         String tradeUrl = ConfCenter.get("pay.ali.tradeUrl");
         StringBuilder reqUrl = new StringBuilder();
@@ -61,7 +68,7 @@ class MockAliPayServiceImpl extends AliPayServiceImpl {
         paramStr.append(PEPConstants.DEFAULT_CHARSET.name());
         paramStr.append("&method=");
         paramStr.append(method);
-        paramStr.append("&sign_type=RSA");
+        paramStr.append("&sign_type=" + signType);
         paramStr.append("&timestamp=").append(DateUtil.toTimestamp(new Date()));
         paramStr.append("&version=1.0");
         String sign = paramStr.toString();
