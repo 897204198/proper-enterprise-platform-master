@@ -1,6 +1,6 @@
 dependencies {
-    implementation project(':pep-core'),
-                   project(':pep-dfs-api')
+    compile project(':pep-core'),
+            project(':pep-dfs-api')
 
     runtime libraries.commons_fileupload
 }
