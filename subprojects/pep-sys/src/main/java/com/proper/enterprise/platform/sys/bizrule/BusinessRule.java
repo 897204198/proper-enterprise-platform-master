@@ -10,6 +10,7 @@ import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 业务规则.
@@ -19,11 +20,15 @@ public class BusinessRule {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessRule.class);
 
-    @Autowired
     private SpELParser parser;
 
-    @Autowired
     private RuleRepository ruleRepository;
+
+    @Autowired
+    public BusinessRule(SpELParser parser, RuleRepository ruleRepository) {
+        this.parser = parser;
+        this.ruleRepository = ruleRepository;
+    }
 
     public Object expression(String ruleName, Map<String, Object> vars) {
         return expression(ruleName, vars, Object.class, null);
@@ -39,16 +44,17 @@ public class BusinessRule {
      * @return 计算结果
      */
     public <T> T expression(String ruleId, Map<String, Object> vars, Class<T> clz, T defaultVal) {
-        RuleEntity rule = ruleRepository.findById(ruleId);
-        if (rule == null) {
+        Optional<RuleEntity> rule = ruleRepository.findById(ruleId);
+        if (!rule.isPresent()) {
             LOGGER.debug("Could NOT found rule with name {}!", ruleId);
             return defaultVal;
         }
+        RuleEntity ruleEntity = rule.get();
         try {
-            LOGGER.info("Parsing {} rule({}) with {}", rule.getName(), rule.getRule(), vars);
-            return parser.parse(rule.getRule(), vars, clz);
+            LOGGER.info("Parsing {} rule({}) with {}", ruleEntity.getName(), ruleEntity.getRule(), vars);
+            return parser.parse(ruleEntity.getRule(), vars, clz);
         } catch (ExpressionException ee) {
-            LOGGER.error("Parse {} with {} throw exception!", rule.getRule(), vars, ee);
+            LOGGER.error("Parse {} with {} throw exception!", ruleEntity.getRule(), vars, ee);
         }
         return defaultVal;
     }

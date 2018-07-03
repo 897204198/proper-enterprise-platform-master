@@ -29,6 +29,16 @@ public class MockUserDAO implements UserDao {
     }
 
     @Override
+    public User findById(String var1) {
+        return null;
+    }
+
+    @Override
+    public boolean existsById(String var1) {
+        return false;
+    }
+
+    @Override
     public User addUserRole(String userId, String roleId) {
         return null;
     }
@@ -74,17 +84,17 @@ public class MockUserDAO implements UserDao {
     }
 
     @Override
-    public Collection<User> findAll(Iterable<String> var1) {
-        return null;
-    }
-
-    @Override
     public Collection<User> findAll(Sort var1) {
         return null;
     }
 
     @Override
     public Page<User> findAll(Pageable var1) {
+        return null;
+    }
+
+    @Override
+    public Collection<User> findAllById(Iterable<String> var1) {
         return null;
     }
 
@@ -106,16 +116,6 @@ public class MockUserDAO implements UserDao {
     @Override
     public User changePassword(String userId, String oldPassword, String password) {
         return null;
-    }
-
-    @Override
-    public User findOne(String var1) {
-        return null;
-    }
-
-    @Override
-    public boolean exists(String var1) {
-        return false;
     }
 
     @Override

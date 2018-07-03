@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(String id) {
-        return userDao.findOne(id);
+        return userDao.findById(id);
     }
 
     @Override

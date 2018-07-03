@@ -30,6 +30,16 @@ public class MockRoleDAO implements RoleDao {
     }
 
     @Override
+    public Role findById(String var1) {
+        return null;
+    }
+
+    @Override
+    public boolean existsById(String var1) {
+        return false;
+    }
+
+    @Override
     public Role updateForSelective(Role role) {
         return null;
     }
@@ -75,16 +85,6 @@ public class MockRoleDAO implements RoleDao {
     }
 
     @Override
-    public Role findOne(String var1) {
-        return null;
-    }
-
-    @Override
-    public boolean exists(String var1) {
-        return false;
-    }
-
-    @Override
     public long count() {
         return 0;
     }
@@ -115,17 +115,17 @@ public class MockRoleDAO implements RoleDao {
     }
 
     @Override
-    public Collection<Role> findAll(Iterable<String> var1) {
-        return null;
-    }
-
-    @Override
     public Collection<Role> findAll(Sort var1) {
         return null;
     }
 
     @Override
     public Page<Role> findAll(Pageable var1) {
+        return null;
+    }
+
+    @Override
+    public Collection<Role> findAllById(Iterable<String> var1) {
         return null;
     }
 

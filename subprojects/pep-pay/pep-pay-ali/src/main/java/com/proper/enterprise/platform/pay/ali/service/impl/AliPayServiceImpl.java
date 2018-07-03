@@ -4,7 +4,6 @@ import com.proper.enterprise.platform.api.pay.constants.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
 import com.proper.enterprise.platform.api.pay.model.*;
-import com.proper.enterprise.platform.api.pay.model.PayResultRes;
 import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.common.pay.service.impl.AbstractPayImpl;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
@@ -353,8 +352,11 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
             paramStr.append("&sign=").append(sign);
             reqUrl = reqUrl.append("?").append(paramStr);
             ResponseEntity<byte[]> entity = HttpClient.get(reqUrl.toString());
-            String strRead = new String(entity.getBody(), PEPConstants.DEFAULT_CHARSET.name());
-            res = aliPayResService.convertMap2AliPayRes(strRead, responseKey, res);
+            byte[] content = entity.getBody();
+            if (content != null && content.length > 0) {
+                String strRead = new String(content, PEPConstants.DEFAULT_CHARSET.name());
+                res = aliPayResService.convertMap2AliPayRes(strRead, responseKey, res);
+            }
         } catch (Exception e) {
             LOGGER.debug("Error occurred while getting Ali pay notice results.{}", e);
             return null;

@@ -4,10 +4,13 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.repository.BaseRepository;
 import com.proper.enterprise.platform.core.service.BaseService;
 import com.proper.enterprise.platform.core.support.AbstractQuerySupport;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Service基类的基础实现
@@ -34,19 +37,20 @@ public abstract class AbstractServiceSupport<T, R extends BaseRepository, IDT ex
     @Override
     @SuppressWarnings("unchecked")
     public <S extends T> Collection<S> save(Iterable<S> var1) {
-        return (Collection<S>) getRepository().save(var1);
+        return (Collection<S>) getRepository().saveAll(var1);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public T findOne(IDT var1) {
-        return (T) getRepository().findOne(var1);
+    public T findById(IDT var1) {
+        Optional<T> result = getRepository().findById(var1);
+        return result.orElse(null);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean exists(IDT var1) {
-        return getRepository().exists(var1);
+    public boolean existsById(IDT var1) {
+        return getRepository().existsById(var1);
     }
 
 
@@ -70,7 +74,7 @@ public abstract class AbstractServiceSupport<T, R extends BaseRepository, IDT ex
     @Override
     @SuppressWarnings("unchecked")
     public void delete(Iterable<? extends T> var1) {
-        getRepository().delete(var1);
+        getRepository().deleteAll(var1);
     }
 
     @Override
@@ -86,12 +90,6 @@ public abstract class AbstractServiceSupport<T, R extends BaseRepository, IDT ex
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<T> findAll(Iterable<IDT> var1) {
-        return (Collection<T>) getRepository().findAll(var1);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public Collection<T> findAll(Sort var1) {
         return (Collection<T>) getRepository().findAll(var1);
     }
@@ -100,6 +98,12 @@ public abstract class AbstractServiceSupport<T, R extends BaseRepository, IDT ex
     @SuppressWarnings("unchecked")
     public Page<T> findAll(Pageable var1) {
         return getRepository().findAll(var1);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Collection<T> findAllById(Iterable<IDT> var1) {
+        return (Collection<T>) getRepository().findAllById(var1);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.pay.wechat.service.impl;
 
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
 import com.proper.enterprise.platform.core.utils.http.HttpsClient;
 import com.proper.enterprise.platform.pay.wechat.constants.WechatConstants;
@@ -53,8 +54,11 @@ public class WechatPayResServiceImpl implements WechatPayResService {
         if (beanIdStr.equals(beanId) && statusCode == response.getStatusCode().value()) {
             return (T)response;
         } else {
-            Object res = unmarshallerMap.get(beanId).unmarshal(
-                new StreamSource(new ByteArrayInputStream(response.getBody())));
+            byte[] body = response.getBody();
+            if (body == null || body.length <= 0) {
+                throw new ErrMsgException("Could NOT get body from " + url);
+            }
+            Object res = unmarshallerMap.get(beanId).unmarshal(new StreamSource(new ByteArrayInputStream(body)));
             return (T)res;
         }
     }

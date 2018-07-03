@@ -42,7 +42,7 @@ public class DataDicController extends BaseController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<DataDic> get(@PathVariable String id) {
-        return responseOfGet(dataDicService.findOne(id));
+        return responseOfGet(dataDicService.findById(id));
     }
 
     @GetMapping(path = "/catalog/{catalog}")

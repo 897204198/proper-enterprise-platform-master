@@ -55,7 +55,7 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
             }
         }
         // 更新消息状态
-        msgRepo.save(lstMsgs);
+        msgRepo.saveAll(lstMsgs);
         return sendCount;
     }
 

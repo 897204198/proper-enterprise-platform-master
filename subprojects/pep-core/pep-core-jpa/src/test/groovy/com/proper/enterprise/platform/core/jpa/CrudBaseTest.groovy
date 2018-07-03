@@ -22,7 +22,7 @@ class CrudBaseTest extends AbstractTest {
     }
 
     void retrieve() {
-        AOEntity user = repository.findOne(id)
+        AOEntity user = repository.findById(id).orElse(null)
 
         // check set values
         assert user.createUserId > ''
@@ -33,18 +33,18 @@ class CrudBaseTest extends AbstractTest {
     }
 
     void update() {
-        AOEntity user = repository.findOne(id)
+        AOEntity user = repository.findById(id).orElse(null)
         user.description = 'desc of user1'
         repository.save(user)
     }
 
     void updateCheck() {
-        AOEntity user = repository.findOne(id)
+        AOEntity user = repository.findById(id).orElse(null)
         assert user.description == 'desc of user1'
     }
 
     void delete() {
-        repository.delete(id)
+        repository.deleteById(id)
     }
 
     @Test

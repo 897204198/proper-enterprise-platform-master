@@ -36,7 +36,7 @@ public class UserGroupDaoImpl extends AbstractJpaServiceSupport<UserGroup, UserG
     @Override
     public Collection<? extends UserGroup> findAll(Collection<String> idList) {
         if (CollectionUtil.isNotEmpty(idList)) {
-            return repository.findAll(idList);
+            return repository.findAllById(idList);
         }
         return new ArrayList<>();
     }

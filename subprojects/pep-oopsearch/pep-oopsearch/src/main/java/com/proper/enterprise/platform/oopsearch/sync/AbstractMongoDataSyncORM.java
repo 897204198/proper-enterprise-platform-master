@@ -127,7 +127,7 @@ public abstract class AbstractMongoDataSyncORM extends AbstractMongoDataSync {
         }
         if (documentList.size() > 0) {
             syncMongoRepository.deleteAllByTabIn(getConfigTables(DataBaseType.RDB));
-            syncMongoRepository.save(documentList);
+            syncMongoRepository.saveAll(documentList);
         }
     }
 

@@ -39,17 +39,17 @@ public class MockMenuDAO implements MenuDao {
     }
 
     @Override
-    public Collection<Menu> findAll(Iterable<String> var1) {
-        return null;
-    }
-
-    @Override
     public Collection<Menu> findAll(Sort var1) {
         return null;
     }
 
     @Override
     public Page<Menu> findAll(Pageable var1) {
+        return null;
+    }
+
+    @Override
+    public Collection<Menu> findAllById(Iterable<String> var1) {
         return null;
     }
 
@@ -84,12 +84,12 @@ public class MockMenuDAO implements MenuDao {
     }
 
     @Override
-    public Menu findOne(String var1) {
+    public Menu findById(String var1) {
         return null;
     }
 
     @Override
-    public boolean exists(String var1) {
+    public boolean existsById(String var1) {
         return false;
     }
 

@@ -42,7 +42,7 @@ public class FileController extends BaseController {
 
     @GetMapping(path = "/{id}/meta")
     public ResponseEntity<FileVO> metainfo(@PathVariable String id) {
-        return responseOfGet(fileService.findOne(id), FileVO.class);
+        return responseOfGet(fileService.findById(id), FileVO.class);
     }
 
     @DeleteMapping

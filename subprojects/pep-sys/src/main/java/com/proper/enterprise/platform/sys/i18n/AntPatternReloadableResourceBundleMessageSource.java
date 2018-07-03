@@ -81,10 +81,16 @@ public class AntPatternReloadableResourceBundleMessageSource extends ReloadableR
         long lastModified = -1;
         try {
             Resource[] resources = resolver.getResources(filename + PROPERTIES_SUFFIX);
+            String sourcePath;
+            PropertiesHolder holder;
+            Properties holderProperties;
             for (Resource resource : resources) {
-                String sourcePath = resource.getURI().toString().replace(PROPERTIES_SUFFIX, "");
-                PropertiesHolder holder = super.refreshProperties(sourcePath, propHolder);
-                properties.putAll(holder.getProperties());
+                sourcePath = resource.getURI().toString().replace(PROPERTIES_SUFFIX, "");
+                holder = super.refreshProperties(sourcePath, propHolder);
+                holderProperties = holder.getProperties();
+                if (holderProperties != null) {
+                    properties.putAll(holderProperties);
+                }
                 if (lastModified < resource.lastModified()) {
                     lastModified = resource.lastModified();
                 }

@@ -136,7 +136,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public Collection<? extends Resource> updateEnable(Collection<String> idList, boolean enable) {
-        Collection<? extends Resource> resourceList = resourceDao.findAll(idList);
+        Collection<? extends Resource> resourceList = resourceDao.findAllById(idList);
         for (Resource resource : resourceList) {
             resource.setEnable(enable);
         }

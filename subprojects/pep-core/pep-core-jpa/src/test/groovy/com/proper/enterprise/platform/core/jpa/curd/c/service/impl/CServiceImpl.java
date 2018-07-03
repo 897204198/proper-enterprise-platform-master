@@ -28,8 +28,8 @@ public class CServiceImpl extends AbstractJpaServiceSupport<C, CRepository, Stri
 
     @Override
     public C addB(String cid, String bid) {
-        C c = this.findOne(cid);
-        B b = bservice.findOne(bid);
+        C c = this.findById(cid);
+        B b = bservice.findById(bid);
         ((CEntity) c).setBentity((BEntity) b);
         return this.save(c);
     }

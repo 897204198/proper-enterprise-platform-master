@@ -40,14 +40,14 @@ public interface BaseService<T, ID extends Serializable> {
      * @param var1 主键泛型
      * @return 泛型
      */
-    T findOne(ID var1);
+    T findById(ID var1);
 
     /**
      * 是否存在
      * @param var1 主键泛型
      * @return boolean类型
      */
-    boolean exists(ID var1);
+    boolean existsById(ID var1);
 
     /**
      * 数量
@@ -85,13 +85,6 @@ public interface BaseService<T, ID extends Serializable> {
     Collection<T> findAll();
 
     /**
-     * 查询所有
-     * @param var1 主键泛型
-     * @return 集合
-     */
-    Collection<T> findAll(Iterable<ID> var1);
-
-    /**
      * 查询所有并且有顺序
      * @param var1 顺序
      * @return 集合
@@ -104,6 +97,13 @@ public interface BaseService<T, ID extends Serializable> {
      * @return 分页Page类型
      */
     Page<T> findAll(Pageable var1);
+
+    /**
+     * 根据主键查询所有
+     * @param var1 主键泛型迭代器
+     * @return 集合
+     */
+    Collection<T> findAllById(Iterable<ID> var1);
 
     /**
      * 查询分页

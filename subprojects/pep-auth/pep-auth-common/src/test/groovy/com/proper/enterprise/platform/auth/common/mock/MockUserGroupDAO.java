@@ -29,6 +29,16 @@ public class MockUserGroupDAO implements UserGroupDao {
     }
 
     @Override
+    public UserGroup findById(String var1) {
+        return null;
+    }
+
+    @Override
+    public boolean existsById(String var1) {
+        return false;
+    }
+
+    @Override
     public UserGroup updateForSelective(UserGroup group) {
         return null;
     }
@@ -44,17 +54,17 @@ public class MockUserGroupDAO implements UserGroupDao {
     }
 
     @Override
-    public Collection<UserGroup> findAll(Iterable<String> var1) {
-        return null;
-    }
-
-    @Override
     public Collection<UserGroup> findAll(Sort var1) {
         return null;
     }
 
     @Override
     public Page<UserGroup> findAll(Pageable var1) {
+        return null;
+    }
+
+    @Override
+    public Collection<UserGroup> findAllById(Iterable<String> var1) {
         return null;
     }
 
@@ -71,16 +81,6 @@ public class MockUserGroupDAO implements UserGroupDao {
     @Override
     public DataTrunk<? extends UserGroup> getGroupsPagination(String name, String description, EnableEnum enable) {
         return null;
-    }
-
-    @Override
-    public UserGroup findOne(String var1) {
-        return null;
-    }
-
-    @Override
-    public boolean exists(String var1) {
-        return false;
     }
 
     @Override

@@ -6,16 +6,16 @@ ext {
 versions.flowable           = '6.2.1-SNAPSHOT'
 versions.groovy             = '2.4.15'
 versions.hibernate          = '4.3.10.Final'
-versions.jackson            = '2.8.1'
+versions.jackson            = '2.9.6'
 //versions.jcaptcha         = '1.0'
 versions.logback            = '1.2.3'
-versions.mongo              = '3.2.2'
+versions.mongo              = '3.4.0'
 versions.quartz             = '2.2.1'
 versions.slf4j              = '1.7.21'
-versions.spring             = '4.3.0.RELEASE'
-versions.spring_data        = 'Ingalls-SR10'
-versions.spring_integration = '4.3.9.RELEASE'
-versions.spring_security    = '4.2.3.RELEASE'
+versions.spring             = '5.0.7.RELEASE'
+versions.spring_data        = 'Kay-SR8'
+versions.spring_integration = '5.0.6.RELEASE'
+versions.spring_security    = '5.0.6.RELEASE'
 
 configurations.all {
 //    //Don't cache snapshots, need to check work or not
@@ -150,7 +150,7 @@ libraries.hibernate_redis = 'com.github.debop:hibernate-redis:2.3.1'
 //libraries.jackson_annotations = "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}"
 //libraries.jackson_core = "com.fasterxml.jackson.core:jackson-core:${versions.jackson}"
 //libraries.jackson_databind = "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
-libraries.jackson_databind = 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
+libraries.jackson_databind = "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
 
 libraries.javax_inject = "javax.inject:javax.inject:1"
 
@@ -203,7 +203,7 @@ libraries.redisson = 'org.redisson:redisson:3.5.3'
 
 libraries.reflections = 'org.reflections:reflections:0.9.11'
 
-libraries.servlet_api = 'javax.servlet:javax.servlet-api:3.0.1'
+libraries.servlet_api = 'javax.servlet:javax.servlet-api:3.1.0'
 
 libraries.slf4j_api = "org.slf4j:slf4j-api:${versions.slf4j}"
 
@@ -257,7 +257,6 @@ libraries.spring_integration_jdbc = "org.springframework.integration:spring-inte
 //libraries.urlrewritefilter = 'org.tuckey:urlrewritefilter:4.0.3'
 
 libraries.nutz='org.nutz:nutz:1.r.56'
-libraries.activemq_broker='org.apache.activemq:activemq-broker:5.14.3'
 //ios apns push sdk. see: https://github.com/relayrides/pushy/
 libraries.push_vendor_apns=[
     'com.relayrides:pushy:0.9.3'

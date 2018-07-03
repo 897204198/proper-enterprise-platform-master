@@ -2,6 +2,8 @@ package com.proper.enterprise.platform.push.vendor.android.huawei;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
@@ -20,7 +22,9 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 推送服务类
@@ -211,9 +215,13 @@ public class HuaweiPushApp extends BasePushApp {
         apiUrl = "https://api.push.hicloud.com/pushsend.do";
         String msgBody = MessageFormat.format(
             "grant_type=client_credentials&client_secret={0}&client_id={1}",
-            URLEncoder.encode(theAppSecret, "UTF-8"), theAppid);
+            URLEncoder.encode(theAppSecret, PEPConstants.DEFAULT_CHARSET.name()), theAppid);
         ResponseEntity<byte[]> post = HttpClient.post(tokenUrl, MediaType.APPLICATION_FORM_URLENCODED, msgBody);
-        String response = new String(post.getBody(), "UTF-8");
+        byte[] body = post.getBody();
+        if (body == null || body.length <= 0) {
+            throw new ErrMsgException("Could NOT get body from " + tokenUrl);
+        }
+        String response = new String(body, PEPConstants.DEFAULT_CHARSET);
 
         JSONObject obj = JSONObject.parseObject(response);
         accessToken = obj.getString("access_token");
@@ -312,7 +320,11 @@ public class HuaweiPushApp extends BasePushApp {
 
     private String post(String postUrl, String postBody) throws IOException {
         ResponseEntity<byte[]> post = HttpClient.post(postUrl, MediaType.APPLICATION_FORM_URLENCODED, postBody);
-        return new String(post.getBody(), "UTF-8");
+        byte[] body = post.getBody();
+        if (body == null || body.length <= 0) {
+            throw new ErrMsgException("Could NOT get body from " + postUrl);
+        }
+        return new String(body, PEPConstants.DEFAULT_CHARSET);
     }
 
     static class Rsp {

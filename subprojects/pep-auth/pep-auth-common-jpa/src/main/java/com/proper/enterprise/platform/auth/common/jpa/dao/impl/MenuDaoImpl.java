@@ -35,7 +35,7 @@ public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository,
 
     @Override
     public Menu get(String id) {
-        return repository.findOne(id);
+        return repository.findById(id).orElse(null);
     }
 
     @Override

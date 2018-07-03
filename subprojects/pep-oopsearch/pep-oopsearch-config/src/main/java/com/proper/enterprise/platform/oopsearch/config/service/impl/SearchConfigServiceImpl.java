@@ -246,8 +246,8 @@ public class SearchConfigServiceImpl extends AbstractJpaServiceSupport<SearchCon
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            Collection<SearchConfigEntity> all = searchConfigRepository.findAll(idList);
-            searchConfigRepository.delete(all);
+            Collection<SearchConfigEntity> all = searchConfigRepository.findAllById(idList);
+            searchConfigRepository.deleteAll(all);
             return all.size() > 0;
         }
         return false;

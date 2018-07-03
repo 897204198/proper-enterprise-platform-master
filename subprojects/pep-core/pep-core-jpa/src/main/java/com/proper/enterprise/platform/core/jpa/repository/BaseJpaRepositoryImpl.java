@@ -11,22 +11,23 @@ import java.io.Serializable;
 
 public class BaseJpaRepositoryImpl<T, IDT extends Serializable> extends SimpleJpaRepository<T, IDT> implements BaseJpaRepository<T, IDT> {
 
-    private final EntityManager entityManager;
     private final JpaEntityInformation<T, ?> entityInformation;
 
     public BaseJpaRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
-        this.entityManager = entityManager;
         this.entityInformation = entityInformation;
     }
-
 
     @Override
     public T updateForSelective(T var1) {
         if (entityInformation.isNew(var1)) {
             throw new PersistenceException("entity not persist");
         }
-        T oldEntity = this.findOne((IDT) entityInformation.getId(var1));
+        IDT id = (IDT) entityInformation.getId(var1);
+        if (id == null) {
+            throw new PersistenceException("Could not get id from " + var1);
+        }
+        T oldEntity = this.findById(id).orElseThrow(() -> new PersistenceException("entity not persist"));
         BeanUtils.copyProperties(oldEntity, var1, JPAUtil.getNotNullColumnNames(var1));
         return this.save(var1);
     }

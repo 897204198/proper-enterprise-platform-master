@@ -1,24 +1,28 @@
 package com.proper.enterprise.platform.file.service.impl;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.dfs.api.service.DFSService;
+import com.proper.enterprise.platform.file.api.File;
 import com.proper.enterprise.platform.file.entity.FileEntity;
+import com.proper.enterprise.platform.file.repository.FileRepository;
+import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
-import com.proper.enterprise.platform.file.api.File;
-import com.proper.enterprise.platform.file.repository.FileRepository;
-import com.proper.enterprise.platform.file.service.FileService;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileRepository, String> implements FileService {
@@ -60,7 +64,7 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
             return false;
         }
         String[] idArr = ids.split(",");
-        Collection<File> files = this.findAll(Arrays.asList(idArr));
+        Collection<File> files = this.findAllById(Arrays.asList(idArr));
         if (CollectionUtil.isEmpty(files)) {
             return false;
         }
@@ -73,7 +77,7 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
 
     @Override
     public File update(String id, MultipartFile file) throws IOException {
-        File updateFile = this.findOne(id);
+        File updateFile = this.findById(id);
         if (null == updateFile) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.upload.put.notfind"));
         }
@@ -83,7 +87,7 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
 
     @Override
     public void download(String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        File file = this.findOne(id);
+        File file = this.findById(id);
         if (null == file) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
         }
@@ -119,12 +123,16 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
 
     private File buildFileEntity(MultipartFile file, boolean buildPath) {
         File fileEntity = new FileEntity();
-        fileEntity.setFileType(getFileType(file.getOriginalFilename()));
+        String fileName = file.getOriginalFilename();
+        if (StringUtil.isBlank(fileName)) {
+            fileName = "DEFAULT_FILE_NAME_" + UUID.randomUUID() + ".tmp";
+        }
+        fileEntity.setFileType(getFileType(fileName));
         if (buildPath) {
             fileEntity.setFilePath(createFilePath() + UUID.randomUUID() + "." + fileEntity.getFileType());
         }
         fileEntity.setFileSize(file.getSize());
-        fileEntity.setFileName(file.getOriginalFilename());
+        fileEntity.setFileName(fileName);
         return fileEntity;
     }
 

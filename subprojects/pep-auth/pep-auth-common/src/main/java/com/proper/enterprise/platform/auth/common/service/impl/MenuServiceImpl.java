@@ -187,7 +187,7 @@ public class MenuServiceImpl implements MenuService {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            Collection<? extends Menu> list = menuDao.findAll(idList);
+            Collection<? extends Menu> list = menuDao.findAllById(idList);
             for (Menu menu : list) {
                 // 菜单存在关联关系
                 if (getMenuByCondition(null, null, null, EnableEnum.ENABLE, menu.getId()).size() > 0) {
@@ -216,7 +216,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public Collection<? extends Menu> updateEnable(Collection<String> idList, boolean enable) {
-        Collection<? extends Menu> menuList = menuDao.findAll(idList);
+        Collection<? extends Menu> menuList = menuDao.findAllById(idList);
         for (Menu menu : menuList) {
             menu.setEnable(enable);
         }

@@ -26,7 +26,7 @@ public abstract class AbstractQuerySupport {
 
 
     public PageRequest getPageRequest() {
-        return getPageRequest(null);
+        return getPageRequest(Sort.unsorted());
     }
 
     public PageRequest getPageRequest(Sort.Direction direction, String... properties) {

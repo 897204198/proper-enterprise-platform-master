@@ -88,7 +88,7 @@ public class CommonPushClientRequestServiceImpl implements CommonPushClientReque
                     LOGGER.info("unbindOtherDevice of user:" + userid + " of device " + d.getDeviceid()
                             + " devicetype:" + d.getDevicetype());
                 }
-                deviceRepo.save(list);
+                deviceRepo.saveAll(list);
             }
         }
     }

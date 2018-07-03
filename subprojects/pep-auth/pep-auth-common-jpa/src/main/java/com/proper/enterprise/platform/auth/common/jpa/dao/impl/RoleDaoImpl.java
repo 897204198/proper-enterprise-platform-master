@@ -51,7 +51,7 @@ public class RoleDaoImpl extends AbstractJpaServiceSupport<Role, RoleRepository,
 
     @Override
     public Collection<? extends Role> findRoles(Collection<String> idList) {
-        return super.findAll(idList);
+        return super.findAllById(idList);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class RoleDaoImpl extends AbstractJpaServiceSupport<Role, RoleRepository,
     @Override
     public Collection<? extends Role> findParentRoles(String currentRoleId) {
         Collection<Role> result = new LinkedList<>();
-        Role role = super.findOne(currentRoleId);
+        Role role = super.findById(currentRoleId);
         if (role == null) {
             return new ArrayList<>();
         }

@@ -67,6 +67,10 @@ public class AliPayResServiceImpl implements AliPayResService {
      */
     @Override
     public String checkUrl(String urlvalue) throws IOException {
-        return new String(HttpClient.get(urlvalue).getBody(), PEPConstants.DEFAULT_CHARSET);
+        byte[] content = HttpClient.get(urlvalue).getBody();
+        if (content != null && content.length > 0) {
+            return new String(content, PEPConstants.DEFAULT_CHARSET);
+        }
+        return null;
     }
 }

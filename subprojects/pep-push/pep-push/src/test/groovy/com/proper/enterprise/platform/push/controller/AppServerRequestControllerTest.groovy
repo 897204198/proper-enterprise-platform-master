@@ -170,7 +170,7 @@ class AppServerRequestControllerTest extends PushAbstractTest {
             tokens.add(it.pushToken)
             it.setPushToken('')
         }
-        deviceRepo.save(lstDevice)
+        deviceRepo.saveAll(lstDevice)
 
         pusherApp.pushMessageToOneUser(msg,TEST_USERID1)
 
@@ -179,7 +179,7 @@ class AppServerRequestControllerTest extends PushAbstractTest {
         }
 
         tokens.eachWithIndex {it,i->lstDevice[i].pushToken=it}
-        deviceRepo.save(lstDevice)
+        deviceRepo.saveAll(lstDevice)
     }
 
 

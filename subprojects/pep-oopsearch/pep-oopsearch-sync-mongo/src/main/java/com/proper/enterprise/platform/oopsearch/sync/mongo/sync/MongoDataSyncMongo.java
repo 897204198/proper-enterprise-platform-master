@@ -89,7 +89,7 @@ public class MongoDataSyncMongo extends AbstractMongoDataSync {
         }
         if (documentList.size() > 0) {
             syncMongoRepository.deleteAllByTabIn(getConfigTables(DataBaseType.MONGODB));
-            syncMongoRepository.save(documentList);
+            syncMongoRepository.saveAll(documentList);
         }
     }
 

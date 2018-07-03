@@ -34,9 +34,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role get(String id) {
-        return roleDao.findOne(id);
+        return roleDao.findById(id);
     }
-
 
     @Override
     public Role save(Role role) {
@@ -67,7 +66,7 @@ public class RoleServiceImpl implements RoleService {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            Collection<? extends Role> list = roleDao.findAll(idList);
+            Collection<? extends Role> list = roleDao.findAllById(idList);
             for (Role roleEntity : list) {
                 validateBeforeDelete(roleEntity);
                 if (CollectionUtil.isNotEmpty(roleEntity.getUserGroups())) {
@@ -102,14 +101,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     public Role addParent(String roleId, String parentId) {
-        Role role = roleDao.findOne(roleId);
+        Role role = roleDao.findById(roleId);
         if (null == role) {
             return null;
         }
         if (StringUtil.isEmpty(parentId)) {
             return role;
         }
-        Role parentRole = roleDao.findOne(parentId);
+        Role parentRole = roleDao.findById(parentId);
         if (null == parentRole) {
             return role;
         }
@@ -143,7 +142,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<? extends Role> findRoleParents(String roleId) {
-        Role role = roleDao.findOne(roleId);
+        Role role = roleDao.findById(roleId);
         if (null == role) {
             return new ArrayList<>();
         }
@@ -180,7 +179,7 @@ public class RoleServiceImpl implements RoleService {
         if (CollectionUtil.isEmpty(idList)) {
             return new ArrayList<>();
         }
-        Collection<? extends Role> roles = roleDao.findAll(idList);
+        Collection<? extends Role> roles = roleDao.findAllById(idList);
         for (Role role : roles) {
             role.setEnable(enable);
         }
@@ -309,7 +308,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role addRoleResources(String roleId, List<String> ids) {
-        Role role = roleDao.findOne(roleId);
+        Role role = roleDao.findById(roleId);
         if (role == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.role.get.failed"));
         }
@@ -326,7 +325,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role deleteRoleResources(String roleId, String ids) {
-        Role role = roleDao.findOne(roleId);
+        Role role = roleDao.findById(roleId);
         if (role == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.role.get.failed"));
         }
@@ -344,7 +343,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<? extends User> getRoleUsers(String roleId, EnableEnum roleEnable, EnableEnum userEnable) {
-        Role role = roleDao.findOne(roleId);
+        Role role = roleDao.findById(roleId);
         if (role == null) {
             return new ArrayList<>();
         }
@@ -353,7 +352,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Collection<? extends UserGroup> getRoleUserGroups(String roleId, EnableEnum roleEnable, EnableEnum userGroupEnable) {
-        Role role = roleDao.findOne(roleId);
+        Role role = roleDao.findById(roleId);
         if (role == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.role.get.failed"));
         }
@@ -414,7 +413,7 @@ public class RoleServiceImpl implements RoleService {
         if (StringUtil.isEmpty(parentId)) {
             return;
         }
-        role.addParent(roleDao.findOne(parentId));
+        role.addParent(roleDao.findById(parentId));
         String currentRoleId = role.getId();
         while (true) {
             role = role.getParent();

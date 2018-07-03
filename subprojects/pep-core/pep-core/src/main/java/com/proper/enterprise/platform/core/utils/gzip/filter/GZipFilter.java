@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -325,6 +326,11 @@ public class GZipFilter extends UserAgentFilter {
             {
                 return new AbstractCompressedStream(compressionType,request,this,_vary)
                 {
+                    @Override
+                    public void setWriteListener(WriteListener writeListener) {
+
+                    }
+
                     private Deflater _allocatedDeflater;
                     private byte[] _allocatedBuffer;
 

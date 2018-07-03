@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.jpa.copy.service.impl;
 
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.jpa.copy.entity.CopyAEntity;
 import com.proper.enterprise.platform.core.jpa.copy.repository.CopyARepository;
 import com.proper.enterprise.platform.core.jpa.copy.service.CopyAService;
@@ -19,6 +20,6 @@ public class CopyAServiceImpl implements CopyAService {
 
     @Override
     public CopyAEntity findOne(String id) {
-        return copyaRepository.findOne(id);
+        return copyaRepository.findById(id).orElseThrow(() -> new ErrMsgException("error"));
     }
 }

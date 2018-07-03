@@ -13,13 +13,13 @@ import javax.xml.transform.stream.StreamSource
 class Jaxb2MarshallerTest extends AbstractTest {
 
     @Autowired
-    Marshaller marshaller
+    private Marshaller marshaller = null
 
     @Autowired
-    Unmarshaller unmarshaller
+    private Unmarshaller unmarshaller = null
 
     @Test
-    public void marshal() {
+    void marshal() {
         def m = new Req()
         m.setHosId('11')
         m.setIp('192.168.1.1')

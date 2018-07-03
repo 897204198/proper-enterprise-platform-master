@@ -73,7 +73,7 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
     @Override
     public Collection<? extends User> findAll(Collection<String> idList) {
         if (CollectionUtil.isNotEmpty(idList)) {
-            return userRepo.findAll(idList);
+            return userRepo.findAllById(idList);
         }
         return new ArrayList<>();
     }
@@ -140,7 +140,7 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
 
     @Override
     public User changePassword(String userId, String oldPassword, String password) {
-        User user = this.findOne(userId);
+        User user = this.findById(userId);
         if (!pwdService.encrypt(oldPassword).equals(user.getPassword())) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.user.change.password.oldpassword.error"));
         }
@@ -150,9 +150,9 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
 
     @Override
     public User addUserRole(String userId, String roleId) {
-        User user = this.findOne(userId);
+        User user = this.findById(userId);
         if (null == hasRole(user, roleId)) {
-            Role role = roleDao.findOne(roleId);
+            Role role = roleDao.findById(roleId);
             if (role != null) {
                 user.add(role);
                 user = this.save(user);
@@ -163,7 +163,7 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
 
     @Override
     public User deleteUserRole(String userId, String roleId) {
-        User user = this.findOne(userId);
+        User user = this.findById(userId);
         Role role = hasRole(user, roleId);
         if (null != role) {
             user.remove(role);
@@ -175,7 +175,7 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
 
     @Override
     public boolean deleteByIds(Collection<String> ids) {
-        Collection<? extends User> collection = userRepo.findAll(ids);
+        Collection<? extends User> collection = userRepo.findAllById(ids);
         for (User userEntity : collection) {
             if (userEntity.getSuperuser()) {
                 throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.user.delete.role.super.failed"));

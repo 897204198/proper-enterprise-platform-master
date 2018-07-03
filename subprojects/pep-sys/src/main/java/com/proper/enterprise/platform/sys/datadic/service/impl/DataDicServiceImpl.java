@@ -124,7 +124,7 @@ public class DataDicServiceImpl extends AbstractJpaServiceSupport<DataDic, DataD
             }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
-        return this.findOne(specification);
+        return this.findOne(specification).orElse(null);
     }
 
     @Override
@@ -181,7 +181,7 @@ public class DataDicServiceImpl extends AbstractJpaServiceSupport<DataDic, DataD
             return false;
         }
         String[] idArr = ids.split(",");
-        Collection<DataDic> dataDics = this.findAll(Arrays.asList(idArr));
+        Collection<DataDic> dataDics = this.findAllById(Arrays.asList(idArr));
         if (CollectionUtil.isEmpty(dataDics)) {
             return false;
         }

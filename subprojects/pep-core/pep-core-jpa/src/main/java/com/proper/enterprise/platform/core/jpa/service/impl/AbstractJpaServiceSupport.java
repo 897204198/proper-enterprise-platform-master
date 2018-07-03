@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * JpaService基类的基础实现
@@ -53,7 +54,7 @@ public abstract class AbstractJpaServiceSupport<T extends IBase, R extends BaseJ
     @SuppressWarnings("unchecked")
     public boolean deleteById(IDT var1) {
         try {
-            getRepository().delete(var1);
+            getRepository().deleteById(var1);
             return true;
         } catch (EmptyResultDataAccessException e) {
             return false;
@@ -81,14 +82,14 @@ public abstract class AbstractJpaServiceSupport<T extends IBase, R extends BaseJ
 
     @Override
     @SuppressWarnings("unchecked")
-    public <S extends T> S findOne(Example<S> var1) {
-        return (S) getRepository().findOne(var1);
+    public <S extends T> Optional<S> findOne(Example<S> var1) {
+        return getRepository().findOne(var1);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public T findOne(Specification<T> var1) {
-        return (T) getRepository().findOne(var1);
+    public Optional<T> findOne(Specification<T> var1) {
+        return getRepository().findOne(var1);
     }
 
     @Override

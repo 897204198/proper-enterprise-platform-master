@@ -19,10 +19,10 @@ class ManyToManyTest extends AbstractTest {
     def a, c1, c2
 
     @Before
-    public void setUp() {
+    void setUp() {
         c1 = new COEntity('c1')
         c2 = new COEntity('c2')
-        cRepo.save([c1, c2])
+        cRepo.saveAll([c1, c2])
 
         a = new AOEntity('a', 'pwd')
         c1.setaEntities([a])
@@ -32,7 +32,7 @@ class ManyToManyTest extends AbstractTest {
     }
 
     @Test
-    public void saveNewRelationAndGetFromMappedByCol() {
+    void saveNewRelationAndGetFromMappedByCol() {
         def result = cRepo.findAll()
         assert result[0].getaEntities() != null
         assert result[1].getaEntities() != null

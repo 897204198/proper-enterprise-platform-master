@@ -210,13 +210,20 @@ public abstract class BaseController extends AbstractQuerySupport {
     protected HttpStatus handleStatus(Exception ex, WebRequest request) {
         ResponseEntityExceptionHandler handler = new ResponseEntityExceptionHandler() {
         };
-        ResponseEntity res = handler.handleException(ex, request);
-        return res.getStatusCode();
+        try {
+            ResponseEntity res = handler.handleException(ex, request);
+            if (res != null) {
+                return res.getStatusCode();
+            }
+            throw new NullPointerException("Could NOT get ResponseEntity!");
+        } catch (Exception e) {
+            LOGGER.error("Could NOT handle this exception by ResponseEntityExceptionHandler", e);
+            return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
 
     protected String handleBody(Exception ex) {
         return null == ex.getMessage() ? PEPConstants.RESPONSE_SYSTEM_ERROR_MSG : ex.getMessage();
     }
-
 
 }

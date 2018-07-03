@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * JpaService基类
@@ -77,7 +78,7 @@ public interface BaseJpaService<T extends IBase, ID extends Serializable> extend
      * @param spec spec
      * @return 泛型
      */
-    T findOne(Specification<T> spec);
+    Optional<T> findOne(Specification<T> spec);
 
     /**
      * 查询
@@ -85,7 +86,7 @@ public interface BaseJpaService<T extends IBase, ID extends Serializable> extend
      * @param <S> S
      * @return 返回结果
      */
-    <S extends T> S findOne(Example<S> example);
+    <S extends T> Optional<S> findOne(Example<S> example);
 
     /**
      * 查询

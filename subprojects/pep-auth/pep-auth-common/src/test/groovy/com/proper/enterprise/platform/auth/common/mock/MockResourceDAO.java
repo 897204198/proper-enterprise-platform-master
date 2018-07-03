@@ -24,6 +24,16 @@ public class MockResourceDAO implements ResourceDao {
     }
 
     @Override
+    public Resource findById(String var1) {
+        return null;
+    }
+
+    @Override
+    public boolean existsById(String var1) {
+        return false;
+    }
+
+    @Override
     public Resource updateForSelective(Resource resource) {
         return null;
     }
@@ -49,11 +59,6 @@ public class MockResourceDAO implements ResourceDao {
     }
 
     @Override
-    public Collection<Resource> findAll(Iterable<String> var1) {
-        return null;
-    }
-
-    @Override
     public Collection<Resource> findAll(Sort var1) {
         return null;
     }
@@ -63,6 +68,10 @@ public class MockResourceDAO implements ResourceDao {
         return null;
     }
 
+    @Override
+    public Collection<Resource> findAllById(Iterable<String> var1) {
+        return null;
+    }
 
     @Override
     public Resource getNewResourceEntity() {
@@ -72,16 +81,6 @@ public class MockResourceDAO implements ResourceDao {
     @Override
     public Resource get(String id) {
         return null;
-    }
-
-    @Override
-    public Resource findOne(String var1) {
-        return null;
-    }
-
-    @Override
-    public boolean exists(String var1) {
-        return false;
     }
 
     @Override

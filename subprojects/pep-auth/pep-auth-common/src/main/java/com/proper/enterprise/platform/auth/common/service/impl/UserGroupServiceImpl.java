@@ -37,12 +37,12 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Override
     public UserGroup get(String id) {
-        return userGroupDao.findOne(id);
+        return userGroupDao.findById(id);
     }
 
     @Override
     public UserGroup get(String id, EnableEnum enable) {
-        return userGroupDao.findOne(id);
+        return userGroupDao.findById(id);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class UserGroupServiceImpl implements UserGroupService {
             Collections.addAll(idList, idArr);
             List<UserGroup> list = new ArrayList<>(idList.size());
             for (String id : idList) {
-                UserGroup tempGroup = userGroupDao.findOne(id);
+                UserGroup tempGroup = userGroupDao.findById(id);
                 if (tempGroup == null) {
                     continue;
                 }

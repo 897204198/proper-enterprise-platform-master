@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.jpa.curd.a.service.impl;
 
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.jpa.curd.a.api.A;
 import com.proper.enterprise.platform.core.jpa.curd.a.repository.ARepository;
 import com.proper.enterprise.platform.core.jpa.curd.a.service.AService;
@@ -37,16 +38,16 @@ public class AServiceImpl extends AbstractJpaServiceSupport<A, ARepository, Stri
 
     @Override
     public A addB(String aid, String bid) {
-        A a = this.findOne(aid);
-        B b = brepository.findOne(bid);
+        A a = this.findById(aid);
+        B b = brepository.findById(bid).orElseThrow(() -> new ErrMsgException("error"));
         a.add(b);
         return this.save(a);
     }
 
     @Override
     public A addC(String aid, String cid) {
-        A a = this.findOne(aid);
-        C c = crepository.findOne(cid);
+        A a = this.findById(aid);
+        C c = crepository.findById(cid).orElseThrow(() -> new ErrMsgException("error"));
         a.setCentity(c);
         return this.save(a);
     }

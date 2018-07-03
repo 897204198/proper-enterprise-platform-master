@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.core.mongo;
 
-import com.mongodb.Mongo;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
@@ -67,11 +66,6 @@ public class MongoConfigs extends AbstractMongoConfiguration {
 
     @Bean
     @Override
-    public Mongo mongo() throws Exception {
-        return mongoClient();
-    }
-
-    @Bean
     public PEPMongoClient mongoClient() {
         List<MongoCredential> credentialList = Collections.emptyList();
         if (StringUtil.isNotNull(username)) {
@@ -100,12 +94,14 @@ public class MongoConfigs extends AbstractMongoConfiguration {
     }
 
     @Bean
-    public MongoDbFactory mongoDbFactory() throws Exception {
+    @Override
+    public MongoDbFactory mongoDbFactory() {
         return new SimpleMongoDbFactory(mongoClient(), getDatabaseName());
     }
 
     @Bean
-    public MongoTemplate mongoTemplate() throws Exception {
+    @Override
+    public MongoTemplate mongoTemplate() {
         MongoDbFactory mongoDbFactory = mongoDbFactory();
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDbFactory);
         MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, new MongoMappingContext());

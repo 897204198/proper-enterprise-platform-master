@@ -76,7 +76,7 @@ public class ResourceDaoImpl extends AbstractJpaServiceSupport<Resource, Resourc
 
     @Override
     public Collection<? extends Resource> findAll(Collection<String> ids) {
-        return resourceRepository.findAll(ids);
+        return resourceRepository.findAllById(ids);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class ResourceDaoImpl extends AbstractJpaServiceSupport<Resource, Resourc
 
     @Override
     public Resource get(String id) {
-        return resourceRepository.findOne(id);
+        return resourceRepository.findById(id).orElse(null);
     }
 
     @Override
