@@ -10,31 +10,28 @@ import com.mongodb.MongoClient;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.dfs.api.common.AbstractDFSServiceSupport;
+import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.io.IOException;
 import java.io.InputStream;
 
 
 /**
  * GridFS implementation of AbstractDFSServiceSupport
- *
  */
 @Service
 public class DFSGridFSImpl extends AbstractDFSServiceSupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DFSGridFSImpl.class);
-
-    @Value("${mongodb.host}")
-    private String host;
-
-    @Value("${mongodb.port}")
-    private int port;
 
     @Value("${dfs.upload.rootpath}")
     private String dbname;
@@ -42,15 +39,13 @@ public class DFSGridFSImpl extends AbstractDFSServiceSupport {
     @Value("${dfs.mongo.bucket}")
     private String bucket;
 
+    @Autowired
     private MongoClient mongoClient;
 
     private GridFS gridFS;
 
     @PostConstruct
     public void postConstruct() {
-        LOGGER.debug("Prepare to create MongoDB client with host:{}, port:{} ...", host, port);
-        mongoClient = new MongoClient(host, port);
-        LOGGER.info("MongoDB client created.");
 
         LOGGER.debug("Prepare to get database:{} ...", dbname);
         DB db = mongoClient.getDB(dbname);
@@ -73,9 +68,15 @@ public class DFSGridFSImpl extends AbstractDFSServiceSupport {
 
     @Override
     protected void doSaveFile(InputStream is, String filePath) {
+        if (exists(filePath)) {
+            try {
+                deleteFile(filePath);
+            } catch (IOException e) {
+                throw new ErrMsgException(I18NUtil.getMessage("dfs.upload.valid.path.duplicated"));
+            }
+        }
         GridFSInputFile file = gridFS.createFile(is, filePath, true);
         LOGGER.debug("Create GridFS input file:{}", file);
-
         file.save();
         LOGGER.debug("After GridFS input file saving:{}", file);
     }
