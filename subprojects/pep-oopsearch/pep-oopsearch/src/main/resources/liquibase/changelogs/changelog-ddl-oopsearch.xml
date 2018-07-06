@@ -44,4 +44,8 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="fm (generated)" id="add-unique-index-2">
+        <addUniqueConstraint columnNames="TABLE_NAME, SEARCH_COLUMN" constraintName="UK_TABLE_NAME_SEARCH_COLUMN" tableName="PEP_OOPSEARCH_CONFIG"/>
+        <addUniqueConstraint columnNames="TABLE_NAME, COLUMN_ALIAS" constraintName="UK_TABLE_NAME_COLUMN_ALIAS" tableName="PEP_OOPSEARCH_CONFIG"/>
+    </changeSet>
 </databaseChangeLog>

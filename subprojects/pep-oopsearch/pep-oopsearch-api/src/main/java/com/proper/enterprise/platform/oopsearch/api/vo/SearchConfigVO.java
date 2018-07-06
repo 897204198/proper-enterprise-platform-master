@@ -100,6 +100,9 @@ public class SearchConfigVO extends BaseVO {
     }
 
     public DataBaseType getDataBaseType() {
+        if (null == this.dataBaseType) {
+            return DataBaseType.RDB;
+        }
         return dataBaseType;
     }
 
