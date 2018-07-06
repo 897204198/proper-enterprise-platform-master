@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.workflow.convert;
 
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import org.flowable.idm.engine.impl.persistence.entity.UserEntityImpl;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,6 +27,9 @@ public class UserConvert {
 
 
     public static List<org.flowable.idm.api.User> convertCollection(Collection<? extends User> pepUsers) {
+        if (CollectionUtil.isEmpty(pepUsers)) {
+            return new ArrayList<>();
+        }
         List<org.flowable.idm.api.User> users = new ArrayList<>();
         for (User pepUser : pepUsers) {
             org.flowable.idm.api.User user = convert(pepUser);

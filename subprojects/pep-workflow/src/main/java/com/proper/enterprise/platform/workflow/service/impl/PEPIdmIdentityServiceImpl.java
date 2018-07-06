@@ -6,12 +6,17 @@ import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.workflow.convert.GroupConvert;
 import com.proper.enterprise.platform.workflow.convert.RoleConvert;
 import org.flowable.idm.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 
 public class PEPIdmIdentityServiceImpl implements IdmIdentityService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PEPIdmIdentityServiceImpl.class);
 
     @Override
     public User newUser(String userId) {
@@ -54,6 +59,7 @@ public class PEPIdmIdentityServiceImpl implements IdmIdentityService {
             Collection<? extends UserGroup> userGroups = getUserService().getUserGroups(userId);
             return GroupConvert.convertCollection(userGroups);
         } catch (Exception e) {
+            LOGGER.error("queryGroupByUserId in identity find error", e);
             return new ArrayList<>();
         }
     }
@@ -62,8 +68,9 @@ public class PEPIdmIdentityServiceImpl implements IdmIdentityService {
     public List<Role> queryRoleByUserId(String userId) {
         try {
             Collection<? extends com.proper.enterprise.platform.api.auth.model.Role> roles = getUserService().getUserRoles(userId);
-            return new ArrayList<>(RoleConvert.convertCollection(roles));
+            return RoleConvert.convertCollection(roles);
         } catch (Exception e) {
+            LOGGER.error("queryGroupByUserId in identity find error", e);
             return new ArrayList<>();
         }
     }

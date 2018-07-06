@@ -40,6 +40,7 @@ public class PEPModelVO {
     private Integer processVersion;
     private String comment;
     private Integer modelType;
+    private String startFormKey;
     @Convert(converter = DataDicLiteConverter.class)
     private DataDicLite status;
 
@@ -52,11 +53,12 @@ public class PEPModelVO {
         this.setModelVersion(model.getVersion());
     }
 
-    public PEPModelVO(String id, String name, Date deploymentTime, Integer processVersion) {
+    public PEPModelVO(String id, String name, Date deploymentTime, Integer processVersion, String startFormKey) {
         this.id = id;
         this.name = name;
         this.setDeploymentTime(deploymentTime);
         this.processVersion = processVersion;
+        this.startFormKey = startFormKey;
     }
 
     public String getId() {
@@ -193,6 +195,14 @@ public class PEPModelVO {
 
     public void setStatus(DataDicLite status) {
         this.status = status;
+    }
+
+    public String getStartFormKey() {
+        return startFormKey;
+    }
+
+    public void setStartFormKey(String startFormKey) {
+        this.startFormKey = startFormKey;
     }
 
     @Override

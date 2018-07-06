@@ -106,7 +106,6 @@ class UserTaskTest extends AbstractTest {
 
         taskService.addCandidateRole(taskCanOrAss1.getId(), 'role2')
         taskService.deleteCandidateRole(taskCanOrAss1.getId(), 'role1')
-
         //动态删除候选角色 并验证role1候选任务为空
         def delTaskRole1 = taskService.createTaskQuery().taskCandidateRole("role1").singleResult()
         assert null == delTaskRole1
