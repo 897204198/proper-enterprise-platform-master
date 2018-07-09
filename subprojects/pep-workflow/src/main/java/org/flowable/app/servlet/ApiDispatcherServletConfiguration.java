@@ -29,7 +29,10 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
-@ComponentScan(value = { "org.flowable.app.conf", "org.flowable.app.rest.api", "org.flowable.app.rest.exception" })
+@ComponentScan(value = { "org.flowable.app.conf",
+    "org.flowable.app.rest.api",
+    "org.flowable.app.rest.exception",
+    "org.flowable.rest.service.api.runtime.process" })
 @EnableAsync
 public class ApiDispatcherServletConfiguration extends WebMvcConfigurationSupport {
 

@@ -178,4 +178,31 @@
             <column name="DD_ORDER" valueNumeric="1"/>
         </insert>
     </changeSet>
+
+    <changeSet author="zjl" id="data-dic-add-flowable-state">
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_workflow_status_doing"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="PEPProcInstStateEnum"/>
+            <column name="DD_CODE" value="DOING"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="处理中"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_workflow_status_done"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="PEPProcInstStateEnum"/>
+            <column name="DD_CODE" value="DONE"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="已完成"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

@@ -198,6 +198,7 @@ public class SearchConfigServiceImpl extends AbstractJpaServiceSupport<SearchCon
     public SearchConfigVO updateSearchConfig(String id, SearchConfigVO searchConfigVO) {
         try {
             searchConfigVO.setId(id);
+            checkParam(searchConfigVO);
             SearchConfigEntity searchConfigEntity = new SearchConfigEntity();
             BeanUtils.copyProperties(searchConfigVO, searchConfigEntity);
             BeanUtils.copyProperties(searchConfigRepository.updateForSelective(searchConfigEntity), searchConfigVO);
@@ -231,7 +232,7 @@ public class SearchConfigServiceImpl extends AbstractJpaServiceSupport<SearchCon
             || StringUtil.isBlank(searchConfigVO.getTableName())
             || StringUtil.isBlank(searchConfigVO.getModuleName())
             || StringUtil.isBlank(searchConfigVO.getUrl())) {
-            throw new ErrMsgException("searchConfigEntity Param is null or ' ' ");
+            throw new ErrMsgException("oopsearch config Param is null or ' ' ");
         }
     }
 

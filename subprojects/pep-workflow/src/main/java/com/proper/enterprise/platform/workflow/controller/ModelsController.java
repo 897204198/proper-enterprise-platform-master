@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.workflow.vo.PEPModelVO;
 import org.flowable.app.domain.editor.Model;
 import org.flowable.app.model.common.ResultListDataRepresentation;
 import org.flowable.app.service.api.ModelService;
+import org.flowable.engine.FormService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.impl.ProcessDefinitionQueryProperty;
 import org.flowable.engine.repository.Deployment;
@@ -29,6 +30,8 @@ public class ModelsController extends BaseController {
     private PEPModelService pepModelService;
     @Autowired
     private ModelService modelService;
+    @Autowired
+    private FormService formService;
 
     @RequestMapping(value = "/{modelId}/deployment", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,7 +42,11 @@ public class ModelsController extends BaseController {
             .processDefinitionKey(model.getKey())
             .orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_VERSION).desc()
             .list().get(0);
-        return responseOfPost(new PEPModelVO(model.getId(), model.getName(), deployment.getDeploymentTime(), processDefinition.getVersion()));
+        String startFormKey = formService.getStartFormKey(processDefinition.getId());
+        return responseOfPost(new PEPModelVO(model.getId(),
+            model.getName(),
+            deployment.getDeploymentTime(),
+            processDefinition.getVersion(), startFormKey));
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")

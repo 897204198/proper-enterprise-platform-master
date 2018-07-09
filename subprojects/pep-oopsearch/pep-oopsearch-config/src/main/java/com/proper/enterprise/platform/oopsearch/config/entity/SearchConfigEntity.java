@@ -11,7 +11,9 @@ import javax.persistence.*;
  * searchConfig对应的entity
  */
 @Entity
-@Table(name = "PEP_OOPSEARCH_CONFIG")
+@Table(name = "PEP_OOPSEARCH_CONFIG", indexes = {
+    @Index(name = "UK_TABLE_NAME_SEARCH_COLUMN", columnList = "tableName, searchColumn", unique = true),
+    @Index(name = "UK_TABLE_NAME_COLUMN_ALIAS", columnList = "tableName, columnAlias", unique = true)})
 @CacheEntity
 public class SearchConfigEntity extends BaseEntity {
 

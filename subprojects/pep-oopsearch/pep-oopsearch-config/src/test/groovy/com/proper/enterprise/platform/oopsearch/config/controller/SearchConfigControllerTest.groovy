@@ -44,9 +44,9 @@ class SearchConfigControllerTest extends AbstractTest{
         configReq['id'] = '001'
         configReq['moduleName'] = 'testuser'
         configReq['tableName'] = 'test_user'
-        configReq['searchColumn'] = 'create_time'
-        configReq['columnAlias'] = '人员创建时间'
-        configReq['columnDesc'] = 'demouser_create_time'
+        configReq['searchColumn'] = 'user_id'
+        configReq['columnAlias'] = 'demouser_user_id'
+        configReq['columnDesc'] = '人员创建时间'
         configReq['url'] = '/demouser'
         configReq['dataBaseType'] = 'RDB'
         configReq['enable'] = true
@@ -61,8 +61,8 @@ class SearchConfigControllerTest extends AbstractTest{
         def searchConfigEntity = [:]
         searchConfigEntity['moduleName'] = 'demouser'
         searchConfigEntity['tableName'] = 'demo_user'
-        searchConfigEntity['searchColumn'] = 'create_time'
-        searchConfigEntity['columnAlias'] = 'demouser_create_time'
+        searchConfigEntity['searchColumn'] = 'create_time_test'
+        searchConfigEntity['columnAlias'] = 'demouser_create_time_test'
         searchConfigEntity['columnDesc'] = 'demoDesc'
         searchConfigEntity['url'] = '/url'
         searchConfigEntity['dataBaseType'] = 'RDB'
