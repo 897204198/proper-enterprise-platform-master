@@ -59,12 +59,16 @@ dependencies {
             project(':pep-av-backend'),
             // Needs one cache implementation if use cache API
             project(':pep-cache-ehcache'),
+            project(':pep-dev-tools'),
+            // Needs one dfs implementation if use DFS API
+            // MUST change 'dfs.upload.rootpath' together
+            project(':pep-dfs-mongo'),
+            project(':pep-feedback'),
+            project(':pep-file'),
             project(':pep-oopsearch-config'),
             project(':pep-oopsearch'),
-            project(':pep-workflow'),
-            project(':pep-file'),
-            project(':pep-dfs-mongo'),
-            project(':pep-dev-tools')
+            project(':pep-workflow')
+
 }
 task cleanDist(type: Delete) {
     delete 'build/libs'

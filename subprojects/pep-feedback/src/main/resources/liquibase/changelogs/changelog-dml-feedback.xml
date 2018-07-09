@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="alphahinex (generated)" id="1526364235459-0704">
+        <!--意见反馈状态-->
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_feedback_not_reply"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="FEEDBACK_STATUS"/>
+            <column name="DD_CODE" value="0"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="未反馈"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+            <column name="ENABLE" value="Y"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_feedback_replied"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="FEEDBACK_STATUS"/>
+            <column name="DD_CODE" value="1"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="已反馈"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+            <column name="ENABLE" value="Y"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_feedback_colsed"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="FEEDBACK_STATUS"/>
+            <column name="DD_CODE" value="2"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="已关闭"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+            <column name="ENABLE" value="Y"/>
+        </insert>
+    </changeSet>
+    <changeSet id="20180708-Sunday1" author="wyia">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-yjfk"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="form"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;0"/>
+            <column name="NAME" value="意见反馈"/>
+            <column name="ROUTE" value="feedback"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="3"/>
+            <column name="PARENT_ID"/>
+        </insert>
+    </changeSet>
+    <changeSet id="20180708-Sunday2" author="wyib">
+        <insert tableName="PEP_AUTH_ROLES">
+            <column name="ID" value="role-fk"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="NAME" value="DevFeedback"/>
+            <column name="PARENT_ID"/>
+        </insert>
+    </changeSet>
+    <changeSet id="20180708-Sunday3" author="wyic">
+        <insert tableName="PEP_AUTH_ROLES_MENUS">
+            <column name="ROLE_ID" value="role-fk"/>
+            <column name="MENU_ID" value="pep-yjfk"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
