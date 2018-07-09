@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
 import com.proper.enterprise.platform.auth.service.APISecret
 import com.proper.enterprise.platform.auth.service.JWTService
+import com.proper.enterprise.platform.auth.service.impl.JWTServiceImpl
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,7 +12,7 @@ import org.springframework.http.HttpStatus
 
 import javax.servlet.http.Cookie
 
-class JWTServiceTest extends AbstractTest {
+class JWTServiceImplTest extends AbstractTest {
 
     @Autowired
     private JWTService jwtService
@@ -81,7 +82,7 @@ class JWTServiceTest extends AbstractTest {
     @Test
     void getTokenFromCookie() {
         def token = '123456token'
-        Cookie cookie = new Cookie(JWTService.TOKEN_FLAG, token)
+        Cookie cookie = new Cookie(JWTServiceImpl.TOKEN_FLAG, token)
         mockRequest.setCookies(cookie)
         assert token == jwtService.getTokenFromCookie(mockRequest)
 
