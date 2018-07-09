@@ -93,11 +93,11 @@ class JWTServiceImplTest extends AbstractTest {
     @Test
     void getTokenFromRequestParam(){
         def token = 'a.b.1'
-        mockRequest.setParameter(JWTService.TOKEN, token)
+        mockRequest.setParameter(JWTServiceImpl.TOKEN, token)
         assert jwtService.getTokenFromReqParameter(mockRequest) == token
 
         def token1 = ''
-        mockRequest.setParameter(JWTService.TOKEN, token1)
+        mockRequest.setParameter(JWTServiceImpl.TOKEN, token1)
         assert jwtService.getTokenFromReqParameter(mockRequest) == null
     }
 
