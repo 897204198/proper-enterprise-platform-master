@@ -33,7 +33,7 @@ public class JWTServiceImpl implements JWTService {
     private APISecret secret;
 
     @Autowired
-    public void JWTServiceImpl(APISecret secret) {
+    public JWTServiceImpl(APISecret secret) {
         this.secret = secret;
     }
 
