@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
+import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 
 import java.util.Collection;
 
@@ -269,7 +270,7 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public DataDicLite getMenuType() {
-        return menuType;
+        return DataDicUtil.convert(menuType);
     }
 
     @Override

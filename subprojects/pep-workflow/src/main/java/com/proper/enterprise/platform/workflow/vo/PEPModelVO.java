@@ -3,13 +3,11 @@ package com.proper.enterprise.platform.workflow.vo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
-import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
+import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import org.flowable.app.domain.editor.Model;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
-import javax.persistence.Convert;
-import java.io.IOException;
 import java.util.Date;
 
 public class PEPModelVO {
@@ -41,7 +39,6 @@ public class PEPModelVO {
     private String comment;
     private Integer modelType;
     private String startFormKey;
-    @Convert(converter = DataDicLiteConverter.class)
     private DataDicLite status;
 
     public PEPModelVO() {
@@ -190,7 +187,7 @@ public class PEPModelVO {
     }
 
     public DataDicLite getStatus() {
-        return status;
+        return DataDicUtil.convert(status);
     }
 
     public void setStatus(DataDicLite status) {
@@ -207,12 +204,6 @@ public class PEPModelVO {
 
     @Override
     public String toString() {
-        String pepModelVOStr = "";
-        try {
-            pepModelVOStr = JSONUtil.toJSON(this);
-        } catch (IOException e) {
-            LOGGER.error("PEPModelVO error , vo is null", e);
-        }
-        return pepModelVOStr;
+        return JSONUtil.toJSONIgnoreException(this);
     }
 }

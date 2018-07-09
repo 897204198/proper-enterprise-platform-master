@@ -26,7 +26,7 @@
         <property name="filters" value="stat"/>
     </bean>
 
-    <bean id="pepLiquibase" class="liquibase.integration.spring.SpringLiquibase" lazy-init="false">
+    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase" lazy-init="false">
         <property name="dataSource" ref="dataSource"/>
         <property name="changeLog" value="classpath:liquibase/changelog.xml"/>
         <property name="contexts" value="${database.liquibase.profile}"/>

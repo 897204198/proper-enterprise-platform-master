@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component(value = "mongoSyncFullMongoManager")
 @Lazy(false)
-@DependsOn("pepLiquibase")
+@DependsOn("liquibase")
 public class MongoFullSyncMongoManager implements InitializingBean {
 
     @Autowired

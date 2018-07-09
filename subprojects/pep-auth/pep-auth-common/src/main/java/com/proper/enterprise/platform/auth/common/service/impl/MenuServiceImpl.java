@@ -14,6 +14,7 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.sort.BeanComparator;
+import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
@@ -86,7 +87,7 @@ public class MenuServiceImpl implements MenuService {
         String parentId = menuReq.getParentId();
         String menuCode = menuReq.getMenuCode();
         if (StringUtil.isNotNull(menuCode)) {
-            menuReq.setMenuType(dataDicService.get("MENU_TYPE", menuCode));
+            menuReq.setMenuType(new DataDicLiteBean("MENU_TYPE", menuCode));
         }
 
         Menu updateMenu = menuDao.updateForSelective(menuReq);
@@ -232,7 +233,7 @@ public class MenuServiceImpl implements MenuService {
         resource.setMethod(resourceReq.getMethod());
         String resourceCode = resourceReq.getResourceCode();
         if (StringUtil.isNotNull(resourceCode)) {
-            resource.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
+            resource.setResourceType(new DataDicLiteBean("RESOURCE_TYPE", resourceCode));
         }
         Menu menu = this.get(menuId);
         if (menu != null) {
@@ -384,7 +385,6 @@ public class MenuServiceImpl implements MenuService {
     }
 
     private void validate(Menu menu) {
-        menuDao.findAll(null, null, menu.getRoute(), EnableEnum.ALL, null);
         if (StringUtil.isEmpty(menu.getRoute())) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.menu.route.empty"));
         }

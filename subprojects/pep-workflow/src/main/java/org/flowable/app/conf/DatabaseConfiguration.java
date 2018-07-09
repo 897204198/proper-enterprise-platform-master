@@ -147,9 +147,9 @@ public class DatabaseConfiguration {
         return databaseType;
     }
 
-    @Bean
+    @Bean("flowableLiquibase")
     public Liquibase liquibase() {
-        LOGGER.info("Configuring Liquibase");
+        LOGGER.info("Configuring flowable Liquibase");
         DatabaseConnection connection = null;
         try {
             connection = new JdbcConnection(dataSource.getConnection());

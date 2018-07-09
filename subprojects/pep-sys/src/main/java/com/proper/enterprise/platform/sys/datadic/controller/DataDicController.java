@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/sys/datadic")
 public class DataDicController extends BaseController {
 
+    private DataDicService dataDicService;
+
     @Autowired
-    DataDicService dataDicService;
+    public DataDicController(DataDicService dataDicService) {
+        this.dataDicService = dataDicService;
+    }
 
     @PostMapping
     public ResponseEntity<DataDic> save(@RequestBody DataDicEntity dataDicEntity) {

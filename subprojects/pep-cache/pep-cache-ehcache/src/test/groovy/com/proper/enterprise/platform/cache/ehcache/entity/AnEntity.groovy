@@ -10,6 +10,8 @@ import javax.persistence.*
 @CacheEntity
 class AnEntity {
 
+    AnEntity() { }
+
     AnEntity(String username, String password) {
         this.username = username;
         this.password = password;

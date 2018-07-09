@@ -1,49 +1,43 @@
 /*
  * Hibernate, Relational Persistence for Idiomatic Java
  *
- * Copyright (c) 2011, Red Hat Inc. or third-party contributors as
- * indicated by the @author tags or express copyright attribution
- * statements applied by the authors.  All third-party contributions are
- * distributed under license by Red Hat Inc.
- *
- * This copyrighted material is made available to anyone wishing to use, modify,
- * copy, or redistribute it subject to the terms and conditions of the GNU
- * Lesser General Public License, as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this distribution; if not, write to:
- * Free Software Foundation, Inc.
- * 51 Franklin Street, Fifth Floor
- * Boston, MA  02110-1301  USA
+ * License: GNU Lesser General Public License (LGPL), version 2.1 or later.
+ * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
  */
 
 package com.proper.enterprise.platform.cache.ehcache;
 
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
-import org.hibernate.cache.CacheException;
-import org.hibernate.cache.ehcache.EhCacheMessageLogger;
-import org.hibernate.cache.ehcache.internal.nonstop.NonstopAccessStrategyFactory;
-import org.hibernate.cache.ehcache.internal.regions.*;
-import org.hibernate.cache.ehcache.internal.strategy.EhcacheAccessStrategyFactory;
-import org.hibernate.cache.ehcache.internal.strategy.EhcacheAccessStrategyFactoryImpl;
-import org.hibernate.cache.ehcache.internal.util.HibernateEhcacheUtils;
-import org.hibernate.cache.ehcache.management.impl.ProviderMBeanRegistrationHelper;
-import org.hibernate.cache.spi.*;
-import org.hibernate.cache.spi.access.AccessType;
-import org.hibernate.cfg.Settings;
-import org.hibernate.service.spi.InjectService;
-import org.jboss.logging.Logger;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
+
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+
+import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
+import org.hibernate.boot.spi.SessionFactoryOptions;
+import org.hibernate.cache.CacheException;
+import org.hibernate.cache.ehcache.EhCacheMessageLogger;
+import org.hibernate.cache.ehcache.internal.nonstop.NonstopAccessStrategyFactory;
+import org.hibernate.cache.ehcache.internal.regions.EhcacheCollectionRegion;
+import org.hibernate.cache.ehcache.internal.regions.EhcacheEntityRegion;
+import org.hibernate.cache.ehcache.internal.regions.EhcacheNaturalIdRegion;
+import org.hibernate.cache.ehcache.internal.regions.EhcacheQueryResultsRegion;
+import org.hibernate.cache.ehcache.internal.regions.EhcacheTimestampsRegion;
+import org.hibernate.cache.ehcache.internal.strategy.EhcacheAccessStrategyFactory;
+import org.hibernate.cache.ehcache.internal.strategy.EhcacheAccessStrategyFactoryImpl;
+import org.hibernate.cache.ehcache.management.impl.ProviderMBeanRegistrationHelper;
+import org.hibernate.cache.spi.CacheDataDescription;
+import org.hibernate.cache.spi.CollectionRegion;
+import org.hibernate.cache.spi.EntityRegion;
+import org.hibernate.cache.spi.NaturalIdRegion;
+import org.hibernate.cache.spi.QueryResultsRegion;
+import org.hibernate.cache.spi.RegionFactory;
+import org.hibernate.cache.spi.TimestampsRegion;
+import org.hibernate.cache.spi.access.AccessType;
+import org.hibernate.service.spi.InjectService;
+
+import org.jboss.logging.Logger;
 
 /**
  * Abstract implementation of an Ehcache specific RegionFactory.
@@ -54,9 +48,9 @@ import java.util.Properties;
  * @author Abhishek Sanoujam
  * @author Alex Snaps
  *
- * Copy from {@link org.hibernate.cache.ehcache.AbstractEhcacheRegionFactory} v4.3.10.Final directly.
+ * Copy from {@link org.hibernate.cache.ehcache.AbstractEhcacheRegionFactory} v5.2.17.Final directly.
  * Nothing changed.
- * Because could not access this class in other packages.
+ * Because could not access this class in EhCacheRegionFactory of this package.
  */
 abstract class AbstractEhcacheRegionFactory implements RegionFactory {
     //CHECKSTYLE:OFF
@@ -88,7 +82,7 @@ abstract class AbstractEhcacheRegionFactory implements RegionFactory {
     /**
      * Settings object for the Hibernate persistence unit.
      */
-    protected Settings settings;
+    protected SessionFactoryOptions settings;
 
     /**
      * {@link EhcacheAccessStrategyFactory} for creating various access strategies
@@ -175,7 +169,6 @@ abstract class AbstractEhcacheRegionFactory implements RegionFactory {
                 cache = manager.getEhcache( name );
                 LOG.debug( "started EHCache region: " + name );
             }
-            HibernateEhcacheUtils.validateEhcache( cache );
             return cache;
         }
         catch (net.sf.ehcache.CacheException e) {
@@ -231,7 +224,6 @@ abstract class AbstractEhcacheRegionFactory implements RegionFactory {
      * <p/>
      * This is a Hibernate 3.5 method.
      */
-    @Override
     public AccessType getDefaultAccessType() {
         return AccessType.READ_WRITE;
     }

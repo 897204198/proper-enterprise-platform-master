@@ -9,7 +9,7 @@
     </bean>
 
     <bean id="pepSchedulerFactory" name="pepSchedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
-          lazy-init="false" depends-on="pepLiquibase">
+          lazy-init="false" depends-on="liquibase">
         <property name="applicationContextSchedulerContextKey" value="applicationContext"/>
         <property name="dataSource" ref="dataSource" />
         <property name="overwriteExistingJobs" value="true" />

@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
@@ -54,7 +55,7 @@ public class ResourceServiceImpl implements ResourceService {
         setDefault(resourceReq);
         String resourceCode = resourceReq.getResourceCode();
         if (StringUtil.isNotNull(resourceCode)) {
-            resourceReq.setResourceType(dataDicService.get("RESOURCE_TYPE", resourceCode));
+            resourceReq.setResourceType(new DataDicLiteBean("RESOURCE_TYPE", resourceCode));
         }
         return resourceDao.updateForSelective(resourceReq);
     }

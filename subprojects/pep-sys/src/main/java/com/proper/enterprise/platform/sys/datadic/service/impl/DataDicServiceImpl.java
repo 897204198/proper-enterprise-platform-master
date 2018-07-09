@@ -166,6 +166,9 @@ public class DataDicServiceImpl extends AbstractJpaServiceSupport<DataDic, DataD
             dataDic.setDeft(false);
         }
         validate(dataDic);
+        if (dataDic.getOrder() == null) {
+            dataDic.setOrder(1);
+        }
         return repository.save((DataDicEntity) dataDic);
     }
 

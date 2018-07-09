@@ -12,18 +12,19 @@
         <property name="locations" value="classpath*:conf/**/jpa-cache.properties" />
         <property name="properties">
             <value>
-                hibernate.dialect             = #{dataSource.dialect}
-                hibernate.ejb.naming_strategy = ${hibernate.ejb.naming_strategy}
-                hibernate.format_sql          = ${hibernate.format_sql}
-                hibernate.generate_statistics = ${hibernate.generate_statistics}
-                hibernate.hbm2ddl.auto        = ${hibernate.hbm2ddl.auto}
-                hibernate.query.substitutions = ${hibernate.query.substitutions}
-                hibernate.show_sql            = ${hibernate.show_sql}
+                hibernate.dialect                  = #{dataSource.dialect}
+                hibernate.format_sql               = ${hibernate.format_sql}
+                hibernate.generate_statistics      = ${hibernate.generate_statistics}
+                hibernate.hbm2ddl.auto             = ${hibernate.hbm2ddl.auto}
+                hibernate.physical_naming_strategy = ${hibernate.physical_naming_strategy}
+                hibernate.query.substitutions      = ${hibernate.query.substitutions}
+                hibernate.show_sql                 = ${hibernate.show_sql}
             </value>
         </property>
     </bean>
 
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+          depends-on="liquibase">
         <property name="dataSource" ref="dataSource" />
         <property name="packagesToScan" value="com.proper.**.entity" />
         <property name="jpaVendorAdapter">
@@ -33,6 +34,8 @@
     </bean>
 
     <!-- Spring Data JPA -->
-    <jpa:repositories base-package="com.proper.**.repository"  factory-class="com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepositoryBean" transaction-manager-ref="jpaTransactionManager" entity-manager-factory-ref="entityManagerFactory"/>
+    <jpa:repositories base-package="com.proper.**.repository"
+                      factory-class="com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepositoryBean"
+                      transaction-manager-ref="jpaTransactionManager" entity-manager-factory-ref="entityManagerFactory"/>
 
 </beans>

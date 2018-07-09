@@ -23,7 +23,7 @@ public class DataDicEntity extends BaseEntity implements DataDic {
     @Column(nullable = false, name = "DD_NAME")
     private String name;
     @Column(nullable = false, name = "DD_ORDER", columnDefinition = "int(5) DEFAULT 1")
-    private int order;
+    private Integer order;
     @Column(nullable = false, name = "DD_TYPE", columnDefinition = "VARCHAR(8) DEFAULT 'SYSTEM'")
     @Enumerated(EnumType.STRING)
     private DataDicTypeEnum dataDicType;
@@ -101,28 +101,31 @@ public class DataDicEntity extends BaseEntity implements DataDic {
     }
 
     @Override
-    public int getOrder() {
+    public Integer getOrder() {
         return order;
     }
 
     @Override
-    public void setOrder(int order) {
+    public void setOrder(Integer order) {
         this.order = order;
     }
 
-
+    @Override
     public Boolean getDeft() {
         return deft;
     }
 
+    @Override
     public void setDeft(Boolean deft) {
         this.deft = deft;
     }
 
+    @Override
     public DataDicTypeEnum getDataDicType() {
         return dataDicType;
     }
 
+    @Override
     public void setDataDicType(DataDicTypeEnum dataDicType) {
         this.dataDicType = dataDicType;
     }

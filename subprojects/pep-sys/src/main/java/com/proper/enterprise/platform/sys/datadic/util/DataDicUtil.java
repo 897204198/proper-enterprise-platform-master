@@ -2,7 +2,12 @@ package com.proper.enterprise.platform.sys.datadic.util;
 
 import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
+import com.proper.enterprise.platform.sys.datadic.DataDicVO;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Collection;
 
@@ -10,6 +15,8 @@ import java.util.Collection;
  * 数据字典工具类
  */
 public class DataDicUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataDicUtil.class);
 
     private DataDicUtil() {
 
@@ -54,6 +61,20 @@ public class DataDicUtil {
      */
     public static DataDic getDefault(String catalog) {
         return PEPApplicationContext.getBean(DataDicService.class).getDefault(catalog);
+    }
+
+    public static DataDic convert(DataDicLite dataDicLite) {
+        if (dataDicLite == null) {
+            return null;
+        }
+        DataDic dataDic = DataDicUtil.get(dataDicLite.getCatalog(), dataDicLite.getCode());
+        if (dataDic == null) {
+            LOGGER.debug("Could NOT find data dictionary with catalog {} and code {}", dataDicLite.getCatalog(), dataDicLite.getCode());
+            return null;
+        }
+        DataDic vo = new DataDicVO();
+        BeanUtils.copyProperties(dataDic, vo);
+        return vo;
     }
 
 }

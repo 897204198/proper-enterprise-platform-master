@@ -21,7 +21,7 @@ import java.util.List;
 
 @Component
 @Lazy(value = false)
-@DependsOn(value = "liquibase")
+@DependsOn(value = "flowableLiquibase")
 public class ProcDefInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcDefInitializer.class);

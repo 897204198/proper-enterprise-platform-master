@@ -1,13 +1,13 @@
 package com.proper.enterprise.platform.sys.datadic;
 
 import com.proper.enterprise.platform.core.utils.ConfCenter;
-import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
 
 import java.io.Serializable;
 
 /**
  * 数据字典简化类型
  * 用来表示存储到关系型数据库中的数据字典
+ * 仅包含必须持久化到数据库中的数据字典信息（类别 和 编码）
  */
 public interface DataDicLite extends Serializable {
 
@@ -45,40 +45,5 @@ public interface DataDicLite extends Serializable {
      * @param code 编码
      */
     void setCode(String code);
-
-    /**
-     * 获得name
-     *
-     * @return name
-     */
-    String getName();
-
-    /**
-     * 获得字典类型
-     *
-     * @return 字典类型
-     */
-    DataDicTypeEnum getDataDicType();
-
-    /**
-     * 设置字典类型
-     *
-     * @param dataDicType 字典类型
-     */
-    void setDataDicType(DataDicTypeEnum dataDicType);
-
-    /**
-     * 获得启用停用
-     *
-     * @return true启用 false停用
-     */
-    Boolean getEnable();
-
-    /**
-     * 设置启用停用
-     *
-     * @param enable true启用 false停用 默认启用
-     */
-    void setEnable(Boolean enable);
 
 }

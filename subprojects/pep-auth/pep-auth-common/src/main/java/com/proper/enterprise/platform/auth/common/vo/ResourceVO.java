@@ -9,10 +9,9 @@ import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
-import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
+import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.persistence.Convert;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -43,7 +42,6 @@ public class ResourceVO extends BaseVO implements Resource {
     /**
      * 菜单类别数据字典
      */
-    @Convert(converter = DataDicLiteConverter.class)
     @JsonView(value = {Single.class})
     private DataDicLite resourceType;
 
@@ -125,7 +123,7 @@ public class ResourceVO extends BaseVO implements Resource {
 
     @Override
     public DataDicLite getResourceType() {
-        return resourceType;
+        return DataDicUtil.convert(resourceType);
     }
 
     @Override

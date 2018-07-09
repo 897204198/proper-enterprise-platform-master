@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component(value = "mySQLFullSyncMongoManager")
 @Lazy(false)
-@DependsOn("pepLiquibase")
+@DependsOn("liquibase")
 public class MySQLFullSyncMongoManager implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(MySQLFullSyncMongoManager.class);
 

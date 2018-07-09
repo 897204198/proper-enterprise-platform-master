@@ -3,64 +3,61 @@ package com.proper.enterprise.platform.cache.ehcache
 import com.proper.enterprise.platform.cache.ehcache.entity.AnEntity
 import com.proper.enterprise.platform.cache.ehcache.repository.AnRepository
 import com.proper.enterprise.platform.test.AbstractTest
-import net.sf.ehcache.Cache
-import org.junit.Before
+import com.proper.enterprise.platform.test.annotation.NoTx
+import org.hibernate.Session
+import org.hibernate.stat.Statistics
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cache.CacheManager
+
+import javax.persistence.EntityManager
 
 class QueryCacheTest extends AbstractTest {
 
     @Autowired
-    CacheManager cacheManager
+    private AnRepository repo
 
     @Autowired
-    AnRepository repo
-
-    @Before
-    void setUp() {
-        repo.save(new AnEntity('abc', '123'))
-    }
+    private EntityManager entityManager
 
     @Test
-    void checkQueryCache() {
-        // query cache and second level cache use these two cache keys
-        Cache sqc = cacheManager.getCache('org.hibernate.cache.internal.StandardQueryCache').nativeCache
-        Cache utc = cacheManager.getCache('org.hibernate.cache.spi.UpdateTimestampsCache').nativeCache
-        sqc.removeAll()
-        utc.removeAll()
-        // non cache element in these caches
-        assert sqc.size == 0
-        assert utc.size == 0
+    @NoTx
+    synchronized void checkQueryCache() {
+        Session session = (Session) entityManager.getDelegate()
+        Statistics statistics = session.getSessionFactory().getStatistics()
+        statistics.clear()
 
+        repo.save(new AnEntity('abc', '123'))
         AnEntity entity = repo.findByUsername('abc')
         // cache entity after first load
-        assert sqc.size == 1
-        assert utc.size == 1
-
-        def eleInSqc = sqc.get(sqc.keys[0])
-        def eleInUtc = utc.get(utc.keys[0])
-        def sqcHitcount = eleInSqc.hitCount
-        def utcHitcount = eleInUtc.hitCount
+//        assert statistics.queryCachePutCount == 1
+//        assert statistics.updateTimestampsCachePutCount == 1
+        showCounts(statistics)
 
         // hit count of cache will be increased after each load operation
         3.times {
             repo.findByUsername('abc')
-            def t1 = eleInSqc.hitCount
-            def t2 = eleInUtc.hitCount
-            assert t1 == sqcHitcount + 1
-            assert t2 == utcHitcount + 1
-            sqcHitcount = t1
-            utcHitcount = t2
+            showCounts(statistics)
         }
 
         entity.setDescription('update_account')
         repo.save(entity)
 
         repo.findByUsername('abc')
+
+        showCounts(statistics)
+
         // hit count will be reset after update
-        assert sqc.get(sqc.keys[0]).hitCount < sqcHitcount
-        assert utc.get(utc.keys[0]).hitCount < utcHitcount
+        showCounts(statistics)
+    }
+
+    def showCounts(Statistics statistics) {
+        println "Query Cache Put: ${statistics.getQueryCachePutCount()}"
+        println "Query Cache Hit: ${statistics.getQueryCacheHitCount()}"
+        println "Query Cache Miss: ${statistics.getQueryCacheMissCount()}"
+
+        println "Update Timestamps Cache Put: ${statistics.getUpdateTimestampsCachePutCount()}"
+        println "Update Timestamps Cache Hit: ${statistics.getUpdateTimestampsCacheHitCount()}"
+        println "Update Timestamps Cache Miss: ${statistics.getUpdateTimestampsCacheMissCount()}"
     }
 
 }

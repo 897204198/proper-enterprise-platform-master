@@ -5,8 +5,6 @@ dependencies {
 
     compile project(':pep-cache-api')
 
-    testCompile libraries.ehcache
-
     testCompile project(':pep-core-jpa'),
                 project(':pep-test')
 }
