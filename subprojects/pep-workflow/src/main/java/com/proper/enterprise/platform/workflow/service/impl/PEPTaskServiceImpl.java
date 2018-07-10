@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.convert.TaskConvert;
 import com.proper.enterprise.platform.workflow.service.PEPTaskService;
+import com.proper.enterprise.platform.workflow.vo.PEPFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import org.apache.commons.collections.MapUtils;
 import org.flowable.engine.HistoryService;
@@ -70,7 +71,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         String formKey = task.getFormKey();
         Map<String, Object> globalVariables = taskService.getVariables(taskId);
         if (StringUtil.isNotEmpty(formKey)) {
-            globalVariables.put(formKey, variables);
+            globalVariables.put(formKey, new PEPFormVO(formKey, variables));
         }
         if (null == task.getAssignee()) {
             taskService.claim(taskId, SecurityUtil.getCurrentUserId());

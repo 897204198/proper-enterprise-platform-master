@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.security.util.SecurityUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
+import com.proper.enterprise.platform.workflow.vo.PEPFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
 import org.flowable.engine.FormService;
 import org.flowable.engine.HistoryService;
@@ -52,7 +53,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         String startFormKey = formService.getStartFormKey(processDefinition.getId());
         Map<String, Object> globalVariables = new HashMap<>(16);
         if (StringUtil.isNotEmpty(startFormKey)) {
-            globalVariables.put(startFormKey, variables);
+            globalVariables.put(startFormKey, new PEPFormVO(startFormKey, variables));
         }
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
         return ProcInstConvert.convert(processInstance);
