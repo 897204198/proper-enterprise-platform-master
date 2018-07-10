@@ -16,6 +16,7 @@ public class PEPProcessDefinitionVO {
     private Integer version;
     private String deploymentId;
     private Date deploymentTime;
+    private String startFormKey;
 
     public PEPProcessDefinitionVO(ProcessDefinition processDefinition) {
         BeanUtils.copyProperties(processDefinition, this);
@@ -58,6 +59,14 @@ public class PEPProcessDefinitionVO {
 
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
+    }
+
+    public String getStartFormKey() {
+        return startFormKey;
+    }
+
+    public void setStartFormKey(String startFormKey) {
+        this.startFormKey = startFormKey;
     }
 
     @Override

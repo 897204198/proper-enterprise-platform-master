@@ -98,12 +98,12 @@ class FrameControllerTest extends AbstractTest {
     }
 
     private String start(String key, Map<String, Object> form) {
-        PEPProcInstVO pepProcInstVO = JSONUtil.parse(post('/process/' + key, JSONUtil.toJSON(form), HttpStatus.CREATED).getResponse().getContentAsString(), PEPProcInstVO.class)
+        PEPProcInstVO pepProcInstVO = JSONUtil.parse(post('/workflow/process/' + key, JSONUtil.toJSON(form), HttpStatus.CREATED).getResponse().getContentAsString(), PEPProcInstVO.class)
         return pepProcInstVO.getProcInstId()
     }
 
     private PEPTaskVO getTask(String taskName) {
-        DataTrunk<PEPTaskVO> dataTrunk = JSONUtil.parse(get('/task?pageNo=1&pageSize=10', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        DataTrunk<PEPTaskVO> dataTrunk = JSONUtil.parse(get('/workflow/task?pageNo=1&pageSize=10', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         for (PEPTaskVO pepTaskVO : dataTrunk.getData()) {
             if (taskName.equals(pepTaskVO.getName())) {
                 return pepTaskVO
@@ -115,7 +115,7 @@ class FrameControllerTest extends AbstractTest {
     private void completeStep1(PEPTaskVO step1) {
         Map<String, Object> taskFormMap = new HashMap<>()
         taskFormMap.put("test", "test")
-        post('/task/' + step1.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
+        post('/workflow/task/' + step1.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
     }
 
     private void completeStep2(PEPTaskVO step2) {
@@ -124,13 +124,13 @@ class FrameControllerTest extends AbstractTest {
         CustomHandlerVO customHandlerVO = new CustomHandlerVO()
         customHandlerVO.setAssignee("user2")
         taskFormMap.put("customHandler", customHandlerVO)
-        post('/task/' + step2.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
+        post('/workflow/task/' + step2.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
     }
 
     private void completeStep3(PEPTaskVO step3) {
         Map<String, Object> taskFormMap = new HashMap<>()
         taskFormMap.put("step3", "step3")
-        post('/task/' + step3.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
+        post('/workflow/task/' + step3.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
     }
 
     private void completeStep2Again(PEPTaskVO step2) {
@@ -141,7 +141,7 @@ class FrameControllerTest extends AbstractTest {
         groupIds.add("group1")
         customHandlerVO.setCandidateGroups(groupIds)
         taskFormMap.put("customHandler", customHandlerVO)
-        post('/task/' + step2.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
+        post('/workflow/task/' + step2.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
     }
 
     private void completeStep2Again2(PEPTaskVO step2) {
@@ -152,7 +152,7 @@ class FrameControllerTest extends AbstractTest {
         roleIds.add("role2")
         customHandlerVO.setCandidateRoles(roleIds)
         taskFormMap.put("customHandler", customHandlerVO)
-        post('/task/' + step2.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
+        post('/workflow/task/' + step2.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
     }
 
     private void completeApprove(PEPTaskVO approve, boolean pass) {
@@ -160,15 +160,15 @@ class FrameControllerTest extends AbstractTest {
         taskFormMap.put("approveResult", pass ? "Y" : "N")
         taskFormMap.put("approveDesc", pass ? "这次OK" : "这不能通过将第二步好好填填")
 
-        post('/task/' + approve.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
+        post('/workflow/task/' + approve.getTaskId(), JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
     }
 
     private void complete(String taskId) {
-        post('/task/' + taskId, JSONUtil.toJSON(new HashMap()), HttpStatus.CREATED)
+        post('/workflow/task/' + taskId, JSONUtil.toJSON(new HashMap()), HttpStatus.CREATED)
     }
 
     private List<PEPProcInstVO> findProcessStartByMe() {
-        DataTrunk<PEPProcInstVO> dataTrunk = JSONUtil.parse(get('/process', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        DataTrunk<PEPProcInstVO> dataTrunk = JSONUtil.parse(get('/workflow/process', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         return dataTrunk.getData()
     }
 
@@ -183,7 +183,7 @@ class FrameControllerTest extends AbstractTest {
     }
 
     private List<PEPTaskVO> findHis(String procInstId) {
-        List<PEPTaskVO> list = JSONUtil.parse(get('/task/' + procInstId, HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        List<PEPTaskVO> list = JSONUtil.parse(get('/workflow/task/' + procInstId, HttpStatus.OK).getResponse().getContentAsString(), List.class)
         return list
     }
 }

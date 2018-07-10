@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/task")
+@RequestMapping("/workflow/task")
 public class TaskController extends BaseController {
 
     private PEPTaskService pepTaskService;
