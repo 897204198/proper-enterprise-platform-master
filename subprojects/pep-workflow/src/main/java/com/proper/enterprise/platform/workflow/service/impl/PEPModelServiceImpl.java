@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.flowable.app.domain.editor.Model;
 import org.flowable.app.model.common.ResultListDataRepresentation;
 import org.flowable.app.repository.editor.ModelRepository;
+import org.flowable.engine.FormService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
@@ -27,6 +28,8 @@ public class PEPModelServiceImpl implements PEPModelService {
     private RepositoryService repositoryService;
     @Autowired
     private DataDicService dataDicService;
+    @Autowired
+    private FormService formService;
 
     @Override
     public ResultListDataRepresentation getModels(String filter, String sort, Integer modelType) {
@@ -60,6 +63,7 @@ public class PEPModelServiceImpl implements PEPModelService {
                 pepModelVO.setProcessVersion(pepProcessDefinitionVO.getVersion());
                 pepModelVO.setDeploymentTime(pepProcessDefinitionVO.getDeploymentTime());
                 pepModelVO.setStatus(buildModelStatus(pepModelVO, pepProcessDefinitionVO));
+                pepModelVO.setStartFormKey(pepProcessDefinitionVO.getStartFormKey());
                 continue;
             }
             pepModelVO.setStatus(dataDicService.get(PEPModelVO.ModelStatus.UN_DEPLOYED));
@@ -85,6 +89,8 @@ public class PEPModelServiceImpl implements PEPModelService {
                 + ") b on a.KEY_=b.KEY_ and a.VERSION_ =b.VERSION_").parameter("KEYS", modelKeys.toArray()).list();
         for (ProcessDefinition processDefinition : processDefinitions) {
             PEPProcessDefinitionVO pepProcessDefinitionVO = new PEPProcessDefinitionVO(processDefinition);
+            String startFormKey = formService.getStartFormKey(processDefinition.getId());
+            pepProcessDefinitionVO.setStartFormKey(startFormKey);
             returnMap.put(pepProcessDefinitionVO.getKey(), pepProcessDefinitionVO);
             deploymentIds.add(pepProcessDefinitionVO.getDeploymentId());
         }
