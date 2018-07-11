@@ -19,45 +19,45 @@ class QueryCacheTest extends AbstractTest {
     @Autowired
     private EntityManager entityManager
 
+    private Statistics statistics
+
     @Test
     @NoTx
-    synchronized void checkQueryCache() {
+    void checkQueryCache() {
         Session session = (Session) entityManager.getDelegate()
-        Statistics statistics = session.getSessionFactory().getStatistics()
+        statistics = session.getSessionFactory().getStatistics()
         statistics.clear()
 
         repo.save(new AnEntity('abc', '123'))
         AnEntity entity = repo.findByUsername('abc')
         // cache entity after first load
-//        assert statistics.queryCachePutCount == 1
-//        assert statistics.updateTimestampsCachePutCount == 1
-        showCounts(statistics)
+        assertPut 1
+        assertMiss 1
 
         // hit count of cache will be increased after each load operation
-        3.times {
+        3.times { idx ->
             repo.findByUsername('abc')
-            showCounts(statistics)
+            assertHit idx+1
         }
 
         entity.setDescription('update_account')
         repo.save(entity)
-
         repo.findByUsername('abc')
-
-        showCounts(statistics)
-
-        // hit count will be reset after update
-        showCounts(statistics)
+        assertPut 2
+        assertHit 3
+        assertMiss 2
     }
 
-    def showCounts(Statistics statistics) {
-        println "Query Cache Put: ${statistics.getQueryCachePutCount()}"
-        println "Query Cache Hit: ${statistics.getQueryCacheHitCount()}"
-        println "Query Cache Miss: ${statistics.getQueryCacheMissCount()}"
+    def assertPut(put) {
+        assert statistics.getQueryCachePutCount() == put
+    }
 
-        println "Update Timestamps Cache Put: ${statistics.getUpdateTimestampsCachePutCount()}"
-        println "Update Timestamps Cache Hit: ${statistics.getUpdateTimestampsCacheHitCount()}"
-        println "Update Timestamps Cache Miss: ${statistics.getUpdateTimestampsCacheMissCount()}"
+    def assertHit(hit) {
+        assert statistics.getQueryCacheHitCount() == hit
+    }
+
+    def assertMiss(miss) {
+        assert statistics.getQueryCacheMissCount() == miss
     }
 
 }
