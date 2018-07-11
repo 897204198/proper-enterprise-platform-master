@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.jwt.controller
 
 import com.proper.enterprise.platform.api.auth.dao.UserDao
 import com.proper.enterprise.platform.auth.service.JWTService
+import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
@@ -37,6 +38,7 @@ class LoginControllerTest extends AbstractTest {
     void getCurrentUser() {
         def token = mockLogin('admin', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
         mockRequest.addHeader("Authorization", token)
+        Authentication.setCurrentUserId(DEFAULT_USER)
         Map<String, String> currentUserMap = JSONUtil.parse(get("/auth/login/user", HttpStatus.OK)
             .getResponse().getContentAsString(), HashMap)
         assert DEFAULT_USER == currentUserMap.get("userId")

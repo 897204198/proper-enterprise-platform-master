@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.auth.common.jpa.repository.*
 import com.proper.enterprise.platform.auth.common.vo.UserVO
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
+import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
@@ -435,6 +436,7 @@ class UsersControllerTest extends AbstractTest {
         put(URI + "/password", JSONUtil.toJSON(changePassword), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() == I18NUtil.getMessage("pep.auth.common.user.change.password.oldpassword.error")
         changePassword['oldPassword'] = "password"
         changePassword['password'] = "456"
+        Authentication.setCurrentUserId(userVO.getId())
         UserVO changeVO = JSONUtil.parse(put(URI + "/password/", JSONUtil.toJSON(changePassword), HttpStatus.OK).getResponse().getContentAsString(), UserVO.class)
         assert changeVO.getPassword() == pwdService.encrypt('456')
     }

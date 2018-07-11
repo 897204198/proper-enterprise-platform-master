@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.core.security.util.SecurityUtil;
+import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
@@ -62,7 +62,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
     @Override
     public DataTrunk<PEPProcInstVO> findProcessStartByMe() {
         List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery()
-            .startedBy(SecurityUtil.getCurrentUserId())
+            .startedBy(Authentication.getCurrentUserId())
             .includeProcessVariables().list();
         DataTrunk<PEPProcInstVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setData(ProcInstConvert.convert(historicProcessInstances));

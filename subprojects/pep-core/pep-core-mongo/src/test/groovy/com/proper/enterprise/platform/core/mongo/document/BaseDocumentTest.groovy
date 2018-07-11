@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.core.mongo.document
 import com.proper.enterprise.platform.core.mongo.dao.MongoDAO
 import com.proper.enterprise.platform.core.mongo.document.mock.document.MockDocument
 import com.proper.enterprise.platform.core.mongo.document.mock.repository.MockRepository
+import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
@@ -29,6 +30,7 @@ class BaseDocumentTest extends AbstractTest {
 
     @Test
     public void checkMongoField() {
+        Authentication.setCurrentUserId(null)
         def mock = repository.save(new MockDocument('c1', 'c2'))
         def id = mock.getId()
         def doc = dao.queryById('mock', id)

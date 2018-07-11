@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.workflow.service.impl;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.core.security.util.SecurityUtil;
+import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
@@ -62,7 +62,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (MapUtils.isEmpty(variables)) {
             if (null == task.getAssignee()) {
-                taskService.claim(taskId, SecurityUtil.getCurrentUserId());
+                taskService.claim(taskId, Authentication.getCurrentUserId());
             }
             taskService.complete(taskId);
             return;
@@ -74,7 +74,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             globalVariables.put(formKey, new PEPFormVO(formKey, variables));
         }
         if (null == task.getAssignee()) {
-            taskService.claim(taskId, SecurityUtil.getCurrentUserId());
+            taskService.claim(taskId, Authentication.getCurrentUserId());
         }
         taskService.complete(taskId, globalVariables);
     }
@@ -83,7 +83,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     public DataTrunk<PEPTaskVO> findPagination(Map<String, Object> searchParam, PageRequest pageRequest) {
         TaskQuery taskQuery = taskService.createTaskQuery()
             .includeProcessVariables()
-            .taskCandidateOrAssigned(SecurityUtil.getCurrentUserId())
+            .taskCandidateOrAssigned(Authentication.getCurrentUserId())
             .orderByTaskCreateTime()
             .desc();
         List<Task> tasks = taskQuery.list();

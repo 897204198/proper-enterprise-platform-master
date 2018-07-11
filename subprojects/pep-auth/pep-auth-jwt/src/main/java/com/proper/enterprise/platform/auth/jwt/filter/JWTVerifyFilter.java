@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.service.AuthzService;
 import com.proper.enterprise.platform.auth.service.HandlerHolder;
 import com.proper.enterprise.platform.auth.service.JWTService;
+import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,14 +32,16 @@ public class JWTVerifyFilter implements Filter {
     private HandlerHolder handlerHolder;
 
     @Autowired
-    public JWTVerifyFilter(JWTService jwtService, AuthzService authzService, HandlerHolder handlerHolder) {
+    public JWTVerifyFilter(JWTService jwtService, AuthzService authzService,
+                           HandlerHolder handlerHolder) {
         this.jwtService = jwtService;
         this.authzService = authzService;
         this.handlerHolder = handlerHolder;
     }
 
     @Override
-    public void destroy() { }
+    public void destroy() {
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
@@ -55,6 +58,7 @@ public class JWTVerifyFilter implements Filter {
         if (StringUtil.isNotNull(token) && jwtService.verify(token)) {
             LOGGER.trace("JWT verfiy succeed.");
             String userId = jwtService.getHeader(token).getId();
+            Authentication.setCurrentUserId(userId);
             if (authzService.accessible(req.getRequestURI(), req.getMethod(), userId)) {
                 LOGGER.trace("Current user with {} could access {}:{}, invoke next filter in filter chain.",
                     token, req.getMethod(), req.getRequestURI());
@@ -64,18 +68,18 @@ public class JWTVerifyFilter implements Filter {
                 HttpServletResponse resp = (HttpServletResponse) response;
                 resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 resp.setHeader("WWW-Authenticate",
-                        "Bearer realm=\"pep\", "
-                                + "error=\"invalid_auth\", "
-                                + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHORIZATION\"");
+                    "Bearer realm=\"pep\", "
+                        + "error=\"invalid_auth\", "
+                        + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHORIZATION\"");
             }
         } else {
             LOGGER.trace("JWT verfiy failed.");
             HttpServletResponse resp1 = (HttpServletResponse) response;
             resp1.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp1.setHeader("WWW-Authenticate",
-                    "Bearer realm=\"pep\", "
-                            + "error=\"invalid_auth\", "
-                            + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHENTICATION\"");
+                "Bearer realm=\"pep\", "
+                    + "error=\"invalid_auth\", "
+                    + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHENTICATION\"");
         }
     }
 
@@ -86,7 +90,7 @@ public class JWTVerifyFilter implements Filter {
      * 2. 直接在 controller 上设置 @AuthcIgnore，表示该 controller 下的所有方法都不需要权限
      * 3. 在 properties 的 auth.jwt.ignorePatterns 中配置
      *
-     * @param  req 请求对象
+     * @param req 请求对象
      * @return true：不需要权限约束；false：需要权限约束
      */
     private boolean shouldIgnore(HttpServletRequest req) {
@@ -128,6 +132,7 @@ public class JWTVerifyFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig arg0) { }
+    public void init(FilterConfig arg0) {
+    }
 
 }

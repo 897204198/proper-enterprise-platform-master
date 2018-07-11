@@ -53,7 +53,7 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     private I18NService i18NService;
 
-    @javax.annotation.Resource(name = "ignorePatternsListAuthIgnore")
+    @javax.annotation.Resource(name = "ignorePatternsList")
     private List<String> ignorePatternsList;
 
     private static PathMatcher matcher = new AntPathMatcher();

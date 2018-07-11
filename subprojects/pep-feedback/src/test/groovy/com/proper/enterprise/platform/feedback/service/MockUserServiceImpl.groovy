@@ -4,7 +4,6 @@ import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.model.User
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.service.impl.UserServiceImpl
-import com.proper.enterprise.platform.core.security.service.SecurityService
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.core.utils.RequestUtil
 import org.slf4j.Logger
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service
 
 @Service
 @Primary
-class MockUserServiceImpl extends UserServiceImpl implements SecurityService {
+class MockUserServiceImpl extends UserServiceImpl {
     def static final DEFAULT_USER = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS")
     def static final Logger LOGGER = LoggerFactory.getLogger(MockUserServiceImpl.class)
 
@@ -39,11 +38,6 @@ class MockUserServiceImpl extends UserServiceImpl implements SecurityService {
             return user
 
         }
-    }
-
-    @Override
-    String getCurrentUserId() {
-        return getMockUser().id
     }
 
     private getMockUser() {

@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.core.mongo.dal
 
 import com.proper.enterprise.platform.core.mongo.dal.document.Customer
 import com.proper.enterprise.platform.core.mongo.dal.repository.CustomerRepository
+import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.After
 import org.junit.Test
@@ -15,6 +16,7 @@ class MongoRepositoryTest extends AbstractTest {
     @Test
     public void testSaveAndQuery() {
         mockUser("user1", "isMock")
+        Authentication.setCurrentUserId("user1")
         def cus = new Customer('fn', 'ln')
         customerRepository.save(cus)
         def newCus = customerRepository.findByLastName('ln').first()
@@ -24,6 +26,7 @@ class MongoRepositoryTest extends AbstractTest {
         assert cus.createUserId == 'user1'
 
         mockUser("user2", "isMock")
+        Authentication.setCurrentUserId("user2")
         customerRepository.save(cus)
         assert cus.lastModifyUserId == 'user2'
     }

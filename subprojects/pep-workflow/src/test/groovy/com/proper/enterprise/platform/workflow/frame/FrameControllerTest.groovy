@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.workflow.frame
 
 import com.proper.enterprise.platform.core.entity.DataTrunk
+import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.vo.CustomHandlerVO
@@ -36,6 +37,7 @@ class FrameControllerTest extends AbstractTest {
     public void flowableTest() {
         mockUser('user1', 'testuser1', '123456')
         identityService.setAuthenticatedUserId('user1')
+        Authentication.setCurrentUserId("user1")
         assert null == findProcessStartByKey(FRAME_WORKFLOW_KEY)
         Map<String, Object> formTestVO = new HashMap<>()
         formTestVO.put("sex", "1")
@@ -59,12 +61,14 @@ class FrameControllerTest extends AbstractTest {
         assertTaskMsg(step2, "第二步")
         completeStep2(step2)
         mockUser('user2', 'testuser2', '123456')
+        Authentication.setCurrentUserId("user2")
         PEPTaskVO approve = getTask("审核")
         assertTaskMsg(approve, "审核")
         completeApprove(approve, false)
         assert "这不能通过将第二步好好填填" == findHis(procInstId).last().variables.get("approveDesc")
 
         mockUser('user1', 'testuser1', '123456')
+        Authentication.setCurrentUserId("user1")
         PEPTaskVO step2Again = getTask("第二步")
         completeStep2Again(step2Again)
         PEPTaskVO approveAgain = getTask("审核")
@@ -74,11 +78,13 @@ class FrameControllerTest extends AbstractTest {
         PEPTaskVO step2Again2 = getTask("第二步")
         completeStep2Again2(step2Again2)
         mockUser('user3', 'testuser3', '123456')
+        Authentication.setCurrentUserId("user3")
         PEPTaskVO approveAgain2 = getTask("审核")
         completeApprove(approveAgain2, true)
         assert "这次OK" == findHis(procInstId).last().variables.get("approveDesc")
 
         mockUser('user1', 'testuser1', '123456')
+        Authentication.setCurrentUserId("user1")
         PEPTaskVO step3 = getTask("第三步")
         completeStep3(step3)
         PEPTaskVO step4 = getTask("第四步")

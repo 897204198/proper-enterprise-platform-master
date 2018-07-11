@@ -53,8 +53,7 @@ class AuthzServiceImplTest extends AbstractTest {
 
     @Test
     void hasBeanList() {
-        assert ignorePatternsList.size() == 1
-        assert "GET:/auth/menus" == ignorePatternsList.get(0)
+        assert ignorePatternsList.size() == 0
     }
 
 }

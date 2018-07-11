@@ -1,13 +1,15 @@
 package com.proper.enterprise.platform.auth.service.impl
 
-import com.proper.enterprise.platform.core.security.service.impl.JWTSecurityServiceImpl
+import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.security.Authentication
 import spock.lang.Specification
 
 class UserServiceImplSpec extends Specification {
 
     def "Get current user without request(always in async tasks) should not throw exception"() {
+         Authentication.setCurrentUserId(null)
         expect:
-        new JWTSecurityServiceImpl().getCurrentUserId() == null
+         Authentication.getCurrentUserId() == PEPConstants.DEFAULT_OPERAOTR_ID
     }
 
 }

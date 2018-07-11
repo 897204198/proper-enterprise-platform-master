@@ -14,6 +14,7 @@ import com.proper.enterprise.platform.auth.common.vo.ResourceVO
 import com.proper.enterprise.platform.auth.common.vo.UserVO
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
+import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
@@ -229,6 +230,7 @@ class MenusControllerTest extends AbstractTest {
     void testPageIsOrNot() {
         // 分页的两种情况
         mockUser('test1', 't1', 'pwd', true)
+        Authentication.setCurrentUserId('test1')
         def value = JSONUtil.parse(get('/auth/menus?name=&description=&route=&enable=&pageNo=1&pageSize=2', HttpStatus.OK).getResponse()
             .getContentAsString(), DataTrunk.class)
         value.count == 14
