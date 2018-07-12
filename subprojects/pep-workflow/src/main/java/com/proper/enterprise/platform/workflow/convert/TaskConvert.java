@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.workflow.convert;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
+import org.flowable.identitylink.api.IdentityLinkInfo;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
 
@@ -22,6 +23,7 @@ public class TaskConvert {
         pepTaskVO.setName(task.getName());
         pepTaskVO.setFormKey(task.getFormKey());
         pepTaskVO.setCreateTime(DateUtil.toString(task.getCreateTime(), DEFAULT_DATETIME_FORMAT));
+        pepTaskVO = buildIdentityMsg(pepTaskVO, task.getIdentityLinks());
         return pepTaskVO;
     }
 
@@ -40,7 +42,6 @@ public class TaskConvert {
         return pepTaskVO;
     }
 
-
     public static List<PEPTaskVO> convert(List<Task> tasks) {
         List<PEPTaskVO> pepTaskVOs = new ArrayList<>();
         if (CollectionUtil.isEmpty(tasks)) {
@@ -50,6 +51,23 @@ public class TaskConvert {
             pepTaskVOs.add(convert(task));
         }
         return pepTaskVOs;
+    }
+
+    private static PEPTaskVO buildIdentityMsg(PEPTaskVO pepTaskVO, List<? extends IdentityLinkInfo> identityLinkInfos) {
+        if (CollectionUtil.isEmpty(identityLinkInfos)) {
+            return pepTaskVO;
+        }
+        for (IdentityLinkInfo identityLinkInfo : identityLinkInfos) {
+            if ("candidate".equals(identityLinkInfo.getType())) {
+                pepTaskVO.addCandidateUser(identityLinkInfo.getUserId());
+                pepTaskVO.addCandidateGroup(identityLinkInfo.getGroupId());
+                pepTaskVO.addCandidateRole(identityLinkInfo.getRoleId());
+            }
+            if ("assigne".equals(identityLinkInfo.getType())) {
+                pepTaskVO.setAssignee(identityLinkInfo.getUserId());
+            }
+        }
+        return pepTaskVO;
     }
 
     public static List<PEPTaskVO> convertHisTasks(List<HistoricTaskInstance> tasks) {

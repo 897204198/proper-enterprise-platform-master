@@ -1,20 +1,28 @@
 package com.proper.enterprise.platform.workflow.service.impl;
 
+import com.proper.enterprise.platform.api.auth.dao.RoleDao;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
+import com.proper.enterprise.platform.api.auth.dao.UserGroupDao;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.convert.TaskConvert;
 import com.proper.enterprise.platform.workflow.service.PEPTaskService;
 import com.proper.enterprise.platform.workflow.vo.PEPFormVO;
+import com.proper.enterprise.platform.workflow.vo.PEPStartVO;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
+import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
 import org.apache.commons.collections.MapUtils;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
+import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
@@ -24,6 +32,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import static com.proper.enterprise.platform.core.PEPConstants.DEFAULT_DATETIME_FORMAT;
 
 @Service
 public class PEPTaskServiceImpl implements PEPTaskService {
@@ -40,14 +50,22 @@ public class PEPTaskServiceImpl implements PEPTaskService {
 
     private UserDao userDao;
 
+    private RoleDao roleDao;
+
+    private UserGroupDao userGroupDao;
+
     @Autowired
     PEPTaskServiceImpl(TaskService taskService,
                        RuntimeService runtimeService,
                        UserDao userDao,
+                       RoleDao roleDao,
+                       UserGroupDao userGroupDao,
                        HistoryService historyService) {
         this.taskService = taskService;
         this.runtimeService = runtimeService;
         this.userDao = userDao;
+        this.roleDao = roleDao;
+        this.userGroupDao = userGroupDao;
         this.historyService = historyService;
     }
 
@@ -98,18 +116,57 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     }
 
     @Override
-    public List<PEPTaskVO> findHistoricalProcessTrajectory(String procInstId) {
+    public PEPWorkflowPathVO findWorkflowPath(String procInstId) {
+        PEPWorkflowPathVO pepWorkflowPathVO = new PEPWorkflowPathVO();
+        pepWorkflowPathVO.setHisTasks(findHisTasks(procInstId));
+        pepWorkflowPathVO.setCurrentTasks(findCurrentTasks(procInstId));
+        pepWorkflowPathVO.setStart(findStart(procInstId));
+        return pepWorkflowPathVO;
+    }
+
+    private PEPStartVO findStart(String procInstId) {
+        HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery()
+            .includeProcessVariables().processInstanceId(procInstId).singleResult();
+        PEPStartVO pepStartVO = new PEPStartVO();
+        pepStartVO.setCreateTime(DateUtil.toString(processInstance.getStartTime(), DEFAULT_DATETIME_FORMAT));
+        pepStartVO.setStartUserId(processInstance.getStartUserId());
+        pepStartVO.setProcessDefinitionName(processInstance.getProcessDefinitionName());
+        Object startFormData = processInstance.getProcessVariables().get(PEPProcessServiceImpl.START_FORM_DATA);
+        if (null != startFormData) {
+            pepStartVO.setStartForm((PEPFormVO) startFormData);
+        }
+        User user = userDao.findOne(processInstance.getStartUserId());
+        if (null != user) {
+            pepStartVO.setStartUserName(user.getName());
+        }
+        return pepStartVO;
+    }
+
+    private List<PEPTaskVO> findHisTasks(String procInstId) {
         List<HistoricTaskInstance> historicTaskInstances = historyService
             .createHistoricTaskInstanceQuery()
             .processInstanceId(procInstId)
             .includeTaskLocalVariables()
             .finished()
-            .orderByHistoricTaskInstanceStartTime()
-            .asc()
+            .orderByHistoricTaskInstanceEndTime()
+            .desc()
             .list();
         List<PEPTaskVO> hisTasks = TaskConvert.convertHisTasks(historicTaskInstances);
         hisTasks = buildTaskUserName(hisTasks, ASSIGNEE);
         return hisTasks;
+    }
+
+    private List<PEPTaskVO> findCurrentTasks(String procInstId) {
+        TaskQuery taskQuery = taskService.createTaskQuery()
+            .processInstanceId(procInstId)
+            .includeIdentityLinks();
+        List<Task> tasks = taskQuery.list();
+        List<PEPTaskVO> taskVOs = TaskConvert.convert(tasks);
+        taskVOs = buildTaskUserName(taskVOs, ASSIGNEE);
+        taskVOs = buildTaskCandidateUserName(taskVOs);
+        taskVOs = buildTaskRoleName(taskVOs);
+        taskVOs = buildTaskGroupName(taskVOs);
+        return taskVOs;
     }
 
     /**
@@ -185,6 +242,60 @@ public class PEPTaskServiceImpl implements PEPTaskService {
                 }
                 pepTaskVO.getPepProcInstVO().setStartUserName(user.getName());
             }
+        }
+        return tasks;
+    }
+
+    private List<PEPTaskVO> buildTaskRoleName(List<PEPTaskVO> tasks) {
+        if (CollectionUtil.isEmpty(tasks)) {
+            return tasks;
+        }
+        for (PEPTaskVO pepTaskVO : tasks) {
+            if (CollectionUtil.isEmpty(pepTaskVO.getCandidateRoles())) {
+                continue;
+            }
+            List<Role> roles = new ArrayList<>(roleDao.findAll(pepTaskVO.getCandidateRoles()));
+            Set<String> roleNames = new HashSet<>();
+            for (Role role : roles) {
+                roleNames.add(role.getName());
+            }
+            pepTaskVO.setCandidateRoleNames(roleNames);
+        }
+        return tasks;
+    }
+
+    private List<PEPTaskVO> buildTaskGroupName(List<PEPTaskVO> tasks) {
+        if (CollectionUtil.isEmpty(tasks)) {
+            return tasks;
+        }
+        for (PEPTaskVO pepTaskVO : tasks) {
+            if (CollectionUtil.isEmpty(pepTaskVO.getCandidateGroups())) {
+                continue;
+            }
+            List<UserGroup> groups = new ArrayList<>(userGroupDao.findAll(pepTaskVO.getCandidateGroups()));
+            Set<String> groupNames = new HashSet<>();
+            for (UserGroup userGroup : groups) {
+                groupNames.add(userGroup.getName());
+            }
+            pepTaskVO.setCandidateGroupNames(groupNames);
+        }
+        return tasks;
+    }
+
+    private List<PEPTaskVO> buildTaskCandidateUserName(List<PEPTaskVO> tasks) {
+        if (CollectionUtil.isEmpty(tasks)) {
+            return tasks;
+        }
+        for (PEPTaskVO pepTaskVO : tasks) {
+            if (CollectionUtil.isEmpty(pepTaskVO.getCandidateUsers())) {
+                continue;
+            }
+            List<User> users = new ArrayList<>(userDao.findAll(pepTaskVO.getCandidateUsers()));
+            Set<String> userNames = new HashSet<>();
+            for (User user : users) {
+                userNames.add(user.getName());
+            }
+            pepTaskVO.setCandidateUserNames(userNames);
         }
         return tasks;
     }
