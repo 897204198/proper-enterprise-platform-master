@@ -30,7 +30,7 @@ public class PusherApp {
     private String appkey = "";
     private String pushUrl = "";
     private int connTimeout = 30000; // 超时时间
-
+    private String packageName = "";
     private boolean isAsync = true; // 是否异步调用
 
     IPushApiServiceRequest pushApiRequest;
@@ -121,6 +121,7 @@ public class PusherApp {
                 String msgStr = null;
                 String userids = null;
                 try {
+                    msg.addCustomData("packageName", packageName);
                     msgStr = (JSONUtil.toJSON(msg)).toString();
                     userids = (JSONUtil.toJSON(lstUserIds)).toString();
                     LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
@@ -154,6 +155,7 @@ public class PusherApp {
             public void run() {
                 try {
                     LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+                    msg.addCustomData("packageName", packageName);
                     params.put("msg", (JSONUtil.toJSON(msg)).toString());
                     params.put("deviceids", (JSONUtil.toJSON(lstDeviceIds.toArray())).toString());
                     params.put("device_type", deviceType);
@@ -205,6 +207,7 @@ public class PusherApp {
             public void run() {
                 try {
                     final LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+                    msg.addCustomData("packageName", packageName);
                     params.put("msg", (JSONUtil.toJSON(msg)).toString());
                     params.put("appkey", appkey);
                     String rtn = pushApiRequest.requestServiceServer(pushUrl, "pushMessageToAllUsers", params,
@@ -245,6 +248,7 @@ public class PusherApp {
             public void run() {
                 try {
                     final LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+                    msg.addCustomData("packageName", packageName);
                     params.put("msg", (JSONUtil.toJSON(msg)).toString());
                     params.put("appkey", appkey);
                     if (deviceType != null && !"".equals(deviceType)) {
@@ -282,4 +286,11 @@ public class PusherApp {
         this.pushUrl = pushUrl;
     }
 
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
 }
