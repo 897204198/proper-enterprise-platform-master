@@ -59,6 +59,9 @@ public class OopSearchController extends BaseController {
     @GetMapping("/query")
     public void query(HttpServletRequest request, HttpServletResponse response, String restPath, String req, String moduleName) {
         String url = searchConfigService.getURL(moduleName.replace("$", "/"));
+        if (StringUtil.isNull(url)) {
+            return;
+        }
         try {
             url = handleRestUrl(url, restPath, response);
         } catch (HttpRequestMethodNotSupportedException e) {

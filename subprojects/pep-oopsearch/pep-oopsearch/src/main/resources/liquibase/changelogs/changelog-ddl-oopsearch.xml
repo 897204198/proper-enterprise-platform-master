@@ -44,8 +44,16 @@
             </column>
         </addColumn>
     </changeSet>
-    <changeSet author="fm (generated)" id="add-unique-index-2">
+    <changeSet author="fm (generated)" id="add-unique-index-2" failOnError="false">
         <addUniqueConstraint columnNames="TABLE_NAME, SEARCH_COLUMN" constraintName="UK_TABLE_NAME_SEARCH_COLUMN" tableName="PEP_OOPSEARCH_CONFIG"/>
         <addUniqueConstraint columnNames="TABLE_NAME, COLUMN_ALIAS" constraintName="UK_TABLE_NAME_COLUMN_ALIAS" tableName="PEP_OOPSEARCH_CONFIG"/>
+    </changeSet>
+    <changeSet author="fm (generated)" id="drop-unique-index-2" failOnError="false">
+        <dropUniqueConstraint tableName="PEP_OOPSEARCH_CONFIG" constraintName="UK_TABLE_NAME_SEARCH_COLUMN"/>
+        <dropUniqueConstraint tableName="PEP_OOPSEARCH_CONFIG" constraintName="UK_TABLE_NAME_COLUMN_ALIAS"/>
+    </changeSet>
+    <changeSet author="fm (generated)" id="add-unique-index-3">
+        <addUniqueConstraint columnNames="TABLE_NAME, SEARCH_COLUMN, URL" constraintName="UK_TABLE_NAME_SEARCH_COLUMN_URL" tableName="PEP_OOPSEARCH_CONFIG"/>
+        <addUniqueConstraint columnNames="TABLE_NAME, COLUMN_ALIAS, URL" constraintName="UK_TABLE_NAME_COLUMN_ALIAS_URL" tableName="PEP_OOPSEARCH_CONFIG"/>
     </changeSet>
 </databaseChangeLog>
