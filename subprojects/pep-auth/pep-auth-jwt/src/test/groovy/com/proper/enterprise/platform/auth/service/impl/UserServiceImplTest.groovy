@@ -6,9 +6,9 @@ import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
 import com.proper.enterprise.platform.auth.service.JWTService
+import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
-import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -51,7 +51,7 @@ class UserServiceImplTest extends AbstractTest {
 
         def token = jwtService.generateToken(new JWTHeader(userNodeEntity.getId(), 'unm'), new JWTPayloadImpl())
         mockRequest.addHeader('Authorization', token)
-
+        Authentication.setCurrentUserId(userNodeEntity.getId())
         User user1 = userDao.getNewUser()
         user1.setUsername('a')
         user1.setPassword('b')
@@ -60,18 +60,9 @@ class UserServiceImplTest extends AbstractTest {
     }
 
     @Test
-    @NoTx
-    void fallbackDefaultUserWithoutToken() {
-        User user1 = userDao.getNewUser()
-        user1.setUsername('a')
-        user1.setPassword('b')
-        def user = userDao.save(user1)
-        assert user.getCreateUserId() == DEFAULT_USER
-    }
-
-    @Test
     void fallbackDefaultUserUsingFakeToken() {
         mockRequest.addHeader('Authorization', 'a.b.c')
+        Authentication.setCurrentUserId(DEFAULT_USER)
         User user1 = userDao.getNewUser()
         user1.setUsername('a')
         user1.setPassword('b')

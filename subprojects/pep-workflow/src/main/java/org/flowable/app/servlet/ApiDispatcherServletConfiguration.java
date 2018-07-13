@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ComponentScan(value = { "org.flowable.app.conf",
     "org.flowable.app.rest.api",
     "org.flowable.app.rest.exception",
-    "org.flowable.rest.service.api.runtime.process" })
+    "org.flowable.rest.service.api" })
 @EnableAsync
 public class ApiDispatcherServletConfiguration extends WebMvcConfigurationSupport {
 

@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.*;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
-import com.proper.enterprise.platform.core.security.util.SecurityUtil;
+import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getCurrentUser() {
-        return userDao.getCurrentUserByUserId(SecurityUtil.getCurrentUserId());
+        return userDao.getCurrentUserByUserId(Authentication.getCurrentUserId());
     }
 
     @Override

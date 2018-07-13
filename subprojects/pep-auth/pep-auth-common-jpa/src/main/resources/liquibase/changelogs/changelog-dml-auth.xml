@@ -1316,4 +1316,9 @@
             <column name="PARENT_ID" value="pep-system"/>
         </insert>
     </changeSet>
+    <changeSet id="del_auth_menu_get_resource" author="zjl">
+        <delete tableName="PEP_AUTH_MENUS_RESOURCES">
+            where MENU_ID='pep-auth-functions' and RES_ID='pep-auth-menus-r'
+        </delete>
+    </changeSet>
 </databaseChangeLog>

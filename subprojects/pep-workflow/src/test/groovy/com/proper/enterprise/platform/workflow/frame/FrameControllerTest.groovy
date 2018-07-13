@@ -1,11 +1,13 @@
 package com.proper.enterprise.platform.workflow.frame
 
 import com.proper.enterprise.platform.core.entity.DataTrunk
+import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.vo.CustomHandlerVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO
+import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO
 import org.flowable.engine.HistoryService
 import org.flowable.engine.IdentityService
 import org.junit.Test
@@ -36,12 +38,15 @@ class FrameControllerTest extends AbstractTest {
     public void flowableTest() {
         mockUser('user1', 'testuser1', '123456')
         identityService.setAuthenticatedUserId('user1')
+        Authentication.setCurrentUserId("user1")
         assert null == findProcessStartByKey(FRAME_WORKFLOW_KEY)
         Map<String, Object> formTestVO = new HashMap<>()
         formTestVO.put("sex", "1")
         formTestVO.put("name", "zjl")
         String procInstId = start(FRAME_WORKFLOW_KEY, formTestVO)
-        assert findHis(procInstId).size() == 0
+        assert findHis(procInstId).getHisTasks().size() == 0
+        assert findHis(procInstId).getCurrentTasks().get(0).getEndTime() == null
+        assert findHis(procInstId).getCurrentTasks().get(0).getAssignee() == "user1"
         start(VALIDATE_ASSIGN_GROUP_KEY, formTestVO)
         assert "处理中" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getStateValue()
         assert "user1" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getStartUserId()
@@ -51,39 +56,44 @@ class FrameControllerTest extends AbstractTest {
         assertTaskMsg(step1, "第一步")
         completeStep1(step1)
         //判断历史
-        assert null != findHis(procInstId).get(0).endTime
-        assert "c" == findHis(procInstId).get(0).assigneeName
-        assert "test" == findHis(procInstId).get(0).variables.get("test")
+        assert null != findHis(procInstId, "第一步").endTime
+        assert "c" == findHis(procInstId, "第一步").assigneeName
+        assert "test" == findHis(procInstId, "第一步").variables.get("test")
 
         PEPTaskVO step2 = getTask("第二步")
         assertTaskMsg(step2, "第二步")
         completeStep2(step2)
         mockUser('user2', 'testuser2', '123456')
+        Authentication.setCurrentUserId("user2")
         PEPTaskVO approve = getTask("审核")
         assertTaskMsg(approve, "审核")
         completeApprove(approve, false)
-        assert "这不能通过将第二步好好填填" == findHis(procInstId).last().variables.get("approveDesc")
+        assert "这不能通过将第二步好好填填" == findHis(procInstId, "审核").variables.get("approveDesc")
 
         mockUser('user1', 'testuser1', '123456')
+        Authentication.setCurrentUserId("user1")
         PEPTaskVO step2Again = getTask("第二步")
         completeStep2Again(step2Again)
         PEPTaskVO approveAgain = getTask("审核")
+        assert findHisCurr(procInstId, "审核").getCandidateGroupNames().contains("testgroup1")
         completeApprove(approveAgain, false)
-        assert "这不能通过将第二步好好填填" == findHis(procInstId).last().variables.get("approveDesc")
+        assert "这不能通过将第二步好好填填" == findHis(procInstId, "审核").variables.get("approveDesc")
 
         PEPTaskVO step2Again2 = getTask("第二步")
         completeStep2Again2(step2Again2)
         mockUser('user3', 'testuser3', '123456')
+        Authentication.setCurrentUserId("user3")
         PEPTaskVO approveAgain2 = getTask("审核")
         completeApprove(approveAgain2, true)
-        assert "这次OK" == findHis(procInstId).last().variables.get("approveDesc")
+        assert "这次OK" == findHis(procInstId, "审核").variables.get("approveDesc")
 
         mockUser('user1', 'testuser1', '123456')
+        Authentication.setCurrentUserId("user1")
         PEPTaskVO step3 = getTask("第三步")
         completeStep3(step3)
         PEPTaskVO step4 = getTask("第四步")
         complete(step4.getTaskId())
-        assert "c" == findHis(procInstId).last().assigneeName
+        assert "c" == findHis(procInstId, "第四步").assigneeName
         assert "已完成" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getStateValue()
         assert 2 == findProcessStartByMe().size()
         assert "处理中" == findProcessStartByKey(VALIDATE_ASSIGN_GROUP_KEY).getStateValue()
@@ -182,8 +192,28 @@ class FrameControllerTest extends AbstractTest {
         return null
     }
 
-    private List<PEPTaskVO> findHis(String procInstId) {
-        List<PEPTaskVO> list = JSONUtil.parse(get('/workflow/task/' + procInstId, HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        return list
+    private PEPWorkflowPathVO findHis(String procInstId) {
+        PEPWorkflowPathVO pepWorkflowPathVO = JSONUtil.parse(get('/workflow/task/workflowPath/' + procInstId, HttpStatus.OK).getResponse().getContentAsString(), PEPWorkflowPathVO.class)
+        return pepWorkflowPathVO
+    }
+
+    private PEPTaskVO findHis(String procInstId, String name) {
+        PEPWorkflowPathVO pepWorkflowPathVO = JSONUtil.parse(get('/workflow/task/workflowPath/' + procInstId, HttpStatus.OK).getResponse().getContentAsString(), PEPWorkflowPathVO.class)
+        for (PEPTaskVO pepTaskVO : pepWorkflowPathVO.getHisTasks()) {
+            if (name.equals(pepTaskVO.getName())) {
+                return pepTaskVO
+            }
+        }
+        return null
+    }
+
+    private PEPTaskVO findHisCurr(String procInstId, String name) {
+        PEPWorkflowPathVO pepWorkflowPathVO = JSONUtil.parse(get('/workflow/task/workflowPath/' + procInstId, HttpStatus.OK).getResponse().getContentAsString(), PEPWorkflowPathVO.class)
+        for (PEPTaskVO pepTaskVO : pepWorkflowPathVO.getCurrentTasks()) {
+            if (name.equals(pepTaskVO.getName())) {
+                return pepTaskVO
+            }
+        }
+        return null
     }
 }

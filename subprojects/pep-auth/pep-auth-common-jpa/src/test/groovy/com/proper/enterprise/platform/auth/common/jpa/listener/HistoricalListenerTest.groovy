@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.jpa.listener
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
+import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
@@ -20,6 +21,7 @@ class HistoricalListenerTest extends AbstractTest {
     @Before
     void mockCurrentUser() {
         mockUser(MOCK_USER_ID)
+        Authentication.setCurrentUserId(MOCK_USER_ID)
     }
 
     @Test

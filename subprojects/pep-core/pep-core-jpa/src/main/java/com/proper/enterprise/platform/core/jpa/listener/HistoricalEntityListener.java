@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.core.jpa.listener;
 
 import com.proper.enterprise.platform.core.api.IBase;
-import com.proper.enterprise.platform.core.security.util.SecurityUtil;
+import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 
 import javax.persistence.PrePersist;
@@ -15,12 +15,12 @@ public class HistoricalEntityListener {
 
     @PrePersist
     public void prePersist(IBase ibase) {
-        insert(ibase, SecurityUtil.getCurrentUserId());
+        insert(ibase, Authentication.getCurrentUserId());
     }
 
     @PreUpdate
     public void preUpdate(IBase ibase) {
-        update(ibase, SecurityUtil.getCurrentUserId());
+        update(ibase, Authentication.getCurrentUserId());
     }
 
     private void insert(IBase ibase, String userId) {

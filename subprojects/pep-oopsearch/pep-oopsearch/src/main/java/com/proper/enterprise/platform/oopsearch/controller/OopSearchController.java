@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.api.auth.service.AuthzService;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
-import com.proper.enterprise.platform.core.security.service.SecurityService;
+import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.oopsearch.document.OOPSearchDocument;
@@ -50,9 +50,6 @@ public class OopSearchController extends BaseController {
     @Autowired
     private AuthzService authzService;
 
-    @Autowired
-    private SecurityService securityService;
-
     @GetMapping("/inverse")
     public ResponseEntity<List<OOPSearchDocument>> searchInfo(@RequestParam String data, @RequestParam String moduleName) {
         List<OOPSearchDocument> docs = (List<OOPSearchDocument>) searchService.getSearchInfo(data, moduleName);
@@ -62,6 +59,9 @@ public class OopSearchController extends BaseController {
     @GetMapping("/query")
     public void query(HttpServletRequest request, HttpServletResponse response, String restPath, String req, String moduleName) {
         String url = searchConfigService.getURL(moduleName.replace("$", "/"));
+        if (StringUtil.isNull(url)) {
+            return;
+        }
         try {
             url = handleRestUrl(url, restPath, response);
         } catch (HttpRequestMethodNotSupportedException e) {
@@ -142,7 +142,7 @@ public class OopSearchController extends BaseController {
     }
 
     private boolean accessible(String url, HttpServletRequest request, HttpServletResponse response) {
-        if (!authzService.accessible(url, request.getMethod(), securityService.getCurrentUserId())) {
+        if (!authzService.accessible(url, request.getMethod(), Authentication.getCurrentUserId())) {
             HttpServletResponse resp = response;
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             resp.setHeader("WWW-Authenticate",

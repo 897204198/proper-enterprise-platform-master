@@ -10,6 +10,9 @@ public class PEPFormVO implements Serializable {
 
     private static final long serialVersionUID = PEPConstants.VERSION;
 
+    public PEPFormVO() {
+    }
+
     public PEPFormVO(String formKey, Map<String, Object> formData) {
         this.formKey = formKey;
         this.formData = formData;

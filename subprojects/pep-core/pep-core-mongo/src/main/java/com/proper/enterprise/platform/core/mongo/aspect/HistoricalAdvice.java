@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.core.mongo.aspect;
 
 import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.mongo.document.BaseDocument;
-import com.proper.enterprise.platform.core.security.util.SecurityUtil;
+import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.aspectj.lang.JoinPoint;
@@ -27,10 +27,10 @@ public class HistoricalAdvice {
         // Repository.save* 方法的参数只有两类
         if (obj instanceof Iterable) {
             for (Object o : (Iterable) obj) {
-                update(o, SecurityUtil.getCurrentUserId());
+                update(o, Authentication.getCurrentUserId());
             }
         } else {
-            update(obj, SecurityUtil.getCurrentUserId());
+            update(obj, Authentication.getCurrentUserId());
         }
     }
 

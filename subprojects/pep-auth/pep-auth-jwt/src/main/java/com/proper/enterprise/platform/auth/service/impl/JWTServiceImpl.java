@@ -29,6 +29,7 @@ public class JWTServiceImpl implements JWTService {
     private static final String BEARER = "Bearer";
     private static final String POINT_SYMBOL = ".";
     private static final String TOKEN = "token";
+    private static final String NULL_VALUE = "null";
 
     private APISecret secret;
 
@@ -54,6 +55,9 @@ public class JWTServiceImpl implements JWTService {
         String token = request.getHeader(AUTH_HEADER);
         if (StringUtil.isNull(token)) {
             token = request.getHeader(TOKEN_FLAG);
+            if (NULL_VALUE.equals(token)) {
+                token = null;
+            }
         }
         LOGGER.trace("Request {} token header!", StringUtil.isNotNull(token) ? "has" : "DOES NOT HAVE");
         if (StringUtil.isNotNull(token) && token.contains(BEARER)) {

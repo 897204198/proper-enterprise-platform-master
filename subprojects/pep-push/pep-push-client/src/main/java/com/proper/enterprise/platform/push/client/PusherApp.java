@@ -44,6 +44,11 @@ public class PusherApp {
      */
     private boolean isAsync = true;
 
+    /**
+     * App 包名
+     */
+    private String packageName = "";
+
     private IPushApiServiceRequest pushApiRequest;
 
     public boolean isAsync() {
@@ -129,6 +134,7 @@ public class PusherApp {
             String msgStr = null;
             String userids = null;
             try {
+                msg.addCustomData("packageName", packageName);
                 msgStr = JSONUtil.toJSON(msg);
                 userids = JSONUtil.toJSON(lstUserIds);
                 LinkedHashMap<String, Object> params = new LinkedHashMap<>();
@@ -144,7 +150,6 @@ public class PusherApp {
             }
         };
         startRunTask(r, isAsync);
-
     }
 
     /**
@@ -157,6 +162,7 @@ public class PusherApp {
         Runnable r = () -> {
             try {
                 LinkedHashMap<String, Object> params = new LinkedHashMap<>();
+                msg.addCustomData("packageName", packageName);
                 params.put("msg", JSONUtil.toJSON(msg));
                 params.put("deviceids", JSONUtil.toJSON(lstDeviceIds.toArray()));
                 params.put("device_type", deviceType);
@@ -201,6 +207,7 @@ public class PusherApp {
         Runnable r = () -> {
             try {
                 final LinkedHashMap<String, Object> params = new LinkedHashMap<>();
+                msg.addCustomData("packageName", packageName);
                 params.put("msg", JSONUtil.toJSON(msg));
                 params.put("appkey", appkey);
                 String rtn = pushApiRequest.requestServiceServer(pushUrl, "pushMessageToAllUsers", params,
@@ -233,6 +240,7 @@ public class PusherApp {
         Runnable r = () -> {
             try {
                 final LinkedHashMap<String, Object> params = new LinkedHashMap<>();
+                msg.addCustomData("packageName", packageName);
                 params.put("msg", JSONUtil.toJSON(msg));
                 params.put("appkey", appkey);
                 if (deviceType != null && !"".equals(deviceType)) {
@@ -266,4 +274,13 @@ public class PusherApp {
     public void setPushUrl(String pushUrl) {
         this.pushUrl = pushUrl;
     }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
 }

@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.core.security.util.SecurityUtil;
+import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
@@ -23,6 +23,8 @@ import java.util.Map;
 
 @Service
 public class PEPProcessServiceImpl implements PEPProcessService {
+
+    public static final String START_FORM_DATA = "start_form_data";
 
     private RuntimeService runtimeService;
 
@@ -54,6 +56,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         Map<String, Object> globalVariables = new HashMap<>(16);
         if (StringUtil.isNotEmpty(startFormKey)) {
             globalVariables.put(startFormKey, new PEPFormVO(startFormKey, variables));
+            globalVariables.put(START_FORM_DATA, new PEPFormVO(startFormKey, variables));
         }
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
         return ProcInstConvert.convert(processInstance);
@@ -62,7 +65,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
     @Override
     public DataTrunk<PEPProcInstVO> findProcessStartByMe() {
         List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery()
-            .startedBy(SecurityUtil.getCurrentUserId())
+            .startedBy(Authentication.getCurrentUserId())
             .includeProcessVariables().list();
         DataTrunk<PEPProcInstVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setData(ProcInstConvert.convert(historicProcessInstances));

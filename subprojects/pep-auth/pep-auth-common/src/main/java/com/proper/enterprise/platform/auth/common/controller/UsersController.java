@@ -8,7 +8,7 @@ import com.proper.enterprise.platform.auth.common.vo.RoleVO;
 import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
 import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.core.security.util.SecurityUtil;
+import com.proper.enterprise.platform.core.security.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,7 +70,7 @@ public class UsersController extends BaseController {
     @PutMapping(path = "/password")
     @JsonView(UserVO.Single.class)
     public ResponseEntity<UserVO> changePassword(@RequestBody ChangePasswordParam changePasswordParam) {
-        return responseOfPut(userService.updateChangePassword(SecurityUtil.getCurrentUserId(),
+        return responseOfPut(userService.updateChangePassword(Authentication.getCurrentUserId(),
             changePasswordParam.getOldPassword(), changePasswordParam.getPassword()),
             UserVO.class, UserVO.Single.class);
     }

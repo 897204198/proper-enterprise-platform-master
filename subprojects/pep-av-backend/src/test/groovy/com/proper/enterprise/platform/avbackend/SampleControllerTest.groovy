@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.avbackend.model.CreateReturnModel
 import com.proper.enterprise.platform.avbackend.model.QueryReturnModel
 import com.proper.enterprise.platform.constants.AvBackConstants
 import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.test.AbstractTest
@@ -42,6 +43,7 @@ class SampleControllerTest extends AbstractTest {
     @Test
     void update() {
         mockUser("test1")
+        Authentication.setCurrentUserId("test1")
         def document = [:]
         document['name'] = 'test'
         document['enable'] = true
@@ -53,6 +55,7 @@ class SampleControllerTest extends AbstractTest {
         String oldModifyTime = listOld.get(0).get(AvBackConstants.LAST_MODIFY_TIME)
         assert "test1" == listOld.get(0).get(AvBackConstants.CREATE_USER_ID)
         mockUser("test2")
+        Authentication.setCurrentUserId("test2")
         Thread.sleep(1000)
         putDocument(collectionName, document, returnModel.getObjectId())
         QueryReturnModel queryReturnModel = queryDocument(collectionName, null)

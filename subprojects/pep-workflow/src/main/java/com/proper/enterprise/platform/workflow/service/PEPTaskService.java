@@ -2,9 +2,9 @@ package com.proper.enterprise.platform.workflow.service;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
+import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.List;
 import java.util.Map;
 
 public interface PEPTaskService {
@@ -34,10 +34,10 @@ public interface PEPTaskService {
     DataTrunk<PEPTaskVO> findPagination(Map<String, Object> searchParam, PageRequest pageRequest);
 
     /**
-     * 根据流程实例id查询历史任务
+     * 根据流程实例id查询流程轨迹
      *
      * @param procInstId 流程实例id
-     * @return 历史任务节点
+     * @return 流程轨迹VO
      */
-    List<PEPTaskVO> findHistoricalProcessTrajectory(String procInstId);
+    PEPWorkflowPathVO findWorkflowPath(String procInstId);
 }
