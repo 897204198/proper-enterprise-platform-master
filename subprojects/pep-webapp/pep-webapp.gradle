@@ -48,7 +48,7 @@ dependencies {
     // runtime libraries.jaxws_rt
 
     // Select when need datasource monitor
-    // runtime project(':pep-datasource-monitor')
+    //runtime project(':pep-datasource-monitor')
 
     // Mandatory for PEP
     runtime project(':pep-configs')

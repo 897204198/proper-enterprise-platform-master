@@ -35,6 +35,7 @@ public class ProcInstConvert {
         PEPProcInstVO pepProcInstVO = new PEPProcInstVO();
         pepProcInstVO.setCreateTime(DateUtil.toString(historicProcessInstance.getStartTime(), DEFAULT_DATETIME_FORMAT));
         pepProcInstVO.setEnded(null != historicProcessInstance.getEndTime());
+        pepProcInstVO.setProcInstId(historicProcessInstance.getId());
         pepProcInstVO.setProcessDefinitionId(historicProcessInstance.getProcessDefinitionId());
         pepProcInstVO.setProcessDefinitionKey(historicProcessInstance.getProcessDefinitionKey());
         pepProcInstVO.setProcessDefinitionName(historicProcessInstance.getProcessDefinitionName());

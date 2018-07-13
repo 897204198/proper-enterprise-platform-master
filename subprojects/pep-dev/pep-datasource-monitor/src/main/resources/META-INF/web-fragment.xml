@@ -20,11 +20,6 @@
     <servlet>
         <servlet-name>DruidStatView</servlet-name>
         <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
-        <!--配置白名单-->
-        <init-param>
-            <param-name>allow</param-name>
-            <param-value>127.0.0.1</param-value>
-        </init-param>
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
     </servlet>

@@ -108,6 +108,7 @@ public class DataDicServiceImpl extends AbstractJpaServiceSupport<DataDic, DataD
 
 
     @Override
+    @CacheQuery
     public DataDic get(String catalog, String code) {
         return get(catalog, code, null);
     }
