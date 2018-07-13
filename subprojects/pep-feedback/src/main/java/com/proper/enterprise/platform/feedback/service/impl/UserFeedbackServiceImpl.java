@@ -143,14 +143,6 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
         FeedBackDocument feedBackDocument = new FeedBackDocument();
         feedBackDocument.setFeedbackTime(DateUtil.toString(new Date(), "yyyy-MM-dd HH:mm"));
         feedBackDocument.setFeedback(feedback);
-        for (FeedBackDocument feedBackDocument1 : list) {
-            feedBackDocument.setMobileModel(feedBackDocument1.getMobileModel());
-            feedBackDocument.setAppVersion(feedBackDocument1.getAppVersion());
-            feedBackDocument.setPlatform(feedBackDocument1.getPlatform());
-            feedBackDocument.setNetType(feedBackDocument1.getNetType());
-            feedBackDocument.setMobileModel(feedBackDocument1.getMobileModel());
-            feedBackDocument.setPictureId(feedBackDocument1.getPictureId());
-        }
         list.add(feedBackDocument);
         userFeedBackDocument.setFeedBackDocuments(list);
         userFeedBackDocument = userFeedBackRepo.save(userFeedBackDocument);
