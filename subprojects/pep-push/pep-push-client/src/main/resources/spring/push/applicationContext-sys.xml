@@ -11,6 +11,7 @@
         <property name="appkey" value="${pep.push.properpushAppkey}"/>
         <property name="secureKey" value="${pep.push.properpushSecert}"/>
         <property name="async" value="true"/>
+        <property name="packageName" value="${pep.push.packageName}"/>
     </bean>
 
 </beans>
