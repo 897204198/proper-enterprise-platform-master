@@ -1,10 +1,10 @@
 package com.proper.enterprise.platform.app.service.impl;
 
-import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.api.cache.CacheDuration;
 import com.proper.enterprise.platform.app.document.AppVersionDocument;
 import com.proper.enterprise.platform.app.repository.AppVersionRepository;
 import com.proper.enterprise.platform.app.service.AppVersionService;
+import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -26,12 +26,9 @@ public class AppVersionServiceImpl implements AppVersionService {
 
     private AppVersionRepository repo;
 
-    private UserService userService;
-
     @Autowired
-    public AppVersionServiceImpl(AppVersionRepository repo, UserService userService) {
+    public AppVersionServiceImpl(AppVersionRepository repo) {
         this.repo = repo;
-        this.userService = userService;
     }
 
     @Override
@@ -55,7 +52,7 @@ public class AppVersionServiceImpl implements AppVersionService {
             version = appVersionDocument;
         }
         version.setReleased(true);
-        version.setPublisherId(userService.getCurrentUser().getId());
+        version.setPublisherId(Authentication.getCurrentUserId());
         version.setPublishTime(DateUtil.toTimestamp(new Date()));
         return repo.save(version);
     }
