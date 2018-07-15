@@ -17,6 +17,7 @@ import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -25,7 +26,6 @@ import org.springframework.test.context.jdbc.Sql
 class UserGroupControllerTest extends AbstractTest {
 
     private static final String URI = '/auth/user-groups'
-    private static UserGroup group = new UserGroupEntity('oopstrom')
 
     @Autowired
     private UserService userService
@@ -52,6 +52,11 @@ class UserGroupControllerTest extends AbstractTest {
     DataDicRepository dataDicRepository
     @Autowired
     UserGroupService userGroupService
+
+    @Before
+    void setUp() {
+        userGroupRepository.deleteAllInBatch()
+    }
 
     @Test
     @Sql(["/com/proper/enterprise/platform/auth/common/jpa/users.sql",
