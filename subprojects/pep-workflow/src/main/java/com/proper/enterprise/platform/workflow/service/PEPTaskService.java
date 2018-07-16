@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Map;
 
 public interface PEPTaskService {
@@ -40,4 +41,13 @@ public interface PEPTaskService {
      * @return 流程轨迹VO
      */
     PEPWorkflowPathVO findWorkflowPath(String procInstId);
+
+    /**
+     * 根据流程实例id 获取已完成的历史Task
+     * 根据完成时间倒序
+     *
+     * @param procInstId 流程实例id
+     * @return 历史Task集合
+     */
+    List<PEPTaskVO> findHisTasks(String procInstId);
 }

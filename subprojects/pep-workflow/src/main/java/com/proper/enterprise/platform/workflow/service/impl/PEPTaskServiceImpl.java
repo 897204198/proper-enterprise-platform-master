@@ -144,7 +144,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         return pepStartVO;
     }
 
-    private List<PEPTaskVO> findHisTasks(String procInstId) {
+    public List<PEPTaskVO> findHisTasks(String procInstId) {
         List<HistoricTaskInstance> historicTaskInstances = historyService
             .createHistoricTaskInstanceQuery()
             .processInstanceId(procInstId)
