@@ -3,9 +3,10 @@ package com.proper.enterprise.platform.workflow.service.impl;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
-import com.proper.enterprise.platform.workflow.vo.PEPFormVO;
+import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
 import org.flowable.engine.FormService;
 import org.flowable.engine.HistoryService;
@@ -15,6 +16,7 @@ import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -24,7 +26,8 @@ import java.util.Map;
 @Service
 public class PEPProcessServiceImpl implements PEPProcessService {
 
-    public static final String START_FORM_DATA = "start_form_data";
+    @Value("${workflow.global.variables}")
+    private List<String> globalVariableKeys;
 
     private RuntimeService runtimeService;
 
@@ -55,9 +58,11 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         String startFormKey = formService.getStartFormKey(processDefinition.getId());
         Map<String, Object> globalVariables = new HashMap<>(16);
         if (StringUtil.isNotEmpty(startFormKey)) {
-            globalVariables.put(startFormKey, new PEPFormVO(startFormKey, variables));
-            globalVariables.put(START_FORM_DATA, new PEPFormVO(startFormKey, variables));
+            globalVariables.put(startFormKey, variables);
+            globalVariables.put(WorkFlowConstants.START_FORM_DATA, variables);
         }
+        globalVariables.put(WorkFlowConstants.SKIP_EXPRESSION_ENABLED, true);
+        globalVariables = GlobalVariableUtil.setGlobalVariable(globalVariables, variables, globalVariableKeys);
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
         return ProcInstConvert.convert(processInstance);
     }

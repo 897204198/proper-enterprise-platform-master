@@ -11,10 +11,11 @@ import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.convert.TaskConvert;
 import com.proper.enterprise.platform.workflow.service.PEPTaskService;
-import com.proper.enterprise.platform.workflow.vo.PEPFormVO;
+import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPStartVO;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
@@ -28,6 +29,7 @@ import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +40,8 @@ import static com.proper.enterprise.platform.core.PEPConstants.DEFAULT_DATETIME_
 @Service
 public class PEPTaskServiceImpl implements PEPTaskService {
 
-    private static final String START_USER = "startUser";
-    private static final String ASSIGNEE = "assignee";
-
+    @Value("${workflow.global.variables}")
+    private List<String> globalVariableKeys;
 
     private TaskService taskService;
 
@@ -89,8 +90,9 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         String formKey = task.getFormKey();
         Map<String, Object> globalVariables = taskService.getVariables(taskId);
         if (StringUtil.isNotEmpty(formKey)) {
-            globalVariables.put(formKey, new PEPFormVO(formKey, variables));
+            globalVariables.put(formKey, variables);
         }
+        globalVariables = GlobalVariableUtil.setGlobalVariable(globalVariables, variables, globalVariableKeys);
         if (null == task.getAssignee()) {
             taskService.claim(taskId, Authentication.getCurrentUserId());
         }
@@ -107,8 +109,8 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         List<Task> tasks = taskQuery.list();
         List<PEPTaskVO> taskVOs = TaskConvert.convert(tasks);
         taskVOs = buildTaskProsInstMsg(taskVOs);
-        taskVOs = buildTaskUserName(taskVOs, START_USER);
-        taskVOs = buildTaskUserName(taskVOs, ASSIGNEE);
+        taskVOs = buildTaskUserName(taskVOs, WorkFlowConstants.INITIATOR);
+        taskVOs = buildTaskUserName(taskVOs, WorkFlowConstants.ASSIGNEE);
         DataTrunk<PEPTaskVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setData(taskVOs);
         dataTrunk.setCount(0);
@@ -131,9 +133,9 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         pepStartVO.setCreateTime(DateUtil.toString(processInstance.getStartTime(), DEFAULT_DATETIME_FORMAT));
         pepStartVO.setStartUserId(processInstance.getStartUserId());
         pepStartVO.setProcessDefinitionName(processInstance.getProcessDefinitionName());
-        Object startFormData = processInstance.getProcessVariables().get(PEPProcessServiceImpl.START_FORM_DATA);
+        Object startFormData = processInstance.getProcessVariables().get(WorkFlowConstants.START_FORM_DATA);
         if (null != startFormData) {
-            pepStartVO.setStartForm((PEPFormVO) startFormData);
+            pepStartVO.setStartForm((Map<String, Object>) startFormData);
         }
         User user = userDao.findOne(processInstance.getStartUserId());
         if (null != user) {
@@ -152,7 +154,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             .desc()
             .list();
         List<PEPTaskVO> hisTasks = TaskConvert.convertHisTasks(historicTaskInstances);
-        hisTasks = buildTaskUserName(hisTasks, ASSIGNEE);
+        hisTasks = buildTaskUserName(hisTasks, WorkFlowConstants.ASSIGNEE);
         return hisTasks;
     }
 
@@ -162,7 +164,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             .includeIdentityLinks();
         List<Task> tasks = taskQuery.list();
         List<PEPTaskVO> taskVOs = TaskConvert.convert(tasks);
-        taskVOs = buildTaskUserName(taskVOs, ASSIGNEE);
+        taskVOs = buildTaskUserName(taskVOs, WorkFlowConstants.ASSIGNEE);
         taskVOs = buildTaskCandidateUserName(taskVOs);
         taskVOs = buildTaskRoleName(taskVOs);
         taskVOs = buildTaskGroupName(taskVOs);
@@ -236,7 +238,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
                 continue;
             }
             for (PEPTaskVO pepTaskVO : matchTaskVOs) {
-                if (ASSIGNEE.equals(type)) {
+                if (WorkFlowConstants.ASSIGNEE.equals(type)) {
                     pepTaskVO.setAssigneeName(user.getName());
                     continue;
                 }
@@ -301,7 +303,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     }
 
     private String getUserId(PEPTaskVO taskVO, String type) {
-        if (ASSIGNEE.equals(type)) {
+        if (WorkFlowConstants.ASSIGNEE.equals(type)) {
             return taskVO.getAssignee();
         }
         if (null == taskVO.getPepProcInstVO()) {

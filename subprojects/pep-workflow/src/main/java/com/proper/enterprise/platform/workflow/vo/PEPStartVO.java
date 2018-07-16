@@ -2,6 +2,8 @@ package com.proper.enterprise.platform.workflow.vo;
 
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 
+import java.util.Map;
+
 public class PEPStartVO {
 
     /**
@@ -24,9 +26,9 @@ public class PEPStartVO {
      */
     private String startUserName;
     /**
-     * 开始节点表单
+     * 开始节点表单数据
      */
-    private PEPFormVO startForm;
+    private Map<String, Object> startForm;
 
     public String getProcessDefinitionName() {
         return processDefinitionName;
@@ -60,11 +62,11 @@ public class PEPStartVO {
         this.startUserName = startUserName;
     }
 
-    public PEPFormVO getStartForm() {
+    public Map<String, Object> getStartForm() {
         return startForm;
     }
 
-    public void setStartForm(PEPFormVO startForm) {
+    public void setStartForm(Map<String, Object> startForm) {
         this.startForm = startForm;
     }
 
