@@ -26,7 +26,7 @@ import java.util.Map;
 @Service
 public class PEPProcessServiceImpl implements PEPProcessService {
 
-    @Value("${workflow.global.variables}")
+    @Value("#{'${workflow.global.variables}'.split(',')}")
     private List<String> globalVariableKeys;
 
     private RuntimeService runtimeService;
