@@ -135,7 +135,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         if (null != startFormData) {
             pepStartVO.setStartForm((PEPFormVO) startFormData);
         }
-        User user = userDao.findOne(processInstance.getStartUserId());
+        User user = userDao.findById(processInstance.getStartUserId());
         if (null != user) {
             pepStartVO.setStartUserName(user.getName());
         }
@@ -254,7 +254,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             if (CollectionUtil.isEmpty(pepTaskVO.getCandidateRoles())) {
                 continue;
             }
-            List<Role> roles = new ArrayList<>(roleDao.findAll(pepTaskVO.getCandidateRoles()));
+            List<Role> roles = new ArrayList<>(roleDao.findAllById(pepTaskVO.getCandidateRoles()));
             Set<String> roleNames = new HashSet<>();
             for (Role role : roles) {
                 roleNames.add(role.getName());
