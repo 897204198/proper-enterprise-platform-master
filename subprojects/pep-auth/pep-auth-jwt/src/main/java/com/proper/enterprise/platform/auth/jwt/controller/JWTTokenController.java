@@ -24,7 +24,7 @@ class JWTTokenController extends BaseController {
     private UserService userService;
 
     @PostMapping("/encode/header")
-    public ResponseEntity<String> encode(@RequestBody JWTHeader header) throws Exception {
+    public ResponseEntity<String> encodeHeader(@RequestBody JWTHeader header) throws Exception {
         User user;
         if (StringUtil.isBlank(header.getId()) && StringUtil.isNotBlank(header.getName())) {
             user = userService.getByUsername(header.getName(), EnableEnum.ENABLE);
@@ -43,8 +43,22 @@ class JWTTokenController extends BaseController {
     }
 
     @PostMapping("/decode")
-    public ResponseEntity<String> decode(@RequestBody String token) throws Exception {
-        return responseOfPost(StringUtil.toEncodedString(Base64.decodeBase64(token)));
+    public ResponseEntity<String> decodeToken(@RequestBody String token) {
+        StringBuilder sb = new StringBuilder();
+        String escapeSymbol = "\\.";
+        String tokenSeparator = ".";
+        if (token.contains(tokenSeparator)) {
+            for (String part : token.split(escapeSymbol)) {
+                sb.append(tokenSeparator).append(decode(part));
+            }
+        } else {
+            sb.append(tokenSeparator).append(decode(token));
+        }
+        return responseOfPost(sb.toString().replaceFirst(escapeSymbol, ""));
+    }
+
+    private String decode(String str) {
+        return new String(Base64.decodeBase64(str), PEPConstants.DEFAULT_CHARSET);
     }
 
 }

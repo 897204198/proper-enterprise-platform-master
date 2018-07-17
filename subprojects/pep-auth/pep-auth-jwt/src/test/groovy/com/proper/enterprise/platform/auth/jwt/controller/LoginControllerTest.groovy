@@ -6,6 +6,8 @@ import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
+import groovy.json.JsonSlurper
+import org.apache.commons.codec.binary.Base64
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -37,6 +39,10 @@ class LoginControllerTest extends AbstractTest {
     @Sql("/com/proper/enterprise/platform/auth/jwt/filter/adminUsers.sql")
     void getCurrentUser() {
         def token = mockLogin('admin', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
+        def payload = new JsonSlurper().parse(Base64.decodeBase64(token.split(/\./)[1]))
+        assert payload.name == '超级管理员'
+        assert payload.hasRole == true
+
         mockRequest.addHeader("Authorization", token)
         Authentication.setCurrentUserId(DEFAULT_USER)
         Map<String, String> currentUserMap = JSONUtil.parse(get("/auth/login/user", HttpStatus.OK)

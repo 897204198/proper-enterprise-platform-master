@@ -26,7 +26,6 @@ class JWTServiceImplTest extends AbstractTest {
         header.setId('1')
         header.setName('test')
         def payload = new JWTPayloadImpl()
-        payload.setRoles('a,b,c')
         def token = jwtService.generateToken(header, payload)
 
         assert jwtService.verify(token)

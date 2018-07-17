@@ -84,8 +84,7 @@ class JWTVerifyFilterTest extends AbstractTest {
     private String getToken() {
         def header = getHeader()
         def payload = new JWTPayloadImpl()
-        payload.setRoles('a,b,c')
-        payload.setEmpName('en')
+        payload.setName('en')
         jwtService.generateToken(header, payload)
     }
 

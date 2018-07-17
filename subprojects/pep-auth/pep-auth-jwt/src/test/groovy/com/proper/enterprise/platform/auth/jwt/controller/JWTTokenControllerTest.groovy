@@ -27,6 +27,7 @@ class JWTTokenControllerTest extends AbstractTest {
     void testDecode() throws Exception {
         decode(token, header)
         decode('eyJpZCI6IjE', '{"id":"1')
+        decode('eyJpZCI6IlBFUF9TWVMiLCJuYW1lIjoiYWRtaW4ifQ.eyJuYW1lIjoi6LaF57qn566h55CG5ZGYIiwiaGFzUm9sZSI6dHJ1ZX0', '{"id":"PEP_SYS","name":"admin"}.{"name":"超级管理员","hasRole":true}')
     }
 
     def decode(String input, String output) {
