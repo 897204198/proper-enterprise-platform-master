@@ -100,20 +100,23 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     }
 
     @Override
-    public DataTrunk<PEPTaskVO> findPagination(Map<String, Object> searchParam, PageRequest pageRequest) {
+    public DataTrunk<PEPTaskVO> findTodoPagination(String processDefinitionName, PageRequest pageRequest) {
         TaskQuery taskQuery = taskService.createTaskQuery()
             .includeProcessVariables()
             .taskCandidateOrAssigned(Authentication.getCurrentUserId())
             .orderByTaskCreateTime()
             .desc();
-        List<Task> tasks = taskQuery.list();
+        if (StringUtil.isNotEmpty(processDefinitionName)) {
+            taskQuery.processDefinitionName(processDefinitionName);
+        }
+        List<Task> tasks = taskQuery.listPage(pageRequest.getPageNumber(), pageRequest.getPageSize());
         List<PEPTaskVO> taskVOs = TaskConvert.convert(tasks);
         taskVOs = buildTaskProsInstMsg(taskVOs);
         taskVOs = buildTaskUserName(taskVOs, WorkFlowConstants.INITIATOR);
         taskVOs = buildTaskUserName(taskVOs, WorkFlowConstants.ASSIGNEE);
         DataTrunk<PEPTaskVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setData(taskVOs);
-        dataTrunk.setCount(0);
+        dataTrunk.setCount(taskQuery.count());
         return dataTrunk;
     }
 

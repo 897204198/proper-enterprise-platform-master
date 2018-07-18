@@ -26,12 +26,11 @@ public class TaskController extends BaseController {
     public ResponseEntity complete(@PathVariable String taskId, @RequestBody Map<String, Object> variables) {
         pepTaskService.complete(taskId, variables);
         return responseOfPost(null);
-
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<DataTrunk<PEPTaskVO>> get(@RequestParam Map<String, Object> searchParam) {
-        return responseOfGet(pepTaskService.findPagination(searchParam, getPageRequest()));
+    public ResponseEntity<DataTrunk<PEPTaskVO>> get(String processDefinitionName) {
+        return responseOfGet(pepTaskService.findTodoPagination(processDefinitionName, getPageRequest()));
     }
 
     @RequestMapping(value = "/workflowPath/{procInstId}", method = RequestMethod.GET)

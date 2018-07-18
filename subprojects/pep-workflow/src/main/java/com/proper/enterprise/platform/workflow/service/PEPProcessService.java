@@ -3,6 +3,8 @@ package com.proper.enterprise.platform.workflow.service;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
+import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Map;
 import java.util.Set;
@@ -22,9 +24,12 @@ public interface PEPProcessService {
     /**
      * 查询当前登录人尕其的流程实例集合
      *
+     * @param processDefinitionName 流程定义名称
+     * @param state               流程状态
+     * @param pageRequest         分页参数
      * @return 流程实例集合
      */
-    DataTrunk<PEPProcInstVO> findProcessStartByMe();
+    DataTrunk<PEPProcInstVO> findProcessStartByMePagination(String processDefinitionName, PEPProcInstStateEnum state, PageRequest pageRequest);
 
     /**
      * 根据流程实例Id构建流程页面

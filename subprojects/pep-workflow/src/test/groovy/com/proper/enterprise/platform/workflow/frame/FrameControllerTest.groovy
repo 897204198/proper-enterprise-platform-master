@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.vo.CustomHandlerVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
+import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum
 import org.flowable.engine.HistoryService
 import org.flowable.engine.IdentityService
 import org.flowable.engine.TaskService
@@ -19,6 +20,7 @@ class FrameControllerTest extends AbstractTest {
 
     private static final String FRAME_WORKFLOW_KEY = 'flowableFrame'
     private static final String VALIDATE_ASSIGN_GROUP_KEY = 'validateAssignGroup'
+    private static final String SAME_ASSIGNEE_SKIP_TEST_KEY = 'sameAssigneeSkipTest'
 
     @Autowired
     HistoryService historyService
@@ -104,6 +106,42 @@ class FrameControllerTest extends AbstractTest {
         assert "处理中" == findProcessStartByKey(VALIDATE_ASSIGN_GROUP_KEY).getStateValue()
     }
 
+    @Test
+    @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
+        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+    public void findStartByMeTest() {
+        Authentication.setCurrentUserId("pep-sysadmin")
+        identityService.setAuthenticatedUserId("pep-sysadmin")
+        assert 0 == findProcessStartByMe().size()
+        start(FRAME_WORKFLOW_KEY, new HashMap<String, Object>())
+        start(SAME_ASSIGNEE_SKIP_TEST_KEY, new HashMap<String, Object>())
+        assert 2 == findProcessStartByMe().size()
+        assert "框架测试流程" == findProcessStartByMeParam("框架测试流程", PEPProcInstStateEnum.DOING, 1, 1).get(0).processDefinitionName
+        assert 1 == findProcessStartByMeParam("sameAssigneeSkipTest", PEPProcInstStateEnum.DOING, 1, 1).size()
+        assert "sameAssigneeSkipTest" == findProcessStartByMeParam("sameAssigneeSkipTest", PEPProcInstStateEnum.DONE, 1, 1).get(0).processDefinitionName
+        assert "sameAssigneeSkipTest" == findProcessStartByMeParam("", null, 1, 1).get(0).processDefinitionName
+        assert "框架测试流程" == findProcessStartByMeParam("", null, 2, 1).get(0).processDefinitionName
+    }
+
+    @Test
+    @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
+        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+    public void findTodoTest() {
+        identityService.setAuthenticatedUserId('user1')
+        Authentication.setCurrentUserId("user1")
+        start(FRAME_WORKFLOW_KEY, new HashMap<String, Object>())
+        start(FRAME_WORKFLOW_KEY, new HashMap<String, Object>())
+        start(FRAME_WORKFLOW_KEY, new HashMap<String, Object>())
+        start(FRAME_WORKFLOW_KEY, new HashMap<String, Object>())
+        start(FRAME_WORKFLOW_KEY, new HashMap<String, Object>())
+        start(FRAME_WORKFLOW_KEY, new HashMap<String, Object>())
+        assert 6 == JSONUtil.parse(get('/workflow/task?pageNo=1&pageSize=10', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class).getCount()
+        assert 0 == JSONUtil.parse(get('/workflow/task?processDefinitionName=123&pageNo=1&pageSize=10', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class).getCount()
+        assert 6 == JSONUtil.parse(get('/workflow/task?pageNo=1&pageSize=2', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class).getCount()
+        assert 2 == JSONUtil.parse(get('/workflow/task?pageNo=1&pageSize=2', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class).getData().size()
+        assert 2 == JSONUtil.parse(get('/workflow/task?processDefinitionName=框架测试流程&pageNo=1&pageSize=2', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class).getData().size()
+    }
+
     private void assertTaskMsg(Map pepTaskVO, String name) {
         assert name == pepTaskVO.name
         assert "框架测试流程" == pepTaskVO.pepProcInstVO.processDefinitionName
@@ -183,7 +221,13 @@ class FrameControllerTest extends AbstractTest {
     }
 
     private List<PEPProcInstVO> findProcessStartByMe() {
-        DataTrunk<PEPProcInstVO> dataTrunk = JSONUtil.parse(get('/workflow/process', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        DataTrunk<PEPProcInstVO> dataTrunk = JSONUtil.parse(get('/workflow/process?pageNo=1&pageSize=10', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        return dataTrunk.getData()
+    }
+
+    private List<PEPProcInstVO> findProcessStartByMeParam(String processDefinitionName, PEPProcInstStateEnum state, Integer pageNo, Integer pageSize) {
+        String stateQuery = null == state ? '' : '&state=' + state
+        DataTrunk<PEPProcInstVO> dataTrunk = JSONUtil.parse(get('/workflow/process?processDefinitionName=' + processDefinitionName + stateQuery + '&pageNo=' + pageNo + '&pageSize=' + pageSize, HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         return dataTrunk.getData()
     }
 

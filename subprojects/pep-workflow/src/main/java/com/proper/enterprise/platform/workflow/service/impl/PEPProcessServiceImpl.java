@@ -10,16 +10,19 @@ import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
+import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import org.flowable.engine.FormService;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.history.HistoricProcessInstance;
+import org.flowable.engine.history.HistoricProcessInstanceQuery;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -69,13 +72,25 @@ public class PEPProcessServiceImpl implements PEPProcessService {
     }
 
     @Override
-    public DataTrunk<PEPProcInstVO> findProcessStartByMe() {
-        List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery()
-            .startedBy(Authentication.getCurrentUserId())
-            .includeProcessVariables().list();
+    public DataTrunk<PEPProcInstVO> findProcessStartByMePagination(String processDefinitionName,
+                                                                   PEPProcInstStateEnum state, PageRequest pageRequest) {
+        HistoricProcessInstanceQuery historicProcessInstanceQuery = historyService
+            .createHistoricProcessInstanceQuery()
+            .startedBy(Authentication.getCurrentUserId());
+        if (StringUtil.isNotEmpty(processDefinitionName)) {
+            historicProcessInstanceQuery.processDefinitionName(processDefinitionName);
+        }
+        if (null != state && PEPProcInstStateEnum.DONE == state) {
+            historicProcessInstanceQuery.finished();
+        }
+        List<HistoricProcessInstance> historicProcessInstances = historicProcessInstanceQuery
+            .includeProcessVariables()
+            .orderByProcessInstanceEndTime()
+            .desc()
+            .listPage(pageRequest.getPageNumber(), pageRequest.getPageSize());
         DataTrunk<PEPProcInstVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setData(ProcInstConvert.convert(historicProcessInstances));
-        dataTrunk.setCount(0);
+        dataTrunk.setCount(historicProcessInstanceQuery.count());
         return dataTrunk;
     }
 

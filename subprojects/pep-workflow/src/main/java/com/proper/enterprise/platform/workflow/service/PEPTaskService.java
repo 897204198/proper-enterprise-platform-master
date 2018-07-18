@@ -28,11 +28,11 @@ public interface PEPTaskService {
     /**
      * 查找当前人待办
      *
-     * @param searchParam 查询条件
+     * @param processDefinitionName 流程定义名称
      * @param pageRequest 分页参数
      * @return 待办列表
      */
-    DataTrunk<PEPTaskVO> findPagination(Map<String, Object> searchParam, PageRequest pageRequest);
+    DataTrunk<PEPTaskVO> findTodoPagination(String processDefinitionName, PageRequest pageRequest);
 
     /**
      * 根据流程实例id查询流程轨迹
