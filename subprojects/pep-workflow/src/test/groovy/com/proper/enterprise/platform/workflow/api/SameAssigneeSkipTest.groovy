@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.workflow.frame.listener
+package com.proper.enterprise.platform.workflow.api
 
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.security.Authentication
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 
-class SameAssigneeAutoCompleteListenerTest extends AbstractTest {
+class SameAssigneeSkipTest extends AbstractTest {
 
     @Autowired
     private TaskService taskService
@@ -24,7 +24,7 @@ class SameAssigneeAutoCompleteListenerTest extends AbstractTest {
     @Autowired
     private IdentityService identityService
 
-    private static final String SKIP_PROC_KEY = "testSkip"
+    private static final String SKIP_PROC_KEY = "sameAssigneeSkipTest"
 
     @Test
     @Sql("/com/proper/enterprise/platform/workflow/datadics.sql")
@@ -32,8 +32,22 @@ class SameAssigneeAutoCompleteListenerTest extends AbstractTest {
         Authentication.setCurrentUserId("pep-sysadmin")
         identityService.setAuthenticatedUserId("pep-sysadmin")
         Map<String, Object> variables = new HashMap<>()
-        variables.put("skip", true)
         String procInsId = start(SKIP_PROC_KEY, variables)
+        assert null != historyService.createHistoricProcessInstanceQuery()
+            .processInstanceId(procInsId).singleResult().endTime
+    }
+
+    @Test
+    @Sql("/com/proper/enterprise/platform/workflow/datadics.sql")
+    public void sameAssigneeAutoCompleteListenerOtherInitiatorTest() {
+        Authentication.setCurrentUserId("user1")
+        identityService.setAuthenticatedUserId("user1")
+        Map<String, Object> variables = new HashMap<>()
+        String procInsId = start(SKIP_PROC_KEY, variables)
+        Authentication.setCurrentUserId("pep-sysadmin")
+        Map task1=getTask("task1")
+        post('/workflow/task/' + task1.taskId, JSONUtil.toJSON(new HashMap()), HttpStatus.CREATED)
+        Authentication.setCurrentUserId("user1")
         assert null != historyService.createHistoricProcessInstanceQuery()
             .processInstanceId(procInsId).singleResult().endTime
     }

@@ -25,4 +25,14 @@ public class WorkFlowConstants {
      * 流程启动表单key
      */
     public static final String START_FORM_DATA = "start_form_data";
+
+    /**
+     * 审核结果key
+     */
+    public static final String APPROVE_RESULT = "passOrNot";
+
+    /**
+     * 审核通过
+     */
+    public static final String APPROVE_PASS = "1";
 }

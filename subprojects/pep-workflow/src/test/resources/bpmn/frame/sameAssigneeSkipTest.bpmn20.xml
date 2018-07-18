@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
-  <process id="testSkip" name="testSkip" isExecutable="true">
+  <process id="sameAssigneeSkipTest" name="sameAssigneeSkipTest" isExecutable="true">
     <documentation>1</documentation>
     <startEvent id="startEvent1" flowable:formKey="mainForm"></startEvent>
-    <userTask id="sid-9F93B396-D4D3-4CE1-BE11-485D9889A002" name="task1" flowable:assignee="pep-sysadmin">
+    <userTask id="sid-9F93B396-D4D3-4CE1-BE11-485D9889A002" name="task1" flowable:assignee="#{assigneeExpression.assignee()}" flowable:skipExpression="#{sameAssigneeSkip.skip(execution)}">
       <extensionElements>
-        <flowable:taskListener event="create" class="com.proper.enterprise.platform.workflow.listener.SameAssigneeAutoCompleteListener"></flowable:taskListener>
         <modeler:activiti-idm-assignee xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-assignee>
         <modeler:assignee-info-email xmlns:modeler="http://flowable.org/modeler"><![CDATA[admin@peoper.cn]]></modeler:assignee-info-email>
         <modeler:assignee-info-firstname xmlns:modeler="http://flowable.org/modeler"><![CDATA[admin]]></modeler:assignee-info-firstname>
@@ -14,9 +13,8 @@
     </userTask>
     <sequenceFlow id="sid-BC6BB1C1-E225-4501-8871-6986188D5088" sourceRef="startEvent1" targetRef="sid-9F93B396-D4D3-4CE1-BE11-485D9889A002"></sequenceFlow>
     <endEvent id="sid-B411EF07-AF86-4903-A60D-838379896772"></endEvent>
-    <userTask id="sid-DEF17A57-EB28-4042-BCFC-8A2E17D475CF" name="task2" flowable:assignee="pep-sysadmin">
+    <userTask id="sid-DEF17A57-EB28-4042-BCFC-8A2E17D475CF" name="task2" flowable:assignee="pep-sysadmin" flowable:skipExpression="#{sameAssigneeSkip.skip(execution)}">
       <extensionElements>
-        <flowable:taskListener event="create" class="com.proper.enterprise.platform.workflow.listener.SameAssigneeAutoCompleteListener"></flowable:taskListener>
         <modeler:activiti-idm-assignee xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-assignee>
         <modeler:assignee-info-email xmlns:modeler="http://flowable.org/modeler"><![CDATA[admin@peoper.cn]]></modeler:assignee-info-email>
         <modeler:assignee-info-firstname xmlns:modeler="http://flowable.org/modeler"><![CDATA[admin]]></modeler:assignee-info-firstname>
@@ -24,10 +22,18 @@
       </extensionElements>
     </userTask>
     <sequenceFlow id="sid-6592F5A6-E3EB-438F-8233-80BDD20C9A1F" sourceRef="sid-9F93B396-D4D3-4CE1-BE11-485D9889A002" targetRef="sid-DEF17A57-EB28-4042-BCFC-8A2E17D475CF"></sequenceFlow>
-    <sequenceFlow id="sid-73BEA5CE-60B1-4019-8329-667C02192B60" sourceRef="sid-DEF17A57-EB28-4042-BCFC-8A2E17D475CF" targetRef="sid-B411EF07-AF86-4903-A60D-838379896772"></sequenceFlow>
+    <sequenceFlow id="sid-73BEA5CE-60B1-4019-8329-667C02192B60" sourceRef="sid-B1E423E4-2A8C-46DB-ACE3-104F07B31B41" targetRef="sid-B411EF07-AF86-4903-A60D-838379896772"></sequenceFlow>
+    <userTask id="sid-B1E423E4-2A8C-46DB-ACE3-104F07B31B41" name="task3" flowable:assignee="pep-sysadmin" flowable:skipExpression="#{sameAssigneeSkip.skip(execution)}">
+      <extensionElements>
+        <modeler:activiti-idm-assignee xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-assignee>
+        <modeler:assignee-info-firstname xmlns:modeler="http://flowable.org/modeler"><![CDATA[admin]]></modeler:assignee-info-firstname>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-F1423272-F94B-4B06-886A-E3C6357B8391" sourceRef="sid-DEF17A57-EB28-4042-BCFC-8A2E17D475CF" targetRef="sid-B1E423E4-2A8C-46DB-ACE3-104F07B31B41"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_testSkip">
-    <bpmndi:BPMNPlane bpmnElement="testSkip" id="BPMNPlane_testSkip">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_sameAssigneeSkipTest">
+    <bpmndi:BPMNPlane bpmnElement="sameAssigneeSkipTest" id="BPMNPlane_sameAssigneeSkipTest">
       <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
         <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
@@ -35,22 +41,29 @@
         <omgdc:Bounds height="80.0" width="100.0" x="195.0" y="138.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-B411EF07-AF86-4903-A60D-838379896772" id="BPMNShape_sid-B411EF07-AF86-4903-A60D-838379896772">
-        <omgdc:Bounds height="28.0" width="28.0" x="510.0" y="164.0"></omgdc:Bounds>
+        <omgdc:Bounds height="28.0" width="28.0" x="645.0" y="164.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-DEF17A57-EB28-4042-BCFC-8A2E17D475CF" id="BPMNShape_sid-DEF17A57-EB28-4042-BCFC-8A2E17D475CF">
-        <omgdc:Bounds height="80.0" width="100.0" x="345.0" y="138.0"></omgdc:Bounds>
+        <omgdc:Bounds height="80.0" width="100.0" x="330.0" y="138.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-B1E423E4-2A8C-46DB-ACE3-104F07B31B41" id="BPMNShape_sid-B1E423E4-2A8C-46DB-ACE3-104F07B31B41">
+        <omgdc:Bounds height="80.0" width="100.0" x="495.0" y="138.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-F1423272-F94B-4B06-886A-E3C6357B8391" id="BPMNEdge_sid-F1423272-F94B-4B06-886A-E3C6357B8391">
+        <omgdi:waypoint x="430.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="495.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-BC6BB1C1-E225-4501-8871-6986188D5088" id="BPMNEdge_sid-BC6BB1C1-E225-4501-8871-6986188D5088">
         <omgdi:waypoint x="130.0" y="178.0"></omgdi:waypoint>
         <omgdi:waypoint x="195.0" y="178.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-6592F5A6-E3EB-438F-8233-80BDD20C9A1F" id="BPMNEdge_sid-6592F5A6-E3EB-438F-8233-80BDD20C9A1F">
         <omgdi:waypoint x="295.0" y="178.0"></omgdi:waypoint>
-        <omgdi:waypoint x="345.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="330.0" y="178.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-73BEA5CE-60B1-4019-8329-667C02192B60" id="BPMNEdge_sid-73BEA5CE-60B1-4019-8329-667C02192B60">
-        <omgdi:waypoint x="445.0" y="178.0"></omgdi:waypoint>
-        <omgdi:waypoint x="510.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="595.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="645.0" y="178.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
