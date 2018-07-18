@@ -1,9 +1,11 @@
 package com.proper.enterprise.platform.workflow.service;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
 
 import java.util.Map;
+import java.util.Set;
 
 public interface PEPProcessService {
     /**
@@ -23,4 +25,13 @@ public interface PEPProcessService {
      * @return 流程实例集合
      */
     DataTrunk<PEPProcInstVO> findProcessStartByMe();
+
+    /**
+     * 根据流程实例Id构建流程页面
+     * 相同formKey取最新内容
+     *
+     * @param procInstId 流程实例Id
+     * @return 需要展示的表单集合
+     */
+    Set<PEPForm> buildPage(String procInstId);
 }

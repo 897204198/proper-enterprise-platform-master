@@ -8,6 +8,7 @@ import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
 
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -70,5 +71,22 @@ public class PEPExtFormVO implements PEPForm {
 
     public String toString() {
         return JSONUtil.toJSONIgnoreException(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PEPExtFormVO that = (PEPExtFormVO) o;
+        return Objects.equals(formKey, that.formKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(formKey);
     }
 }
