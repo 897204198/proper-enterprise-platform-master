@@ -31,8 +31,6 @@ configurations.all {
             details.useVersion versions.spring
         } else if (req.name == 'mongo-java-driver') {
             details.useTarget "org.mongodb:mongodb-driver:${versions.mongo}"
-        } else if (req.group == 'com.proper.enterprise.platform' && req.name.startsWith('pep-')) {
-            details.useVersion versions.pep
         }
 
         def nameVers = [
