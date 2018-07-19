@@ -102,6 +102,7 @@ libraries.druid = "com.alibaba:druid:1.1.9"
 libraries.ehcache = 'net.sf.ehcache:ehcache-core:2.6.9'
 
 libraries.flowable_engine = "com.proper.enterprise.platform:flowable-engine:${versions.flowable}"
+libraries.flowable_http="com.proper.enterprise.platform:flowable-http:${versions.flowable}"
 libraries.flowable_json_converter = "com.proper.enterprise.platform:flowable-json-converter:${versions.flowable}"
 libraries.flowable_rest = "com.proper.enterprise.platform:flowable-rest:${versions.flowable}"
 libraries.flowable_spring = "com.proper.enterprise.platform:flowable-spring:${versions.flowable}"
@@ -178,6 +179,8 @@ libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:
     dependency "ch.qos.logback:logback-core:${versions.logback}"
 }
 //libraries.lombok = "org.projectlombok:lombok:1.16.20"
+
+libraries.mail = 'com.sun.mail:javax.mail:1.5.6'
 
 libraries.mongodb_driver = "org.mongodb:mongodb-driver:${versions.mongo}"
 

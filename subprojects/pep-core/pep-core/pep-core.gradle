@@ -8,7 +8,9 @@ dependencies {
             libraries.servlet_api,
             libraries.spring_oxm,
             libraries.spring_data_commons,
-            libraries.aspectjweaver
+            libraries.aspectjweaver,
+            libraries.spring_context_support,
+            libraries.mail
 
     testCompile project(':pep-test'),
             libraries.spring_data_jpa,
