@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.workflow.controller;
 
+import com.proper.enterprise.platform.workflow.service.PEPProcDefsService;
 import org.flowable.app.util.XmlUtil;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
@@ -9,16 +10,16 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,8 +30,15 @@ public class ProcDefsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("ProcDefsController");
 
-    @Autowired
     private RepositoryService repositoryService;
+
+    private PEPProcDefsService pepProcDefsService;
+
+    @Autowired
+    ProcDefsController(RepositoryService repositoryService, PEPProcDefsService pepProcDefsService) {
+        this.repositoryService = repositoryService;
+        this.pepProcDefsService = pepProcDefsService;
+    }
 
     @RequestMapping(value = "/{processDefinitionId}/diagram-size", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -66,6 +74,14 @@ public class ProcDefsController {
             LOGGER.error("Create XML stream reader error! ", ex);
             return size;
         }
+    }
+
+    @RequestMapping(value = "/{processDefinitionId}/diagram", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getProcessDefinitionDiagram(@PathVariable String processDefinitionId) throws IOException {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Content-Type", "image/png");
+        return new ResponseEntity<>(pepProcDefsService.getProcessDefinitionDiagram(processDefinitionId),
+            responseHeaders, HttpStatus.OK);
     }
 
 }

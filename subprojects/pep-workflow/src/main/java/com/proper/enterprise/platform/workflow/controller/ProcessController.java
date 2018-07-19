@@ -2,12 +2,15 @@ package com.proper.enterprise.platform.workflow.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
+import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,8 +31,14 @@ public class ProcessController extends BaseController {
 
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<DataTrunk<PEPProcInstVO>> findProcessStartByMe() {
-        return responseOfGet(pepProcessService.findProcessStartByMe());
+    public ResponseEntity<DataTrunk<PEPProcInstVO>> findProcessStartByMePagination(String processDefinitionName, PEPProcInstStateEnum state) {
+        return responseOfGet(pepProcessService.findProcessStartByMePagination(processDefinitionName, state, getPageRequest()));
+    }
+
+
+    @RequestMapping(value = "/{procInstId}/page", method = RequestMethod.GET)
+    public ResponseEntity<List<PEPForm>> buildPage(@PathVariable String procInstId) {
+        return responseOfGet(pepProcessService.buildPage(procInstId));
     }
 
 }

@@ -39,8 +39,6 @@ public class ProcDefInitializer {
 
     private ModelService modelService;
 
-    private static boolean deployed;
-
     @Autowired
     public ProcDefInitializer(DeployService deployService, ModelService modelService) {
         this.deployService = deployService;
@@ -59,19 +57,22 @@ public class ProcDefInitializer {
             return;
         }
         deployService.deployFromResourcePattern(DEPLOY_NAME, procDefLocations);
-        setDeployed();
     }
 
     private void cleanIfNecessary() {
         if (ProcDefDeployType.DROP_CREATE.equals(deployType)) {
-            List<Deployment> deploymentList = deployService.findByName(DEPLOY_NAME);
-            if (CollectionUtil.isNotEmpty(deploymentList)) {
-                for (Deployment deployment : deploymentList) {
-                    cleanModels(deployment.getId());
-                    cleanDeployment(deployment.getId());
-                }
-                LOGGER.debug("Clean '{}' related deployments and models.", DEPLOY_NAME);
+            resetDeployed();
+        }
+    }
+
+    private void resetDeployed() {
+        List<Deployment> deploymentList = deployService.findByName(DEPLOY_NAME);
+        if (CollectionUtil.isNotEmpty(deploymentList)) {
+            for (Deployment deployment : deploymentList) {
+                cleanModels(deployment.getId());
+                cleanDeployment(deployment.getId());
             }
+            LOGGER.debug("Clean '{}' related deployments and models.", DEPLOY_NAME);
         }
     }
 
@@ -96,16 +97,8 @@ public class ProcDefInitializer {
         cleanIfNecessary();
     }
 
-    private static boolean hasDeployed() {
-        return deployed;
-    }
-
-    private static void setDeployed() {
-        deployed = true;
-    }
-
-    public static void resetDeployed() {
-        deployed = false;
+    private boolean hasDeployed() {
+        return deployService.findByName(DEPLOY_NAME).size() > 0;
     }
 
 }

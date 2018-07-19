@@ -42,7 +42,7 @@
       </extensionElements>
     </userTask>
     <sequenceFlow id="sid-99E3C7B2-F8DC-405B-9A18-515868DE0CF6" sourceRef="sid-E4EA6144-C3E6-4897-B325-397C3B1A6840" targetRef="sid-5E6535E4-0530-4DF9-BE19-91B2B5C5F261"></sequenceFlow>
-    <serviceTask id="sid-9AA88ABF-69C9-4F77-BBFA-5F281DF4DB37" name="归档" flowable:expression="#{archiveService.archive(mainForm.formData)}" flowable:resultVariableName="archive"></serviceTask>
+    <serviceTask id="sid-9AA88ABF-69C9-4F77-BBFA-5F281DF4DB37" name="归档" flowable:expression="#{archiveService.archive(mainForm)}" flowable:resultVariableName="archive"></serviceTask>
     <sequenceFlow id="sid-8F210F25-348E-457B-9333-155C48EEC800" sourceRef="sid-9CA61381-5FC1-42B5-83A6-9C519CA5EB47" targetRef="sid-E40F2AE8-76D5-4B65-AE4A-DDF1720DF617"></sequenceFlow>
     <sequenceFlow id="sid-66FE97B9-10D6-450D-99D0-8043BFC56E5D" sourceRef="sid-9AA88ABF-69C9-4F77-BBFA-5F281DF4DB37" targetRef="sid-C37FB84A-5D33-4DF8-86E4-8C9C2DE34CF1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{archive=='success'}]]></conditionExpression>
@@ -55,10 +55,10 @@
     <sequenceFlow id="sid-331EE696-B432-4484-9B0C-EAC155FB3B7C" sourceRef="sid-E4EA6144-C3E6-4897-B325-397C3B1A6840" targetRef="sid-9CA61381-5FC1-42B5-83A6-9C519CA5EB47"></sequenceFlow>
     <sequenceFlow id="sid-25B25AC9-9134-40E9-AB36-174D225E5AA1" sourceRef="sid-E26F3550-05B6-43C2-8D88-56B0749AB211" targetRef="sid-E4EA6144-C3E6-4897-B325-397C3B1A6840"></sequenceFlow>
     <sequenceFlow id="sid-EC424DA2-D9E8-4221-9268-E51BC7A31FDA" sourceRef="sid-E40F2AE8-76D5-4B65-AE4A-DDF1720DF617" targetRef="sid-149FD6F2-980F-4462-9C4D-0A545CA2BBB5">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${audit.formData.approveResult == "Y"}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${audit.approveResult == "Y"}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="sid-5937E781-99A7-498A-92B2-45ACD78D3002" sourceRef="sid-E40F2AE8-76D5-4B65-AE4A-DDF1720DF617" targetRef="sid-9CA61381-5FC1-42B5-83A6-9C519CA5EB47">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${audit.formData.approveResult == "N"}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${audit.approveResult == "N"}]]></conditionExpression>
     </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_flowableFrame">

@@ -7,20 +7,13 @@ import org.flowable.app.domain.editor.AbstractModel
 import org.flowable.app.domain.editor.Model
 import org.flowable.app.repository.editor.ModelRepository
 import org.flowable.app.repository.editor.ModelSort
-import org.flowable.engine.RepositoryService
-import org.junit.FixMethodOrder
 import org.junit.Test
-import org.junit.runners.MethodSorters
 import org.springframework.beans.factory.annotation.Autowired
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ProcDefInitializerTest extends AbstractTest {
 
     @Autowired
     ModelRepository modelRepository
-
-    @Autowired
-    RepositoryService repositoryService
 
     @Autowired
     DeployService deployService
@@ -73,11 +66,6 @@ class ProcDefInitializerTest extends AbstractTest {
         pdi.shutdown()
         assert queryDeployment().size() == 0
         assert queryModel().size() == 0
-
-        pdi.deployType = ProcDefDeployType.ONCE
-        pdi.init()
-        assert queryDeployment().size() == 0
-        assert queryModel().size() == 0
     }
 
     @Test
@@ -86,7 +74,7 @@ class ProcDefInitializerTest extends AbstractTest {
         pdi.deployType = ProcDefDeployType.DROP_CREATE
         pdi.shutdown()
 
-        ProcDefInitializer.resetDeployed()
+        pdi.resetDeployed()
         assert queryDeployment().size() == 0
         pdi.deployType = ProcDefDeployType.ONCE
         pdi.init()

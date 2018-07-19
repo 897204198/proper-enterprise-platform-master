@@ -6,30 +6,27 @@ public class JWTPayloadImpl implements JWTPayload {
 
     public JWTPayloadImpl() { }
 
-    public JWTPayloadImpl(String empName) {
-        this.empName = empName;
+    public JWTPayloadImpl(String name) {
+        this.name = name;
     }
 
-    private String empName;
+    /**
+     * 显示名
+     */
+    private String name;
 
-    private String roles;
-
+    /**
+     * 是否有角色
+     * APP 用户可能只访问不需要权限访问的资源，或只访问没挂在菜单下的资源
+     */
     private boolean hasRole;
 
-    public String getEmpName() {
-        return empName;
+    public String getName() {
+        return name;
     }
 
-    public void setEmpName(String empName) {
-        this.empName = empName;
-    }
-
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isHasRole() {

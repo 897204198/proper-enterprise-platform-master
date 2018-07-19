@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.*
 import com.proper.enterprise.platform.auth.common.vo.UserGroupVO
 import com.proper.enterprise.platform.core.entity.DataTrunk
+import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.i18n.I18NService
@@ -66,6 +67,7 @@ class UserGroupControllerTest extends AbstractTest {
     void userGroupUnionTest() {
 
         mockUser('test1', 't1', 'pwd')
+        Authentication.setCurrentUserId('test1')
 
         def group1 = [:]
         group1['name'] = 'group-1'

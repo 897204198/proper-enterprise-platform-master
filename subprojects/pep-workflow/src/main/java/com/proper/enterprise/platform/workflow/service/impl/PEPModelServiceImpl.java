@@ -14,22 +14,34 @@ import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
 public class PEPModelServiceImpl implements PEPModelService {
 
+    private ModelRepository modelRepository;
+
+    private RepositoryService repositoryService;
+
+    private DataDicService dataDicService;
+
+    private FormService formService;
+
+    @Value("${core.default_charset}")
+    private String charset;
 
     @Autowired
-    private ModelRepository modelRepository;
-    @Autowired
-    private RepositoryService repositoryService;
-    @Autowired
-    private DataDicService dataDicService;
-    @Autowired
-    private FormService formService;
+    PEPModelServiceImpl(ModelRepository modelRepository,
+                        RepositoryService repositoryService,
+                        DataDicService dataDicService,
+                        FormService formService) {
+        this.modelRepository = modelRepository;
+        this.repositoryService = repositoryService;
+        this.dataDicService = dataDicService;
+        this.formService = formService;
+    }
 
     @Override
     public ResultListDataRepresentation getModels(String filter, String sort, Integer modelType) {

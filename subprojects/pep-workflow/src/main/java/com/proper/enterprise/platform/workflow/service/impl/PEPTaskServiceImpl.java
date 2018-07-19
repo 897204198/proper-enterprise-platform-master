@@ -7,17 +7,23 @@ import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.workflow.api.PEPForm;
+import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.convert.TaskConvert;
+import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.service.PEPTaskService;
-import com.proper.enterprise.platform.workflow.vo.PEPFormVO;
+import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
+import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPStartVO;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
+import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
@@ -28,6 +34,7 @@ import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +45,8 @@ import static com.proper.enterprise.platform.core.PEPConstants.DEFAULT_DATETIME_
 @Service
 public class PEPTaskServiceImpl implements PEPTaskService {
 
-    private static final String START_USER = "startUser";
-    private static final String ASSIGNEE = "assignee";
-
+    @Value("${workflow.global.variables}")
+    private List<String> globalVariableKeys;
 
     private TaskService taskService;
 
@@ -54,8 +60,11 @@ public class PEPTaskServiceImpl implements PEPTaskService {
 
     private UserGroupDao userGroupDao;
 
+    private PEPProcessService pepProcessService;
+
     @Autowired
-    PEPTaskServiceImpl(TaskService taskService,
+    PEPTaskServiceImpl(PEPProcessService pepProcessService,
+                       TaskService taskService,
                        RuntimeService runtimeService,
                        UserDao userDao,
                        RoleDao roleDao,
@@ -67,6 +76,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         this.roleDao = roleDao;
         this.userGroupDao = userGroupDao;
         this.historyService = historyService;
+        this.pepProcessService = pepProcessService;
     }
 
 
@@ -89,8 +99,9 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         String formKey = task.getFormKey();
         Map<String, Object> globalVariables = taskService.getVariables(taskId);
         if (StringUtil.isNotEmpty(formKey)) {
-            globalVariables.put(formKey, new PEPFormVO(formKey, variables));
+            globalVariables.put(formKey, variables);
         }
+        globalVariables = GlobalVariableUtil.setGlobalVariable(globalVariables, variables, globalVariableKeys);
         if (null == task.getAssignee()) {
             taskService.claim(taskId, Authentication.getCurrentUserId());
         }
@@ -98,20 +109,23 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     }
 
     @Override
-    public DataTrunk<PEPTaskVO> findPagination(Map<String, Object> searchParam, PageRequest pageRequest) {
+    public DataTrunk<PEPTaskVO> findTodoPagination(String processDefinitionName, PageRequest pageRequest) {
         TaskQuery taskQuery = taskService.createTaskQuery()
             .includeProcessVariables()
             .taskCandidateOrAssigned(Authentication.getCurrentUserId())
             .orderByTaskCreateTime()
             .desc();
-        List<Task> tasks = taskQuery.list();
+        if (StringUtil.isNotEmpty(processDefinitionName)) {
+            taskQuery.processDefinitionName(processDefinitionName);
+        }
+        List<Task> tasks = taskQuery.listPage(pageRequest.getPageNumber(), pageRequest.getPageSize());
         List<PEPTaskVO> taskVOs = TaskConvert.convert(tasks);
         taskVOs = buildTaskProsInstMsg(taskVOs);
-        taskVOs = buildTaskUserName(taskVOs, START_USER);
-        taskVOs = buildTaskUserName(taskVOs, ASSIGNEE);
+        taskVOs = buildTaskUserName(taskVOs, WorkFlowConstants.INITIATOR);
+        taskVOs = buildTaskUserName(taskVOs, WorkFlowConstants.ASSIGNEE);
         DataTrunk<PEPTaskVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setData(taskVOs);
-        dataTrunk.setCount(0);
+        dataTrunk.setCount(taskQuery.count());
         return dataTrunk;
     }
 
@@ -131,9 +145,9 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         pepStartVO.setCreateTime(DateUtil.toString(processInstance.getStartTime(), DEFAULT_DATETIME_FORMAT));
         pepStartVO.setStartUserId(processInstance.getStartUserId());
         pepStartVO.setProcessDefinitionName(processInstance.getProcessDefinitionName());
-        Object startFormData = processInstance.getProcessVariables().get(PEPProcessServiceImpl.START_FORM_DATA);
+        Object startFormData = processInstance.getProcessVariables().get(WorkFlowConstants.START_FORM_DATA);
         if (null != startFormData) {
-            pepStartVO.setStartForm((PEPFormVO) startFormData);
+            pepStartVO.setStartForm((Map<String, Object>) startFormData);
         }
         User user = userDao.findById(processInstance.getStartUserId());
         if (null != user) {
@@ -142,7 +156,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         return pepStartVO;
     }
 
-    private List<PEPTaskVO> findHisTasks(String procInstId) {
+    public List<PEPTaskVO> findHisTasks(String procInstId) {
         List<HistoricTaskInstance> historicTaskInstances = historyService
             .createHistoricTaskInstanceQuery()
             .processInstanceId(procInstId)
@@ -152,8 +166,31 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             .desc()
             .list();
         List<PEPTaskVO> hisTasks = TaskConvert.convertHisTasks(historicTaskInstances);
-        hisTasks = buildTaskUserName(hisTasks, ASSIGNEE);
+        hisTasks = buildTaskUserName(hisTasks, WorkFlowConstants.ASSIGNEE);
         return hisTasks;
+    }
+
+    @Override
+    public List<PEPForm> buildPage(String taskId) {
+        Task task = taskService.createTaskQuery().includeProcessVariables().taskId(taskId).singleResult();
+        if (null == task) {
+            throw new ErrMsgException("can't buildTaskPage with empty task");
+        }
+        List<PEPForm> pepForms = pepProcessService.buildPage(task.getProcessInstanceId());
+        Map<String, PEPForm> pepExtFormMaps = new HashMap<>(16);
+        for (PEPForm pepForm : pepForms) {
+            pepExtFormMaps.put(pepForm.getFormKey(), pepForm);
+        }
+        PEPExtFormVO pepExtFormVO = new PEPExtFormVO(task);
+        pepExtFormVO.setShowType(ShowType.EDIT);
+        if (StringUtil.isNotEmpty(pepExtFormVO.getFormKey())) {
+            pepExtFormMaps.put(pepExtFormVO.getFormKey(), pepExtFormVO);
+        }
+        List<PEPForm> returnPEPForms = new ArrayList<>();
+        for (Map.Entry<String, PEPForm> entry : pepExtFormMaps.entrySet()) {
+            returnPEPForms.add(entry.getValue());
+        }
+        return returnPEPForms;
     }
 
     private List<PEPTaskVO> findCurrentTasks(String procInstId) {
@@ -162,7 +199,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             .includeIdentityLinks();
         List<Task> tasks = taskQuery.list();
         List<PEPTaskVO> taskVOs = TaskConvert.convert(tasks);
-        taskVOs = buildTaskUserName(taskVOs, ASSIGNEE);
+        taskVOs = buildTaskUserName(taskVOs, WorkFlowConstants.ASSIGNEE);
         taskVOs = buildTaskCandidateUserName(taskVOs);
         taskVOs = buildTaskRoleName(taskVOs);
         taskVOs = buildTaskGroupName(taskVOs);
@@ -236,7 +273,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
                 continue;
             }
             for (PEPTaskVO pepTaskVO : matchTaskVOs) {
-                if (ASSIGNEE.equals(type)) {
+                if (WorkFlowConstants.ASSIGNEE.equals(type)) {
                     pepTaskVO.setAssigneeName(user.getName());
                     continue;
                 }
@@ -301,7 +338,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     }
 
     private String getUserId(PEPTaskVO taskVO, String type) {
-        if (ASSIGNEE.equals(type)) {
+        if (WorkFlowConstants.ASSIGNEE.equals(type)) {
             return taskVO.getAssignee();
         }
         if (null == taskVO.getPepProcInstVO()) {

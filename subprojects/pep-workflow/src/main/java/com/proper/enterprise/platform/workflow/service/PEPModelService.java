@@ -12,4 +12,5 @@ public interface PEPModelService {
      * @return ResultListDataRepresentation
      */
     ResultListDataRepresentation getModels(String filter, String sort, Integer modelType);
+
 }

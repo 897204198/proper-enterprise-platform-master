@@ -15,11 +15,15 @@ import java.io.IOException;
 @Service
 public class JWTAuthcServiceImpl implements JWTAuthcService {
 
-    @Autowired
     private UserService userService;
 
-    @Autowired
     private JWTService jwtService;
+
+    @Autowired
+    public JWTAuthcServiceImpl(JWTService jwtService, UserService userService) {
+        this.jwtService = jwtService;
+        this.userService = userService;
+    }
 
     @Override
     public String getUserToken(String username) throws IOException {
@@ -45,6 +49,7 @@ public class JWTAuthcServiceImpl implements JWTAuthcService {
     public JWTPayload composeJWTPayload(User user) {
         JWTPayloadImpl payload = new JWTPayloadImpl();
         payload.setHasRole(user.getSuperuser() || CollectionUtil.isNotEmpty(user.getRoles()));
+        payload.setName(user.getName());
         return payload;
     }
 

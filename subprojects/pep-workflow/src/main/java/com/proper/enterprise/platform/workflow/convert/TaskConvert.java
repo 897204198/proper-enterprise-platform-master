@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.workflow.convert;
 
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import org.flowable.identitylink.api.IdentityLinkInfo;
 import org.flowable.task.api.Task;
@@ -19,9 +20,8 @@ public class TaskConvert {
         pepTaskVO.setProcInstId(task.getProcessInstanceId());
         pepTaskVO.setTaskId(task.getId());
         pepTaskVO.setAssignee(task.getAssignee());
-        pepTaskVO.setVariables(task.getProcessVariables());
+        pepTaskVO.setForm(new PEPExtFormVO(task));
         pepTaskVO.setName(task.getName());
-        pepTaskVO.setFormKey(task.getFormKey());
         pepTaskVO.setCreateTime(DateUtil.toString(task.getCreateTime(), DEFAULT_DATETIME_FORMAT));
         pepTaskVO = buildIdentityMsg(pepTaskVO, task.getIdentityLinks());
         return pepTaskVO;
@@ -31,10 +31,9 @@ public class TaskConvert {
         PEPTaskVO pepTaskVO = new PEPTaskVO();
         pepTaskVO.setProcInstId(historicTaskInstance.getProcessInstanceId());
         pepTaskVO.setTaskId(historicTaskInstance.getId());
+        pepTaskVO.setForm(new PEPExtFormVO(historicTaskInstance));
         pepTaskVO.setAssignee(historicTaskInstance.getAssignee());
-        pepTaskVO.setVariables(historicTaskInstance.getTaskLocalVariables());
         pepTaskVO.setName(historicTaskInstance.getName());
-        pepTaskVO.setFormKey(historicTaskInstance.getFormKey());
         pepTaskVO.setEndTime(null != historicTaskInstance.getEndTime()
             ? DateUtil.toString(historicTaskInstance.getEndTime(), DEFAULT_DATETIME_FORMAT)
             : null);

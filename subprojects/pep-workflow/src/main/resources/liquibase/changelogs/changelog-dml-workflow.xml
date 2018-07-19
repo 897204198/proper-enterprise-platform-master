@@ -224,4 +224,34 @@
             <column name="PARENT_ID" value="pep-workflow"/>
         </insert>
     </changeSet>
+    <changeSet id="workflow-search-2018-07-18" author="zjl">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="workflow-process-findme-1"/>
+            <column name="CREATE_TIME" value="2017-06-27 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-06-27 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="processDefinitionName"/>
+            <column name="COLUMN_DESC" value="流程名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="workflow_process"/>
+            <column name="SEARCH_COLUMN" value="name_"/>
+            <column name="TABLE_NAME" value="act_re_procdef"/>
+            <column name="URL" value="/workflow/process"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="workflow-process-todo-1"/>
+            <column name="CREATE_TIME" value="2017-06-27 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-06-27 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="processDefinitionName"/>
+            <column name="COLUMN_DESC" value="流程名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="workflow_task"/>
+            <column name="SEARCH_COLUMN" value="name_"/>
+            <column name="TABLE_NAME" value="act_re_procdef"/>
+            <column name="URL" value="/workflow/task"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

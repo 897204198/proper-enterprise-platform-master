@@ -2,9 +2,9 @@ package com.proper.enterprise.platform.workflow.vo;
 
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.workflow.api.PEPForm;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class PEPTaskVO {
@@ -52,11 +52,7 @@ public class PEPTaskVO {
     /**
      * 任务表单
      */
-    private Map<String, Object> variables;
-    /**
-     * 任务对应的formKey
-     */
-    private String formKey;
+    private PEPForm form;
     /**
      * 任务开始时间
      */
@@ -74,20 +70,20 @@ public class PEPTaskVO {
      */
     private PEPProcInstVO pepProcInstVO;
 
+    public PEPForm getForm() {
+        return form;
+    }
+
+    public void setForm(PEPForm form) {
+        this.form = form;
+    }
+
     public String getAssignee() {
         return assignee;
     }
 
     public void setAssignee(String assignee) {
         this.assignee = assignee;
-    }
-
-    public Map<String, Object> getVariables() {
-        return variables;
-    }
-
-    public void setVariables(Map<String, Object> variables) {
-        this.variables = variables;
     }
 
     public String getTaskId() {
@@ -114,13 +110,6 @@ public class PEPTaskVO {
         this.pepProcInstVO = pepProcInstVO;
     }
 
-    public String getFormKey() {
-        return formKey;
-    }
-
-    public void setFormKey(String formKey) {
-        this.formKey = formKey;
-    }
 
     public String getCreateTime() {
         return createTime;

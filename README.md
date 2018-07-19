@@ -1,8 +1,8 @@
 Proper Enterprise Platform
 ==========================
 
-<a href="https://cloud.propersoft.cn/teamcities/viewType.html?buildTypeId=ProperEnterprise_PEP">
-  <img src="https://cloud.propersoft.cn/teamcities/app/rest/builds/buildType:(id:ProperEnterprise_PEP)/statusIcon.svg"/>
+<a href="https://cloud.propersoft.cn/teamcities/viewType.html?buildTypeId=ProperEnterprise_PepParallel">
+  <img src="https://cloud.propersoft.cn/teamcities/app/rest/builds/buildType:(id:ProperEnterprise_PepParallel)/statusIcon.svg"/>
 </a>
 <a href="https://codecov.io/gh/propersoft-cn/proper-enterprise-platform">
   <img src="https://codecov.io/gh/propersoft-cn/proper-enterprise-platform/branch/master/graph/badge.svg?token=uthbnLL68t"/>
@@ -121,7 +121,7 @@ tomcat 的 docker 镜像需使用 [docker-tomcat](https://github.com/propersoft-
 
 * **同步** 修改前端、后端、API 等版本号
 
-> 后端修改 build.gradle 中的 `version` 和 core.properties 中的 `core.version` 值
+> 后端修改 build.gradle 中的 `version` 值，并同步修改 core.properties 中的 `core.version` 及 dependencies.gradle 中的 `versions.pep`
 
 > 接口文档调整 API 仓库的 `api.raml` 和 `package.json` 中的版本号
 
