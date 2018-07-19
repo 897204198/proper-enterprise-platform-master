@@ -3,12 +3,12 @@ package com.proper.enterprise.platform.workflow.vo;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
+import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
 
 import java.util.Map;
-import java.util.Objects;
 
 
 /**
@@ -35,6 +35,8 @@ public class PEPExtFormVO implements PEPForm {
 
     private Map<String, Object> formData;
 
+    private ShowType showType;
+
     public String getFormKey() {
         return formKey;
     }
@@ -49,6 +51,14 @@ public class PEPExtFormVO implements PEPForm {
 
     public void setFormData(Map<String, Object> formData) {
         this.formData = formData;
+    }
+
+    public ShowType getShowType() {
+        return showType;
+    }
+
+    public void setShowType(ShowType showType) {
+        this.showType = showType;
     }
 
     /**
@@ -73,20 +83,4 @@ public class PEPExtFormVO implements PEPForm {
         return JSONUtil.toJSONIgnoreException(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        PEPExtFormVO that = (PEPExtFormVO) o;
-        return Objects.equals(formKey, that.formKey);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(formKey);
-    }
 }

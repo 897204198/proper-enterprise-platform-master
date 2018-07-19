@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
+import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.flowable.engine.FormService;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
@@ -85,7 +86,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         }
         List<HistoricProcessInstance> historicProcessInstances = historicProcessInstanceQuery
             .includeProcessVariables()
-            .orderByProcessInstanceEndTime()
+            .orderByProcessInstanceStartTime()
             .desc()
             .listPage(pageRequest.getPageNumber(), pageRequest.getPageSize());
         DataTrunk<PEPProcInstVO> dataTrunk = new DataTrunk<>();
@@ -94,16 +95,19 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         return dataTrunk;
     }
 
-    public Set<PEPForm> buildPage(String procInstId) {
+    public List<PEPForm> buildPage(String procInstId) {
         HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
             .processInstanceId(procInstId)
             .includeProcessVariables()
             .singleResult();
+        Map<String, PEPForm> pepExtFormMaps = new HashMap<>(16);
         String startFormKey = formService.getStartFormKey(historicProcessInstance.getProcessDefinitionId());
-        PEPExtFormVO startForm = new PEPExtFormVO(startFormKey,
-            getFormData(historicProcessInstance.getProcessVariables(), startFormKey));
-        Set<PEPForm> pepExtFormVOs = new LinkedHashSet<>();
-        pepExtFormVOs.add(startForm);
+        if (StringUtil.isNotEmpty(startFormKey)) {
+            PEPExtFormVO startForm = new PEPExtFormVO(startFormKey,
+                getFormData(historicProcessInstance.getProcessVariables(), startFormKey));
+            startForm.setShowType(ShowType.SHOW);
+            pepExtFormMaps.put(startFormKey, startForm);
+        }
         List<HistoricTaskInstance> historicTaskInstances = historyService
             .createHistoricTaskInstanceQuery()
             .processInstanceId(procInstId)
@@ -115,9 +119,17 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
             PEPExtFormVO pepExtFormVO = new PEPExtFormVO(historicTaskInstance.getFormKey(),
                 getFormData(historicTaskInstance.getProcessVariables(), historicTaskInstance.getFormKey()));
-            pepExtFormVOs.add(pepExtFormVO);
+            if (StringUtil.isEmpty(pepExtFormVO.getFormKey())) {
+                continue;
+            }
+            pepExtFormVO.setShowType(ShowType.SHOW);
+            pepExtFormMaps.put(pepExtFormVO.getFormKey(), pepExtFormVO);
         }
-        return pepExtFormVOs;
+        List<PEPForm> pepForms = new ArrayList<>();
+        for (Map.Entry<String, PEPForm> entry : pepExtFormMaps.entrySet()) {
+            pepForms.add(entry.getValue());
+        }
+        return pepForms;
     }
 
     private Map<String, Object> getFormData(Map<String, Object> processVariables, String formKey) {

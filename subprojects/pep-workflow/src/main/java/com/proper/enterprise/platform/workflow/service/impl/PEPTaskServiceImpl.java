@@ -7,18 +7,23 @@ import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.convert.TaskConvert;
+import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.service.PEPTaskService;
 import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
+import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPStartVO;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
+import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
@@ -55,8 +60,11 @@ public class PEPTaskServiceImpl implements PEPTaskService {
 
     private UserGroupDao userGroupDao;
 
+    private PEPProcessService pepProcessService;
+
     @Autowired
-    PEPTaskServiceImpl(TaskService taskService,
+    PEPTaskServiceImpl(PEPProcessService pepProcessService,
+                       TaskService taskService,
                        RuntimeService runtimeService,
                        UserDao userDao,
                        RoleDao roleDao,
@@ -68,6 +76,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         this.roleDao = roleDao;
         this.userGroupDao = userGroupDao;
         this.historyService = historyService;
+        this.pepProcessService = pepProcessService;
     }
 
 
@@ -159,6 +168,29 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         List<PEPTaskVO> hisTasks = TaskConvert.convertHisTasks(historicTaskInstances);
         hisTasks = buildTaskUserName(hisTasks, WorkFlowConstants.ASSIGNEE);
         return hisTasks;
+    }
+
+    @Override
+    public List<PEPForm> buildPage(String taskId) {
+        Task task = taskService.createTaskQuery().includeProcessVariables().taskId(taskId).singleResult();
+        if (null == task) {
+            throw new ErrMsgException("can't buildTaskPage with empty task");
+        }
+        List<PEPForm> pepForms = pepProcessService.buildPage(task.getProcessInstanceId());
+        Map<String, PEPForm> pepExtFormMaps = new HashMap<>(16);
+        for (PEPForm pepForm : pepForms) {
+            pepExtFormMaps.put(pepForm.getFormKey(), pepForm);
+        }
+        PEPExtFormVO pepExtFormVO = new PEPExtFormVO(task);
+        pepExtFormVO.setShowType(ShowType.EDIT);
+        if (StringUtil.isNotEmpty(pepExtFormVO.getFormKey())) {
+            pepExtFormMaps.put(pepExtFormVO.getFormKey(), pepExtFormVO);
+        }
+        List<PEPForm> returnPEPForms = new ArrayList<>();
+        for (Map.Entry<String, PEPForm> entry : pepExtFormMaps.entrySet()) {
+            returnPEPForms.add(entry.getValue());
+        }
+        return returnPEPForms;
     }
 
     private List<PEPTaskVO> findCurrentTasks(String procInstId) {

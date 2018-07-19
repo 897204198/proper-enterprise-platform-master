@@ -6,8 +6,8 @@ import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface PEPProcessService {
     /**
@@ -38,5 +38,5 @@ public interface PEPProcessService {
      * @param procInstId 流程实例Id
      * @return 需要展示的表单集合
      */
-    Set<PEPForm> buildPage(String procInstId);
+    List<PEPForm> buildPage(String procInstId);
 }

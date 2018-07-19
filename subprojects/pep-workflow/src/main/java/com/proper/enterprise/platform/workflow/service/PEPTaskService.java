@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.workflow.service;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
 import org.springframework.data.domain.PageRequest;
@@ -50,4 +51,13 @@ public interface PEPTaskService {
      * @return 历史Task集合
      */
     List<PEPTaskVO> findHisTasks(String procInstId);
+
+    /**
+     * 根据taskId构建流程页面
+     * 相同formKey取最新内容
+     *
+     * @param taskId taskId
+     * @return 需要展示的表单集合
+     */
+    List<PEPForm> buildPage(String taskId);
 }

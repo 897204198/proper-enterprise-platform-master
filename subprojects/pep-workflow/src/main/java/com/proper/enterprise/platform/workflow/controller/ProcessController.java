@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/workflow/process")
@@ -37,7 +37,7 @@ public class ProcessController extends BaseController {
 
 
     @RequestMapping(value = "/{procInstId}/page", method = RequestMethod.GET)
-    public ResponseEntity<Set<PEPForm>> buildPage(@PathVariable String procInstId) {
+    public ResponseEntity<List<PEPForm>> buildPage(@PathVariable String procInstId) {
         return responseOfGet(pepProcessService.buildPage(procInstId));
     }
 
