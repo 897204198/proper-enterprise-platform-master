@@ -88,7 +88,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             .includeProcessVariables()
             .orderByProcessInstanceStartTime()
             .desc()
-            .listPage(pageRequest.getPageNumber(), pageRequest.getPageSize());
+            .listPage(pageRequest.getPageNumber() * pageRequest.getPageSize(), pageRequest.getPageSize());
         DataTrunk<PEPProcInstVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setData(ProcInstConvert.convert(historicProcessInstances));
         dataTrunk.setCount(historicProcessInstanceQuery.count());

@@ -118,7 +118,8 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         if (StringUtil.isNotEmpty(processDefinitionName)) {
             taskQuery.processDefinitionName(processDefinitionName);
         }
-        List<Task> tasks = taskQuery.listPage(pageRequest.getPageNumber(), pageRequest.getPageSize());
+        List<Task> tasks = taskQuery.listPage(pageRequest.getPageNumber() * pageRequest.getPageSize(),
+            pageRequest.getPageSize());
         List<PEPTaskVO> taskVOs = TaskConvert.convert(tasks);
         taskVOs = buildTaskProsInstMsg(taskVOs);
         taskVOs = buildTaskUserName(taskVOs, WorkFlowConstants.INITIATOR);
