@@ -1,11 +1,9 @@
-package com.proper.enterprise.platform.auth.jwt.filter;
+package com.proper.enterprise.platform.auth.common.filter;
 
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
+import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.api.auth.service.AuthzService;
-import com.proper.enterprise.platform.auth.service.HandlerHolder;
-import com.proper.enterprise.platform.auth.service.JWTService;
 import com.proper.enterprise.platform.core.security.Authentication;
-import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,25 +14,26 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
- * Filter request to verify JWT with it
+ * Filter request to verify access token
  */
-@Service("jwtVerifyFilter")
-public class JWTVerifyFilter implements Filter {
+@Service
+public class AccessTokenFilter implements Filter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JWTVerifyFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenFilter.class);
 
-    private JWTService jwtService;
+    private AccessTokenService accessTokenService;
 
     private AuthzService authzService;
 
     private HandlerHolder handlerHolder;
 
     @Autowired
-    public JWTVerifyFilter(JWTService jwtService, AuthzService authzService,
-                           HandlerHolder handlerHolder) {
-        this.jwtService = jwtService;
+    public AccessTokenFilter(AccessTokenService accessTokenService, AuthzService authzService,
+                             HandlerHolder handlerHolder) {
+        this.accessTokenService = accessTokenService;
         this.authzService = authzService;
         this.handlerHolder = handlerHolder;
     }
@@ -53,27 +52,28 @@ public class JWTVerifyFilter implements Filter {
             return;
         }
 
-        String token = jwtService.getToken(req);
-        LOGGER.trace("JSON Web Token: " + token);
-        if (StringUtil.isNotNull(token) && jwtService.verify(token)) {
-            LOGGER.trace("JWT verfiy succeed.");
-            String userId = jwtService.getHeader(token).getId();
-            Authentication.setCurrentUserId(userId);
-            if (authzService.accessible(req.getRequestURI(), req.getMethod(), userId)) {
-                LOGGER.trace("Current user with {} could access {}:{}, invoke next filter in filter chain.",
-                    token, req.getMethod(), req.getRequestURI());
-                filterChain.doFilter(request, response);
-            } else {
-                LOGGER.trace("Current user with {} could NOT access {}:{}!", token, req.getMethod(), req.getRequestURI());
-                HttpServletResponse resp = (HttpServletResponse) response;
-                resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                resp.setHeader("WWW-Authenticate",
-                    "Bearer realm=\"pep\", "
-                        + "error=\"invalid_auth\", "
-                        + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHORIZATION\"");
+        Optional<String> token = accessTokenService.getToken(req);
+        if (token.isPresent() && accessTokenService.verify(token.get())) {
+            LOGGER.trace("Access token verify succeed.");
+            Optional<String> userId = accessTokenService.getUserId(token.get());
+            if (userId.isPresent()) {
+                Authentication.setCurrentUserId(userId.get());
+                if (authzService.accessible(req.getRequestURI(), req.getMethod(), userId.get())) {
+                    LOGGER.trace("Current user with {} could access {}:{}, invoke next filter in filter chain.",
+                        token.get(), req.getMethod(), req.getRequestURI());
+                    filterChain.doFilter(request, response);
+                } else {
+                    LOGGER.trace("Current user with {} could NOT access {}:{}!", token.get(), req.getMethod(), req.getRequestURI());
+                    HttpServletResponse resp = (HttpServletResponse) response;
+                    resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    resp.setHeader("WWW-Authenticate",
+                        "Bearer realm=\"pep\", "
+                            + "error=\"invalid_auth\", "
+                            + "error_description=\"COULD NOT ACCESS THIS API WITHOUT A PROPER AUTHORIZATION\"");
+                }
             }
         } else {
-            LOGGER.trace("JWT verfiy failed.");
+            LOGGER.trace("Access token verfiy failed.");
             HttpServletResponse resp1 = (HttpServletResponse) response;
             resp1.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp1.setHeader("WWW-Authenticate",
@@ -84,11 +84,11 @@ public class JWTVerifyFilter implements Filter {
     }
 
     /**
-     * 判断 request 请求的资源是否不需要 JWT 权限约束
+     * 判断 request 请求的资源是否不需要权限约束
      * 可以通过如下方式设置资源不需要权限：
      * 1. 在 controller 的方法上设置 @AuthcIgnore，表示该方法不需要权限
      * 2. 直接在 controller 上设置 @AuthcIgnore，表示该 controller 下的所有方法都不需要权限
-     * 3. 在 properties 的 auth.jwt.ignorePatterns 中配置
+     * 3. 按照 ignorePatternsList 中的模式，在 list bean 中添加忽略配置
      *
      * @param req 请求对象
      * @return true：不需要权限约束；false：需要权限约束
@@ -110,7 +110,7 @@ public class JWTVerifyFilter implements Filter {
     private boolean hasIgnoreOnMethod(HandlerMethod handler) {
         boolean ignore = handler.hasMethodAnnotation(AuthcIgnore.class);
         if (ignore) {
-            LOGGER.trace("Not need JWT of this url caused by @AuthcIgnore on method '{}'.", handler.getMethod().getName());
+            LOGGER.trace("Not need token of this url caused by @AuthcIgnore on method '{}'.", handler.getMethod().getName());
         }
         return ignore;
     }
@@ -118,7 +118,7 @@ public class JWTVerifyFilter implements Filter {
     private boolean hasIgnoreOnType(HandlerMethod handler) {
         boolean ignore = handler.getBeanType().getAnnotation(AuthcIgnore.class) != null;
         if (ignore) {
-            LOGGER.trace("Not need JWT of this url caused by @AuthcIgnore on type '{}'.", handler.getBeanType().getName());
+            LOGGER.trace("Not need token of this url caused by @AuthcIgnore on type '{}'.", handler.getBeanType().getName());
         }
         return ignore;
     }
@@ -126,7 +126,7 @@ public class JWTVerifyFilter implements Filter {
     private boolean inIgnorePatterns(HttpServletRequest req) {
         boolean ignore = authzService.shouldIgnore(req.getRequestURI(), req.getMethod());
         if (ignore) {
-            LOGGER.debug("Not need JWT of this url({}) caused by settings of AuthzService.ignorePatterns.", req.getRequestURI());
+            LOGGER.debug("Not need token of this url({}) caused by settings of AuthzService.ignorePatterns.", req.getRequestURI());
         }
         return ignore;
     }

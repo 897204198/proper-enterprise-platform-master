@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
+import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants
 import com.proper.enterprise.platform.workflow.vo.CustomHandlerVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum
@@ -140,6 +141,17 @@ class FrameControllerTest extends AbstractTest {
         assert 6 == JSONUtil.parse(get('/workflow/task?pageNo=1&pageSize=2', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class).getCount()
         assert 2 == JSONUtil.parse(get('/workflow/task?pageNo=1&pageSize=2', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class).getData().size()
         assert 2 == JSONUtil.parse(get('/workflow/task?processDefinitionName=框架测试流程&pageNo=1&pageSize=2', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class).getData().size()
+    }
+
+    @Test
+    @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
+        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+    public void testStartUserName() {
+        identityService.setAuthenticatedUserId("user1")
+        Authentication.setCurrentUserId("user1")
+        start(FRAME_WORKFLOW_KEY, new HashMap<String, Object>())
+        Task task = taskService.createTaskQuery().includeProcessVariables().singleResult()
+        assert "c" == task.getProcessVariables().get(WorkFlowConstants.INITIATOR_NAME)
     }
 
     private void assertTaskMsg(Map pepTaskVO, String name) {

@@ -1,10 +1,13 @@
 package com.proper.enterprise.platform.auth.service.impl;
 
+import com.proper.enterprise.platform.api.auth.model.AccessToken;
+import com.proper.enterprise.platform.auth.common.service.impl.AccessTokenServiceImpl;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.model.JWTPayload;
 import com.proper.enterprise.platform.auth.service.APISecret;
 import com.proper.enterprise.platform.auth.service.JWTService;
 import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -12,83 +15,26 @@ import org.apache.commons.codec.digest.HmacUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
-public class JWTServiceImpl implements JWTService {
+@Primary
+public class JWTServiceImpl extends AccessTokenServiceImpl implements JWTService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTService.class);
 
-    private static final String AUTH_HEADER = "Authorization";
-    protected static final String TOKEN_FLAG = "X-PEP-TOKEN";
-    private static final String BEARER = "Bearer";
-    private static final String POINT_SYMBOL = ".";
-    private static final String TOKEN = "token";
-    private static final String NULL_VALUE = "null";
+    private static final String TOKEN_SEPARATOR = ".";
 
     private APISecret secret;
 
     @Autowired
     public JWTServiceImpl(APISecret secret) {
         this.secret = secret;
-    }
-
-    @Override
-    public String getToken(HttpServletRequest request) {
-        String token = getTokenFromHeader(request);
-        if (StringUtil.isNull(token)) {
-            token = getTokenFromCookie(request);
-        }
-        if (StringUtil.isNull(token)) {
-            token = getTokenFromReqParameter(request);
-        }
-        return token;
-    }
-
-    @Override
-    public String getTokenFromHeader(HttpServletRequest request) {
-        String token = request.getHeader(AUTH_HEADER);
-        if (StringUtil.isNull(token)) {
-            token = request.getHeader(TOKEN_FLAG);
-            if (NULL_VALUE.equals(token)) {
-                token = null;
-            }
-        }
-        LOGGER.trace("Request {} token header!", StringUtil.isNotNull(token) ? "has" : "DOES NOT HAVE");
-        if (StringUtil.isNotNull(token) && token.contains(BEARER)) {
-            token = token.replace(BEARER, "").trim();
-        }
-        return token;
-    }
-
-    @Override
-    public String getTokenFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return null;
-        }
-        for (Cookie cookie : request.getCookies()) {
-            if (TOKEN_FLAG.equals(cookie.getName())) {
-                LOGGER.trace("Found token in cookie! {}", cookie);
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public String getTokenFromReqParameter(HttpServletRequest request) {
-        String token = request.getParameter(TOKEN);
-        if (StringUtil.isNull(token)) {
-            return null;
-        }
-        LOGGER.trace("Found token in Param! {}", token);
-        return token;
     }
 
     @Override
@@ -114,30 +60,62 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
-    public boolean verify(String token) throws IOException {
-        if (StringUtil.isNull(token) || !token.contains(POINT_SYMBOL)) {
-            LOGGER.debug("Token should NOT NULL!");
+    public boolean verify(String token) {
+        if (StringUtil.isBlank(token)) {
+            LOGGER.debug("Token IS NULL!");
             return false;
         }
 
-        String[] split = token.split("\\.");
+        if (notJWTToken(token)) {
+            LOGGER.debug("Token is NOT JWT type, delegate super class to verify!");
+            return super.verify(token);
+        }
+
+        String[] split = token.split("\\" + TOKEN_SEPARATOR);
         String headerBase64 = split[0];
         String payloadBase64 = split[1];
         String sign = split[2];
 
-        JWTHeader header = getHeader(token);
-        String apiSecret = secret.getAPISecret(header.getId());
-        if (!sign.equals(hmacSha256Base64(apiSecret, headerBase64 + POINT_SYMBOL + payloadBase64))) {
-            LOGGER.debug("Token is INVALID or EXPIRED! Sign is {}", sign);
+        try {
+            JWTHeader header = getHeader(token);
+            String apiSecret = secret.getAPISecret(header.getId());
+            if (!sign.equals(hmacSha256Base64(apiSecret, headerBase64 + TOKEN_SEPARATOR + payloadBase64))) {
+                LOGGER.info("Token is INVALID or EXPIRED! Sign is {}", sign);
+                return false;
+            }
+            return true;
+        } catch (IOException e) {
+            LOGGER.debug("Error occurs when parsing token.", e);
             return false;
         }
-        return true;
+    }
+
+    private boolean notJWTToken(String token) {
+        return !token.contains(TOKEN_SEPARATOR) || token.split("\\" + TOKEN_SEPARATOR).length != 3;
+    }
+
+    @Override
+    public Optional<String> getUserId(String token) {
+        if (notJWTToken(token)) {
+            return super.getUserId(token);
+        }
+        try {
+            JWTHeader header = getHeader(token);
+            if (header != null) {
+                return Optional.of(header.getId());
+            } else {
+                return Optional.empty();
+            }
+        } catch (IOException e) {
+            LOGGER.debug("Get JWT header error!", e);
+            return Optional.empty();
+        }
     }
 
     @Override
     public JWTHeader getHeader(String token) throws IOException {
         Assert.notNull(token, "COULD NOT GET JWT HEADER FROM NULL TOKEN!");
-        String[] split = token.split("\\.");
+        String[] split = token.split("\\" + TOKEN_SEPARATOR);
         String headerStr = split[0];
         Assert.notNull(headerStr, "COULD NOT GET JWT HEADER FROM TOKEN " + token);
         return JSONUtil.parse(Base64.decodeBase64(headerStr), JWTHeader.class);
@@ -146,6 +124,21 @@ public class JWTServiceImpl implements JWTService {
     @Override
     public void clearToken(JWTHeader header) {
         secret.clearAPISecret(header.getId());
+    }
+
+    @Override
+    public String generate() {
+        throw new ErrMsgException("Generate AccessToken UnSupported!");
+    }
+
+    @Override
+    public AccessToken saveOrUpdate(AccessToken accessToken) {
+        throw new ErrMsgException("SaveOrUpdate AccessToken UnSupported!");
+    }
+
+    @Override
+    public void deleteByToken(String token) {
+        throw new ErrMsgException("DeleteByToken AccessToken UnSupported!");
     }
 
 }

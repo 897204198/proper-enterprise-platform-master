@@ -1,10 +1,12 @@
 package com.proper.enterprise.platform.auth.jwt.service
 
+import com.proper.enterprise.platform.api.auth.service.AccessTokenService
+import com.proper.enterprise.platform.auth.common.jpa.entity.AccessTokenEntity
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
 import com.proper.enterprise.platform.auth.service.APISecret
 import com.proper.enterprise.platform.auth.service.JWTService
-import com.proper.enterprise.platform.auth.service.impl.JWTServiceImpl
+import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +21,9 @@ class JWTServiceImplTest extends AbstractTest {
 
     @Autowired
     private APISecret secret
+
+    @Autowired
+    private AccessTokenService accessTokenService
 
     @Test
     void testGenerateAndVerifyToken() {
@@ -55,14 +60,14 @@ class JWTServiceImplTest extends AbstractTest {
     void getTokenFromMockReq() {
         def token = 'a.b.c'
         mockRequest.addHeader("Authorization", token)
-        assert jwtService.getTokenFromHeader(mockRequest) == token
+        assert accessTokenService.getToken(mockRequest).value == token
     }
 
     @Test
     void getTokenFromMockReqWithBearer() {
         def token = 'a.b.c'
         mockRequest.addHeader("Authorization", "Bearer $token")
-        assert jwtService.getTokenFromHeader(mockRequest) == token
+        assert accessTokenService.getToken(mockRequest).value == token
     }
 
     @Test
@@ -81,23 +86,39 @@ class JWTServiceImplTest extends AbstractTest {
     @Test
     void getTokenFromCookie() {
         def token = '123456token'
-        Cookie cookie = new Cookie(JWTServiceImpl.TOKEN_FLAG, token)
+        Cookie cookie = new Cookie(AccessTokenService.TOKEN_FLAG_COOKIE, token)
         mockRequest.setCookies(cookie)
-        assert token == jwtService.getTokenFromCookie(mockRequest)
+        assert accessTokenService.getToken(mockRequest).value == token
 
         mockRequest.setCookies(new Cookie('test1', 'test1'), new Cookie('test2', 'test2'))
-        assert jwtService.getTokenFromCookie(mockRequest) == null
+        assert accessTokenService.getToken(mockRequest).value == null
     }
 
     @Test
-    void getTokenFromRequestParam(){
+    void getTokenFromRequestParam() {
         def token = 'a.b.1'
-        mockRequest.setParameter(JWTServiceImpl.TOKEN, token)
-        assert jwtService.getTokenFromReqParameter(mockRequest) == token
+        mockRequest.setParameter(AccessTokenService.TOKEN_FLAG_URI, token)
+        assert accessTokenService.getToken(mockRequest).value == token
 
         def token1 = ''
-        mockRequest.setParameter(JWTServiceImpl.TOKEN, token1)
-        assert jwtService.getTokenFromReqParameter(mockRequest) == null
+        mockRequest.setParameter(AccessTokenService.TOKEN_FLAG_URI, token1)
+        assert accessTokenService.getToken(mockRequest).value == null
     }
 
+    @Test(expected = ErrMsgException.class)
+    void notSupportGenerate() {
+        jwtService.generate()
+    }
+
+    @Test(expected = ErrMsgException.class)
+    void notSupportSaveOrUpdate() {
+        AccessTokenEntity accessToken = new AccessTokenEntity()
+        jwtService.saveOrUpdate(accessToken)
+    }
+
+    @Test(expected = ErrMsgException.class)
+    void notSupportDeleteByToken() {
+        String token = "123"
+        jwtService.deleteByToken(token)
+    }
 }

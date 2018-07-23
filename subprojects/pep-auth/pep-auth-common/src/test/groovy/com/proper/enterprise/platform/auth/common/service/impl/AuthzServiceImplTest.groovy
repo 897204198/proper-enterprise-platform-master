@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.service.impl
 
+import com.proper.enterprise.platform.api.auth.service.AccessTokenService
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.test.AbstractTest
@@ -16,9 +17,12 @@ class AuthzServiceImplTest extends AbstractTest {
     @Autowired
     private MenuService menuService
 
+    @Autowired
+    private AccessTokenService accessTokenService
+
     @Test
     void shouldIgnoreTest() {
-        def service = new AuthzServiceImpl(menuService, resourceService)
+        def service = new AuthzServiceImpl(menuService, resourceService, accessTokenService)
 
         def ignoreList = []
         ignoreList[0] = 'GET:/auth/resources'

@@ -1,7 +1,5 @@
 package com.proper.enterprise.platform.auth.jwt.controller
 
-import com.proper.enterprise.platform.api.auth.dao.UserDao
-import com.proper.enterprise.platform.auth.service.JWTService
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
@@ -9,21 +7,16 @@ import com.proper.enterprise.platform.test.utils.JSONUtil
 import groovy.json.JsonSlurper
 import org.apache.commons.codec.binary.Base64
 import org.junit.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 
+@Sql("/com/proper/enterprise/platform/auth/jwt/filter/adminUsers.sql")
 class LoginControllerTest extends AbstractTest {
-    def static final DEFAULT_USER = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS")
-    @Autowired
-    JWTService jwtService
 
-    @Autowired
-    UserDao userDao
+    def static final DEFAULT_USER = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS")
 
     @Test
-    @Sql("/com/proper/enterprise/platform/auth/jwt/filter/adminUsers.sql")
     void login() {
         // all right
         mockLogin('admin', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
@@ -36,7 +29,6 @@ class LoginControllerTest extends AbstractTest {
     }
 
     @Test
-    @Sql("/com/proper/enterprise/platform/auth/jwt/filter/adminUsers.sql")
     void getCurrentUser() {
         def token = mockLogin('admin', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
         def payload = new JsonSlurper().parse(Base64.decodeBase64(token.split(/\./)[1]))
@@ -55,6 +47,13 @@ class LoginControllerTest extends AbstractTest {
 
     private String mockLogin(String user, String pwd, MediaType produce, HttpStatus statusCode) {
         return post('/auth/login', produce, """{"username":"$user","pwd":"$pwd"}""", statusCode).getResponse().getContentAsString()
+    }
+
+    @Test
+    void normalUserLogin() {
+        def token1 = mockLogin('sam', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
+        def token2 = mockLogin('sam', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
+        assert token1 != token2
     }
 
 }
