@@ -50,7 +50,7 @@ public class EndNoticeImpl implements EndNotice {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(from);
             message.setTo(user.getEmail());
-            message.setSubject(execution.getName());
+            message.setSubject(I18NUtil.getMessage("workflow.notice.end..msg.subject"));
             message.setText(String.format(I18NUtil.getMessage("workflow.notice.end.msg"),
                 initiatorUser.getName(), processDefinition.getName(), execution.getName()));
             mailSender.send(message);

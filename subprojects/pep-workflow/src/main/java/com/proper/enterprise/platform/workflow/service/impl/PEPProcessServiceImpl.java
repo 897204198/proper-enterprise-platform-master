@@ -10,6 +10,7 @@ import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
+import com.proper.enterprise.platform.workflow.util.VariableUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
@@ -61,6 +62,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
 
     @Override
     public PEPProcInstVO startProcess(String procDefKey, Map<String, Object> variables) {
+        variables = VariableUtil.handleVariableDateType(variables);
         ProcessDefinition processDefinition = repositoryService
             .createProcessDefinitionQuery()
             .processDefinitionKey(procDefKey)

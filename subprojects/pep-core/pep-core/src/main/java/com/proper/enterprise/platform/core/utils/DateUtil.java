@@ -1,11 +1,16 @@
 package com.proper.enterprise.platform.core.utils;
 
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.proper.enterprise.platform.core.PEPConstants.*;
 
@@ -17,7 +22,8 @@ public class DateUtil {
     /**
      * 私有化工具类的构造函数，避免对工具类的实例化
      */
-    private DateUtil() { }
+    private DateUtil() {
+    }
 
     /**
      * 静态方法调用私有构造函数，以覆盖对构造函数的测试
@@ -109,8 +115,8 @@ public class DateUtil {
     /**
      * 按默认时间戳格式转换日期为时间戳
      *
-     * @param date          日期对象
-     * @param millisecond   是否包含毫秒
+     * @param date        日期对象
+     * @param millisecond 是否包含毫秒
      * @return 时间戳
      */
     public static String toTimestamp(Date date, boolean millisecond) {
@@ -133,7 +139,7 @@ public class DateUtil {
      * 常用在 Java Bean 中的 Date 类型属性的 getter 和 setter 方法中
      * 防止将 Bean 中的私有属性直接暴露出来
      *
-     * @param date  日期对象
+     * @param date 日期对象
      * @return null 或者克隆出的日期对象
      */
     public static Date safeClone(Date date) {
@@ -144,7 +150,7 @@ public class DateUtil {
      * 日期添加指定天数
      *
      * @param date 要添加天数的日期,如果为负数，则为减少的天数
-     * @param day 添加的天数
+     * @param day  添加的天数
      * @return 添加指定分钟数的新的Date对象
      */
     public static Date addDay(Date date, int day) {
@@ -154,12 +160,41 @@ public class DateUtil {
     /**
      * 日期添加指定分钟数
      *
-     * @param date 要添加天数的日期,如果为负数，则为减少的分钟数
+     * @param date   要添加天数的日期,如果为负数，则为减少的分钟数
      * @param minute 添加的天数
      * @return 添加指定分钟数的新的Date对象
      */
     public static Date addMinute(Date date, int minute) {
         return date == null ? null : new DateTime(date.getTime()).plusMinutes(minute).toDate();
+    }
+
+    /**
+     * 根据时间戳判断是否为时间类型
+     *
+     * @param dateTimestamp 时间戳
+     * @return true是 false否
+     */
+    public static boolean isDate(String dateTimestamp) {
+        String re = "\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}\\.\\d{0,3}Z)?";
+        Pattern p = Pattern.compile(re);
+        Matcher m = p.matcher(dateTimestamp);
+        return m.find();
+    }
+
+    /**
+     * 处理前台的特殊字符T Z 2018-07-23T10:44:05.469Z
+     *
+     * @param dateTimestamp 时间类型特殊字符
+     * @return 时间
+     */
+    public static Date parseSpecial(String dateTimestamp) {
+        dateTimestamp = dateTimestamp.replace("Z", "");
+        SimpleDateFormat sdf = new SimpleDateFormat(dateTimestamp.length() > 10 ? "yyyy-MM-dd'T'HH:mm:ss.SSS" : "yyyy-MM-dd");
+        try {
+            return sdf.parse(dateTimestamp);
+        } catch (ParseException e) {
+            throw new ErrMsgException("time parse error time is " + dateTimestamp);
+        }
     }
 
 }
