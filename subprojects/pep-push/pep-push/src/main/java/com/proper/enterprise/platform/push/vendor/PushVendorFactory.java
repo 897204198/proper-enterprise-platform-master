@@ -90,10 +90,9 @@ public class PushVendorFactory {
 
 
     private InputStream getInputStream(String fileId) throws IOException {
-        File file = fileRepository.findById(fileId).orElse(null);
-        if (null == file) {
+        File file = fileRepository.findById(fileId).<ErrMsgException>orElseThrow(() -> {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
-        }
+        });
         InputStream inputStream = dsfService.getFile(file.getFilePath());
         if (inputStream == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));

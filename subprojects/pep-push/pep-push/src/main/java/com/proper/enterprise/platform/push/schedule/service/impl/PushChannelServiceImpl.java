@@ -35,10 +35,9 @@ public class PushChannelServiceImpl implements PushChannelService {
     @Override
     public PushChannelVO updateChannel(PushChannelVO pushChannelVO) {
         checkVo(pushChannelVO);
-        PushChannelEntity pushChannelEntity = pushChannelRepository.findById(pushChannelVO.getId()).orElse(null);
-        if (pushChannelEntity != null) {
+        PushChannelEntity pushChannelEntity = pushChannelRepository.findById(pushChannelVO.getId()).<ErrMsgException>orElseThrow(() -> {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.update.fail"));
-        }
+        });
         return PushChannelVO.convertEntityToVo(pushChannelRepository.save(pushChannelEntity));
     }
 
