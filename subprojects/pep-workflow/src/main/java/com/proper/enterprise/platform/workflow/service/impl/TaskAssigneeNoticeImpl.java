@@ -43,10 +43,10 @@ public class TaskAssigneeNoticeImpl implements TaskAssigneeNotice {
     public void notice(TaskEntity task) {
         try {
             String initiator = (String) task.getVariable(WorkFlowConstants.INITIATOR);
-            User initiatorUser = userDao.findOne(initiator);
+            User initiatorUser = userDao.findById(initiator);
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(task.getProcessDefinitionId()).singleResult();
-            User user = userDao.findOne(task.getAssignee());
+            User user = userDao.findById(task.getAssignee());
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(from);
             message.setTo(user.getEmail());

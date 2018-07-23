@@ -41,10 +41,10 @@ public class EndNoticeImpl implements EndNotice {
     public void notice(ExecutionEntity execution) {
         try {
             String initiator = (String) execution.getVariable(WorkFlowConstants.INITIATOR);
-            User initiatorUser = userDao.findOne(initiator);
+            User initiatorUser = userDao.findById(initiator);
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(execution.getProcessDefinitionId()).singleResult();
-            User user = userDao.findOne(initiator);
+            User user = userDao.findById(initiator);
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(from);
             message.setTo(user.getEmail());

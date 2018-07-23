@@ -90,7 +90,7 @@ public class PushVendorFactory {
 
 
     private InputStream getInputStream(String fileId) throws IOException {
-        File file = fileRepository.findOne(fileId);
+        File file = fileRepository.findById(fileId).orElse(null);
         if (null == file) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
         }

@@ -35,19 +35,18 @@ public class PushChannelServiceImpl implements PushChannelService {
     @Override
     public PushChannelVO updateChannel(PushChannelVO pushChannelVO) {
         checkVo(pushChannelVO);
-        PushChannelEntity pushChannelEntity = pushChannelRepository.findOne(pushChannelVO.getId());
+        PushChannelEntity pushChannelEntity = pushChannelRepository.findById(pushChannelVO.getId()).orElse(null);
         if (pushChannelEntity != null) {
-            return PushChannelVO.convertEntityToVo(pushChannelRepository.save(pushChannelEntity));
-        } else {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.update.fail"));
         }
+        return PushChannelVO.convertEntityToVo(pushChannelRepository.save(pushChannelEntity));
     }
 
     @Override
     public boolean deleteChannel(String ids) {
         String[] split = ids.split(",");
         for (String id : split) {
-            pushChannelRepository.delete(id);
+            pushChannelRepository.deleteById(id);
         }
         return true;
     }

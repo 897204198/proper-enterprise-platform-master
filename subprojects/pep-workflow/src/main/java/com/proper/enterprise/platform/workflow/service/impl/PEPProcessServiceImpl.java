@@ -146,7 +146,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
 
     private Map<String, Object> setStartUserName(Map<String, Object> globalVariables) {
         if (StringUtil.isNotEmpty(Authentication.getCurrentUserId())) {
-            User user = userDao.findOne(Authentication.getCurrentUserId());
+            User user = userDao.findById(Authentication.getCurrentUserId());
             if (null != user) {
                 //设置默认全局变量
                 globalVariables.put(WorkFlowConstants.INITIATOR_NAME, user.getName());

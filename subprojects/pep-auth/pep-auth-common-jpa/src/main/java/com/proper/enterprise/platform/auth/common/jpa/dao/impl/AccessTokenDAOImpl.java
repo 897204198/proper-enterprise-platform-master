@@ -34,15 +34,12 @@ public class AccessTokenDAOImpl implements AccessTokenDAO {
 
     @Override
     public Optional<AccessToken> get(String id) {
-        return Optional.of(repository.findOne(id));
+        return repository.findById(id).map((entity) -> entity);
     }
 
     @Override
     public AccessToken saveOrUpdate(AccessToken accessToken) {
-        AccessTokenEntity entity = repository.findOne(accessToken.getId());
-        if (entity == null) {
-            entity = new AccessTokenEntity();
-        }
+        AccessTokenEntity entity = repository.findById(accessToken.getId()).orElse(new AccessTokenEntity());
         BeanUtils.copyProperties(accessToken, entity);
         return repository.save(entity);
     }
