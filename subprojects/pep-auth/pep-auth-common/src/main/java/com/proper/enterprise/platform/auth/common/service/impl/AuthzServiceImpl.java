@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -49,7 +50,7 @@ public class AuthzServiceImpl implements AuthzService {
 
     @Override
     public boolean shouldIgnore(String url, String method) {
-        String path = method + ":" + getMappingUrl(url);
+        String path = method + ":" + getMappingUrl(url, hasContext);
         LOGGER.debug("Request is {}", path);
         boolean notExistList = null == ignoreList || ignoreList.size() == 0;
         if (notExistList) {
@@ -66,11 +67,16 @@ public class AuthzServiceImpl implements AuthzService {
 
     @Override
     public boolean accessible(String url, String method, String userId) {
-        Resource resource = resourceService.get(getMappingUrl(url), RequestMethod.valueOf(method));
+        return accessible(url, method, userId, hasContext);
+    }
+
+    @Override
+    public boolean accessible(String url, String method, String userId, boolean hasContext) {
+        Resource resource = resourceService.get(getMappingUrl(url, hasContext), RequestMethod.valueOf(method));
         return menuService.accessible(resource, userId);
     }
 
-    private String getMappingUrl(String url) {
+    private String getMappingUrl(String url, boolean hasContext) {
         String result = "";
         try {
             result = new URI(hasContext ? url.substring(url.indexOf("/", 1)) : url).getPath();

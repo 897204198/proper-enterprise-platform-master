@@ -9,6 +9,8 @@ import com.proper.enterprise.platform.push.common.model.PushUser
 import com.proper.enterprise.platform.push.common.model.enums.PushDeviceType
 import com.proper.enterprise.platform.push.common.model.enums.PushMode
 import com.proper.enterprise.platform.push.test.PushAbstractTest
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -20,6 +22,18 @@ class CommonPushClientRequestControllerTest extends PushAbstractTest {
     PushDeviceRepository deviceRepo
 
     private static final String URL_STARTPUSH = "/push/request/startpush"
+
+    def vo
+
+    @Before
+    void beforeInit() {
+        vo = initData()
+    }
+
+    @After
+    void afterData(){
+        delete(vo.getId())
+    }
 
     @Test
     void startpushTest() {

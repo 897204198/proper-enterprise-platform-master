@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.push.test
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.core.utils.http.HttpClient
+import com.proper.enterprise.platform.push.vo.PushChannelVO
 import com.proper.enterprise.platform.test.AbstractTest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -48,6 +49,35 @@ abstract class PushAbstractTest extends AbstractTest {
         return JSONUtil.parse(
             str,
             Map.class)
+    }
+
+    def url = "/push/channels"
+
+    PushChannelVO initData(){
+        PushChannelVO pushChannelVo = new PushChannelVO()
+        pushChannelVo.setChannelName("test")
+        pushChannelVo.setChannelDesc("推送平台test")
+        pushChannelVo.setMsgSaveDays(3)
+        pushChannelVo.setMaxSendCount(5)
+        pushChannelVo.setSecretKey("b2024e00064bc5d8db70fdee087eae4f")
+        pushChannelVo.setAndroid(new PushChannelVO.Android(
+            new PushChannelVO.Android.HuaweiBean(
+                "10819197", "fbfe31923440e417f8fb9f4ce133e3c1",
+                "com.proper.mobile.oa.shengjing.htest"),
+            new PushChannelVO.Android.XiaomiBean("2AF1VndMLqwLF/4zOHgWNw==",
+                "com.proper.mobile.oa.shengjing.htest")))
+        pushChannelVo.setIos(new PushChannelVO.IOS(false, "h123456",
+            "com.proper.mobile.oa.shengjing.htest"))
+        this.addChannel(pushChannelVo)
+    }
+
+    PushChannelVO addChannel(PushChannelVO pushChannelVo) {
+        def resultContent = post(url, com.proper.enterprise.platform.test.utils.JSONUtil.toJSON(pushChannelVo), HttpStatus.CREATED).getResponse().getContentAsString()
+        return com.proper.enterprise.platform.test.utils.JSONUtil.parse(resultContent, PushChannelVO.class)
+    }
+
+    void delete(String ids) {
+        delete(url + "?ids=" + ids, HttpStatus.NO_CONTENT)
     }
 
 }

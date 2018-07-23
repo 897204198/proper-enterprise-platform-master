@@ -36,6 +36,7 @@ public class HuaweiPushApp extends BasePushApp {
     private static final String MSG_SUCCESS = "Success";
     private String theAppid;
     private String theAppSecret;
+    private String packageName;
     private NSPClient client;
     private String accessToken;
 
@@ -64,6 +65,14 @@ public class HuaweiPushApp extends BasePushApp {
 
     public void setTheAppSecret(String theAppSecret) {
         this.theAppSecret = theAppSecret;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     /**
@@ -248,10 +257,8 @@ public class HuaweiPushApp extends BasePushApp {
         //目标设备Token
         JSONArray deviceTokens = new JSONArray();
         deviceTokens.add(token);
-        String packageName = null;
         PushType pushType = PushType.other;
         if (ext != null) {
-            packageName = ext.getString("packageName");
             if (StringUtil.isNull(packageName)) {
                 packageName = "c";
             }

@@ -23,8 +23,20 @@
         <property name="processDefinitionCacheLimit" value="500"/>
         <property name="enableSafeBpmnXml" value="true"/>
         <property name="idmEngineConfigurator" ref="pepIdmEngineConfigurator"/>
+        <property name="mailServerHost" value="${pep.mail.mailServerHost}"/>
+        <property name="mailServerPort" value="${pep.mail.mailServerPort}"/>
+        <property name="mailServerUsername" value="${pep.mail.mailServerUsername}"/>
+        <property name="mailServerPassword" value="${pep.mail.mailServerPassword}"/>
+        <property name="mailServerUseSSL" value="${pep.mail.mailServerUseSSL}"/>
+        <property name="httpClientConfig" ref="httpClientConfig"/>
         <!--&lt;!&ndash;自定义扩展属性 默认为false  如果extIdm设置为true 则flowable IdmIdentityService的实现由IdmIdentityServiceImpl变为自定义PEPIdmIdentityServiceImpl&ndash;&gt;-->
         <!--<property name="extIdm" value="true"/>-->
+    </bean>
+    <bean id="httpClientConfig" class="org.flowable.engine.cfg.HttpClientConfig">
+        <property name="connectTimeout" value="${workflow.http.connectTimeout}"/>
+        <property name="socketTimeout" value="${workflow.http.socketTimeout}"/>
+        <property name="connectionRequestTimeout" value="${workflow.http.connectionRequestTimeout}"/>
+        <property name="requestRetryLimit" value="${workflow.http.requestRetryLimit}"/>
     </bean>
     <bean id="processEngine" class="org.flowable.spring.ProcessEngineFactoryBean" destroy-method="destroy">
         <property name="processEngineConfiguration" ref="processEngineConfiguration"/>

@@ -17,9 +17,16 @@
     <context:component-scan base-package="com.proper"/>
 
     <!--init configs-->
-    <context:property-placeholder ignore-unresolvable="true" location="classpath:conf/pep/pep.properties" local-override="true"/>
-    <context:property-placeholder ignore-unresolvable="true" ignore-resource-not-found="true" properties-ref="pepPropertyPlaceholderConfigurer"
+    <!--加载顺序理解成Set先进的就占住了不会被替换-->
+    <!--系统模式 system-properties-mode-->
+    <!--system-properties-mode 默认ENVIRONMENT plocal-override=true roperties-ref、location、environment  否则相反-->
+    <!--system-properties-mode OVERRIDE  local-override=true properties-ref、location、System.getProperty(),System.getenv() 否则相反-->
+    <!--system-properties-mode NEVER  local-override=true properties-ref、location 否则相反-->
+    <context:property-placeholder ignore-unresolvable="true" ignore-resource-not-found="true"
+                                  properties-ref="pepPropertyPlaceholderConfigurer"
                                   location="classpath:conf/config.properties" local-override="true"/>
+    <context:property-placeholder ignore-unresolvable="true" location="classpath:conf/pep/pep.properties"
+                                  local-override="true"/>
     <bean id="pepPropertyPlaceholderConfigurer"
           class="com.proper.enterprise.platform.core.placeholder.PEPPropertyPlaceholderConfigurer" init-method="init">
         <property name="location" value="classpath:conf/config.properties"/>
@@ -43,7 +50,8 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
-    <task:annotation-driven scheduler="pepScheduler" executor="pepExecutor" />
-    <task:scheduler id="pepScheduler" pool-size="${pep.scheduler.poolSize}" />
-    <task:executor id="pepExecutor" pool-size="${pep.executor.poolSize}" queue-capacity="${pep.executor.queueCapacity}" />
+    <task:annotation-driven scheduler="pepScheduler" executor="pepExecutor"/>
+    <task:scheduler id="pepScheduler" pool-size="${pep.scheduler.poolSize}"/>
+    <task:executor id="pepExecutor" pool-size="${pep.executor.poolSize}"
+                   queue-capacity="${pep.executor.queueCapacity}"/>
 </beans>

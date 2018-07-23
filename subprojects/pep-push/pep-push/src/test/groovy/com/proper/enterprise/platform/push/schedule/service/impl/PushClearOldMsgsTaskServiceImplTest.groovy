@@ -5,6 +5,8 @@ import com.proper.enterprise.platform.push.config.PushGlobalInfo
 import com.proper.enterprise.platform.push.repository.PushMsgRepository
 import com.proper.enterprise.platform.push.common.schedule.service.PushClearOldMsgsTaskService
 import com.proper.enterprise.platform.push.test.PushAbstractTest
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
@@ -23,7 +25,17 @@ class PushClearOldMsgsTaskServiceImplTest extends PushAbstractTest {
 
     @Autowired
     PushGlobalInfo globalInfo;
+    def vo
 
+    @Before
+    void beforeInit() {
+        vo = initData()
+    }
+
+    @After
+    void afterData(){
+        delete(vo.getId())
+    }
     @Test
     void deleteOldMsgsTest() {
         assert msgRepository.count()>0

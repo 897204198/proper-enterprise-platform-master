@@ -8,12 +8,12 @@ dependencies {
             libraries.push_vendor_xiaomi
 
     compile project(':pep-auth-api'),
-            project(':pep-push-api'),
-            project(':pep-schedule-cluster')
-
-    runtime project(':pep-auth-common-jpa')
+        project(':pep-push-api'),
+        project(':pep-schedule-cluster'),
+        project(':pep-file')
 
     compile "javax.jms:javax.jms-api:2.0.1"
     testCompile project(':pep-test')
     testCompile project(':pep-push-client')
+    testCompile project(':pep-dfs-mongo')
 }

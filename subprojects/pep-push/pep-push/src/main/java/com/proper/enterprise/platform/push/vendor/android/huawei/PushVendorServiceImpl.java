@@ -29,6 +29,7 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
             pushApp = new HuaweiPushApp();
             pushApp.setTheAppid(Mapl.cell(pushParams, "the_app_id").toString());
             pushApp.setTheAppSecret(Mapl.cell(pushParams, "the_app_secret").toString());
+            pushApp.setPackageName(Mapl.cell(pushParams, "the_app_package").toString());
             pushApp.setPushService(this);
         }
 
