@@ -1,5 +1,7 @@
 package com.proper.enterprise.platform.workflow.service.impl;
 
+import com.proper.enterprise.platform.api.auth.dao.UserDao;
+import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -42,15 +44,19 @@ public class PEPProcessServiceImpl implements PEPProcessService {
 
     private HistoryService historyService;
 
+    private UserDao userDao;
+
     @Autowired
     PEPProcessServiceImpl(RuntimeService runtimeService,
                           FormService formService,
                           RepositoryService repositoryService,
-                          HistoryService historyService) {
+                          HistoryService historyService,
+                          UserDao userDao) {
         this.runtimeService = runtimeService;
         this.formService = formService;
         this.repositoryService = repositoryService;
         this.historyService = historyService;
+        this.userDao = userDao;
     }
 
     @Override
@@ -66,7 +72,9 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             globalVariables.put(startFormKey, variables);
             globalVariables.put(WorkFlowConstants.START_FORM_DATA, variables);
         }
+        //设置允许是skip
         globalVariables.put(WorkFlowConstants.SKIP_EXPRESSION_ENABLED, true);
+        globalVariables = setDefaultVariables(globalVariables);
         globalVariables = GlobalVariableUtil.setGlobalVariable(globalVariables, variables, globalVariableKeys);
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
         return ProcInstConvert.convert(processInstance);
@@ -130,6 +138,21 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             pepForms.add(entry.getValue());
         }
         return pepForms;
+    }
+
+    private Map<String, Object> setDefaultVariables(Map<String, Object> globalVariables) {
+        return setStartUserName(globalVariables);
+    }
+
+    private Map<String, Object> setStartUserName(Map<String, Object> globalVariables) {
+        if (StringUtil.isNotEmpty(Authentication.getCurrentUserId())) {
+            User user = userDao.findOne(Authentication.getCurrentUserId());
+            if (null != user) {
+                //设置默认全局变量
+                globalVariables.put(WorkFlowConstants.INITIATOR_NAME, user.getName());
+            }
+        }
+        return globalVariables;
     }
 
     private Map<String, Object> getFormData(Map<String, Object> processVariables, String formKey) {

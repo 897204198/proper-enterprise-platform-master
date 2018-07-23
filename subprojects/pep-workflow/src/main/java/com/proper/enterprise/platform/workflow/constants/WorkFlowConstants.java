@@ -12,6 +12,11 @@ public class WorkFlowConstants {
     public static final String INITIATOR = "initiator";
 
     /**
+     * 流程启动者名称
+     */
+    public static final String INITIATOR_NAME = "initiatorName";
+
+    /**
      * 经办人
      */
     public static final String ASSIGNEE = "assignee";
