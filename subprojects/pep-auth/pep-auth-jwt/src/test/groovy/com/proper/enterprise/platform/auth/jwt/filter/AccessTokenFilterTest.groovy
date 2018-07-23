@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.MenuDao
 import com.proper.enterprise.platform.api.auth.dao.ResourceDao
 import com.proper.enterprise.platform.api.auth.dao.UserDao
 import com.proper.enterprise.platform.api.auth.service.AuthzService
+import com.proper.enterprise.platform.auth.common.filter.AccessTokenFilter
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader
 import com.proper.enterprise.platform.auth.jwt.model.impl.JWTPayloadImpl
 import com.proper.enterprise.platform.auth.service.JWTService
@@ -15,10 +16,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
-class JWTVerifyFilterTest extends AbstractTest {
+class AccessTokenFilterTest extends AbstractTest {
 
     @Autowired
-    JWTVerifyFilter jwtVerifyFilter
+    AccessTokenFilter accessTokenFilter
 
     @Autowired
     AuthzService authzService
@@ -37,12 +38,7 @@ class JWTVerifyFilterTest extends AbstractTest {
 
     @Before
     void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).addFilter(jwtVerifyFilter, '/*').build()
-    }
-
-    @Test
-    void testFilter() {
-        coverFilter(jwtVerifyFilter)
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).addFilter(accessTokenFilter, '/*').build()
     }
 
     @Test

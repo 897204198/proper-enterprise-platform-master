@@ -124,11 +124,12 @@ public class AppVersionDocument extends BaseDocument {
     }
 
     public String getPublisher() {
-        String publisher = "unknown";
+        String publisher;
         try {
             publisher = PEPApplicationContext.getBean(UserService.class).get(publisherId).getUsername();
         } catch (Exception e) {
-            LOGGER.error("Get publisher name ERROR!", e);
+            LOGGER.debug("Could NOT get user name of {}, use user ID as publisher ID as fallback.", publisherId);
+            publisher = publisherId;
         }
         return publisher;
     }

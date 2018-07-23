@@ -15,8 +15,8 @@ class GetTokenController extends BaseController {
     JWTService jwtService
 
     @GetMapping('/token/get')
-    public ResponseEntity<String> get() {
-        String token = jwtService.getTokenFromHeader(RequestUtil.getCurrentRequest())
+    ResponseEntity<String> get() {
+        String token = jwtService.getToken(RequestUtil.getCurrentRequest()).orElse(null)
         responseOfGet(token)
     }
 

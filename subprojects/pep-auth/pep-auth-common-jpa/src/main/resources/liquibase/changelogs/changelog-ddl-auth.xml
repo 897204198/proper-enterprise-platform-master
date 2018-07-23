@@ -534,4 +534,42 @@
             <column name="avatar" type="VARCHAR(255)"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="wyiyi (generated)" id="20180719-1531979950252">
+        <createTable tableName="PEP_AUTH_TOKENS">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="RESOURCES_DESCRIPTION" type="VARCHAR(4000)"/>
+            <column name="TOKEN" type="VARCHAR(255)"/>
+            <column name="USER_ID" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="wyiyi (generated)" id="20180719-1531979950252-37">
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_TOKENS" tableName="PEP_AUTH_TOKENS"/>
+    </changeSet>
+
+    <changeSet author="wyiyi (generated)" id="20180719-1531979950252-38">
+        <addUniqueConstraint columnNames="TOKEN" constraintName="UK_PEP_AUTH_TOKENS_TOKEN" tableName="PEP_AUTH_TOKENS"/>
+    </changeSet>
+
+    <changeSet author="wyiyi (generated)" id="20180719-1531979950252-39">
+        <addUniqueConstraint columnNames="USER_ID" constraintName="UK_PEP_AUTH_TOKENS_USER_ID" tableName="PEP_AUTH_TOKENS"/>
+    </changeSet>
 </databaseChangeLog>

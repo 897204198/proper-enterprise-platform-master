@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.jpa.vo
 
 import com.proper.enterprise.platform.api.auth.model.DataRestrain
+import com.proper.enterprise.platform.auth.common.jpa.entity.AccessTokenEntity
 import com.proper.enterprise.platform.auth.common.vo.DataRestrainVO
 import com.proper.enterprise.platform.auth.common.vo.MenuVO
 import com.proper.enterprise.platform.auth.common.vo.ResourceVO
@@ -130,5 +131,10 @@ class VoTest extends AbstractTest{
         userVO.getUserGroups()
         userVO.getRoles()
 
+    }
+
+    @Test
+    void testAccessToken(){
+        coverBean(new AccessTokenEntity())
     }
 }

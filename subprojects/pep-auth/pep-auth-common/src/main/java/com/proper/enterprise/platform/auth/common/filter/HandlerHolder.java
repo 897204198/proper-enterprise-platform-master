@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.service;
+package com.proper.enterprise.platform.auth.common.filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

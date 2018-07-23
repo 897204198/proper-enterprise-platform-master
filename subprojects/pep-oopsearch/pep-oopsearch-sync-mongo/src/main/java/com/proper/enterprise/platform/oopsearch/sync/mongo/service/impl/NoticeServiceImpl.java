@@ -52,6 +52,10 @@ public class NoticeServiceImpl implements Notice {
     @Override
     public void handleUpdate(DBObject op) {
         String pos = getPos(op);
+        Document updateCols = getUpdateCols(op);
+        if (updateCols == null) {
+            return;
+        }
         for (Map.Entry<String, Object> map : getUpdateCols(op).entrySet()) {
             SyncDocumentModel syncDocumentModel = new SyncDocumentModel();
             syncDocumentModel.setDataBaseType(DataBaseType.MONGODB);

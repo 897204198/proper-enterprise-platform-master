@@ -27,7 +27,6 @@ class UserServiceImplTest extends AbstractTest {
 
     def static final DEFAULT_USER = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS")
 
-
     @Before
     void initData() {
         tearDown()
