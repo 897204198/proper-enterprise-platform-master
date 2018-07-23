@@ -10,6 +10,8 @@ import com.proper.enterprise.platform.push.repository.PushMsgRepository
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus
 import com.proper.enterprise.platform.push.common.schedule.service.PushCheckUnsendMsgsService
 import com.proper.enterprise.platform.push.test.PushAbstractTest
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
@@ -31,7 +33,17 @@ class PushCheckUnsendMsgsServiceImplTest extends PushAbstractTest {
 
     @Autowired
     PushGlobalInfo globalInfo;
+    def vo
 
+    @Before
+    void beforeInit() {
+        vo = initData()
+    }
+
+    @After
+    void afterData(){
+        delete(vo.getId())
+    }
 
     @Test
     void saveCheckUnsendMsgsTest() {

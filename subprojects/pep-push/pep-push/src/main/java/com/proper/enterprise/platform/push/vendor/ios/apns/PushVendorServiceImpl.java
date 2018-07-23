@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.push.vendor.ios.apns;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -8,9 +8,7 @@ import com.proper.enterprise.platform.core.utils.JSONUtil;
 import org.nutz.mapl.Mapl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 
-import com.proper.enterprise.platform.push.api.openapi.exceptions.PushException;
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
 import com.proper.enterprise.platform.push.vendor.AbstractPushVendorService;
@@ -32,15 +30,9 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
             pushApp.setEnvProduct(Boolean.parseBoolean(Mapl.cell(pushParams, "env_product").toString()));
             pushApp.setKeyStorePassword(Mapl.cell(pushParams, "keystore_password").toString());
             pushApp.setTopic(Mapl.cell(pushParams, "topic").toString());
-            String filename = Mapl.cell(pushParams, "keystore_filename").toString();
-            ClassPathResource res = new ClassPathResource("/conf/push/vendor/apns/keystores/" + filename);
+            InputStream inputStream = (InputStream) Mapl.cell(pushParams, "input");
             Object keystoreMeta;
-            try {
-                keystoreMeta = res.getInputStream();
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage(), e);
-                throw new PushException("apns keystore file: " + filename + " can't find!");
-            }
+            keystoreMeta = inputStream;
             // p12文件的绝对路径
             pushApp.setKeyStoreMeta(keystoreMeta);
             pushApp.setTheAppkey(appkey);
@@ -66,5 +58,6 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
         }
         return sendCount;
     }
+
 
 }

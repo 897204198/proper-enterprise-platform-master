@@ -1,8 +1,16 @@
 package com.proper.enterprise.platform.push.vendor;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.dfs.api.service.DFSService;
+import com.proper.enterprise.platform.file.api.File;
+import com.proper.enterprise.platform.file.repository.FileRepository;
+import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.nutz.mapl.Mapl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +27,6 @@ import com.proper.enterprise.platform.push.common.model.enums.PushMode;
  * 通过反射+工厂方法来应用“开放封闭原则”（对扩展开发，对修改封闭）
  *
  * @author shen
- *
  */
 @Component
 public class PushVendorFactory {
@@ -30,11 +37,17 @@ public class PushVendorFactory {
     PushMsgRepository msgRepo;
     @Autowired
     PushDeviceRepository deviceRepo;
+    @Autowired
+    private FileRepository fileRepository;
+
+    @Autowired
+    DFSService dsfService;
+
     final Map<String, AbstractPushVendorService> mapPushVendorServices = new ConcurrentHashMap<String, AbstractPushVendorService>();
     public static final String BASE_PACKAGE = PushVendorFactory.class.getPackage().getName();
 
     public synchronized AbstractPushVendorService getPushVendorService(String appkey, PushDeviceType devicetype,
-            PushMode pushMode) {
+                                                                       PushMode pushMode) {
         AbstractPushVendorService service = null;
         String key = getKey(appkey, devicetype, pushMode);
         service = mapPushVendorServices.get(key);
@@ -50,7 +63,12 @@ public class PushVendorFactory {
                 service.setDeviceRepo(deviceRepo);
                 service.setGlobalInfo(globalInfo);
                 Object pushParams = Mapl.cell(globalInfo.getPushConfigs(),
-                        appkey + ".device." + devicetype + "." + pushMode);
+                    appkey + ".device." + devicetype + "." + pushMode);
+                Object diplomaId = Mapl.cell(pushParams,
+                    "diplomaId");
+                if (diplomaId != null) {
+                    ((LinkedHashMap) pushParams).put("input", getInputStream(diplomaId.toString()));
+                }
                 service.setPushParams(pushParams);
                 mapPushVendorServices.put(key, service);
             } catch (Exception ex) {
@@ -68,5 +86,18 @@ public class PushVendorFactory {
         StringBuilder sb = new StringBuilder();
         sb.append(appkey).append("_").append(devicetype.toString()).append("_").append(pushMode);
         return sb.toString();
+    }
+
+
+    private InputStream getInputStream(String fileId) throws IOException {
+        File file = fileRepository.findOne(fileId);
+        if (null == file) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
+        }
+        InputStream inputStream = dsfService.getFile(file.getFilePath());
+        if (inputStream == null) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
+        }
+        return inputStream;
     }
 }

@@ -156,6 +156,7 @@ public class ApnsPushApp extends BasePushApp {
             } else if (keyStoreMeta instanceof InputStream) {
                 InputStream inputStream = (InputStream) keyStoreMeta;
                 apnsClient = new ApnsClientBuilder().setClientCredentials(inputStream, keyStorePassword).build();
+                inputStream.close();
             } else {
                 throw new UnsupportedDataTypeException("" + keyStoreMeta);
             }
@@ -164,4 +165,6 @@ public class ApnsPushApp extends BasePushApp {
             connectFuture.await();
         }
     }
+
+
 }

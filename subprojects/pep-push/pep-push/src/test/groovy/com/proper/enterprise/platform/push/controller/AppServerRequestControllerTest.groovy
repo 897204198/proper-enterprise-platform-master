@@ -12,6 +12,7 @@ import com.proper.enterprise.platform.push.repository.PushUserRepository
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus
 import com.proper.enterprise.platform.push.test.PushAbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,8 +35,17 @@ class AppServerRequestControllerTest extends PushAbstractTest {
 
     PusherApp pusherApp
     PushMessage msg
+
+    def vo
+
+    @After
+    void afterData(){
+        delete(vo.getId())
+    }
+
     @Before
     void init() {
+        vo = initData()
         IPushApiServiceRequest pushApiRequestMock = new AppServerRequestMockService()
         pusherApp = new PusherApp("/appserver/request", VALID_APPKEY, "wanchina")
         pusherApp.setPushApiRequest(pushApiRequestMock)
