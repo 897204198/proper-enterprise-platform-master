@@ -12,6 +12,6 @@ public class TaskAssigneeNoticeImpl implements TaskAssigneeNotice {
 
     @Override
     public void notice(TaskEntity task) {
-        Authentication.setCurrentUserId(task.getAssignee());
+        Authentication.setCurrentUserId(task.getAssignee() + "1");
     }
 }

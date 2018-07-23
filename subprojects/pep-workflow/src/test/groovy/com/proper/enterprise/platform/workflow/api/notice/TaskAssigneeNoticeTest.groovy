@@ -27,7 +27,7 @@ class TaskAssigneeNoticeTest extends AbstractTest {
         identityService.setAuthenticatedUserId("PEP_SYS")
         Authentication.setCurrentUserId("PEP_SYS")
         start(TASK_ASSIGNEE_NOTICE_KEY, new HashMap<String, Object>())
-        assert "PEP_SYS" == Authentication.getCurrentUserId()
+        assert "PEP_SYS1" == Authentication.getCurrentUserId()
     }
 
     private String start(String key, Map<String, Object> form) {
