@@ -1,0 +1,6 @@
+dependencies {
+    compile project(':pep-core-jpa'),
+            project(':pep-push-client')
+    testCompile project(':pep-test')
+}
+
