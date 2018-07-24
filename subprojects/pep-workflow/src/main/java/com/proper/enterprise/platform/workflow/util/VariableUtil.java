@@ -22,7 +22,7 @@ public class VariableUtil {
                 continue;
             }
             if (DateUtil.isDate((String) entry.getValue())) {
-                variables.put(entry.getKey(), DateUtil.parseSpecial((String) entry.getValue()));
+                variables.put(entry.getKey(), DateUtil.parseGMTSpecial((String) entry.getValue()));
             }
         }
         return variables;

@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import com.proper.enterprise.platform.workflow.api.TaskAssigneeNotice;
+import com.proper.enterprise.platform.workflow.api.WorkflowAsyncNotice;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.ProcessDefinition;
@@ -13,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service("taskAssigneeNotice")
@@ -27,21 +26,20 @@ public class TaskAssigneeNoticeImpl implements TaskAssigneeNotice {
 
     private RepositoryService repositoryService;
 
-    private JavaMailSender mailSender;
-
     private UserDao userDao;
 
+    private WorkflowAsyncNotice workflowAsyncNotice;
+
     @Autowired
-    TaskAssigneeNoticeImpl(JavaMailSender mailSender,
+    TaskAssigneeNoticeImpl(WorkflowAsyncNotice workflowAsyncNotice,
                            UserDao userDao,
                            RepositoryService repositoryService) {
-        this.mailSender = mailSender;
         this.userDao = userDao;
         this.repositoryService = repositoryService;
+        this.workflowAsyncNotice = workflowAsyncNotice;
     }
 
     @Override
-    @Async
     public void notice(TaskEntity task) {
         try {
             String initiator = (String) task.getVariable(WorkFlowConstants.INITIATOR);
@@ -55,7 +53,7 @@ public class TaskAssigneeNoticeImpl implements TaskAssigneeNotice {
             message.setSubject(task.getName());
             message.setText(String.format(I18NUtil.getMessage("workflow.notice.msg"),
                 initiatorUser.getName(), processDefinition.getName(), task.getName()));
-            mailSender.send(message);
+            workflowAsyncNotice.notice(message);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);
         }
