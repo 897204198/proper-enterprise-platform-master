@@ -34,7 +34,7 @@ public class AccessTokenDAOImpl implements AccessTokenDAO {
 
     @Override
     public Optional<AccessToken> get(String id) {
-        return repository.findById(id).map((entity) -> entity);
+        return repository.findById(id).map(entity -> entity);
     }
 
     @Override
