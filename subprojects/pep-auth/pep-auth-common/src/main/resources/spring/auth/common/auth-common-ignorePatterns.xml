@@ -5,7 +5,8 @@
                            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- ANT path pattern, start with HTTP method, such as: GET:/**/bar, *:/foo/** -->
-    <bean id="ignorePatternsList" class="com.proper.enterprise.platform.core.factory.ComposeListFactoryBean">
+    <bean id="ignorePatternsList" class="com.proper.enterprise.platform.core.factory.ComposeListFactoryBean"
+          depends-on="PEPApplicationContext">
         <constructor-arg name="listBeanNamePattern" value="ignorePatternsList.+"/>
     </bean>
 

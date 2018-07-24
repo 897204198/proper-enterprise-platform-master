@@ -8,7 +8,7 @@ import java.util.Date;
 @Service("variableTimeHandler")
 public class VariableTimeHandler {
 
-    public String toString(Long date, String format) {
-        return DateUtil.toString(new Date(date), format);
+    public String toString(Date date, String format) {
+        return DateUtil.toString(date, format);
     }
 }

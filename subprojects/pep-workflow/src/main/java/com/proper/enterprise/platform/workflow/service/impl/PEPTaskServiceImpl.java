@@ -19,6 +19,7 @@ import com.proper.enterprise.platform.workflow.convert.TaskConvert;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.service.PEPTaskService;
 import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
+import com.proper.enterprise.platform.workflow.util.VariableUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPStartVO;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
@@ -87,6 +88,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
 
     @Override
     public void complete(String taskId, Map<String, Object> variables) {
+        variables = VariableUtil.handleVariableDateType(variables);
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (MapUtils.isEmpty(variables)) {
             if (null == task.getAssignee()) {

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service("endNotice")
@@ -38,6 +39,7 @@ public class EndNoticeImpl implements EndNotice {
     }
 
     @Override
+    @Async
     public void notice(ExecutionEntity execution) {
         try {
             String initiator = (String) execution.getVariable(WorkFlowConstants.INITIATOR);
@@ -48,7 +50,7 @@ public class EndNoticeImpl implements EndNotice {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(from);
             message.setTo(user.getEmail());
-            message.setSubject(execution.getName());
+            message.setSubject(I18NUtil.getMessage("workflow.notice.end..msg.subject"));
             message.setText(String.format(I18NUtil.getMessage("workflow.notice.end.msg"),
                 initiatorUser.getName(), processDefinition.getName(), execution.getName()));
             mailSender.send(message);
