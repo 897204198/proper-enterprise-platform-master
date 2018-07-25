@@ -28,6 +28,10 @@ jacoco {
     toolVersion = "0.7.7.201606060606"
 }
 
+pmd {
+    toolVersion = '5.5.2'
+}
+
 jacocoTestReport {
     reports {
         xml.enabled true
