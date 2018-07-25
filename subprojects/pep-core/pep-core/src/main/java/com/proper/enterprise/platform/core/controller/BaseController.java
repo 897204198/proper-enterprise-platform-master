@@ -192,7 +192,7 @@ public abstract class BaseController extends AbstractQuerySupport {
         HttpStatus status = handleStatus(ex, request);
         HttpHeaders headers = handleHeaders(ex);
         String body = handleBody(ex);
-        if (ex instanceof ErrMsgException) {
+        if (!(ex instanceof ErrMsgException)) {
             LOGGER.error("Controller throws exception", ex);
         }
         LOGGER.debug("Handle controller's exception to {}:{}:{}", status, headers, body);

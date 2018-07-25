@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.core.utils
 
 import com.proper.enterprise.platform.core.PEPConstants
 import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.joda.time.Interval
 import org.joda.time.LocalDate
 import spock.lang.Specification
@@ -103,7 +104,10 @@ class DateUtilSpec extends Specification {
 
     def "Check parseSpecial"() {
         expect:
-        assert "2018-07-25 09:42:17" == DateUtil.toString(DateUtil.parseGMTSpecial("2018-07-25T01:42:17.582Z"), PEPConstants.DEFAULT_DATETIME_FORMAT)
+        assert DateTimeZone.getDefault() == "GMT" || "2018-07-25 01:42:17" != DateUtil.toString(DateUtil.parseGMTSpecial("2018-07-25T01:42:17.582Z"), PEPConstants.DEFAULT_DATETIME_FORMAT)
+        assert "2018-07-25 01:42:17" == new DateTime(DateUtil.parseGMTSpecial("2018-07-25T01:42:17.582Z")
+            .getTime(), DateTimeZone.forID("GMT"))
+            .toString(PEPConstants.DEFAULT_DATETIME_FORMAT)
     }
 
 }
