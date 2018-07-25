@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import com.proper.enterprise.platform.workflow.api.EndNotice;
+import com.proper.enterprise.platform.workflow.api.WorkflowAsyncNotice;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.impl.persistence.entity.ExecutionEntity;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +25,15 @@ public class EndNoticeImpl implements EndNotice {
     @Value("${pep.mail.mailDefaultFrom}")
     private String from;
 
-    private JavaMailSender mailSender;
+    private WorkflowAsyncNotice workflowAsyncNotice;
 
     private RepositoryService repositoryService;
 
     private UserDao userDao;
 
     @Autowired
-    EndNoticeImpl(JavaMailSender mailSender, UserDao userDao, RepositoryService repositoryService) {
-        this.mailSender = mailSender;
+    EndNoticeImpl(WorkflowAsyncNotice workflowAsyncNotice, UserDao userDao, RepositoryService repositoryService) {
+        this.workflowAsyncNotice = workflowAsyncNotice;
         this.userDao = userDao;
         this.repositoryService = repositoryService;
     }
@@ -50,10 +50,10 @@ public class EndNoticeImpl implements EndNotice {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(from);
             message.setTo(user.getEmail());
-            message.setSubject(I18NUtil.getMessage("workflow.notice.end..msg.subject"));
+            message.setSubject(processDefinition.getName());
             message.setText(String.format(I18NUtil.getMessage("workflow.notice.end.msg"),
                 initiatorUser.getName(), processDefinition.getName(), execution.getName()));
-            mailSender.send(message);
+            workflowAsyncNotice.notice(message);
         } catch (Exception e) {
             LOGGER.error("endNoticeError", e);
         }

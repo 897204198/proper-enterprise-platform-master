@@ -2,9 +2,11 @@ package com.proper.enterprise.platform.core.utils
 
 import com.proper.enterprise.platform.core.PEPConstants
 import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.joda.time.Interval
 import org.joda.time.LocalDate
 import spock.lang.Specification
+
 
 class DateUtilSpec extends Specification {
 
@@ -38,8 +40,8 @@ class DateUtilSpec extends Specification {
         result.equals new LocalDate(year, month, 1).toString(PEPConstants.DEFAULT_DATE_FORMAT)
 
         where:
-        year  | month | result
-        2012  | 12    | '2012-12-01'
+        year | month | result
+        2012 | 12    | '2012-12-01'
     }
 
     def "Get #year year #month month last date: #result"() {
@@ -47,9 +49,9 @@ class DateUtilSpec extends Specification {
         result.equals new LocalDate(year, month, 1).dayOfMonth().withMaximumValue().toString(PEPConstants.DEFAULT_DATE_FORMAT)
 
         where:
-        year  | month | result
-        2012  | 12    | '2012-12-31'
-        2013  | 2     | '2013-02-28'
+        year | month | result
+        2012 | 12    | '2012-12-31'
+        2013 | 2     | '2013-02-28'
     }
 
     def "The margin between #start and #end is #result"() {
@@ -57,14 +59,14 @@ class DateUtilSpec extends Specification {
         result == new Interval(DateUtil.toDate(start).getTime(), DateUtil.toDate(end).getTime()).toPeriod().years
 
         where:
-        start           | end           | result
-        '1993-10-01'    | '2013-09-13'  | 19
-        '2010-01-01'    | '2013-09-13'  | 3
-        '2010-01-15'    | '2013-09-13'  | 3
-        '1993-10-15'    | '2013-09-13'  | 19
-        '1993-10-15'    | '2013-10-15'  | 20
-        '1993-10-15'    | '2013-09-15'  | 19
-        '2013-9-15'     | '2013-10-15'  | 0
+        start        | end          | result
+        '1993-10-01' | '2013-09-13' | 19
+        '2010-01-01' | '2013-09-13' | 3
+        '2010-01-15' | '2013-09-13' | 3
+        '1993-10-15' | '2013-09-13' | 19
+        '1993-10-15' | '2013-10-15' | 20
+        '1993-10-15' | '2013-09-15' | 19
+        '2013-9-15'  | '2013-10-15' | 0
     }
 
     def "Timestamp with millisecond is unique"() {
@@ -81,11 +83,11 @@ class DateUtilSpec extends Specification {
         Date d = new DateTime(2016, 6, 15, 15, 31, 24).toDate()
 
         expect:
-        DateUtil.addDay(DateUtil.addDay(d, 2),-2)==d
-        DateUtil.addDay(DateUtil.addDay(d, 2),-1)!=d
-        DateUtil.addDay(d,0)==d
-        DateUtil.addDay(null,0)==null
-        DateUtil.addDay(d,5)==new DateTime(2016, 6, 20, 15, 31, 24).toDate()
+        DateUtil.addDay(DateUtil.addDay(d, 2), -2) == d
+        DateUtil.addDay(DateUtil.addDay(d, 2), -1) != d
+        DateUtil.addDay(d, 0) == d
+        DateUtil.addDay(null, 0) == null
+        DateUtil.addDay(d, 5) == new DateTime(2016, 6, 20, 15, 31, 24).toDate()
     }
 
     def "Check addMinute in DateUtil"() {
@@ -93,11 +95,19 @@ class DateUtilSpec extends Specification {
         Date d = new DateTime(2016, 6, 15, 15, 31, 24).toDate()
 
         expect:
-        DateUtil.addMinute(DateUtil.addMinute(d, 100),-100)==d
-        DateUtil.addMinute(DateUtil.addMinute(d, 100),-99)!=d
-        DateUtil.addMinute(d,0)==d
-        DateUtil.addMinute(null,0)==null
-        DateUtil.addMinute(d,5)==new DateTime(2016, 6, 15, 15, 36, 24).toDate()
+        DateUtil.addMinute(DateUtil.addMinute(d, 100), -100) == d
+        DateUtil.addMinute(DateUtil.addMinute(d, 100), -99) != d
+        DateUtil.addMinute(d, 0) == d
+        DateUtil.addMinute(null, 0) == null
+        DateUtil.addMinute(d, 5) == new DateTime(2016, 6, 15, 15, 36, 24).toDate()
+    }
+
+    def "Check parseSpecial"() {
+        expect:
+        assert DateTimeZone.getDefault() == "GMT" || "2018-07-25 01:42:17" != DateUtil.toString(DateUtil.parseGMTSpecial("2018-07-25T01:42:17.582Z"), PEPConstants.DEFAULT_DATETIME_FORMAT)
+        assert "2018-07-25 01:42:17" == new DateTime(DateUtil.parseGMTSpecial("2018-07-25T01:42:17.582Z")
+            .getTime(), DateTimeZone.forID("GMT"))
+            .toString(PEPConstants.DEFAULT_DATETIME_FORMAT)
     }
 
 }

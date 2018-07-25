@@ -12,6 +12,8 @@ public class PEPWorkflowPathVO {
 
     private List<PEPTaskVO> hisTasks;
 
+    private Boolean ended;
+
     public PEPStartVO getStart() {
         return start;
     }
@@ -34,6 +36,14 @@ public class PEPWorkflowPathVO {
 
     public void setHisTasks(List<PEPTaskVO> hisTasks) {
         this.hisTasks = hisTasks;
+    }
+
+    public Boolean getEnded() {
+        return ended;
+    }
+
+    public void setEnded(Boolean ended) {
+        this.ended = ended;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.utils;
 
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -8,7 +9,9 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -182,14 +185,16 @@ public class DateUtil {
     }
 
     /**
-     * 处理前台的特殊字符T Z 2018-07-23T10:44:05.469Z
+     * 处理格林威治时间(零时区)前台的特殊字符T Z 2018-07-23T10:44:05.469Z
      *
      * @param dateTimestamp 时间类型特殊字符
      * @return 时间
      */
-    public static Date parseSpecial(String dateTimestamp) {
-        dateTimestamp = dateTimestamp.replace("Z", "");
-        SimpleDateFormat sdf = new SimpleDateFormat(dateTimestamp.length() > 10 ? "yyyy-MM-dd'T'HH:mm:ss.SSS" : "yyyy-MM-dd");
+    public static Date parseGMTSpecial(String dateTimestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateTimestamp.length() > 10
+            ? PEPConstants.ANT_D_TIMESTAMP_FORMAT
+            : PEPConstants.DEFAULT_DATE_FORMAT);
+        sdf.setTimeZone(TimeZone.getTimeZone(ZoneId.of("GMT")));
         try {
             return sdf.parse(dateTimestamp);
         } catch (ParseException e) {

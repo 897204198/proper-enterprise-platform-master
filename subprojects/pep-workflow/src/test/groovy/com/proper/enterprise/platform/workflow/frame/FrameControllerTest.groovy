@@ -102,6 +102,7 @@ class FrameControllerTest extends AbstractTest {
         Map step4 = getTask("第四步")
         complete(step4.taskId)
         assert "c" == findHis(procInstId, "第四步").assigneeName
+        assert true == findHis(procInstId).ended
         assert "已完成" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getStateValue()
         assert 2 == findProcessStartByMe().size()
         assert "处理中" == findProcessStartByKey(VALIDATE_ASSIGN_GROUP_KEY).getStateValue()
