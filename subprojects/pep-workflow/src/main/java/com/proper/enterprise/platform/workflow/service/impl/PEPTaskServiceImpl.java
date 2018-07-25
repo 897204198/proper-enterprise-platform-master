@@ -138,6 +138,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         pepWorkflowPathVO.setHisTasks(findHisTasks(procInstId));
         pepWorkflowPathVO.setCurrentTasks(findCurrentTasks(procInstId));
         pepWorkflowPathVO.setStart(findStart(procInstId));
+        pepWorkflowPathVO.setEnded(isEnded(procInstId));
         return pepWorkflowPathVO;
     }
 
@@ -157,6 +158,12 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             pepStartVO.setStartUserName(user.getName());
         }
         return pepStartVO;
+    }
+
+    private boolean isEnded(String procInstId) {
+        HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery()
+            .processInstanceId(procInstId).singleResult();
+        return null != processInstance && null != processInstance.getEndTime();
     }
 
     public List<PEPTaskVO> findHisTasks(String procInstId) {
