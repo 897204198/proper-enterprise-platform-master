@@ -12,10 +12,10 @@
         <property name="cacheManager" ref="ehcacheCacheManager" />
     </bean>
 
-    <bean id="ehcacheCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="cacheManagerName" value="pepCacheManager" />
+    <bean id="ehcacheCacheManager" class="com.proper.enterprise.platform.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="cacheManagerName" value="pepSpringCacheManager" />
         <property name="acceptExisting" value="true" />
-        <property name="configLocation" value="classpath:conf/cache/ehcache/ehcache.xml" />
+        <property name="configLocation" value="classpath:conf/cache/ehcache/ehcache-spring.xml" />
     </bean>
 
     <cache:annotation-driven />

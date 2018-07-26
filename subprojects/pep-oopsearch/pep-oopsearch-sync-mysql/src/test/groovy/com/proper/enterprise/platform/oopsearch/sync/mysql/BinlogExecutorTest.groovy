@@ -13,6 +13,7 @@ import com.proper.enterprise.platform.oopsearch.sync.mysql.executor.BinlogExecut
 import com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl.MySQLMongoDataSync
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
+import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.Cache
@@ -131,6 +132,7 @@ class BinlogExecutorTest extends AbstractTest{
         sleep(2000)
     }
 
+    @Ignore
     @Test
     @NoTx
     @Sql("/sql/oopsearch/sync/mysql/demoUserConfigData.sql")
@@ -164,6 +166,7 @@ class BinlogExecutorTest extends AbstractTest{
         searchConfigRepository.deleteAll()
     }
 
+    @Ignore
     @Test
     @NoTx
     @Sql("/sql/oopsearch/sync/mysql/demoUserConfigData.sql")

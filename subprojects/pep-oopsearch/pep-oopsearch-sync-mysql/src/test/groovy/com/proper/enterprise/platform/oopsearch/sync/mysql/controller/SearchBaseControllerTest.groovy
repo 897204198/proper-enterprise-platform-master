@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.oopsearch.sync.mysql.entity.DemoTestEntity
 import com.proper.enterprise.platform.oopsearch.sync.mysql.repository.DemoDeptRepository
 import com.proper.enterprise.platform.oopsearch.sync.mysql.repository.DemoTestRepository
 import com.proper.enterprise.platform.test.AbstractTest
+import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.Cache
@@ -31,6 +32,7 @@ class SearchBaseControllerTest extends AbstractTest{
     @Autowired
     CacheManager cacheManager
 
+    @Ignore
     @Test
     @Sql([
         "/sql/oopsearch/sync/mysql/demoDeptConfigData.sql",

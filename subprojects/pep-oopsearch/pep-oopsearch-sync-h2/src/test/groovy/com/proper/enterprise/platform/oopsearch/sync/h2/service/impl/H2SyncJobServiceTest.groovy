@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.oopsearch.sync.h2.repository.DemoTestRepos
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.Cache
@@ -36,6 +37,7 @@ class H2SyncJobServiceTest extends AbstractTest{
     @Autowired
     CacheManager cacheManager
 
+    @Ignore
     @NoTx
     @Test
     @Sql([
