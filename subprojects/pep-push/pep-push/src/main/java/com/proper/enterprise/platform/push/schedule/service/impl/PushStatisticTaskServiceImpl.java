@@ -70,6 +70,6 @@ public class PushStatisticTaskServiceImpl implements PushStatisticTaskService {
         }
         LOGGER.info("startDate:{} endDate:{} entityList:{}", DateUtil.toString(dateStart, PEPConstants.DEFAULT_DATETIME_FORMAT),
             DateUtil.toString(dateEnd, PEPConstants.DEFAULT_DATETIME_FORMAT), entityList);
-        msgStatisticRepositoryRepo.save(entityList);
+        msgStatisticRepositoryRepo.saveAll(entityList);
     }
 }
