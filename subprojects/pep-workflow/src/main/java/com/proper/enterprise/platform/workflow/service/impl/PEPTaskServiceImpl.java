@@ -100,6 +100,9 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         taskService.setVariablesLocal(taskId, variables);
         String formKey = task.getFormKey();
         Map<String, Object> globalVariables = taskService.getVariables(taskId);
+        if (MapUtils.isNotEmpty(variables)) {
+            globalVariables.putAll(variables);
+        }
         if (StringUtil.isNotEmpty(formKey)) {
             globalVariables.put(formKey, variables);
         }

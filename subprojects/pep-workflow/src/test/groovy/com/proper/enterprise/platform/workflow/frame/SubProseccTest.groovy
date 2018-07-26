@@ -51,7 +51,6 @@ class SubProseccTest extends WorkflowAbstractTest {
         List<Map> taskPages = buildPageTask(subStep1.taskId)
         assert taskPages.size() == 2
         assert taskPages.get(1).showType == ShowType.EDIT.name()
-        assert taskPages.get(1).formData == null
         Map<String, Object> subStep1Form = new HashMap<>()
         subStep1Form.put("b", "b")
         complete(subStep1.taskId, subStep1Form)

@@ -15,6 +15,7 @@ import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
+import org.apache.commons.collections.MapUtils;
 import org.flowable.engine.FormService;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
@@ -70,6 +71,9 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             .singleResult();
         String startFormKey = formService.getStartFormKey(processDefinition.getId());
         Map<String, Object> globalVariables = new HashMap<>(16);
+        if (MapUtils.isNotEmpty(variables)) {
+            globalVariables.putAll(variables);
+        }
         if (StringUtil.isNotEmpty(startFormKey)) {
             globalVariables.put(startFormKey, variables);
             globalVariables.put(WorkFlowConstants.START_FORM_DATA, variables);
