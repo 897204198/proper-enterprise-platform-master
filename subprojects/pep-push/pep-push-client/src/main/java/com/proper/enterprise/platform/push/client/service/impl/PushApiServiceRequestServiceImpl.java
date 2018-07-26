@@ -12,19 +12,25 @@ import java.util.Map;
  * 默认的http请求方法
  *
  * @author shen
- *
  */
 public class PushApiServiceRequestServiceImpl implements IPushApiServiceRequest {
 
     @Override
     public synchronized String requestServiceServer(final String baseUrl, final String methodName,
-            Map<String, Object> params, int timeout) throws Exception {
+                                                    Map<String, Object> params, int timeout) throws Exception {
         String url = baseUrl + "/appserver/request/" + methodName;
         String data = HttpClient.getFormUrlEncodedData(params);
         ResponseEntity<byte[]> response = HttpClient.post(url, MediaType.APPLICATION_FORM_URLENCODED, data, timeout);
         return StringUtil.toEncodedString(response.getBody());
     }
 
+    @Override
+    public String requestServiceServer(String baseUrl, Map<String, Object> params, int timeout) throws Exception {
+        String url = baseUrl;
+        String data = HttpClient.getFormUrlEncodedData(params);
+        ResponseEntity<byte[]> response = HttpClient.post(url, MediaType.APPLICATION_FORM_URLENCODED, data, timeout);
+        return StringUtil.toEncodedString(response.getBody());
+    }
 
 
 }

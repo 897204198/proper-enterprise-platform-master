@@ -14,19 +14,23 @@ import org.springframework.http.MediaType
  */
 abstract class PushAbstractTest extends AbstractTest {
 
-    protected static final String VALID_APPKEY="test"
-    protected static final String TEST_USERID1="testuser1"
-    protected static final String TEST_USERID2="testuser2"
-    protected static final String TEST_DEVICEID1="testdevice1"
-    protected static final String TEST_DEVICEID2="testdevice2"
-    protected static final String TEST_DEVICEID3="testdevice3"
+    protected static final String VALID_APPKEY = "test"
+    protected static final String TEST_USERID1 = "testuser1"
+    protected static final String TEST_USERID2 = "testuser2"
+    protected static final String TEST_DEVICEID1 = "testdevice1"
+    protected static final String TEST_DEVICEID2 = "testdevice2"
+    protected static final String TEST_DEVICEID3 = "testdevice3"
 
-    protected static final String TEST_PUSHTOKEN1="testpushtoken1"
-    protected static final String TEST_PUSHTOKEN2="testpushtoken2"
+    protected static final String TEST_PUSHTOKEN1 = "testpushtoken1"
+    protected static final String TEST_PUSHTOKEN2 = "testpushtoken2"
 
 
     Map<String, Object> pushRequest(String url, Map<String, Object> param) {
-        pushRequest(url,param,HttpStatus.OK)
+        pushRequest(url, param, HttpStatus.OK)
+    }
+
+    String apiRequest(String url, Map<String, Object> param) {
+        apiRequest(url, param, HttpStatus.OK)
     }
     /**
      * http请求
@@ -35,14 +39,14 @@ abstract class PushAbstractTest extends AbstractTest {
      * @param status 期待返回的状态码
      * @return 将http 请求返回的json字符串转换成map
      */
-    Map<String, Object> pushRequest(String url, Map<String, Object> param,HttpStatus status) {
-        String str=post(url,
+    Map<String, Object> pushRequest(String url, Map<String, Object> param, HttpStatus status) {
+        String str = post(url,
             MediaType.APPLICATION_FORM_URLENCODED,
             MediaType.APPLICATION_JSON_UTF8,
             HttpClient.getFormUrlEncodedData(param),
             status).getResponse()
             .getContentAsString();
-        if(StringUtil.isEmpty(str)){
+        if (StringUtil.isEmpty(str)) {
             return new HashMap<>()
         }
 
@@ -53,7 +57,7 @@ abstract class PushAbstractTest extends AbstractTest {
 
     def url = "/push/channels"
 
-    PushChannelVO initData(){
+    PushChannelVO initData() {
         PushChannelVO pushChannelVo = new PushChannelVO()
         pushChannelVo.setChannelName("test")
         pushChannelVo.setChannelDesc("推送平台test")
@@ -78,6 +82,26 @@ abstract class PushAbstractTest extends AbstractTest {
 
     void delete(String ids) {
         delete(url + "?ids=" + ids, HttpStatus.NO_CONTENT)
+    }
+    /**
+     * http请求
+     * @param url 请求地址
+     * @param param 参数
+     * @param status 期待返回的状态码
+     * @return 将http 请求返回的json字符串转换成map
+     */
+    String apiRequest(String url, Map<String, Object> param, HttpStatus status) {
+        String str = post(url,
+            MediaType.APPLICATION_FORM_URLENCODED,
+            MediaType.APPLICATION_JSON_UTF8,
+            HttpClient.getFormUrlEncodedData(param),
+            status).getResponse()
+            .getContentAsString();
+        if (StringUtil.isEmpty(str)) {
+            return ""
+        }
+
+        return str
     }
 
 }

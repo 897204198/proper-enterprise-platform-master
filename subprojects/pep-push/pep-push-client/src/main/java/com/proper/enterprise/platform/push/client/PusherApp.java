@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.push.client.service.impl.PushApiServiceReq
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -21,19 +22,18 @@ import java.util.concurrent.ThreadFactory;
  * 推送程序
  *
  * @author 沈东生
- *
  */
 public class PusherApp {
-    private final ThreadFactory namedThreadFactory = new BasicThreadFactory.Builder().namingPattern("pusherApp-pool-%d").daemon(true).build();
-    private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(1, namedThreadFactory);
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PusherApp.class);
     public static final String DEVICE_TYPE_ANDROID = "android";
     public static final String DEVICE_TYPE_IOS = "ios";
+    private static final Logger LOGGER = LoggerFactory.getLogger(PusherApp.class);
+    private final ThreadFactory namedThreadFactory = new BasicThreadFactory.Builder().namingPattern("pusherApp-pool-%d").daemon(true).build();
+    @Autowired
+    PushApiClient pushApiClient;
+    private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(1, namedThreadFactory);
     private String secureKey = "";
     private String appkey = "";
     private String pushUrl = "";
-
     /**
      * 超时时间
      */
@@ -51,17 +51,32 @@ public class PusherApp {
 
     private IPushApiServiceRequest pushApiRequest;
 
+    public PusherApp() {
+        super();
+        initDefaultPushApiRequest();
+    }
+
+    /**
+     * 新建推送App
+     *
+     * @param pushUrl   推送对应的服务url
+     * @param appkey    推送的对应的应用编号
+     * @param secureKey 推送对应的密钥，用于应用服务器向推送服务器间通信的加密。
+     */
+    public PusherApp(String pushUrl, String appkey, String secureKey) {
+        super();
+        this.pushUrl = pushUrl;
+        this.appkey = appkey;
+        this.secureKey = secureKey;
+        initDefaultPushApiRequest();
+    }
+
     public boolean isAsync() {
         return isAsync;
     }
 
     public void setAsync(boolean isAsync) {
         this.isAsync = isAsync;
-    }
-
-    public PusherApp() {
-        super();
-        initDefaultPushApiRequest();
     }
 
     public int getConnTimeout() {
@@ -78,24 +93,6 @@ public class PusherApp {
 
     public void setPushApiRequest(IPushApiServiceRequest pushApiRequest) {
         this.pushApiRequest = pushApiRequest;
-    }
-
-    /**
-     * 新建推送App
-     *
-     * @param pushUrl
-     *            推送对应的服务url
-     * @param appkey
-     *            推送的对应的应用编号
-     * @param secureKey
-     *            推送对应的密钥，用于应用服务器向推送服务器间通信的加密。
-     */
-    public PusherApp(String pushUrl, String appkey, String secureKey) {
-        super();
-        this.pushUrl = pushUrl;
-        this.appkey = appkey;
-        this.secureKey = secureKey;
-        initDefaultPushApiRequest();
     }
 
     /**
@@ -124,10 +121,8 @@ public class PusherApp {
     /**
      * 向指定的一组用户推送消息
      *
-     * @param msg
-     *            推送的消息
-     * @param lstUserIds
-     *            要推送消息的 userid
+     * @param msg        推送的消息
+     * @param lstUserIds 要推送消息的 userid
      */
     public void pushMessageToUsers(final PushMessage msg, final List<String> lstUserIds) {
         Runnable r = () -> {
@@ -155,8 +150,7 @@ public class PusherApp {
     /**
      * 向一组设备发送消息
      *
-     * @param msg
-     *            消息正文
+     * @param msg 消息正文
      */
     public void pushMessageToDevices(final PushMessage msg, final String deviceType, final List<String> lstDeviceIds) {
         Runnable r = () -> {
@@ -168,7 +162,7 @@ public class PusherApp {
                 params.put("device_type", deviceType);
                 params.put("appkey", appkey);
                 String rtn = pushApiRequest.requestServiceServer(pushUrl, "pushMessageToDevices", params,
-                        connTimeout);
+                    connTimeout);
                 LOGGER.info("{pushMessageToDevices:}" + rtn);
             } catch (Exception ex) {
                 LOGGER.error("Exception:" + ex.getMessage(), ex);
@@ -187,8 +181,7 @@ public class PusherApp {
     /**
      * 向一个用户推送单条消息
      *
-     * @param msg
-     *            消息
+     * @param msg    消息
      * @param userId 用户 id
      */
     public void pushMessageToOneUser(PushMessage msg, String userId) {
@@ -211,7 +204,7 @@ public class PusherApp {
                 params.put("msg", JSONUtil.toJSON(msg));
                 params.put("appkey", appkey);
                 String rtn = pushApiRequest.requestServiceServer(pushUrl, "pushMessageToAllUsers", params,
-                        connTimeout);
+                    connTimeout);
                 LOGGER.info("{pushMessageToAllUsers:}" + rtn);
             } catch (Exception ex) {
                 LOGGER.error("Exception:" + ex.getMessage(), ex);
@@ -233,7 +226,7 @@ public class PusherApp {
     /**
      * 向指定类型的设备，全推消息
      *
-     * @param msg 消息
+     * @param msg        消息
      * @param deviceType 设备类型
      */
     public void pushMessageToAllDevices(final PushMessage msg, final String deviceType) {
@@ -247,7 +240,7 @@ public class PusherApp {
                     params.put("device_type", deviceType);
                 }
                 String rtn = pushApiRequest.requestServiceServer(pushUrl, "pushMessageToAllDevices", params,
-                        connTimeout);
+                    connTimeout);
                 LOGGER.info("{pushMssageToAllDevices:}" + rtn);
             } catch (Exception ex) {
                 LOGGER.error("Exception:" + ex.getMessage(), ex);
@@ -257,9 +250,19 @@ public class PusherApp {
     }
 
     /**
+     * 调用统计接口
+     *
+     * @param params 请求参数
+     */
+    public void doRequestApi(final LinkedHashMap<String, Object> params) {
+        String rtn = pushApiClient.taskRun(this, params);
+        LOGGER.info("requetUrl:{}; requetParams:{};requestResult:{}", pushUrl, params, rtn);
+    }
+
+    /**
      * 执行任务
      */
-    private  void startRunTask(Runnable r, boolean isAsync) {
+    private void startRunTask(Runnable r, boolean isAsync) {
         if (isAsync) {
             executor.execute(r);
         } else {

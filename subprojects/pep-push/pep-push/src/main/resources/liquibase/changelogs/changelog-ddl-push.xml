@@ -166,5 +166,39 @@
             <column name="DIPLOMA_ID" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-
+    <changeSet author="alphahinex (generated)" id="1526968403001-35">
+        <createTable tableName="PEP_PUSH_STATISTIC">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APPKEY" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PUSH_MODE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MSENDED_DATE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MSTATUS" type="INT(10)"/>
+            <column name="MNUM" type="INT(10)"/>
+            <column name="WEEK" type="VARCHAR(255)"/>
+            <column name="MONTH" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
