@@ -17,7 +17,7 @@ class LoginControllerTest extends AbstractTest {
     def static final DEFAULT_USER = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS")
 
     @Test
-    void login() {
+    void loginAndLogout() {
         // all right
         mockLogin('admin', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
         // wrong produce type
@@ -26,6 +26,8 @@ class LoginControllerTest extends AbstractTest {
         mockLogin('admin', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
         // wrong account
         mockLogin('test', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
+
+        post('/auth/logout', '', HttpStatus.CREATED)
     }
 
     @Test

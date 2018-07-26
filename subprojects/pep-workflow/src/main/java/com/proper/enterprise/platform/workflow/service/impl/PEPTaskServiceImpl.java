@@ -100,6 +100,9 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         taskService.setVariablesLocal(taskId, variables);
         String formKey = task.getFormKey();
         Map<String, Object> globalVariables = taskService.getVariables(taskId);
+        if (MapUtils.isNotEmpty(variables)) {
+            globalVariables.putAll(variables);
+        }
         if (StringUtil.isNotEmpty(formKey)) {
             globalVariables.put(formKey, variables);
         }
@@ -169,7 +172,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     public List<PEPTaskVO> findHisTasks(String procInstId) {
         List<HistoricTaskInstance> historicTaskInstances = historyService
             .createHistoricTaskInstanceQuery()
-            .processInstanceId(procInstId)
+            .processInstanceIdIn(pepProcessService.findProcAndSubInstIds(procInstId))
             .includeTaskLocalVariables()
             .finished()
             .orderByHistoricTaskInstanceEndTime()
@@ -186,7 +189,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         if (null == task) {
             throw new ErrMsgException("can't buildTaskPage with empty task");
         }
-        List<PEPForm> pepForms = pepProcessService.buildPage(task.getProcessInstanceId());
+        List<PEPForm> pepForms = pepProcessService.buildPage(pepProcessService.findTopMostProcInstId(task.getProcessInstanceId()));
         Map<String, PEPForm> pepExtFormMaps = new HashMap<>(16);
         for (PEPForm pepForm : pepForms) {
             pepExtFormMaps.put(pepForm.getFormKey(), pepForm);
@@ -203,9 +206,10 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         return returnPEPForms;
     }
 
+
     private List<PEPTaskVO> findCurrentTasks(String procInstId) {
         TaskQuery taskQuery = taskService.createTaskQuery()
-            .processInstanceId(procInstId)
+            .processInstanceIdIn(pepProcessService.findProcAndSubInstIds(procInstId))
             .includeIdentityLinks();
         List<Task> tasks = taskQuery.list();
         List<PEPTaskVO> taskVOs = TaskConvert.convert(tasks);

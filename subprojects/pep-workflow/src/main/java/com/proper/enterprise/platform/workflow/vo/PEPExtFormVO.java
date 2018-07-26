@@ -1,7 +1,6 @@
 package com.proper.enterprise.platform.workflow.vo;
 
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
@@ -71,10 +70,7 @@ public class PEPExtFormVO implements PEPForm {
         if (MapUtils.isEmpty(processVariables)) {
             return null;
         }
-        if (StringUtil.isEmpty(this.getFormKey())) {
-            return null;
-        }
-        return (Map<String, Object>) processVariables.get(this.getFormKey());
+        return processVariables;
     }
 
     @Override

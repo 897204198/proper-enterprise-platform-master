@@ -15,6 +15,7 @@ import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
+import org.apache.commons.collections.MapUtils;
 import org.flowable.engine.FormService;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
@@ -70,6 +71,9 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             .singleResult();
         String startFormKey = formService.getStartFormKey(processDefinition.getId());
         Map<String, Object> globalVariables = new HashMap<>(16);
+        if (MapUtils.isNotEmpty(variables)) {
+            globalVariables.putAll(variables);
+        }
         if (StringUtil.isNotEmpty(startFormKey)) {
             globalVariables.put(startFormKey, variables);
             globalVariables.put(WorkFlowConstants.START_FORM_DATA, variables);
@@ -120,7 +124,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         }
         List<HistoricTaskInstance> historicTaskInstances = historyService
             .createHistoricTaskInstanceQuery()
-            .processInstanceId(procInstId)
+            .processInstanceIdIn(findProcAndSubInstIds(procInstId))
             .includeProcessVariables()
             .finished()
             .orderByHistoricTaskInstanceEndTime()
@@ -140,6 +144,34 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             pepForms.add(entry.getValue());
         }
         return pepForms;
+    }
+
+    public List<String> findProcAndSubInstIds(String procInstId) {
+        List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery()
+            .includeProcessVariables()
+            .or()
+            .processInstanceId(procInstId)
+            .superProcessInstanceId(procInstId)
+            .endOr()
+            .list();
+        List<String> procInstIds = new ArrayList<>();
+        for (HistoricProcessInstance historicProcessInstance : historicProcessInstances) {
+            procInstIds.add(historicProcessInstance.getId());
+        }
+        return procInstIds;
+    }
+
+    @Override
+    public String findTopMostProcInstId(String procInstId) {
+        HistoricProcessInstance historicProcessInstance = historyService
+            .createHistoricProcessInstanceQuery()
+            .includeProcessVariables()
+            .processInstanceId(procInstId)
+            .singleResult();
+        if (StringUtil.isEmpty(historicProcessInstance.getSuperProcessInstanceId())) {
+            return historicProcessInstance.getId();
+        }
+        return findTopMostProcInstId(historicProcessInstance.getSuperProcessInstanceId());
     }
 
     private Map<String, Object> setDefaultVariables(Map<String, Object> globalVariables) {

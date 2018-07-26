@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import com.proper.enterprise.platform.workflow.api.TaskAssigneeNotice;
 import com.proper.enterprise.platform.workflow.api.WorkflowAsyncNotice;
@@ -42,6 +43,9 @@ public class TaskAssigneeNoticeImpl implements TaskAssigneeNotice {
     @Override
     public void notice(TaskEntity task) {
         try {
+            if (StringUtil.isEmpty(task.getAssignee())) {
+                return;
+            }
             String initiator = (String) task.getVariable(WorkFlowConstants.INITIATOR);
             User initiatorUser = userDao.findById(initiator);
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()

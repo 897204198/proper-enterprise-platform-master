@@ -30,5 +30,16 @@
             </property>
             <property name="cronExpression" value="0 0 23 * * ?"/>
         </bean>
+        <!-- 每日消息统计任务 -->
+        <bean id="saveMsgStatisticInfoScheduleTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+            <property name="jobDetail">
+                <bean class="com.proper.enterprise.platform.schedule.cluster.PEPMethodInvokingJobDetailFactoryBean">
+                    <property name="targetBeanName" value="pushStatisticTask"/>
+                    <property name="targetMethod" value="saveYesterdayPushStatistic" />
+                    <property name="concurrent" value="false"/>
+                </bean>
+            </property>
+            <property name="cronExpression" value="0 0 3 * * ?"/>
+        </bean>
     </util:list>
 </beans>
