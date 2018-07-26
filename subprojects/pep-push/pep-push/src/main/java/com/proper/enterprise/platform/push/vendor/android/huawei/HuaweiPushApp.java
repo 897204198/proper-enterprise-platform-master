@@ -309,7 +309,7 @@ public class HuaweiPushApp extends BasePushApp {
             URLEncoder.encode(deviceTokens.toString(), "UTF-8"),
             URLEncoder.encode(payload.toString(), "UTF-8"),
             URLEncoder.encode(format, "UTF-8"));
-
+        LOGGER.debug("postBody:" + postBody);
         String postUrl = apiUrl + "?nsp_ctx="
             + URLEncoder.encode("{\"ver\":\"1\", \"appId\":\"" + theAppid + "\"}", "UTF-8");
         String resBody = post(postUrl, postBody);
