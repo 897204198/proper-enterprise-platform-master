@@ -120,7 +120,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         }
         List<HistoricTaskInstance> historicTaskInstances = historyService
             .createHistoricTaskInstanceQuery()
-            .processInstanceId(procInstId)
+            .processInstanceIdIn(findProcAndSubInstIds(procInstId))
             .includeProcessVariables()
             .finished()
             .orderByHistoricTaskInstanceEndTime()
@@ -140,6 +140,34 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             pepForms.add(entry.getValue());
         }
         return pepForms;
+    }
+
+    public List<String> findProcAndSubInstIds(String procInstId) {
+        List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery()
+            .includeProcessVariables()
+            .or()
+            .processInstanceId(procInstId)
+            .superProcessInstanceId(procInstId)
+            .endOr()
+            .list();
+        List<String> procInstIds = new ArrayList<>();
+        for (HistoricProcessInstance historicProcessInstance : historicProcessInstances) {
+            procInstIds.add(historicProcessInstance.getId());
+        }
+        return procInstIds;
+    }
+
+    @Override
+    public String findTopMostProcInstId(String procInstId) {
+        HistoricProcessInstance historicProcessInstance = historyService
+            .createHistoricProcessInstanceQuery()
+            .includeProcessVariables()
+            .processInstanceId(procInstId)
+            .singleResult();
+        if (StringUtil.isEmpty(historicProcessInstance.getSuperProcessInstanceId())) {
+            return historicProcessInstance.getId();
+        }
+        return findTopMostProcInstId(historicProcessInstance.getSuperProcessInstanceId());
     }
 
     private Map<String, Object> setDefaultVariables(Map<String, Object> globalVariables) {
