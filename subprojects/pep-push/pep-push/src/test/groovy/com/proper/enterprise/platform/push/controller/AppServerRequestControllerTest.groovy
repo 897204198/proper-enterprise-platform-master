@@ -192,7 +192,7 @@ class AppServerRequestControllerTest extends PushAbstractTest {
         }
 
         tokens.eachWithIndex { it, i -> lstDevice[i].pushToken = it }
-        deviceRepo.save(lstDevice)
+        deviceRepo.saveAll(lstDevice)
     }
 
 
