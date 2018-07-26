@@ -14,6 +14,7 @@ import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +66,7 @@ public class DataDicServiceImpl extends AbstractJpaServiceSupport<DataDic, DataD
             }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
-        return this.findAll(specification);
+        return this.findAll(specification, new Sort(Sort.Direction.ASC, "order"));
     }
 
     @Override

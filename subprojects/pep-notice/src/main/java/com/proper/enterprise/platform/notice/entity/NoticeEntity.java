@@ -2,7 +2,9 @@ package com.proper.enterprise.platform.notice.entity;
 
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
+import org.hibernate.annotations.Type;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -36,15 +38,21 @@ public class NoticeEntity extends BaseEntity {
      */
     private String toUserId;
 
-    /**
-     *  业务ID
-     */
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
     private boolean isReaded;
 
-    /**
-     *  通知渠道
-     */
-    private String noticeChannelCode;
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+    private boolean isPush;
+
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+    private boolean isSms;
+
+    @Type(type = "yes_no")
+    @Column(nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+    private boolean isEmail;
 
     public String getBusinessId() {
         return businessId;
@@ -82,16 +90,32 @@ public class NoticeEntity extends BaseEntity {
         return toUserId;
     }
 
+    public boolean isPush() {
+        return isPush;
+    }
+
+    public void setPush(boolean push) {
+        isPush = push;
+    }
+
+    public boolean isSms() {
+        return isSms;
+    }
+
+    public void setSms(boolean sms) {
+        isSms = sms;
+    }
+
+    public boolean isEmail() {
+        return isEmail;
+    }
+
+    public void setEmail(boolean email) {
+        isEmail = email;
+    }
+
     public void setToUserId(String toUserId) {
         this.toUserId = toUserId;
-    }
-
-    public String getNoticeChannelCode() {
-        return noticeChannelCode;
-    }
-
-    public void setNoticeChannelCode(String noticeChannelCode) {
-        this.noticeChannelCode = noticeChannelCode;
     }
 
     public boolean isReaded() {

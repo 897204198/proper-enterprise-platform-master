@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.notice.service.impl;
 
-import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.entity.NoticeEntity;
 import com.proper.enterprise.platform.notice.repository.NoticeRepository;
 import com.proper.enterprise.platform.notice.service.NoticeService;
+import com.proper.enterprise.platform.notice.service.NoticeSetService;
 import com.proper.enterprise.platform.push.client.PusherApp;
 import com.proper.enterprise.platform.push.client.model.PushMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class NoticeServiceImpl implements NoticeService {
@@ -21,86 +22,100 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     NoticeRepository noticeRepository;
 
+    @Autowired
+    NoticeSetService noticeSetService;
+
     private static final String NOTICE_CHANNEL_PUSH = "PUSH";
     private static final String NOTICE_CHANNEL_EMAIL = "EMAIL";
     private static final String NOTICE_CHANNEL_SMS = "SMS";
     private static final String NOTICE_CHANNEL_NORMAL = "NORMAL";
 
-
     @Override
     public void sendNotice(String businessId,
                            String businessName,
+                           String noticeType,
                            String title,
                            String content,
                            String toUserId,
                            Map<String, Object> custom,
                            String noticeChannelContent) {
-        String noticeChannelCode = "";
-        // 推送消息
+        NoticeEntity noticeEntity = new NoticeEntity();
         if (noticeChannelContent.contains(NOTICE_CHANNEL_PUSH)) {
             pushNotice(title, content, toUserId, custom);
-            noticeChannelCode = noticeChannelCode + "1";
-        } else {
-            noticeChannelCode = noticeChannelCode + "0";
+            noticeEntity.setPush(true);
         }
-
-        // 发送邮件
         if (noticeChannelContent.contains(NOTICE_CHANNEL_EMAIL)) {
             emailNotice();
-            noticeChannelCode = noticeChannelCode + "1";
-        } else {
-            noticeChannelCode = noticeChannelCode + "0";
+            noticeEntity.setEmail(true);
         }
-
-        // 发送短信
         if (noticeChannelContent.contains(NOTICE_CHANNEL_SMS)) {
             smsNotice();
-            noticeChannelCode = noticeChannelCode + "1";
-        } else {
-            noticeChannelCode = noticeChannelCode + "0";
+            noticeEntity.setSms(true);
         }
 
-        NoticeEntity noticeDocument = new NoticeEntity();
-        noticeDocument.setTitle(title);
-        noticeDocument.setContent(content);
-        noticeDocument.setBusinessId(businessId);
-        noticeDocument.setBusinessName(businessName);
-        noticeDocument.setReaded(false);
-        noticeDocument.setToUserId(toUserId);
-        noticeDocument.setNoticeChannelCode(noticeChannelCode);
-        noticeRepository.save(noticeDocument);
+        noticeEntity.setTitle(title);
+        noticeEntity.setContent(content);
+        noticeEntity.setBusinessId(businessId);
+        noticeEntity.setBusinessName(businessName);
+        noticeEntity.setToUserId(toUserId);
+        noticeRepository.save(noticeEntity);
     }
 
     @Override
     public void sendNotice(String businessId,
                            String businessName,
+                           String noticeType,
                            String title,
                            String content,
-                           List<String> toUserIds,
+                           Set<String> toUserIds,
                            Map<String, Object> custom,
                            String noticeChannelContent) {
         for (String userId : toUserIds) {
-            sendNotice(businessId, businessName, title, content, userId, custom, noticeChannelContent);
+            sendNotice(businessId, businessName, noticeType, title, content, userId, custom, noticeChannelContent);
+        }
+    }
+
+
+    @Override
+    public void sendNotice(String businessId,
+                           String businessName,
+                           String noticeType,
+                           String title,
+                           String content,
+                           String toUserId,
+                           Map<String, Object> custom) {
+        String noticeChannelContent = noticeSetService.findNoticeSetsByNoticeTypeAndUserId(noticeType, toUserId);
+        sendNotice(businessId, businessName, noticeType, title, content, toUserId, custom, noticeChannelContent);
+    }
+
+    @Override
+    public void sendNotice(String businessId,
+                           String businessName,
+                           String noticeType,
+                           String title,
+                           String content,
+                           Set<String> toUserIds,
+                           Map<String, Object> custom) {
+        for (String userId : toUserIds) {
+            sendNotice(businessId, businessName, noticeType, title, content, userId, custom);
         }
     }
 
     @Override
     public List<NoticeEntity> findByNoticeChannelName(String noticeChannelName) {
-        String noticeChannelCode = null;
+        if (NOTICE_CHANNEL_NORMAL.equals(noticeChannelName)) {
+            return noticeRepository.findByIsPushAndIsSmsAndIsEmail(false, false, false);
+        }
+        if (NOTICE_CHANNEL_EMAIL.equals(noticeChannelName)) {
+            return noticeRepository.findByIsEmail(true);
+        }
         if (NOTICE_CHANNEL_PUSH.equals(noticeChannelName)) {
-            noticeChannelCode = "1__";
-        } else if (NOTICE_CHANNEL_EMAIL.equals(noticeChannelName)) {
-            noticeChannelCode = "_1_";
-        } else if (NOTICE_CHANNEL_SMS.equals(noticeChannelName)) {
-            noticeChannelCode = "__1";
-        } else if (NOTICE_CHANNEL_NORMAL.equals(noticeChannelName)) {
-            noticeChannelCode = "000";
+            return noticeRepository.findByIsPush(true);
         }
-        if (StringUtil.isNull(noticeChannelCode)) {
-            return noticeRepository.findAllByOrderByCreateTimeDesc();
-        } else {
-            return noticeRepository.findByNoticeChannelCodeLikeOrderByCreateTimeDesc(noticeChannelCode);
+        if (NOTICE_CHANNEL_SMS.equals(noticeChannelName)) {
+            return noticeRepository.findByIsSms(true);
         }
+        return noticeRepository.findAllByOrderByCreateTimeDesc();
     }
 
     private void pushNotice(String title,
