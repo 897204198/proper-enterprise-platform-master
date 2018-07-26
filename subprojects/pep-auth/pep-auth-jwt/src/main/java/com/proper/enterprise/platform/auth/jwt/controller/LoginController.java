@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -58,6 +55,16 @@ public class LoginController {
         currentUserMap.put("userId", user.getId());
         currentUserMap.put("notifyCount", "12");
         return new ResponseEntity<>(currentUserMap, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/auth/logout", method = RequestMethod.POST)
+    public ResponseEntity logout() {
+        User user = userService.getCurrentUser();
+        String username = user.getUsername();
+        if (username != null) {
+            jwtAuthcService.clearUserToken(username);
+        }
+        return new ResponseEntity<>("", HttpStatus.CREATED);
     }
 
 }
