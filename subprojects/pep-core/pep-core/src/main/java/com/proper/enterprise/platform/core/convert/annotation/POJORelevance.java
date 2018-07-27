@@ -5,6 +5,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
+@Deprecated
 public @interface POJORelevance {
 
     Class relevanceDO() default void.class;

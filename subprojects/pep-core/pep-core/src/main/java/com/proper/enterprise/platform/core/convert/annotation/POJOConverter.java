@@ -9,6 +9,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(POJOConverters.class)
 @Inherited
+@Deprecated
 public @interface POJOConverter {
 
     /**

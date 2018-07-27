@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.utils
 
 import com.fasterxml.jackson.core.type.TypeReference
+import com.proper.enterprise.platform.core.utils.JSONUtilSpec.BaseEntity
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -20,11 +21,11 @@ class JSONUtilSpec extends Specification {
         result == JSONUtil.toJSONIgnoreException(obj)
 
         where:
-        obj                                             | result
-        [a: 'a', b: 'b']                                | '{"a":"a","b":"b"}'
-        [[a1: 'a1', a2: 'a2'], [b1: 'b1', b2: 'b2']]    | '[{"a1":"a1","a2":"a2"},{"b1":"b1","b2":"b2"}]'
-        [id: 123, text: '中文']                          | '{"id":123,"text":"中文"}'
-        ['a', 'b', 'c']                                 | '["a","b","c"]'
+        obj                                          | result
+        [a: 'a', b: 'b']                             | '{"a":"a","b":"b"}'
+        [[a1: 'a1', a2: 'a2'], [b1: 'b1', b2: 'b2']] | '[{"a1":"a1","a2":"a2"},{"b1":"b1","b2":"b2"}]'
+        [id: 123, text: '中文']                        | '{"id":123,"text":"中文"}'
+        ['a', 'b', 'c']                              | '["a","b","c"]'
     }
 
     def "Entity to JSON string"() {
@@ -36,9 +37,9 @@ class JSONUtilSpec extends Specification {
         result ==~ regEx
 
         where:
-        obj                 | regEx
-        entity              | /\{(".*":"?.*"?,?)+\}/
-        [entity, entity]    | /\[\{.*\},\{.*\}\]/
+        obj              | regEx
+        entity           | /\{(".*":"?.*"?,?)+\}/
+        [entity, entity] | /\[\{.*\},\{.*\}\]/
     }
 
     def "Parse JSON string to container object"() {
@@ -52,9 +53,9 @@ class JSONUtilSpec extends Specification {
         result.toString() == value
 
         where:
-        keys        | value    | json
-        'email'     | 'aaaa'   | '{"firstName":"Brett","lastName":"McLaughlin","email":"aaaa"}'
-        'child.id'  | '113000' | """
+        keys       | value    | json
+        'email'    | 'aaaa'   | '{"firstName":"Brett","lastName":"McLaughlin","email":"aaaa"}'
+        'child.id' | '113000' | """
 {
   id: '100000',
   text: 'parent',
@@ -83,8 +84,8 @@ class JSONUtilSpec extends Specification {
 
     def "Parse JSON string to entity array or collection"() {
         given:
-        def result1 = JSONUtil.getMapper().readValue(str, new TypeReference<BaseEntity[]>() { })
-        def result2 = JSONUtil.getMapper().readValue(str, new TypeReference<List<BaseEntity>>() { })
+        def result1 = JSONUtil.getMapper().readValue(str, new TypeReference<BaseEntity[]>() {})
+        def result2 = JSONUtil.getMapper().readValue(str, new TypeReference<List<BaseEntity>>() {})
 
         expect:
         result1[idx] instanceof BaseEntity
@@ -95,8 +96,17 @@ class JSONUtilSpec extends Specification {
 
         where:
         idx | key  | value | str
-        1   | 'id' | '2'  | '[{"id":"1","createUserId":"a"},{"id":"2","createUserId":"b"}]'
-        0   | 'id' | '1'  | '[{"id":"1","createUserId":"a"},{"id":"2","createUserId":"b"}]'
+        1   | 'id' | '2'   | '[{"id":"1","createUserId":"a"},{"id":"2","createUserId":"b"}]'
+        0   | 'id' | '1'   | '[{"id":"1","createUserId":"a"},{"id":"2","createUserId":"b"}]'
+    }
+
+    def "parse jsonattr"() {
+        List<BaseEntity> bs = new ArrayList<>()
+        BaseEntity baseEntity = new BaseEntity()
+        baseEntity.setId("123")
+        bs.add(baseEntity)
+        expect:
+        assert JSONUtil.parse(JSONUtil.toJSON(bs), new TypeReference<List<BaseEntity>>() {}).get(0).id == "123"
     }
 
     static class BaseEntity {
