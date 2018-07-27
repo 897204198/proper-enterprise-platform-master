@@ -222,30 +222,37 @@ public class BeanUtil {
         return targets;
     }
 
+    @Deprecated
     public static <T, S> T convertToDO(S source, Class<T> classType) {
         return convert(source, classType, ConvertType.TARGET_TYPE, false, false, null);
     }
 
+    @Deprecated
     public static <T, S> Collection<T> convertToDO(Collection<S> collection, Class<T> classType) {
         return convert(collection, classType, ConvertType.TARGET_TYPE, false, false, null);
     }
 
+    @Deprecated
     public static <T, S> DataTrunk<T> convertToDO(DataTrunk<S> dataTrunk, Class<T> classType) {
         return convert(dataTrunk, classType, ConvertType.TARGET_TYPE, false, false, null);
     }
 
+    @Deprecated
     public static <T, S> T convertToVO(S source, Class<T> classType, Class... showType) {
         return convert(source, classType, ConvertType.FROM_TYPE, false, true, showType);
     }
 
+    @Deprecated
     public static <T, S> Collection<T> convertToVO(Collection<S> collection, Class<T> classType, Class... showType) {
         return convert(collection, classType, ConvertType.FROM_TYPE, false, true, showType);
     }
 
+    @Deprecated
     public static <T, S> DataTrunk<T> convertToVO(DataTrunk<S> dataTrunk, Class<T> classType, Class... showType) {
         return convert(dataTrunk, classType, ConvertType.FROM_TYPE, false, true, showType);
     }
 
+    @Deprecated
     public static <T, S> T convert(S source, Class<T> classType, ConvertType convertType,
                                    boolean ignoreCycle, boolean ignoreWithView, Class... showType) {
         if (ignoreWithView) {
@@ -310,6 +317,7 @@ public class BeanUtil {
         return result;
     }
 
+    @Deprecated
     public static <T, S> DataTrunk<T> convert(DataTrunk<S> dataTrunk, Class<T> classType, ConvertType convertType,
                                               boolean ignoreCycle, boolean ignoreWithView, Class... showType) {
         if (null == dataTrunk) {
