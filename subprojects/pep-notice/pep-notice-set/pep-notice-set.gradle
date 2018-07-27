@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':pep-sys')
+    testCompile project(':pep-test')
+}
+

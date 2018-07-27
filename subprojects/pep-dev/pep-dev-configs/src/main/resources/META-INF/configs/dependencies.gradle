@@ -323,3 +323,5 @@ libraries.pep_schedule_cluster = "com.proper.enterprise.platform:pep-schedule-cl
 libraries.pep_sys = "com.proper.enterprise.platform:pep-sys:${versions.pep}"
 libraries.pep_test = "com.proper.enterprise.platform:pep-test:${versions.pep}"
 libraries.pep_workflow = "com.proper.enterprise.platform:pep-workflow:${versions.pep}"
+libraries.pep_notice = "com.proper.enterprise.platform:pep-notice:${versions.pep}"
+libraries.pep_notice_set = "com.proper.enterprise.platform:pep-notice-set:${versions.pep}"
