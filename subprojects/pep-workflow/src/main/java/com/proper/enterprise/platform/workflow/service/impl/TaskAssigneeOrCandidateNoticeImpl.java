@@ -64,7 +64,7 @@ public class TaskAssigneeOrCandidateNoticeImpl implements TaskAssigneeOrCandidat
                 return;
             }
             String initiator = (String) task.getVariable(WorkFlowConstants.INITIATOR);
-            User initiatorUser = userDao.findOne(initiator);
+            User initiatorUser = userDao.findById(initiator);
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(task.getProcessDefinitionId()).singleResult();
             SimpleMailMessage message = new SimpleMailMessage();
@@ -118,7 +118,7 @@ public class TaskAssigneeOrCandidateNoticeImpl implements TaskAssigneeOrCandidat
         if (StringUtil.isEmpty(groupId)) {
             return userIds;
         }
-        UserGroup userGroup = userGroupDao.findOne(groupId);
+        UserGroup userGroup = userGroupDao.findById(groupId);
         if (null == userGroup) {
             return userIds;
         }
@@ -136,7 +136,7 @@ public class TaskAssigneeOrCandidateNoticeImpl implements TaskAssigneeOrCandidat
         if (StringUtil.isEmpty(roleId)) {
             return userIds;
         }
-        Role role = roleDao.findOne(roleId);
+        Role role = roleDao.findById(roleId);
         if (null == role) {
             return userIds;
         }
