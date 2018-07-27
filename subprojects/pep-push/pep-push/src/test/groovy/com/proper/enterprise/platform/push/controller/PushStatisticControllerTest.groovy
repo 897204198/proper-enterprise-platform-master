@@ -3,23 +3,37 @@ package com.proper.enterprise.platform.push.controller
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.push.client.PusherApp
 import com.proper.enterprise.platform.push.client.service.IPushApiServiceRequest
+import com.proper.enterprise.platform.push.common.model.enums.PushMode
+import com.proper.enterprise.platform.push.entity.PushMsgEntity
+import com.proper.enterprise.platform.push.repository.PushMsgRepository
 import com.proper.enterprise.platform.push.repository.PushMsgStatisticRepository
+import com.proper.enterprise.platform.push.service.PushMsgService
 import com.proper.enterprise.platform.push.test.PushAbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Example
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.test.context.jdbc.Sql
 
 import java.text.SimpleDateFormat
 
 @Sql([
+    "/com/proper/enterprise/platform/push/push-users.sql",
+    "/com/proper/enterprise/platform/push/push-devices.sql",
+    "/com/proper/enterprise/platform/push/push-msgs.sql",
     "/com/proper/enterprise/platform/push/push-statistic.sql"
 ])
 class PushStatisticControllerTest extends PushAbstractTest {
     @Autowired
     PushMsgStatisticRepository statisticRepository;
-
+    @Autowired
+    PushMsgRepository msgRepository
+    @Autowired
+    PushMsgService pushMsgService
     PusherApp pusherApp
 
     @Before
@@ -30,7 +44,6 @@ class PushStatisticControllerTest extends PushAbstractTest {
         pusherApp.setAsync(false)
     }
 
-    @Test
     void doRequestMethodTest() {
         assert statisticRepository.count() == 15
 
@@ -77,6 +90,36 @@ class PushStatisticControllerTest extends PushAbstractTest {
             params.put("appkey", "test")
             pusherApp.doRequestApi(params)
         } catch (Exception ex) {
+        }
+
+    }
+
+    @Test
+    void testGetPushList() {
+        pusherApp.setPushUrl("/push/list")
+        Pageable pageable = new PageRequest(0, 3)
+
+        PushMsgEntity entity = new PushMsgEntity()
+        entity.setMcontent("content1")
+        entity.setAppkey("test")
+        entity.setPushMode(PushMode.valueOf("xiaomi"))
+
+        Example<PushMsgEntity> example = Example.of(entity)
+        Page<PushMsgEntity> page1 = msgRepository.findAll(example, pageable)
+
+        assert page1.getTotalElements() == 1
+
+        pushMsgService.findByDateTypeAndAppkey(example, pageable)
+
+        try {
+            HashMap<String, Object> params = new LinkedHashMap<String, Object>()
+            params.put("pageNo", 1)
+            params.put("pageSize", 3)
+            params.put("mcontent", "content1")
+            params.put("appkey", "test")
+            params.put("pushMode", "xiaomi")
+//            pusherApp.doRequestApis(params)
+        } catch (Exception e) {
         }
 
     }

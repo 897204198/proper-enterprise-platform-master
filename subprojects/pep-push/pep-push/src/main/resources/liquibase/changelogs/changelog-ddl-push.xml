@@ -201,4 +201,9 @@
             <column name="MONTH" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
+    <changeSet id="1532672935124" author="alphahinex (generated)">
+        <addColumn tableName="PEP_PUSH_MSG">
+            <column name="PUSH_MODE" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

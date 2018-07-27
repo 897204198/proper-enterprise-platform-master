@@ -1,17 +1,16 @@
 package com.proper.enterprise.platform.push.vendor.ios.apns;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
+import com.proper.enterprise.platform.push.entity.PushMsgEntity;
+import com.proper.enterprise.platform.push.vendor.AbstractPushVendorService;
 import org.nutz.mapl.Mapl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.proper.enterprise.platform.push.entity.PushMsgEntity;
-import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
-import com.proper.enterprise.platform.push.vendor.AbstractPushVendorService;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
 
 /**
  * ios apns 推送实现
@@ -41,7 +40,8 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
         if (lstMsgs != null && lstMsgs.size() > 0) {
             // 向指定的设备推送数据。
             for (PushMsgEntity dm : lstMsgs) {
-                LOGGER.info("ios push log step5 content:{},msg:{}", dm.getMcontent(), JSONUtil.toJSONIgnoreException(lstMsgs));
+                LOGGER.info("ios push log step5 pushId:{}, content:{},msg:{}",
+                    dm.getId(), dm.getMcontent(), JSONUtil.toJSONIgnoreException(lstMsgs));
                 // 发送次数+1
                 dm.setSendCount(dm.getSendCount() + 1);
                 // 向手机端推送一条消息
