@@ -8,7 +8,7 @@
                            http://www.springframework.org/schema/util/spring-util.xsd">
 
     <util:list id="pepJobListPush">
-        <!-- 清空指定天数之前的历史消息定时任务 -->
+        <!-- 检查未发送的消息定时任务 -->
         <bean id="pushClearOldMsgsScheduleTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
             <property name="jobDetail">
                 <bean class="com.proper.enterprise.platform.schedule.cluster.PEPMethodInvokingJobDetailFactoryBean">
@@ -19,12 +19,23 @@
             </property>
             <property name="cronExpression" value="0 0/15 * * * ?"/>
         </bean>
-        <!-- 检查未发送的消息定时任务 -->
+        <!-- 清空指定天数之前的发送成功消息定时任务 -->
         <bean id="pushClearOldMsgsScheduleTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
             <property name="jobDetail">
                 <bean class="com.proper.enterprise.platform.schedule.cluster.PEPMethodInvokingJobDetailFactoryBean">
                     <property name="targetBeanName" value="clearOldMsgsTask"/>
                     <property name="targetMethod" value="deleteOldMsgs" />
+                    <property name="concurrent" value="false"/>
+                </bean>
+            </property>
+            <property name="cronExpression" value="0 0 23 * * ?"/>
+        </bean>
+        <!-- 清空指定天数之前的发送失败消息定时任务 -->
+        <bean id="pushClearOldUnsendMsgsScheduleTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+            <property name="jobDetail">
+                <bean class="com.proper.enterprise.platform.schedule.cluster.PEPMethodInvokingJobDetailFactoryBean">
+                    <property name="targetBeanName" value="clearOldMsgsTask"/>
+                    <property name="targetMethod" value="deleteOldUnsendMsgs" />
                     <property name="concurrent" value="false"/>
                 </bean>
             </property>

@@ -1,20 +1,24 @@
 package com.proper.enterprise.platform.push.openapi.service.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.push.api.openapi.exceptions.PushException;
+import com.proper.enterprise.platform.push.api.openapi.model.PushMessage;
+import com.proper.enterprise.platform.push.api.openapi.service.AppServerRequestService;
+import com.proper.enterprise.platform.push.common.model.enums.PushDeviceStatus;
+import com.proper.enterprise.platform.push.common.model.enums.PushDeviceType;
+import com.proper.enterprise.platform.push.common.model.enums.PushMode;
+import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
+import com.proper.enterprise.platform.push.config.PushGlobalInfo;
 import com.proper.enterprise.platform.push.entity.PushDeviceEntity;
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.entity.PushUserEntity;
 import com.proper.enterprise.platform.push.repository.PushDeviceRepository;
 import com.proper.enterprise.platform.push.repository.PushMsgRepository;
 import com.proper.enterprise.platform.push.repository.PushUserRepository;
+import com.proper.enterprise.platform.push.vendor.AbstractPushVendorService;
+import com.proper.enterprise.platform.push.vendor.PushVendorFactory;
 import org.nutz.mapl.Mapl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +28,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.push.api.openapi.exceptions.PushException;
-import com.proper.enterprise.platform.push.api.openapi.model.PushMessage;
-import com.proper.enterprise.platform.push.api.openapi.service.AppServerRequestService;
-import com.proper.enterprise.platform.push.config.PushGlobalInfo;
-import com.proper.enterprise.platform.push.common.model.enums.PushDeviceStatus;
-import com.proper.enterprise.platform.push.common.model.enums.PushDeviceType;
-import com.proper.enterprise.platform.push.common.model.enums.PushMode;
-import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
-import com.proper.enterprise.platform.push.vendor.AbstractPushVendorService;
-import com.proper.enterprise.platform.push.vendor.PushVendorFactory;
+import java.util.*;
+import java.util.Map.Entry;
 
 @Service
 public class AppServerRequestServiceImpl implements AppServerRequestService {
@@ -193,6 +188,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
         dbmsg.setMcustomDatasMap(msg.getCustoms());
         dbmsg.setMtitle(msg.getTitle());
         dbmsg.setSendCount(0);
+        dbmsg.setPushMode(d.getPushMode());
         // 添加全局统一的自定义键值对
         Map<String, Object> maps = dbmsg.getMcustomDatasMap();
         // userid

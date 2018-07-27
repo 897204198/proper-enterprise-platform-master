@@ -1,28 +1,21 @@
 package com.proper.enterprise.platform.push.entity;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.push.common.model.PushDevice;
 import com.proper.enterprise.platform.push.common.model.PushMsg;
+import com.proper.enterprise.platform.push.common.model.enums.PushMode;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.*;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "PEP_PUSH_MSG")
@@ -30,52 +23,43 @@ import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
 public class PushMsgEntity extends BaseEntity implements PushMsg {
     private static final long serialVersionUID = PEPConstants.VERSION;
     private static final Logger LOGGER = LoggerFactory.getLogger(PushMsgEntity.class);
-
+    private static final int MAX_MRESPONSE_LENGTH = 1000;
     @Column(nullable = false)
     private String appkey;
     @Column(nullable = false)
     private String msgid;
     @Column(nullable = false)
     private String userid;
-
     /**
      * 消息正文
      */
     @Column(nullable = false, length = 1000)
     private String mcontent;
-
     /**
      * 消息标题
      */
     private String mtitle;
-
     /**
      * 消息的附加信息，json 字符串
      */
     @Column(nullable = false, length = 1500)
     private String mcustoms;
-
     /**
      * 消息状态，是否发送
      */
     @Enumerated(EnumType.ORDINAL)
     private PushMsgStatus mstatus;
-
     /**
      * 消息成功发送日期
      */
     private Date msendedDate;
-
     /**
      * 消息发送次数
      */
     private Integer sendCount;
-
     @OneToOne
     @JoinColumn(name = "DEVICE_PK_ID")
     private PushDeviceEntity device;
-    private static final int MAX_MRESPONSE_LENGTH = 1000;
-
     /**
      * 最后一次推送服务器返回的信息
      */
@@ -85,6 +69,13 @@ public class PushMsgEntity extends BaseEntity implements PushMsg {
     /**
      * 最后一次推送消息时的唯一标识
      */
+
+    /**
+     * 推送渠道
+     */
+    @Enumerated(EnumType.STRING)
+    private PushMode pushMode;
+
     private String pushToken;
 
     public String getMtitle() {
@@ -227,4 +218,11 @@ public class PushMsgEntity extends BaseEntity implements PushMsg {
         this.pushToken = pushToken;
     }
 
+    public PushMode getPushMode() {
+        return pushMode;
+    }
+
+    public void setPushMode(PushMode pushMode) {
+        this.pushMode = pushMode;
+    }
 }

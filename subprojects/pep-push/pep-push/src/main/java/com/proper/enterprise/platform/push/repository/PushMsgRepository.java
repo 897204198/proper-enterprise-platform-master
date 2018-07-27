@@ -50,15 +50,30 @@ public interface PushMsgRepository extends BaseJpaRepository<PushMsgEntity, Stri
                                                                                          PushMode pushMode, Pageable pageable);
 
     /**
-     * 通过应用标识，时间删除传入时间之前的消息
+     * 通过应用标识，时间删除传入时间之前发送成功的的消息
      *
      * @param appkey 应用标识
      * @param date2  时间
+     * @param send   发送成功状态
      * @return int
      */
     @Modifying
-    @Query("delete from PushMsgEntity m where m.appkey=:appkey and  m.createTime <= :date2")
-    public int deleteByAppkeyAndCreateTimeLessThan(@Param("appkey") String appkey, @Param("date2") String date2);
+    @Query("delete from PushMsgEntity m where m.appkey=:appkey and  m.createTime <= :date2 and m.mstatus = :send")
+    public int deleteByAppkeyAndCreateTimeLessThan(@Param("appkey") String appkey, @Param("date2") String date2, @Param("send") PushMsgStatus send);
+
+    /**
+     * 通过应用标识，时间删除传入时间之前发送失败的的消息
+     *
+     * @param appkey 应用标识
+     * @param date2  时间
+     * @param unsend 发送失败状态
+     * @return int
+     */
+    @Modifying
+    @Query("delete from PushMsgEntity m where m.appkey=:appkey and  m.createTime <= :date2 and m.mstatus = :unsend")
+    public int deleteUnsendMsgByAppkeyAndCreateTimeLessThan(@Param("appkey") String appkey,
+                                                            @Param("date2") String date2,
+                                                            @Param("unsend") PushMsgStatus unsend);
 
     /**
      * 通过消息最后修改时间获取消息统计信息
@@ -67,9 +82,7 @@ public interface PushMsgRepository extends BaseJpaRepository<PushMsgEntity, Stri
      * @param mendDate   最后修改时间段的结束
      * @return 消息集合
      */
-    @Query("SELECT A.appkey, A.device, A.lastModifyTime, A.mstatus, COUNT(A.appkey) "
-        + "FROM PushMsgEntity AS A "
+    @Query("SELECT A.appkey, A.device, A.lastModifyTime, A.mstatus, COUNT(A.appkey) FROM PushMsgEntity AS A "
         + "WHERE A.lastModifyTime>=:mstartDate AND A.lastModifyTime< :mendDate GROUP BY  A.appkey, A.device, A.lastModifyTime, A.mstatus")
     List findByLastModifyTimeByGroup(@Param("mstartDate") String mstartDate, @Param("mendDate") String mendDate);
-
 }

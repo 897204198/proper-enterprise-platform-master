@@ -40,11 +40,13 @@ class PushClearOldMsgsTaskServiceImplTest extends PushAbstractTest {
     void deleteOldMsgsTest() {
         assert msgRepository.count()>0
         service.deleteOldMsgs()
+        assert msgRepository.count()==4
+        service.deleteOldUnsendMsgs()
         assert msgRepository.count()==0
         //Exception 覆盖率
         Map<String, Map<String, Object>> config = globalInfo.getPushConfigs();
         Map<String, Map<String, Object>> temp = new HashMap<String, Map<String, Object>>();
-        Set<String> appkeys = config.keySet();
+        Set<String> appkeys = config.keySet()
         for (String appkey : appkeys) {
             temp.put(appkey,config.get(appkey));
         }

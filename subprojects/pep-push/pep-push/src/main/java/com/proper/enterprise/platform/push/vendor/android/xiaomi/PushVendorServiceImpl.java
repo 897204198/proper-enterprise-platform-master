@@ -1,27 +1,25 @@
 package com.proper.enterprise.platform.push.vendor.android.xiaomi;
 
-import java.util.Date;
-import java.util.List;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import org.nutz.mapl.Mapl;
-
-import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
+import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.vendor.AbstractPushVendorService;
+import org.nutz.mapl.Mapl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 华为推送消息
  *
  * @author shen
- *
  */
 public class PushVendorServiceImpl extends AbstractPushVendorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushVendorServiceImpl.class);
-
-    XiaomiPushApp pushApp;
     private static final int MIN_NOTIFY_ID = 10000;
+    XiaomiPushApp pushApp;
     private int notifyId = MIN_NOTIFY_ID;
 
     protected synchronized int getNextNotifyId() {
@@ -43,7 +41,8 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
         int notifyId1 = getNextNotifyId();
         // 向指定的设备推送数据。
         for (PushMsgEntity dm : lstMsgs) {
-            LOGGER.info("xiaomi push log step5 content:{},msg:{}", dm.getMcontent(), JSONUtil.toJSONIgnoreException(dm));
+            LOGGER.info("xiaomi push log step5 pushId:{}, content:{},msg:{}",
+                dm.getId(), dm.getMcontent(), JSONUtil.toJSONIgnoreException(dm));
             // 发送次数+1
             dm.setSendCount(dm.getSendCount() + 1);
             // 向手机端推送一条消息，手机端收到消息后，请求web服务器,再获取消息内容
