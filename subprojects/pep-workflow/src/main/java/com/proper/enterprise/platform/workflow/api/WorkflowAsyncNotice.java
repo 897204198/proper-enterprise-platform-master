@@ -8,5 +8,5 @@ public interface WorkflowAsyncNotice {
      *
      * @param message 消息内容
      */
-    void notice(SimpleMailMessage message);
+    void notice(SimpleMailMessage... message);
 }

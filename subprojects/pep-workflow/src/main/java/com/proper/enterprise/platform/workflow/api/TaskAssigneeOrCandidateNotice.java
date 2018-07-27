@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.workflow.api;
 
 import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 
-public interface TaskAssigneeNotice {
+public interface TaskAssigneeOrCandidateNotice {
     /**
      * 经办人通知
      *
