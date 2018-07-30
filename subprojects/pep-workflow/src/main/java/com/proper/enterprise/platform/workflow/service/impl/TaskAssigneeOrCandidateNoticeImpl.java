@@ -60,7 +60,8 @@ public class TaskAssigneeOrCandidateNoticeImpl implements TaskAssigneeOrCandidat
     @Override
     public void notice(TaskEntity task) {
         try {
-            if (StringUtil.isEmpty(task.getAssignee())) {
+            Set<String> emails = queryEmails(task);
+            if (CollectionUtil.isEmpty(emails)) {
                 return;
             }
             String initiator = (String) task.getVariable(WorkFlowConstants.INITIATOR);
@@ -72,10 +73,6 @@ public class TaskAssigneeOrCandidateNoticeImpl implements TaskAssigneeOrCandidat
             message.setSubject(task.getName());
             message.setText(String.format(I18NUtil.getMessage("workflow.notice.msg"),
                 initiatorUser.getName(), processDefinition.getName(), task.getName()));
-            Set<String> emails = queryEmails(task);
-            if (CollectionUtil.isEmpty(emails)) {
-                return;
-            }
             message.setTo(emails.toArray(new String[emails.size()]));
             workflowAsyncNotice.notice(message);
         } catch (Exception e) {
