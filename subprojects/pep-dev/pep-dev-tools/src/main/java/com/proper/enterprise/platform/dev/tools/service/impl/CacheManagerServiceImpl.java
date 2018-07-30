@@ -11,7 +11,6 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,7 +49,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     }
 
     @Override
-    public List<String> getCacheKeysByCacheNamePageable(String cacheName, Integer pageNo, Integer pageSize) throws IOException {
+    public List<String> getCacheKeysByCacheNamePageable(String cacheName, Integer pageNo, Integer pageSize) {
         Cache cache = cacheManager.getCache(cacheName);
         if (cache == null) {
             return null;
@@ -65,7 +64,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
             if (object instanceof String) {
                 keyjson = object.toString();
             } else {
-                keyjson = JSONUtil.toJSON(object);
+                keyjson = JSONUtil.toJSONIgnoreException(object);
             }
             list.add(keyjson);
         }

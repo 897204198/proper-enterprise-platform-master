@@ -30,7 +30,7 @@ public interface CacheManagerService {
      * @return 返回符合条件的key值列表
      * @throws IOException 异常信息
      */
-    List<String> getCacheKeysByCacheNamePageable(String cacheName, Integer pageNo, Integer pageSize) throws IOException;
+    List<String> getCacheKeysByCacheNamePageable(String cacheName, Integer pageNo, Integer pageSize);
 
     /**
      * 根据缓存名字，key值，key对应的类型名，获取对应的value值
