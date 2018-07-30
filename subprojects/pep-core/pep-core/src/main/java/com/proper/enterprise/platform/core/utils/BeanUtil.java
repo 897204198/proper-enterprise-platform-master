@@ -209,10 +209,9 @@ public class BeanUtil {
         //特殊处理集合 目前支持Set,List的copy
         if (Set.class.isAssignableFrom(targetPd.getPropertyType())) {
             targets = new HashSet();
-        } else if (List.class.isAssignableFrom(targetPd.getPropertyType())) {
-            targets = new ArrayList();
         } else {
-            return null;
+            //若target为Collection 而没有实现 默认用list实现
+            targets = new ArrayList();
         }
         for (Object source : sources) {
             Object target = BeanUtil.newInstance(targetGenericityType);

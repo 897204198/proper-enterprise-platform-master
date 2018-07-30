@@ -16,4 +16,12 @@ public interface PushMsgStatisticService extends BaseJpaService<PushMsgStatistic
      * @return List 推送集合
      */
     List<PushMsgStatisticVO> findByDateTypeAndAppkey(String dateType, String appkey);
+
+    /**
+     * 统计某一天的推送数据
+     *
+     * @param date 日期
+     * @return List 当天的推送数据
+     */
+    List<PushMsgStatisticVO> saveStatisticOfSomeday(String date);
 }
