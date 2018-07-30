@@ -1,9 +1,8 @@
 dependencies {
-    compile project(':pep-push-client'),
+    compile project(':pep-sys'),
             project(':pep-core-mongo'),
-            project(':pep-notice-api'),
             project(':pep-auth-api'),
-            project(':pep-sys')
+            project(':pep-notice-api')
     testCompile project(':pep-test')
 }
 
