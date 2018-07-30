@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.notice.service
 
+
 import com.proper.enterprise.platform.core.utils.JSONUtil
+import com.proper.enterprise.platform.notice.model.NoticeModel
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,15 +19,21 @@ class NoticeServiceImplTest extends AbstractTest {
     void sendNotice() {
         Map<String, Object> custom = new HashMap<>(1)
         custom.put("pageUrl", "messages")
-        Set<String> targets = new HashSet<>()
-        targets.add("IHOS1")
-        targets.add("IHOS2")
-        //Default
-        noticeService.sendNotice("ihos", "testBpm", "测试流程", "BPM", targets, "bpm1", "this is a bpm test.", custom , "PUSH")
-        noticeService.sendNotice("ihos", "testBpm", "测试流程", "BPM", "IHOS3", "bpm2", "this is a bpm test.", custom , "PUSH")
+
+        NoticeModel noticeModel1 = new NoticeModel();
+        noticeModel1.setSystemId("ihos")
+        noticeModel1.setBusinessId("testBpm")
+        noticeModel1.setBusinessName("测试流程")
+        noticeModel1.setNoticeType("BPM")
+        noticeModel1.setTarget("ihos1")
+        noticeModel1.setTitle("bpm1")
+        noticeModel1.setContent("noticeModel1")
+        noticeModel1.setCustom(custom)
+        noticeModel1.setNoticeChannel("PUSH")
+        post('/notice', JSONUtil.toJSON(noticeModel1), HttpStatus.CREATED)
 
         def result = JSONUtil.parse(get('/notice/PUSH', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert result.size() == 3
+        assert result.size() == 1
     }
 
 }
