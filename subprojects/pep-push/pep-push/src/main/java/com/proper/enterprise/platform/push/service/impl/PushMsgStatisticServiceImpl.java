@@ -65,7 +65,7 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             convertObjToEntity(statisticList, entityList, voList);
             pushMsgStatisticRepository.deleteByMsendedDate(DateUtil.toString(dateStart,
                 PEPConstants.DEFAULT_DATETIME_FORMAT));
-            pushMsgStatisticRepository.save(entityList);
+            pushMsgStatisticRepository.saveAll(entityList);
         }
         return voList;
     }
