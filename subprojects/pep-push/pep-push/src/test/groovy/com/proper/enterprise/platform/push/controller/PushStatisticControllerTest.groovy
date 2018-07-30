@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.push.entity.PushMsgEntity
 import com.proper.enterprise.platform.push.repository.PushMsgRepository
 import com.proper.enterprise.platform.push.repository.PushMsgStatisticRepository
 import com.proper.enterprise.platform.push.service.PushMsgService
+import com.proper.enterprise.platform.push.service.PushMsgStatisticService
 import com.proper.enterprise.platform.push.test.PushAbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Before
@@ -34,6 +35,8 @@ class PushStatisticControllerTest extends PushAbstractTest {
     PushMsgRepository msgRepository
     @Autowired
     PushMsgService pushMsgService
+    @Autowired
+    PushMsgStatisticService pushMsgStatisticService
     PusherApp pusherApp
 
     @Before
@@ -119,6 +122,28 @@ class PushStatisticControllerTest extends PushAbstractTest {
             params.put("appkey", "test")
             params.put("pushMode", "xiaomi")
 //            pusherApp.doRequestApis(params)
+        } catch (Exception e) {
+        }
+
+    }
+
+    @Test
+    void testStatisticInit() {
+        pusherApp.setPushUrl("/push/statistic/init")
+        String msendDate = "2018-07-25"
+        String msendDateEnd = "2018-07-26"
+
+        pushMsgStatisticService.saveStatisticOfSomeday(msendDate)
+        List list = statisticRepository.findAll()
+        assert list.size() == 16
+        statisticRepository.deleteByMsendedDate(msendDate)
+        List listAfterDelete = statisticRepository.findAll()
+        assert listAfterDelete.size() == 15
+
+        try {
+            HashMap<String, Object> params = new LinkedHashMap<String, Object>()
+            params.put("date", msendDate)
+            pusherApp.doRequestApi(params)
         } catch (Exception e) {
         }
 

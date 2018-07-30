@@ -43,6 +43,12 @@ public class PushStatisticController extends BaseController {
         return new ResponseEntity<>(pushMsgStatisticService.findByDateTypeAndAppkey(dateType, appkey), null, HttpStatus.OK);
     }
 
+    @GetMapping
+    @JsonView(PushMsgStatisticVO.Single.class)
+    @RequestMapping("/statistic/init")
+    public ResponseEntity<?> get(String date) {
+        return new ResponseEntity<>(pushMsgStatisticService.saveStatisticOfSomeday(date), null, HttpStatus.OK);
+    }
 
     @GetMapping
     @JsonView(PushMsgVO.Single.class)

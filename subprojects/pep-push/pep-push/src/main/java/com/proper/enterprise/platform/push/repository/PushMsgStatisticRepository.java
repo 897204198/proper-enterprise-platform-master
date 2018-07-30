@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.push.repository;
 
 import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
 import com.proper.enterprise.platform.push.entity.PushMsgStatisticEntity;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -111,5 +112,16 @@ public interface PushMsgStatisticRepository extends BaseJpaRepository<PushMsgSta
         + "WHERE S.appkey = :appkey AND S.msendedDate >= :msendDate "
         + "GROUP BY S.month, S.mstatus, S.pushMode ORDER BY S.month")
     List findByAppkeyAndMsendedDateAfterGroupByMonthOfYear(@Param("appkey") String appkey, @Param("msendDate") String msendDate);
+
+
+    /**
+     * 清除指定日期的统计数据
+     *
+     * @param msendedDate 应用标识
+     * @return int
+     */
+    @Modifying
+    @Query("delete from PushMsgStatisticEntity s where s.msendedDate = :msendedDate")
+    public int deleteByMsendedDate(@Param("msendedDate") String msendedDate);
 
 }
