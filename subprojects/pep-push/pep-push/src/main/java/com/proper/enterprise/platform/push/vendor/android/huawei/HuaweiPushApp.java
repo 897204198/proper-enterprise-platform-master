@@ -77,18 +77,21 @@ public class HuaweiPushApp extends BasePushApp {
      * @return boolean
      */
     boolean pushOneMsg(PushMsgEntity msg) {
-        LOGGER.info("huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
+        LOGGER.info("huawei push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(),
+            msg.getId(), JSONUtil.toJSONIgnoreException(msg));
 
         boolean result;
         try {
             result = doPushMsg(msg);
         } catch (Exception e) {
-            LOGGER.error("error huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), e);
+            LOGGER.error("error huawei push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(),
+                msg.getId(), JSONUtil.toJSONIgnoreException(msg), e);
             try {
                 close();
                 result = doPushMsg(msg);
             } catch (Exception e1) {
-                LOGGER.error("error huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), e1);
+                LOGGER.error("error huawei push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(),
+                    msg.getId(), JSONUtil.toJSONIgnoreException(msg), e1);
                 // 第二次发送失败才真的发送失败
                 result = false;
             }
@@ -158,11 +161,12 @@ public class HuaweiPushApp extends BasePushApp {
         try {
             PushRet result = JSONUtil.parse(rsp, PushRet.class);
             if (MSG_SUCCESS.equals(result.getMsg())) {
-                LOGGER.info("success huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
+                LOGGER.info("success huawei push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(),
+                    msg.getId(), JSONUtil.toJSONIgnoreException(msg));
                 rtn = true;
             } else {
-                LOGGER.error("error huawei push log step6 content:{},msg:{},error_msg:{},msg_code:{},SUCCESS:{}",
-                    msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), result.toString(), result.getMsg(),
+                LOGGER.error("error huawei push log step6 content:{},pushId:{},msg:{},error_msg:{},msg_code:{},SUCCESS:{}",
+                    msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), result.toString(), msg.getId(), result.getMsg(),
                     "Success".equals(result.getMsg()));
             }
             Integer badgeNumber = getBadgeNumber(msg);
@@ -182,7 +186,8 @@ public class HuaweiPushApp extends BasePushApp {
                 msg.setMresponse(rsp);
             }
         } catch (Exception ex) {
-            LOGGER.error("error huawei push log step6 content:{},msg:{},error_msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), ex);
+            LOGGER.error("error huawei push log step6 content:{},pushId:{},msg:{},error_msg:{}", msg.getMcontent(), msg.getId(),
+                JSONUtil.toJSONIgnoreException(msg), ex);
         }
         return rtn;
     }
@@ -192,14 +197,16 @@ public class HuaweiPushApp extends BasePushApp {
             msg.setMresponse(rsp);
             PushRet result = JSONUtil.parse(rsp, PushRet.class);
             if (MSG_SUCCESS.equals(result.getMsg())) {
-                LOGGER.info("success huawei push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
+                LOGGER.info("success huawei push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(), msg.getId(),
+                    JSONUtil.toJSONIgnoreException(msg));
                 return true;
             } else {
-                LOGGER.error("error huawei push log step6 content:{},msg:{},error_msg:{}",
-                    msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), JSONUtil.toJSONIgnoreException(result));
+                LOGGER.error("error huawei push log step6 content:{},pushId:{},msg:{},error_msg:{}",
+                    msg.getMcontent(), msg.getId(), JSONUtil.toJSONIgnoreException(msg), JSONUtil.toJSONIgnoreException(result));
             }
         } catch (Exception ex) {
-            LOGGER.error("error huawei push log step6 content:{},msg:{},error_msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), ex);
+            LOGGER.error("error huawei push log step6 content:{},pushId:{},msg:{},error_msg:{}", msg.getMcontent(),
+                msg.getId(), JSONUtil.toJSONIgnoreException(msg), ex);
         }
         return false;
     }

@@ -77,7 +77,8 @@ public class ApnsPushApp extends BasePushApp {
      * @return
      */
     public boolean pushOneMsg(PushMsgEntity msg) {
-        LOGGER.info("ios push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
+        LOGGER.info("ios push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(),
+            msg.getId(), JSONUtil.toJSONIgnoreException(msg));
         boolean result = false;
         try {
             initApnsClient();
@@ -108,7 +109,8 @@ public class ApnsPushApp extends BasePushApp {
                 msg.setMresponse(JSONUtil.toJSON(pushNotificationResponse));
                 if (pushNotificationResponse.isAccepted()) {
                     LOGGER.info("Push notitification accepted by APNs gateway.");
-                    LOGGER.info("success ios push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
+                    LOGGER.info("success ios push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(),
+                        msg.getId(), JSONUtil.toJSONIgnoreException(msg));
                     result = true;
                 } else {
                     LOGGER.info(
@@ -121,23 +123,20 @@ public class ApnsPushApp extends BasePushApp {
                         LOGGER.info("\t…and the token is invalid as of "
                             + pushNotificationResponse.getTokenInvalidationTimestamp());
                     }
-
                 }
             } else {
                 LOGGER.info("Push a notice to APNS server with pushToken:{} ", pushToken);
             }
-
+        } catch (ClientNotConnectedException ce) {
+            LOGGER.info("Waiting for client to reconnect…,Reconnected.");
+            msg.setMresponse(ce + "\t" + ce.getMessage());
+            result = false;
         } catch (Exception e) {
             LOGGER.error("Failed to send push notification.msg:{}", e, JSONUtil.toJSONIgnoreException(msg));
-            if (e.getCause() instanceof ClientNotConnectedException) {
-                LOGGER.info("Waiting for client to reconnect…,Reconnected.");
-            }
             msg.setMresponse(e + "\t" + e.getMessage());
             result = false;
         }
-
         return result;
-
     }
 
     private void initApnsClient() throws IOException, InterruptedException {

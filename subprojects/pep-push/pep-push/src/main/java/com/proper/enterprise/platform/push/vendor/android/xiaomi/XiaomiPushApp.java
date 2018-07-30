@@ -59,7 +59,8 @@ public class XiaomiPushApp extends BasePushApp {
      * @return
      */
     public boolean pushOneMsg(PushMsgEntity msg, int notifyId) {
-        LOGGER.info("xiaomi push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
+        LOGGER.info("xiaomi push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(), msg.getId(),
+            JSONUtil.toJSONIgnoreException(msg));
 
         boolean result = false;
 
@@ -99,12 +100,14 @@ public class XiaomiPushApp extends BasePushApp {
             result = doSendMsg(msg, toMsg);
 
         } catch (Exception e) {
-            LOGGER.error("error xiaomi push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), e);
+            LOGGER.error("error xiaomi push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(), msg.getId(),
+                JSONUtil.toJSONIgnoreException(msg), e);
             try {
                 close();
                 result = doSendMsg(msg, toMsg);
             } catch (Exception ex) {
-                LOGGER.error("error xiaomi push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), ex);
+                LOGGER.error("error xiaomi push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(), msg.getId(),
+                    JSONUtil.toJSONIgnoreException(msg), ex);
                 // 第二次发送失败才真的发送失败
                 result = false;
             }
@@ -121,10 +124,12 @@ public class XiaomiPushApp extends BasePushApp {
             com.xiaomi.xmpush.server.Result rsp = getClient().send(toMsg, pushToken, 1);
             // 有错误返回
             if (rsp.getErrorCode() == ErrorCode.Success) {
-                LOGGER.info("success xiaomi push log step6 content:{},msg:{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg));
+                LOGGER.info("success xiaomi push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(), msg.getId(),
+                    JSONUtil.toJSONIgnoreException(msg));
                 result = true;
             } else {
-                LOGGER.info("error xiaomi push log step6 content:{},msg{}", msg.getMcontent(), JSONUtil.toJSONIgnoreException(msg), rsp);
+                LOGGER.info("error xiaomi push log step6 content:{},pushId:{},msg{}", msg.getMcontent(), msg.getId(),
+                    JSONUtil.toJSONIgnoreException(msg), rsp);
                 // 发送消息失败
                 result = false;
             }
