@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,7 +66,9 @@ public class PushStatisticController extends BaseController {
             entity.setPushMode(PushMode.valueOf(pushMode));
         }
         Example example = Example.of(entity);
-        PageRequest pageRequest = getPageRequest();
+
+        Sort sort = new Sort(Sort.Direction.DESC, "lastModifyTime");
+        PageRequest pageRequest = getPageRequest(sort);
         return responseOfGet(pushMsgService.findByDateTypeAndAppkey(example, pageRequest), PushMsgVO.class, PushMsgVO.Single.class);
     }
 }

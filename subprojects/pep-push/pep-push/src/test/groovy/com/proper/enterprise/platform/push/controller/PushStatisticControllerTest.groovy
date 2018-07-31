@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.push.client.PusherApp
 import com.proper.enterprise.platform.push.client.service.IPushApiServiceRequest
 import com.proper.enterprise.platform.push.common.model.enums.PushMode
+import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus
 import com.proper.enterprise.platform.push.entity.PushMsgEntity
 import com.proper.enterprise.platform.push.repository.PushMsgRepository
 import com.proper.enterprise.platform.push.repository.PushMsgStatisticRepository
@@ -14,10 +15,7 @@ import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Example
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.*
 import org.springframework.test.context.jdbc.Sql
 
 import java.text.SimpleDateFormat
@@ -98,7 +96,7 @@ class PushStatisticControllerTest extends PushAbstractTest {
     }
 
     @Test
-    void testGetPushList() {
+    void getPushMsgListTest() {
         pusherApp.setPushUrl("/push/list")
         Pageable pageable = new PageRequest(0, 3)
 
@@ -128,7 +126,7 @@ class PushStatisticControllerTest extends PushAbstractTest {
     }
 
     @Test
-    void testStatisticInit() {
+    void getTest() {
         pusherApp.setPushUrl("/push/statistic/init")
         String msendDate = "2018-07-25"
         String msendDateEnd = "2018-07-26"
@@ -147,6 +145,69 @@ class PushStatisticControllerTest extends PushAbstractTest {
         } catch (Exception e) {
         }
 
+    }
+
+    @Test
+    void orderByLastModifyTimeTest() {
+        //测试查询排序
+
+        PushMsgEntity entity = new PushMsgEntity()
+        Sort sort = new Sort(Sort.Direction.DESC, "lastModifyTime")
+        PageRequest pageRequest = new PageRequest(0, 30, sort)
+        Example<PushMsgEntity> example = Example.of(entity)
+        List<PushMsgEntity> list = msgRepository.findAll(example, pageRequest).getContent()
+        String lastDate = null
+        for (PushMsgEntity en : list) {
+            if (lastDate != null) {
+                assert lastDate > en.getLastModifyTime()
+            }
+            lastDate = en.getLastModifyTime()
+        }
+    }
+
+    @Test
+    void findByAppkeyTest() {
+        //测试按应用查询
+
+        PushMsgEntity entity = new PushMsgEntity()
+        entity.setAppkey("test")
+        Sort sort = new Sort(Sort.Direction.DESC, "lastModifyTime")
+        PageRequest pageRequest = new PageRequest(0, 30, sort)
+        Example<PushMsgEntity> example = Example.of(entity)
+        List<PushMsgEntity> list = msgRepository.findAll(example, pageRequest).getContent()
+        for (PushMsgEntity en : list) {
+            assert "test".equals(en.getAppkey())
+        }
+    }
+
+    @Test
+    void findByMstatusTest() {
+        //测试按状态查询
+
+        PushMsgEntity entity = new PushMsgEntity()
+        entity.setMstatus(PushMsgStatus.UNSEND)
+        Sort sort = new Sort(Sort.Direction.DESC, "lastModifyTime")
+        PageRequest pageRequest = new PageRequest(0, 30, sort)
+        Example<PushMsgEntity> example = Example.of(entity)
+        List<PushMsgEntity> list = msgRepository.findAll(example, pageRequest).getContent()
+        for (PushMsgEntity en : list) {
+            assert PushMsgStatus.UNSEND.ordinal() == en.getMstatus().ordinal()
+        }
+    }
+
+    @Test
+    void findByMcontentTest() {
+        //测试按状态查询
+
+        PushMsgEntity entity = new PushMsgEntity()
+        entity.setMcontent("content1")
+        Sort sort = new Sort(Sort.Direction.DESC, "lastModifyTime")
+        PageRequest pageRequest = new PageRequest(0, 30, sort)
+        Example<PushMsgEntity> example = Example.of(entity)
+        List<PushMsgEntity> list = msgRepository.findAll(example, pageRequest).getContent()
+        for (PushMsgEntity en : list) {
+            assert "content1".equals(en.getMcontent())
+        }
     }
 
     private class AppServerRequestMockService implements IPushApiServiceRequest {
