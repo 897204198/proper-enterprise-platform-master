@@ -4,22 +4,24 @@ import com.proper.enterprise.platform.notice.document.NoticeDocument;
 import com.proper.enterprise.platform.notice.model.NoticeModel;
 import com.proper.enterprise.platform.notice.repository.NoticeRepository;
 import com.proper.enterprise.platform.notice.service.NoticeService;
-import com.proper.enterprise.platform.push.client.PusherApp;
-import com.proper.enterprise.platform.push.client.model.PushMessage;
+import com.proper.enterprise.platform.push.api.openapi.model.PushMessage;
+import com.proper.enterprise.platform.push.api.openapi.service.AppServerRequestService;
 import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class NoticeServiceImpl implements NoticeService {
 
     @Autowired
-    PusherApp pusherApp;
+    NoticeRepository noticeRepository;
 
     @Autowired
-    NoticeRepository noticeRepository;
+    AppServerRequestService service;
+
 
     private static final String NOTICE_CHANNEL_PUSH = "PUSH";
     //private static final String NOTICE_CHANNEL_EMAIL = "EMAIL";
@@ -48,12 +50,19 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     private boolean pushNotice(NoticeModel noticeModel) {
-        PushMessage msg = new PushMessage();
-        msg.setTitle(noticeModel.getTitle());
-        msg.setContent(noticeModel.getContent());
-        msg.setCustoms(noticeModel.getCustom());
-        pusherApp.pushMessageToOneUser(msg, noticeModel.getTarget());
+        PushMessage thePushmsg = getPushMessage(noticeModel);
+        List<String> lstUids = new ArrayList<>();
+        lstUids.add(noticeModel.getTarget());
+        service.savePushMessageToUsers(noticeModel.getSystemId(), lstUids, thePushmsg);
         return true;
+    }
+
+    private PushMessage getPushMessage(NoticeModel noticeModel) {
+        PushMessage pushMessage = new PushMessage();
+        pushMessage.setTitle(noticeModel.getTitle());
+        pushMessage.setContent(noticeModel.getContent());
+        pushMessage.setCustoms(noticeModel.getCustom());
+        return pushMessage;
     }
 
     @Override
