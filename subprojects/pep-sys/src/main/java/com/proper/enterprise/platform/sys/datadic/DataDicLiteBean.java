@@ -12,6 +12,8 @@ public class DataDicLiteBean implements DataDicLite {
     private DataDicTypeEnum dataDicType;
     private Boolean enable;
 
+    public DataDicLiteBean(){}
+
     public DataDicLiteBean(String catalog, String code) {
         this.catalog = catalog;
         this.code = code;

@@ -63,7 +63,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
 
     @Override
     public PEPProcInstVO startProcess(String procDefKey, Map<String, Object> variables) {
-        variables = VariableUtil.handleVariableDateType(variables);
+        variables = VariableUtil.handleVariableSpecialType(variables);
         ProcessDefinition processDefinition = repositoryService
             .createProcessDefinitionQuery()
             .processDefinitionKey(procDefKey)
