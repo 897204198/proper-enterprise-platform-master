@@ -7,14 +7,12 @@ import com.proper.enterprise.platform.push.common.schedule.service.PushStatistic
 import com.proper.enterprise.platform.push.entity.PushMsgStatisticEntity;
 import com.proper.enterprise.platform.push.repository.PushMsgRepository;
 import com.proper.enterprise.platform.push.repository.PushMsgStatisticRepository;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -36,29 +34,28 @@ public class PushStatisticTaskServiceImpl implements PushStatisticTaskService {
     public void saveYesterdayPushStatistic() throws Exception {
         List<PushMsgStatisticEntity> entityList = new ArrayList<PushMsgStatisticEntity>();
 
-        Date dateStart = DateUtils.ceiling(DateUtils.addDays(new Date(), -2), Calendar.DAY_OF_MONTH);
-        Date dateEnd = DateUtils.ceiling(DateUtils.addDays(new Date(), -1), Calendar.DAY_OF_MONTH);
-        List<Object[]> statisticList = msgStatisticRepositoryRepo.getPushStatistic(DateUtil.toString(dateStart, PEPConstants.DEFAULT_DATETIME_FORMAT),
-            DateUtil.toString(dateEnd, PEPConstants.DEFAULT_DATETIME_FORMAT));
+        Date dateEnd = new Date();
+        Date dateStart = DateUtil.addDay(dateEnd, -1);
+        List<Object[]> statisticList = msgStatisticRepositoryRepo.getPushStatistic(
+            DateUtil.toString(dateStart, PEPConstants.DEFAULT_DATE_FORMAT),
+            DateUtil.toString(dateEnd, PEPConstants.DEFAULT_DATE_FORMAT));
         for (Object[] rows : statisticList) {
             PushMsgStatisticEntity entity = new PushMsgStatisticEntity();
             entity.setAppkey((String) rows[0]);
             entity.setPushMode((String) rows[1]);
-            Date msendDate = DateUtils.parseDate((String) rows[2], PEPConstants.DEFAULT_DATE_FORMAT);
+            Date msendDate = DateUtil.toDate((String) rows[2], PEPConstants.DEFAULT_DATE_FORMAT);
             entity.setMsendedDate(DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATE_FORMAT));
 
-            Calendar cale = DateUtils.toCalendar(msendDate);
-            if (cale.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-                cale.add(Calendar.DAY_OF_MONTH, -1);
-            }
-            cale.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-            StringBuffer sb = new StringBuffer();
-            sb.append(DateUtil.toString(cale.getTime(), PEPConstants.DEFAULT_DATE_FORMAT)).append("～");
-            cale.add(Calendar.DAY_OF_MONTH, 6);
-            sb.append(DateUtil.toString(cale.getTime(), PEPConstants.DEFAULT_DATE_FORMAT));
 
+            StringBuffer sb = new StringBuffer();
+            Date mondayOfThisWeek = DateUtil.getDayOfWeek(msendDate, 1);
+            Date sundayOfThisWeek = DateUtil.getDayOfWeek(msendDate, 7);
+            sb.append(DateUtil.toString(mondayOfThisWeek, PEPConstants.DEFAULT_DATE_FORMAT))
+                .append("～")
+                .append(DateUtil.toString(sundayOfThisWeek, PEPConstants.DEFAULT_DATE_FORMAT));
             entity.setWeek(sb.toString());
-            entity.setMonth(DateUtil.toString(msendDate, "yyyy-MM"));
+
+            entity.setMonth(DateUtil.toString(msendDate, PEPConstants.DEFAULT_MONTH_FORMAT));
             if ((int) rows[3] == PushMsgStatus.SENDED.ordinal()) {
                 entity.setMstatus(PushMsgStatus.SENDED);
             } else if ((int) rows[3] == PushMsgStatus.UNSEND.ordinal()) {
@@ -70,7 +67,8 @@ public class PushStatisticTaskServiceImpl implements PushStatisticTaskService {
         }
         LOGGER.info("startDate:{} endDate:{} entityList:{}", DateUtil.toString(dateStart, PEPConstants.DEFAULT_DATETIME_FORMAT),
             DateUtil.toString(dateEnd, PEPConstants.DEFAULT_DATETIME_FORMAT), entityList);
-        msgStatisticRepositoryRepo.deleteByMsendedDate(DateUtil.toString(dateStart, PEPConstants.DEFAULT_DATETIME_FORMAT));
+        msgStatisticRepositoryRepo.deleteByMsendedDate(DateUtil.toString(dateStart, PEPConstants.DEFAULT_DATE_FORMAT));
         msgStatisticRepositoryRepo.saveAll(entityList);
     }
+
 }

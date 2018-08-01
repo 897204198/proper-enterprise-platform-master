@@ -7,6 +7,8 @@ public class DataDicLiteBean implements DataDicLite {
     private String catalog;
     private String code;
 
+    public DataDicLiteBean(){}
+
     public DataDicLiteBean(String catalog, String code) {
         this.catalog = catalog;
         this.code = code;

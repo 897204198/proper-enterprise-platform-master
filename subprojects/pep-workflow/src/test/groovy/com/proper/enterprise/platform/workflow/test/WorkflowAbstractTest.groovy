@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
+import org.flowable.engine.HistoryService
 import org.flowable.engine.IdentityService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -13,6 +14,9 @@ abstract class WorkflowAbstractTest extends AbstractTest {
 
     @Autowired
     IdentityService identityService
+
+    @Autowired
+    HistoryService historyService
 
     protected void setCurrentUserId(String currentUserId) {
         identityService.setAuthenticatedUserId(currentUserId)
@@ -52,5 +56,9 @@ abstract class WorkflowAbstractTest extends AbstractTest {
     protected List<Map> buildPageTask(String taskId) {
         List<Map> pages = JSONUtil.parse(get('/workflow/task/' + taskId + '/page', HttpStatus.OK).getResponse().getContentAsString(), List.class)
         return pages
+    }
+
+    boolean isEnded(String procInstId) {
+        return null != historyService.createHistoricProcessInstanceQuery().processInstanceId(procInstId).finished().singleResult()
     }
 }

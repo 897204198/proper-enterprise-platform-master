@@ -88,7 +88,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
 
     @Override
     public void complete(String taskId, Map<String, Object> variables) {
-        variables = VariableUtil.handleVariableDateType(variables);
+        variables = VariableUtil.handleVariableSpecialType(variables);
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (MapUtils.isEmpty(variables)) {
             if (null == task.getAssignee()) {

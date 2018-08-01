@@ -110,4 +110,51 @@ class DateUtilSpec extends Specification {
             .toString(PEPConstants.DEFAULT_DATETIME_FORMAT)
     }
 
+    def "Check addWeek in DateUtil"() {
+        given:
+        Date d = new DateTime(2018, 7, 19, 15, 31, 24).toDate()
+
+        expect:
+        DateUtil.addWeek(DateUtil.addWeek(d, 2), -2) == d
+        DateUtil.addWeek(DateUtil.addWeek(d, 2), -1) != d
+        DateUtil.addWeek(d, 0) == d
+        DateUtil.addWeek(null, 0) == null
+        DateUtil.addWeek(d, 1) == new DateTime(2018, 7, 26, 15, 31, 24).toDate()
+    }
+
+    def "Check getDayOfWeek in DateUtil"() {
+        given:
+        Date dateOfSundy = new DateTime(2018, 7, 15, 15, 31, 24).toDate()
+        Date dateNotSundy = new DateTime(2018, 7, 5, 15, 31, 24).toDate()
+
+        expect:
+        DateUtil.getDayOfWeek(dateOfSundy, 1) == new DateTime(2018, 7, 9, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateOfSundy, 2) == new DateTime(2018, 7, 10, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateOfSundy, 3) == new DateTime(2018, 7, 11, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateOfSundy, 4) == new DateTime(2018, 7, 12, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateOfSundy, 5) == new DateTime(2018, 7, 13, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateOfSundy, 6) == new DateTime(2018, 7, 14, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateOfSundy, 7) == dateOfSundy
+
+        DateUtil.getDayOfWeek(dateNotSundy, 1) == new DateTime(2018, 7, 2, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateNotSundy, 2) == new DateTime(2018, 7, 3, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateNotSundy, 3) == new DateTime(2018, 7, 4, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateNotSundy, 4) == new DateTime(2018, 7, 5, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateNotSundy, 5) == new DateTime(2018, 7, 6, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateNotSundy, 6) == new DateTime(2018, 7, 7, 15, 31, 24).toDate()
+        DateUtil.getDayOfWeek(dateNotSundy, 7) == new DateTime(2018, 7, 8, 15, 31, 24).toDate()
+
+        DateUtil.getDayOfWeek(null, 1) == null
+    }
+
+
+    def "Check getBeginningOfYear in DateUtil"() {
+        given:
+        Date d = new DateTime(2018, 7, 15, 15, 31, 24).toDate()
+
+        expect:
+        DateUtil.getBeginningOfYear(d) == new DateTime(2018, 1, 1, 15, 31, 24).toDate()
+        DateUtil.getBeginningOfYear(d) != d
+        DateUtil.getBeginningOfYear(null) == null
+    }
 }
