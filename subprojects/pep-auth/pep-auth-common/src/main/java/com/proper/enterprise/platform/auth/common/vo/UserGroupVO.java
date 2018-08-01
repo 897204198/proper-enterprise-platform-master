@@ -28,7 +28,7 @@ public class UserGroupVO extends BaseVO implements UserGroup {
     /**
      * 用户组名称
      */
-    @JsonView(value = {Single.class})
+    @JsonView(value = {Single.class, UserVO.CurrentUser.class})
     private String name;
 
     /**

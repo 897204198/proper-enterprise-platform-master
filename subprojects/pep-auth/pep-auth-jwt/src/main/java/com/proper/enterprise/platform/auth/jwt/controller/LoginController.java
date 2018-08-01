@@ -1,10 +1,17 @@
 package com.proper.enterprise.platform.auth.jwt.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.AuthcService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
+import com.proper.enterprise.platform.auth.common.vo.RoleVO;
+import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
+import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.auth.service.JWTAuthcService;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -47,14 +53,17 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/auth/login/user", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, String>> getCurrentUser() {
-        Map<String, String> currentUserMap = new HashMap<>(4);
+    @JsonView(UserVO.CurrentUser.class)
+    public ResponseEntity<User> getCurrentUser() {
         User user = userService.getCurrentUser();
-        currentUserMap.put("name", user.getName());
-        currentUserMap.put("avatar", user.getAvatar());
-        currentUserMap.put("userId", user.getId());
-        currentUserMap.put("notifyCount", "12");
-        return new ResponseEntity<>(currentUserMap, HttpStatus.OK);
+        UserVO currentUserVO = BeanUtil.convert(user, UserVO.class);
+        if (CollectionUtil.isNotEmpty(user.getRoles())) {
+            currentUserVO.setRoles(BeanUtil.convert(userService.getUserRoles(user.getId(), EnableEnum.ENABLE), RoleVO.class));
+        }
+        if (CollectionUtil.isNotEmpty(user.getUserGroups())) {
+            currentUserVO.setUserGroups(BeanUtil.convert(userService.getUserGroups(user.getId(), EnableEnum.ENABLE), UserGroupVO.class));
+        }
+        return new ResponseEntity<>(currentUserVO, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/auth/logout", method = RequestMethod.POST)
