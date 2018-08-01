@@ -74,6 +74,12 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
         List list = new ArrayList<PushMsgStatisticVO>();
         Date msendDate = DateUtils.ceiling(DateUtils.addDays(new Date(), -8), Calendar.DAY_OF_MONTH);
         String dateStr = DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATE_FORMAT);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("findPushStatisticByDay dateStr:{}, nowStr:{}, now:{}",
+                DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATETIME_FORMAT),
+                DateUtil.toString(new Date(), PEPConstants.DEFAULT_DATETIME_FORMAT),
+                new Date());
+        }
         if (appkey == null) {
             List result = pushMsgStatisticRepository.findByAndMsendedDateAfterOrderByMsendedDate(dateStr);
             toEntity(result, list);
