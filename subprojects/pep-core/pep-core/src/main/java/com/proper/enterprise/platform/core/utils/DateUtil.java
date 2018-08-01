@@ -23,16 +23,16 @@ import static com.proper.enterprise.platform.core.PEPConstants.*;
 public class DateUtil {
 
     /**
-     * 私有化工具类的构造函数，避免对工具类的实例化
-     */
-    private DateUtil() {
-    }
-
-    /**
      * 静态方法调用私有构造函数，以覆盖对构造函数的测试
      */
     static {
         new DateUtil();
+    }
+
+    /**
+     * 私有化工具类的构造函数，避免对工具类的实例化
+     */
+    private DateUtil() {
     }
 
     /**
@@ -202,4 +202,35 @@ public class DateUtil {
         }
     }
 
+    /**
+     * 日期添加指定星期
+     *
+     * @param date 要添加星期的日期
+     * @param week 添加的星期,如果为负数，则为减少的星期
+     * @return 添加指定星期数的新的Date对象
+     */
+    public static Date addWeek(Date date, int week) {
+        return date == null ? null : new DateTime(date.getTime()).plusWeeks(week).toDate();
+    }
+
+    /**
+     * 获取本周的周几 ，周一、周日为一周的开始和结束
+     *
+     * @param date      日期
+     * @param dayOfWeek 周几 1～7代表周一～周日
+     * @return 本周几Date对象
+     */
+    public static Date getDayOfWeek(Date date, int dayOfWeek) {
+        return date == null ? null : new DateTime(date).withDayOfWeek(dayOfWeek).toDate();
+    }
+
+    /**
+     * 获取年初日期
+     *
+     * @param date 要获得年初的日期
+     * @return 该年度1月1日的Date对象
+     */
+    public static Date getBeginningOfYear(Date date) {
+        return date == null ? null : new DateTime(date).withDayOfYear(1).toDate();
+    }
 }

@@ -9,15 +9,12 @@ import com.proper.enterprise.platform.push.entity.PushMsgStatisticEntity;
 import com.proper.enterprise.platform.push.repository.PushMsgStatisticRepository;
 import com.proper.enterprise.platform.push.service.PushMsgStatisticService;
 import com.proper.enterprise.platform.push.vo.PushMsgStatisticVO;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -56,15 +53,15 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
         List<PushMsgStatisticEntity> entityList = new ArrayList<PushMsgStatisticEntity>();
 
         Date dateStart = DateUtil.toDate(date, PEPConstants.DEFAULT_DATE_FORMAT);
-        Date dateEnd = DateUtils.addDays(dateStart, 1);
+        Date dateEnd = DateUtil.addDay(dateStart, 1);
 
         List<Object[]> statisticList = pushMsgStatisticRepository.getPushStatistic(DateUtil.toString(dateStart,
-            PEPConstants.DEFAULT_DATETIME_FORMAT), DateUtil.toString(dateEnd, PEPConstants.DEFAULT_DATETIME_FORMAT));
+            PEPConstants.DEFAULT_DATE_FORMAT), DateUtil.toString(dateEnd, PEPConstants.DEFAULT_DATE_FORMAT));
         List<PushMsgStatisticVO> voList = new ArrayList<>();
         if (statisticList.size() > 0) {
             convertObjToEntity(statisticList, entityList, voList);
             pushMsgStatisticRepository.deleteByMsendedDate(DateUtil.toString(dateStart,
-                PEPConstants.DEFAULT_DATETIME_FORMAT));
+                PEPConstants.DEFAULT_DATE_FORMAT));
             pushMsgStatisticRepository.save(entityList);
         }
         return voList;
@@ -72,7 +69,7 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
 
     public List<PushMsgStatisticVO> findPushStatisticByDay(String appkey) {
         List list = new ArrayList<PushMsgStatisticVO>();
-        Date msendDate = DateUtils.ceiling(DateUtils.addDays(new Date(), -8), Calendar.DAY_OF_MONTH);
+        Date msendDate = DateUtil.addDay(new Date(), -7);
         String dateStr = DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATE_FORMAT);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("findPushStatisticByDay dateStr:{}, nowStr:{}, now:{}",
@@ -91,14 +88,8 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
     }
 
     public List<PushMsgStatisticVO> findPushStatisticByWeek(String appkey) {
-
-        Calendar cale = DateUtils.toCalendar(new Date());
-        if (cale.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-            cale.add(Calendar.DAY_OF_MONTH, -1);
-        }
-        cale.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        cale.add(Calendar.WEEK_OF_YEAR, -6);
-        String dateStr = DateUtil.toString(cale.getTime(), PEPConstants.DEFAULT_DATE_FORMAT);
+        Date msendDate = DateUtil.getDayOfWeek(DateUtil.addWeek(new Date(), -6), 1);
+        String dateStr = DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATE_FORMAT);
 
         List list = new ArrayList<PushMsgStatisticVO>();
         if (appkey == null) {
@@ -112,8 +103,7 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
     }
 
     public List<PushMsgStatisticVO> findPushStatisticByMonth(String appkey) {
-        Date date = DateUtils.addYears(DateUtils.ceiling(new Date(), Calendar.YEAR), -1);
-        String dateStr = DateUtil.toString(date, PEPConstants.DEFAULT_DATE_FORMAT);
+        String dateStr = DateUtil.toString(DateUtil.getBeginningOfYear(new Date()), PEPConstants.DEFAULT_DATE_FORMAT);
         List list = new ArrayList<PushMsgStatisticVO>();
         if (appkey == null) {
             List result = pushMsgStatisticRepository.findByMsendedDateAfterGroupByMonthOfYear(dateStr);
@@ -144,22 +134,19 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
                 PushMsgStatisticEntity entity = new PushMsgStatisticEntity();
                 entity.setAppkey((String) rows[0]);
                 entity.setPushMode((String) rows[1]);
-                Date msendDate = null;
-                msendDate = DateUtils.parseDate((String) rows[2], PEPConstants.DEFAULT_DATE_FORMAT);
+                Date msendDate = DateUtil.toDate((String) rows[2], PEPConstants.DEFAULT_DATE_FORMAT);
                 entity.setMsendedDate(DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATE_FORMAT));
 
-                Calendar cale = DateUtils.toCalendar(msendDate);
-                if (cale.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-                    cale.add(Calendar.DAY_OF_MONTH, -1);
-                }
-                cale.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                StringBuffer sb = new StringBuffer();
-                sb.append(DateUtil.toString(cale.getTime(), PEPConstants.DEFAULT_DATE_FORMAT)).append("～");
-                cale.add(Calendar.DAY_OF_MONTH, 6);
-                sb.append(DateUtil.toString(cale.getTime(), PEPConstants.DEFAULT_DATE_FORMAT));
 
+                StringBuffer sb = new StringBuffer();
+                Date mondayOfThisWeek = DateUtil.getDayOfWeek(msendDate, 1);
+                Date sundayOfThisWeek = DateUtil.getDayOfWeek(msendDate, 7);
+                sb.append(DateUtil.toString(mondayOfThisWeek, PEPConstants.DEFAULT_DATE_FORMAT))
+                    .append("～")
+                    .append(DateUtil.toString(sundayOfThisWeek, PEPConstants.DEFAULT_DATE_FORMAT));
                 entity.setWeek(sb.toString());
-                entity.setMonth(DateUtil.toString(msendDate, "yyyy-MM"));
+
+                entity.setMonth(DateUtil.toString(msendDate, PEPConstants.DEFAULT_MONTH_FORMAT));
                 if ((int) rows[3] == PushMsgStatus.SENDED.ordinal()) {
                     entity.setMstatus(PushMsgStatus.SENDED);
                 } else if ((int) rows[3] == PushMsgStatus.UNSEND.ordinal()) {
@@ -178,7 +165,7 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
                 vo.setMstatus(entity.getMstatus().toString());
                 voList.add(vo);
             }
-        } catch (ParseException e) {
+        } catch (Exception e) {
             LOGGER.error("statistic init error:{}", e, e.getStackTrace());
         }
     }
