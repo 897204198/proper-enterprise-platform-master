@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.jwt.controller
 
+import com.proper.enterprise.platform.auth.common.vo.UserVO
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
@@ -26,25 +27,28 @@ class LoginControllerTest extends AbstractTest {
         mockLogin('admin', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
         // wrong account
         mockLogin('test', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
-
+        Authentication.setCurrentUserId(DEFAULT_USER)
         post('/auth/logout', '', HttpStatus.CREATED)
     }
 
     @Test
+   @Sql("/com/proper/enterprise/platform/auth/jwt/sql/identity.sql")
     void getCurrentUser() {
-        def token = mockLogin('admin', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
+        def token = mockLogin('testuser1', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
         def payload = new JsonSlurper().parse(Base64.decodeBase64(token.split(/\./)[1]))
-        assert payload.name == '超级管理员'
+        assert payload.name == 'c'
         assert payload.hasRole == true
 
         mockRequest.addHeader("Authorization", token)
-        Authentication.setCurrentUserId(DEFAULT_USER)
-        Map<String, String> currentUserMap = JSONUtil.parse(get("/auth/login/user", HttpStatus.OK)
-            .getResponse().getContentAsString(), HashMap)
-        assert DEFAULT_USER == currentUserMap.get("userId")
-        assert '超级管理员' == currentUserMap.get("name")
-        assert 'avatar' == currentUserMap.get("avatar")
-        assert '12' == currentUserMap.get("notifyCount")
+        Authentication.setCurrentUserId("user1")
+        UserVO currentUserVO = JSONUtil.parse(get("/auth/login/user", HttpStatus.OK)
+            .getResponse().getContentAsString(), UserVO.class)
+
+        assert "user1" == currentUserVO.getId()
+        assert 'c' == currentUserVO.getName()
+        assert 'avatar' == currentUserVO.getAvatar()
+        assert 1 == currentUserVO.getRoles().size()
+        assert 1 == currentUserVO.getUserGroups().size()
     }
 
     private String mockLogin(String user, String pwd, MediaType produce, HttpStatus statusCode) {

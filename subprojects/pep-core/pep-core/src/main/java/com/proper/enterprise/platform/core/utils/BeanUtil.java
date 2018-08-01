@@ -191,6 +191,9 @@ public class BeanUtil {
         Class sourceGenericityType = BeanUtil.getCollectionGenericityType(source.getClass(), sourcePd.getName());
         Class targetGenericityType = BeanUtil.getCollectionGenericityType(target.getClass(), targetPd.getName());
         Method writeMethod = targetPd.getWriteMethod();
+        if (null == targetGenericityType || null == sourceGenericityType) {
+            return;
+        }
         if (null == value || sourceGenericityType == targetGenericityType) {
             writeMethod.invoke(target, value);
             return;
@@ -348,7 +351,11 @@ public class BeanUtil {
      * @return 泛型的具体类型
      */
     public static Class getCollectionGenericityType(Class cls, String fieldName) {
-        return BeanUtil.getCollectionActualType(Objects.requireNonNull(BeanUtil.getField(cls, fieldName)));
+        Field filed = BeanUtil.getField(cls, fieldName);
+        if (null == filed) {
+            return null;
+        }
+        return BeanUtil.getCollectionActualType(Objects.requireNonNull(filed));
     }
 
     /**

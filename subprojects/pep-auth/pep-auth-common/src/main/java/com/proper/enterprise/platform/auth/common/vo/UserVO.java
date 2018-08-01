@@ -32,10 +32,15 @@ public class UserVO extends BaseVO implements User {
 
     }
 
+    public interface CurrentUser extends BaseView {
+
+    }
+
+
     /**
      * 用户名，唯一
      */
-    @JsonView(value = {Single.class})
+    @JsonView(value = {Single.class, CurrentUser.class})
     private String username;
 
     /**
@@ -47,7 +52,7 @@ public class UserVO extends BaseVO implements User {
     /**
      * 邮箱，用于找回密码
      */
-    @JsonView(value = {Single.class})
+    @JsonView(value = {Single.class, CurrentUser.class})
     private String email;
 
     /**
@@ -65,7 +70,7 @@ public class UserVO extends BaseVO implements User {
     /**
      * 用户显示名称
      */
-    @JsonView(value = {Single.class})
+    @JsonView(value = {Single.class, CurrentUser.class})
     private String name;
 
     protected String pepDtype;
@@ -73,16 +78,18 @@ public class UserVO extends BaseVO implements User {
     @POJOConverter(fromClassName = USER_ENTITY_PATH,
         fieldName = "roleEntities",
         targetClassName = USER_ENTITY_PATH)
+    @JsonView(value = {CurrentUser.class})
     private Collection<RoleVO> roles;
 
     @POJOConverter(fromClassName = USER_ENTITY_PATH,
         fieldName = "userGroupEntities",
         targetClassName = USER_ENTITY_PATH)
+    @JsonView(value = {CurrentUser.class})
     private Collection<UserGroupVO> userGroups;
     /**
      * 用户头像
      */
-    @JsonView(value = {Single.class})
+    @JsonView(value = {Single.class, CurrentUser.class})
     private String avatar;
 
     @Override

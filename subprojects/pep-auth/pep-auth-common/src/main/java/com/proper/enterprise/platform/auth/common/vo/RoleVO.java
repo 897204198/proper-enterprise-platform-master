@@ -31,7 +31,7 @@ public class RoleVO extends BaseVO implements Role {
     /**
      * 名称
      */
-    @JsonView(value = {UserGroupVO.GroupWithRole.class, Single.class})
+    @JsonView(value = {UserGroupVO.GroupWithRole.class, UserVO.CurrentUser.class, Single.class})
     private String name;
 
     /**
