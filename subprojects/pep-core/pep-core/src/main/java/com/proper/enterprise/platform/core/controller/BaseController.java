@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.support.AbstractQuerySupport;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,6 +29,8 @@ import java.util.List;
 public abstract class BaseController extends AbstractQuerySupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseController.class);
+
+    private static final String VALID_MESSGE_SEPARATOR = ":";
 
     /**
      * 返回 POST 请求的响应
@@ -203,7 +207,7 @@ public abstract class BaseController extends AbstractQuerySupport {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
         headers.set(PEPConstants.RESPONSE_HEADER_ERROR_TYPE, PEPConstants.RESPONSE_SYSTEM_ERROR);
-        if (ex instanceof ErrMsgException) {
+        if (ex instanceof ErrMsgException || ex instanceof ConstraintViolationException) {
             headers.set(PEPConstants.RESPONSE_HEADER_ERROR_TYPE, PEPConstants.RESPONSE_BUSINESS_ERROR);
         }
         return headers;
@@ -217,8 +221,23 @@ public abstract class BaseController extends AbstractQuerySupport {
     }
 
     protected String handleBody(Exception ex) {
+        if (ex instanceof ConstraintViolationException) {
+            return handleValidMessage(ex.getMessage());
+        }
         return null == ex.getMessage() ? PEPConstants.RESPONSE_SYSTEM_ERROR_MSG : ex.getMessage();
     }
 
+    private String handleValidMessage(String message) {
+        if (StringUtil.isEmpty(message)) {
+            return message;
+        }
+        if (message.contains(VALID_MESSGE_SEPARATOR)) {
+            String validMessage = message.split("\\:").length > 0
+                ? message.split("\\:")[1]
+                : message;
+            return validMessage.trim();
+        }
+        return message;
+    }
 
 }
