@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.push.vo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.push.api.PushMsg;
-import com.proper.enterprise.platform.push.common.model.enums.PushMode;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
 import com.proper.enterprise.platform.push.entity.PushDeviceEntity;
 
@@ -20,7 +19,7 @@ public class PushMsgVO extends BaseVO implements PushMsg {
     @JsonView(PushMsgVO.Single.class)
     private PushMsgStatus mstatus;
     @JsonView(PushMsgVO.Single.class)
-    private PushMode pushMode;
+    private String pushMode;
     @JsonView(PushMsgVO.Single.class)
     private String lastPushTime;
 
@@ -72,12 +71,12 @@ public class PushMsgVO extends BaseVO implements PushMsg {
     }
 
     @Override
-    public PushMode getPushMode() {
+    public String getPushMode() {
         return this.pushMode;
     }
 
     @Override
-    public PushMsg setPushMode(PushMode pushMode) {
+    public PushMsg setPushMode(String pushMode) {
         this.pushMode = pushMode;
         return this;
     }

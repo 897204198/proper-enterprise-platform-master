@@ -1,7 +1,6 @@
 package com.proper.enterprise.platform.push.api;
 
 import com.proper.enterprise.platform.core.api.IBase;
-import com.proper.enterprise.platform.push.common.model.enums.PushMode;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
 import com.proper.enterprise.platform.push.entity.PushDeviceEntity;
 
@@ -73,7 +72,7 @@ public interface PushMsg extends IBase {
      *
      * @return String 推送渠道
      */
-    public PushMode getPushMode();
+    public String getPushMode();
 
     /**
      * 设置推送渠道
@@ -81,7 +80,7 @@ public interface PushMsg extends IBase {
      * @param pushMode 推送渠道
      * @return PushMsg
      */
-    public PushMsg setPushMode(PushMode pushMode);
+    public PushMsg setPushMode(String pushMode);
 
     /**
      * 设置推送渠道
