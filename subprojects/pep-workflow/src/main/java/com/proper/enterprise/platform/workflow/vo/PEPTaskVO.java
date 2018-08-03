@@ -1,21 +1,27 @@
 package com.proper.enterprise.platform.workflow.vo;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class PEPTaskVO {
 
+    public interface ToDoView extends BaseView {
+
+    }
+
     /**
      * 任务Id
      */
+    @JsonView(value = {ToDoView.class})
     private String taskId;
     /**
      * 任务名称
      */
+    @JsonView(value = {ToDoView.class})
     private String name;
     /**
      * 当前经办人
@@ -56,6 +62,7 @@ public class PEPTaskVO {
     /**
      * 任务开始时间
      */
+    @JsonView(value = {ToDoView.class})
     private String createTime;
     /**
      * 任务结束时间
@@ -68,7 +75,10 @@ public class PEPTaskVO {
     /**
      * 流程实例信息
      */
-    private PEPProcInstVO pepProcInstVO;
+    @JsonView(value = {ToDoView.class})
+    private PEPProcInstVO pepProcInst;
+
+    private Boolean sameAssigneeSkip;
 
     public PEPForm getForm() {
         return form;
@@ -102,14 +112,13 @@ public class PEPTaskVO {
         this.name = name;
     }
 
-    public PEPProcInstVO getPepProcInstVO() {
-        return pepProcInstVO;
+    public PEPProcInstVO getPepProcInst() {
+        return pepProcInst;
     }
 
-    public void setPepProcInstVO(PEPProcInstVO pepProcInstVO) {
-        this.pepProcInstVO = pepProcInstVO;
+    public void setPepProcInst(PEPProcInstVO pepProcInst) {
+        this.pepProcInst = pepProcInst;
     }
-
 
     public String getCreateTime() {
         return createTime;
@@ -191,34 +200,12 @@ public class PEPTaskVO {
         this.candidateGroupNames = candidateGroupNames;
     }
 
-    public void addCandidateUser(String candidateUserId) {
-        if (StringUtil.isEmpty(candidateUserId)) {
-            return;
-        }
-        if (null == this.candidateUsers) {
-            this.candidateUsers = new HashSet<>();
-        }
-        candidateUsers.add(candidateUserId);
+    public Boolean getSameAssigneeSkip() {
+        return sameAssigneeSkip;
     }
 
-    public void addCandidateRole(String candidateRoleId) {
-        if (StringUtil.isEmpty(candidateRoleId)) {
-            return;
-        }
-        if (null == this.candidateRoles) {
-            this.candidateRoles = new HashSet<>();
-        }
-        candidateRoles.add(candidateRoleId);
-    }
-
-    public void addCandidateGroup(String candidateGroupId) {
-        if (StringUtil.isEmpty(candidateGroupId)) {
-            return;
-        }
-        if (null == this.candidateGroups) {
-            this.candidateGroups = new HashSet<>();
-        }
-        candidateGroups.add(candidateGroupId);
+    public void setSameAssigneeSkip(Boolean sameAssigneeSkip) {
+        this.sameAssigneeSkip = sameAssigneeSkip;
     }
 
     @Override

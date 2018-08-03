@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.workflow.frame
 
+import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.test.AbstractTest
@@ -77,6 +78,13 @@ class ManyFormTest extends AbstractTest {
         assert pages2.get(0).get("formData").a == "a"
         assert pages2.get(0).get("showType") == "EDIT"
         form1.put("a", "a2")
+        assert pages2.get(0).get("formProperties").size() == 2
+        assert pages2.get(0).get("formProperties").get(0).name == 'name'
+        assert pages2.get(0).get("formProperties").get(0).readable
+        assert pages2.get(0).get("formProperties").get(0).writable
+        assert !pages2.get(0).get("formProperties").get(0).required
+        assert !pages2.get(0).get("formProperties").get(1).writable
+        assert pages2.get(0).get("formProperties").get(1).value == PEPConstants.DEFAULT_OPERAOTR_ID
         completeStep(form1Step1, form1)
 
 
@@ -85,6 +93,7 @@ class ManyFormTest extends AbstractTest {
         assert page3.size() == 1
         assert page3.get(0).get("formData").a == "a2"
         assert page3.get(0).get("showType") == "EDIT"
+        assert page3.get(0).get("formProperties").size() == 0
         form1.put("a", "a3")
         completeStep(form1Step2, form1)
 
@@ -95,8 +104,14 @@ class ManyFormTest extends AbstractTest {
         assert page4.get(0).get("showType") == "SHOW"
         assert page4.get(1).get("showType") == "EDIT"
         assert page4.get(1).get("formKey") == "form2"
+        assert page4.get(1).get("formProperties").size() == 1
+        assert page4.get(1).get("formProperties").get(0).name == 'name1'
+        assert page4.get(1).get("formProperties").get(0).readable
+        assert page4.get(1).get("formProperties").get(0).writable
+        assert page4.get(1).get("formProperties").get(0).required
         Map form2 = new HashMap()
         form2.put("b", "b")
+        form2.put("name1", "name1")
         completeStep(form2Step1, form2)
 
 
@@ -108,6 +123,7 @@ class ManyFormTest extends AbstractTest {
         assert pages5.get(1).get("showType") == "EDIT"
         assert pages5.get(1).get("formKey") == "form2"
         assert pages5.get(1).get("formData").b == "b"
+        assert pages5.get(1).get("formData").name1 == "name1"
         form2.put("b", "b2")
         completeStep(form2Step2, form2)
     }

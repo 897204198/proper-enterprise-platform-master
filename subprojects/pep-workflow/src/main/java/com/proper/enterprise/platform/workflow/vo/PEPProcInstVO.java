@@ -1,5 +1,7 @@
 package com.proper.enterprise.platform.workflow.vo;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 public class PEPProcInstVO {
 
     /**
@@ -20,11 +22,13 @@ public class PEPProcInstVO {
     /**
      * 流程定义名称
      */
+    @JsonView(value = {PEPTaskVO.ToDoView.class})
     private String processDefinitionName;
 
     /**
      * 流程启动时间
      */
+    @JsonView(value = {PEPTaskVO.ToDoView.class})
     private String createTime;
 
     /**
@@ -35,11 +39,13 @@ public class PEPProcInstVO {
     /**
      * 流程启动者Id
      */
+    @JsonView(value = {PEPTaskVO.ToDoView.class})
     private String startUserId;
 
     /**
      * 流程启动者名称
      */
+    @JsonView(value = {PEPTaskVO.ToDoView.class})
     private String startUserName;
 
     /**
@@ -50,10 +56,12 @@ public class PEPProcInstVO {
     /**
      * 流程状态
      */
+    @JsonView(value = {PEPTaskVO.ToDoView.class})
     private String stateCode;
     /**
      * 流程状态
      */
+    @JsonView(value = {PEPTaskVO.ToDoView.class})
     private String stateValue;
 
     public String getProcInstId() {

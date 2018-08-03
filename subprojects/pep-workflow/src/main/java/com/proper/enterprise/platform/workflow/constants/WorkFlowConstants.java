@@ -40,4 +40,8 @@ public class WorkFlowConstants {
      * 审核通过
      */
     public static final String APPROVE_PASS = "1";
+    /**
+     * 相同经办人未跳过记录Key
+     */
+    public static final String NO_SAME_ASSIGNEE_SKIP_REMARK = "noSameAssigneeSkipRemark";
 }

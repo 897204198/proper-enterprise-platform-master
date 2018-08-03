@@ -1,9 +1,8 @@
 package com.proper.enterprise.platform.workflow.api
 
-import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.security.Authentication
-import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
+import com.proper.enterprise.platform.workflow.test.WorkflowAbstractTest
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
 import org.flowable.engine.HistoryService
 import org.flowable.engine.IdentityService
@@ -13,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 
-class SameAssigneeSkipTest extends AbstractTest {
+class SameAssigneeSkipTest extends WorkflowAbstractTest {
 
     @Autowired
     private TaskService taskService
@@ -28,43 +27,35 @@ class SameAssigneeSkipTest extends AbstractTest {
 
     @Test
     @Sql("/com/proper/enterprise/platform/workflow/datadics.sql")
-    public void sameAssigneeAutoCompleteListenerTest() {
-        Authentication.setCurrentUserId("pep-sysadmin")
-        identityService.setAuthenticatedUserId("pep-sysadmin")
-        Map<String, Object> variables = new HashMap<>()
-        String procInsId = start(SKIP_PROC_KEY, variables)
-        assert null != historyService.createHistoricProcessInstanceQuery()
-            .processInstanceId(procInsId).singleResult().endTime
-    }
-
-    @Test
-    @Sql("/com/proper/enterprise/platform/workflow/datadics.sql")
-    public void sameAssigneeAutoCompleteListenerOtherInitiatorTest() {
+    public void sameAssigneeSkipOtherInitiatorTest() {
         Authentication.setCurrentUserId("user1")
         identityService.setAuthenticatedUserId("user1")
         Map<String, Object> variables = new HashMap<>()
-        String procInsId = start(SKIP_PROC_KEY, variables)
+        PEPProcInstVO pepProcInstVO = start(SKIP_PROC_KEY, variables)
         Authentication.setCurrentUserId("pep-sysadmin")
-        Map task1=getTask("task1")
+        Map task1 = getTask("task1")
         post('/workflow/task/' + task1.taskId, JSONUtil.toJSON(new HashMap()), HttpStatus.CREATED)
+        Map skipHis1 = findHis(pepProcInstVO.procInstId)
+        assert skipHis1.get("hisTasks").size() == 3
+        assert skipHis1.get("hisTasks").get(0).sameAssigneeSkip
+        assert skipHis1.get("hisTasks").get(1).sameAssigneeSkip
+        assert !skipHis1.get("hisTasks").get(2).sameAssigneeSkip
         Authentication.setCurrentUserId("user1")
+        Map task4 = getTask("task4")
+        Map task4Form = new HashMap()
+        task4Form.put("passOrNot", "0")
+        complete(task4.taskId, task4Form)
+        Authentication.setCurrentUserId("pep-sysadmin")
+        Map task3 = getTask("task3")
+        complete(task3.taskId, new HashMap())
+        Map skipHis2 = findHis(pepProcInstVO.procInstId)
+        assert skipHis2.get("hisTasks").size() == 5
+        assert !skipHis2.get("hisTasks").get(0).sameAssigneeSkip
+        Authentication.setCurrentUserId("user1")
+        Map task42 = getTask("task4")
+        task4Form.put("passOrNot", "1")
+        complete(task42.taskId, task4Form)
         assert null != historyService.createHistoricProcessInstanceQuery()
-            .processInstanceId(procInsId).singleResult().endTime
-    }
-
-    private String start(String key, Map<String, Object> form) {
-        PEPProcInstVO pepProcInstVO = JSONUtil.parse(post('/workflow/process/' + key, JSONUtil.toJSON(form), HttpStatus.CREATED).getResponse().getContentAsString(), PEPProcInstVO.class)
-        return pepProcInstVO.getProcInstId()
-    }
-
-
-    private Map getTask(String taskName) {
-        DataTrunk dataTrunk = JSONUtil.parse(get('/workflow/task?pageNo=1&pageSize=10', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
-        for (Map pepTaskVO : dataTrunk.getData()) {
-            if (taskName.equals(pepTaskVO.name)) {
-                return pepTaskVO
-            }
-        }
-        return null
+            .processInstanceId(pepProcInstVO.getProcInstId()).singleResult().endTime
     }
 }

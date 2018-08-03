@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.workflow.service;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
-import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -36,14 +35,6 @@ public interface PEPTaskService {
     DataTrunk<PEPTaskVO> findTodoPagination(String processDefinitionName, PageRequest pageRequest);
 
     /**
-     * 根据流程实例id查询流程轨迹
-     *
-     * @param procInstId 流程实例id
-     * @return 流程轨迹VO
-     */
-    PEPWorkflowPathVO findWorkflowPath(String procInstId);
-
-    /**
      * 根据流程实例id 获取已完成的历史Task
      * 根据完成时间倒序
      *
@@ -51,6 +42,15 @@ public interface PEPTaskService {
      * @return 历史Task集合
      */
     List<PEPTaskVO> findHisTasks(String procInstId);
+
+    /**
+     * 根据流程实例id 获取当前Task
+     * 根据完成时间倒序
+     *
+     * @param procInstId 流程实例id
+     * @return 历史Task集合
+     */
+    List<PEPTaskVO> findCurrentTasks(String procInstId);
 
     /**
      * 根据taskId构建流程页面

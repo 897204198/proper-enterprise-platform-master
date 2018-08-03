@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.workflow.service;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
+import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import org.springframework.data.domain.PageRequest;
 
@@ -56,4 +57,12 @@ public interface PEPProcessService {
      * @return 需要展示的表单集合
      */
     List<PEPForm> buildPage(String procInstId);
+
+    /**
+     * 根据流程实例id查询流程轨迹
+     *
+     * @param procInstId 流程实例id
+     * @return 流程轨迹VO
+     */
+    PEPWorkflowPathVO findWorkflowPath(String procInstId);
 }

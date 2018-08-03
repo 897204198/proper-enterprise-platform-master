@@ -1,9 +1,13 @@
-package com.proper.enterprise.platform.workflow.vo;
+package com.proper.enterprise.platform.workflow.model;
 
+import com.proper.enterprise.platform.core.PEPApplicationContext;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
+import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
+import org.flowable.engine.FormService;
 import org.flowable.engine.form.FormProperty;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
@@ -11,25 +15,25 @@ import org.flowable.task.api.history.HistoricTaskInstance;
 import java.util.List;
 import java.util.Map;
 
+public class PEPExtForm implements PEPForm {
 
-/**
- * 外置表单 实现PEP表单接口
- */
-public class PEPExtFormVO implements PEPForm {
 
-    public PEPExtFormVO() {}
-
-    public PEPExtFormVO(Task task) {
+    public PEPExtForm(Task task) {
         this.formKey = task.getFormKey();
         this.formData = buildFormData(task.getProcessVariables());
+        this.globalData = task.getProcessVariables();
+        this.showType = ShowType.EDIT;
+        buildFormProperties(task.getId());
     }
 
-    public PEPExtFormVO(HistoricTaskInstance historicTaskInstance) {
+    public PEPExtForm(HistoricTaskInstance historicTaskInstance) {
         this.formKey = historicTaskInstance.getFormKey();
         this.formData = historicTaskInstance.getTaskLocalVariables();
+        this.globalData = historicTaskInstance.getProcessVariables();
+        this.showType = ShowType.SHOW;
     }
 
-    public PEPExtFormVO(String formKey, Map<String, Object> formData) {
+    public PEPExtForm(String formKey, Map<String, Object> formData) {
         this.formKey = formKey;
         this.formData = formData;
     }
@@ -40,9 +44,9 @@ public class PEPExtFormVO implements PEPForm {
 
     private Map<String, Object> globalData;
 
-    private ShowType showType;
-
     private List<FormProperty> formProperties;
+
+    private ShowType showType;
 
     public String getFormKey() {
         return formKey;
@@ -68,6 +72,20 @@ public class PEPExtFormVO implements PEPForm {
         this.showType = showType;
     }
 
+
+    public List<FormProperty> getFormProperties() {
+        return formProperties;
+    }
+
+    public void setFormProperties(List<FormProperty> formProperties) {
+        this.formProperties = formProperties;
+    }
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJSONIgnoreException(this);
+    }
+
     /**
      * 从全局变量中获得formData
      *
@@ -81,12 +99,10 @@ public class PEPExtFormVO implements PEPForm {
         return processVariables;
     }
 
-    public List<FormProperty> getFormProperties() {
-        return formProperties;
-    }
 
-    public void setFormProperties(List<FormProperty> formProperties) {
-        this.formProperties = formProperties;
+    private void buildFormProperties(String taskId) {
+        FormService formService = PEPApplicationContext.getApplicationContext().getBean(FormService.class);
+        setFormProperties(formService.getTaskFormData(taskId).getFormProperties());
     }
 
     public Map<String, Object> getGlobalData() {
@@ -97,10 +113,8 @@ public class PEPExtFormVO implements PEPForm {
         this.globalData = globalData;
     }
 
-    @Override
-
-    public String toString() {
-        return JSONUtil.toJSONIgnoreException(this);
+    public PEPExtFormVO convert() {
+        return BeanUtil.convert(this, PEPExtFormVO.class);
     }
 
 }

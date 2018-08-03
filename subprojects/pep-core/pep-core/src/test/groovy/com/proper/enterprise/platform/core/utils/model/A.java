@@ -12,6 +12,8 @@ public class A {
 
     private Collection<CV> cs;
 
+    private CV cv;
+
     public String getName() {
         return name;
     }
@@ -34,6 +36,14 @@ public class A {
 
     public void setCs(Collection<CV> cs) {
         this.cs = cs;
+    }
+
+    public CV getCv() {
+        return cv;
+    }
+
+    public void setCv(CV cv) {
+        this.cv = cv;
     }
 
     @Override

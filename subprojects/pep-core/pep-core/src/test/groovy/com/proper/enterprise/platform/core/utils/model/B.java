@@ -12,6 +12,8 @@ public class B {
 
     private Set<C> cs;
 
+    private C cv;
+
     public String getName() {
         return name;
     }
@@ -34,6 +36,14 @@ public class B {
 
     public void setCs(Set<C> cs) {
         this.cs = cs;
+    }
+
+    public C getCv() {
+        return cv;
+    }
+
+    public void setCv(C cv) {
+        this.cv = cv;
     }
 
     @Override
