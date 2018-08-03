@@ -7,16 +7,19 @@ public class PEPProcInstVO {
     /**
      * 流程实例Id
      */
+    @JsonView(value = {PEPTaskVO.ToDoView.class})
     private String procInstId;
 
     /**
      * 流程定义Id
      */
+    @JsonView(value = {PEPTaskVO.ToDoView.class})
     private String processDefinitionId;
 
     /**
      * 流程定义key
      */
+    @JsonView(value = {PEPTaskVO.ToDoView.class})
     private String processDefinitionKey;
 
     /**
