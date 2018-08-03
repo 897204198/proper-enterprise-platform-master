@@ -71,7 +71,7 @@ public class DataDicCatalogServiceImpl implements DataDicCatalogService {
 
     @Override
     public DataDicCatalogVO get(String id) {
-        return BeanUtil.convert(dataDicCatalogRepository.findOne(id), DataDicCatalogVO.class);
+        return BeanUtil.convert(dataDicCatalogRepository.findById(id).orElse(null), DataDicCatalogVO.class);
     }
 
     @Override
@@ -93,7 +93,9 @@ public class DataDicCatalogServiceImpl implements DataDicCatalogService {
     @Override
     public DataDicCatalogVO update(DataDicCatalogVO dataDicCatalogVO) {
         validUnique(dataDicCatalogVO);
-        DataDicCatalogEntity oldCatalog = dataDicCatalogRepository.findOne(dataDicCatalogVO.getId());
+        DataDicCatalogEntity oldCatalog = dataDicCatalogRepository.findById(dataDicCatalogVO.getId()).<ErrMsgException>orElseThrow(() -> {
+            throw new ErrMsgException("Could NOT find data dic cataglog with " + dataDicCatalogVO.getId());
+        });
         String oldCatalogCode = oldCatalog.getCatalogCode();
         DataDicCatalogEntity dataDicCatalogEntity = dataDicCatalogRepository.updateForSelective(
             BeanUtil.convert(dataDicCatalogVO, DataDicCatalogEntity.class));
@@ -109,7 +111,7 @@ public class DataDicCatalogServiceImpl implements DataDicCatalogService {
             return false;
         }
         String[] idArr = ids.split(",");
-        Collection<DataDicCatalogEntity> dataCatalogs = dataDicCatalogRepository.findAll(Arrays.asList(idArr));
+        Collection<DataDicCatalogEntity> dataCatalogs = dataDicCatalogRepository.findAllById(Arrays.asList(idArr));
         if (CollectionUtil.isEmpty(dataCatalogs)) {
             return false;
         }
@@ -119,7 +121,7 @@ public class DataDicCatalogServiceImpl implements DataDicCatalogService {
                 throw new ErrMsgException(I18NUtil.getMessage("pep.sys.datadic.catalog.del.relevance.error"));
             }
         }
-        dataDicCatalogRepository.delete(dataCatalogs);
+        dataDicCatalogRepository.deleteAll(dataCatalogs);
         return true;
     }
 
