@@ -26,4 +26,34 @@
             <column name="DD_ORDER" valueNumeric="2"/>
         </insert>
     </changeSet>
+    <changeSet id="20180803-datadicCatalog-oopsearch" author="DELL">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="catalog-name"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="catalogName"/>
+            <column name="COLUMN_DESC" value="字典项名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="catalog"/>
+            <column name="SEARCH_COLUMN" value="DD_CATALOG_NAME"/>
+            <column name="TABLE_NAME" value="pep_sys_data_dic_catalog"/>
+            <column name="URL" value="/sys/catalog"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="catalog-code"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="catalogCode"/>
+            <column name="COLUMN_DESC" value="字典项编码"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="catalog"/>
+            <column name="SEARCH_COLUMN" value="DD_CATALOG_CODE"/>
+            <column name="TABLE_NAME" value="pep_sys_data_dic_catalog"/>
+            <column name="URL" value="/sys/catalog"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
