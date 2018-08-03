@@ -9,7 +9,6 @@ import com.proper.enterprise.platform.push.repository.PushMsgRepository;
 import com.proper.enterprise.platform.push.service.PushMsgService;
 import com.proper.enterprise.platform.push.vo.PushMsgVO;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
-import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import org.nutz.mapl.Mapl;
 import org.slf4j.Logger;
