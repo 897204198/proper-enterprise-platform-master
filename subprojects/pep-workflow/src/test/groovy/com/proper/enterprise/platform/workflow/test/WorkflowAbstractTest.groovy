@@ -43,7 +43,7 @@ abstract class WorkflowAbstractTest extends AbstractTest {
     }
 
     protected Map findHis(String procInstId) {
-        Map pepWorkflowPathVO = JSONUtil.parse(get('/workflow/task/workflowPath/' + procInstId, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        Map pepWorkflowPathVO = JSONUtil.parse(get('/workflow/process/' + procInstId + '/path', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         return pepWorkflowPathVO
     }
 

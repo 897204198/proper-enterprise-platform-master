@@ -4,15 +4,22 @@ import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.security.Authentication;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
+import com.proper.enterprise.platform.workflow.model.PEPExtForm;
+import com.proper.enterprise.platform.workflow.model.PEPProcInst;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
+import com.proper.enterprise.platform.workflow.service.PEPTaskService;
 import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
 import com.proper.enterprise.platform.workflow.util.VariableUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
+import com.proper.enterprise.platform.workflow.vo.PEPStartVO;
+import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
@@ -32,6 +39,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static com.proper.enterprise.platform.core.PEPConstants.DEFAULT_DATETIME_FORMAT;
+
 @Service
 public class PEPProcessServiceImpl implements PEPProcessService {
 
@@ -45,6 +54,9 @@ public class PEPProcessServiceImpl implements PEPProcessService {
     private RepositoryService repositoryService;
 
     private HistoryService historyService;
+
+    @Autowired
+    private PEPTaskService pepTaskService;
 
     private UserDao userDao;
 
@@ -83,7 +95,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         globalVariables = setDefaultVariables(globalVariables);
         globalVariables = GlobalVariableUtil.setGlobalVariable(globalVariables, variables, globalVariableKeys);
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
-        return ProcInstConvert.convert(processInstance);
+        return new PEPProcInst(processInstance).convert();
     }
 
     @Override
@@ -104,7 +116,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             .desc()
             .listPage(pageRequest.getPageNumber() * pageRequest.getPageSize(), pageRequest.getPageSize());
         DataTrunk<PEPProcInstVO> dataTrunk = new DataTrunk<>();
-        dataTrunk.setData(ProcInstConvert.convert(historicProcessInstances));
+        dataTrunk.setData(BeanUtil.convert(ProcInstConvert.convert(historicProcessInstances), PEPProcInstVO.class));
         dataTrunk.setCount(historicProcessInstanceQuery.count());
         return dataTrunk;
     }
@@ -131,19 +143,29 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             .desc()
             .list();
         for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
-            PEPExtFormVO pepExtFormVO = new PEPExtFormVO(historicTaskInstance.getFormKey(),
+            PEPExtForm pepExtForm = new PEPExtForm(historicTaskInstance.getFormKey(),
                 getFormData(historicTaskInstance.getProcessVariables(), historicTaskInstance.getFormKey()));
-            if (StringUtil.isEmpty(pepExtFormVO.getFormKey())) {
+            if (StringUtil.isEmpty(pepExtForm.getFormKey())) {
                 continue;
             }
-            pepExtFormVO.setShowType(ShowType.SHOW);
-            pepExtFormMaps.put(pepExtFormVO.getFormKey(), pepExtFormVO);
+            pepExtForm.setShowType(ShowType.SHOW);
+            pepExtFormMaps.put(pepExtForm.getFormKey(), pepExtForm.convert());
         }
         List<PEPForm> pepForms = new ArrayList<>();
         for (Map.Entry<String, PEPForm> entry : pepExtFormMaps.entrySet()) {
             pepForms.add(entry.getValue());
         }
         return pepForms;
+    }
+
+    @Override
+    public PEPWorkflowPathVO findWorkflowPath(String procInstId) {
+        PEPWorkflowPathVO pepWorkflowPathVO = new PEPWorkflowPathVO();
+        pepWorkflowPathVO.setHisTasks(pepTaskService.findHisTasks(procInstId));
+        pepWorkflowPathVO.setCurrentTasks(pepTaskService.findCurrentTasks(procInstId));
+        pepWorkflowPathVO.setStart(findStart(procInstId));
+        pepWorkflowPathVO.setEnded(isEnded(procInstId));
+        return pepWorkflowPathVO;
     }
 
     public List<String> findProcAndSubInstIds(String procInstId) {
@@ -194,5 +216,30 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             return null;
         }
         return (Map<String, Object>) processVariables.get(formKey);
+    }
+
+    private PEPStartVO findStart(String procInstId) {
+        HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery()
+            .includeProcessVariables().processInstanceId(procInstId).singleResult();
+        PEPStartVO pepStartVO = new PEPStartVO();
+        pepStartVO.setCreateTime(DateUtil.toString(processInstance.getStartTime(), DEFAULT_DATETIME_FORMAT));
+        pepStartVO.setStartUserId(processInstance.getStartUserId());
+        pepStartVO.setProcessDefinitionName(processInstance.getProcessDefinitionName());
+        Object startFormData = processInstance.getProcessVariables().get(WorkFlowConstants.START_FORM_DATA);
+        if (null != startFormData) {
+            pepStartVO.setStartForm((Map<String, Object>) startFormData);
+        }
+        User user = userDao.findOne(processInstance.getStartUserId());
+        if (null != user) {
+            pepStartVO.setStartUserName(user.getName());
+        }
+        return pepStartVO;
+    }
+
+
+    private boolean isEnded(String procInstId) {
+        HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery()
+            .processInstanceId(procInstId).singleResult();
+        return null != processInstance && null != processInstance.getEndTime();
     }
 }

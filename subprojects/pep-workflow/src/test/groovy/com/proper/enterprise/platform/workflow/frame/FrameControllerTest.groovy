@@ -21,7 +21,6 @@ class FrameControllerTest extends AbstractTest {
 
     private static final String FRAME_WORKFLOW_KEY = 'flowableFrame'
     private static final String VALIDATE_ASSIGN_GROUP_KEY = 'validateAssignGroup'
-    private static final String SAME_ASSIGNEE_SKIP_TEST_KEY = 'sameAssigneeSkipTest'
 
     @Autowired
     HistoryService historyService
@@ -116,12 +115,13 @@ class FrameControllerTest extends AbstractTest {
         identityService.setAuthenticatedUserId("pep-sysadmin")
         assert 0 == findProcessStartByMe().size()
         start(FRAME_WORKFLOW_KEY, new HashMap<String, Object>())
-        start(SAME_ASSIGNEE_SKIP_TEST_KEY, new HashMap<String, Object>())
+        start("autoFinish", new HashMap<String, Object>())
         assert 2 == findProcessStartByMe().size()
         assert "框架测试流程" == findProcessStartByMeParam("框架测试流程", PEPProcInstStateEnum.DOING, 1, 1).get(0).processDefinitionName
-        assert 1 == findProcessStartByMeParam("sameAssigneeSkipTest", PEPProcInstStateEnum.DOING, 1, 1).size()
-        assert "sameAssigneeSkipTest" == findProcessStartByMeParam("sameAssigneeSkipTest", PEPProcInstStateEnum.DONE, 1, 1).get(0).processDefinitionName
-        assert "sameAssigneeSkipTest" == findProcessStartByMeParam("", null, 1, 1).get(0).processDefinitionName
+        assert 1 == findProcessStartByMeParam("autoFinish", PEPProcInstStateEnum.DOING, 1, 1).size()
+        assert "autoFinish" == findProcessStartByMeParam("", null, 1, 1).get(0).processDefinitionName
+        assert "autoFinish" == findProcessStartByMeParam("autoFinish", PEPProcInstStateEnum.DONE, 1, 1).get(0).processDefinitionName
+
         assert "框架测试流程" == findProcessStartByMeParam("", null, 2, 1).get(0).processDefinitionName
     }
 
@@ -157,10 +157,10 @@ class FrameControllerTest extends AbstractTest {
 
     private void assertTaskMsg(Map pepTaskVO, String name) {
         assert name == pepTaskVO.name
-        assert "框架测试流程" == pepTaskVO.pepProcInstVO.processDefinitionName
-        assert "user1" == pepTaskVO.pepProcInstVO.startUserId
-        assert "c" == pepTaskVO.pepProcInstVO.startUserName
-        assert "处理中" == pepTaskVO.pepProcInstVO.stateValue
+        assert "框架测试流程" == pepTaskVO.pepProcInst.processDefinitionName
+        assert "user1" == pepTaskVO.pepProcInst.startUserId
+        assert "c" == pepTaskVO.pepProcInst.startUserName
+        assert "处理中" == pepTaskVO.pepProcInst.stateValue
     }
 
     private String start(String key, Map<String, Object> form) {
@@ -255,12 +255,12 @@ class FrameControllerTest extends AbstractTest {
     }
 
     private Map findHis(String procInstId) {
-        Map pepWorkflowPathVO = JSONUtil.parse(get('/workflow/task/workflowPath/' + procInstId, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        Map pepWorkflowPathVO = JSONUtil.parse(get('/workflow/process/' + procInstId + '/path', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         return pepWorkflowPathVO
     }
 
     private Map findHis(String procInstId, String name) {
-        Map pepWorkflowPathVO = JSONUtil.parse(get('/workflow/task/workflowPath/' + procInstId, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        Map pepWorkflowPathVO = JSONUtil.parse(get('/workflow/process/' + procInstId + '/path', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         for (Map pepTaskVO : pepWorkflowPathVO.hisTasks) {
             if (name.equals(pepTaskVO.name)) {
                 return pepTaskVO
@@ -270,7 +270,7 @@ class FrameControllerTest extends AbstractTest {
     }
 
     private Map findHisCurr(String procInstId, String name) {
-        Map pepWorkflowPathVO = JSONUtil.parse(get('/workflow/task/workflowPath/' + procInstId, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        Map pepWorkflowPathVO = JSONUtil.parse(get('/workflow/process/' + procInstId + '/path', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         for (Map pepTaskVO : pepWorkflowPathVO.currentTasks) {
             if (name.equals(pepTaskVO.name)) {
                 return pepTaskVO

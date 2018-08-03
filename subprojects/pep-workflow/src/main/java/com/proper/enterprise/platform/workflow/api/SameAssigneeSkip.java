@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.workflow.api;
 
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import org.flowable.bpmn.model.UserTask;
@@ -8,6 +9,8 @@ import org.flowable.engine.impl.persistence.entity.ExecutionEntity;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service("sameAssigneeSkip")
 public class SameAssigneeSkip {
@@ -20,20 +23,21 @@ public class SameAssigneeSkip {
     }
 
     private HistoricTaskInstance findLastTask(String executionId) {
-        HistoricTaskInstance lastHisTask = processEngineConfiguration.getHistoryService()
+        List<HistoricTaskInstance> lastHisTasks = processEngineConfiguration.getHistoryService()
             .createHistoricTaskInstanceQuery()
             .executionId(executionId)
             .orderByHistoricTaskInstanceEndTime()
             .asc()
-            .singleResult();
-        if (null == lastHisTask) {
+            .list();
+        if (CollectionUtil.isEmpty(lastHisTasks)) {
             return null;
         }
-        return lastHisTask;
+        return lastHisTasks.get(0);
     }
 
     public boolean skip(ExecutionEntity execution) {
-        String assignee = ((UserTask) execution.getCurrentFlowElement()).getAssignee();
+        UserTask userTask = (UserTask) execution.getCurrentFlowElement();
+        String assignee = userTask.getAssignee();
         String initiator = (String) execution.getVariable(WorkFlowConstants.INITIATOR);
         if (StringUtil.isEmpty(assignee)) {
             return false;
@@ -47,7 +51,7 @@ public class SameAssigneeSkip {
             if (!initiator.equals(assignee)) {
                 return false;
             }
-            addVariablePass(execution.getId());
+            addVariablePass(execution);
             return true;
         }
 
@@ -57,12 +61,14 @@ public class SameAssigneeSkip {
         if (!lastTask.getAssignee().equals(assignee)) {
             return false;
         }
-        addVariablePass(execution.getId());
+        addVariablePass(execution);
         return true;
     }
 
-    private void addVariablePass(String executionId) {
-        processEngineConfiguration.getRuntimeService().setVariableLocal(executionId,
+    private void addVariablePass(ExecutionEntity execution) {
+        processEngineConfiguration.getRuntimeService().setVariableLocal(execution.getId(),
             WorkFlowConstants.APPROVE_RESULT, WorkFlowConstants.APPROVE_PASS);
+
     }
+
 }

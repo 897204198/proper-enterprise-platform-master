@@ -17,7 +17,6 @@ import java.util.Collections;
  *
  * @param <T> 存放的数据类型
  */
-@Deprecated
 public class DataTrunk<T> implements Serializable {
 
     /**

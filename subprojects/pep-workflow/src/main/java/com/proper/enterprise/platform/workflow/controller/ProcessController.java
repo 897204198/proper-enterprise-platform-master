@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
+import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,11 @@ public class ProcessController extends BaseController {
     @RequestMapping(value = "/{procInstId}/page", method = RequestMethod.GET)
     public ResponseEntity<List<PEPForm>> buildPage(@PathVariable String procInstId) {
         return responseOfGet(pepProcessService.buildPage(procInstId));
+    }
+
+    @RequestMapping(value = "/{procInstId}/path", method = RequestMethod.GET)
+    public ResponseEntity<PEPWorkflowPathVO> findWorkflowPath(@PathVariable String procInstId) {
+        return responseOfGet(pepProcessService.findWorkflowPath(procInstId));
     }
 
 }
