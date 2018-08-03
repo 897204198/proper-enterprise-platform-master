@@ -6,11 +6,24 @@
     <beans>
         <bean id="messageSource"
               class="com.proper.enterprise.platform.sys.i18n.AntPatternReloadableResourceBundleMessageSource">
-            <property name="defaultEncoding" value="UTF-8" />
-            <property name="useCodeAsDefaultMessage" value="true" />
+            <property name="defaultEncoding" value="UTF-8"/>
+            <property name="useCodeAsDefaultMessage" value="true"/>
             <property name="basename">
                 <value>classpath*:i18n/**/*-i18n.properties</value>
             </property>
+        </bean>
+        <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+            <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+            <property name="validationMessageSource" ref="messageSource"/>
+            <property name="validationPropertyMap">
+                <map>
+                    <entry key="hibernate.validator.fail_fast" value="true"></entry>
+                </map>
+            </property>
+        </bean>
+        <bean id="methodValidationPostProcessor"
+              class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor">
+            <property name="validator" ref="validator"/>
         </bean>
     </beans>
 

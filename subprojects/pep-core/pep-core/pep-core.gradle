@@ -10,7 +10,10 @@ dependencies {
             libraries.spring_data_commons,
             libraries.aspectjweaver,
             libraries.spring_context_support,
-            libraries.mail
+            libraries.mail,
+            libraries.validation_api,
+            libraries.hibernate_validator,
+            libraries.el_api
 
     testCompile project(':pep-test'),
             libraries.spring_data_jpa,

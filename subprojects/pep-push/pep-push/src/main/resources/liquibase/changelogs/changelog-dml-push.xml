@@ -169,5 +169,30 @@
             <column name="ENABLE" value="Y"/>
         </insert>
     </changeSet>
+    <changeSet author="alphahinex (generated)" id="1533195178000-15">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-push-manage"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="message"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;0"/>
+            <column name="NAME" value="推送管理"/>
+            <column name="ROUTE" value="/pushManage"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="3"/>
+        </insert>
+        <update tableName="PEP_AUTH_MENUS">
+            <column name="ROUTE" value="/pushManage/pushMessage"/>
+            <column name="PARENT_ID" value="pep-push-manage"/>
+            <where>
+                ID='pep-system-pushMessage'
+            </where>
+        </update>
+    </changeSet>
 
 </databaseChangeLog>

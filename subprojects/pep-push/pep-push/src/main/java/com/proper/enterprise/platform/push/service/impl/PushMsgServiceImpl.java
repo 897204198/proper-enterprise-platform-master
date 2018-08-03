@@ -3,10 +3,13 @@ package com.proper.enterprise.platform.push.service.impl;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.push.api.PushMsg;
+import com.proper.enterprise.platform.push.config.PushGlobalInfo;
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.repository.PushMsgRepository;
 import com.proper.enterprise.platform.push.service.PushMsgService;
 import com.proper.enterprise.platform.push.vo.PushMsgVO;
+import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
+import org.nutz.mapl.Mapl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,9 @@ import java.util.List;
 public class PushMsgServiceImpl extends AbstractJpaServiceSupport<PushMsg, PushMsgRepository, String>
     implements PushMsgService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushMsgServiceImpl.class);
+
+    @Autowired
+    PushGlobalInfo globalInfo;
     @Autowired
     private PushMsgRepository pushMsgRepository;
 
@@ -41,11 +47,12 @@ public class PushMsgServiceImpl extends AbstractJpaServiceSupport<PushMsg, PushM
         List<PushMsgVO> voList = new ArrayList<PushMsgVO>();
         for (PushMsgEntity entity : entityList) {
             PushMsgVO vo = new PushMsgVO();
-            vo.setAppkey(entity.getAppkey());
+            Object channelDesc = Mapl.cell(globalInfo.getPushConfigs(), entity.getAppkey() + ".desc");
+            vo.setAppkey(channelDesc == null ? "" : channelDesc.toString());
             vo.setLastPushTime(entity.getLastModifyTime());
             vo.setMcontent(entity.getMcontent());
             vo.setMstatus(entity.getMstatus());
-            vo.setPushMode(entity.getPushMode());
+            vo.setPushMode(new DataDicLiteBean("PEP_PUSH_CHANNEL_TYPE", entity.getPushMode().toString()).getName());
             vo.setId(entity.getId());
             vo.setUserid(entity.getUserid());
             voList.add(vo);
