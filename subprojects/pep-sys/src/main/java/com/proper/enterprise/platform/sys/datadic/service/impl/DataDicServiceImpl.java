@@ -181,6 +181,18 @@ public class DataDicServiceImpl extends AbstractJpaServiceSupport<DataDic, DataD
     }
 
     @Override
+    public void updateCatalog(String catalog, String changeCatalog) {
+        Collection<? extends DataDic> dataDics = this.findByCatalog(catalog);
+        if (CollectionUtil.isEmpty(dataDics)) {
+            return;
+        }
+        for (DataDic dataDic : dataDics) {
+            dataDic.setCatalog(changeCatalog);
+            this.updateForSelective(dataDic);
+        }
+    }
+
+    @Override
     public boolean deleteByIds(String ids) {
         if (StringUtil.isEmpty(ids)) {
             return false;

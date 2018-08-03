@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.FatalBeanException;
+import org.springframework.data.domain.Page;
 import org.springframework.util.Assert;
 
 import java.beans.PropertyDescriptor;
@@ -274,7 +275,9 @@ public class BeanUtil {
      * @return 目标对象实例
      */
     public static <T> T convert(Object source, Class<T> targetCls, String... ignoreProperties) {
-        Assert.notNull(source, "Source must not be null");
+        if (null == source) {
+            return null;
+        }
         T t = newInstance(targetCls);
         copyProperties(source, t, false, ignoreProperties);
         return t;
@@ -290,7 +293,9 @@ public class BeanUtil {
      * @return 目标对象实例集合
      */
     public static <T> Collection<T> convert(Collection sources, Class<T> targetCls, String... ignoreProperties) {
-        Assert.notNull(sources, "Source must not be null");
+        if (null == sources) {
+            return null;
+        }
         // 区分list和set，其余按照list处理
         Collection<T> targets;
         if (Set.class.isAssignableFrom(sources.getClass())) {
@@ -302,6 +307,25 @@ public class BeanUtil {
             targets.add(convert(source, targetCls, ignoreProperties));
         }
         return targets;
+    }
+
+    /**
+     * DataTrunk类型转换
+     *
+     * @param page             源对象集合
+     * @param targetCls        目标对象类型
+     * @param ignoreProperties 忽略属性
+     * @param <T>              目标对象泛型
+     * @return 目标对象实例集合
+     */
+    public static <T> DataTrunk<T> convert(Page page, Class<T> targetCls, String... ignoreProperties) {
+        if (null == page) {
+            return null;
+        }
+        DataTrunk<T> dataTrunk = new DataTrunk<>();
+        dataTrunk.setCount(page.getTotalElements());
+        dataTrunk.setData(convert(page.getContent(), targetCls, ignoreProperties));
+        return dataTrunk;
     }
 
     @Deprecated

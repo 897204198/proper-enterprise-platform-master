@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet author="alphahinex" id="pep-sys-data-dic-1">
         <createTable tableName="PEP_SYS_DATA_DIC">
             <column name="ID" type="VARCHAR(255)">
@@ -82,19 +85,55 @@
         </addColumn>
     </changeSet>
     <changeSet author="DELL (generated)" id="1527845640178-2">
-        <addUniqueConstraint columnNames="dd_catalog, dd_code" constraintName="UK_CATALOG_CODE" tableName="pep_sys_data_dic"/>
+        <addUniqueConstraint columnNames="dd_catalog, dd_code" constraintName="UK_CATALOG_CODE"
+                             tableName="pep_sys_data_dic"/>
     </changeSet>
     <changeSet author="DELL (generated)" id="1527845640178-3">
         <addNotNullConstraint columnDataType="varchar(255)" columnName="dd_catalog" tableName="pep_sys_data_dic"/>
     </changeSet>
     <changeSet author="DELL (generated)" id="1527845640178-4">
         <addNotNullConstraint columnDataType="varchar(255)" columnName="dd_code" tableName="pep_sys_data_dic"/>
-   </changeSet>
+    </changeSet>
     <changeSet author="DELL (generated)" id="1527845640178-5">
         <addNotNullConstraint columnDataType="varchar(255)" columnName="dd_name" tableName="pep_sys_data_dic"/>
     </changeSet>
     <changeSet author="DELL (generated)" id="1527845640178-6">
         <addNotNullConstraint columnDataType="int(10)" columnName="dd_order" tableName="pep_sys_data_dic"/>
-        <addDefaultValue columnDataType="int(10)" columnName="dd_order" defaultValueNumeric="1" tableName="pep_sys_data_dic"/>
+        <addDefaultValue columnDataType="int(10)" columnName="dd_order" defaultValueNumeric="1"
+                         tableName="pep_sys_data_dic"/>
+    </changeSet>
+    <changeSet id="DELL (generated)" author="20180803-datacatalog">
+        <createTable tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DD_CATALOG_CODE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DD_CATALOG_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="SYSTEM" name="DD_CATALOG_TYPE" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="1" name="DD_CATALOG_ORDER" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_DATA_DIC_CATALOG_CODE_ID" tableName="PEP_SYS_DATA_DIC_CATALOG"/>
+        <addUniqueConstraint columnNames="DD_CATALOG_CODE" constraintName="UK_DD_CATALOG_CODE"
+                             tableName="PEP_SYS_DATA_DIC_CATALOG"/>
     </changeSet>
 </databaseChangeLog>

@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.push.vo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.push.entity.PushChannelEntity;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
@@ -264,16 +265,9 @@ public class PushChannelVO extends BaseVO {
 
     public static PushChannelEntity convertVoToEntity(PushChannelVO pushChannelVO) {
         try {
-            PushChannelEntity pushChannelEntity = new PushChannelEntity();
-            pushChannelEntity.setId(pushChannelVO.getId());
+            PushChannelEntity pushChannelEntity = BeanUtil.convert(pushChannelVO, PushChannelEntity.class);
             pushChannelEntity.setAndroid(JSONUtil.toJSON(pushChannelVO.getAndroid()));
             pushChannelEntity.setIos(JSONUtil.toJSON(pushChannelVO.getIos()));
-            pushChannelEntity.setChannelDesc(pushChannelVO.getChannelDesc());
-            pushChannelEntity.setChannelName(pushChannelVO.getChannelName());
-            pushChannelEntity.setDiplomaId(pushChannelVO.getDiplomaId());
-            pushChannelEntity.setMaxSendCount(pushChannelVO.getMaxSendCount());
-            pushChannelEntity.setMsgSaveDays(pushChannelVO.getMsgSaveDays());
-            pushChannelEntity.setSecretKey(pushChannelVO.getSecretKey());
             return pushChannelEntity;
         } catch (Exception e) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.formatting.error"));
@@ -282,16 +276,9 @@ public class PushChannelVO extends BaseVO {
 
     public static PushChannelVO convertEntityToVo(PushChannelEntity pushChannelEntity) {
         try {
-            PushChannelVO pushChannelVO = new PushChannelVO();
-            pushChannelVO.setId(pushChannelEntity.getId());
+            PushChannelVO pushChannelVO = BeanUtil.convert(pushChannelEntity, PushChannelVO.class);
             pushChannelVO.setAndroid(JSONUtil.parse(pushChannelEntity.getAndroid(), PushChannelVO.Android.class));
             pushChannelVO.setIos(JSONUtil.parse(pushChannelEntity.getIos(), PushChannelVO.IOS.class));
-            pushChannelVO.setChannelDesc(pushChannelEntity.getChannelDesc());
-            pushChannelVO.setChannelName(pushChannelEntity.getChannelName());
-            pushChannelVO.setDiplomaId(pushChannelEntity.getDiplomaId());
-            pushChannelVO.setMaxSendCount(pushChannelEntity.getMaxSendCount());
-            pushChannelVO.setMsgSaveDays(pushChannelEntity.getMsgSaveDays());
-            pushChannelVO.setSecretKey(pushChannelEntity.getSecretKey());
             return pushChannelVO;
         } catch (Exception e) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.formatting.error"));

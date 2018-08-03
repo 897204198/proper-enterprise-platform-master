@@ -17,7 +17,6 @@ import java.util.List;
 @Service
 public class PushChannelServiceImpl implements PushChannelService {
 
-
     private PushChannelRepository pushChannelRepository;
 
     @Autowired
@@ -35,10 +34,11 @@ public class PushChannelServiceImpl implements PushChannelService {
     @Override
     public PushChannelVO updateChannel(PushChannelVO pushChannelVO) {
         checkVo(pushChannelVO);
-        PushChannelEntity pushChannelEntity = pushChannelRepository.findById(pushChannelVO.getId()).<ErrMsgException>orElseThrow(() -> {
+        boolean exists = pushChannelRepository.existsById(pushChannelVO.getId());
+        if (!exists) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.update.fail"));
-        });
-        return PushChannelVO.convertEntityToVo(pushChannelRepository.save(pushChannelEntity));
+        }
+        return PushChannelVO.convertEntityToVo(pushChannelRepository.save(PushChannelVO.convertVoToEntity(pushChannelVO)));
     }
 
     @Override
