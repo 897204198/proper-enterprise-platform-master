@@ -1,8 +1,11 @@
 dependencies {
     compile libraries.commons_codec,
             libraries.commons_lang3,
+            libraries.hibernate_validator,
             libraries.jackson_databind,
+            libraries.javax_el,
             libraries.joda_time,
+            libraries.mail,
             libraries.okhttp,
             libraries.pinyin4j,
             libraries.servlet_api,
@@ -10,14 +13,13 @@ dependencies {
             libraries.spring_data_commons,
             libraries.aspectjweaver,
             libraries.spring_context_support,
-            libraries.mail,
-            libraries.validation_api,
-            libraries.hibernate_validator,
-            libraries.el_api
+            libraries.validation_api
+
+
 
     testCompile project(':pep-test'),
-            libraries.spring_data_jpa,
-            libraries.hibernate_entitymanager
+            libraries.hibernate_entitymanager,
+            libraries.spring_data_jpa
 
     testRuntime fileTree(dir: 'libs', include: 'conf-in-jar.jar')
 }
