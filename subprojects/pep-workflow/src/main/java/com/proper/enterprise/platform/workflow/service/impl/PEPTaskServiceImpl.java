@@ -37,15 +37,14 @@ public class PEPTaskServiceImpl implements PEPTaskService {
 
     private HistoryService historyService;
 
+    @Autowired
     private PEPProcessService pepProcessService;
 
     @Autowired
-    PEPTaskServiceImpl(PEPProcessService pepProcessService,
-                       TaskService taskService,
+    PEPTaskServiceImpl(TaskService taskService,
                        HistoryService historyService) {
         this.taskService = taskService;
         this.historyService = historyService;
-        this.pepProcessService = pepProcessService;
     }
 
 
