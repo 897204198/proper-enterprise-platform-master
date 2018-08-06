@@ -260,6 +260,7 @@ libraries.spring_integration_jdbc = "org.springframework.integration:spring-inte
 //libraries.spring_security_web = "org.springframework.security:spring-security-web:${versions.spring_security}"
 
 //libraries.urlrewritefilter = 'org.tuckey:urlrewritefilter:4.0.3'
+libraries.thumbnailator = 'net.coobird:thumbnailator:0.4.8'
 libraries.validation_api = "javax.validation:validation-api:2.0.1.Final"
 libraries.nutz='org.nutz:nutz:1.r.56'
 libraries.activemq_broker='org.apache.activemq:activemq-broker:5.14.3'

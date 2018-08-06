@@ -158,17 +158,18 @@ public class DataDicServiceImpl extends AbstractJpaServiceSupport<DataDic, DataD
 
     @Override
     public DataDic save(DataDic dataDic) {
-        if (null == dataDic.getDataDicType()) {
-            dataDic.setDataDicType(DataDicTypeEnum.SYSTEM);
+        DataDicEntity  dataDicEntity = (DataDicEntity) dataDic;
+        if (null == dataDicEntity.getDataDicType()) {
+            dataDicEntity.setDataDicType(DataDicTypeEnum.SYSTEM);
         }
         if (null == dataDic.getEnable()) {
-            dataDic.setEnable(true);
+            dataDicEntity.setEnable(true);
         }
-        if (null == dataDic.getDeft()) {
-            dataDic.setDeft(false);
+        if (null == dataDicEntity.getDeft()) {
+            dataDicEntity.setDeft(false);
         }
-        validate(dataDic);
-        return repository.save((DataDicEntity) dataDic);
+        validate(dataDicEntity);
+        return repository.save(dataDicEntity);
     }
 
     @Override
