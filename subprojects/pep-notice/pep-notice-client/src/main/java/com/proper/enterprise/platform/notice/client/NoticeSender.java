@@ -70,6 +70,68 @@ public class NoticeSender {
     /**
      * 发送单人消息接口
      *
+     * @param businessId 业务ID
+     * @param noticeType 通知类型
+     * @param custom     扩展字段
+     * @param userId     通知接收人ID
+     * @param title      标题
+     * @param content    正文
+     */
+    @Async
+    public void sendNotice(String businessId, String noticeType, Map<String, Object> custom, String userId, String title, String content) {
+        NoticeModel noticeModel = new NoticeModel();
+        noticeModel.setSystemId(systemId);
+        noticeModel.setBusinessId(businessId);
+        noticeModel.setNoticeType(noticeType);
+        NoticeSetDocument noticeSetDocument = noticeSetService.findByNoticeTypeAndUserId(noticeType, userId);
+        User user = userService.get(userId);
+        if (user != null) {
+            if (noticeSetDocument.isPush()) {
+                noticeModel.setTitle(title);
+                noticeModel.setContent(content);
+                noticeModel.setNoticeChannel("PUSH");
+                if (StringUtil.isNotNull(user.getUsername())) {
+                    noticeModel.setTarget(user.getUsername());
+                    custom.put("packageName", packageName);
+                    noticeModel.setCustom(custom);
+                    accessNoticeServer(noticeModel);
+                } else {
+                    LOGGER.error("This is Notice Sender, username is empty.");
+                }
+            }
+            if (noticeSetDocument.isEmail()) {
+                noticeModel.setTitle(title);
+                noticeModel.setContent(content);
+                noticeModel.setNoticeChannel("EMAIL");
+                if (StringUtil.isNotNull(user.getEmail())) {
+                    noticeModel.setTarget(user.getEmail());
+                    noticeModel.setCustom(custom);
+                    accessNoticeServer(noticeModel);
+                } else {
+                    LOGGER.error("This is Notice Sender, email is empty.");
+                }
+            }
+            if (noticeSetDocument.isSms()) {
+                noticeModel.setTitle(title);
+                noticeModel.setContent(content);
+                noticeModel.setNoticeChannel("SMS");
+                if (StringUtil.isNotNull(user.getPhone())) {
+                    noticeModel.setTarget(user.getPhone());
+                    noticeModel.setCustom(custom);
+                    accessNoticeServer(noticeModel);
+                } else {
+                    LOGGER.error("This is Notice Sender, phone is empty.");
+                }
+
+            }
+        } else {
+            LOGGER.error("This is Notice Sender, the user is not exits : " + userId);
+        }
+    }
+
+    /**
+     * 发送单人消息接口
+     *
      * @param businessId     业务ID
      * @param noticeType     通知类型
      * @param custom         扩展字段
@@ -142,7 +204,7 @@ public class NoticeSender {
         try {
             String data = JSONUtil.toJSON(noticeModel);
             LOGGER.debug("NOTICE SENDER POST:" + data);
-            ResponseEntity<byte[]> response = HttpClient.post(serverUrl + "/notice", MediaType.APPLICATION_FORM_URLENCODED, data);
+            ResponseEntity<byte[]> response = HttpClient.post(serverUrl + "/notice", MediaType.APPLICATION_JSON, data);
             return StringUtil.toEncodedString(response.getBody());
         } catch (IOException e) {
             return null;
