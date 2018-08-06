@@ -23,6 +23,7 @@ public class NoticeSetServiceImpl implements NoticeSetService {
         } else {
             noticeSetEntity = new NoticeSetDocument();
             noticeSetEntity.setPush(true);
+            noticeSetEntity.setEmail(true);
         }
         return noticeSetEntity;
     }

@@ -15,11 +15,6 @@ public class NoticeModel {
     private String businessId;
 
     /**
-     * 业务名称
-     */
-    private String businessName;
-
-    /**
      * 通知类型
      */
     private String noticeType;
@@ -63,14 +58,6 @@ public class NoticeModel {
 
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
-    }
-
-    public String getBusinessName() {
-        return businessName;
-    }
-
-    public void setBusinessName(String businessName) {
-        this.businessName = businessName;
     }
 
     public String getNoticeType() {

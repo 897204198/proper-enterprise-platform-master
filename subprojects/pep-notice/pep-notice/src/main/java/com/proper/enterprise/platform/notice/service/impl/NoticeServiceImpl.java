@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.notice.service.impl;
 
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.document.NoticeDocument;
 import com.proper.enterprise.platform.notice.model.NoticeModel;
 import com.proper.enterprise.platform.notice.repository.NoticeRepository;
@@ -7,9 +8,12 @@ import com.proper.enterprise.platform.notice.service.NoticeService;
 import com.proper.enterprise.platform.push.api.openapi.model.PushMessage;
 import com.proper.enterprise.platform.push.api.openapi.service.AppServerRequestService;
 import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +26,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     AppServerRequestService service;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(NoticeServiceImpl.class);
 
     private static final String NOTICE_CHANNEL_PUSH = "PUSH";
     //private static final String NOTICE_CHANNEL_EMAIL = "EMAIL";
@@ -50,6 +55,11 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     private boolean pushNotice(NoticeModel noticeModel) {
+        try {
+            LOGGER.debug("start push: " + JSONUtil.toJSON(noticeModel));
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+        }
         PushMessage thePushmsg = getPushMessage(noticeModel);
         List<String> lstUids = new ArrayList<>();
         lstUids.add(noticeModel.getTarget());
