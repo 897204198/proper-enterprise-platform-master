@@ -19,6 +19,7 @@ class DataDicServiceImplTest extends AbstractTest{
         dic.setCode("code")
         dic.setId("id")
         dic.setName("name")
+        dic.setOrder(1)
         dic = dataDicService.save(dic)
         dataDicService.findByCatalog(dic.getCatalog())
         dataDicService.get(dic.getCatalog(), dic.getCode())

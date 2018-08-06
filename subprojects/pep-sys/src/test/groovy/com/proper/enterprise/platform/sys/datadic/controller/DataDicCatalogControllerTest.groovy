@@ -57,6 +57,7 @@ class DataDicCatalogControllerTest extends AbstractTest {
         dataDic1.setCatalog("catalog")
         dataDic1.setCode("code")
         dataDic1.setName("name")
+        dataDic1.setOrder(1)
         DataDicEntity saveDic = postAndReturn("/sys/datadic", dataDic1)
         DataDicEntity queryDataDic = JSONUtil.parse(get("/sys/datadic"
             + "/catalog/catalog/code/code", HttpStatus.OK).getResponse().getContentAsString(), DataDicEntity.class)
@@ -93,6 +94,7 @@ class DataDicCatalogControllerTest extends AbstractTest {
         dataDic1.setCatalog("catalog")
         dataDic1.setCode("code")
         dataDic1.setName("name")
+        dataDic1.setOrder(1)
         DataDicEntity saveDic = postAndReturn("/sys/datadic", dataDic1)
         DataDicCatalogVO queryDataDic = JSONUtil.parse(get(datadicUrl + "/id/" + saveDataDicCatalogVO.getId(), HttpStatus.OK).getResponse().getContentAsString(), DataDicCatalogVO.class)
         assert saveDataDicCatalogVO.getId() == queryDataDic.getId()
