@@ -54,7 +54,7 @@ public class PushMsgServiceImpl extends AbstractJpaServiceSupport<PushMsg, PushM
             vo.setMcontent(entity.getMcontent());
             vo.setMstatus(entity.getMstatus());
             DataDic dataDic = DataDicUtil.get("PEP_PUSH_CHANNEL_TYPE", entity.getPushMode().toString());
-            vo.setPushMode(dataDic == null ? "" : dataDic.getName());
+            vo.setPushMode(null == dataDic ? null : dataDic.getName());
             vo.setId(entity.getId());
             vo.setUserid(entity.getUserid());
             voList.add(vo);

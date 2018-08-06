@@ -1,11 +1,8 @@
 package com.proper.enterprise.platform.file.vo;
 
-import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.file.api.File;
-import com.proper.enterprise.platform.file.entity.FileEntity;
 
-@POJORelevance(relevanceDO = FileEntity.class)
 public class FileVO extends BaseVO implements File {
 
     public FileVO(){}

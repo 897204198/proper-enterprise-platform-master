@@ -65,6 +65,7 @@ dependencies {
             project(':pep-dfs-mongo'),
             project(':pep-feedback'),
             project(':pep-file'),
+            project(':pep-image-handler'),
             project(':pep-oopsearch-config'),
             project(':pep-oopsearch'),
             project(':pep-workflow')

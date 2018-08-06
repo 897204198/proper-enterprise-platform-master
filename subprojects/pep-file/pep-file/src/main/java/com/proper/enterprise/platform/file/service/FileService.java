@@ -12,6 +12,7 @@ public interface FileService extends BaseJpaService<File, String> {
 
     /**
      * 保存文件
+     *
      * @param file 文件
      * @return 文件
      * @throws IOException io异常
@@ -20,6 +21,7 @@ public interface FileService extends BaseJpaService<File, String> {
 
     /**
      * 删除文件
+     *
      * @param ids 文件id
      * @return true false
      * @throws IOException io异常
@@ -28,7 +30,8 @@ public interface FileService extends BaseJpaService<File, String> {
 
     /**
      * 修改文件
-     * @param id 文件id
+     *
+     * @param id   文件id
      * @param file 文件
      * @return 文件
      * @throws IOException io异常
@@ -37,10 +40,13 @@ public interface FileService extends BaseJpaService<File, String> {
 
     /**
      * 下载文件
-     * @param id 文件id
-     * @param request 请求
+     *
+     * @param id       文件id
+     * @param request  请求
      * @param response 响应
      * @throws IOException io异常
      */
     void download(String id, HttpServletRequest request, HttpServletResponse response) throws IOException;
+
+
 }

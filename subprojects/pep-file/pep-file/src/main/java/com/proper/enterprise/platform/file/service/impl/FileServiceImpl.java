@@ -95,19 +95,23 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         if (inputStream == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
         }
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
         OutputStream outputStream = response.getOutputStream();
-        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
+        commonDownLoad(inputStream, outputStream);
         response.setHeader("Content-disposition", "attachment;filename=" + java.net.URLEncoder.encode(file.getFileName(), charset));
+        inputStream.close();
+        outputStream.close();
+    }
+
+    private void commonDownLoad(InputStream inputStream, OutputStream outputStream) throws IOException {
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
         int bytesRead;
         byte[] buffer = new byte[LENGTH];
         while ((bytesRead = bufferedInputStream.read(buffer, 0, LENGTH)) != -1) {
             bufferedOutputStream.write(buffer, 0, bytesRead);
         }
-        bufferedOutputStream.flush();
-        inputStream.close();
         bufferedInputStream.close();
-        outputStream.close();
+        bufferedOutputStream.flush();
         bufferedOutputStream.close();
     }
 
