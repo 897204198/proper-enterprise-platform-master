@@ -3,7 +3,8 @@ INSERT INTO pep_auth_users (id, username, password, superuser, pep_dtype, name, 
 'UserEntity', 'b', '12345678902', 'test2@test.com', 'Y');
 INSERT INTO pep_auth_users (id, username, password, superuser, pep_dtype, name, phone, email, enable) VALUES ('user3', 'testuser3', 'e10adc3949ba59abbe56e057f20f883e', 'N', 'UserEntity', 'a', '12345678903', 'test3@test.com', 'Y');
 
-INSERT INTO pep_auth_roles (id, name, description) VALUES ('role1', 'testrole1', 'des');
+INSERT INTO pep_auth_roles (id, name, description) VALUES ('role4', 'testrole4', 'des');
+INSERT INTO pep_auth_roles (id, name, description,PARENT_ID) VALUES ('role1', 'testrole1', 'des','role4');
 INSERT INTO pep_auth_roles (id, name) VALUES ('role2', 'testrole2');
 INSERT INTO pep_auth_users_roles (user_id, role_id) VALUES ('user2', 'role2');
 INSERT INTO pep_auth_users_roles (user_id, role_id) VALUES ('user3', 'role2');
