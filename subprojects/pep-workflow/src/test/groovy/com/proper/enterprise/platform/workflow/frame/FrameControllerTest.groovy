@@ -43,6 +43,7 @@ class FrameControllerTest extends AbstractTest {
         mockUser('user1', 'testuser1', '123456')
         identityService.setAuthenticatedUserId('user1')
         Authentication.setCurrentUserId("user1")
+        assert null == getTask("第一步")
         assert null == findProcessStartByKey(FRAME_WORKFLOW_KEY)
         Map<String, Object> formTestVO = new HashMap<>()
         formTestVO.put("sex", "1")
