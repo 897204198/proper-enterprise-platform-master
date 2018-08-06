@@ -136,4 +136,11 @@
         <addUniqueConstraint columnNames="DD_CATALOG_CODE" constraintName="UK_DD_CATALOG_CODE"
                              tableName="PEP_SYS_DATA_DIC_CATALOG"/>
     </changeSet>
+    <changeSet author="DELL (generated)" id="20180803-datacatalog-2">
+        <addColumn tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

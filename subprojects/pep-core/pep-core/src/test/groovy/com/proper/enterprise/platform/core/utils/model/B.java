@@ -14,6 +14,8 @@ public class B {
 
     private C cv;
 
+    private String cstr;
+
     public String getName() {
         return name;
     }
@@ -44,6 +46,14 @@ public class B {
 
     public void setCv(C cv) {
         this.cv = cv;
+    }
+
+    public String getCstr() {
+        return cstr;
+    }
+
+    public void setCstr(String cstr) {
+        this.cstr = cstr;
     }
 
     @Override
