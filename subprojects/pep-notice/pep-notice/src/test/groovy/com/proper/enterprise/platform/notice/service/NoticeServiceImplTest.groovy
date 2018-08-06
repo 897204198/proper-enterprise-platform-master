@@ -51,7 +51,6 @@ class NoticeServiceImplTest extends AbstractTest {
         NoticeModel noticeModel1 = new NoticeModel();
         noticeModel1.setSystemId("test")
         noticeModel1.setBusinessId("testBpm")
-        noticeModel1.setBusinessName("测试流程")
         noticeModel1.setNoticeType("BPM")
         noticeModel1.setTarget("ihos1")
         noticeModel1.setTitle("bpm1")

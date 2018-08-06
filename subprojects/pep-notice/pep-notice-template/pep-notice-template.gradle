@@ -1,0 +1,6 @@
+dependencies {
+    compile project(':pep-sys'),
+            project(':pep-auth-api')
+    testCompile project(':pep-test')
+}
+
