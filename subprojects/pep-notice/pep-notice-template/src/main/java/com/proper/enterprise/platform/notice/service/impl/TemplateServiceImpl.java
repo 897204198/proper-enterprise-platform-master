@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.service.impl;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -87,7 +88,9 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateVO, T
     @Override
     public TemplateVO get(String id) {
         TemplateVO template;
-        TemplateEntity templateEntity = templateRepository.findOne(id);
+        TemplateEntity templateEntity = templateRepository.findById(id).<ErrMsgException>orElseThrow(() -> {
+            throw new ErrMsgException("Could NOT find template entity with " + id);
+        });
         template = BeanUtil.convert(templateEntity, TemplateVO.class);
         template.setCatelog(templateEntity.getCatelog().getCode());
         template.setType(templateEntity.getType().getCode());
@@ -100,8 +103,8 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateVO, T
             String[] idArr = ids.split(",");
             List<String> list = new ArrayList<>();
             Collections.addAll(list, idArr);
-            List<TemplateEntity> collection = templateRepository.findAll(list);
-            templateRepository.delete(collection);
+            List<TemplateEntity> collection = templateRepository.findAllById(list);
+            templateRepository.deleteAll(collection);
         }
         return true;
     }
