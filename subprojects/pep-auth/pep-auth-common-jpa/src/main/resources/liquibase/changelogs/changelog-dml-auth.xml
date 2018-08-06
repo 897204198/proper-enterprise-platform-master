@@ -1321,4 +1321,18 @@
             where MENU_ID='pep-auth-functions' and RES_ID='pep-auth-menus-r'
         </delete>
     </changeSet>
+    <changeSet id="init-20180803-catalog-auth" author="DELL">
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="MENU_TYPE"/>
+            <column name="DD_CATALOG_CODE" value="MENU_TYPE"/>
+            <column name="DD_CATALOG_NAME" value="菜单类型"/>
+            <column name="DD_CATALOG_ORDER" value="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="RESOURCE_TYPE"/>
+            <column name="DD_CATALOG_CODE" value="RESOURCE_TYPE"/>
+            <column name="DD_CATALOG_NAME" value="资源类型"/>
+            <column name="DD_CATALOG_ORDER" value="2"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

@@ -22,6 +22,7 @@ class BeanUtilSpec extends Specification {
         cs.add(c)
         b.setCs(cs)
         b.setCv(c)
+        b.setCstr('a')
 
         A a = BeanUtil.convert(b, A.class)
         expect:
@@ -31,6 +32,7 @@ class BeanUtilSpec extends Specification {
         assert a.getCs().size() == 1
         assert a.getCs()[0].sort == 1
         assert a.getCv().getSort() == 1
+        assert null == a.getCstr()
     }
 
 }

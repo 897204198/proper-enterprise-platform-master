@@ -254,4 +254,18 @@
             <column name="URL" value="/workflow/task"/>
         </insert>
     </changeSet>
+    <changeSet id="init-20180803-catalog-workflow" author="DELL">
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="ModelStatus"/>
+            <column name="DD_CATALOG_CODE" value="ModelStatus"/>
+            <column name="DD_CATALOG_NAME" value="流程模板状态"/>
+            <column name="DD_CATALOG_ORDER" value="6"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="PEPProcInstStateEnum"/>
+            <column name="DD_CATALOG_CODE" value="PEPProcInstStateEnum"/>
+            <column name="DD_CATALOG_NAME" value="流程状态"/>
+            <column name="DD_CATALOG_ORDER" value="7"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

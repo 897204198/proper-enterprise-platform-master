@@ -14,6 +14,8 @@ public class A {
 
     private CV cv;
 
+    private CI cstr;
+
     public String getName() {
         return name;
     }
@@ -44,6 +46,14 @@ public class A {
 
     public void setCv(CV cv) {
         this.cv = cv;
+    }
+
+    public CI getCstr() {
+        return cstr;
+    }
+
+    public void setCstr(CI cstr) {
+        this.cstr = cstr;
     }
 
     @Override
