@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet id="data-dic-add-ifornot" author="fm">
         <insert tableName="PEP_SYS_DATA_DIC">
             <column name="ID" value="pep_if_or_not_true"/>
@@ -54,6 +57,14 @@
             <column name="SEARCH_COLUMN" value="DD_CATALOG_CODE"/>
             <column name="TABLE_NAME" value="pep_sys_data_dic_catalog"/>
             <column name="URL" value="/sys/catalog"/>
+        </insert>
+    </changeSet>
+    <changeSet id="init-20180803-catalog-datadic" author="DELL">
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="IF_OR_NOT"/>
+            <column name="DD_CATALOG_CODE" value="IF_OR_NOT"/>
+            <column name="DD_CATALOG_NAME" value="判断类型"/>
+            <column name="DD_CATALOG_ORDER" value="8"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

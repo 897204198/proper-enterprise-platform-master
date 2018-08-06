@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.core.utils.model;
 
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 
-public class C {
+public class C implements CI {
 
     private Integer sort;
 

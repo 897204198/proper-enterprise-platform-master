@@ -131,6 +131,9 @@ public class BeanUtil {
                             }
                             //处理类型不一致  多用于bean类型不一致但是bean之间有相同属性
                             if (targetPd.getPropertyType() != sourcePd.getPropertyType()) {
+                                if (targetPd.getPropertyType().isInterface()) {
+                                    continue;
+                                }
                                 copyBean(value, target, sourcePd, targetPd, ignoreProperties);
                                 continue;
                             }
