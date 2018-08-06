@@ -28,6 +28,10 @@ public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
+    private static final String[] IGNORE_ROLES = {"parent", "menus", "users", "userGroups", "resources"};
+
+    private static final String[] IGNORE_USER_GROUPS = {"users", "roles"};
+
     @Autowired
     private AuthcService authcService;
 
@@ -58,10 +62,12 @@ public class LoginController {
         User user = userService.getCurrentUser();
         UserVO currentUserVO = BeanUtil.convert(user, UserVO.class);
         if (CollectionUtil.isNotEmpty(user.getRoles())) {
-            currentUserVO.setRoles(BeanUtil.convert(userService.getUserRoles(user.getId(), EnableEnum.ENABLE), RoleVO.class));
+            currentUserVO.setRoles(BeanUtil.convert(userService.getUserRoles(user.getId(), EnableEnum.ENABLE),
+                RoleVO.class, IGNORE_ROLES));
         }
         if (CollectionUtil.isNotEmpty(user.getUserGroups())) {
-            currentUserVO.setUserGroups(BeanUtil.convert(userService.getUserGroups(user.getId(), EnableEnum.ENABLE), UserGroupVO.class));
+            currentUserVO.setUserGroups(BeanUtil.convert(userService.getUserGroups(user.getId(), EnableEnum.ENABLE),
+                UserGroupVO.class, IGNORE_USER_GROUPS));
         }
         return new ResponseEntity<>(currentUserVO, HttpStatus.OK);
     }
