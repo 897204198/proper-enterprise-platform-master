@@ -31,7 +31,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public void downloadThumbnail(String id, int width, int height, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        File file = fileService.findOne(id);
+        File file = fileService.findById(id);
         if (null == file) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
         }
