@@ -6,7 +6,10 @@ import com.proper.enterprise.platform.notice.service.NoticeSetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class NoticeSetServiceImpl implements NoticeSetService {
@@ -26,6 +29,18 @@ public class NoticeSetServiceImpl implements NoticeSetService {
             noticeSetEntity.setEmail(true);
         }
         return noticeSetEntity;
+    }
+
+    @Override
+    public Map<String, NoticeSetDocument> findMapByNoticeTypeAndUserIds(String noticeType, Set<String> userIds) {
+        List<NoticeSetDocument> list = noticeSetRepository.findByNoticeTypeAndUserIdIn(noticeType, userIds);
+        Map<String, NoticeSetDocument> result = new HashMap<>(1);
+        if (!list.isEmpty()) {
+            for (NoticeSetDocument noticeSetDocument : list) {
+                result.put(noticeSetDocument.getUserId(), noticeSetDocument);
+            }
+        }
+        return result;
     }
 
 }

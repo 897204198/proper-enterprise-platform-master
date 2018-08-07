@@ -33,8 +33,8 @@ public class NoticeServiceImpl implements NoticeService {
     //private static final String NOTICE_CHANNEL_SMS = "SMS";
 
     @Override
-    public boolean sendNotice(NoticeModel noticeModel) {
-        //TODO auto add business (datadic)
+    public boolean saveNoticeAndCallNoticeChannel(NoticeModel noticeModel) {
+        LOGGER.info("Notice Channel ...");
         saveNotice(noticeModel);
         if (NOTICE_CHANNEL_PUSH.equals(noticeModel.getNoticeChannel())) {
             return pushNotice(noticeModel);
@@ -49,20 +49,21 @@ public class NoticeServiceImpl implements NoticeService {
         noticeDocument.setBusinessId(noticeModel.getBusinessId());
         noticeDocument.setNoticeChannel(noticeChannel);
         noticeDocument.setTitle(noticeModel.getTitle());
+        noticeDocument.setCustom(noticeModel.getCustom());
         noticeDocument.setContent(noticeModel.getContent());
-        noticeDocument.setTarget(noticeModel.getTarget());
+        noticeDocument.setTargets(noticeModel.getTarget());
         return noticeRepository.save(noticeDocument);
     }
 
     private boolean pushNotice(NoticeModel noticeModel) {
+        LOGGER.info("start push: ");
         try {
-            LOGGER.debug("start push: " + JSONUtil.toJSON(noticeModel));
+            LOGGER.info(JSONUtil.toJSON(noticeModel));
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
         }
         PushMessage thePushmsg = getPushMessage(noticeModel);
-        List<String> lstUids = new ArrayList<>();
-        lstUids.add(noticeModel.getTarget());
+        List<String> lstUids = new ArrayList<>(noticeModel.getTarget());
         service.savePushMessageToUsers(noticeModel.getSystemId(), lstUids, thePushmsg);
         return true;
     }

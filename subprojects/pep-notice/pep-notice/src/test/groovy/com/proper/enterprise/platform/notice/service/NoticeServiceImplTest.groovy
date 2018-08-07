@@ -47,12 +47,13 @@ class NoticeServiceImplTest extends AbstractTest {
     void sendNotice() {
         Map<String, Object> custom = new HashMap<>(1)
         custom.put("pageUrl", "messages")
-
+        Set<String> targets = new HashSet<>()
+        targets.add("ihos1")
         NoticeModel noticeModel1 = new NoticeModel();
         noticeModel1.setSystemId("test")
         noticeModel1.setBusinessId("testBpm")
         noticeModel1.setNoticeType("BPM")
-        noticeModel1.setTarget("ihos1")
+        noticeModel1.setTarget(targets)
         noticeModel1.setTitle("bpm1")
         noticeModel1.setContent("noticeModel1")
         noticeModel1.setCustom(custom)

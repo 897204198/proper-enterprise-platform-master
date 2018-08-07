@@ -18,21 +18,40 @@ class NoticeServiceClientTest extends AbstractTest {
 
     @Test
     void findByNoticeTypeAndUserId() {
-        NoticeSetDocument noticeSetEntity = noticeSetService.findByNoticeTypeAndUserId("BPM", "test_bpm_user01")
-        assert noticeSetEntity.email == true
-        assert noticeSetEntity.push == false
-        assert noticeSetEntity.sms == true
+        Set<String> userIds = new HashSet<>(3)
+        userIds.add("test_bpm_user01")
+        userIds.add("test_bpm_user02")
+        userIds.add("test_bpm_user03")
+        Map<String, NoticeSetDocument> result = noticeSetService.findMapByNoticeTypeAndUserIds("BPM", userIds)
+        NoticeSetDocument noticeSetDocument = result.get("test_bpm_user01")
+        assert noticeSetDocument.email == true
+        assert noticeSetDocument.push == false
+        assert noticeSetDocument.sms == true
+        noticeSetDocument = result.get("test_bpm_user02")
+        assert noticeSetDocument.email == true
+        assert noticeSetDocument.push == false
+        assert noticeSetDocument.sms == true
+        noticeSetDocument = result.get("test_bpm_user03")
+        assert noticeSetDocument == null
     }
 
     @Before
     void init() {
-        NoticeSetDocument noticeSetDocument = new NoticeSetDocument()
-        noticeSetDocument.setUserId("test_bpm_user01")
-        noticeSetDocument.setNoticeType("BPM")
-        noticeSetDocument.setPush(false)
-        noticeSetDocument.setSms(true)
-        noticeSetDocument.setEmail(true)
-        noticeSetRepository.save(noticeSetDocument)
+        NoticeSetDocument noticeSetDocument1 = new NoticeSetDocument()
+        noticeSetDocument1.setUserId("test_bpm_user01")
+        noticeSetDocument1.setNoticeType("BPM")
+        noticeSetDocument1.setPush(false)
+        noticeSetDocument1.setSms(true)
+        noticeSetDocument1.setEmail(true)
+        noticeSetRepository.save(noticeSetDocument1)
+
+        NoticeSetDocument noticeSetDocument2 = new NoticeSetDocument()
+        noticeSetDocument2.setUserId("test_bpm_user02")
+        noticeSetDocument2.setNoticeType("BPM")
+        noticeSetDocument2.setPush(false)
+        noticeSetDocument2.setSms(true)
+        noticeSetDocument2.setEmail(true)
+        noticeSetRepository.save(noticeSetDocument2)
     }
 
 }

@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
 import com.proper.enterprise.platform.notice.entity.NoticeSetDocument;
+import com.proper.enterprise.platform.notice.model.Addressee;
 import com.proper.enterprise.platform.notice.model.NoticeModel;
 import com.proper.enterprise.platform.notice.service.NoticeSetService;
 import com.proper.enterprise.platform.notice.service.TemplateService;
@@ -21,8 +22,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class NoticeSender {
@@ -48,88 +48,6 @@ public class NoticeSender {
     TemplateService templateService;
 
     /**
-     * 发送批量消息接口
-     *
-     * @param businessId     业务ID
-     * @param noticeType     通知类型
-     * @param custom         扩展字段
-     * @param userIds        通知接收人ID
-     * @param templateParams 文案参数
-     */
-    public void sendNotice(String businessId,
-                           String noticeType,
-                           String code,
-                           Map<String, Object> custom,
-                           Set<String> userIds,
-                           Map<String, String> templateParams) {
-        for (String userId : userIds) {
-            sendNotice(businessId, noticeType, code, custom, userId, templateParams);
-        }
-    }
-
-    /**
-     * 发送单人消息接口
-     *
-     * @param businessId 业务ID
-     * @param noticeType 通知类型
-     * @param custom     扩展字段
-     * @param userId     通知接收人ID
-     * @param title      标题
-     * @param content    正文
-     */
-    @Async
-    public void sendNotice(String businessId, String noticeType, Map<String, Object> custom, String userId, String title, String content) {
-        NoticeModel noticeModel = new NoticeModel();
-        noticeModel.setSystemId(systemId);
-        noticeModel.setBusinessId(businessId);
-        noticeModel.setNoticeType(noticeType);
-        NoticeSetDocument noticeSetDocument = noticeSetService.findByNoticeTypeAndUserId(noticeType, userId);
-        User user = userService.get(userId);
-        if (user != null) {
-            if (noticeSetDocument.isPush()) {
-                noticeModel.setTitle(title);
-                noticeModel.setContent(content);
-                noticeModel.setNoticeChannel("PUSH");
-                if (StringUtil.isNotNull(user.getUsername())) {
-                    noticeModel.setTarget(user.getUsername());
-                    custom.put("packageName", packageName);
-                    noticeModel.setCustom(custom);
-                    accessNoticeServer(noticeModel);
-                } else {
-                    LOGGER.error("This is Notice Sender, username is empty.");
-                }
-            }
-            if (noticeSetDocument.isEmail()) {
-                noticeModel.setTitle(title);
-                noticeModel.setContent(content);
-                noticeModel.setNoticeChannel("EMAIL");
-                if (StringUtil.isNotNull(user.getEmail())) {
-                    noticeModel.setTarget(user.getEmail());
-                    noticeModel.setCustom(custom);
-                    accessNoticeServer(noticeModel);
-                } else {
-                    LOGGER.error("This is Notice Sender, email is empty.");
-                }
-            }
-            if (noticeSetDocument.isSms()) {
-                noticeModel.setTitle(title);
-                noticeModel.setContent(content);
-                noticeModel.setNoticeChannel("SMS");
-                if (StringUtil.isNotNull(user.getPhone())) {
-                    noticeModel.setTarget(user.getPhone());
-                    noticeModel.setCustom(custom);
-                    accessNoticeServer(noticeModel);
-                } else {
-                    LOGGER.error("This is Notice Sender, phone is empty.");
-                }
-
-            }
-        } else {
-            LOGGER.error("This is Notice Sender, the user is not exits : " + userId);
-        }
-    }
-
-    /**
      * 发送单人消息接口
      *
      * @param businessId     业务ID
@@ -145,65 +63,154 @@ public class NoticeSender {
                            Map<String, Object> custom,
                            String userId,
                            Map<String, String> templateParams) {
+        Set<String> userIds = new HashSet<>(1);
+        userIds.add(userId);
+        sendNotice(businessId, noticeType, code, custom, userIds, templateParams);
+    }
+
+    /**
+     * 发送批量消息接口
+     *
+     * @param businessId     业务ID
+     * @param noticeType     通知类型
+     * @param custom         扩展字段
+     * @param userIds        通知接收人ID集合
+     * @param templateParams 文案参数
+     */
+    public void sendNotice(String businessId,
+                           String noticeType,
+                           String code,
+                           Map<String, Object> custom,
+                           Set<String> userIds,
+                           Map<String, String> templateParams) {
+        Addressee addressee = packageAddressee(noticeType, userIds);
+        DataDicLiteBean business = new DataDicLiteBean("NOTICE_BUSINESS", businessId);
+        Map<String, TemplateVO> templates = templateService.getTemplates(business, code, templateParams);
+        sendNoticeChannel(addressee, businessId, noticeType, custom, templates, "PUSH", "EMAIL", "SMS");
+    }
+
+    /**
+     * 发送单人消息接口
+     *
+     * @param businessId 业务ID
+     * @param noticeType 通知类型
+     * @param custom     扩展字段
+     * @param userId     通知接收人ID
+     * @param title      标题
+     * @param content    正文
+     */
+    @Async
+    public void sendNotice(String businessId,
+                           String noticeType,
+                           Map<String, Object> custom,
+                           String userId,
+                           String title,
+                           String content) {
+        Set<String> userIds = new HashSet<>(1);
+        userIds.add(userId);
+        sendNotice(businessId, noticeType, custom, userIds, title, content);
+    }
+
+    /**
+     * 发送批量消息接口
+     *
+     * @param businessId 业务ID
+     * @param noticeType 通知类型
+     * @param custom     扩展字段
+     * @param userIds    通知接收人ID集合
+     * @param title      标题
+     * @param content    正文
+     */
+    public void sendNotice(String businessId,
+                           String noticeType,
+                           Map<String, Object> custom,
+                           Set<String> userIds,
+                           String title,
+                           String content) {
+        Addressee addressee = packageAddressee(noticeType, userIds);
+        sendNoticeChannel(addressee, businessId, noticeType, custom, title, content, "PUSH", "EMAIL", "SMS");
+    }
+
+    private Addressee packageAddressee(String noticeType, Set<String> userIds) {
+        Map<String, NoticeSetDocument> noticeSetMap = noticeSetService.findMapByNoticeTypeAndUserIds(noticeType, userIds);
+        Collection<? extends User> users = userService.getUsersByIds(new ArrayList<>(userIds));
+        Addressee addressee = new Addressee();
+        for (User user : users) {
+            NoticeSetDocument noticeSetDocument = noticeSetMap.get(user.getId());
+            if (noticeSetDocument == null) {
+                noticeSetDocument = new NoticeSetDocument(true, true, false);
+            }
+            if (noticeSetDocument.isPush()) {
+                addressee.add("PUSH", user.getUsername());
+            }
+            if (noticeSetDocument.isEmail()) {
+                addressee.add("EMAIL", user.getEmail());
+            }
+            if (noticeSetDocument.isSms()) {
+                addressee.add("SMS", user.getPhone());
+            }
+        }
+        return addressee;
+    }
+
+    private void sendNoticeChannel(Addressee addressee,
+                                   String businessId,
+                                   String noticeType,
+                                   Map<String, Object> custom,
+                                   String title,
+                                   String content,
+                                   String... noticeChannels) {
+        for (String noticeChannel : noticeChannels) {
+            Set<String> targets = addressee.get(noticeChannel);
+            if (targets != null && !targets.isEmpty()) {
+                NoticeModel noticeModel = packageNoticeModel(targets, businessId, noticeType, custom, title, content, noticeChannel);
+                accessNoticeServer(noticeModel);
+            }
+        }
+    }
+
+    private void sendNoticeChannel(Addressee addressee,
+                                   String businessId,
+                                   String noticeType,
+                                   Map<String, Object> custom,
+                                   Map<String, TemplateVO> templates,
+                                   String... noticeChannels) {
+        for (String noticeChannel : noticeChannels) {
+            Set<String> targets = addressee.get(noticeChannel);
+            if (targets != null && !targets.isEmpty()) {
+                TemplateVO templateVO = templates.get(noticeChannel);
+                String title = templateVO.getTitle();
+                String content = templateVO.getTemplate();
+                NoticeModel noticeModel = packageNoticeModel(targets, businessId, noticeType, custom, title, content, noticeChannel);
+                accessNoticeServer(noticeModel);
+            }
+        }
+    }
+
+    private NoticeModel packageNoticeModel(Set<String> targets,
+                                           String businessId,
+                                           String noticeType,
+                                           Map<String, Object> custom,
+                                           String title,
+                                           String content,
+                                           String noticeChannel) {
         NoticeModel noticeModel = new NoticeModel();
+        noticeModel.setTarget(targets);
         noticeModel.setSystemId(systemId);
         noticeModel.setBusinessId(businessId);
         noticeModel.setNoticeType(noticeType);
-        NoticeSetDocument noticeSetDocument = noticeSetService.findByNoticeTypeAndUserId(noticeType, userId);
-        User user = userService.get(userId);
-        if (user != null) {
-            DataDicLiteBean business = new DataDicLiteBean("NOTICE_BUSINESS", businessId);
-            Map<String, TemplateVO> templates = templateService.getTemplates(business, code, templateParams);
-            if (noticeSetDocument.isPush()) {
-                TemplateVO templateVO = templates.get("PUSH");
-                noticeModel.setTitle(templateVO.getTitle());
-                noticeModel.setContent(templateVO.getTemplate());
-                noticeModel.setNoticeChannel("PUSH");
-                if (StringUtil.isNotNull(user.getUsername())) {
-                    noticeModel.setTarget(user.getUsername());
-                    custom.put("packageName", packageName);
-                    noticeModel.setCustom(custom);
-                    accessNoticeServer(noticeModel);
-                } else {
-                    LOGGER.error("This is Notice Sender, username is empty.");
-                }
-            }
-            if (noticeSetDocument.isEmail()) {
-                TemplateVO templateVO = templates.get("EMAIL");
-                noticeModel.setTitle(templateVO.getTitle());
-                noticeModel.setContent(templateVO.getTemplate());
-                noticeModel.setNoticeChannel("EMAIL");
-                if (StringUtil.isNotNull(user.getEmail())) {
-                    noticeModel.setTarget(user.getEmail());
-                    noticeModel.setCustom(custom);
-                    accessNoticeServer(noticeModel);
-                } else {
-                    LOGGER.error("This is Notice Sender, email is empty.");
-                }
-            }
-            if (noticeSetDocument.isSms()) {
-                TemplateVO templateVO = templates.get("SMS");
-                noticeModel.setTitle(templateVO.getTitle());
-                noticeModel.setContent(templateVO.getTemplate());
-                noticeModel.setNoticeChannel("SMS");
-                if (StringUtil.isNotNull(user.getPhone())) {
-                    noticeModel.setTarget(user.getPhone());
-                    noticeModel.setCustom(custom);
-                    accessNoticeServer(noticeModel);
-                } else {
-                    LOGGER.error("This is Notice Sender, phone is empty.");
-                }
-
-            }
-        } else {
-            LOGGER.error("This is Notice Sender, the user is not exits : " + userId);
-        }
+        noticeModel.setTitle(title);
+        noticeModel.setContent(content);
+        noticeModel.setCustom(custom);
+        noticeModel.setNoticeChannel(noticeChannel);
+        noticeModel.addCustom("packageName", packageName);
+        return noticeModel;
     }
 
     private String accessNoticeServer(NoticeModel noticeModel) {
         try {
             String data = JSONUtil.toJSON(noticeModel);
-            LOGGER.debug("NOTICE SENDER POST:" + data);
+            LOGGER.debug("NOTICE SENDER SEND:" + data);
             ResponseEntity<byte[]> response = HttpClient.post(serverUrl + "/notice", MediaType.APPLICATION_JSON, data);
             return StringUtil.toEncodedString(response.getBody());
         } catch (IOException e) {

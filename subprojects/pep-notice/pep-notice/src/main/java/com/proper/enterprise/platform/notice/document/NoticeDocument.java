@@ -6,6 +6,8 @@ import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Convert;
+import java.util.Map;
+import java.util.Set;
 
 @Document(collection = "PEP_NOTICE")
 public class NoticeDocument extends BaseDocument {
@@ -31,9 +33,14 @@ public class NoticeDocument extends BaseDocument {
     private String content;
 
     /**
-     * 通知接收人ID 为空时代表广播通知
+     * 通知接收人ID集合 为空时代表广播通知
      */
-    private String target;
+    private Set<String> targets;
+
+    /**
+     * 通知自定义字段
+     */
+    private Map<String, Object> custom;
 
     private boolean isReaded;
 
@@ -64,12 +71,12 @@ public class NoticeDocument extends BaseDocument {
         this.content = content;
     }
 
-    public String getTarget() {
-        return target;
+    public Set<String> getTargets() {
+        return targets;
     }
 
-    public void setTarget(String target) {
-        this.target = target;
+    public void setTargets(Set<String> targets) {
+        this.targets = targets;
     }
 
     public boolean isReaded() {
@@ -94,5 +101,13 @@ public class NoticeDocument extends BaseDocument {
 
     public void setSystemId(String systemId) {
         this.systemId = systemId;
+    }
+
+    public Map<String, Object> getCustom() {
+        return custom;
+    }
+
+    public void setCustom(Map<String, Object> custom) {
+        this.custom = custom;
     }
 }

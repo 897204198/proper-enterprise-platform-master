@@ -21,7 +21,7 @@ public class NoticeController extends BaseController {
     @AuthcIgnore
     @PostMapping
     public ResponseEntity<Boolean> sendNotice(@RequestBody NoticeModel noticeModel) {
-        return responseOfPost(noticeService.sendNotice(noticeModel));
+        return responseOfPost(noticeService.saveNoticeAndCallNoticeChannel(noticeModel));
     }
 
     @GetMapping("/{noticeChannelName}")
