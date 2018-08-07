@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.notice.model;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class NoticeModel {
 
@@ -37,7 +39,7 @@ public class NoticeModel {
     /**
      * 通知接收人ID集合 为空时代表广播通知
      */
-    private String target;
+    private Set<String> target;
 
     /**
      * 通知自定义字段
@@ -100,11 +102,18 @@ public class NoticeModel {
         this.custom = custom;
     }
 
-    public String getTarget() {
+    public Set<String> getTarget() {
         return target;
     }
 
-    public void setTarget(String target) {
+    public void setTarget(Set<String> target) {
         this.target = target;
+    }
+
+    public void addCustom(String key, String value) {
+        if (custom == null) {
+            custom = new HashMap<>(1);
+        }
+        custom.put(key, value);
     }
 }

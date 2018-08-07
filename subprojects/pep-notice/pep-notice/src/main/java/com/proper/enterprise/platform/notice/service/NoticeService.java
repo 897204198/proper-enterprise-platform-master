@@ -16,10 +16,10 @@ public interface NoticeService {
     List<NoticeDocument> findByNoticeChannel(String noticeChannel);
 
     /**
-     * 创建通知
+     * 创建通知并转发各消息渠道
      *
      * @param noticeModel 通知
      * @return
      */
-    boolean sendNotice(NoticeModel noticeModel);
+    boolean saveNoticeAndCallNoticeChannel(NoticeModel noticeModel);
 }

@@ -6,6 +6,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "PEP_NOTICE_SET")
 public class NoticeSetDocument extends BaseDocument {
 
+    public NoticeSetDocument() {
+    }
+
+    public NoticeSetDocument(boolean isPush, boolean isEmail, boolean isSms) {
+        this.isPush = isPush;
+        this.isEmail = isEmail;
+        this.isSms = isSms;
+    }
+
     /**
      *  用户ID
      */
