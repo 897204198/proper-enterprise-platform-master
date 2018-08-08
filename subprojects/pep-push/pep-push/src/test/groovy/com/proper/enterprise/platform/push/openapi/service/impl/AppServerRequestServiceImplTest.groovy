@@ -37,13 +37,13 @@ class AppServerRequestServiceImplTest extends PushAbstractTest {
     @Test
     void sendMsgTest() {
         String pushId = "m_id_1"
-        PushMsgEntity entity = pushMsgRepository.findOne(pushId)
+        PushMsgEntity entity = pushMsgRepository.findById(pushId).orElse(null)
         assert entity != null
         assert entity.getSendCount() == 1
         List<String> list = new ArrayList<>()
         list.add(pushId)
         appServerRequestService.sendMsg(list)
-        entity = pushMsgRepository.findOne(pushId)
+        entity = pushMsgRepository.findById(pushId).orElse(null)
         assert entity.getSendCount() == 2
     }
 }
