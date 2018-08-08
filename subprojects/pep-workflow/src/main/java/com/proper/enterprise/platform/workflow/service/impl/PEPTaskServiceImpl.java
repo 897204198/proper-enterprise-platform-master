@@ -100,7 +100,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             && task.getAssignee().equals(Authentication.getCurrentUserId())) {
             return;
         }
-        User user = userDao.findOne(Authentication.getCurrentUserId());
+        User user = userDao.findById(Authentication.getCurrentUserId());
         if (null == user) {
             throw new ErrMsgException(I18NUtil.getMessage("workflow.task.complete.no.permissions"));
         }
