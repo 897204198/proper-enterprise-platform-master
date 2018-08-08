@@ -206,4 +206,9 @@
             <column name="PUSH_MODE" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="20180806141613-01" author="alphahinex (generated)">
+        <addColumn tableName="PEP_PUSH_MSG">
+            <column name="DEVICETYPE" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
