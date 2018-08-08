@@ -33,14 +33,5 @@ public class BaseJpaRepositoryImpl<T, IDT extends Serializable> extends SimpleJp
         return this.save(var1);
     }
 
-    @Override
-    public boolean deleteById(IDT var1) {
-        try {
-            this.delete(var1);
-            return true;
-        } catch (EmptyResultDataAccessException e) {
-            return false;
-        }
-    }
 }
 
