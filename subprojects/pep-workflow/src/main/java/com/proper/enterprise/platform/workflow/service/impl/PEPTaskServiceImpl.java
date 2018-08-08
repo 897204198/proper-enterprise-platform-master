@@ -1,10 +1,16 @@
 package com.proper.enterprise.platform.workflow.service.impl;
 
+import com.proper.enterprise.platform.api.auth.dao.UserDao;
+import com.proper.enterprise.platform.api.auth.model.Role;
+import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.TaskConvert;
@@ -17,6 +23,7 @@ import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import org.apache.commons.collections.MapUtils;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.TaskService;
+import org.flowable.identitylink.api.IdentityLinkInfo;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
@@ -40,11 +47,15 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     @Autowired
     private PEPProcessService pepProcessService;
 
+    private UserDao userDao;
+
     @Autowired
     PEPTaskServiceImpl(TaskService taskService,
-                       HistoryService historyService) {
+                       HistoryService historyService,
+                       UserDao userDao) {
         this.taskService = taskService;
         this.historyService = historyService;
+        this.userDao = userDao;
     }
 
 
@@ -64,7 +75,9 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         if (MapUtils.isEmpty(globalVariables)) {
             globalVariables = new HashMap<>(16);
         }
-        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        Task task = taskService.createTaskQuery()
+            .includeIdentityLinks()
+            .taskId(taskId).singleResult();
         globalVariables = addNoSameAssigneeSkipMark(task, globalVariables);
         globalVariables.putAll(variables);
         String formKey = task.getFormKey();
@@ -72,10 +85,57 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             globalVariables.put(formKey, variables);
         }
         globalVariables = GlobalVariableUtil.setGlobalVariable(globalVariables, variables, globalVariableKeys);
+        validAssigneeIsCurrentUser(task);
         if (null == task.getAssignee()) {
             taskService.claim(taskId, Authentication.getCurrentUserId());
         }
         taskService.complete(taskId, globalVariables);
+    }
+
+    private void validAssigneeIsCurrentUser(Task task) {
+        if (StringUtil.isEmpty(Authentication.getCurrentUserId())) {
+            throw new ErrMsgException(I18NUtil.getMessage("workflow.task.complete.no.permissions"));
+        }
+        if (StringUtil.isNotEmpty(task.getAssignee())
+            && task.getAssignee().equals(Authentication.getCurrentUserId())) {
+            return;
+        }
+        User user = userDao.findOne(Authentication.getCurrentUserId());
+        if (null == user) {
+            throw new ErrMsgException(I18NUtil.getMessage("workflow.task.complete.no.permissions"));
+        }
+        List<String> userGroupIds = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(user.getUserGroups())) {
+            for (UserGroup userGroup : user.getUserGroups()) {
+                userGroupIds.add(userGroup.getId());
+            }
+        }
+        List<String> roleIds = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(user.getRoles())) {
+            for (Role role : user.getRoles()) {
+                roleIds.add(role.getId());
+            }
+        }
+        if (CollectionUtil.isNotEmpty(task.getIdentityLinks())) {
+            for (IdentityLinkInfo identityLinkInfo : task.getIdentityLinks()) {
+                if ("candidate".equals(identityLinkInfo.getType())) {
+                    if (StringUtil.isNotEmpty(identityLinkInfo.getUserId())
+                        && identityLinkInfo.getUserId().equals(user.getId())) {
+                        return;
+                    }
+                    if (StringUtil.isNotEmpty(identityLinkInfo.getGroupId())
+                        && userGroupIds.contains(identityLinkInfo.getGroupId())) {
+                        return;
+
+                    }
+                    if (StringUtil.isNotEmpty(identityLinkInfo.getRoleId())
+                        && roleIds.contains(identityLinkInfo.getRoleId())) {
+                        return;
+                    }
+                }
+            }
+        }
+        throw new ErrMsgException(I18NUtil.getMessage("workflow.task.complete.no.permissions"));
     }
 
     @Override

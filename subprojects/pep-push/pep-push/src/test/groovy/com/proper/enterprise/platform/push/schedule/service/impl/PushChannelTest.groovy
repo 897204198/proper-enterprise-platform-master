@@ -49,6 +49,9 @@ class PushChannelTest extends AbstractTest {
         vo = addChannel(vo)
         assert vo != null
 
+        def id = vo.getId()
+        vo = initVo()
+        vo.setId(id)
         vo.getAndroid().getHuawei().setTheAppId("app_id222")
         vo.setMsgSaveDays(2)
         vo = updateChannel(vo)
