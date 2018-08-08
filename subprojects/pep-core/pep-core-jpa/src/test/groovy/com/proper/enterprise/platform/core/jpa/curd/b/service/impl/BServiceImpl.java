@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.jpa.curd.b.service.impl;
 
 import com.proper.enterprise.platform.core.jpa.curd.b.api.B;
+import com.proper.enterprise.platform.core.jpa.curd.b.entity.BEntity;
 import com.proper.enterprise.platform.core.jpa.curd.b.repository.BRepository;
 import com.proper.enterprise.platform.core.jpa.curd.b.service.BService;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
@@ -17,5 +18,12 @@ public class BServiceImpl extends AbstractJpaServiceSupport<B, BRepository, Stri
     public BRepository getRepository() {
         return brepository;
     }
+
+    @Override
+    public B saveB(B b) {
+        return brepository.save((BEntity)b);
+    }
+
+
 
 }

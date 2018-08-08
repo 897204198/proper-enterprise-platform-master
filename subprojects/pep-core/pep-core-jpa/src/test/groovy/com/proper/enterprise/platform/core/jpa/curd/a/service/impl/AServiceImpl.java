@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.core.jpa.curd.a.repository.ARepository;
 import com.proper.enterprise.platform.core.jpa.curd.a.service.AService;
 import com.proper.enterprise.platform.core.jpa.curd.b.api.B;
 import com.proper.enterprise.platform.core.jpa.curd.b.repository.BRepository;
+import com.proper.enterprise.platform.core.jpa.curd.b.service.BService;
 import com.proper.enterprise.platform.core.jpa.curd.c.api.C;
 import com.proper.enterprise.platform.core.jpa.curd.c.repository.CRepository;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
@@ -22,6 +23,9 @@ public class AServiceImpl extends AbstractJpaServiceSupport<A, ARepository, Stri
 
     @Autowired
     private BRepository brepository;
+
+    @Autowired
+    private BService bservice;
 
     @Autowired
     private CRepository crepository;
@@ -55,6 +59,11 @@ public class AServiceImpl extends AbstractJpaServiceSupport<A, ARepository, Stri
     @Override
     public Collection<A> findAllWithB() {
         return null;
+    }
+
+    @Override
+    public B txReadOnly(B b) {
+        return bservice.saveB(b);
     }
 
 

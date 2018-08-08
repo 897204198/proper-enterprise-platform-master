@@ -1,10 +1,15 @@
 package com.proper.enterprise.platform.core.jpa.curd
 
+import com.proper.enterprise.platform.core.jpa.curd.a.repository.ARepository
 import com.proper.enterprise.platform.core.jpa.curd.a.vo.AVO
+import com.proper.enterprise.platform.core.jpa.curd.b.entity.BEntity
+import com.proper.enterprise.platform.core.jpa.curd.b.repository.BRepository
 import com.proper.enterprise.platform.core.jpa.curd.b.vo.BVO
+import com.proper.enterprise.platform.core.jpa.curd.c.repository.CRepository
 import com.proper.enterprise.platform.core.jpa.curd.c.vo.CVO
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.test.AbstractTest
@@ -14,6 +19,15 @@ import com.proper.enterprise.platform.test.utils.JSONUtil
 class CRUDTest extends AbstractTest {
 
     private static final URL = "/a"
+
+    @Autowired
+    private BRepository brepository
+
+    @Autowired
+    private ARepository arepository
+
+    @Autowired
+    private CRepository crepository
 
     @Test
     void "post"() {
@@ -123,6 +137,31 @@ class CRUDTest extends AbstractTest {
         //A关联C
         AVO avoc = postAndReturn(URL + "/" + avo.getId() + "/c/" + resultC.getId(), entity1)
         AVO avob = postAndReturn(URL + "/" + avo.getId() + "/b/" + resultB.getId(), entity1)
+    }
+
+    /**
+     * 只读事务套可写则不可写
+     */
+    @Test
+    @NoTx
+    void readOnlyIncludeWriteTxTest() {
+        arepository.deleteAll()
+        crepository.deleteAll()
+        brepository.deleteAll()
+        BEntity b = new BEntity()
+        b.setTest(2)
+        BEntity bsave = postAndReturn(URL + "/b", b)
+        List bs = JSONUtil.parse(get("/b", HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert bs.size() == 0
+    }
+
+
+    @Test
+    void deleteTest() {
+        AVO entity1 = new AVO().setTest(1).setVoStr("AAA")
+        AVO avo1 = postAndReturn(URL, entity1)
+        delete("/a?id=" + avo1.getId(), HttpStatus.NO_CONTENT)
+        delete("/a?id=" + avo1.getId(), HttpStatus.NOT_FOUND)
     }
 
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.jpa.curd.a.service.AService;
 import com.proper.enterprise.platform.core.jpa.curd.a.vo.AVO;
+import com.proper.enterprise.platform.core.jpa.curd.b.api.B;
+import com.proper.enterprise.platform.core.jpa.curd.b.entity.BEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,4 +60,9 @@ public class AController extends BaseController {
         return responseOfPost(aservice.addC(aid, cid), AVO.class);
     }
 
+
+    @PostMapping(path = "/b")
+    public ResponseEntity<B> txReadOnlySaveB(@RequestBody BEntity b) {
+        return responseOfPost(aservice.txReadOnly(b));
+    }
 }
