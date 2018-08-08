@@ -12,8 +12,17 @@ public interface BaseJpaRepository<T, ID extends Serializable> extends JpaReposi
 
     /**
      * 更新
+     *
      * @param var1 var1
      * @return T 泛型
      */
     T updateForSelective(T var1);
+
+    /**
+     * 根据id删除
+     *
+     * @param var1 id
+     * @return true删除成功 false未删除
+     */
+    boolean deleteById(ID var1);
 }

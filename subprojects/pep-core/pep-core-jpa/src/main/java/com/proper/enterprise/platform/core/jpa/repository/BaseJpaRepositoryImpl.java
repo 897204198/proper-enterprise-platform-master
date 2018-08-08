@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.core.jpa.repository;
 
 import com.proper.enterprise.platform.core.jpa.util.JPAUtil;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
@@ -29,6 +30,16 @@ public class BaseJpaRepositoryImpl<T, IDT extends Serializable> extends SimpleJp
         T oldEntity = this.findOne((IDT) entityInformation.getId(var1));
         BeanUtils.copyProperties(oldEntity, var1, JPAUtil.getNotNullColumnNames(var1));
         return this.save(var1);
+    }
+
+    @Override
+    public boolean deleteById(IDT var1) {
+        try {
+            this.delete(var1);
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+            return false;
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.jpa.curd.a.service;
 
 import com.proper.enterprise.platform.core.jpa.curd.a.api.A;
+import com.proper.enterprise.platform.core.jpa.curd.b.api.B;
 import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
 
 import java.util.Collection;
@@ -9,6 +10,7 @@ public interface AService extends BaseJpaService<A, String> {
 
     /**
      * 保存
+     *
      * @param a a
      * @return A
      */
@@ -16,6 +18,7 @@ public interface AService extends BaseJpaService<A, String> {
 
     /**
      * 添加
+     *
      * @param aid aid
      * @param bid bid
      * @return A
@@ -24,6 +27,7 @@ public interface AService extends BaseJpaService<A, String> {
 
     /**
      * 添加
+     *
      * @param aid aid
      * @param cid cid
      * @return A
@@ -32,9 +36,18 @@ public interface AService extends BaseJpaService<A, String> {
 
     /**
      * 用B查找所有
+     *
      * @return 返回集合
      */
     Collection<A> findAllWithB();
+
+    /**
+     * 测试只读事务套可写事务
+     * @param b B
+     * @return B
+     */
+
+    B txReadOnly(B b);
 
 
 }
