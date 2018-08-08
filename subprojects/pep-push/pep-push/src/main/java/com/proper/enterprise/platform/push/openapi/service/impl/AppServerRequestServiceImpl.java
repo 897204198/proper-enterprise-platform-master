@@ -238,7 +238,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
     @Override
     public void sendMsg(List<String> pushIds) {
         for (String pushId : pushIds) {
-            PushMsgEntity entity = msgRepo.findOne(pushId);
+            PushMsgEntity entity = msgRepo.findById(pushId).orElse(null);
             if (entity != null) {
                 LOGGER.info("AppServerRequestServiceImpl sendMsg pushId:{},PushMsgEntity:{}",
                     pushId, entity.toString());

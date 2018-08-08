@@ -264,7 +264,7 @@ public class PushMsgServiceImpl extends AbstractJpaServiceSupport<PushMsg, PushM
                 }
             }
             try {
-                saveResultList = pushMsgRepository.save(lstMsgs);
+                saveResultList = pushMsgRepository.saveAll(lstMsgs);
             } catch (Exception e) {
                 throw new PushException(e.getMessage());
             }
