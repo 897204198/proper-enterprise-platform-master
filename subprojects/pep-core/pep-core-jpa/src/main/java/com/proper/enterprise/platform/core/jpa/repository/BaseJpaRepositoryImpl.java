@@ -2,7 +2,6 @@ package com.proper.enterprise.platform.core.jpa.repository;
 
 import com.proper.enterprise.platform.core.jpa.util.JPAUtil;
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
