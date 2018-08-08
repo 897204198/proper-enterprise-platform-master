@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -34,6 +35,8 @@ import java.util.Map.Entry;
 @Service
 public class AppServerRequestServiceImpl implements AppServerRequestService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppServerRequestServiceImpl.class);
+    private static final String CONTAINER_FACTIORY_NAME = "pushAppServerRequestFactory";
+    private static final String CONTAINERE_DESTINATION_NAME = PushGlobalInfo.JSM_DES_APP_SERVER_REQUEST + "/sendPushMsg";
     @Autowired
     PushGlobalInfo globalInfo;
     @Autowired
@@ -231,4 +234,26 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
         LOGGER.trace(rtn.toString());
     }
 
+    @JmsListener(destination = CONTAINERE_DESTINATION_NAME, containerFactory = CONTAINER_FACTIORY_NAME)
+    @Override
+    public void sendMsg(List<String> pushIds) {
+        for (String pushId : pushIds) {
+            PushMsgEntity entity = msgRepo.findOne(pushId);
+            if (entity != null) {
+                LOGGER.info("AppServerRequestServiceImpl sendMsg pushId:{},PushMsgEntity:{}",
+                    pushId, entity.toString());
+                AbstractPushVendorService pushService = pushVendorFactory.getPushVendorService(
+                    entity.getAppkey(), entity.getDevicetype(), entity.getPushMode());
+                List list = new ArrayList();
+                list.add(entity);
+                pushService.pushMsg(list);
+            } else {
+                LOGGER.info("AppServerRequestServiceImpl sendMsg error:can't find pushEntity by pushId:{}", pushId);
+            }
+        }
+    }
+
+    public String getContainereDestinationName() {
+        return CONTAINERE_DESTINATION_NAME;
+    }
 }

@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.push.openapi.service.impl;
 
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.push.api.openapi.exceptions.PushException;
+import com.proper.enterprise.platform.push.api.openapi.service.AppServerRequestService;
 import com.proper.enterprise.platform.push.api.openapi.service.MsgQueueAppServerRequestService;
 import com.proper.enterprise.platform.push.api.openapi.service.PushJmsTemplateService;
 import com.proper.enterprise.platform.push.config.PushGlobalInfo;
@@ -13,6 +14,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,6 +26,9 @@ public class PushJmsTemplateServiceImpl implements PushJmsTemplateService {
 
     @Autowired
     MsgQueueAppServerRequestService targetService;
+
+    @Autowired
+    AppServerRequestService appServerRequestService;
 
     @Override
     public void saveConvertAndSend(String destinationName, Object message) {
@@ -44,4 +49,21 @@ public class PushJmsTemplateServiceImpl implements PushJmsTemplateService {
             appServerRequestJmsTemplate.convertAndSend(destinationName, message);
         }
     }
+
+    @Override
+    public void sendPushMsg(List pushIds) {
+        if (appServerRequestJmsTemplate == null) {
+            pushIds.forEach(n -> LOGGER.info("PushJmsTemplateServiceImpl sendPushMsg inner pushId:{},", n));
+            try {
+                appServerRequestService.sendMsg(pushIds);
+            } catch (Exception e) {
+                pushIds.forEach(n -> LOGGER.error("sendPushMsg inner pushId:{},errorMsg:{}", n, e.getMessage(), e));
+                throw new PushException(e.getMessage());
+            }
+        } else {
+            pushIds.forEach(n -> LOGGER.info("PushJmsTemplateServiceImpl sendPushMsg jms pushId:{},", n));
+            appServerRequestJmsTemplate.convertAndSend(appServerRequestService.getContainereDestinationName(), pushIds);
+        }
+    }
+
 }

@@ -4,8 +4,10 @@ import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.push.api.openapi.model.PushMessage;
 import com.proper.enterprise.platform.push.common.model.PushDevice;
 import com.proper.enterprise.platform.push.common.model.PushMsg;
+import com.proper.enterprise.platform.push.common.model.enums.PushDeviceType;
 import com.proper.enterprise.platform.push.common.model.enums.PushMode;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Entity
 @Table(name = "PEP_PUSH_MSG")
@@ -76,7 +79,35 @@ public class PushMsgEntity extends BaseEntity implements PushMsg {
     @Enumerated(EnumType.STRING)
     private PushMode pushMode;
 
+    /**
+     * 设备类型
+     */
+    @Enumerated(EnumType.STRING)
+    private PushDeviceType devicetype;
+
     private String pushToken;
+
+    public PushMsgEntity() {
+    }
+
+    public PushMsgEntity(PushMessage msg, String appkey, PushDeviceEntity device) {
+        this.msgid = UUID.randomUUID().toString();
+        this.mstatus = PushMsgStatus.UNSEND;
+        this.userid = device == null ? null : device.getUserid();
+        this.device = device;
+        this.appkey = appkey;
+        this.mcontent = msg.getContent();
+        this.setMcustomDatasMap(msg.getCustoms());
+        this.mtitle = msg.getTitle();
+        this.sendCount = 0;
+        this.pushMode = device == null ? null : device.getPushMode();
+        this.devicetype = device == null ? null : device.getDevicetype();
+        Map<String, Object> maps = this.getMcustomDatasMap();
+        maps.put("_proper_userid", device == null ? null : device.getUserid());
+        maps.put("_proper_title", msg.getTitle());
+        maps.put("_proper_content", msg.getContent());
+        this.setMcustomDatasMap(maps);
+    }
 
     public String getMtitle() {
         return mtitle;
@@ -224,5 +255,27 @@ public class PushMsgEntity extends BaseEntity implements PushMsg {
 
     public void setPushMode(PushMode pushMode) {
         this.pushMode = pushMode;
+    }
+
+    public PushDeviceType getDevicetype() {
+        return devicetype;
+    }
+
+    public void setDevicetype(PushDeviceType devicetype) {
+        this.devicetype = devicetype;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("{id='").append(id).append(", appkey=").append(appkey)
+            .append(", msgid='").append(msgid).append(", userid='").append(userid)
+            .append(", mcontent='").append(mcontent).append(", mtitle='").append(mtitle)
+            .append(", mcustoms='").append(mcustoms).append(", mstatus=").append(mstatus)
+            .append(", msendedDate=").append(msendedDate).append(", sendCount=").append(sendCount)
+            .append(", mresponse='").append(mresponse).append(", pushMode=").append(pushMode)
+            .append(", devicetype=").append(devicetype).append(", pushToken='").append(pushToken)
+            .append("}");
+        return sb.toString();
     }
 }
