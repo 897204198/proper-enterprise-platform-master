@@ -17,7 +17,7 @@ public final class PEPConstants {
     /**
      * 默认月份日期表示格式
      */
-    public static final String DEFAULT_MONTH_FORMAT = ConfCenter.get("core.default_date_format", "yyyy-MM");
+    public static final String DEFAULT_MONTH_FORMAT = ConfCenter.get("core.default_month_format", "yyyy-MM");
     /**
      * 默认日期表示格式
      */
