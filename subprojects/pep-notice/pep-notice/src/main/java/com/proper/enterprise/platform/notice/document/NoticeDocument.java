@@ -33,6 +33,11 @@ public class NoticeDocument extends BaseDocument {
     private String content;
 
     /**
+     * 接收人
+     */
+    private String from;
+
+    /**
      * 通知接收人ID集合 为空时代表广播通知
      */
     private Set<String> targets;
@@ -109,5 +114,13 @@ public class NoticeDocument extends BaseDocument {
 
     public void setCustom(Map<String, Object> custom) {
         this.custom = custom;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 }

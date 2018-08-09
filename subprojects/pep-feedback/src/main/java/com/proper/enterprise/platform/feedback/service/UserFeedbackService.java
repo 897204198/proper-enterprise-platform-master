@@ -15,6 +15,7 @@ public interface UserFeedbackService {
 
     /**
      * 保存用户意见反馈
+     *
      * @param feedbackInfo feedbackInfo
      */
     void save(UserFeedBackDocument feedbackInfo);
@@ -23,9 +24,9 @@ public interface UserFeedbackService {
      * 管理端取得App所有用户的意见反馈
      * 按照查询条件获取所有用户的列表
      *
-     * @param  feedbackStatus 意见反馈状态
-     * @param  query          查询条件
-     * @param  pageRequest    分页条件
+     * @param feedbackStatus 意见反馈状态
+     * @param query          查询条件
+     * @param pageRequest    分页条件
      * @return 意见反馈分页数据
      */
     DataTrunk<UserFeedBackDocument> findByConditionAndPage(String feedbackStatus, String query, PageRequest pageRequest);
@@ -41,12 +42,12 @@ public interface UserFeedbackService {
     /**
      * 保存APP用户反馈意见
      *
-     * @param opinion 反馈意见.
-     * @param pictureId 图片id
+     * @param opinion     反馈意见.
+     * @param pictureId   图片id
      * @param mobileModel 手机型号
-     * @param netType 网络
-     * @param platform 手机系统
-     * @param appVersion 版本
+     * @param netType     网络
+     * @param platform    手机系统
+     * @param appVersion  版本
      * @return ""
      * @throws Exception 异常.
      */
@@ -54,7 +55,8 @@ public interface UserFeedbackService {
 
     /**
      * 保存管理端回复反馈意见信息
-     * @param feedback 意见
+     *
+     * @param feedback        意见
      * @param opinionDocument opinionDocument对象
      * @return UserFeedBackDocument
      * @throws Exception 抛异常
@@ -71,16 +73,18 @@ public interface UserFeedbackService {
 
     /**
      * 掌上就医推送反馈意见消息
+     *
      * @param pushContent pushContent
-     * @param pushType pushType
-     * @param userNameList userNameList
-     * @param paramList paramList
+     * @param pushType    pushType
+     * @param userId      userId
+     * @param paramList   paramList
      * @throws Exception 抛异常
      */
-    void pushInfo(String pushContent, String pushType, List<String> userNameList, List<Map<String, String>> paramList) throws Exception;
+    void pushInfo(String pushContent, String pushType, String userId, List<Map<String, String>> paramList) throws Exception;
 
     /**
      * 关闭状态更新管理端的意见反馈
+     *
      * @param userFeedBackDocument userFeedBackDocument
      * @return ""
      */

@@ -10,6 +10,7 @@ public class PEPProperty {
         this.require = formProperty.isRequired();
         this.writable = formProperty.isWritable();
         this.label = formProperty.getName();
+        this.value = formProperty.getValue();
     }
 
     /**
@@ -29,6 +30,10 @@ public class PEPProperty {
      * 展示名称
      */
     private String label;
+    /**
+     * 值
+     */
+    private String value;
 
     public String getId() {
         return id;
@@ -60,6 +65,14 @@ public class PEPProperty {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override

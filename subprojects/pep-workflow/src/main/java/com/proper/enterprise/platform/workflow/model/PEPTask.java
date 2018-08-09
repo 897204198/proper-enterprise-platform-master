@@ -278,6 +278,7 @@ public class PEPTask {
         }
         ProcessInstance processInstance = PEPApplicationContext.getBean(RuntimeService.class)
             .createProcessInstanceQuery()
+            .includeProcessVariables()
             .processInstanceId(this.getProcInstId())
             .singleResult();
         if (null == processInstance) {

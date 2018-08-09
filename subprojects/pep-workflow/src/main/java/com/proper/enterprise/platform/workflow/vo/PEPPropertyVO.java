@@ -24,6 +24,11 @@ public class PEPPropertyVO {
      */
     private String label;
 
+    /**
+     * 值
+     */
+    private String value;
+
     public String getId() {
         return id;
     }
@@ -54,6 +59,14 @@ public class PEPPropertyVO {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override

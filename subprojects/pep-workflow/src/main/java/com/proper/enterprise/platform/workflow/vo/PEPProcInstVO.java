@@ -29,6 +29,12 @@ public class PEPProcInstVO {
     private String processDefinitionName;
 
     /**
+     * 流程标题
+     */
+    @JsonView(value = {PEPTaskVO.ToDoView.class})
+    private String processTitle;
+
+    /**
      * 流程启动时间
      */
     @JsonView(value = {PEPTaskVO.ToDoView.class})
@@ -97,6 +103,14 @@ public class PEPProcInstVO {
 
     public void setProcessDefinitionName(String processDefinitionName) {
         this.processDefinitionName = processDefinitionName;
+    }
+
+    public String getProcessTitle() {
+        return processTitle;
+    }
+
+    public void setProcessTitle(String processTitle) {
+        this.processTitle = processTitle;
     }
 
     public String getCreateTime() {

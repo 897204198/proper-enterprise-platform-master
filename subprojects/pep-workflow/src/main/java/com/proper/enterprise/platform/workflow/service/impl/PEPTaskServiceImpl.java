@@ -66,6 +66,10 @@ public class PEPTaskServiceImpl implements PEPTaskService {
 
     @Override
     public void complete(String taskId, Map<String, Object> variables) {
+        Task task = taskService.createTaskQuery()
+            .includeIdentityLinks()
+            .taskId(taskId).singleResult();
+        validAssigneeIsCurrentUser(task);
         variables = VariableUtil.handleVariableSpecialType(variables);
         if (MapUtils.isEmpty(variables)) {
             variables = new HashMap<>(16);
@@ -75,9 +79,6 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         if (MapUtils.isEmpty(globalVariables)) {
             globalVariables = new HashMap<>(16);
         }
-        Task task = taskService.createTaskQuery()
-            .includeIdentityLinks()
-            .taskId(taskId).singleResult();
         globalVariables = addNoSameAssigneeSkipMark(task, globalVariables);
         globalVariables.putAll(variables);
         String formKey = task.getFormKey();
@@ -85,7 +86,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             globalVariables.put(formKey, variables);
         }
         globalVariables = GlobalVariableUtil.setGlobalVariable(globalVariables, variables, globalVariableKeys);
-        validAssigneeIsCurrentUser(task);
+
         if (null == task.getAssignee()) {
             taskService.claim(taskId, Authentication.getCurrentUserId());
         }

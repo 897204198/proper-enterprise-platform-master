@@ -2,6 +2,11 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
   <process id="manyForm" name="manyForm" isExecutable="true">
     <documentation>多表单验证</documentation>
+    <dataObject id="processTitle" name="processTitle" itemSubjectRef="xsd:string">
+      <extensionElements>
+        <flowable:value>${initiator}发起的${processDefinitionName}流程</flowable:value>
+      </extensionElements>
+    </dataObject>
     <startEvent id="startEvent1" flowable:formKey="form1">
       <extensionElements>
         <flowable:formProperty id="readAndWrite" name="name" type="string"></flowable:formProperty>
@@ -12,7 +17,7 @@
     <userTask id="sid-C3DBA445-CFE4-4AD4-87FA-0F4E77184CAB" name="form1step1" flowable:assignee="admin" flowable:formKey="form1">
       <extensionElements>
         <flowable:formProperty id="readAndWrite" name="name" type="string"></flowable:formProperty>
-        <flowable:formProperty id="read" name="name2" type="string" expression="${formPropertyService.value()}" writable="false"></flowable:formProperty>
+        <flowable:formProperty id="read" name="name2" type="string" expression="大大${initiator}" writable="false"></flowable:formProperty>
         <flowable:formProperty id="write" name="name3" type="string" readable="false" required="true"></flowable:formProperty>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>

@@ -8,8 +8,7 @@ import com.proper.enterprise.platform.feedback.document.FeedBackDocument;
 import com.proper.enterprise.platform.feedback.document.UserFeedBackDocument;
 import com.proper.enterprise.platform.feedback.repository.UserFeedBackRepository;
 import com.proper.enterprise.platform.feedback.service.UserFeedbackService;
-import com.proper.enterprise.platform.push.client.PusherApp;
-import com.proper.enterprise.platform.push.client.model.PushMessage;
+import com.proper.enterprise.platform.notice.client.NoticeSender;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
@@ -42,7 +41,7 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
     private UserFeedBackRepository userFeedBackRepo;
 
     @Autowired
-    private PusherApp pusherApp;
+    private NoticeSender noticeSender;
 
     @Autowired
     private I18NService i18NService;
@@ -55,7 +54,7 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
     @Override
     public DataTrunk<UserFeedBackDocument> findByConditionAndPage(String feedbackStatus, String query, PageRequest pageRequest) {
         Page<UserFeedBackDocument> userFeedBackDocumentPage =
-                userFeedBackRepo.findByUserAndStatus(feedbackStatus, feedbackStatus + "==-1", query, pageRequest);
+            userFeedBackRepo.findByUserAndStatus(feedbackStatus, feedbackStatus + "==-1", query, pageRequest);
         List<UserFeedBackDocument> userFeedBackDocumentList = userFeedBackDocumentPage.getContent();
         for (UserFeedBackDocument userFeedBackDocument : userFeedBackDocumentList) {
             List<FeedBackDocument> documentList = userFeedBackDocument.getFeedBackDocuments();
@@ -148,15 +147,13 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
         userFeedBackDocument = userFeedBackRepo.save(userFeedBackDocument);
 
         if (dataDicService.get(FEEDBACK_REPLIED).getCode().equals(userFeedBackDocument.getStatusCode())) {
-            List<String> userNameList = new ArrayList<>();
-            userNameList.add(userFeedBackDocument.getUserTel());
             String pushContent = i18NService.getMessage("pep.feedback.message.content");
             String pushType = "feedback";
             List<Map<String, String>> paramMapList = new ArrayList<>();
             Map<String, String> paramMap = new HashMap<>(1);
             paramMap.put("opinionId", userFeedBackDocument.getId());
             paramMapList.add(paramMap);
-            pushInfo(pushContent, pushType, userNameList, paramMapList);
+            pushInfo(pushContent, pushType, userFeedBackDocument.getUserId(), paramMapList);
             LOGGER.debug("Push feedback information !");
             LOGGER.debug("feedback Id :" + userFeedBackDocument.getId());
         }
@@ -183,39 +180,24 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
     /**
      * 掌上医院推送反馈意见消息
      *
-     * @param pushContent  推送消息内容
-     * @param pushType     推送消息类别
-     * @param userNameList 推送人列表(手机号)
-     * @param paramList    推送参数列表
+     * @param pushContent 推送消息内容
+     * @param pushType    推送消息类别
+     * @param userId      接收人
+     * @param paramList   推送参数列表
      * @throws Exception 异常信息
      */
     @Override
-    public void pushInfo(String pushContent, String pushType, List<String> userNameList, List<Map<String, String>> paramList) throws Exception {
-        LOGGER.debug("Push info: {}, {}, {}, {}", pushContent, pushType, userNameList, paramList);
-
-        // 拼接推送消息
-        PushMessage msg = new PushMessage();
-        msg.setTitle(i18NService.getMessage("pep.feedback.message.title"));
-        msg.setContent(pushContent);
-        msg.addCustomData("pageUrl", pushType);
-        // 推送参数
-        String paramKey;
-        String paramValue;
-        //在推送消息时，设置推送消息对应的角标
-        //badgeNumber >=0 合法的角标数;=0时，清空手机端对应的角标；>0时，设置对应的角标数
-        // 比如，进到程序里，用户查看对应的消息后，手机端App要根据推送SDK清空对应的角标。
+    public void pushInfo(String pushContent, String pushType, String userId, List<Map<String, String>> paramList) throws Exception {
+        String title = i18NService.getMessage("pep.feedback.message.title");
+        Map<String, Object> custom = new HashMap<>(1);
+        custom.put("pageUrl", pushType);
         for (Map<String, String> pushMap : paramList) {
             Iterator<Map.Entry<String, String>> paraIter = pushMap.entrySet().iterator();
             while (paraIter.hasNext()) {
                 Map.Entry<String, String> entry = paraIter.next();
-                paramKey = entry.getKey();
-                paramValue = entry.getValue();
-                msg.addCustomData(paramKey, paramValue);
+                custom.put(entry.getKey(), entry.getValue());
             }
         }
-
-        LOGGER.debug("Invoke PusherAPP to push {} to {}", msg, userNameList);
-        // 推送消息
-        pusherApp.pushMessageToUsers(msg, userNameList);
+        noticeSender.sendNotice("feedBack", "MESSAGE", custom, userId, title, pushContent);
     }
 }

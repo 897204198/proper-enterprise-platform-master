@@ -8,9 +8,9 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.notice.client.NoticeSender;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import com.proper.enterprise.platform.workflow.api.TaskAssigneeOrCandidateNotice;
-import com.proper.enterprise.platform.workflow.api.WorkflowAsyncNotice;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.ProcessDefinition;
@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -42,10 +41,10 @@ public class TaskAssigneeOrCandidateNoticeImpl implements TaskAssigneeOrCandidat
 
     private RoleDao roleDao;
 
-    private WorkflowAsyncNotice workflowAsyncNotice;
+    private NoticeSender noticeSender;
 
     @Autowired
-    TaskAssigneeOrCandidateNoticeImpl(WorkflowAsyncNotice workflowAsyncNotice,
+    TaskAssigneeOrCandidateNoticeImpl(NoticeSender noticeSender,
                                       UserDao userDao,
                                       UserGroupDao userGroupDao,
                                       RoleDao roleDao,
@@ -54,7 +53,7 @@ public class TaskAssigneeOrCandidateNoticeImpl implements TaskAssigneeOrCandidat
         this.userGroupDao = userGroupDao;
         this.roleDao = roleDao;
         this.repositoryService = repositoryService;
-        this.workflowAsyncNotice = workflowAsyncNotice;
+        this.noticeSender = noticeSender;
     }
 
     @Override
@@ -68,13 +67,11 @@ public class TaskAssigneeOrCandidateNoticeImpl implements TaskAssigneeOrCandidat
             User initiatorUser = userDao.findById(initiator);
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(task.getProcessDefinitionId()).singleResult();
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(from);
-            message.setSubject(task.getName());
-            message.setText(String.format(I18NUtil.getMessage("workflow.notice.msg"),
-                initiatorUser.getName(), processDefinition.getName(), task.getName()));
-            message.setTo(emails.toArray(new String[emails.size()]));
-            workflowAsyncNotice.notice(message);
+            Map<String, Object> custom = new HashMap<>(0);
+            String content = String.format(I18NUtil.getMessage("workflow.notice.msg"),
+                initiatorUser.getName(), processDefinition.getName(), task.getName());
+            //TODO need userIds
+            noticeSender.sendNotice("TaskAssigneeOrCandidate", "BPM", custom, from, emails, task.getName(), content);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);
         }

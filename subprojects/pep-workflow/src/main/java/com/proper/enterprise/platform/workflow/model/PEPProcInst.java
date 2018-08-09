@@ -3,15 +3,19 @@ package com.proper.enterprise.platform.workflow.model;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.PEPApplicationContext;
-import com.proper.enterprise.platform.core.utils.BeanUtil;
-import com.proper.enterprise.platform.core.utils.DateUtil;
-import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.core.utils.*;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
+import com.proper.enterprise.platform.sys.i18n.I18NUtil;
+import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
+import com.proper.enterprise.platform.workflow.util.TmplUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
+import org.flowable.bpmn.model.ValuedDataObject;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.runtime.ProcessInstance;
+
+import java.util.List;
+import java.util.Map;
 
 import static com.proper.enterprise.platform.core.PEPConstants.DEFAULT_DATETIME_FORMAT;
 
@@ -25,6 +29,7 @@ public class PEPProcInst {
         this.setProcessDefinitionKey(processInstance.getProcessDefinitionKey());
         this.setProcessDefinitionName(processInstance.getProcessDefinitionName());
         this.setStartUserId(processInstance.getStartUserId());
+        this.setProcessTitle(buildProcessTitle(processInstance.getProcessVariables()));
     }
 
     public PEPProcInst(HistoricProcessInstance historicProcessInstance) {
@@ -38,6 +43,7 @@ public class PEPProcInst {
         this.setEndTime(this.getEnded()
             ? DateUtil.toString(historicProcessInstance.getEndTime(), DEFAULT_DATETIME_FORMAT)
             : null);
+        this.setProcessTitle(buildProcessTitle(historicProcessInstance.getProcessVariables()));
     }
 
     /**
@@ -59,6 +65,11 @@ public class PEPProcInst {
      * 流程定义名称
      */
     private String processDefinitionName;
+
+    /**
+     * 流程标题
+     */
+    private String processTitle;
 
     /**
      * 流程启动时间
@@ -125,6 +136,14 @@ public class PEPProcInst {
 
     public void setProcessDefinitionName(String processDefinitionName) {
         this.processDefinitionName = processDefinitionName;
+    }
+
+    public String getProcessTitle() {
+        return processTitle;
+    }
+
+    public void setProcessTitle(String processTitle) {
+        this.processTitle = processTitle;
     }
 
     public String getCreateTime() {
@@ -209,5 +228,26 @@ public class PEPProcInst {
 
     public PEPProcInstVO convert() {
         return BeanUtil.convert(this, PEPProcInstVO.class);
+    }
+
+    private static String buildProcessTitle(Map<String, Object> globalVariables) {
+        return (String) globalVariables.get(WorkFlowConstants.PROCESS_TITLE);
+    }
+
+    public static String buildProcessTitle(List<ValuedDataObject> datas, Map<String, Object> globalVariables) {
+        String processTitleTmpl = "";
+        String defaultTitleTmpl = I18NUtil.getMessage("workflow.default.process.title");
+        if (CollectionUtil.isEmpty(datas)) {
+            return TmplUtil.resolveTmpl(defaultTitleTmpl, globalVariables);
+        }
+        for (ValuedDataObject data : datas) {
+            if (WorkFlowConstants.PROCESS_TITLE.equals(data.getName())) {
+                processTitleTmpl = (String) data.getValue();
+            }
+        }
+        if (StringUtil.isEmpty(processTitleTmpl)) {
+            return TmplUtil.resolveTmpl(defaultTitleTmpl, globalVariables);
+        }
+        return TmplUtil.resolveTmpl(processTitleTmpl, globalVariables);
     }
 }
