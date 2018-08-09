@@ -35,10 +35,11 @@ class ApnsPushAppSpec extends Specification {
 
         System.setProperty('push_env', 'Fire in test')
         ConfCenter.reload()
-        boolean result = apnsPushApp.pushOneMsg(msg)
+        boolean result1 = apnsPushApp.pushOneMsg(msg)
+        boolean result2 = apnsPushApp.pushOneMsg(msg)
 
         expect:
-        assert result
+        assert result1 && result2
     }
 
 }

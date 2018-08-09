@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.push.vendor.ios.apns;
 
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.utils.MacAddressUtil;
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.vendor.BasePushApp;
 import com.turo.pushy.apns.ApnsClient;
@@ -13,9 +14,13 @@ import io.netty.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class ApnsPushApp extends BasePushApp {
 
@@ -67,13 +72,13 @@ public class ApnsPushApp extends BasePushApp {
         this.topic = topic;
     }
 
-    private ApnsClient apnsClient;
+    private static ConcurrentMap<String, ApnsClient> clientPool = new ConcurrentHashMap<>();
 
     /**
      * 推送一条消息
      *
      * @param msg 消息正文
-     * @return
+     * @return true：推送成功；false：推送失败
      */
     public boolean pushOneMsg(PushMsgEntity msg) {
         LOGGER.info("ios push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(),
@@ -100,7 +105,7 @@ public class ApnsPushApp extends BasePushApp {
 
             SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, topic, payload);
             if (isReallySendMsg()) {
-                final Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = apnsClient
+                final Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = clientPool.get(theAppkey)
                     .sendNotification(pushNotification);
 
                 final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse = sendNotificationFuture
@@ -127,15 +132,17 @@ public class ApnsPushApp extends BasePushApp {
                 LOGGER.info("No need to push notice to real APNs server when 'push_env' set to 'test'! {}", msg.getMcontent());
             }
         } catch (Exception e) {
-            LOGGER.error("Failed to send push notification.msg:" + JSONUtil.toJSONIgnoreException(msg), e);
+            LOGGER.error("Failed to send push notification.msg: " + JSONUtil.toJSONIgnoreException(msg), e);
             msg.setMresponse(e + "\t" + e.getMessage());
             result = false;
         }
         return result;
     }
 
-    private void initApnsClient() {
-        if (apnsClient != null) {
+    private void initApnsClient() throws IOException {
+        if (clientPool.containsKey(theAppkey)) {
+            LOGGER.debug("Current client pool is {}:{}, not need to build client for '{}' again.",
+                MacAddressUtil.getCompressedMacAddress(), Arrays.toString(clientPool.keySet().toArray()), theAppkey);
             return;
         }
 
@@ -150,11 +157,16 @@ public class ApnsPushApp extends BasePushApp {
             }
         } catch (IOException ioe) {
             LOGGER.error("Set APNs client credentials ERROR!", ioe);
+            throw ioe;
         }
         try {
-            apnsClient = builder.build();
-        } catch (Throwable throwable) {
-            LOGGER.error("Build APNs client ERROR!", throwable);
+            final ApnsClient apnsClient = builder.build();
+            clientPool.put(theAppkey, apnsClient);
+            LOGGER.debug("After build '{}' APNs client, client pool is {}:{}", theAppkey,
+                MacAddressUtil.getCompressedMacAddress(), Arrays.toString(clientPool.keySet().toArray()));
+        } catch (SSLException sslEx) {
+            LOGGER.error("Build APNs client ERROR!", sslEx);
+            throw sslEx;
         }
     }
 
