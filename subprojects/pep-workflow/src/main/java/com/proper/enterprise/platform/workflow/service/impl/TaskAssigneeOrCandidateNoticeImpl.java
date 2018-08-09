@@ -9,7 +9,7 @@ import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.client.NoticeSender;
-import com.proper.enterprise.platform.sys.i18n.I18NUtil;
+import com.proper.enterprise.platform.workflow.api.AbstractWorkFlowNoticeSupport;
 import com.proper.enterprise.platform.workflow.api.TaskAssigneeOrCandidateNotice;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import org.flowable.engine.RepositoryService;
@@ -19,19 +19,15 @@ import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 
 @Service("taskAssigneeOrCandidateNotice")
-public class TaskAssigneeOrCandidateNoticeImpl implements TaskAssigneeOrCandidateNotice {
+public class TaskAssigneeOrCandidateNoticeImpl extends AbstractWorkFlowNoticeSupport implements TaskAssigneeOrCandidateNotice {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskAssigneeOrCandidateNoticeImpl.class);
-
-    @Value("${pep.mail.mailDefaultFrom}")
-    private String from;
 
     private RepositoryService repositoryService;
 
@@ -59,25 +55,31 @@ public class TaskAssigneeOrCandidateNoticeImpl implements TaskAssigneeOrCandidat
     @Override
     public void notice(TaskEntity task) {
         try {
-            Set<String> emails = queryEmails(task);
-            if (CollectionUtil.isEmpty(emails)) {
+            Set<String> userIds = queryUserIds(task);
+            if (CollectionUtil.isEmpty(userIds)) {
                 return;
             }
             String initiator = (String) task.getVariable(WorkFlowConstants.INITIATOR);
             User initiatorUser = userDao.findById(initiator);
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(task.getProcessDefinitionId()).singleResult();
+            Map<String, String> templateParams = new HashMap<>(5);
+            templateParams.put("initiatorName", initiatorUser.getName());
+            templateParams.put("processDefinitionName", processDefinition.getName());
+            templateParams.put("taskName", task.getName());
+            templateParams.put("pageurl", buildTaskUrl(task));
             Map<String, Object> custom = new HashMap<>(0);
-            String content = String.format(I18NUtil.getMessage("workflow.notice.msg"),
-                initiatorUser.getName(), processDefinition.getName(), task.getName());
-            //TODO need userIds
-            noticeSender.sendNotice("TaskAssigneeOrCandidate", "BPM", custom, from, emails, task.getName(), content);
+            custom.put("gdpr_mpage", "examList");
+            custom.put("url", buildTaskUrl(task));
+            custom.put("title", task.getName());
+            noticeSender.sendNotice("EndNotice", "BPM", "TaskAssignee",
+                custom, initiator, templateParams);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);
         }
     }
 
-    protected Set<String> queryEmails(TaskEntity task) {
+    protected Set<String> queryUserIds(TaskEntity task) {
         Set<String> userIds = new HashSet<>();
         if (StringUtil.isNotEmpty(task.getAssignee())) {
             userIds.add(task.getAssignee());
@@ -95,16 +97,7 @@ public class TaskAssigneeOrCandidateNoticeImpl implements TaskAssigneeOrCandidat
                 }
             }
         }
-        if (CollectionUtil.isEmpty(userIds)) {
-            return userIds;
-        }
-        Collection<? extends User> users = userDao.findAll(userIds);
-        Set<String> emails = new HashSet<>();
-        for (User user : users) {
-            emails.add(user.getEmail());
-        }
-        LOGGER.info("taskId:{},emails:{}", task.getId(), emails.toString());
-        return emails;
+        return userIds;
     }
 
     protected Set<String> queryUserIdByGroup(String groupId) {

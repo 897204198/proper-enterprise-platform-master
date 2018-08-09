@@ -1,15 +1,20 @@
 package com.proper.enterprise.platform.workflow.api.notice
 
 import com.proper.enterprise.platform.api.auth.service.UserService
-import com.proper.enterprise.platform.core.security.Authentication;
+import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.security.Authentication
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.test.AbstractTest;
-import com.proper.enterprise.platform.test.utils.JSONUtil;
+import com.proper.enterprise.platform.test.utils.JSONUtil
+import com.proper.enterprise.platform.workflow.api.AbstractWorkFlowNoticeSupport
+import com.proper.enterprise.platform.workflow.model.PEPWorkflowNoticeUrlParam;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
 import org.flowable.engine.IdentityService
 import org.junit.Test
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql
 
 
 class TaskAssigneeNoticeTest extends AbstractTest {
@@ -21,13 +26,19 @@ class TaskAssigneeNoticeTest extends AbstractTest {
     @Autowired
     private UserService userService
 
+    @Value('${sys.base.path}')
+    private String baseUrl
+
     @Test
     @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/adminUsers.sql"])
     public void taskAssigneeNotice() {
         identityService.setAuthenticatedUserId("PEP_SYS")
         Authentication.setCurrentUserId("PEP_SYS")
         start(TASK_ASSIGNEE_NOTICE_KEY, new HashMap<String, Object>())
-        assert "PEP_SYSgroup1role1user1" == Authentication.getCurrentUserId()
+        String param = Authentication.getCurrentUserId().replace(baseUrl, "").replace(AbstractWorkFlowNoticeSupport.TASK_PAGE_URL, "")
+        PEPWorkflowNoticeUrlParam noticeUrlParam = JSONUtil.parse(URLDecoder.decode(param, PEPConstants.DEFAULT_CHARSET.name()),
+            PEPWorkflowNoticeUrlParam.class);
+        assert StringUtil.isNotEmpty(noticeUrlParam.getBusinessObj().getFormTitle())
     }
 
     private String start(String key, Map<String, Object> form) {

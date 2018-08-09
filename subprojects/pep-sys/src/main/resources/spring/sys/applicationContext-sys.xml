@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd">
     <beans>
         <bean id="messageSource"
               class="com.proper.enterprise.platform.sys.i18n.AntPatternReloadableResourceBundleMessageSource">
@@ -25,6 +28,7 @@
               class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor">
             <property name="validator" ref="validator"/>
         </bean>
+        <context:property-placeholder location="classpath:conf/sys/sys.properties" ignore-unresolvable="true"/>
     </beans>
 
 </beans>
