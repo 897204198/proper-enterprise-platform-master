@@ -16,19 +16,4 @@
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="packagesToScan" value="com.proper.enterprise" />
     </bean>
-
-    <!--init mail-->
-    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="${pep.mail.mailServerHost}"></property>
-        <property name="port" value="${pep.mail.mailServerPort}"></property>
-        <property name="username" value="${pep.mail.mailServerUsername}"></property>
-        <property name="password" value="${pep.mail.mailServerPassword}"></property>
-        <property name="javaMailProperties">
-            <props>
-                <prop key="mail.smtp.auth">true</prop>
-                <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
-                <prop key="mail.smtp.starttls.enable">true</prop>
-            </props>
-        </property>
-    </bean>
 </beans>

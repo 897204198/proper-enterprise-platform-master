@@ -25,10 +25,17 @@ class TemplateServiceTest extends AbstractTest {
         templateParams.put("package", "blood")
         templateParams.put("date", "20180801")
         templateParams.put("address", "shenyang")
+        templateParams.put("startDate", "2018-08-08 13:00")
+        templateParams.put("endDate", "2018-08-08 17:30")
+        templateParams.put("time", "4")
+        templateParams.put("url", "http://docs.easemob.com/im/start")
+        templateParams.put("note", "请悉知")
         DataDicLiteBean business = new DataDicLiteBean("NOTICE_BUSINESS", "TEST")
         Map<String, TemplateVO> templates = templateService.getTemplates(business, "code", templateParams)
-        assert templates.size() == 1
+        assert templates.size() == 2
         String content = templates.get("PUSH").getTemplate()
+        assert content.indexOf("{") == -1
+        content = templates.get("EMAIL").getTemplate()
         assert content.indexOf("{") == -1
     }
 
@@ -36,7 +43,7 @@ class TemplateServiceTest extends AbstractTest {
         TemplateEntity templateEntity = new TemplateEntity()
         templateEntity.setCode("code")
         templateEntity.setName("name")
-        templateEntity.setTitle("title1")
+        templateEntity.setTitle("title-push")
         String template = "体检预约成功！体检人:{name};身份证号:{idcard};体检套餐:{package};体检日期:{date};体检地点:{address};备注:请于体检当日携带有效证件，早晨7：50空腹，到体检中心。"
         templateEntity.setTemplate(template)
         templateEntity.setDescription("name : 体检人, idcard : 身份证号, package : 体检套餐, date : 体检日期, address : 体检地点")
@@ -45,6 +52,19 @@ class TemplateServiceTest extends AbstractTest {
         DataDicLiteBean type = new DataDicLiteBean("NOTICE_CHANNEL", "PUSH")
         templateEntity.setType(type)
         templateRepository.save(templateEntity)
+
+        TemplateEntity templateEntity2 = new TemplateEntity()
+        templateEntity2.setCode("code")
+        templateEntity2.setName("name")
+        templateEntity2.setTitle("title-email")
+        template = "【{name}】于【{startDate}】至【{endDate}】请假【{time}】小时，<a href='{url}'>{note}</a>"
+        templateEntity2.setTemplate(template)
+        templateEntity2.setDescription("name : 姓名, startDate : 起始日期, endDate : 结束日期, time : 持续时间, url : 连接，note : 说明")
+        business = new DataDicLiteBean("NOTICE_BUSINESS", "TEST")
+        templateEntity2.setCatelog(business)
+        type = new DataDicLiteBean("NOTICE_CHANNEL", "EMAIL")
+        templateEntity2.setType(type)
+        templateRepository.save(templateEntity2)
     }
 
 }

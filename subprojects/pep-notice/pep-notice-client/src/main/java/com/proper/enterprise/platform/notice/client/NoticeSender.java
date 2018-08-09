@@ -56,16 +56,35 @@ public class NoticeSender {
      * @param userId         通知接收人ID
      * @param templateParams 文案参数
      */
-    @Async
     public void sendNotice(String businessId,
                            String noticeType,
                            String code,
                            Map<String, Object> custom,
                            String userId,
                            Map<String, String> templateParams) {
+        sendNotice(businessId, noticeType, code, custom, null, userId, templateParams);
+    }
+
+    /**
+     * 发送单人消息接口
+     *
+     * @param businessId     业务ID
+     * @param noticeType     通知类型
+     * @param custom         扩展字段
+     * @param from           发起人
+     * @param userId         通知接收人ID
+     * @param templateParams 文案参数
+     */
+    public void sendNotice(String businessId,
+                           String noticeType,
+                           String code,
+                           Map<String, Object> custom,
+                           String from,
+                           String userId,
+                           Map<String, String> templateParams) {
         Set<String> userIds = new HashSet<>(1);
         userIds.add(userId);
-        sendNotice(businessId, noticeType, code, custom, userIds, templateParams);
+        sendNotice(businessId, noticeType, code, custom, from, userIds, templateParams);
     }
 
     /**
@@ -83,10 +102,31 @@ public class NoticeSender {
                            Map<String, Object> custom,
                            Set<String> userIds,
                            Map<String, String> templateParams) {
+        sendNotice(businessId, noticeType, code, custom, null, userIds, templateParams);
+    }
+
+    /**
+     * 发送批量消息接口
+     *
+     * @param businessId     业务ID
+     * @param noticeType     通知类型
+     * @param custom         扩展字段
+     * @param from           发起人
+     * @param userIds        通知接收人ID集合
+     * @param templateParams 文案参数
+     */
+    @Async
+    public void sendNotice(String businessId,
+                           String noticeType,
+                           String code,
+                           Map<String, Object> custom,
+                           String from,
+                           Set<String> userIds,
+                           Map<String, String> templateParams) {
         Addressee addressee = packageAddressee(noticeType, userIds);
         DataDicLiteBean business = new DataDicLiteBean("NOTICE_BUSINESS", businessId);
         Map<String, TemplateVO> templates = templateService.getTemplates(business, code, templateParams);
-        sendNoticeChannel(addressee, businessId, noticeType, custom, templates, "PUSH", "EMAIL", "SMS");
+        sendNoticeChannel(from, addressee, businessId, noticeType, custom, templates, "PUSH", "EMAIL", "SMS");
     }
 
     /**
@@ -99,16 +139,36 @@ public class NoticeSender {
      * @param title      标题
      * @param content    正文
      */
-    @Async
     public void sendNotice(String businessId,
                            String noticeType,
                            Map<String, Object> custom,
                            String userId,
                            String title,
                            String content) {
+        sendNotice(businessId, noticeType, custom, null, userId, title, content);
+    }
+
+    /**
+     * 发送单人消息接口
+     *
+     * @param businessId 业务ID
+     * @param noticeType 通知类型
+     * @param custom     扩展字段
+     * @param from       发起人
+     * @param userId     通知接收人ID
+     * @param title      标题
+     * @param content    正文
+     */
+    public void sendNotice(String businessId,
+                           String noticeType,
+                           Map<String, Object> custom,
+                           String from,
+                           String userId,
+                           String title,
+                           String content) {
         Set<String> userIds = new HashSet<>(1);
         userIds.add(userId);
-        sendNotice(businessId, noticeType, custom, userIds, title, content);
+        sendNotice(businessId, noticeType, custom, from, userIds, title, content);
     }
 
     /**
@@ -127,8 +187,30 @@ public class NoticeSender {
                            Set<String> userIds,
                            String title,
                            String content) {
+        sendNotice(businessId, noticeType, custom, null, userIds, title, content);
+    }
+
+    /**
+     * 发送批量消息接口
+     *
+     * @param businessId 业务ID
+     * @param noticeType 通知类型
+     * @param custom     扩展字段
+     * @param from       发起人
+     * @param userIds    通知接收人ID集合
+     * @param title      标题
+     * @param content    正文
+     */
+    @Async
+    public void sendNotice(String businessId,
+                           String noticeType,
+                           Map<String, Object> custom,
+                           String from,
+                           Set<String> userIds,
+                           String title,
+                           String content) {
         Addressee addressee = packageAddressee(noticeType, userIds);
-        sendNoticeChannel(addressee, businessId, noticeType, custom, title, content, "PUSH", "EMAIL", "SMS");
+        sendNoticeChannel(from, addressee, businessId, noticeType, custom, title, content, "PUSH", "EMAIL", "SMS");
     }
 
     private Addressee packageAddressee(String noticeType, Set<String> userIds) {
@@ -153,7 +235,8 @@ public class NoticeSender {
         return addressee;
     }
 
-    private void sendNoticeChannel(Addressee addressee,
+    private void sendNoticeChannel(String from,
+                                   Addressee addressee,
                                    String businessId,
                                    String noticeType,
                                    Map<String, Object> custom,
@@ -163,13 +246,14 @@ public class NoticeSender {
         for (String noticeChannel : noticeChannels) {
             Set<String> targets = addressee.get(noticeChannel);
             if (targets != null && !targets.isEmpty()) {
-                NoticeModel noticeModel = packageNoticeModel(targets, businessId, noticeType, custom, title, content, noticeChannel);
+                NoticeModel noticeModel = packageNoticeModel(from, targets, businessId, noticeType, custom, title, content, noticeChannel);
                 accessNoticeServer(noticeModel);
             }
         }
     }
 
-    private void sendNoticeChannel(Addressee addressee,
+    private void sendNoticeChannel(String from,
+                                   Addressee addressee,
                                    String businessId,
                                    String noticeType,
                                    Map<String, Object> custom,
@@ -181,13 +265,14 @@ public class NoticeSender {
                 TemplateVO templateVO = templates.get(noticeChannel);
                 String title = templateVO.getTitle();
                 String content = templateVO.getTemplate();
-                NoticeModel noticeModel = packageNoticeModel(targets, businessId, noticeType, custom, title, content, noticeChannel);
+                NoticeModel noticeModel = packageNoticeModel(from, targets, businessId, noticeType, custom, title, content, noticeChannel);
                 accessNoticeServer(noticeModel);
             }
         }
     }
 
-    private NoticeModel packageNoticeModel(Set<String> targets,
+    private NoticeModel packageNoticeModel(String from,
+                                           Set<String> targets,
                                            String businessId,
                                            String noticeType,
                                            Map<String, Object> custom,
@@ -195,6 +280,7 @@ public class NoticeSender {
                                            String content,
                                            String noticeChannel) {
         NoticeModel noticeModel = new NoticeModel();
+        noticeModel.setFrom(from);
         noticeModel.setTarget(targets);
         noticeModel.setSystemId(systemId);
         noticeModel.setBusinessId(businessId);

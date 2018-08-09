@@ -37,6 +37,11 @@ public class NoticeModel {
     private String content;
 
     /**
+     * 接收人
+     */
+    private String from;
+
+    /**
      * 通知接收人ID集合 为空时代表广播通知
      */
     private Set<String> target;
@@ -115,5 +120,13 @@ public class NoticeModel {
             custom = new HashMap<>(1);
         }
         custom.put(key, value);
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 }
