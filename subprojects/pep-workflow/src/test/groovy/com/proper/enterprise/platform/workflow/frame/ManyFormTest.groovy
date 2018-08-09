@@ -1,11 +1,11 @@
 package com.proper.enterprise.platform.workflow.frame
 
-import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
+import org.flowable.app.model.common.ResultListDataRepresentation
 import org.flowable.engine.IdentityService
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -70,6 +70,17 @@ class ManyFormTest extends AbstractTest {
         identityService.setAuthenticatedUserId("admin")
         Map form1 = new HashMap()
         form1.put("a", "a")
+        ResultListDataRepresentation representation = JSONUtil.parse(get('/repository/models/?filter=' + MANY_FORM_WORKFLOW_KEY + '&modelType=0'
+            , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
+        assert representation.data.get(0).formProperties.size() == 2
+        Map readAndWriteStart = representation.data.get(0).formProperties.readAndWrite
+        assert readAndWriteStart.label == 'name'
+        assert readAndWriteStart.writable
+        assert !readAndWriteStart.required
+        Map write= representation.data.get(0).formProperties.write
+        assert write.label == 'name3'
+        assert write.writable
+        assert !write.required
         String procInstId = start(MANY_FORM_WORKFLOW_KEY, form1)
 
         Map form1Step1 = getTask("form1step1")
@@ -79,12 +90,12 @@ class ManyFormTest extends AbstractTest {
         assert pages2.get(0).get("showType") == "EDIT"
         form1.put("a", "a2")
         assert pages2.get(0).get("formProperties").size() == 2
-        assert pages2.get(0).get("formProperties").get(0).name == 'name'
-        assert pages2.get(0).get("formProperties").get(0).readable
-        assert pages2.get(0).get("formProperties").get(0).writable
-        assert !pages2.get(0).get("formProperties").get(0).required
-        assert !pages2.get(0).get("formProperties").get(1).writable
-        assert pages2.get(0).get("formProperties").get(1).value == PEPConstants.DEFAULT_OPERAOTR_ID
+        Map readAndWrite = pages2.get(0).get("formProperties").readAndWrite
+        assert readAndWrite.label == 'name'
+        assert readAndWrite.writable
+        assert !readAndWrite.required
+        Map read = pages2.get(0).get("formProperties").read
+        assert !read.writable
         completeStep(form1Step1, form1)
 
 
@@ -93,7 +104,7 @@ class ManyFormTest extends AbstractTest {
         assert page3.size() == 1
         assert page3.get(0).get("formData").a == "a2"
         assert page3.get(0).get("showType") == "EDIT"
-        assert page3.get(0).get("formProperties").size() == 0
+        assert page3.get(0).get("formProperties") == null
         form1.put("a", "a3")
         completeStep(form1Step2, form1)
 
@@ -104,11 +115,11 @@ class ManyFormTest extends AbstractTest {
         assert page4.get(0).get("showType") == "SHOW"
         assert page4.get(1).get("showType") == "EDIT"
         assert page4.get(1).get("formKey") == "form2"
+        Map readAndWrite2 = page4.get(1).get("formProperties").readAndWrite
         assert page4.get(1).get("formProperties").size() == 1
-        assert page4.get(1).get("formProperties").get(0).name == 'name1'
-        assert page4.get(1).get("formProperties").get(0).readable
-        assert page4.get(1).get("formProperties").get(0).writable
-        assert page4.get(1).get("formProperties").get(0).required
+        assert readAndWrite2.label == 'name1'
+        assert readAndWrite2.writable
+        assert readAndWrite2.require
         Map form2 = new HashMap()
         form2.put("b", "b")
         form2.put("name1", "name1")

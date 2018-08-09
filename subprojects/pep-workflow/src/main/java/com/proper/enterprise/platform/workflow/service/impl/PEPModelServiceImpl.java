@@ -1,21 +1,27 @@
 package com.proper.enterprise.platform.workflow.service.impl;
 
+import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
+import com.proper.enterprise.platform.workflow.model.PEPProperty;
 import com.proper.enterprise.platform.workflow.vo.PEPModelVO;
 import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO;
 import com.proper.enterprise.platform.workflow.service.PEPModelService;
+import com.proper.enterprise.platform.workflow.vo.PEPPropertyVO;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.app.domain.editor.Model;
 import org.flowable.app.model.common.ResultListDataRepresentation;
 import org.flowable.app.repository.editor.ModelRepository;
 import org.flowable.engine.FormService;
 import org.flowable.engine.RepositoryService;
+import org.flowable.engine.form.FormProperty;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 
 @Service
@@ -76,6 +82,16 @@ public class PEPModelServiceImpl implements PEPModelService {
                 pepModelVO.setDeploymentTime(pepProcessDefinitionVO.getDeploymentTime());
                 pepModelVO.setStatus(buildModelStatus(pepModelVO, pepProcessDefinitionVO));
                 pepModelVO.setStartFormKey(pepProcessDefinitionVO.getStartFormKey());
+                List<FormProperty> formProperties = formService.getStartFormData(pepProcessDefinitionVO.getId())
+                    .getFormProperties();
+                if (CollectionUtil.isNotEmpty(formProperties)) {
+                    Map<String, PEPPropertyVO> pepPropertyMap = new HashMap<>(16);
+                    for (FormProperty formProperty : formProperties) {
+                        pepPropertyMap.put(formProperty.getId(), BeanUtil.convert(new PEPProperty(formProperty),
+                            PEPPropertyVO.class));
+                    }
+                    pepModelVO.setFormProperties(CollectionUtil.isEmpty(pepPropertyMap) ? null : pepPropertyMap);
+                }
                 continue;
             }
             pepModelVO.setStatus(dataDicService.get(PEPModelVO.ModelStatus.UN_DEPLOYED));

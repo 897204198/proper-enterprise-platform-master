@@ -4,11 +4,9 @@ import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
-import org.flowable.engine.form.FormProperty;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -17,7 +15,8 @@ import java.util.Map;
  */
 public class PEPExtFormVO implements PEPForm {
 
-    public PEPExtFormVO() {}
+    public PEPExtFormVO() {
+    }
 
     public PEPExtFormVO(Task task) {
         this.formKey = task.getFormKey();
@@ -42,7 +41,7 @@ public class PEPExtFormVO implements PEPForm {
 
     private ShowType showType;
 
-    private List<FormProperty> formProperties;
+    private Map<String, PEPPropertyVO> formProperties;
 
     public String getFormKey() {
         return formKey;
@@ -81,11 +80,11 @@ public class PEPExtFormVO implements PEPForm {
         return processVariables;
     }
 
-    public List<FormProperty> getFormProperties() {
+    public Map<String, PEPPropertyVO> getFormProperties() {
         return formProperties;
     }
 
-    public void setFormProperties(List<FormProperty> formProperties) {
+    public void setFormProperties(Map<String, PEPPropertyVO> formProperties) {
         this.formProperties = formProperties;
     }
 

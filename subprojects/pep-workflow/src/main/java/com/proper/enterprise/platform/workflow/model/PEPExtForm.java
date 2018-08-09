@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.workflow.model;
 
 import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
@@ -12,6 +13,7 @@ import org.flowable.engine.form.FormProperty;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +46,7 @@ public class PEPExtForm implements PEPForm {
 
     private Map<String, Object> globalData;
 
-    private List<FormProperty> formProperties;
+    private Map<String, PEPProperty> formProperties;
 
     private ShowType showType;
 
@@ -73,11 +75,11 @@ public class PEPExtForm implements PEPForm {
     }
 
 
-    public List<FormProperty> getFormProperties() {
+    public Map<String, PEPProperty> getFormProperties() {
         return formProperties;
     }
 
-    public void setFormProperties(List<FormProperty> formProperties) {
+    public void setFormProperties(Map<String, PEPProperty> formProperties) {
         this.formProperties = formProperties;
     }
 
@@ -102,7 +104,15 @@ public class PEPExtForm implements PEPForm {
 
     private void buildFormProperties(String taskId) {
         FormService formService = PEPApplicationContext.getApplicationContext().getBean(FormService.class);
-        setFormProperties(formService.getTaskFormData(taskId).getFormProperties());
+        List<FormProperty> formProperties = formService.getTaskFormData(taskId).getFormProperties();
+        if (CollectionUtil.isEmpty(formProperties)) {
+            return;
+        }
+        Map<String, PEPProperty> pepPropertyMap = new HashMap<>(16);
+        for (FormProperty formProperty : formProperties) {
+            pepPropertyMap.put(formProperty.getId(), new PEPProperty(formProperty));
+        }
+        this.setFormProperties(CollectionUtil.isEmpty(pepPropertyMap) ? null : pepPropertyMap);
     }
 
     public Map<String, Object> getGlobalData() {

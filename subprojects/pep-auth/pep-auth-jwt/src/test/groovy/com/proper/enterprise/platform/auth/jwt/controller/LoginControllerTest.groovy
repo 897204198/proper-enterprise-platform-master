@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.auth.jwt.controller
 
-import com.proper.enterprise.platform.auth.common.vo.UserVO
+import com.proper.enterprise.platform.core.model.CurrentModel
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.test.AbstractTest
@@ -32,7 +32,7 @@ class LoginControllerTest extends AbstractTest {
     }
 
     @Test
-   @Sql("/com/proper/enterprise/platform/auth/jwt/sql/identity.sql")
+    @Sql("/com/proper/enterprise/platform/auth/jwt/sql/identity.sql")
     void getCurrentUser() {
         def token = mockLogin('testuser1', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
         def payload = new JsonSlurper().parse(Base64.decodeBase64(token.split(/\./)[1]))
@@ -41,14 +41,14 @@ class LoginControllerTest extends AbstractTest {
 
         mockRequest.addHeader("Authorization", token)
         Authentication.setCurrentUserId("user1")
-        UserVO currentUserVO = JSONUtil.parse(get("/auth/login/user", HttpStatus.OK)
-            .getResponse().getContentAsString(), UserVO.class)
+        CurrentModel currentUserVO = JSONUtil.parse(get("/auth/current/user", HttpStatus.OK)
+            .getResponse().getContentAsString(), CurrentModel.class)
 
         assert "user1" == currentUserVO.getId()
-        assert 'c' == currentUserVO.getName()
-        assert 'avatar' == currentUserVO.getAvatar()
-        assert 1 == currentUserVO.getRoles().size()
-        assert 1 == currentUserVO.getUserGroups().size()
+        assert 'c' == currentUserVO.getData().name
+        assert 'avatar' == currentUserVO.getData().avatar
+        assert 1 == currentUserVO.getData().roles.size()
+        assert 1 == currentUserVO.getData().userGroups.size()
     }
 
     private String mockLogin(String user, String pwd, MediaType produce, HttpStatus statusCode) {

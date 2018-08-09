@@ -3,12 +3,15 @@ package com.proper.enterprise.platform.workflow.vo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
+import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import org.flowable.app.domain.editor.Model;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
+import javax.persistence.Convert;
 import java.util.Date;
+import java.util.Map;
 
 public class PEPModelVO {
 
@@ -39,6 +42,8 @@ public class PEPModelVO {
     private String comment;
     private Integer modelType;
     private String startFormKey;
+    private Map<String, PEPPropertyVO> formProperties;
+    @Convert(converter = DataDicLiteConverter.class)
     private DataDicLite status;
 
     public PEPModelVO() {
@@ -200,6 +205,14 @@ public class PEPModelVO {
 
     public void setStartFormKey(String startFormKey) {
         this.startFormKey = startFormKey;
+    }
+
+    public Map<String, PEPPropertyVO> getFormProperties() {
+        return formProperties;
+    }
+
+    public void setFormProperties(Map<String, PEPPropertyVO> formProperties) {
+        this.formProperties = formProperties;
     }
 
     @Override

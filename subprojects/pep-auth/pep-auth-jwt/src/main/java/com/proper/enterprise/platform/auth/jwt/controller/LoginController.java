@@ -10,6 +10,7 @@ import com.proper.enterprise.platform.auth.common.vo.RoleVO;
 import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
 import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.auth.service.JWTAuthcService;
+import com.proper.enterprise.platform.core.model.CurrentModel;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import org.slf4j.Logger;
@@ -56,9 +57,9 @@ public class LoginController {
         }
     }
 
-    @RequestMapping(value = "/auth/login/user", method = RequestMethod.GET)
+    @RequestMapping(value = "/auth/current/user", method = RequestMethod.GET)
     @JsonView(UserVO.CurrentUser.class)
-    public ResponseEntity<User> getCurrentUser() {
+    public ResponseEntity<CurrentModel> getCurrentUser() {
         User user = userService.getCurrentUser();
         UserVO currentUserVO = BeanUtil.convert(user, UserVO.class);
         if (CollectionUtil.isNotEmpty(user.getRoles())) {
@@ -69,7 +70,10 @@ public class LoginController {
             currentUserVO.setUserGroups(BeanUtil.convert(userService.getUserGroups(user.getId(), EnableEnum.ENABLE),
                 UserGroupVO.class, IGNORE_USER_GROUPS));
         }
-        return new ResponseEntity<>(currentUserVO, HttpStatus.OK);
+        CurrentModel currentModel = new CurrentModel();
+        currentModel.setId(currentUserVO.getId());
+        currentModel.setData(currentUserVO);
+        return new ResponseEntity<>(currentModel, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/auth/logout", method = RequestMethod.POST)
