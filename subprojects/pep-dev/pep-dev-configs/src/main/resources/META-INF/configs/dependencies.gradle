@@ -260,8 +260,9 @@ libraries.thumbnailator = 'net.coobird:thumbnailator:0.4.8'
 libraries.validation_api = "javax.validation:validation-api:2.0.1.Final"
 libraries.nutz='org.nutz:nutz:1.r.56'
 //ios apns push sdk. see: https://github.com/relayrides/pushy/
-libraries.push_vendor_apns=[
-    'com.relayrides:pushy:0.9.3'
+libraries.push_vendor_apns = [
+    'com.turo:pushy:0.13.3',
+    'io.netty:netty-tcnative-boringssl-static:2.0.8.Final'
 ]
 
 //android huawei push sdk
