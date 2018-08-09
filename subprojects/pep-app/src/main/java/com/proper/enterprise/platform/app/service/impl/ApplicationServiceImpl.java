@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.app.repository.ApplicationRepository;
 import com.proper.enterprise.platform.app.service.ApplicationService;
 import com.proper.enterprise.platform.app.vo.AppCatalogVO;
 import com.proper.enterprise.platform.app.vo.ApplicationVO;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public ApplicationVO updateApplication(String appId, ApplicationVO applicationVO) {
-        ApplicationEntity applicationDoc = applicationRepository.findOne(appId);
+        ApplicationEntity applicationDoc = applicationRepository.findById(appId).<ErrMsgException>orElseThrow(() -> {
+            throw new ErrMsgException("Could not find application with " + appId);
+        });
         BeanUtils.copyProperties(applicationDoc, applicationVO);
         applicationDoc = applicationRepository.save(applicationDoc);
         applicationVO.setId(applicationDoc.getId());
@@ -56,8 +59,8 @@ public class ApplicationServiceImpl implements ApplicationService {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            Iterable<ApplicationEntity> list = applicationRepository.findAll(idList);
-            applicationRepository.delete(list);
+            Iterable<ApplicationEntity> list = applicationRepository.findAllById(idList);
+            applicationRepository.deleteAll(list);
             ret = true;
         }
         return ret;
@@ -66,7 +69,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApplicationVO getApplication(String appId) {
         ApplicationVO applicationVO = new ApplicationVO();
-        ApplicationEntity applicationEntity = applicationRepository.findOne(appId);
+        ApplicationEntity applicationEntity = applicationRepository.findById(appId).<ErrMsgException>orElseThrow(() -> {
+            throw new ErrMsgException("Could not find application by " + appId);
+        });
         BeanUtils.copyProperties(applicationEntity, applicationVO);
         return applicationVO;
     }
