@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import javax.persistence.Convert;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 
 public class PEPModelVO {
 
@@ -41,6 +42,7 @@ public class PEPModelVO {
     private String comment;
     private Integer modelType;
     private String startFormKey;
+    private Map<String, PEPPropertyVO> formProperties;
     @Convert(converter = DataDicLiteConverter.class)
     private DataDicLite status;
 
@@ -203,6 +205,14 @@ public class PEPModelVO {
 
     public void setStartFormKey(String startFormKey) {
         this.startFormKey = startFormKey;
+    }
+
+    public Map<String, PEPPropertyVO> getFormProperties() {
+        return formProperties;
+    }
+
+    public void setFormProperties(Map<String, PEPPropertyVO> formProperties) {
+        this.formProperties = formProperties;
     }
 
     @Override

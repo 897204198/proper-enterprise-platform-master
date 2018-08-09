@@ -2,7 +2,13 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
   <process id="manyForm" name="manyForm" isExecutable="true">
     <documentation>多表单验证</documentation>
-    <startEvent id="startEvent1" flowable:formKey="form1"></startEvent>
+    <startEvent id="startEvent1" flowable:formKey="form1">
+      <extensionElements>
+        <flowable:formProperty id="readAndWrite" name="name" type="string"></flowable:formProperty>
+        <flowable:formProperty id="read" name="name2" type="string" readable="false"></flowable:formProperty>
+        <flowable:formProperty id="write" name="name3" type="string"></flowable:formProperty>
+      </extensionElements>
+    </startEvent>
     <userTask id="sid-C3DBA445-CFE4-4AD4-87FA-0F4E77184CAB" name="form1step1" flowable:assignee="admin" flowable:formKey="form1">
       <extensionElements>
         <flowable:formProperty id="readAndWrite" name="name" type="string"></flowable:formProperty>
@@ -21,7 +27,7 @@
     <sequenceFlow id="sid-2BB652DB-45D4-47E4-B344-C83E05041335" sourceRef="sid-C3DBA445-CFE4-4AD4-87FA-0F4E77184CAB" targetRef="sid-BF995EB0-41C9-458B-94E2-A634B5B79E26"></sequenceFlow>
     <userTask id="sid-7BB1A94C-9384-4C37-A18D-91E99EA14B35" name="form2step1" flowable:assignee="admin" flowable:formKey="form2">
       <extensionElements>
-        <flowable:formProperty id="readAndWrite" name="name1" type="string" variable="${form2Variable}" writable="true" required="true"></flowable:formProperty>
+        <flowable:formProperty id="readAndWrite" name="name1" type="string" variable="${form2Variable}" required="true"></flowable:formProperty>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>

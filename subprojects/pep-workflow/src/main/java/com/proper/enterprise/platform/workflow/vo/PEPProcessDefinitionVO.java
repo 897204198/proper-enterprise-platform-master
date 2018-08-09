@@ -12,6 +12,7 @@ public class PEPProcessDefinitionVO {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(PEPModelVO.class);
 
+    private String id;
     private String key;
     private Integer version;
     private String deploymentId;
@@ -67,6 +68,14 @@ public class PEPProcessDefinitionVO {
 
     public void setStartFormKey(String startFormKey) {
         this.startFormKey = startFormKey;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
