@@ -29,13 +29,13 @@ public class NoticeSender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeSender.class);
 
-    @Value("${pep.push.properpushAppkey}")
+    @Value("{pep.push.properpushAppkey:unUsed}")
     private String systemId;
 
-    @Value("${pep.push.pushUrl}")
+    @Value("${pep.push.pushUrl:unUsed}")
     private String serverUrl;
 
-    @Value("${pep.push.packageName}")
+    @Value("${pep.push.packageName:unUsed}")
     private String packageName;
 
     @Autowired
