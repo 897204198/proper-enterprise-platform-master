@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="Wangyi (generated)-0801" id="1533780274460-20180808091010">
+        <createTable tableName="PEP_APPLICATIONS_CATALOG">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CODE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SORT" type="VARCHAR(255)"/>
+            <column name="TYPE_NAME" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Wangyi (generated)-0802" id="1533780274460-20180808091011">
+        <createTable tableName="PEP_APP_APPLICATIONS">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CODE" type="VARCHAR(255)"/>
+            <column name="DATA" type="VARCHAR(255)"/>
+            <column name="ICON" type="VARCHAR(255)"/>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="PAGE" type="VARCHAR(255)"/>
+            <column name="STYLE" type="VARCHAR(255)"/>
+            <column name="DEFAULT_VALUE" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Wangyi (generated)-0803" id="1533780274460-201808091012">
+        <createTable tableName="PEP_USER_APPLICATIONS">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APP_ID" type="VARCHAR(255)"/>
+            <column name="USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Wangyi (generated)-0804" id="1533780274460-201808091013">
+        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_USER_APPLICATION_ID" tableName="PEP_USER_APPLICATIONS"/>
+    </changeSet>
+    <changeSet author="Wangyi (generated)-0805" id="1533780274460-201808091014">
+        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_APP_APPLICATIONS_ID" tableName="PEP_APP_APPLICATIONS"/>
+    </changeSet>
+    <changeSet author="Wangyi (generated)-0806" id="1533780274460-201808091015">
+        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_APPLICATIONS_CATALOG" tableName="PEP_APPLICATIONS_CATALOG"/>
+    </changeSet>
+    <changeSet author="Wangyi (generated)-0807" id="1533780274460-201808091015">
+        <addUniqueConstraint columnNames="CODE" constraintName="UK_APPLICATIONS_CATALOG_CODE" tableName="PEP_APPLICATIONS_CATALOG"/>
+    </changeSet>
+    <changeSet author="Wangyi (generated)-0808" id="1533780274460-201808091016">
+        <addUniqueConstraint columnNames="USER_ID" constraintName="UK_USER_APPLICATIONS_USER_ID" tableName="PEP_USER_APPLICATIONS"/>
+    </changeSet>
+</databaseChangeLog>
