@@ -22,6 +22,22 @@ public class WorkFlowConstants {
     public static final String ASSIGNEE = "assignee";
 
     /**
+     * 流程标题
+     */
+    public static final String PROCESS_TITLE = "processTitle";
+
+
+    /**
+     * 流程定义名称
+     */
+    public static final String PROCESS_DEFINITION_NAME = "processDefinitionName";
+
+    /**
+     * 流程发起时间
+     */
+    public static final String PROCESS_CREATE_TIME = "processCreateTime";
+
+    /**
      * 是否启用skip
      */
     public static final String SKIP_EXPRESSION_ENABLED = "_FLOWABLE_SKIP_EXPRESSION_ENABLED";

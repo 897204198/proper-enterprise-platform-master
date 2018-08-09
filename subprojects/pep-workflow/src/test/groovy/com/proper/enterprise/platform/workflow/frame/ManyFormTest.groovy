@@ -77,13 +77,14 @@ class ManyFormTest extends AbstractTest {
         assert readAndWriteStart.label == 'name'
         assert readAndWriteStart.writable
         assert !readAndWriteStart.required
-        Map write= representation.data.get(0).formProperties.write
+        Map write = representation.data.get(0).formProperties.write
         assert write.label == 'name3'
         assert write.writable
         assert !write.required
-        String procInstId = start(MANY_FORM_WORKFLOW_KEY, form1)
+        PEPProcInstVO pepProcInstVO = startReturnVO(MANY_FORM_WORKFLOW_KEY, form1)
 
         Map form1Step1 = getTask("form1step1")
+        assert "admin发起的manyForm流程" == form1Step1.pepProcInst.processTitle
         List<Map> pages2 = buildPageTask(form1Step1.taskId)
         assert pages2.size() == 1
         assert pages2.get(0).get("formData").a == "a"
@@ -96,6 +97,7 @@ class ManyFormTest extends AbstractTest {
         assert !readAndWrite.required
         Map read = pages2.get(0).get("formProperties").read
         assert !read.writable
+        assert read.value == '大大admin'
         completeStep(form1Step1, form1)
 
 
@@ -137,12 +139,18 @@ class ManyFormTest extends AbstractTest {
         assert pages5.get(1).get("formData").name1 == "name1"
         form2.put("b", "b2")
         completeStep(form2Step2, form2)
+        assert "admin发起的manyForm流程" ==  findProcessStartByKey(MANY_FORM_WORKFLOW_KEY).getProcessTitle()
     }
 
 
     private String start(String key, Map<String, Object> form) {
         PEPProcInstVO pepProcInstVO = JSONUtil.parse(post('/workflow/process/' + key, JSONUtil.toJSON(form), HttpStatus.CREATED).getResponse().getContentAsString(), PEPProcInstVO.class)
         return pepProcInstVO.getProcInstId()
+    }
+
+    private PEPProcInstVO startReturnVO(String key, Map<String, Object> form) {
+        PEPProcInstVO pepProcInstVO = JSONUtil.parse(post('/workflow/process/' + key, JSONUtil.toJSON(form), HttpStatus.CREATED).getResponse().getContentAsString(), PEPProcInstVO.class)
+        return pepProcInstVO
     }
 
     private Map getTask(String taskName) {
@@ -167,5 +175,20 @@ class ManyFormTest extends AbstractTest {
 
     private void completeStep(Map step, Map<String, Object> taskFormMap) {
         post('/workflow/task/' + step.taskId, JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
+    }
+
+    private PEPProcInstVO findProcessStartByKey(String processDefinitionKey) {
+        List<PEPProcInstVO> pepProcInstVOs = findProcessStartByMe()
+        for (PEPProcInstVO pepProcInstVO : pepProcInstVOs) {
+            if (processDefinitionKey == pepProcInstVO.getProcessDefinitionKey()) {
+                return pepProcInstVO
+            }
+        }
+        return null
+    }
+
+    private List<PEPProcInstVO> findProcessStartByMe() {
+        DataTrunk<PEPProcInstVO> dataTrunk = JSONUtil.parse(get('/workflow/process?pageNo=1&pageSize=10', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        return dataTrunk.getData()
     }
 }

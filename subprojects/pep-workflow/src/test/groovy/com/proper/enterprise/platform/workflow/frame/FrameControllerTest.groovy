@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.workflow.frame
 
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.security.Authentication
+import com.proper.enterprise.platform.sys.i18n.I18NUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants
@@ -49,8 +50,8 @@ class FrameControllerTest extends AbstractTest {
         formTestVO.put("sex", "1")
         formTestVO.put("name", "zjl")
         formTestVO.put("passOrNot", 1)
-        String procInstId = start(FRAME_WORKFLOW_KEY, formTestVO)
-
+        PEPProcInstVO pepProcInstVO = start(FRAME_WORKFLOW_KEY, formTestVO)
+        String procInstId = pepProcInstVO.getProcInstId()
         assert findHis(procInstId).hisTasks.size() == 0
         assert findHis(procInstId).currentTasks.get(0).endTime == null
         assert findHis(procInstId).currentTasks.get(0).assignee == "user1"
@@ -59,6 +60,10 @@ class FrameControllerTest extends AbstractTest {
         assert "user1" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getStartUserId()
         assert "框架测试流程" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getProcessDefinitionName()
         Map step1 = getTask("第一步")
+        String processTitle = I18NUtil.getMessage("workflow.default.process.title")
+        processTitle = processTitle.replace("\${initiatorName}", "c")
+        processTitle = processTitle.replace("\${processDefinitionName}", "框架测试流程")
+        assert processTitle == step1.pepProcInst.processTitle
         assertGlobalVariables(step1.taskId)
         //判断task内容
         assertTaskMsg(step1, "第一步")
@@ -104,6 +109,7 @@ class FrameControllerTest extends AbstractTest {
         assert "c" == findHis(procInstId, "第四步").assigneeName
         assert true == findHis(procInstId).ended
         assert "已完成" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getStateValue()
+        assert processTitle == findProcessStartByKey(FRAME_WORKFLOW_KEY).getProcessTitle()
         assert 2 == findProcessStartByMe().size()
         assert "处理中" == findProcessStartByKey(VALIDATE_ASSIGN_GROUP_KEY).getStateValue()
     }
@@ -164,9 +170,9 @@ class FrameControllerTest extends AbstractTest {
         assert "处理中" == pepTaskVO.pepProcInst.stateValue
     }
 
-    private String start(String key, Map<String, Object> form) {
+    private PEPProcInstVO start(String key, Map<String, Object> form) {
         PEPProcInstVO pepProcInstVO = JSONUtil.parse(post('/workflow/process/' + key, JSONUtil.toJSON(form), HttpStatus.CREATED).getResponse().getContentAsString(), PEPProcInstVO.class)
-        return pepProcInstVO.getProcInstId()
+        return pepProcInstVO
     }
 
     private Map getTask(String taskName) {
