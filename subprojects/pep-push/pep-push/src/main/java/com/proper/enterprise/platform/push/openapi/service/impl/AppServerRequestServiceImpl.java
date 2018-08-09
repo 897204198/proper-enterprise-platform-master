@@ -158,7 +158,8 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
                 if (StringUtil.isNotEmpty(d.getPushToken())) {
                     PushMsgEntity dbMsg = createMsgVO(thePushmsg, appkey, d);
                     lstMsgs.add(dbMsg);
-                    LOGGER.info("doSendMsgToDevices:saveMsg:msgConent:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
+                    LOGGER.info("doSendMsgToDevices:saveMsg:pushId:{},msgConent:{}",
+                        dbMsg.getId(), JSONUtil.toJSONIgnoreException(thePushmsg));
                 } else {
                     LOGGER.info("doSendMsgToDevices:saveMsgError:push token is empty:appkey:{},device:{},msg:{}"
                         + appkey, d.getDeviceid(), JSONUtil.toJSONIgnoreException(thePushmsg));
@@ -166,6 +167,8 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
             }
             try {
                 msgRepo.save(lstMsgs);
+                lstMsgs.forEach(msg -> LOGGER.info("doSendMsgToDevices:success saveMsg:pushId:{},msgConent:{}",
+                    msg.getId(), msg.toString()));
             } catch (Exception e) {
                 LOGGER.error("doSendMsgToDevices saveMsg error:msg:{}", e, JSONUtil.toJSONIgnoreException(thePushmsg));
             }
