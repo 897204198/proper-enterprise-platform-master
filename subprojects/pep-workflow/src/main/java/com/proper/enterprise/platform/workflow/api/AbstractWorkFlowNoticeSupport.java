@@ -19,7 +19,7 @@ public abstract class AbstractWorkFlowNoticeSupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractWorkFlowNoticeSupport.class);
 
-    public static final String TASK_PAGE_URL = "/web/#/webapp/workflowMainPop?param=";
+    public static final String TASK_PAGE_URL = "#/webapp/workflowMainPop?param=";
 
     @Value("${sys.base.path}")
     private String baseUrl;
