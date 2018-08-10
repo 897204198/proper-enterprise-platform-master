@@ -66,13 +66,13 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
             templateParams.put("initiatorName", initiatorUser.getName());
             templateParams.put("processDefinitionName", processDefinition.getName());
             templateParams.put("taskName", task.getName());
-            templateParams.put("pageurl", buildTaskUrl(task));
+            templateParams.put("pageurl", buildTaskUrl(task) + "&from=email");
             Map<String, Object> custom = new HashMap<>(0);
             custom.put("gdpr_mpage", "examList");
-            custom.put("url", buildTaskUrl(task));
+            custom.put("url", buildTaskUrl(task) + "&from=app");
             custom.put("title", task.getName());
             noticeSender.sendNotice("EndNotice", "BPM", "TaskAssignee",
-                custom, initiator, templateParams);
+                custom, userIds, templateParams);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);
         }
