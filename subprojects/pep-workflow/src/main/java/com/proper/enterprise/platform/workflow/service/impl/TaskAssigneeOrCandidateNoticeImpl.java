@@ -72,7 +72,9 @@ public class TaskAssigneeOrCandidateNoticeImpl extends AbstractWorkFlowNoticeSup
             custom.put("gdpr_mpage", "examList");
             custom.put("url", buildTaskUrl(task) + "&from=app");
             custom.put("title", task.getName());
-            noticeSender.sendNotice("EndNotice", "BPM", "TaskAssignee",
+            String noticeCode = (String) task.getVariable(TASK_ASSIGNEE_NOTICE_CODE_KEY);
+            noticeSender.sendNotice("EndNotice", "BPM",
+                StringUtil.isEmpty(noticeCode) ? "TaskAssignee" : noticeCode,
                 custom, userIds, templateParams);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);

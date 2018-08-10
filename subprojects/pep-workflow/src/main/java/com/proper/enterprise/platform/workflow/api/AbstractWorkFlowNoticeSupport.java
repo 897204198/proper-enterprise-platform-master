@@ -21,6 +21,8 @@ public abstract class AbstractWorkFlowNoticeSupport {
 
     public static final String TASK_PAGE_URL = "#/webapp/workflowMainPop?param=";
 
+    public static final String TASK_ASSIGNEE_NOTICE_CODE_KEY = "taskAssigneeNoticeCode";
+
     @Value("${sys.base.path}")
     private String baseUrl;
 
