@@ -29,7 +29,7 @@ public class NoticeSender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeSender.class);
 
-    @Value("{pep.push.properpushAppkey:unUsed}")
+    @Value("${pep.push.properpushAppkey:unUsed}")
     private String systemId;
 
     @Value("${pep.push.pushUrl:unUsed}")
@@ -123,10 +123,14 @@ public class NoticeSender {
                            String from,
                            Set<String> userIds,
                            Map<String, String> templateParams) {
-        Addressee addressee = packageAddressee(noticeType, userIds);
-        DataDicLiteBean business = new DataDicLiteBean("NOTICE_BUSINESS", businessId);
-        Map<String, TemplateVO> templates = templateService.getTemplates(business, code, templateParams);
-        sendNoticeChannel(from, addressee, businessId, noticeType, custom, templates, "PUSH", "EMAIL", "SMS");
+        try {
+            Addressee addressee = packageAddressee(noticeType, userIds);
+            DataDicLiteBean business = new DataDicLiteBean("NOTICE_BUSINESS", businessId);
+            Map<String, TemplateVO> templates = templateService.getTemplates(business, code, templateParams);
+            sendNoticeChannel(from, addressee, businessId, noticeType, custom, templates, "PUSH", "EMAIL", "SMS");
+        } catch (Exception e) {
+            LOGGER.error("NoticeSender.sendNotice[Exception]:{}", e);
+        }
     }
 
     /**
@@ -209,8 +213,12 @@ public class NoticeSender {
                            Set<String> userIds,
                            String title,
                            String content) {
-        Addressee addressee = packageAddressee(noticeType, userIds);
-        sendNoticeChannel(from, addressee, businessId, noticeType, custom, title, content, "PUSH", "EMAIL", "SMS");
+        try {
+            Addressee addressee = packageAddressee(noticeType, userIds);
+            sendNoticeChannel(from, addressee, businessId, noticeType, custom, title, content, "PUSH", "EMAIL", "SMS");
+        } catch (Exception e) {
+            LOGGER.error("NoticeSender.sendNotice[Exception]:{}", e);
+        }
     }
 
     private Addressee packageAddressee(String noticeType, Set<String> userIds) {
@@ -263,6 +271,9 @@ public class NoticeSender {
             Set<String> targets = addressee.get(noticeChannel);
             if (targets != null && !targets.isEmpty()) {
                 TemplateVO templateVO = templates.get(noticeChannel);
+                if (templateVO == null) {
+                    continue;
+                }
                 String title = templateVO.getTitle();
                 String content = templateVO.getTemplate();
                 NoticeModel noticeModel = packageNoticeModel(from, targets, businessId, noticeType, custom, title, content, noticeChannel);
@@ -300,6 +311,7 @@ public class NoticeSender {
             ResponseEntity<byte[]> response = HttpClient.post(serverUrl + "/notice", MediaType.APPLICATION_JSON, data);
             return StringUtil.toEncodedString(response.getBody());
         } catch (IOException e) {
+            LOGGER.error("NoticeSender.accessNoticeServer[Exception]:{}", e);
             return null;
         }
     }
