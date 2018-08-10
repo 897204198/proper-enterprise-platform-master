@@ -6,6 +6,8 @@ import com.proper.enterprise.platform.app.entity.UserApplicationEntity
 import com.proper.enterprise.platform.app.repository.AppCatalogRepository
 import com.proper.enterprise.platform.app.repository.ApplicationRepository
 import com.proper.enterprise.platform.app.repository.UserApplicationsRepository
+import com.proper.enterprise.platform.app.service.UserApplicationService
+import com.proper.enterprise.platform.app.vo.ApplicationVO
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.UserRepository
 import com.proper.enterprise.platform.core.security.Authentication
@@ -30,6 +32,9 @@ class UserApplicationControllerTest extends AbstractTest {
 
     @Autowired
     AppCatalogRepository appCatalogRepo
+
+    @Autowired
+    UserApplicationService userApplicationService
 
     @Test
     void testAllApplications() {
@@ -59,6 +64,11 @@ class UserApplicationControllerTest extends AbstractTest {
                 getResponse().getContentAsString(), UserApplicationEntity.class)
         assert result.appId == '001,002'
     }
+    
+    @Test
+    void test(){
+        List<ApplicationVO> applicationVOList =  userApplicationService.findDefaultApplication()
+        assert applicationVOList.get(0).getData().get("url").equals("http://192.168.1.111/icmp/desktop/#/customframe/exam-list")    }
 
     @Before
     void init() {
@@ -82,7 +92,8 @@ class UserApplicationControllerTest extends AbstractTest {
         appDoc1.setName("问卷调查")
         appDoc1.setIcon("./assets/images/application.png")
         appDoc1.setPage("examList")
-        appDoc1.setData("'url': 'http://192.168.1.111/icmp/desktop/#/customframe/exam-list'")
+        appDoc1.setData("{'url': 'http://192.168.1.111/icmp/desktop/#/customframe/exam-list'}")
+        appDoc1.setDefaultValue(true)
         applicationRepo.save(appDoc1)
 
         ApplicationEntity appDoc2 = new ApplicationEntity()
