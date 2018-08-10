@@ -10,6 +10,8 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
+import com.proper.enterprise.platform.workflow.decorator.GlobalVariableInitDecorator;
+import com.proper.enterprise.platform.workflow.handler.GlobalVariableInitHandler;
 import com.proper.enterprise.platform.workflow.model.PEPExtForm;
 import com.proper.enterprise.platform.workflow.model.PEPProcInst;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
@@ -23,7 +25,6 @@ import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
-import org.flowable.bpmn.model.ValuedDataObject;
 import org.flowable.engine.FormService;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
@@ -38,7 +39,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.proper.enterprise.platform.core.PEPConstants.DEFAULT_DATETIME_FORMAT;
 
@@ -61,10 +65,15 @@ public class PEPProcessServiceImpl implements PEPProcessService {
 
     private UserDao userDao;
 
-    @Autowired
+    private GlobalVariableInitHandler customHandler;
+
+    private GlobalVariableInitDecorator globalVariableInitDecorator;
+
+    @Autowired(required = false)
     PEPProcessServiceImpl(RuntimeService runtimeService,
                           FormService formService,
                           RepositoryService repositoryService,
+                          GlobalVariableInitHandler customHandler,
                           HistoryService historyService,
                           UserDao userDao) {
         this.runtimeService = runtimeService;
@@ -72,6 +81,8 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         this.repositoryService = repositoryService;
         this.historyService = historyService;
         this.userDao = userDao;
+        this.customHandler = customHandler;
+        this.globalVariableInitDecorator = new GlobalVariableInitDecorator(repositoryService, this.customHandler, userDao);
     }
 
     @Override
@@ -94,7 +105,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         }
         //设置允许是skip
         globalVariables.put(WorkFlowConstants.SKIP_EXPRESSION_ENABLED, true);
-        globalVariables = setDefaultVariables(globalVariables, processDefinition);
+        globalVariables = globalVariableInitDecorator.init(globalVariables, processDefinition);
         globalVariables = GlobalVariableUtil.setGlobalVariable(globalVariables, variables, globalVariableKeys);
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
         return new PEPProcInst(processInstance).convert();
@@ -196,31 +207,6 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             return historicProcessInstance.getId();
         }
         return findTopMostProcInstId(historicProcessInstance.getSuperProcessInstanceId());
-    }
-
-    private Map<String, Object> setDefaultVariables(Map<String, Object> globalVariables, ProcessDefinition processDefinition) {
-        globalVariables = setStartUserName(globalVariables);
-        return setProcessDefinition(globalVariables, processDefinition);
-    }
-
-    private Map<String, Object> setProcessDefinition(Map<String, Object> globalVariables, ProcessDefinition processDefinition) {
-        globalVariables.put(WorkFlowConstants.PROCESS_DEFINITION_NAME, processDefinition.getName());
-        globalVariables.put(WorkFlowConstants.PROCESS_CREATE_TIME, new Date());
-        List<ValuedDataObject> datas = repositoryService.getBpmnModel(processDefinition.getId()).getMainProcess().getDataObjects();
-        globalVariables.put(WorkFlowConstants.PROCESS_TITLE, PEPProcInst.buildProcessTitle(datas, globalVariables));
-        return globalVariables;
-    }
-
-    private Map<String, Object> setStartUserName(Map<String, Object> globalVariables) {
-        if (StringUtil.isNotEmpty(Authentication.getCurrentUserId())) {
-            globalVariables.put(WorkFlowConstants.INITIATOR, Authentication.getCurrentUserId());
-            User user = userDao.findById(Authentication.getCurrentUserId());
-            if (null != user) {
-                //设置默认全局变量
-                globalVariables.put(WorkFlowConstants.INITIATOR_NAME, user.getName());
-            }
-        }
-        return globalVariables;
     }
 
     private Map<String, Object> getFormData(Map<String, Object> processVariables, String formKey) {

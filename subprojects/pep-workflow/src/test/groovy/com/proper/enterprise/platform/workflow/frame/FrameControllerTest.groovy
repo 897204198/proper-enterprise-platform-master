@@ -289,5 +289,6 @@ class FrameControllerTest extends AbstractTest {
     private void assertGlobalVariables(String taskId) {
         Task task = taskService.createTaskQuery().taskId(taskId).includeProcessVariables().singleResult()
         assert 1 == task.getProcessVariables().get("passOrNot")
+        assert "workflowtest" == task.getProcessVariables().get("workflowtest")
     }
 }
