@@ -229,6 +229,9 @@ public class NoticeSender {
             NoticeSetDocument noticeSetDocument = noticeSetMap.get(user.getId());
             if (noticeSetDocument == null) {
                 noticeSetDocument = new NoticeSetDocument(true, true, false);
+                if ("MESSAGE".equals(noticeType)) {
+                    noticeSetDocument = new NoticeSetDocument(true, false, false);
+                }
             }
             if (noticeSetDocument.isPush()) {
                 addressee.add("PUSH", user.getUsername());

@@ -25,7 +25,8 @@ public class GlobalVariableInitDecorator implements GlobalVariableInitHandler {
 
     private UserDao userDao;
 
-    public GlobalVariableInitDecorator(RepositoryService repositoryService, GlobalVariableInitHandler customHandler,
+    public GlobalVariableInitDecorator(RepositoryService repositoryService,
+                                       GlobalVariableInitHandler customHandler,
                                        UserDao userDao) {
         this.repositoryService = repositoryService;
         this.customHandler = customHandler;
