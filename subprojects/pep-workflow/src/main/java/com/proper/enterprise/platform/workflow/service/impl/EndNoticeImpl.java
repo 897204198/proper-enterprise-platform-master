@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.client.NoticeSender;
 import com.proper.enterprise.platform.workflow.api.EndNotice;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
@@ -18,6 +19,10 @@ import java.util.Map;
 
 @Service("endNotice")
 public class EndNoticeImpl implements EndNotice {
+
+    public static final String END_NOTICE_USER_ID_KEY = "endNoticeUserId";
+
+    public static final String END_NOTICE_CODE_KEY = "endNoticeCode";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EndNoticeImpl.class);
 
@@ -47,8 +52,11 @@ public class EndNoticeImpl implements EndNotice {
             Map<String, Object> custom = new HashMap<>(0);
             custom.put("gdpr_mpage", "examList");
             custom.put("title", processDefinition.getName());
-            noticeSender.sendNotice("EndNotice", "BPM", "EndCode", custom,
-                initiator, templateParams);
+            String endNoticeUserId = (String) execution.getVariable(END_NOTICE_USER_ID_KEY);
+            String endNoticeCode = (String) execution.getVariable(END_NOTICE_CODE_KEY);
+            noticeSender.sendNotice("EndNotice", "BPM",
+                StringUtil.isEmpty(endNoticeCode) ? "EndCode" : endNoticeCode, custom,
+                StringUtil.isEmpty(endNoticeUserId) ? initiator : endNoticeUserId, templateParams);
         } catch (Exception e) {
             LOGGER.error("endNoticeError", e);
         }
