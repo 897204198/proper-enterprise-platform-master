@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,9 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Autowired
     JavaMailSender javaMailSender;
+
+    @Value("${pep.mail.mailDefaultFrom}")
+    String emailFrom;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeServiceImpl.class);
 
@@ -83,7 +87,8 @@ public class NoticeServiceImpl implements NoticeService {
         MimeMessageHelper helper = null;
         try {
             helper = new MimeMessageHelper(mailMessage, true, "GBK");
-            helper.setFrom(noticeModel.getFrom());
+            String from = noticeModel.getFrom() == null ? emailFrom : noticeModel.getFrom();
+            helper.setFrom(from);
             helper.setTo(targets.get(0));
             helper.setSubject(noticeModel.getTitle());
             helper.setText(noticeModel.getContent(), true);
