@@ -61,6 +61,7 @@ class FrameControllerTest extends AbstractTest {
         assert "user1" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getStartUserId()
         assert "框架测试流程" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getProcessDefinitionName()
         Map step1 = getTask("第一步")
+        assert step1.taskId.length() == 36
         String processTitle = I18NUtil.getMessage("workflow.default.process.title")
         processTitle = processTitle.replace("\${initiatorName}", "c")
         processTitle = processTitle.replace("\${processDefinitionName}", "框架测试流程")
