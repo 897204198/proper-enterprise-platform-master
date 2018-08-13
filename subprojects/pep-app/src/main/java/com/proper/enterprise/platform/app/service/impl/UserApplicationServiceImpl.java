@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.app.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.proper.enterprise.platform.app.entity.ApplicationEntity;
 import com.proper.enterprise.platform.app.entity.UserApplicationEntity;
 import com.proper.enterprise.platform.app.repository.ApplicationRepository;
@@ -11,20 +10,16 @@ import com.proper.enterprise.platform.app.vo.AppCatalogVO;
 import com.proper.enterprise.platform.app.vo.ApplicationVO;
 import com.proper.enterprise.platform.app.vo.UserApplicationVO;
 import com.proper.enterprise.platform.core.security.Authentication;
-import com.proper.enterprise.platform.core.utils.JSONUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserApplicationServiceImpl implements UserApplicationService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserApplicationServiceImpl.class);
 
     private static final String COMMA = ",";
 
@@ -66,17 +61,7 @@ public class UserApplicationServiceImpl implements UserApplicationService {
             ApplicationVO applicationVO = new ApplicationVO();
             BeanUtils.copyProperties(applicationEntity, applicationVO);
             String data = applicationEntity.getData();
-            Map<String, String> map = new HashMap<>(16);
-            try {
-                JsonNode node = JSONUtil.parse(data, JsonNode.class);
-                Iterator<Map.Entry<String, JsonNode>> iterator = node.fields();
-                while (iterator.hasNext()) {
-                    Map.Entry<String, JsonNode> entry = iterator.next();
-                    map.put(entry.getKey(), entry.getValue().textValue());
-                }
-            } catch (IOException e) {
-                LOGGER.warn("Data of json parse exception!", e);
-            }
+            Map<String, String> map = applicationService.getDataMap(data);
             applicationVO.setData(map);
             list.add(applicationVO);
         }
@@ -84,8 +69,12 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     }
 
     @Override
-    public UserApplicationVO updateUserApplications(String ids) {
+    public UserApplicationVO saveOrUpdateUserApplications(String ids) {
         UserApplicationEntity userApplicationEntity = userApplicationsRepo.getByUserId(Authentication.getCurrentUserId());
+        if (userApplicationEntity == null) {
+            userApplicationEntity = new UserApplicationEntity();
+        }
+        userApplicationEntity.setUserId(Authentication.getCurrentUserId());
         userApplicationEntity.setAppId(ids);
         userApplicationEntity = userApplicationsRepo.save(userApplicationEntity);
         UserApplicationVO userApplicationVO = new UserApplicationVO();

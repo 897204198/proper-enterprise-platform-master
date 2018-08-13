@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.app.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.proper.enterprise.platform.app.entity.AppCatalogEntity;
 import com.proper.enterprise.platform.app.entity.ApplicationEntity;
 import com.proper.enterprise.platform.app.repository.AppCatalogRepository;
@@ -7,18 +8,23 @@ import com.proper.enterprise.platform.app.repository.ApplicationRepository;
 import com.proper.enterprise.platform.app.service.ApplicationService;
 import com.proper.enterprise.platform.app.vo.AppCatalogVO;
 import com.proper.enterprise.platform.app.vo.ApplicationVO;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationServiceImpl.class);
+
 
     @Autowired
     AppCatalogRepository appCatalogRepository;
@@ -68,6 +74,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         ApplicationVO applicationVO = new ApplicationVO();
         ApplicationEntity applicationEntity = applicationRepository.findOne(appId);
         BeanUtils.copyProperties(applicationEntity, applicationVO);
+        String data = applicationEntity.getData();
+        Map<String, String> map = getDataMap(data);
+        applicationVO.setData(map);
         return applicationVO;
     }
 
@@ -78,6 +87,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         for (ApplicationEntity applicationEntity : applicationEntities) {
             ApplicationVO application = new ApplicationVO();
             BeanUtils.copyProperties(applicationEntity, application);
+            String data = applicationEntity.getData();
+            Map<String, String> map = getDataMap(data);
+            application.setData(map);
             applicationVOS.add(application);
         }
         return applicationVOS;
@@ -138,4 +150,23 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         return applicationVOS;
     }
+
+    @Override
+    public Map<String, String> getDataMap(String data) {
+        Map<String, String> map = new HashMap<>(16);
+        if (data != null) {
+            try {
+                JsonNode node = JSONUtil.parse(data, JsonNode.class);
+                Iterator<Map.Entry<String, JsonNode>> iterator = node.fields();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, JsonNode> entry = iterator.next();
+                    map.put(entry.getKey(), entry.getValue().textValue());
+                }
+            } catch (IOException e) {
+                LOGGER.warn("Data of json parse exception!", e);
+            }
+        }
+        return map;
+    }
+
 }

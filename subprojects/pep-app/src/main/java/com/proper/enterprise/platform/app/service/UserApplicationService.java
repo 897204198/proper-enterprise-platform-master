@@ -19,7 +19,7 @@ public interface UserApplicationService {
      * @param ids appId
      * @return 应用的集合
      */
-    UserApplicationVO updateUserApplications(String ids);
+    UserApplicationVO saveOrUpdateUserApplications(String ids);
 
     /**
      * 用户获取的应用，包括类别

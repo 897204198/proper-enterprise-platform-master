@@ -32,7 +32,7 @@ public class UserApplicationController extends BaseController {
     @PutMapping
     public ResponseEntity<UserApplicationVO> putUserApplications(@RequestBody Map<String, String> reqMap) {
         String ids = reqMap.get("ids");
-        return responseOfPut(userApplicationService.updateUserApplications(ids));
+        return responseOfPut(userApplicationService.saveOrUpdateUserApplications(ids));
     }
 
     @GetMapping("/all")
