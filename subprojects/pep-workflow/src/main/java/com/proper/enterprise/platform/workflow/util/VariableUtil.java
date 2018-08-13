@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.workflow.util;
 
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -7,6 +8,7 @@ import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 import org.apache.commons.collections.MapUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +38,22 @@ public class VariableUtil {
             }
         }
         return variables;
+    }
+
+    public static Map<String, String> convertVariableToMsgParam(Map<String, Object> globalVariables) {
+        Map<String, String> msgParam = new HashMap<>(16);
+        if (CollectionUtil.isEmpty(globalVariables)) {
+            return msgParam;
+        }
+        for (Map.Entry<String, Object> entry : globalVariables.entrySet()) {
+            if (entry.getValue() instanceof String) {
+                msgParam.put(entry.getKey(), (String) entry.getValue());
+            }
+            if (entry.getValue() instanceof Long && null != entry.getValue()) {
+                msgParam.put(entry.getKey(), ((Long) entry.getValue()).toString());
+            }
+        }
+        return msgParam;
     }
 
     private static boolean isDataDic(String dataDic) {

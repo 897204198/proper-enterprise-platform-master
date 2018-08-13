@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.sys.i18n.I18NUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants
+import com.proper.enterprise.platform.workflow.util.VariableUtil
 import com.proper.enterprise.platform.workflow.vo.CustomHandlerVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum
@@ -65,6 +66,12 @@ class FrameControllerTest extends AbstractTest {
         processTitle = processTitle.replace("\${processDefinitionName}", "框架测试流程")
         assert processTitle == step1.pepProcInst.processTitle
         assertGlobalVariables(step1.taskId)
+        Map<String, String> msgParam = VariableUtil.convertVariableToMsgParam(taskService.createTaskQuery()
+            .taskId(step1.taskId)
+            .includeProcessVariables()
+            .singleResult()
+            .getProcessVariables())
+        assert msgParam.get(WorkFlowConstants.INITIATOR_NAME) == "c"
         //判断task内容
         assertTaskMsg(step1, "第一步")
         completeStep1(step1)
