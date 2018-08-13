@@ -1,7 +1,6 @@
 package com.proper.enterprise.platform.workflow.api.notice;
 
 import com.proper.enterprise.platform.api.auth.dao.RoleDao;
-import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.dao.UserGroupDao;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
@@ -12,10 +11,8 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.client.NoticeSender;
 import com.proper.enterprise.platform.workflow.api.AbstractWorkFlowNoticeSupport;
 import com.proper.enterprise.platform.workflow.api.TaskAssigneeOrCandidateNotice;
-import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.service.impl.TaskAssigneeOrCandidateNoticeImpl;
-import org.flowable.engine.RepositoryService;
-import org.flowable.engine.repository.ProcessDefinition;
+import com.proper.enterprise.platform.workflow.util.VariableUtil;
 import org.flowable.identitylink.service.impl.persistence.entity.IdentityLinkEntity;
 import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 import org.slf4j.Logger;
@@ -39,10 +36,6 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
     @Value("${pep.mail.mailDefaultFrom}")
     private String from;
 
-    private RepositoryService repositoryService;
-
-    private UserDao userDao;
-
     private UserGroupDao userGroupDao;
 
     private RoleDao roleDao;
@@ -51,14 +44,10 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
 
     @Autowired
     TaskAssigneeNoticeImpl(NoticeSender noticeSender,
-                                      UserDao userDao,
-                                      UserGroupDao userGroupDao,
-                                      RoleDao roleDao,
-                                      RepositoryService repositoryService) {
-        this.userDao = userDao;
+                           UserGroupDao userGroupDao,
+                           RoleDao roleDao) {
         this.userGroupDao = userGroupDao;
         this.roleDao = roleDao;
-        this.repositoryService = repositoryService;
         this.noticeSender = noticeSender;
     }
 
@@ -69,24 +58,23 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
             if (CollectionUtil.isEmpty(userIds)) {
                 return;
             }
-            String initiator = (String) task.getVariable(WorkFlowConstants.INITIATOR);
-            User initiatorUser = userDao.findById(initiator);
-            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionId(task.getProcessDefinitionId()).singleResult();
             Map<String, String> templateParams = new HashMap<>(5);
-            templateParams.put("initiatorName", initiatorUser.getName());
-            templateParams.put("processDefinitionName", processDefinition.getName());
+            templateParams.putAll(VariableUtil.convertVariableToMsgParam(task.getVariables()));
             templateParams.put("taskName", task.getName());
-            templateParams.put("pageurl", buildTaskUrl(task));
+            templateParams.put("pageurl", buildTaskUrl(task) + "&from=email");
             Map<String, Object> custom = new HashMap<>(0);
+            custom.put("gdpr_mpage", "examList");
+            custom.put("url", buildTaskUrl(task) + "&from=app");
+            custom.put("title", task.getName());
+            String noticeCode = (String) task.getVariable(TASK_ASSIGNEE_NOTICE_CODE_KEY);
             Authentication.setCurrentUserId(buildTaskUrl(task));
-            noticeSender.sendNotice("EndNotice", "BPM", "TaskAssignee",
-                custom, initiator, templateParams);
+            noticeSender.sendNotice("EndNotice", "BPM",
+                StringUtil.isEmpty(noticeCode) ? "TaskAssignee" : noticeCode,
+                custom, userIds, templateParams);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);
         }
     }
-
 
 
     protected Set<String> queryUserIds(TaskEntity task) {

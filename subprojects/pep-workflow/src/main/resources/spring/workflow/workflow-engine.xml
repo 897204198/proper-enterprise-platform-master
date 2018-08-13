@@ -12,6 +12,10 @@
         <property name="idmEngineConfiguration" ref="pepIdmEngineConfiguration"/>
     </bean>
     <bean id="processEngineConfiguration" class="org.flowable.spring.SpringProcessEngineConfiguration">
+        <!--主键生成策略 uuid-->
+        <property name="idGenerator">
+            <bean class="org.flowable.engine.common.impl.persistence.StrongUuidGenerator"/>
+        </property>
         <property name="dataSource" ref="dataSource"/>
         <property name="transactionManager" ref="jpaTransactionManager"/>
         <property name="databaseSchemaUpdate" value="${workflow.databaseSchemaUpdate}"/>
