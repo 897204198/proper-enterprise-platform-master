@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.app.vo.AppCatalogVO;
 import com.proper.enterprise.platform.app.vo.ApplicationVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ApplicationService {
     /**
@@ -93,4 +94,11 @@ public interface ApplicationService {
      * @return 所有应用信息
      */
     List<ApplicationVO> getApplications();
+
+    /**
+     * 获取应用的data
+     * @param data data
+     * @return map
+     */
+    Map<String, String> getDataMap(String data);
 }
