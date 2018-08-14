@@ -16,6 +16,30 @@ class TemplateServiceTest extends AbstractTest {
     @Autowired
     TemplateRepository templateRepository
 
+
+    @Test
+    void getTemplate1() {
+        TemplateEntity templateEntity = new TemplateEntity()
+        templateEntity.setCode("code")
+        templateEntity.setName("name")
+        templateEntity.setTitle("title-test")
+        String template = "订单号:{orderNum};病历号:{clinicNum}"
+        templateEntity.setTemplate(template)
+        templateEntity.setDescription("orderNum : 订单号, clinicNum : 病历号")
+        DataDicLiteBean business = new DataDicLiteBean("NOTICE_BUSINESS", "TEST")
+        templateEntity.setCatelog(business)
+        DataDicLiteBean type = new DataDicLiteBean("NOTICE_CHANNEL", "TEXT")
+        templateEntity.setType(type)
+        templateRepository.save(templateEntity)
+
+        Map<String, String> templateParams = new HashMap<>()
+        templateParams.put("orderNum", "123456")
+        templateParams.put("clinicNum", "654321")
+
+        TemplateVO template1 = templateService.getTemplate(business, 'code', type, templateParams)
+        assert '订单号:123456;病历号:654321' == template1.getTemplate()
+    }
+
     @Test
     void getTemplate() {
         getTemplateInit()

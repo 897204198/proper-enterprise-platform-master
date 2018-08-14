@@ -51,4 +51,12 @@ public interface TemplateRepository extends BaseJpaRepository<TemplateEntity, St
                                         String description,
                                         Pageable pageable);
 
+    /**
+     * 获取模板
+     * @param business 业务
+     * @param code 标识
+     * @param type 类型
+     * @return 模板
+     */
+    TemplateEntity findByCatelogAndCodeAndType(DataDicLiteBean business, String code, DataDicLiteBean type);
 }

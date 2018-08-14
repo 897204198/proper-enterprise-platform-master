@@ -72,4 +72,14 @@ public interface TemplateService extends BaseJpaService<TemplateVO, String> {
      */
     DataTrunk<TemplateVO> findPagination(String code, String name, String title, String template, String description);
 
+    /**
+     * 获取模板
+     * @param business 业务
+     * @param code 标识
+     * @param type 类型
+     * @param templateParams 模板参数
+     * @return 模板
+     */
+    TemplateVO getTemplate(DataDicLiteBean business, String code, DataDicLiteBean type, Map<String, String> templateParams);
+
 }
