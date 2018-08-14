@@ -124,6 +124,16 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateVO, T
     }
 
     @Override
+    public TemplateVO getTemplate(DataDicLiteBean business, String code, DataDicLiteBean type, Map<String, String> templateParams) {
+        TemplateEntity templateEntity = templateRepository.findByCatelogAndCodeAndType(business, code, type);
+        TemplateVO templateVO = new TemplateVO();
+        templateVO.setTitle(templateEntity.getTitle());
+        String content = template2Content(templateEntity.getTemplate(), templateParams);
+        templateVO.setTemplate(content);
+        return templateVO;
+    }
+
+    @Override
     public TemplateRepository getRepository() {
         return templateRepository;
     }
