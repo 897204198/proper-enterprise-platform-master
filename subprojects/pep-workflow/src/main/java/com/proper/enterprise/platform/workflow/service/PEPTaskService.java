@@ -29,10 +29,19 @@ public interface PEPTaskService {
      * 查找当前人待办
      *
      * @param processDefinitionName 流程定义名称
-     * @param pageRequest 分页参数
+     * @param pageRequest           分页参数
      * @return 待办列表
      */
     DataTrunk<PEPTaskVO> findTodoPagination(String processDefinitionName, PageRequest pageRequest);
+
+    /**
+     * 查找当前人处理过的待办
+     *
+     * @param processDefinitionName 流程定义名称
+     * @param pageRequest           分页参数
+     * @return 待办处理过的待办列表
+     */
+    DataTrunk<PEPTaskVO> findTaskAssigneeIsMePagination(String processDefinitionName, PageRequest pageRequest);
 
     /**
      * 根据流程实例id 获取已完成的历史Task

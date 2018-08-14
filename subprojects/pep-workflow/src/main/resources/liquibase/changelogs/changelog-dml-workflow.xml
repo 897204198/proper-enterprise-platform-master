@@ -268,4 +268,20 @@
             <column name="DD_CATALOG_ORDER" value="7"/>
         </insert>
     </changeSet>
+    <changeSet id="workflow-search-2018-08-14" author="DELL">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="workflow-process-todo-assignee-1"/>
+            <column name="CREATE_TIME" value="2017-06-27 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-06-27 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="processDefinitionName"/>
+            <column name="COLUMN_DESC" value="流程名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="workflow_taskAssignee"/>
+            <column name="SEARCH_COLUMN" value="name_"/>
+            <column name="TABLE_NAME" value="act_re_procdef"/>
+            <column name="URL" value="/workflow/task/assignee"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

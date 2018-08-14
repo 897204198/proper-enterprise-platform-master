@@ -11,8 +11,8 @@ import com.proper.enterprise.platform.core.utils.*;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
-import org.flowable.engine.RuntimeService;
-import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.engine.HistoryService;
+import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.identitylink.api.IdentityLinkInfo;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
@@ -276,8 +276,8 @@ public class PEPTask {
         if (StringUtil.isEmpty(this.getProcInstId())) {
             return null;
         }
-        ProcessInstance processInstance = PEPApplicationContext.getBean(RuntimeService.class)
-            .createProcessInstanceQuery()
+        HistoricProcessInstance processInstance = PEPApplicationContext.getBean(HistoryService.class)
+            .createHistoricProcessInstanceQuery()
             .includeProcessVariables()
             .processInstanceId(this.getProcInstId())
             .singleResult();

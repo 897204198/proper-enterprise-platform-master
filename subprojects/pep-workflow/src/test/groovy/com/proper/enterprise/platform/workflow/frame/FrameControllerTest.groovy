@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants
 import com.proper.enterprise.platform.workflow.util.VariableUtil
 import com.proper.enterprise.platform.workflow.vo.CustomHandlerVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
+import com.proper.enterprise.platform.workflow.vo.PEPTaskVO
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum
 import org.flowable.engine.HistoryService
 import org.flowable.engine.IdentityService
@@ -52,6 +53,9 @@ class FrameControllerTest extends AbstractTest {
         formTestVO.put("name", "zjl")
         formTestVO.put("passOrNot", 1)
         PEPProcInstVO pepProcInstVO = start(FRAME_WORKFLOW_KEY, formTestVO)
+        List<PEPTaskVO> assigneeIsMe =
+            findTaskAssigneeIsMePagination("框架测试流程", 1, 10)
+        assert assigneeIsMe.size() == 0
         String procInstId = pepProcInstVO.getProcInstId()
         assert findHis(procInstId).hisTasks.size() == 0
         assert findHis(procInstId).currentTasks.get(0).endTime == null
@@ -76,6 +80,10 @@ class FrameControllerTest extends AbstractTest {
         //判断task内容
         assertTaskMsg(step1, "第一步")
         completeStep1(step1)
+        List<PEPTaskVO> assigneeIsMeStep1 = findTaskAssigneeIsMePagination("框架测试流程", 1, 10)
+        assert assigneeIsMeStep1.size() == 1
+        assert pepProcInstVO.getProcInstId() == assigneeIsMeStep1.get(0).pepProcInst.procInstId
+        assert null != assigneeIsMeStep1.get(0).endTime
         //判断历史
         assert null != findHis(procInstId, "第一步").endTime
         assert "c" == findHis(procInstId, "第一步").assigneeName
@@ -86,9 +94,16 @@ class FrameControllerTest extends AbstractTest {
         completeStep2(step2)
         mockUser('user2', 'testuser2', '123456')
         Authentication.setCurrentUserId("user2")
+        identityService.setAuthenticatedUserId("user2")
+        org.flowable.engine.common.impl.identity.Authentication.getAuthenticatedUserId()
+        List<PEPTaskVO> assigneeIsMeApproveBefore = findTaskAssigneeIsMePagination("框架测试流程", 1, 10)
+        assert assigneeIsMeApproveBefore.size() == 0
         Map approve = getTask("审核")
         assertTaskMsg(approve, "审核")
         completeApprove(approve, false)
+        List<PEPTaskVO> assigneeIsMeApproveAfter = findTaskAssigneeIsMePagination("框架测试流程", 1, 10)
+        assert assigneeIsMeApproveAfter.size() == 1
+        assert pepProcInstVO.getProcInstId() == assigneeIsMeApproveAfter.get(0).pepProcInst.procInstId
         assert "这不能通过将第二步好好填填" == findHis(procInstId, "审核").form.formData.approveDesc
 
         mockUser('user1', 'testuser1', '123456')
@@ -120,6 +135,8 @@ class FrameControllerTest extends AbstractTest {
         assert processTitle == findProcessStartByKey(FRAME_WORKFLOW_KEY).getProcessTitle()
         assert 2 == findProcessStartByMe().size()
         assert "处理中" == findProcessStartByKey(VALIDATE_ASSIGN_GROUP_KEY).getStateValue()
+        List<PEPTaskVO> assigneeIsMeOver = findTaskAssigneeIsMePagination("框架测试流程", 1, 10)
+        assert assigneeIsMeOver.get(0).pepProcInst != null
     }
 
     @Test
@@ -258,6 +275,12 @@ class FrameControllerTest extends AbstractTest {
         DataTrunk<PEPProcInstVO> dataTrunk = JSONUtil.parse(get('/workflow/process?processDefinitionName=' + processDefinitionName + stateQuery + '&pageNo=' + pageNo + '&pageSize=' + pageSize, HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         return dataTrunk.getData()
     }
+
+    private List<PEPTaskVO> findTaskAssigneeIsMePagination(String processDefinitionKey, Integer pageNo, Integer pageSize) {
+        DataTrunk<PEPTaskVO> dataTrunk = JSONUtil.parse(get('/workflow/task/assignee?processDefinitionName=' + processDefinitionKey + '&pageNo=' + pageNo + '&pageSize=' + pageSize, HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        return dataTrunk.getData()
+    }
+
 
     private PEPProcInstVO findProcessStartByKey(String processDefinitionKey) {
         List<PEPProcInstVO> pepProcInstVOs = findProcessStartByMe()

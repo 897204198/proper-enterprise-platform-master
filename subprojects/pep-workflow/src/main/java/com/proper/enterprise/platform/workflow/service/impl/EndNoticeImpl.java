@@ -52,7 +52,10 @@ public class EndNoticeImpl implements EndNotice {
             Map<String, Object> custom = new HashMap<>(0);
             custom.put("gdpr_mpage", "examList");
             custom.put("title", processDefinition.getName());
-            String endNoticeUserId = (String) execution.getVariable(END_NOTICE_USER_ID_KEY);
+            String endNoticeUserKey = (String) execution.getVariable(END_NOTICE_USER_ID_KEY);
+            String endNoticeUserId = StringUtil.isNotEmpty(endNoticeUserKey)
+                ? (String) execution.getVariable(endNoticeUserKey)
+                : "";
             String endNoticeCode = (String) execution.getVariable(END_NOTICE_CODE_KEY);
             noticeSender.sendNotice("EndNotice", "BPM",
                 StringUtil.isEmpty(endNoticeCode) ? "EndCode" : endNoticeCode, custom,
