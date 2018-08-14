@@ -36,7 +36,6 @@ public class ProcessController extends BaseController {
         return responseOfGet(pepProcessService.findProcessStartByMePagination(processDefinitionName, state, getPageRequest()));
     }
 
-
     @RequestMapping(value = "/{procInstId}/page", method = RequestMethod.GET)
     public ResponseEntity<List<PEPForm>> buildPage(@PathVariable String procInstId) {
         return responseOfGet(pepProcessService.buildPage(procInstId));

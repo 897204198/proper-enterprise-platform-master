@@ -250,4 +250,5 @@ public class PEPProcInst {
         }
         return TmplUtil.resolveTmpl(processTitleTmpl, globalVariables);
     }
+
 }

@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.model.PEPWorkflowNoticeUrlBusinessParam;
 import com.proper.enterprise.platform.workflow.model.PEPWorkflowNoticeUrlParam;
+import org.apache.commons.codec.binary.Base64;
 import org.flowable.task.api.Task;
 import org.flowable.task.service.impl.persistence.entity.TaskEntityImpl;
 import org.slf4j.Logger;
@@ -37,7 +38,10 @@ public abstract class AbstractWorkFlowNoticeSupport {
         noticeUrlParam.setTaskOrProcDefKey(task.getId());
         noticeUrlParam.setName(task.getName());
         try {
-            return baseUrl + TASK_PAGE_URL + URLEncoder.encode(JSONUtil.toJSONIgnoreException(noticeUrlParam), PEPConstants.DEFAULT_CHARSET.name());
+            Base64 encoder = new Base64();
+            return baseUrl + TASK_PAGE_URL + new String(encoder.encode(
+                URLEncoder.encode(JSONUtil.toJSONIgnoreException(noticeUrlParam), PEPConstants.DEFAULT_CHARSET.name())
+                    .getBytes(PEPConstants.DEFAULT_CHARSET.name())), PEPConstants.DEFAULT_CHARSET.name());
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("taskUrl encode error", e);
         }

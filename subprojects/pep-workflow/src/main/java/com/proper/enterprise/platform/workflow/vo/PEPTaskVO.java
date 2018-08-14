@@ -67,6 +67,7 @@ public class PEPTaskVO {
     /**
      * 任务结束时间
      */
+    @JsonView(value = {PEPTaskVO.ToDoView.class})
     private String endTime;
     /**
      * 流程实例Id

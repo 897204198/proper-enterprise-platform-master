@@ -12,7 +12,7 @@
       </extensionElements>
     </userTask>
     <sequenceFlow id="sid-7B371F01-87DF-4A64-A43D-CC1776C36D66" sourceRef="startEvent1" targetRef="sid-E26F3550-05B6-43C2-8D88-56B0749AB211"></sequenceFlow>
-    <userTask id="sid-E40F2AE8-76D5-4B65-AE4A-DDF1720DF617" name="审核" default="sid-EC424DA2-D9E8-4221-9268-E51BC7A31FDA" flowable:assignee="$INITIATOR" flowable:formKey="audit">
+    <userTask id="sid-E40F2AE8-76D5-4B65-AE4A-DDF1720DF617" name="审核" default="sid-EC424DA2-D9E8-4221-9268-E51BC7A31FDA" flowable:assignee="user2" flowable:formKey="audit">
       <extensionElements>
         <flowable:taskListener event="create" class="com.proper.enterprise.platform.workflow.listener.CustomHandlerListener"></flowable:taskListener>
         <modeler:activiti-idm-initiator xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>

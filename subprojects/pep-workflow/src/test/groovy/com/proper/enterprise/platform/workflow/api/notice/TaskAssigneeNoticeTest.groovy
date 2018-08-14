@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.api.AbstractWorkFlowNoticeSupport
 import com.proper.enterprise.platform.workflow.model.PEPWorkflowNoticeUrlParam;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
+import org.apache.commons.codec.binary.Base64
 import org.flowable.engine.IdentityService
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,8 +36,12 @@ class TaskAssigneeNoticeTest extends AbstractTest {
         identityService.setAuthenticatedUserId("PEP_SYS")
         Authentication.setCurrentUserId("PEP_SYS")
         start(TASK_ASSIGNEE_NOTICE_KEY, new HashMap<String, Object>())
-        String param = Authentication.getCurrentUserId().replace(baseUrl, "").replace(AbstractWorkFlowNoticeSupport.TASK_PAGE_URL, "")
-        PEPWorkflowNoticeUrlParam noticeUrlParam = JSONUtil.parse(URLDecoder.decode(param, PEPConstants.DEFAULT_CHARSET.name()),
+        String param = Authentication.getCurrentUserId().replace(baseUrl, "")
+            .replace(AbstractWorkFlowNoticeSupport.TASK_PAGE_URL, "")
+        Base64 base64Decoder=new Base64()
+        PEPWorkflowNoticeUrlParam noticeUrlParam = JSONUtil.parse(URLDecoder.decode(new String(base64Decoder.decode(param),
+            PEPConstants.DEFAULT_CHARSET.name()),
+            PEPConstants.DEFAULT_CHARSET.name()),
             PEPWorkflowNoticeUrlParam.class);
         assert StringUtil.isNotEmpty(noticeUrlParam.getBusinessObj().getFormTitle())
     }

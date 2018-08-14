@@ -27,6 +27,7 @@ import org.flowable.identitylink.api.IdentityLinkInfo;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
+import org.flowable.task.api.history.HistoricTaskInstanceQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -155,6 +156,27 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         DataTrunk<PEPTaskVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setData(taskVOs);
         dataTrunk.setCount(taskQuery.count());
+        return dataTrunk;
+    }
+
+    @Override
+    public DataTrunk<PEPTaskVO> findTaskAssigneeIsMePagination(String processDefinitionName, PageRequest pageRequest) {
+        HistoricTaskInstanceQuery historicTaskInstanceQuery = historyService.createHistoricTaskInstanceQuery()
+            .includeProcessVariables()
+            .taskAssignee(Authentication.getCurrentUserId())
+            .finished()
+            .orderByTaskCreateTime()
+            .desc();
+        if (StringUtil.isNotEmpty(processDefinitionName)) {
+            historicTaskInstanceQuery.processDefinitionName(processDefinitionName);
+        }
+        List<HistoricTaskInstance> historicTasks = historicTaskInstanceQuery
+            .listPage(pageRequest.getPageNumber() * pageRequest.getPageSize(),
+            pageRequest.getPageSize());
+        List<PEPTaskVO> taskVOs = new ArrayList<>(BeanUtil.convert(TaskConvert.convertHisTasks(historicTasks), PEPTaskVO.class));
+        DataTrunk<PEPTaskVO> dataTrunk = new DataTrunk<>();
+        dataTrunk.setData(taskVOs);
+        dataTrunk.setCount(historicTaskInstanceQuery.count());
         return dataTrunk;
     }
 
