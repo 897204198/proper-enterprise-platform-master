@@ -154,7 +154,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public Map<String, String> getDataMap(String data) {
         Map<String, String> map = new HashMap<>(16);
-        if (data != null) {
+        if (StringUtil.isNotBlank(data)) {
             try {
                 JsonNode node = JSONUtil.parse(data, JsonNode.class);
                 Iterator<Map.Entry<String, JsonNode>> iterator = node.fields();
@@ -163,7 +163,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     map.put(entry.getKey(), entry.getValue().textValue());
                 }
             } catch (IOException e) {
-                LOGGER.warn("Data of json parse exception!", e);
+                LOGGER.warn("Data of json parse exception! data is " + data, e);
             }
         }
         return map;
