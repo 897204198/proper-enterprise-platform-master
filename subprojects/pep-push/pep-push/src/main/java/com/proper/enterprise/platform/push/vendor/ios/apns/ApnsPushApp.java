@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentMap;
 public class ApnsPushApp extends BasePushApp {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApnsPushApp.class);
-
+    private static ConcurrentMap<String, ApnsClient> clientPool = new ConcurrentHashMap<>();
     private String theAppkey;
     private String keyStorePassword;
     private Object keyStoreMeta;
@@ -72,8 +72,6 @@ public class ApnsPushApp extends BasePushApp {
         this.topic = topic;
     }
 
-    private static ConcurrentMap<String, ApnsClient> clientPool = new ConcurrentHashMap<>();
-
     /**
      * 推送一条消息
      *
@@ -118,7 +116,7 @@ public class ApnsPushApp extends BasePushApp {
                     result = true;
                 } else {
                     LOGGER.info(
-                        "Notification rejected by the APNs gateway:{},msg:{}",
+                        "Notification rejected by the APNs pushId:{},gateway:{},msg:{}", msg.getId(),
                         pushNotificationResponse.getRejectionReason(), JSONUtil.toJSONIgnoreException(msg));
                     pushService.onPushTokenInvalid(msg);
                     // 发送消息失败
@@ -132,7 +130,8 @@ public class ApnsPushApp extends BasePushApp {
                 LOGGER.info("No need to push notice to real APNs server when 'push_env' set to 'test'! {}", msg.getMcontent());
             }
         } catch (Exception e) {
-            LOGGER.error("Failed to send push notification.msg: " + JSONUtil.toJSONIgnoreException(msg), e);
+            LOGGER.error("Failed to send push notification pushId:{},msg:{},errMsg:{} ",
+                msg.getId(), JSONUtil.toJSONIgnoreException(msg), e, e.getMessage());
             msg.setMresponse(e + "\t" + e.getMessage());
             result = false;
         }

@@ -21,9 +21,9 @@ import java.util.Map;
  */
 public class XiaomiPushApp extends BasePushApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(XiaomiPushApp.class);
+    Sender client;
     private String theAppPackage;
     private String theAppSecret;
-    Sender client;
 
     public String getTheAppPackage() {
         return theAppPackage;
@@ -128,7 +128,7 @@ public class XiaomiPushApp extends BasePushApp {
                     JSONUtil.toJSONIgnoreException(msg));
                 result = true;
             } else {
-                LOGGER.info("error xiaomi push log step6 content:{},pushId:{},msg{}", msg.getMcontent(), msg.getId(),
+                LOGGER.info("error xiaomi push log step6 content:{},pushId:{},msg:{},rsp:{}", msg.getMcontent(), msg.getId(),
                     JSONUtil.toJSONIgnoreException(msg), rsp);
                 // 发送消息失败
                 result = false;

@@ -42,7 +42,7 @@ class AppServerRequestServiceImplTest extends PushAbstractTest {
         assert entity.getSendCount() == 1
         List<String> list = new ArrayList<>()
         list.add(pushId)
-        appServerRequestService.sendMsg(list)
+        appServerRequestService.updatePushEntityAfterSendMsg(list)
         entity = pushMsgRepository.findOne(pushId)
         assert entity.getSendCount() == 2
     }

@@ -55,7 +55,7 @@ public class PushJmsTemplateServiceImpl implements PushJmsTemplateService {
         if (appServerRequestJmsTemplate == null) {
             pushIds.forEach(n -> LOGGER.info("PushJmsTemplateServiceImpl sendPushMsg inner pushId:{},", n));
             try {
-                appServerRequestService.sendMsg(pushIds);
+                appServerRequestService.updatePushEntityAfterSendMsg(pushIds);
             } catch (Exception e) {
                 pushIds.forEach(n -> LOGGER.error("sendPushMsg inner pushId:{},errorMsg:{}", n, e.getMessage(), e));
                 throw new PushException(e.getMessage());

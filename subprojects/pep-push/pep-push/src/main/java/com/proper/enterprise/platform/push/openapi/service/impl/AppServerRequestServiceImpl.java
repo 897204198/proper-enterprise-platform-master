@@ -239,7 +239,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
 
     @JmsListener(destination = CONTAINERE_DESTINATION_NAME, containerFactory = CONTAINER_FACTIORY_NAME)
     @Override
-    public void sendMsg(List<String> pushIds) {
+    public void updatePushEntityAfterSendMsg(List<String> pushIds) {
         for (String pushId : pushIds) {
             PushMsgEntity entity = msgRepo.findOne(pushId);
             if (entity != null) {

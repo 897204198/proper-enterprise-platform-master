@@ -49,11 +49,11 @@ public interface AppServerRequestService {
                                   PushMessage thePushmsg);
 
     /**
-     * 根据消息ID来推送消息
+     * 根据消息ID来推送消息,然后更新该推送的时间、状态、发送次数
      *
      * @param pushIds 消息的ID集合
      */
-    void sendMsg(List<String> pushIds);
+    void updatePushEntityAfterSendMsg(List<String> pushIds);
 
     /**
      * 获取JMS消费地址
