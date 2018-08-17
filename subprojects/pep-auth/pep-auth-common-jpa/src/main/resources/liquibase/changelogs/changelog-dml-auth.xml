@@ -1316,6 +1316,25 @@
             <column name="PARENT_ID" value="pep-system"/>
         </insert>
     </changeSet>
+    <changeSet author="wangyi20180814" id="pep-menus-application">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-system-appConfig"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="setting"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;1"/>
+            <column name="NAME" value="APP应用管理"/>
+            <column name="ROUTE" value="/system/appConfig"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="0"/>
+            <column name="PARENT_ID" value="pep-system"/>
+        </insert>
+    </changeSet>
     <changeSet id="del_auth_menu_get_resource" author="zjl">
         <delete tableName="PEP_AUTH_MENUS_RESOURCES">
             where MENU_ID='pep-auth-functions' and RES_ID='pep-auth-menus-r'
