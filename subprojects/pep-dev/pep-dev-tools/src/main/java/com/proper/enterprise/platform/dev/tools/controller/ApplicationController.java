@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -38,14 +37,12 @@ public class ApplicationController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ApplicationVO>> getAllOrApplication(@RequestParam(required = false) String code) {
-        List<ApplicationVO> list = new ArrayList<>();
-        if (code != null) {
-            applicationService.getApplicationByCode(code);
-        } else {
-            applicationService.getApplications();
-        }
-        return responseOfGet(list);
+    public ResponseEntity find(@RequestParam(defaultValue = "") String code,
+                               @RequestParam(defaultValue = "") String applicationName,
+                               @RequestParam(defaultValue = "") String applicationPage) {
+        return isPageSearch()
+                ? responseOfGet(applicationService.findPagination(code, applicationName, applicationPage)) :
+                responseOfGet(applicationService.getAllOrApplication(code));
     }
 
     @GetMapping("/{appId}")

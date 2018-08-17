@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.app.repository.AppCatalogRepository
 import com.proper.enterprise.platform.app.repository.ApplicationRepository
 import com.proper.enterprise.platform.app.vo.AppCatalogVO
 import com.proper.enterprise.platform.app.vo.ApplicationVO
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
@@ -78,8 +79,14 @@ class ApplicationControllerTest extends AbstractTest {
         List<ApplicationEntity> list = applicationRepo.findAll()
         assert list.get(0).name == "问卷调查"
 
-        resOfGet(prefix, HttpStatus.OK).size() == 1
-        resOfGet(prefix + "?code=category", HttpStatus.OK).size() == 1
+        DataTrunk<ApplicationVO> page = com.proper.enterprise.platform.test.utils.JSONUtil.parse(get("/admin/app/applications" + "?pageNo=1&pageSize=2",
+                HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert page.count == 1
+
+        page = JSONUtil.parse(get("/admin/app/applications" + "?name=问卷&pageNo=1&pageSize=2", HttpStatus.OK).getResponse().getContentAsString(),
+                DataTrunk.class)
+        assert page.count == 1
+
 
         ApplicationEntity application = new ApplicationEntity()
         application.setCode("category")
@@ -90,10 +97,14 @@ class ApplicationControllerTest extends AbstractTest {
         application.setIcon('test_icon_change')
         applicationRepo.save(application)
         String id = application.getId()
-        def res = JSONUtil.parse(put('/admin/app/applications/' + id, JSONUtil.toJSON(application), HttpStatus.OK)
+
+        ApplicationEntity app = new ApplicationEntity()
+        app.setName('办公流程')
+        app.setIcon('icon')
+        def res = JSONUtil.parse(put('/admin/app/applications/' + id, JSONUtil.toJSON(app), HttpStatus.OK)
                 .getResponse().getContentAsString(), ApplicationVO.class)
-        assert res.icon == 'test_icon_change'
-        assert res.name == '问卷调查'
+        assert res.icon == 'icon'
+        assert res.name == '办公流程'
 
         get(prefix + "/" + id, HttpStatus.OK)
     }

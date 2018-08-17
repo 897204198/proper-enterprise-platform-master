@@ -2,11 +2,13 @@ package com.proper.enterprise.platform.app.service;
 
 import com.proper.enterprise.platform.app.vo.AppCatalogVO;
 import com.proper.enterprise.platform.app.vo.ApplicationVO;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ApplicationService {
+public interface ApplicationService extends BaseJpaService<ApplicationVO, String> {
     /**
      * 更新应用
      *
@@ -47,6 +49,16 @@ public interface ApplicationService {
      * @return 应用的信息
      */
     List<ApplicationVO> getApplicationByCode(String code);
+
+    /**
+     * 根据code获取应用信息
+     *
+     * @param code            应用的code
+     * @param applicationName 应用名
+     * @param applicationPage 应用页
+     * @return 应用的信息
+     */
+    DataTrunk<ApplicationVO> findPagination(String code, String applicationName, String applicationPage);
 
     /**
      * 获取所有应用类别
@@ -97,8 +109,18 @@ public interface ApplicationService {
 
     /**
      * 获取应用的data
+     *
      * @param data data
      * @return map
      */
     Map<String, String> getDataMap(String data);
+
+    /**
+     * 获取应用（传参数根据参数取应用，不传获取所有）
+     *
+     * @param code 应用编码
+     * @return 应用集合
+     */
+    List<ApplicationVO> getAllOrApplication(String code);
+
 }
