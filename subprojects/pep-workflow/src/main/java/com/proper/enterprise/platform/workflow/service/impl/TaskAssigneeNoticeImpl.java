@@ -22,6 +22,10 @@ import java.util.*;
 
 
 @Service("taskAssigneeNotice")
+@Deprecated
+/**
+ * // TODO: 2018/8/17 兼容旧流程十月删除 删除前需查看旧流程是否还存在
+ */
 public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implements TaskAssigneeOrCandidateNotice {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskAssigneeOrCandidateNoticeImpl.class);
 

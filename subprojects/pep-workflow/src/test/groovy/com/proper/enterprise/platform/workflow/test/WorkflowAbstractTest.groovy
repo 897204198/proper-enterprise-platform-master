@@ -4,7 +4,9 @@ import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
+import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
+import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO
 import org.flowable.engine.HistoryService
 import org.flowable.engine.IdentityService
 import org.springframework.beans.factory.annotation.Autowired
@@ -48,14 +50,18 @@ abstract class WorkflowAbstractTest extends AbstractTest {
     }
 
 
-    protected List<Map> buildPage(String procInstId) {
-        List<Map> pages = JSONUtil.parse(get('/workflow/process/' + procInstId + '/page', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        return pages
+    protected List<PEPExtFormVO> buildPage(String procInstId) {
+        PEPWorkflowPageVO pages = JSONUtil.parse(get('/workflow/process/' + procInstId + '/page', HttpStatus.OK).getResponse().getContentAsString(), PEPWorkflowPageVO.class)
+        return pages.getForms()
     }
 
-    protected List<Map> buildPageTask(String taskId) {
-        List<Map> pages = JSONUtil.parse(get('/workflow/task/' + taskId + '/page', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        return pages
+    protected PEPWorkflowPageVO buildPageHaveGlobalVars(String procInstId) {
+        return JSONUtil.parse(get('/workflow/process/' + procInstId + '/page', HttpStatus.OK).getResponse().getContentAsString(), PEPWorkflowPageVO.class)
+    }
+
+    protected List<PEPExtFormVO> buildPageTask(String taskId) {
+        PEPWorkflowPageVO pages = JSONUtil.parse(get('/workflow/task/' + taskId + '/page', HttpStatus.OK).getResponse().getContentAsString(), PEPWorkflowPageVO.class)
+        return pages.getForms()
     }
 
     boolean isEnded(String procInstId) {

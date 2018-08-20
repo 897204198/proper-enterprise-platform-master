@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.workflow.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
@@ -37,6 +38,7 @@ public class PEPExtFormVO implements PEPForm {
 
     private Map<String, Object> formData;
 
+    @JsonIgnore
     private Map<String, Object> globalData;
 
     private ShowType showType;

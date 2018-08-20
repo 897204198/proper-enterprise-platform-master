@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
@@ -97,6 +98,10 @@ public class PEPExtForm implements PEPForm {
     private Map<String, Object> buildFormData(Map<String, Object> processVariables) {
         if (MapUtils.isEmpty(processVariables)) {
             return null;
+        }
+        if (StringUtil.isNotEmpty(this.getFormKey())
+            && null != processVariables.get(this.getFormKey())) {
+            return (Map<String, Object>) processVariables.get(this.getFormKey());
         }
         return processVariables;
     }

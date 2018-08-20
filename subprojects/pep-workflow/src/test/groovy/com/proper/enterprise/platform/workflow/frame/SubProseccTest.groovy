@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.workflow.frame
 
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.workflow.test.WorkflowAbstractTest
+import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType
 import org.flowable.engine.IdentityService
@@ -44,21 +45,21 @@ class SubProseccTest extends WorkflowAbstractTest {
         Map pepWorkflowPathVO = findHis(procInst.procInstId)
         assert pepWorkflowPathVO.get("currentTasks").size() == 1
 
-        List<Map> hisPages = buildPage(procInst.getProcInstId())
+        List<PEPExtFormVO> hisPages = buildPage(procInst.getProcInstId())
         assert hisPages.size() == 1
-        assert hisPages.get(0).showType == ShowType.SHOW.name()
+        assert hisPages.get(0).showType.name() == ShowType.SHOW.name()
         assert hisPages.get(0).formData.a == "a1"
-        List<Map> taskPages = buildPageTask(subStep1.taskId)
+        List<PEPExtFormVO> taskPages = buildPageTask(subStep1.taskId)
         assert taskPages.size() == 2
-        assert taskPages.get(1).showType == ShowType.EDIT.name()
+        assert taskPages.get(1).showType.name() == ShowType.EDIT.name()
         Map<String, Object> subStep1Form = new HashMap<>()
         subStep1Form.put("b", "b")
         complete(subStep1.taskId, subStep1Form)
-        List<Map> hisPages2 = buildPage(procInst.getProcInstId())
+        List<PEPExtFormVO> hisPages2 = buildPage(procInst.getProcInstId())
         assert hisPages2.size() == 2
-        assert hisPages2.get(0).showType == ShowType.SHOW.name()
+        assert hisPages2.get(0).showType.name() == ShowType.SHOW.name()
         assert hisPages2.get(0).formData.a == "a1"
-        assert hisPages2.get(1).showType == ShowType.SHOW.name()
+        assert hisPages2.get(1).showType.name() == ShowType.SHOW.name()
         assert hisPages2.get(1).formData.b == "b"
         Map endPath = findHis(procInst.procInstId)
         assert endPath.get("ended")

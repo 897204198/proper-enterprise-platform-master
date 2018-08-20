@@ -37,8 +37,11 @@ class SameAssigneeSkipTest extends WorkflowAbstractTest {
         post('/workflow/task/' + task1.taskId, JSONUtil.toJSON(new HashMap()), HttpStatus.CREATED)
         Map skipHis1 = findHis(pepProcInstVO.procInstId)
         assert skipHis1.get("hisTasks").size() == 3
+        assert skipHis1.get("hisTasks").get(0).name == 'task3'
         assert skipHis1.get("hisTasks").get(0).sameAssigneeSkip
+        assert skipHis1.get("hisTasks").get(1).name == 'task2'
         assert skipHis1.get("hisTasks").get(1).sameAssigneeSkip
+        assert skipHis1.get("hisTasks").get(2).name == 'task1'
         assert !skipHis1.get("hisTasks").get(2).sameAssigneeSkip
         Authentication.setCurrentUserId("user1")
         Map task4 = getTask("task4")
@@ -50,7 +53,12 @@ class SameAssigneeSkipTest extends WorkflowAbstractTest {
         complete(task3.taskId, new HashMap())
         Map skipHis2 = findHis(pepProcInstVO.procInstId)
         assert skipHis2.get("hisTasks").size() == 5
+        assert skipHis2.get("hisTasks").get(0).name == "task3"
         assert !skipHis2.get("hisTasks").get(0).sameAssigneeSkip
+        assert skipHis2.get("hisTasks").get(1).name == "task4"
+        assert !skipHis2.get("hisTasks").get(1).sameAssigneeSkip
+        assert skipHis2.get("hisTasks").get(4).name == "task1"
+        assert !skipHis2.get("hisTasks").get(4).sameAssigneeSkip
         Authentication.setCurrentUserId("user1")
         Map task42 = getTask("task4")
         task4Form.put("passOrNot", "1")
