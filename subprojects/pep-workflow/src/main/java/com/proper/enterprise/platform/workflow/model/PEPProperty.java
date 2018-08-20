@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.workflow.model;
 
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.workflow.vo.PEPPropertyVO;
 import org.flowable.engine.form.FormProperty;
 
 public class PEPProperty {
@@ -78,5 +80,9 @@ public class PEPProperty {
     @Override
     public String toString() {
         return JSONUtil.toJSONIgnoreException(this);
+    }
+
+    public PEPPropertyVO convert() {
+        return BeanUtil.convert(this, PEPPropertyVO.class);
     }
 }

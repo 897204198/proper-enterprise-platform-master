@@ -15,11 +15,13 @@ import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.TaskConvert;
 import com.proper.enterprise.platform.workflow.model.PEPExtForm;
+import com.proper.enterprise.platform.workflow.model.PEPWorkflowPage;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.service.PEPTaskService;
 import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
 import com.proper.enterprise.platform.workflow.util.VariableUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
+import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO;
 import org.apache.commons.collections.MapUtils;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.TaskService;
@@ -172,7 +174,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         }
         List<HistoricTaskInstance> historicTasks = historicTaskInstanceQuery
             .listPage(pageRequest.getPageNumber() * pageRequest.getPageSize(),
-            pageRequest.getPageSize());
+                pageRequest.getPageSize());
         List<PEPTaskVO> taskVOs = new ArrayList<>(BeanUtil.convert(TaskConvert.convertHisTasks(historicTasks), PEPTaskVO.class));
         DataTrunk<PEPTaskVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setData(taskVOs);
@@ -181,14 +183,14 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     }
 
     @Override
-    public List<PEPForm> buildPage(String taskId) {
+    public PEPWorkflowPageVO buildPage(String taskId) {
         Task task = taskService.createTaskQuery().includeProcessVariables().taskId(taskId).singleResult();
         if (null == task) {
             throw new ErrMsgException("can't buildTaskPage with empty task");
         }
-        List<PEPForm> pepForms = pepProcessService.buildPage(pepProcessService.findTopMostProcInstId(task.getProcessInstanceId()));
+        PEPWorkflowPageVO hisWorkflowPageVO = pepProcessService.buildPage(pepProcessService.findTopMostProcInstId(task.getProcessInstanceId()));
         Map<String, PEPForm> pepExtFormMaps = new HashMap<>(16);
-        for (PEPForm pepForm : pepForms) {
+        for (PEPForm pepForm : hisWorkflowPageVO.getForms()) {
             pepExtFormMaps.put(pepForm.getFormKey(), pepForm);
         }
         PEPExtForm pepExtForm = new PEPExtForm(task);
@@ -199,7 +201,10 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         for (Map.Entry<String, PEPForm> entry : pepExtFormMaps.entrySet()) {
             returnPEPForms.add(entry.getValue());
         }
-        return returnPEPForms;
+        PEPWorkflowPage pepWorkflowPage = new PEPWorkflowPage();
+        pepWorkflowPage.setForms(returnPEPForms);
+        pepWorkflowPage.setGlobalVariables(task.getProcessVariables());
+        return pepWorkflowPage.convert();
     }
 
     @Override
@@ -226,9 +231,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     }
 
     private Map<String, Object> addNoSameAssigneeSkipMark(Task task, Map<String, Object> variables) {
-        Set<String> noSameAssigneeSkipActIds = (Set<String>) task
-            .getProcessVariables()
-            .get(WorkFlowConstants.NO_SAME_ASSIGNEE_SKIP_REMARK);
+        Set<String> noSameAssigneeSkipActIds = (Set<String>) variables.get(WorkFlowConstants.NO_SAME_ASSIGNEE_SKIP_REMARK);
         if (null == noSameAssigneeSkipActIds) {
             noSameAssigneeSkipActIds = new HashSet<>();
         }

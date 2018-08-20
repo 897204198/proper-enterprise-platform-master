@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.workflow.frame
 
 import com.proper.enterprise.platform.workflow.test.WorkflowAbstractTest
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
+import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO
 import org.junit.Test
 import org.springframework.test.context.jdbc.Sql
 
@@ -20,6 +21,8 @@ class DataDicSupportTest extends WorkflowAbstractTest {
         map.put("a", "{\"catalog\":\"12313\",\"code\":\"4441\"}")
         PEPProcInstVO finish = start(DATADIC_SUPPORT_KEY, map)
         assert isEnded(finish.getProcInstId())
+        PEPWorkflowPageVO pageVO = buildPageHaveGlobalVars(finish.procInstId)
+        assert pageVO.getGlobalVariables().get("a").code == "4441"
 
     }
 }

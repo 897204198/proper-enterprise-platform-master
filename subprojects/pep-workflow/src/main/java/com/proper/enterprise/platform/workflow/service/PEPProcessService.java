@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.workflow.service;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
+import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import org.springframework.data.domain.PageRequest;
@@ -54,9 +54,9 @@ public interface PEPProcessService {
      * 相同formKey取最新内容
      *
      * @param procInstId 流程实例Id
-     * @return 需要展示的表单集合
+     * @return pageVO
      */
-    List<PEPForm> buildPage(String procInstId);
+    PEPWorkflowPageVO buildPage(String procInstId);
 
     /**
      * 根据流程实例id查询流程轨迹

@@ -14,14 +14,12 @@ import com.proper.enterprise.platform.workflow.decorator.GlobalVariableInitDecor
 import com.proper.enterprise.platform.workflow.handler.GlobalVariableInitHandler;
 import com.proper.enterprise.platform.workflow.model.PEPExtForm;
 import com.proper.enterprise.platform.workflow.model.PEPProcInst;
+import com.proper.enterprise.platform.workflow.model.PEPWorkflowPage;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.service.PEPTaskService;
 import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
 import com.proper.enterprise.platform.workflow.util.VariableUtil;
-import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
-import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
-import com.proper.enterprise.platform.workflow.vo.PEPStartVO;
-import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;
+import com.proper.enterprise.platform.workflow.vo.*;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
@@ -134,7 +132,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         return dataTrunk;
     }
 
-    public List<PEPForm> buildPage(String procInstId) {
+    public PEPWorkflowPageVO buildPage(String procInstId) {
         HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
             .processInstanceId(procInstId)
             .includeProcessVariables()
@@ -168,7 +166,10 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         for (Map.Entry<String, PEPForm> entry : pepExtFormMaps.entrySet()) {
             pepForms.add(entry.getValue());
         }
-        return pepForms;
+        PEPWorkflowPage pepWorkflowPage = new PEPWorkflowPage();
+        pepWorkflowPage.setForms(pepForms);
+        pepWorkflowPage.setGlobalVariables(historicProcessInstance.getProcessVariables());
+        return pepWorkflowPage.convert();
     }
 
     @Override

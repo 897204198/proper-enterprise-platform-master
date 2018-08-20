@@ -12,12 +12,11 @@ public interface TemplateService extends BaseJpaService<TemplateVO, String> {
     /**
      * 查询指定业务的模板集合
      *
-     * @param business       业务
      * @param code           模板标识
      * @param templateParams 模板参数
      * @return 模板集合
      */
-    Map<String, TemplateVO> getTemplates(DataDicLiteBean business, String code, Map<String, String> templateParams);
+    Map<String, TemplateVO> getTemplates(String code, Map<String, Object> templateParams);
 
     /**
      * 获得纯文本类型的小贴士
@@ -38,11 +37,10 @@ public interface TemplateService extends BaseJpaService<TemplateVO, String> {
     /**
      * 修改模板
      *
-     * @param id       主键
      * @param template 修改的模板
      * @return 已修改的模板
      */
-    TemplateVO update(String id, TemplateVO template);
+    TemplateVO update(TemplateVO template);
 
     /**
      * 查询指定模板
@@ -74,12 +72,21 @@ public interface TemplateService extends BaseJpaService<TemplateVO, String> {
 
     /**
      * 获取模板
-     * @param business 业务
-     * @param code 标识
-     * @param type 类型
+     *
+     * @param business       业务
+     * @param code           标识
+     * @param type           类型
      * @param templateParams 模板参数
      * @return 模板
      */
-    TemplateVO getTemplate(DataDicLiteBean business, String code, DataDicLiteBean type, Map<String, String> templateParams);
+    TemplateVO getTemplate(DataDicLiteBean business, String code, DataDicLiteBean type, Map<String, Object> templateParams);
+
+    /**
+     * 获取模板
+     *
+     * @param code 标识
+     * @return 模板
+     */
+    TemplateVO getTemplateByCode(String code);
 
 }

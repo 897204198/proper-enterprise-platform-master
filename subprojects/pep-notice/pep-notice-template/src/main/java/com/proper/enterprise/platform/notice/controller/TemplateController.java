@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.notice.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.service.TemplateService;
 import com.proper.enterprise.platform.notice.vo.TemplateVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,11 @@ public class TemplateController extends BaseController {
     @PutMapping("/{id}")
     @JsonView(TemplateVO.Detail.class)
     public ResponseEntity<TemplateVO> update(@PathVariable String id, @RequestBody TemplateVO templateVO) {
-        return responseOfPut(templateService.update(id, templateVO));
+        if (StringUtil.isNotBlank(id)) {
+            templateVO.setId(id);
+            return responseOfPut(templateService.update(templateVO));
+        }
+        return responseOfPut(null);
     }
 
     @GetMapping("/{id}")

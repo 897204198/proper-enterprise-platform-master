@@ -21,6 +21,14 @@ public interface TemplateRepository extends BaseJpaRepository<TemplateEntity, St
     List<TemplateEntity> findByCatelogAndCode(DataDicLiteBean catelog, String code);
 
     /**
+     * 查询指定业务的模板列表
+     *
+     * @param code    模板标识
+     * @return 模板列表
+     */
+    List<TemplateEntity> findByCode(String code);
+
+    /**
      * 查询指定的模板
      *
      * @param code 模板标识
@@ -59,4 +67,13 @@ public interface TemplateRepository extends BaseJpaRepository<TemplateEntity, St
      * @return 模板
      */
     TemplateEntity findByCatelogAndCodeAndType(DataDicLiteBean business, String code, DataDicLiteBean type);
+
+    /**
+     * 获得模板（for valid）
+     *
+     * @param code 标识
+     * @param type 类型
+     * @return 模板列表
+     */
+    List<TemplateEntity> findByCodeAndType(String code, DataDicLiteBean type);
 }
