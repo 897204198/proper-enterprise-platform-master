@@ -55,7 +55,7 @@ class TemplateServiceTest extends AbstractTest {
         templateParams.put("url", "http://docs.easemob.com/im/start")
         templateParams.put("note", "请悉知")
         DataDicLiteBean business = new DataDicLiteBean("NOTICE_BUSINESS", "TEST")
-        Map<String, TemplateVO> templates = templateService.getTemplates(business, "code", templateParams)
+        Map<String, TemplateVO> templates = templateService.getTemplates("code", templateParams)
         assert templates.size() == 2
         String content = templates.get("PUSH").getTemplate()
         assert content.indexOf("{") == -1

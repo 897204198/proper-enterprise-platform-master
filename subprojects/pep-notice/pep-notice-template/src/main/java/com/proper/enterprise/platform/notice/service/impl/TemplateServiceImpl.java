@@ -1,12 +1,14 @@
 package com.proper.enterprise.platform.notice.service.impl;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.entity.TemplateEntity;
 import com.proper.enterprise.platform.notice.repository.TemplateRepository;
 import com.proper.enterprise.platform.notice.service.TemplateService;
+import com.proper.enterprise.platform.notice.util.TemplateUtil;
 import com.proper.enterprise.platform.notice.vo.TemplateVO;
 import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +25,15 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateVO, T
     TemplateRepository templateRepository;
 
     @Override
-    public Map<String, TemplateVO> getTemplates(DataDicLiteBean business, String code, Map<String, String> templateParams) {
-        List<TemplateEntity> list = templateRepository.findByCatelogAndCode(business, code);
+    public Map<String, TemplateVO> getTemplates(String code, Map<String, Object> templateParams) {
+        List<TemplateEntity> list = templateRepository.findByCode(code);
         Map<String, TemplateVO> result = new HashMap<>(1);
         TemplateVO templateVO;
         for (TemplateEntity templateEntity : list) {
             templateVO = new TemplateVO();
-            templateVO.setTitle(templateEntity.getTitle());
-            String content = template2Content(templateEntity.getTemplate(), templateParams);
+            String title = TemplateUtil.template2Content(templateEntity.getTitle(), templateParams);
+            templateVO.setTitle(title);
+            String content = TemplateUtil.template2Content(templateEntity.getTemplate(), templateParams);
             templateVO.setTemplate(content);
             result.put(templateEntity.getType().getCode(), templateVO);
         }
@@ -43,17 +46,14 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateVO, T
         return templateEntity.getTemplate();
     }
 
-    private String template2Content(String template, Map<String, String> templateParams) {
-        for (Map.Entry<String, String> entry : templateParams.entrySet()) {
-            template = template.replace("{" + entry.getKey() + "}", entry.getValue());
-        }
-        return template;
-    }
-
     @Override
     public TemplateVO save(TemplateVO template) {
         DataDicLiteBean catelog = new DataDicLiteBean("TEMPLATE_CATELOG", template.getCatelog());
         DataDicLiteBean type = new DataDicLiteBean("TEMPLATE_TYPE", template.getType());
+        List<TemplateEntity> valid = templateRepository.findByCodeAndType(template.getCode(), type);
+        if (valid != null && valid.size() > 0) {
+            throw new ErrMsgException("error");
+        }
         TemplateEntity templateEntity = BeanUtil.convert(template, TemplateEntity.class);
         templateEntity.setCatelog(catelog);
         templateEntity.setType(type);
@@ -66,23 +66,25 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateVO, T
     }
 
     @Override
-    public TemplateVO update(String id, TemplateVO template) {
-        if (StringUtil.isNotBlank(id)) {
-            DataDicLiteBean catelog = new DataDicLiteBean("TEMPLATE_CATELOG", template.getCatelog());
-            DataDicLiteBean type = new DataDicLiteBean("TEMPLATE_TYPE", template.getType());
-            TemplateEntity templateEntity = BeanUtil.convert(template, TemplateEntity.class);
-            templateEntity.setId(id);
-            templateEntity.setCatelog(catelog);
-            templateEntity.setType(type);
-            templateEntity.setEnable(true);
-            templateEntity = templateRepository.save(templateEntity);
-            template = BeanUtil.convert(templateEntity, TemplateVO.class);
-            template.setCatelog(templateEntity.getCatelog().getCode());
-            template.setType(templateEntity.getType().getCode());
-            return template;
+    public TemplateVO update(TemplateVO template) {
+        DataDicLiteBean catelog = new DataDicLiteBean("TEMPLATE_CATELOG", template.getCatelog());
+        DataDicLiteBean type = new DataDicLiteBean("TEMPLATE_TYPE", template.getType());
+        List<TemplateEntity> valid = templateRepository.findByCodeAndType(template.getCode(), type);
+        boolean isExist = valid != null && valid.size() > 0;
+        if (isExist && !valid.get(0).getId().equals(template.getId())) {
+            throw new ErrMsgException("error");
         }
-        return null;
+        TemplateEntity templateEntity = BeanUtil.convert(template, TemplateEntity.class);
+        templateEntity.setCatelog(catelog);
+        templateEntity.setType(type);
+        templateEntity.setEnable(true);
+        templateEntity = templateRepository.save(templateEntity);
+        template = BeanUtil.convert(templateEntity, TemplateVO.class);
+        template.setCatelog(templateEntity.getCatelog().getCode());
+        template.setType(templateEntity.getType().getCode());
+        return template;
     }
+
 
     @Override
     public TemplateVO get(String id) {
@@ -121,12 +123,21 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateVO, T
     }
 
     @Override
-    public TemplateVO getTemplate(DataDicLiteBean business, String code, DataDicLiteBean type, Map<String, String> templateParams) {
+    public TemplateVO getTemplate(DataDicLiteBean business, String code, DataDicLiteBean type, Map<String, Object> templateParams) {
         TemplateEntity templateEntity = templateRepository.findByCatelogAndCodeAndType(business, code, type);
         TemplateVO templateVO = new TemplateVO();
         templateVO.setTitle(templateEntity.getTitle());
-        String content = template2Content(templateEntity.getTemplate(), templateParams);
+        String content = TemplateUtil.template2Content(templateEntity.getTemplate(), templateParams);
         templateVO.setTemplate(content);
+        return templateVO;
+    }
+
+    @Override
+    public TemplateVO getTemplateByCode(String code) {
+        TemplateVO templateVO = new TemplateVO();
+        TemplateEntity templateEntity = templateRepository.findFirstByCode(code);
+        templateVO.setCatelog(templateEntity.getCatelog().getCode());
+        templateVO.setType(templateEntity.getType().getCode());
         return templateVO;
     }
 

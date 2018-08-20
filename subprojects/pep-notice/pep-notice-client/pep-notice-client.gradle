@@ -4,6 +4,7 @@ dependencies {
             project(':pep-notice-api'),
             project(':pep-notice-set'),
             project(':pep-notice-template')
-    testCompile project(':pep-test')
+    testCompile project(':pep-test'),
+            project(':pep-auth-common-jpa')
 }
 

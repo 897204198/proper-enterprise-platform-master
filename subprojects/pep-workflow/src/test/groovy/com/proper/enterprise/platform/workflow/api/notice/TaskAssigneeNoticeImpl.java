@@ -58,7 +58,7 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
             if (CollectionUtil.isEmpty(userIds)) {
                 return;
             }
-            Map<String, String> templateParams = new HashMap<>(5);
+            Map<String, Object> templateParams = new HashMap<>(5);
             templateParams.putAll(VariableUtil.convertVariableToMsgParam(task.getVariables()));
             templateParams.put("taskName", task.getName());
             templateParams.put("pageurl", buildTaskUrl(task) + "&from=email");
@@ -68,8 +68,7 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
             custom.put("title", task.getName());
             String noticeCode = (String) task.getVariable(TASK_ASSIGNEE_NOTICE_CODE_KEY);
             Authentication.setCurrentUserId(buildTaskUrl(task));
-            noticeSender.sendNotice("EndNotice", "BPM",
-                StringUtil.isEmpty(noticeCode) ? "TaskAssignee" : noticeCode,
+            noticeSender.sendNotice(StringUtil.isEmpty(noticeCode) ? "TaskAssignee" : noticeCode,
                 custom, userIds, templateParams);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);

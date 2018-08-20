@@ -43,53 +43,114 @@ class TemplateControllerTest extends AbstractTest {
         assert result.type == "PUSH"
         assert result.description == "name : username"
 
-        TemplateVO template2 = new TemplateVO()
-        template2.code = "1 1"
-        template2.template = "1 1 {1} "
-        template2.title = "1 1"
-        template2.name = "1 1"
-        template2.catelog = "1"
-        template2.type = "1"
-        template2.description = "1 : 1"
-        JSONUtil.parse(post("/notice/template", JSONUtil.toJSON(template2), HttpStatus.CREATED).getResponse().getContentAsString(), TemplateVO.class)
+        //create same code different noticeType
+        template = new TemplateVO()
+        template.code = "TEST CODE"
+        template.template = "TEST TEMPLATE {name} "
+        template.title = "TEST TITLE2"
+        template.name = "TEST NAME2"
+        template.catelog = "CATELOG2"
+        template.type = "EMAIL"
+        template.description = "name : username"
+        result = JSONUtil.parse(post("/notice/template", JSONUtil.toJSON(template), HttpStatus.CREATED).getResponse().getContentAsString(), TemplateVO.class)
+        assert result.id != null
+        assert result.code == "TEST CODE"
+        assert result.template == "TEST TEMPLATE {name} "
+        assert result.title == "TEST TITLE2"
+        assert result.name == "TEST NAME2"
+        assert result.catelog == "CATELOG2"
+        assert result.type == "EMAIL"
+        assert result.description == "name : username"
 
-        //upate
+        //create same code same noticeType
+        template = new TemplateVO()
+        template.code = "TEST CODE"
+        template.template = "TEST TEMPLATE {name} "
+        template.title = "TEST TITLE2"
+        template.name = "TEST NAME2"
+        template.catelog = "CATELOG2"
+        template.type = "EMAIL"
+        template.description = "name : username"
+        post("/notice/template", JSONUtil.toJSON(template), HttpStatus.INTERNAL_SERVER_ERROR)
+
+        template = new TemplateVO()
+        template.code = "1 1"
+        template.template = "1 1 {1} "
+        template.title = "1 1"
+        template.name = "1 1"
+        template.catelog = "1"
+        template.type = "1"
+        template.description = "1 : 1"
+        result = JSONUtil.parse(post("/notice/template", JSONUtil.toJSON(template), HttpStatus.CREATED).getResponse().getContentAsString(), TemplateVO.class)
+
+        //upate same code different noticeType
         String target = result.id
         template = new TemplateVO()
-        template.code = "TEST CODE NEW"
+        template.code = "TEST CODE"
+        template.template = "TEST TEMPLATE {name} "
+        template.title = "TEST TITLE2"
+        template.name = "TEST NAME2"
+        template.catelog = "CATELOG2"
+        template.type = "SMS"
+        template.description = "name : username"
+        result = JSONUtil.parse(put("/notice/template/" + target, JSONUtil.toJSON(template), HttpStatus.OK).getResponse().getContentAsString(), TemplateVO.class)
+        assert result.id != null
+        assert result.code == "TEST CODE"
+        assert result.template == "TEST TEMPLATE {name} "
+        assert result.title == "TEST TITLE2"
+        assert result.name == "TEST NAME2"
+        assert result.catelog == "CATELOG2"
+        assert result.type == "SMS"
+        assert result.description == "name : username"
+
+        //upate same code same noticeType , different title
+        target = result.id
+        template = new TemplateVO()
+        template.code = "TEST CODE"
         template.template = "TEST TEMPLATE {name} NEW"
         template.title = "TEST TITLE NEW"
         template.name = "TEST NAME NEW"
         template.catelog = "CATELOG2"
         template.type = "SMS"
-        template.description = "name : name"
+        template.description = "name : username"
         result = JSONUtil.parse(put("/notice/template/" + target, JSONUtil.toJSON(template), HttpStatus.OK).getResponse().getContentAsString(), TemplateVO.class)
-        assert result.id == target
-        assert result.code == "TEST CODE NEW"
+        assert result.id != null
+        assert result.code == "TEST CODE"
         assert result.template == "TEST TEMPLATE {name} NEW"
         assert result.title == "TEST TITLE NEW"
         assert result.name == "TEST NAME NEW"
         assert result.catelog == "CATELOG2"
         assert result.type == "SMS"
-        assert result.description == "name : name"
+        assert result.description == "name : username"
+
+        //upate same code same noticeType
+        target = result.id
+        template = new TemplateVO()
+        template.code = "TEST CODE"
+        template.template = "TEST TEMPLATE {name} "
+        template.title = "TEST TITLE2"
+        template.name = "TEST NAME2"
+        template.catelog = "CATELOG2"
+        template.type = "EMAIL"
+        template.description = "name : username"
+        put("/notice/template/" + target, JSONUtil.toJSON(template), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
 
         //getOne
         result = JSONUtil.parse(get("/notice/template/" + target, HttpStatus.OK).getResponse().getContentAsString(), TemplateVO.class)
         assert result.id == target
-        assert result.code == "TEST CODE NEW"
         assert result.template == "TEST TEMPLATE {name} NEW"
         assert result.title == "TEST TITLE NEW"
         assert result.name == "TEST NAME NEW"
         assert result.catelog == "CATELOG2"
         assert result.type == "SMS"
-        assert result.description == "name : name"
+        assert result.description == "name : username"
 
         //page
         DataTrunk<TemplateVO> page = JSONUtil.parse(get("/notice/template/" + "?pageNo=1&pageSize=2", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
-        assert page.count == 2
+        assert page.count == 3
 
-        page = JSONUtil.parse(get("/notice/template/" + "?pageNo=1&pageSize=1&code=1 1", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
-        assert page.count == 1
+        page = JSONUtil.parse(get("/notice/template/" + "?pageNo=1&pageSize=1&code=TEST CODE", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert page.count == 3
 
         //delete
         delete("/notice/template?ids=" + target, HttpStatus.NO_CONTENT)

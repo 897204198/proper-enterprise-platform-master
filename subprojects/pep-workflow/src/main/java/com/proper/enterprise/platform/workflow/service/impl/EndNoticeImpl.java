@@ -46,7 +46,7 @@ public class EndNoticeImpl implements EndNotice {
             User initiatorUser = userDao.findOne(initiator);
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(execution.getProcessDefinitionId()).singleResult();
-            Map<String, String> templateParams = new HashMap<>(5);
+            Map<String, Object> templateParams = new HashMap<>(5);
             templateParams.put("initiatorName", initiatorUser.getName());
             templateParams.put("processDefinitionName", processDefinition.getName());
             Map<String, Object> custom = new HashMap<>(0);
@@ -57,8 +57,7 @@ public class EndNoticeImpl implements EndNotice {
                 ? (String) execution.getVariable(endNoticeUserKey)
                 : "";
             String endNoticeCode = (String) execution.getVariable(END_NOTICE_CODE_KEY);
-            noticeSender.sendNotice("EndNotice", "BPM",
-                StringUtil.isEmpty(endNoticeCode) ? "EndCode" : endNoticeCode, custom,
+            noticeSender.sendNotice(StringUtil.isEmpty(endNoticeCode) ? "EndCode" : endNoticeCode, custom,
                 StringUtil.isEmpty(endNoticeUserId) ? initiator : endNoticeUserId, templateParams);
         } catch (Exception e) {
             LOGGER.error("endNoticeError", e);
