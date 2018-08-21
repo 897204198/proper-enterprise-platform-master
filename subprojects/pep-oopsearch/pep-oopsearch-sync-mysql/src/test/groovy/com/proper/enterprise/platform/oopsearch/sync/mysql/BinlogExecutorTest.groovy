@@ -21,7 +21,7 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.scheduling.quartz.SchedulerFactoryBean
 import org.springframework.test.context.jdbc.Sql
 
-class BinlogExecutorTest extends AbstractTest{
+class BinlogExecutorTest extends AbstractTest {
 
     @Autowired
     private MySQLMongoDataSync mongoDataSyncService
@@ -64,9 +64,8 @@ class BinlogExecutorTest extends AbstractTest{
     private String password = "testbinlog"
 
 
-
     @Test
-    void testEventDataFormatFail(){
+    void testEventDataFormatFail() {
         BinlogExecutor binlogThread = new BinlogExecutor(mongoDataSyncService, searchConfigService, nativeRepository, mongoTemplate,
             mongoSyncService, hostname, port, schema, username, password)
         binlogThread.executor()
@@ -110,7 +109,7 @@ class BinlogExecutorTest extends AbstractTest{
     }
 
     @Test
-    void testXid(){
+    void testXid() {
         BinlogExecutor binlogThread = new BinlogExecutor(mongoDataSyncService, searchConfigService, nativeRepository, mongoTemplate,
             mongoSyncService, hostname, port, schema, username, password)
         binlogThread.executor()
@@ -134,7 +133,7 @@ class BinlogExecutorTest extends AbstractTest{
     @Test
     @NoTx
     @Sql("/sql/oopsearch/sync/mysql/demoUserConfigData.sql")
-    void testInitTableObject(){
+    void testInitTableObject() {
         // 清除cachequery的缓存对象，避免通过@sql插入db的数据因为没有触发cache进行更新，而导致查询时出现脏读现象
         Cache queryCache = cacheManager.getCache("org.hibernate.cache.internal.StandardQueryCache")
         queryCache.clear()
@@ -167,7 +166,7 @@ class BinlogExecutorTest extends AbstractTest{
     @Test
     @NoTx
     @Sql("/sql/oopsearch/sync/mysql/demoUserConfigData.sql")
-    void testSync(){
+    void testSync() {
         // 清除cachequery的缓存对象，避免通过@sql插入db的数据因为没有触发cache进行更新，而导致查询时出现脏读现象
         Cache queryCache = cacheManager.getCache("org.hibernate.cache.internal.StandardQueryCache")
         queryCache.clear()
@@ -219,7 +218,7 @@ class BinlogExecutorTest extends AbstractTest{
         // mongo sync
 //        sleep(5000)
         List<SearchDocument> result = new ArrayList<>()
-        for(i in 1..20){
+        for (i in 1..20) {
             result = syncMongoRepository.findAll()
             if (result.size() > 0) {
                 break
@@ -237,7 +236,7 @@ class BinlogExecutorTest extends AbstractTest{
         data = new UpdateRowsEventData()
         List<Map.Entry<Serializable[], Serializable[]>> updateRows = new ArrayList<>()
         Serializable[] key = ["1", "001", "张一", 30, "001", "2018-01-01"]
-        Serializable[] value = ["1", "001", "张二", 30, "001", "2018-01-01"]
+        Serializable[] value = ["1", "001", null, 30, "001", "2018-01-01"]
         updateRows.add(new AbstractMap.SimpleEntry<Serializable[], Serializable[]>(key, value))
         data.setRows(updateRows)
         event = new Event(header, data)
@@ -250,10 +249,10 @@ class BinlogExecutorTest extends AbstractTest{
         // mongo sync
 //        sleep(5000)
         boolean hasUpdated = false
-        for(i in 1..20){
+        for (i in 1..20) {
             result = syncMongoRepository.findAll()
-            for (SearchDocument searchDocument:result){
-                if (searchDocument.getCon().equalsIgnoreCase("张二")) {
+            for (SearchDocument searchDocument : result) {
+                if (searchDocument.getCon() == null) {
                     hasUpdated = true
                 }
                 if (hasUpdated) {
@@ -287,7 +286,7 @@ class BinlogExecutorTest extends AbstractTest{
         }
         // mongo sync
 //        sleep(6000)
-        for(i in 1..20){
+        for (i in 1..20) {
             result = syncMongoRepository.findAll()
             if (result.size() == 0) {
                 break

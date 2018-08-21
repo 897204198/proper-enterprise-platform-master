@@ -230,7 +230,7 @@ public class BinlogExecutor {
             Object[] after = map.getValue();
             // 去mongo中查找before中对应的字段，更新成after，查找按完全匹配进行
             for (int i = 0; i < before.length; i++) {
-                if (!before[i].toString().equals(after[i].toString())) {
+                if (isChange(before[i], after[i])) {
                     // 前后值发生变动才通知服务进行mongo同步
                     String tableName = "";
                     String columnName = "";
@@ -246,8 +246,8 @@ public class BinlogExecutor {
                     } else {
                         for (SyncDocumentModel syncDocumentModel : modelList) {
                             // 根据tablename columnname确认doc对象,并更新content为update之后的值
-                            String columnContentBefore = before[i].toString();
-                            String columnContentAfter = after[i].toString();
+                            String columnContentBefore = null == before[i] ? null : before[i].toString();
+                            String columnContentAfter = null == after[i] ? null : after[i].toString();
                             syncDocumentModel.setCol(columnName);
                             syncDocumentModel.setTab(tableName);
                             syncDocumentModel.setConb(columnContentBefore);
@@ -261,6 +261,16 @@ public class BinlogExecutor {
                 }
             }
         }
+    }
+
+    private boolean isChange(Object before, Object after) {
+        if (null == before && null == after) {
+            return false;
+        }
+        if (null == before || null == after) {
+            return true;
+        }
+        return !before.toString().equals(after.toString());
     }
 
     private void doDeleteSync(EventData eventData, long pos) {
