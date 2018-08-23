@@ -2,10 +2,12 @@ package com.proper.enterprise.platform.workflow.test
 
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.security.Authentication
+import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
+import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO
 import org.flowable.engine.HistoryService
 import org.flowable.engine.IdentityService
@@ -62,6 +64,16 @@ abstract class WorkflowAbstractTest extends AbstractTest {
     protected List<PEPExtFormVO> buildPageTask(String taskId) {
         PEPWorkflowPageVO pages = JSONUtil.parse(get('/workflow/task/' + taskId + '/page', HttpStatus.OK).getResponse().getContentAsString(), PEPWorkflowPageVO.class)
         return pages.getForms()
+    }
+
+    protected PEPProcessDefinitionVO getLatest(String procDefKey) {
+        String req = get('/repository/process-definitions/' + procDefKey + '/latest',
+            HttpStatus.OK).getResponse().getContentAsString()
+        if (StringUtil.isEmpty(req)) {
+            return null
+        }
+        PEPProcessDefinitionVO processDefinitionVO = JSONUtil.parse(req, PEPProcessDefinitionVO.class)
+        return processDefinitionVO
     }
 
     boolean isEnded(String procInstId) {

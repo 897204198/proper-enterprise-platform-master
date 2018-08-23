@@ -2,22 +2,24 @@ package com.proper.enterprise.platform.workflow.vo;
 
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import org.flowable.engine.repository.ProcessDefinition;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
-import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 
 public class PEPProcessDefinitionVO {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(PEPModelVO.class);
-
     private String id;
     private String key;
+    private String name;
     private Integer version;
     private String deploymentId;
     private Date deploymentTime;
     private String startFormKey;
+    private Map<String, PEPPropertyVO> formProperties;
+
+    public PEPProcessDefinitionVO() {
+    }
 
     public PEPProcessDefinitionVO(ProcessDefinition processDefinition) {
         BeanUtils.copyProperties(processDefinition, this);
@@ -29,6 +31,14 @@ public class PEPProcessDefinitionVO {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getVersion() {
@@ -78,14 +88,16 @@ public class PEPProcessDefinitionVO {
         this.id = id;
     }
 
+    public Map<String, PEPPropertyVO> getFormProperties() {
+        return formProperties;
+    }
+
+    public void setFormProperties(Map<String, PEPPropertyVO> formProperties) {
+        this.formProperties = formProperties;
+    }
+
     @Override
     public String toString() {
-        String pepProcessDefinitionVOStr = "";
-        try {
-            pepProcessDefinitionVOStr = JSONUtil.toJSON(this);
-        } catch (IOException e) {
-            LOGGER.error("PEPProcessDefinitionVO error , vo is null", e);
-        }
-        return pepProcessDefinitionVOStr;
+        return JSONUtil.toJSONIgnoreException(this);
     }
 }

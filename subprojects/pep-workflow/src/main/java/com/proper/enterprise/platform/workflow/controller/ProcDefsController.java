@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.workflow.controller;
 
+import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.workflow.service.PEPProcDefsService;
+import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO;
 import org.flowable.app.util.XmlUtil;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
@@ -26,7 +28,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/repository/process-definitions/")
-public class ProcDefsController {
+public class ProcDefsController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("ProcDefsController");
 
@@ -82,6 +84,11 @@ public class ProcDefsController {
         responseHeaders.set("Content-Type", "image/png");
         return new ResponseEntity<>(pepProcDefsService.getProcessDefinitionDiagram(processDefinitionId),
             responseHeaders, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{procDefKey}/latest", method = RequestMethod.GET)
+    public ResponseEntity<PEPProcessDefinitionVO> getLatest(@PathVariable String procDefKey) {
+        return responseOfGet(pepProcDefsService.getLatest(procDefKey));
     }
 
 }

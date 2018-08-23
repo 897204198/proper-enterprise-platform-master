@@ -1,5 +1,7 @@
 package com.proper.enterprise.platform.workflow.service;
 
+import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO;
+
 import java.io.IOException;
 
 public interface PEPProcDefsService {
@@ -12,4 +14,12 @@ public interface PEPProcDefsService {
      * @throws IOException io异常
      */
     byte[] getProcessDefinitionDiagram(String processDefinitionId) throws IOException;
+
+    /**
+     * 根据流程定义Key 查找最新流程定义
+     *
+     * @param procDefKey 流程定义Key
+     * @return 最新流程定义VO
+     */
+    PEPProcessDefinitionVO getLatest(String procDefKey);
 }
