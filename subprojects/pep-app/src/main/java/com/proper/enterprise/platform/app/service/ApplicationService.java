@@ -6,7 +6,6 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ApplicationService extends BaseJpaService<ApplicationVO, String> {
     /**
@@ -106,14 +105,6 @@ public interface ApplicationService extends BaseJpaService<ApplicationVO, String
      * @return 所有应用信息
      */
     List<ApplicationVO> getApplications();
-
-    /**
-     * 获取应用的data
-     *
-     * @param data data
-     * @return map
-     */
-    Map<String, String> getDataMap(String data);
 
     /**
      * 获取应用（传参数根据参数取应用，不传获取所有）

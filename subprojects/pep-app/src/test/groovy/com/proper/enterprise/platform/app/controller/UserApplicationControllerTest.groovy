@@ -68,7 +68,8 @@ class UserApplicationControllerTest extends AbstractTest {
     @Test
     void test(){
         List<ApplicationVO> applicationVOList =  userApplicationService.findDefaultApplication()
-        assert applicationVOList.get(0).getData().get("url").equals("http://192.168.1.111/icmp/desktop/#/customframe/exam-list")    }
+        assert applicationVOList.get(0).getData().get("url").equals("http://192.168.1.111/icmp/desktop/#/customframe/exam-list")
+    }
 
     @Before
     void init() {
@@ -92,7 +93,9 @@ class UserApplicationControllerTest extends AbstractTest {
         appDoc1.setName("问卷调查")
         appDoc1.setIcon("./assets/images/application.png")
         appDoc1.setPage("examList")
-        appDoc1.setData("{'url': 'http://192.168.1.111/icmp/desktop/#/customframe/exam-list'}")
+        Map<String, String> mapStr = new HashMap<>()
+        mapStr.put("url", "http://192.168.1.111/icmp/desktop/#/customframe/exam-list")
+        appDoc1.setData(mapStr)
         appDoc1.setDefaultValue(true)
         applicationRepo.save(appDoc1)
 
@@ -101,7 +104,9 @@ class UserApplicationControllerTest extends AbstractTest {
         appDoc2.setName("调查调查")
         appDoc2.setIcon("./assets/images/application.png")
         appDoc2.setPage("examList")
-        appDoc2.setData("121")
+        Map<String, String> map = new HashMap<>()
+        map.put("questionnaireNo", "qnnre1")
+        appDoc2.setData(map)
         applicationRepo.save(appDoc2)
 
         UserApplicationEntity userApplicationDocument = new UserApplicationEntity()

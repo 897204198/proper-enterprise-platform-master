@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.app.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.proper.enterprise.platform.app.entity.AppCatalogEntity;
 import com.proper.enterprise.platform.app.entity.ApplicationEntity;
 import com.proper.enterprise.platform.app.repository.AppCatalogRepository;
@@ -11,10 +10,7 @@ import com.proper.enterprise.platform.app.vo.ApplicationVO;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
-import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,8 +18,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class ApplicationServiceImpl extends AbstractJpaServiceSupport<ApplicationVO, ApplicationRepository, String>
@@ -31,7 +28,6 @@ public class ApplicationServiceImpl extends AbstractJpaServiceSupport<Applicatio
 
     private AppCatalogRepository appCatalogRepository;
     private ApplicationRepository applicationRepository;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationServiceImpl.class);
 
     @Autowired
     public ApplicationServiceImpl(AppCatalogRepository appCatalogRepository, ApplicationRepository applicationRepository) {
@@ -47,11 +43,9 @@ public class ApplicationServiceImpl extends AbstractJpaServiceSupport<Applicatio
     @Override
     public ApplicationVO updateApplication(String appId, ApplicationVO applicationVO) {
         applicationVO.setId(appId);
-        Map map = applicationVO.getData();
         ApplicationEntity applicationEntity = new ApplicationEntity();
         BeanUtils.copyProperties(applicationVO, applicationEntity);
         BeanUtils.copyProperties(applicationRepository.updateForSelective(applicationEntity), applicationVO);
-        applicationVO.setData(map);
         return applicationVO;
     }
 
@@ -85,9 +79,6 @@ public class ApplicationServiceImpl extends AbstractJpaServiceSupport<Applicatio
             throw new ErrMsgException("Could not find application by " + appId);
         });
         BeanUtils.copyProperties(applicationEntity, applicationVO);
-        String data = applicationEntity.getData();
-        Map<String, String> map = getDataMap(data);
-        applicationVO.setData(map);
         return applicationVO;
     }
 
@@ -98,9 +89,6 @@ public class ApplicationServiceImpl extends AbstractJpaServiceSupport<Applicatio
         for (ApplicationEntity applicationEntity : applicationEntities) {
             ApplicationVO application = new ApplicationVO();
             BeanUtils.copyProperties(applicationEntity, application);
-            String data = applicationEntity.getData();
-            Map<String, String> map = getDataMap(data);
-            application.setData(map);
             applicationVOS.add(application);
         }
         return applicationVOS;
@@ -113,9 +101,6 @@ public class ApplicationServiceImpl extends AbstractJpaServiceSupport<Applicatio
         for (ApplicationEntity applicationEntity : page.getContent()) {
             ApplicationVO application = new ApplicationVO();
             BeanUtils.copyProperties(applicationEntity, application);
-            String data = applicationEntity.getData();
-            Map<String, String> map = getDataMap(data);
-            application.setData(map);
             applicationVOS.add(application);
         }
         Page<ApplicationVO> pageVO = new PageImpl<>(applicationVOS, this.getPageRequest(), page.getTotalElements());
@@ -186,23 +171,4 @@ public class ApplicationServiceImpl extends AbstractJpaServiceSupport<Applicatio
         }
         return applicationVOS;
     }
-
-    @Override
-    public Map<String, String> getDataMap(String data) {
-        Map<String, String> map = new HashMap<>(16);
-        if (StringUtil.isNotBlank(data)) {
-            try {
-                JsonNode node = JSONUtil.parse(data, JsonNode.class);
-                Iterator<Map.Entry<String, JsonNode>> iterator = node.fields();
-                while (iterator.hasNext()) {
-                    Map.Entry<String, JsonNode> entry = iterator.next();
-                    map.put(entry.getKey(), entry.getValue().textValue());
-                }
-            } catch (IOException e) {
-                LOGGER.warn("Data of json parse exception! data is " + data, e);
-            }
-        }
-        return map;
-    }
-
 }

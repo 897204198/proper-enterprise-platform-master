@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.core.jpa.repository.mock.entity
 
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.jpa.converter.AESStringConverter
+import com.proper.enterprise.platform.core.jpa.converter.MapJsonStringConverter
 import org.hibernate.annotations.GenericGenerator
 
 import javax.persistence.Convert
@@ -29,5 +30,8 @@ public class MockEntity {
 
     @Convert(converter = AESStringConverter.class)
     String attr1;
+
+    @Convert(converter = MapJsonStringConverter.class)
+    Map<String, String> attr2;
 
 }

@@ -1,11 +1,14 @@
 package com.proper.enterprise.platform.app.entity;
 
+import com.proper.enterprise.platform.core.jpa.converter.MapJsonStringConverter;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Map;
 
 @Entity
 @Table(name = "PEP_APP_APPLICATIONS")
@@ -35,7 +38,8 @@ public class ApplicationEntity extends BaseEntity implements Serializable {
      * 应用页面初始化参数
      */
     @Column
-    private String data;
+    @Convert(converter = MapJsonStringConverter.class)
+    private Map<String, String> data;
     /**
      * 应用类别编码
      */
@@ -77,12 +81,12 @@ public class ApplicationEntity extends BaseEntity implements Serializable {
         this.style = style;
     }
 
-    public String getData() {
-        return data;
+    public void setData(Map data) {
+        this.data = data;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public Map getData() {
+        return data;
     }
 
     public String getCode() {
