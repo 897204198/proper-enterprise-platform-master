@@ -34,4 +34,18 @@
             <column name="URL" value="/admin/app/applications"/>
         </insert>
     </changeSet>
+    <changeSet author="wyiyi" id="pep-oopsearch-config-update201808231103001">
+        <update tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="TABLE_NAME" value="pep_app_applications"/>
+            <where>
+                ID='081514072018'
+            </where>
+        </update>
+        <update tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="TABLE_NAME" value="pep_app_applications"/>
+            <where>
+                ID='081514182018'
+            </where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

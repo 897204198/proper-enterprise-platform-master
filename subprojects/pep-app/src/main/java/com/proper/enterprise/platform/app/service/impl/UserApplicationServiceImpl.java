@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserApplicationServiceImpl implements UserApplicationService {
@@ -60,9 +59,6 @@ public class UserApplicationServiceImpl implements UserApplicationService {
         for (ApplicationEntity applicationEntity : applications) {
             ApplicationVO applicationVO = new ApplicationVO();
             BeanUtils.copyProperties(applicationEntity, applicationVO);
-            String data = applicationEntity.getData();
-            Map<String, String> map = applicationService.getDataMap(data);
-            applicationVO.setData(map);
             list.add(applicationVO);
         }
         return list;
