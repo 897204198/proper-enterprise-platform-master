@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.workflow.service.impl;
 
+import com.proper.enterprise.platform.workflow.model.PEPProcessDefinition;
 import com.proper.enterprise.platform.workflow.service.PEPProcDefsService;
+import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO;
 import org.apache.commons.io.IOUtils;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.ProcessDefinition;
@@ -31,5 +33,18 @@ public class PEPProcDefsServiceImpl implements PEPProcDefsService {
         InputStream inputStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(),
             processDefinition.getDiagramResourceName());
         return IOUtils.toByteArray(inputStream);
+    }
+
+    @Override
+    public PEPProcessDefinitionVO getLatest(String procDefKey) {
+        ProcessDefinition processDefinition = repositoryService
+            .createProcessDefinitionQuery()
+            .processDefinitionKey(procDefKey)
+            .latestVersion()
+            .singleResult();
+        if (null == processDefinition) {
+            return null;
+        }
+        return new PEPProcessDefinition(processDefinition).convert();
     }
 }
