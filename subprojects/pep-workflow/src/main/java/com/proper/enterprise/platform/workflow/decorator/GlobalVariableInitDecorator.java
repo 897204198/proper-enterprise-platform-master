@@ -12,10 +12,7 @@ import org.flowable.bpmn.model.ValuedDataObject;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.ProcessDefinition;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GlobalVariableInitDecorator implements GlobalVariableInitHandler {
 
@@ -48,6 +45,7 @@ public class GlobalVariableInitDecorator implements GlobalVariableInitHandler {
 
     private Map<String, Object> setDefaultVariables(Map<String, Object> globalVariables, ProcessDefinition processDefinition) {
         globalVariables = setStartUserName(globalVariables);
+        globalVariables = setDefNoSameAssigneeSkipMark(globalVariables);
         return setProcessDefinition(globalVariables, processDefinition);
     }
 
@@ -68,6 +66,11 @@ public class GlobalVariableInitDecorator implements GlobalVariableInitHandler {
                 globalVariables.put(WorkFlowConstants.INITIATOR_NAME, user.getName());
             }
         }
+        return globalVariables;
+    }
+
+    private Map<String, Object> setDefNoSameAssigneeSkipMark(Map<String, Object> globalVariables) {
+        globalVariables.put(WorkFlowConstants.NO_SAME_ASSIGNEE_SKIP_REMARK, new HashSet<>());
         return globalVariables;
     }
 }

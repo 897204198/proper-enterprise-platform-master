@@ -299,7 +299,7 @@ public class PEPTask {
         Set<String> noSameAssigneeSkipActIds = (Set<String>) this.getForm()
             .getGlobalData()
             .get(WorkFlowConstants.NO_SAME_ASSIGNEE_SKIP_REMARK);
-        if (CollectionUtil.isEmpty(noSameAssigneeSkipActIds)) {
+        if (null == noSameAssigneeSkipActIds) {
             this.sameAssigneeSkip = false;
             return this.sameAssigneeSkip;
         }
