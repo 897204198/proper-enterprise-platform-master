@@ -25,6 +25,10 @@ public class MySQLFullSyncMongoManager implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         // 初始同步mysql数据到mongodb中
-        mySQLMongoDataSync.fullSynchronization();
+        try {
+            mySQLMongoDataSync.fullSynchronization();
+        } catch (Exception e) {
+            LOGGER.warn("oopsearch sync error", e);
+        }
     }
 }
