@@ -20,7 +20,7 @@ public abstract class AbstractWorkFlowNoticeSupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractWorkFlowNoticeSupport.class);
 
-    public static final String TASK_PAGE_URL = "#/webapp/workflowMainPop?param=";
+    public static final String TASK_PAGE_URL = "#/webapp/workflow/workflowMainPop?param=";
 
     public static final String TASK_ASSIGNEE_NOTICE_CODE_KEY = "taskAssigneeNoticeCode";
 
