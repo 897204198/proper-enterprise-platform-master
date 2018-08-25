@@ -168,7 +168,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             .includeProcessVariables()
             .taskAssignee(Authentication.getCurrentUserId())
             .finished()
-            .orderByTaskCreateTime()
+            .orderByHistoricTaskInstanceEndTime()
             .desc();
         if (StringUtil.isNotEmpty(processDefinitionName)) {
             historicTaskInstanceQuery.processDefinitionName(processDefinitionName);
