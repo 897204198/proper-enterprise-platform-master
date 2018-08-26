@@ -73,9 +73,12 @@ public class ApplicationServiceImpl extends AbstractJpaServiceSupport<Applicatio
 
     @Override
     public ApplicationVO getApplication(String appId) {
-        ApplicationVO applicationVO = new ApplicationVO();
+        ApplicationVO applicationVO = null;
         ApplicationEntity applicationEntity = applicationRepository.findOne(appId);
-        BeanUtils.copyProperties(applicationEntity, applicationVO);
+        if (applicationEntity != null) {
+            applicationVO = new ApplicationVO();
+            BeanUtils.copyProperties(applicationEntity, applicationVO);
+        }
         return applicationVO;
     }
 
