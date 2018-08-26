@@ -85,12 +85,13 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         }
         globalVariables = addNoSameAssigneeSkipMark(task, globalVariables);
         globalVariables.putAll(variables);
-        String formKey = task.getFormKey();
+        String formKey = StringUtil.isEmpty(task.getFormKey())
+            ? (String) globalVariables.get(WorkFlowConstants.START_FORM_KEY)
+            : task.getFormKey();
         if (StringUtil.isNotEmpty(formKey)) {
             globalVariables.put(formKey, variables);
         }
         globalVariables = GlobalVariableUtil.setGlobalVariable(globalVariables, variables, globalVariableKeys);
-
         if (null == task.getAssignee()) {
             taskService.claim(taskId, Authentication.getCurrentUserId());
         }

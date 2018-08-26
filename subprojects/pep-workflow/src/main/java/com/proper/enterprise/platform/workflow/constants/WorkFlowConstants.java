@@ -43,9 +43,14 @@ public class WorkFlowConstants {
     public static final String SKIP_EXPRESSION_ENABLED = "_FLOWABLE_SKIP_EXPRESSION_ENABLED";
 
     /**
-     * 流程启动表单key
+     * 流程启动表单data
      */
     public static final String START_FORM_DATA = "start_form_data";
+
+    /**
+     * 流程启动表单key
+     */
+    public static final String START_FORM_KEY = "start_form_key";
 
     /**
      * 审核结果key

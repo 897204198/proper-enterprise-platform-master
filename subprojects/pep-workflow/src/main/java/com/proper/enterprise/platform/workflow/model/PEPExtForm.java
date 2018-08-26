@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
+import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
@@ -22,7 +23,9 @@ public class PEPExtForm implements PEPForm {
 
 
     public PEPExtForm(Task task) {
-        this.formKey = task.getFormKey();
+        this.formKey = StringUtil.isEmpty(task.getFormKey())
+            ? (String) task.getProcessVariables().get(WorkFlowConstants.START_FORM_KEY)
+            : task.getFormKey();
         this.formData = buildFormData(task.getProcessVariables());
         this.globalData = task.getProcessVariables();
         this.showType = ShowType.EDIT;
@@ -30,14 +33,19 @@ public class PEPExtForm implements PEPForm {
     }
 
     public PEPExtForm(HistoricTaskInstance historicTaskInstance) {
-        this.formKey = historicTaskInstance.getFormKey();
+        this.formKey = StringUtil.isEmpty(historicTaskInstance.getFormKey())
+            ? (String) historicTaskInstance.getProcessVariables().get(WorkFlowConstants.START_FORM_KEY)
+            : historicTaskInstance.getFormKey();
         this.formData = historicTaskInstance.getTaskLocalVariables();
         this.globalData = historicTaskInstance.getProcessVariables();
         this.showType = ShowType.SHOW;
     }
 
     public PEPExtForm(String formKey, Map<String, Object> formData) {
-        this.formKey = formKey;
+        String startFormKey = null == formData ? null : (String) formData.get(WorkFlowConstants.START_FORM_KEY);
+        this.formKey = StringUtil.isEmpty(formKey)
+            ? startFormKey
+            : formKey;
         this.formData = formData;
     }
 

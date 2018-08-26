@@ -95,6 +95,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
             globalVariables.putAll(variables);
         }
         if (StringUtil.isNotEmpty(startFormKey)) {
+            globalVariables.put(WorkFlowConstants.START_FORM_KEY, startFormKey);
             globalVariables.put(startFormKey, variables);
             globalVariables.put(WorkFlowConstants.START_FORM_DATA, variables);
         }
