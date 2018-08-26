@@ -8,7 +8,6 @@ import com.proper.enterprise.platform.app.service.ApplicationService;
 import com.proper.enterprise.platform.app.vo.AppCatalogVO;
 import com.proper.enterprise.platform.app.vo.ApplicationVO;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.BeanUtils;
@@ -74,11 +73,12 @@ public class ApplicationServiceImpl extends AbstractJpaServiceSupport<Applicatio
 
     @Override
     public ApplicationVO getApplication(String appId) {
-        ApplicationVO applicationVO = new ApplicationVO();
-        ApplicationEntity applicationEntity = applicationRepository.findById(appId).<ErrMsgException>orElseThrow(() -> {
-            throw new ErrMsgException("Could not find application by " + appId);
-        });
-        BeanUtils.copyProperties(applicationEntity, applicationVO);
+        ApplicationVO applicationVO = null;
+        ApplicationEntity applicationEntity = applicationRepository.findById(appId).orElse(null);
+        if (applicationEntity != null) {
+            applicationVO = new ApplicationVO();
+            BeanUtils.copyProperties(applicationEntity, applicationVO);
+        }
         return applicationVO;
     }
 
