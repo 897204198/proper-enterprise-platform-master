@@ -8,8 +8,11 @@ import com.proper.enterprise.platform.app.service.ApplicationService;
 import com.proper.enterprise.platform.app.vo.AppCatalogVO;
 import com.proper.enterprise.platform.app.vo.ApplicationVO;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,11 +30,13 @@ public class ApplicationServiceImpl extends AbstractJpaServiceSupport<Applicatio
 
     private AppCatalogRepository appCatalogRepository;
     private ApplicationRepository applicationRepository;
+    private I18NService i18NService;
 
     @Autowired
-    public ApplicationServiceImpl(AppCatalogRepository appCatalogRepository, ApplicationRepository applicationRepository) {
+    public ApplicationServiceImpl(AppCatalogRepository appCatalogRepository, ApplicationRepository applicationRepository, I18NService i18NService) {
         this.appCatalogRepository = appCatalogRepository;
         this.applicationRepository = applicationRepository;
+        this.i18NService = i18NService;
     }
 
     @Override
@@ -157,7 +162,12 @@ public class ApplicationServiceImpl extends AbstractJpaServiceSupport<Applicatio
 
     @Override
     public void deleteByCode(String code) {
-        appCatalogRepository.deleteByCode(code);
+        List<ApplicationEntity> list = applicationRepository.findAllByCode(code);
+        if (CollectionUtil.isEmpty(list)) {
+            appCatalogRepository.deleteByCode(code);
+        } else {
+            throw new ErrMsgException(i18NService.getMessage("pep.app.application.delete.catalog"));
+        }
     }
 
     @Override
