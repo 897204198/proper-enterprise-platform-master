@@ -200,6 +200,21 @@ class MenusControllerTest extends AbstractTest {
 
         menusService.updateEnable(collection, true)
         assert collection.size() == 2
+        MenuEntity menuEntity3 = new MenuEntity()
+        menuEntity3.setName("test_name3")
+        menuEntity3.setEnable(true)
+        menuEntity3.setIcon('test_icon1')
+        menuEntity3.setSequenceNumber(52)
+        menuEntity3.setRoute("/bbc/b")
+        menuEntity3.setParent(menuEntity2)
+        menuEntity3 = menuRepository.save(menuEntity3)
+        List menus = JSONUtil.parse(get("/auth/menus", HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        Integer menuSize = menus.size()
+        Collection<String> disableCollection = new HashSet<>()
+        disableCollection.add(menuEntity2.getId())
+        menusService.updateEnable(disableCollection, false)
+        List menus2 = JSONUtil.parse(get("/auth/menus", HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert menus2.size() + 1 == menuSize
     }
 
     @Test
