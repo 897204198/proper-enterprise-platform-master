@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.app.vo.AppCatalogVO
 import com.proper.enterprise.platform.app.vo.ApplicationVO
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
+import com.proper.enterprise.platform.sys.i18n.I18NService
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +20,9 @@ class ApplicationControllerTest extends AbstractTest {
 
     @Autowired
     ApplicationRepository applicationRepo
+
+    @Autowired
+    I18NService i18NService
 
     def prefix = '/admin/app/applications'
 
@@ -63,6 +67,20 @@ class ApplicationControllerTest extends AbstractTest {
         List<AppCatalogVO> deleteList = resOfGet(url1, HttpStatus.OK)
         assert deleteList.size() == 2
         assert deleteList.get(0).code == "testCategory"
+
+        AppCatalogEntity appCata = new AppCatalogEntity()
+        appCata.setId("cata")
+        appCata.setTypeName("mac地址绑定")
+        appCata.setCode("mac")
+        appCatalogRepo.save(appCata)
+        ApplicationEntity application = new ApplicationEntity()
+        application.setId("1111")
+        application.setCode("mac")
+        application.setName("mac地址")
+        application.setPage("examList2")
+        applicationRepo.save(application)
+        deleteAndReturn("/admin/app/applications/catalogs", appCata.code, HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString() ==
+                i18NService.getMessage("pep.app.application.delete.catalog")
     }
 
     @Test
