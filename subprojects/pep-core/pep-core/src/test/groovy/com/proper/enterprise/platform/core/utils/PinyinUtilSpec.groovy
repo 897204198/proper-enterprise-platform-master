@@ -19,6 +19,7 @@ class PinyinUtilSpec extends Specification {
         '好似'       | 'haosi'
         '似的'       | 'side'
         '混1a搭'     | 'hun1ada'
+        '绿'         | 'lv'
     }
 
 }
