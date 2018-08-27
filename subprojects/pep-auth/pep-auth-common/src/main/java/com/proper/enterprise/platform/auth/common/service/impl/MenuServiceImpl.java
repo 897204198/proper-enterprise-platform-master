@@ -145,7 +145,11 @@ public class MenuServiceImpl implements MenuService {
 
     private Set<Menu> recursionMenu(Menu menu, Set<Menu> menus, EnableEnum enableEnum) {
         menus.add(menu);
-        Boolean isHaveParent = menu.getParent() != null;
+        Boolean isHaveParent = menu.getParent() != null && (
+            EnableEnum.ALL == enableEnum
+                || EnableEnum.ENABLE == enableEnum && menu.getParent().getEnable()
+                || EnableEnum.DISABLE == enableEnum && !menu.getParent().getEnable()
+        );
         Boolean isEnable = EnableEnum.ALL == enableEnum
             || EnableEnum.ENABLE == enableEnum && menu.getEnable()
             || EnableEnum.DISABLE == enableEnum && !menu.getEnable();

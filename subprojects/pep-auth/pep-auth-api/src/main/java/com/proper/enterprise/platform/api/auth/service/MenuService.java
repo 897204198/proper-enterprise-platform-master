@@ -58,7 +58,7 @@ public interface MenuService {
      * @param route 菜单路径
      * @param enable 是否可用
      * @param parentId 上级菜单id
-     * @return 菜单结婚
+     * @return 菜单集合
      */
     Collection<? extends Menu> getMenus(String name, String description, String route, EnableEnum enable, String parentId);
 
