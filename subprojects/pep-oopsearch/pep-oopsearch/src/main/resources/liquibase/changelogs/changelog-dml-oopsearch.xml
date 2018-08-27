@@ -408,4 +408,14 @@
             <column name="URL" value="/oopsearch/config"/>
         </insert>
     </changeSet>
+    <changeSet id="201808271052-1" author="fm">
+        <update tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="COLUMN_DESC" value="前端路径"/>
+            <where>id='008'</where>
+        </update>
+        <update tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="COLUMN_DESC" value="功能描述"/>
+            <where>id='007'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
