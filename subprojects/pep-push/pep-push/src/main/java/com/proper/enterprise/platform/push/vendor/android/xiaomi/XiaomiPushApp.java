@@ -53,18 +53,10 @@ public class XiaomiPushApp extends BasePushApp {
         }
     }
 
-    /**
-     * 推送一条消息
-     *
-     * @return
-     */
-    public boolean pushOneMsg(PushMsgEntity msg, int notifyId) {
-        LOGGER.info("xiaomi push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(), msg.getId(),
-            JSONUtil.toJSONIgnoreException(msg));
-
-        boolean result = false;
-
-        Message.Builder msgBuilder = new Message.Builder().title(msg.getMtitle()).description(msg.getMcontent())
+    boolean pushOneMsg(PushMsgEntity msg, int notifyId) {
+        Message.Builder msgBuilder = new Message.Builder()
+            .title(msg.getMtitle())
+            .description(msg.getMcontent())
             .restrictedPackageName(theAppPackage)
             // 使用默认提示音提示
             .notifyType(1)
@@ -81,10 +73,9 @@ public class XiaomiPushApp extends BasePushApp {
                 // 系统消息类型：设置角标
                 newCustomMap.put("_proper_mpage", "badge");
                 // 需要手机端自己生成一个notification通知
-                //因为在小米手机的设置角标接口里，角标接口是与通知栏消息绑定在一起的，需要程序自己发送notification,并带上角标数
+                // 因为在小米手机的设置角标接口里，角标接口是与通知栏消息绑定在一起的，需要程序自己发送notification,并带上角标数
                 newCustomMap.put("_proper_badge_type", "notification");
                 newCustomMap.remove("uri");
-                // 更新mcustoms
                 msg.setMcustomDatasMap(newCustomMap);
             } else {
                 // 消息使用通知栏
@@ -92,23 +83,21 @@ public class XiaomiPushApp extends BasePushApp {
             }
         }
 
-        String mcustoms = msg.getMcustoms();
-        msgBuilder.payload(mcustoms);
+        msgBuilder.payload(msg.getMcustoms());
         Message toMsg = msgBuilder.build();
+
+        boolean result;
         try {
-
             result = doSendMsg(msg, toMsg);
-
         } catch (Exception e) {
-            LOGGER.error("error xiaomi push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(), msg.getId(),
-                JSONUtil.toJSONIgnoreException(msg), e);
+            LOGGER.error("Error occurs when 1st time push to xiaomi " + msg.getId(), e);
             try {
                 close();
+                LOGGER.debug("Try to send {} to xiaomi push 2nd time", msg.getId());
                 result = doSendMsg(msg, toMsg);
             } catch (Exception ex) {
-                LOGGER.error("error xiaomi push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(), msg.getId(),
-                    JSONUtil.toJSONIgnoreException(msg), ex);
-                // 第二次发送失败才真的发送失败
+                LOGGER.error("Error occurs when 2nd time push to xiaomi " + msg.getId(), ex);
+                // 第二次发送失败才真的发送失败 TODO why?
                 result = false;
             }
         }
@@ -116,36 +105,32 @@ public class XiaomiPushApp extends BasePushApp {
     }
 
     private boolean doSendMsg(PushMsgEntity msg, Message toMsg) throws IOException, ParseException {
-        boolean result = false;
         String pushToken = msg.getDevice().getPushToken();
         msg.setPushToken(pushToken);
-        // 接口调用
-        if (isReallySendMsg()) {
-            com.xiaomi.xmpush.server.Result rsp = getClient().send(toMsg, pushToken, 1);
-            // 有错误返回
-            if (rsp.getErrorCode() == ErrorCode.Success) {
-                LOGGER.info("success xiaomi push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(), msg.getId(),
-                    JSONUtil.toJSONIgnoreException(msg));
-                result = true;
-            } else {
-                LOGGER.info("error xiaomi push log step6 content:{},pushId:{},msg:{},rsp:{}", msg.getMcontent(), msg.getId(),
-                    JSONUtil.toJSONIgnoreException(msg), rsp);
-                // 发送消息失败
-                result = false;
-            }
-            LOGGER.info("Response：{}", rsp);
-            msg.setMresponse(JSONUtil.toJSON(rsp));
-        } else {
-            LOGGER.info("Push a notice to Xiaomi push server with pushToken:{} ", pushToken);
+
+        LOGGER.debug("Prepare to send msg to xiaomi push: {}:{} with token {}", msg.getId(), msg.getMcontent(), pushToken);
+
+        if (!isReallySendMsg()) {
+            LOGGER.debug("Pretend to push a notice({}) to Xiaomi push server... and then success.", msg.getId());
+            return true;
         }
 
+        com.xiaomi.xmpush.server.Result rsp = getClient().send(toMsg, pushToken, 1);
+        msg.setMresponse(JSONUtil.toJSON(rsp));
 
-        return result;
+        if (rsp.getErrorCode() == ErrorCode.Success) {
+            LOGGER.debug("success xiaomi push log step6 pushId:{}, rsp:{}", msg.getId(), JSONUtil.toJSONIgnoreException(rsp));
+            return true;
+        } else {
+            LOGGER.error("error xiaomi push log step6 pushId:{}, rsp:{}", msg.getId(), JSONUtil.toJSONIgnoreException(rsp));
+            return false;
+        }
     }
 
-    public void close() {
+    private void close() {
         if (client != null) {
             client = null;
         }
     }
+
 }
