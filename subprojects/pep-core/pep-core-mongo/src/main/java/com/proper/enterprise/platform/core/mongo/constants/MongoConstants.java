@@ -1,8 +1,8 @@
-package com.proper.enterprise.platform.constants;
+package com.proper.enterprise.platform.core.mongo.constants;
 
-public final class AvBackConstants {
+public final class MongoConstants {
 
-    private AvBackConstants() {
+    private MongoConstants() {
     }
 
     public static final String CREATE_TIME = "CT";
