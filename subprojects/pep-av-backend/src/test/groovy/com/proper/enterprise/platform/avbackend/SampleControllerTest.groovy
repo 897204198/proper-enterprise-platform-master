@@ -3,8 +3,8 @@ package com.proper.enterprise.platform.avbackend
 import com.proper.enterprise.platform.avbackend.model.CountReturnModel
 import com.proper.enterprise.platform.avbackend.model.CreateReturnModel
 import com.proper.enterprise.platform.avbackend.model.QueryReturnModel
-import com.proper.enterprise.platform.constants.AvBackConstants
 import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.mongo.constants.MongoConstants
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.core.utils.StringUtil
@@ -52,8 +52,8 @@ class SampleControllerTest extends AbstractTest {
         document['enable'] = false
         QueryReturnModel queryReturnOldModel = queryDocument(collectionName, null)
         List<Map> listOld = queryReturnOldModel.getResults()
-        String oldModifyTime = listOld.get(0).get(AvBackConstants.LAST_MODIFY_TIME)
-        assert "test1" == listOld.get(0).get(AvBackConstants.CREATE_USER_ID)
+        String oldModifyTime = listOld.get(0).get(MongoConstants.LAST_MODIFY_TIME)
+        assert "test1" == listOld.get(0).get(MongoConstants.CREATE_USER_ID)
         mockUser("test2")
         Authentication.setCurrentUserId("test2")
         Thread.sleep(1000)
@@ -63,8 +63,8 @@ class SampleControllerTest extends AbstractTest {
         assert list.get(0).get("name") == 'test1'
         assert list.get(0).get("enable") == false
         assert DateUtil.toDate(oldModifyTime, PEPConstants.DEFAULT_DATETIME_FORMAT).getTime() <
-            DateUtil.toDate(list.get(0).get(AvBackConstants.LAST_MODIFY_TIME).toString(), PEPConstants.DEFAULT_DATETIME_FORMAT).getTime()
-        assert "test2" == list.get(0).get(AvBackConstants.LAST_MODIFY_USER_ID)
+            DateUtil.toDate(list.get(0).get(MongoConstants.LAST_MODIFY_TIME).toString(), PEPConstants.DEFAULT_DATETIME_FORMAT).getTime()
+        assert "test2" == list.get(0).get(MongoConstants.LAST_MODIFY_USER_ID)
         deleteDocument(collectionName, returnModel.getObjectId())
     }
 

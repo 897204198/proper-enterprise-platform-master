@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import com.proper.enterprise.platform.api.service.MongoDataBaseService;
-import com.proper.enterprise.platform.constants.AvBackConstants;
+import com.proper.enterprise.platform.core.mongo.constants.MongoConstants;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import org.bson.Document;
@@ -104,18 +104,18 @@ public class SampleController {
     private Map<String, Object> doPut(JsonNode root, String collection, String objectId, String url) throws Exception {
         // TODO delete 返回个空 map 能说通，put 也返回空 map？
         ObjectNode node = root.deepCopy();
-        node.put(AvBackConstants.LAST_MODIFY_TIME, DateUtil.getTimestamp());
-        node.put(AvBackConstants.LAST_MODIFY_USER_ID, Authentication.getCurrentUserId());
+        node.put(MongoConstants.LAST_MODIFY_TIME, DateUtil.getTimestamp());
+        node.put(MongoConstants.LAST_MODIFY_USER_ID, Authentication.getCurrentUserId());
         mongoDBService.updateById(node, collection, objectId);
         return new HashMap<String, Object>(5);
     }
 
     private Map<String, Object> doCreate(JsonNode root, String collection) throws Exception {
         ObjectNode node = root.deepCopy();
-        node.put(AvBackConstants.CREATE_TIME, DateUtil.getTimestamp());
-        node.put(AvBackConstants.LAST_MODIFY_TIME, DateUtil.getTimestamp());
-        node.put(AvBackConstants.CREATE_USER_ID, Authentication.getCurrentUserId());
-        node.put(AvBackConstants.LAST_MODIFY_USER_ID, Authentication.getCurrentUserId());
+        node.put(MongoConstants.CREATE_TIME, DateUtil.getTimestamp());
+        node.put(MongoConstants.LAST_MODIFY_TIME, DateUtil.getTimestamp());
+        node.put(MongoConstants.CREATE_USER_ID, Authentication.getCurrentUserId());
+        node.put(MongoConstants.LAST_MODIFY_USER_ID, Authentication.getCurrentUserId());
 
         Document doc = mongoDBService.insertOne(node, collection);
         Map<String, Object> result = new HashMap<String, Object>(3);
