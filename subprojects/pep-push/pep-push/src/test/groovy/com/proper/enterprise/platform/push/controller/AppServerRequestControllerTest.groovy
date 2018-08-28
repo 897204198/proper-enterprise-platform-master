@@ -159,7 +159,6 @@ class AppServerRequestControllerTest extends PushAbstractTest {
         msgRepository.findAll().each {
             assert it.getMstatus() == PushMsgStatus.UNSEND
         }
-
     }
 
     @Test
