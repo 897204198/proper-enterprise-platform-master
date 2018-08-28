@@ -9,14 +9,15 @@ import com.proper.enterprise.platform.push.entity.PushMsgStatisticEntity;
 import com.proper.enterprise.platform.push.repository.PushMsgStatisticRepository;
 import com.proper.enterprise.platform.push.service.PushMsgStatisticService;
 import com.proper.enterprise.platform.push.vo.PushMsgStatisticVO;
+import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
+import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushMsgStatistic, PushMsgStatisticRepository, String>
@@ -25,6 +26,8 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
     private static final Logger LOGGER = LoggerFactory.getLogger(PushMsgStatisticServiceImpl.class);
     @Autowired
     private PushMsgStatisticRepository pushMsgStatisticRepository;
+    @Autowired
+    DataDicService dataDicService;
 
     public PushMsgStatisticRepository getRepository() {
         return pushMsgStatisticRepository;
@@ -84,7 +87,8 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             List result = pushMsgStatisticRepository.findByAppkeyAndMsendedDateAfterOrderByMsendedDate(appkey, dateStr);
             toEntity(result, list);
         }
-        return list;
+        List<PushMsgStatisticVO> pushList = supplement(list);
+        return pushList;
     }
 
     public List<PushMsgStatisticVO> findPushStatisticByWeek(String appkey) {
@@ -99,7 +103,8 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             List result = pushMsgStatisticRepository.findByAppkeyAndMsendedDateAfterGroupByWeekOfYear(appkey, dateStr);
             toEntity(result, list);
         }
-        return list;
+        List<PushMsgStatisticVO> pushList = supplement(list);
+        return pushList;
     }
 
     public List<PushMsgStatisticVO> findPushStatisticByMonth(String appkey) {
@@ -112,7 +117,8 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             List result = pushMsgStatisticRepository.findByAppkeyAndMsendedDateAfterGroupByMonthOfYear(appkey, dateStr);
             toEntity(result, list);
         }
-        return list;
+        List<PushMsgStatisticVO> pushList = supplement(list);
+        return pushList;
     }
 
     private void toEntity(List list, List<PushMsgStatisticVO> entityList) {
@@ -168,5 +174,78 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
         } catch (Exception e) {
             LOGGER.error("statistic init error:{}", e, e.getStackTrace());
         }
+    }
+
+    private List<PushMsgStatisticVO> supplement(List<PushMsgStatisticVO> list) {
+
+        Map<String, List<PushMsgStatisticVO>> listMap = new LinkedHashMap<>(50);
+        for (PushMsgStatisticVO push : list) {
+            if (listMap.containsKey(push.getMsendedDate())) {
+                List<PushMsgStatisticVO> pushList = listMap.get(push.getMsendedDate());
+                pushList.add(push);
+            } else {
+                List<PushMsgStatisticVO> pushList = new ArrayList<>();
+                pushList.add(push);
+                listMap.put(push.getMsendedDate(), pushList);
+            }
+        }
+        List<PushMsgStatisticVO> pushAllList = new ArrayList<>();
+
+        for (Map.Entry<String, List<PushMsgStatisticVO>> entry : listMap.entrySet()) {
+            pushAllList.addAll(completion(entry.getValue()));
+        }
+        return pushAllList;
+    }
+
+    private List<PushMsgStatisticVO> completion(List<PushMsgStatisticVO> list) {
+
+        List<DataDic> dataDics = (List<DataDic>) DataDicUtil.findByCatalog("PEP_PUSH_CHANNEL_TYPE");
+        Map<String, PushMsgStatisticVO> pushMap = new HashMap<>(50);
+        Set<String> pushSet = new HashSet<>();
+
+        for (PushMsgStatisticVO push : list) {
+            pushSet.add(push.getPushMode());
+            if (!pushMap.containsKey(push.getPushMode())) {
+                pushMap.put(push.getPushMode(), push);
+            } else {
+                pushMap.remove(push.getPushMode());
+            }
+
+        }
+
+        for (DataDic dataDic : dataDics) {
+            if (!pushSet.contains(dataDic.getCode())) {
+                PushMsgStatisticVO pushVO = new PushMsgStatisticVO();
+                pushVO.setMnum(0);
+                pushVO.setMstatus(PushMsgStatus.UNSEND.name());
+                pushVO.setPushMode(dataDic.getCode());
+                pushVO.setMsendedDate(list.get(0).getMsendedDate());
+
+                PushMsgStatisticVO pushVO2 = new PushMsgStatisticVO();
+                pushVO2.setMnum(0);
+                pushVO2.setMstatus(PushMsgStatus.SENDED.name());
+                pushVO2.setPushMode(dataDic.getCode());
+                pushVO2.setMsendedDate(list.get(0).getMsendedDate());
+                list.add(pushVO);
+                list.add(pushVO2);
+            }
+        }
+
+
+        for (Map.Entry<String, PushMsgStatisticVO> entry : pushMap.entrySet()) {
+
+            PushMsgStatisticVO pushVO = new PushMsgStatisticVO();
+            pushVO.setMnum(0);
+            if ("UNSEND".equals(entry.getValue().getMstatus())) {
+                pushVO.setMstatus(PushMsgStatus.SENDED.name());
+            } else {
+                pushVO.setMstatus(PushMsgStatus.UNSEND.name());
+            }
+
+            pushVO.setPushMode(entry.getKey());
+            pushVO.setMsendedDate(list.get(0).getMsendedDate());
+            list.add(pushVO);
+        }
+        return list;
     }
 }
