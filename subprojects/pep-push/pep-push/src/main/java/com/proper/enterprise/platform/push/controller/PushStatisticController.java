@@ -2,7 +2,9 @@ package com.proper.enterprise.platform.push.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.push.common.model.enums.PushMode;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
@@ -21,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 /**
  * 推送消息统计
@@ -47,8 +51,10 @@ public class PushStatisticController extends BaseController {
     @GetMapping
     @JsonView(PushMsgStatisticVO.Single.class)
     @RequestMapping("/statistic/init")
-    public ResponseEntity<?> get(String date) {
-        return new ResponseEntity<>(pushMsgStatisticService.saveStatisticOfSomeday(date), null, HttpStatus.OK);
+    public ResponseEntity<?> get() {
+        Date date = new Date();
+        return new ResponseEntity<>(pushMsgStatisticService.saveStatisticOfSomeday(
+            DateUtil.toString(date, PEPConstants.DEFAULT_DATE_FORMAT)), null, HttpStatus.OK);
     }
 
     @GetMapping
