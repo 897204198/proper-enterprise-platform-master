@@ -16,13 +16,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileRepository, String> implements FileService {
@@ -125,7 +124,7 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         return updateFile;
     }
 
-    private File buildFileEntity(MultipartFile file, boolean buildPath) {
+    private File buildFileEntity(MultipartFile file, boolean buildPath) throws IOException {
         File fileEntity = new FileEntity();
         String fileName = file.getOriginalFilename();
         if (StringUtil.isBlank(fileName)) {
@@ -136,7 +135,14 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
             fileEntity.setFilePath(createFilePath() + UUID.randomUUID() + "." + fileEntity.getFileType());
         }
         fileEntity.setFileSize(file.getSize());
-        fileEntity.setFileName(fileName);
+        fileEntity.setFileName(file.getOriginalFilename());
+        if (isImage(fileEntity.getFileName())) {
+            Map<String, String> imgExtMsg = new HashMap<>(16);
+            BufferedImage image = ImageIO.read(file.getInputStream());
+            imgExtMsg.put("img_width", String.valueOf(image.getWidth()));
+            imgExtMsg.put("img_height", String.valueOf(image.getHeight()));
+            ((FileEntity) fileEntity).setFileExtMsgMap(imgExtMsg);
+        }
         return fileEntity;
     }
 
@@ -152,6 +158,17 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         if (file.getFileSize() > maxSize) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.upload.valid.maxsize"));
         }
+    }
+
+    private boolean isImage(String fileName) {
+        if (StringUtil.isEmpty(fileName)) {
+            return false;
+        }
+        return fileName.endsWith(".jpg")
+            || fileName.endsWith(".jpeg")
+            || fileName.endsWith(".bmp")
+            || fileName.endsWith(".png")
+            || fileName.endsWith(".gif");
     }
 
 }

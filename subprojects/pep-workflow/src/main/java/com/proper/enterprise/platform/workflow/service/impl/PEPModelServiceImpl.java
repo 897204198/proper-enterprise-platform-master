@@ -1,7 +1,9 @@
 package com.proper.enterprise.platform.workflow.service.impl;
 
+import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.workflow.model.PEPProperty;
@@ -71,6 +73,39 @@ public class PEPModelServiceImpl implements PEPModelService {
         resultListDataRepresentation.setStart(0);
         resultListDataRepresentation.setTotal((long) returnData.size());
         return resultListDataRepresentation;
+    }
+
+    @Override
+    public PEPModelVO update(PEPModelVO pepModelVO) {
+        Model targetModel = modelRepository.get(pepModelVO.getId());
+        Model updateModel = updateModelEditJson(pepModelVO.convert(), targetModel);
+        BeanUtil.copyProperties(updateModel, targetModel, true);
+        targetModel.setLastUpdated(new Date());
+        targetModel.setLastUpdatedBy(Authentication.getCurrentUserId());
+        modelRepository.save(targetModel);
+        return pepModelVO;
+    }
+
+    private Model updateModelEditJson(Model model, Model oldModel) {
+        String oldModelEditJson = oldModel.getModelEditorJson();
+        if (StringUtil.isEmpty(oldModelEditJson)) {
+            return model;
+        }
+        model.setModelEditorJson(oldModelEditJson
+            .replaceAll("\"process_id\":\"" + oldModel.getKey() + "\"",
+                "\"process_id\":\"" + (StringUtil.isEmpty(model.getKey())
+                    ? oldModel.getKey()
+                    : model.getKey()) + "\"")
+            .replaceAll("\"name\":\"" + oldModel.getName() + "\"",
+                "\"name\":\"" + (StringUtil.isEmpty(model.getName())
+                    ? oldModel.getName()
+                    : model.getName()) + "\"")
+            .replaceAll("\"documentation\":\"" + oldModel.getDescription() + "\"",
+                "\"documentation\":\"" + (StringUtil.isEmpty(model.getDescription())
+                    ? oldModel.getDescription()
+                    : model.getDescription()) + "\"")
+        );
+        return model;
     }
 
     private List<PEPModelVO> packageModelAndProcess(List<PEPModelVO> pepModelVOS,

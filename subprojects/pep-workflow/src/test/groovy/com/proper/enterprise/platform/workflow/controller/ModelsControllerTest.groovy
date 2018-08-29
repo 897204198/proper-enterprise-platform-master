@@ -61,6 +61,17 @@ class ModelsControllerTest extends AbstractTest {
         assert PEPModelVO.ModelStatus.DEPLOYED.name() == representation.getData().get(0).status.code
         ResultListDataRepresentation nodeploy = JSONUtil.parse(get('/repository/models/?filter=nodeploy&modelType=0'
             , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
-        assert PEPModelVO.ModelStatus.UN_DEPLOYED.name()  == nodeploy.getData().get(0).status.code
+        assert PEPModelVO.ModelStatus.UN_DEPLOYED.name() == nodeploy.getData().get(0).status.code
+
+
+        Map nodeployModelVO = nodeploy.getData().get(0)
+        nodeployModelVO.put("name", "nodeploy2")
+        nodeployModelVO.put("description", "nodeploy2")
+        put('/repository/models/' + nodeployModelVO.id, JSONUtil.toJSON(nodeployModelVO)
+            , HttpStatus.OK)
+        ResultListDataRepresentation nodeploy2 = JSONUtil.parse(get('/repository/models/?filter=nodeploy2&modelType=0'
+            , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
+        assert "nodeploy2" == nodeploy2.getData().get(0).name
+        assert "nodeploy2" == nodeploy2.getData().get(0).description
     }
 }

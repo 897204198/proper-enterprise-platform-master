@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.workflow.service;
 
+import com.proper.enterprise.platform.workflow.vo.PEPModelVO;
 import org.flowable.app.model.common.ResultListDataRepresentation;
 
 public interface PEPModelService {
@@ -12,5 +13,13 @@ public interface PEPModelService {
      * @return ResultListDataRepresentation
      */
     ResultListDataRepresentation getModels(String filter, String sort, Integer modelType);
+
+    /**
+     * 更新model
+     *
+     * @param pepModelVO modelVO
+     * @return 更新后的modelVO
+     */
+    PEPModelVO update(PEPModelVO pepModelVO);
 
 }
