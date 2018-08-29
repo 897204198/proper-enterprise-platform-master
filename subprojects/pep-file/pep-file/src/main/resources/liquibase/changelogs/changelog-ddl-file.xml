@@ -40,4 +40,9 @@
       <dropColumn tableName="PEP_FILE" columnName="FILE_MODULE"/>
         <dropColumn tableName="PEP_FILE" columnName="FILE_DESCRIPTION"/>
     </changeSet>
+    <changeSet id="2018-08-29-fileAddExtMsg" author="zjl">
+        <addColumn tableName="PEP_FILE">
+            <column name="FILE_EXT_MSG" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
