@@ -1,17 +1,23 @@
 package com.proper.enterprise.platform.push.service.impl;
 
 import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.push.api.PushMsgStatistic;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
+import com.proper.enterprise.platform.push.entity.PushChannelEntity;
 import com.proper.enterprise.platform.push.entity.PushMsgStatisticEntity;
+import com.proper.enterprise.platform.push.repository.PushChannelRepository;
 import com.proper.enterprise.platform.push.repository.PushMsgStatisticRepository;
 import com.proper.enterprise.platform.push.service.PushMsgStatisticService;
+import com.proper.enterprise.platform.push.vo.PushMsgPieVO;
 import com.proper.enterprise.platform.push.vo.PushMsgStatisticVO;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
+import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +34,8 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
     private PushMsgStatisticRepository pushMsgStatisticRepository;
     @Autowired
     DataDicService dataDicService;
+    @Autowired
+    private PushChannelRepository pushChannelRepository;
 
     public PushMsgStatisticRepository getRepository() {
         return pushMsgStatisticRepository;
@@ -68,6 +76,54 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             pushMsgStatisticRepository.saveAll(entityList);
         }
         return voList;
+    }
+
+    @Override
+    public List<PushMsgPieVO> findAllWithPie(String startDate, String endDate, String appKey) {
+        List list = null;
+        if (StringUtil.isNotNull(startDate) && StringUtil.isNotNull(endDate) && StringUtil.isNull(appKey)) {
+            list = pushMsgStatisticRepository.findByBetweenStartDataEndDate(startDate, endDate);
+            LOGGER.debug("startDate,endDate,noAppKey startDate:" + startDate + "endDate:" + endDate);
+        }
+        if (StringUtil.isNotNull(startDate) && StringUtil.isNotNull(endDate) && StringUtil.isNotNull(appKey)) {
+            list = pushMsgStatisticRepository.findByBetweenStartDataEndDateAndAppKey(startDate, endDate, appKey);
+        }
+        if (StringUtil.isNull(startDate) && StringUtil.isNull(endDate) && StringUtil.isNotNull(appKey)) {
+            list = pushMsgStatisticRepository.findByAppKey(appKey);
+        }
+        Boolean isDefault = StringUtil.isNull(startDate) && StringUtil.isNull(endDate) && StringUtil.isNull(appKey);
+        if (isDefault) {
+            Date msendDate = DateUtil.addDay(new Date(), -1);
+            LOGGER.debug(DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATETIME_FORMAT)
+                + ":::" + DateUtil.toString(new Date(), PEPConstants.DEFAULT_DATETIME_FORMAT));
+            String dateStr = DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATE_FORMAT);
+            list = pushMsgStatisticRepository.findPushMsgByDefault(dateStr);
+        }
+        List<PushMsgPieVO> pieVOS = new ArrayList<>();
+        orgData(list, pieVOS);
+
+
+
+        return pieVOS;
+    }
+
+    private void orgData(List list, List<PushMsgPieVO> pieVOS) {
+        if (list.size() == 0) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.push.no.data"));
+        }
+        List<PushChannelEntity> channelAll = pushChannelRepository.findAll();
+        for (Object row : list) {
+            Object[] cells = (Object[]) row;
+            PushMsgPieVO pieVO = new PushMsgPieVO();
+            pieVO.setMsgSum(Integer.valueOf(cells[0].toString()));
+            pieVO.setMsgStatus(String.valueOf(cells[1].toString()));
+            for (PushChannelEntity channel : channelAll) {
+                if (String.valueOf(cells[2].toString()).equals(channel.getChannelName())) {
+                    pieVO.setAppKey(channel.getChannelDesc());
+                }
+            }
+            pieVOS.add(pieVO);
+        }
     }
 
     public List<PushMsgStatisticVO> findPushStatisticByDay(String appkey) {

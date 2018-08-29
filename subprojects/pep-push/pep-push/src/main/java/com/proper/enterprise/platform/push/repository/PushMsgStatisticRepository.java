@@ -124,4 +124,53 @@ public interface PushMsgStatisticRepository extends BaseJpaRepository<PushMsgSta
     @Query("delete from PushMsgStatisticEntity s where s.msendedDate = :msendedDate")
     public int deleteByMsendedDate(@Param("msendedDate") String msendedDate);
 
+    /**
+     * 默认展示的饼状图统计数据
+     * @param msendedDate 前一天的时间
+     * @return 饼状图统计数据
+     */
+    @Query("SELECT SUM(S.mnum), S.mstatus, S.appkey "
+        + "FROM PushMsgStatisticEntity S "
+        + "where S.msendedDate = :msendedDate "
+        + "group by S.mstatus, S.appkey")
+    List findPushMsgByDefault(@Param("msendedDate") String msendedDate);
+
+    /**
+     * 查询区间内的数据
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @return 查询区间内饼状图数据
+     */
+    @Query("SELECT SUM(S.mnum), S.mstatus, S.appkey "
+        + "FROM PushMsgStatisticEntity S "
+        + "where S.msendedDate  between :startDate and :endDate "
+        + "group by S.mstatus, S.appkey")
+    List findByBetweenStartDataEndDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
+
+
+    /**
+     * 查询指定项目区间内的数据
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @param appKey 项目key
+     * @return 查询指定项目区间内的数据
+     */
+    @Query("SELECT SUM(S.mnum), S.mstatus, S.appkey "
+        + "FROM PushMsgStatisticEntity S "
+        + "where S.msendedDate  between :startDate and :endDate and S.appkey = :appKey "
+        + "group by S.mstatus, S.appkey ")
+    List findByBetweenStartDataEndDateAndAppKey(@Param("startDate") String startDate,
+                                                @Param("endDate") String endDate, @Param("appKey") String appKey);
+
+
+    /**
+     * 查询指定项目的推送数据
+     * @param appKey 项目key
+     * @return 查询指定项目的推送数据
+     */
+    @Query("SELECT SUM(S.mnum), S.mstatus, S.appkey "
+        + "FROM PushMsgStatisticEntity S "
+        + "where S.appkey = :appKey "
+        + "group by S.mstatus, S.appkey")
+    List findByAppKey(@Param("appKey") String appKey);
 }
