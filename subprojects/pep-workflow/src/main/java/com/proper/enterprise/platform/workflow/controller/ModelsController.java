@@ -49,6 +49,12 @@ public class ModelsController extends BaseController {
             processDefinition.getVersion(), startFormKey));
     }
 
+    @RequestMapping(value = "/{modelId}", method = RequestMethod.PUT)
+    public ResponseEntity<PEPModelVO> changeModel(@PathVariable String modelId, @RequestBody PEPModelVO pepModel) {
+        pepModel.setId(modelId);
+        return responseOfPut(pepModelService.update(pepModel));
+    }
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public ResultListDataRepresentation getModels(String filter, String sort, Integer modelType) {
         return pepModelService.getModels(filter, sort, modelType);
