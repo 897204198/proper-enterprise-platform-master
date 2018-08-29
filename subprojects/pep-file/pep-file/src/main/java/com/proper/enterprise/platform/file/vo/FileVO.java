@@ -3,6 +3,8 @@ package com.proper.enterprise.platform.file.vo;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.file.api.File;
 
+import java.util.Map;
+
 public class FileVO extends BaseVO implements File {
 
     public FileVO(){}
@@ -26,6 +28,10 @@ public class FileVO extends BaseVO implements File {
      * 文件路径
      */
     private String filePath;
+    /**
+     * 扩展字段
+     */
+    private String fileExtMsg;
 
     @Override
     public String getFileName() {
@@ -65,6 +71,11 @@ public class FileVO extends BaseVO implements File {
     @Override
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    @Override
+    public Map<String, String> getFileExtMsgMap() {
+        return null;
     }
 
     @Override

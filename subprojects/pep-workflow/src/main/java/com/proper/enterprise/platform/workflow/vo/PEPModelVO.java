@@ -1,21 +1,20 @@
 package com.proper.enterprise.platform.workflow.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
+import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity;
 import org.flowable.app.domain.editor.Model;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.Convert;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
 public class PEPModelVO {
-
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(PEPModelVO.class);
 
     public enum ModelStatus {
         /**
@@ -44,6 +43,7 @@ public class PEPModelVO {
     private String startFormKey;
     private Map<String, PEPPropertyVO> formProperties;
     @Convert(converter = DataDicLiteConverter.class)
+    @JsonDeserialize(as = DataDicEntity.class)
     private DataDicLite status;
 
     public PEPModelVO() {
@@ -215,14 +215,14 @@ public class PEPModelVO {
         this.formProperties = formProperties;
     }
 
+
+    public Model convert() {
+        Model model = BeanUtil.convert(this, Model.class);
+        return model;
+    }
+
     @Override
     public String toString() {
-        String pepModelVOStr = "";
-        try {
-            pepModelVOStr = JSONUtil.toJSON(this);
-        } catch (IOException e) {
-            LOGGER.error("PEPModelVO error , vo is null", e);
-        }
-        return pepModelVOStr;
+        return JSONUtil.toJSONIgnoreException(this);
     }
 }

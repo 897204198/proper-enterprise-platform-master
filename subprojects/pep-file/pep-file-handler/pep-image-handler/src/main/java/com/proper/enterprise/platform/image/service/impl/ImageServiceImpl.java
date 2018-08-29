@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Map;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -35,7 +36,22 @@ public class ImageServiceImpl implements ImageService {
         if (null == file) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
         }
+        Map<String, String> imgExtMsg = file.getFileExtMsgMap();
         InputStream inputStream = dsfService.getFile(file.getFilePath());
+        Integer imgWidth = null == imgExtMsg || null == imgExtMsg.get("img_width")
+            ? null
+            : Integer.valueOf(imgExtMsg.get("img_width"));
+        Integer imgHeight = null == imgExtMsg || null == imgExtMsg.get("img_height")
+            ? null
+            : Integer.valueOf(imgExtMsg.get("img_height"));
+        if (null != imgWidth && imgWidth <= width) {
+            fileService.download(id, request, response);
+            return;
+        }
+        if (null != imgHeight && imgHeight <= height) {
+            fileService.download(id, request, response);
+            return;
+        }
         if (inputStream == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
         }
