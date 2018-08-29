@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.push.service;
 
 import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
 import com.proper.enterprise.platform.push.api.PushMsgStatistic;
+import com.proper.enterprise.platform.push.vo.PushMsgPieVO;
 import com.proper.enterprise.platform.push.vo.PushMsgStatisticVO;
 
 import java.util.List;
@@ -24,4 +25,18 @@ public interface PushMsgStatisticService extends BaseJpaService<PushMsgStatistic
      * @return List 当天的推送数据
      */
     List<PushMsgStatisticVO> saveStatisticOfSomeday(String date);
+
+    /**
+     * 饼状图数据
+     * @return 饼状图数据
+     */
+    /**
+     * 分类
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @param appKey 项目key
+     * @return
+     */
+    List<PushMsgPieVO> findAllWithPie(String startDate, String endDate, String appKey);
+
 }

@@ -10,6 +10,7 @@ import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.service.PushMsgService;
 import com.proper.enterprise.platform.push.service.PushMsgStatisticService;
+import com.proper.enterprise.platform.push.vo.PushMsgPieVO;
 import com.proper.enterprise.platform.push.vo.PushMsgStatisticVO;
 import com.proper.enterprise.platform.push.vo.PushMsgVO;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+
+import java.util.List;
 
 /**
  * 推送消息统计
@@ -76,5 +79,10 @@ public class PushStatisticController extends BaseController {
         Sort sort = new Sort(Sort.Direction.DESC, "lastModifyTime");
         PageRequest pageRequest = getPageRequest(sort);
         return responseOfGet(pushMsgService.findByDateTypeAndAppkey(example, pageRequest), PushMsgVO.class, PushMsgVO.Single.class);
+    }
+
+    @GetMapping("/statistic/pie")
+    public ResponseEntity<List<PushMsgPieVO>> getPieData(String startDate, String endDate, String appKey) {
+        return new ResponseEntity<>(pushMsgStatisticService.findAllWithPie(startDate, endDate, appKey), null, HttpStatus.OK);
     }
 }
