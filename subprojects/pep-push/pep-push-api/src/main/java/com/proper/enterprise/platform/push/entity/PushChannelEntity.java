@@ -31,6 +31,9 @@ public class PushChannelEntity extends BaseEntity {
     @Column
     private String diplomaId;
 
+    @Column
+    private String color;
+
     public String getChannelName() {
         return channelName;
     }
@@ -93,5 +96,13 @@ public class PushChannelEntity extends BaseEntity {
 
     public void setDiplomaId(String diplomaId) {
         this.diplomaId = diplomaId;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }
