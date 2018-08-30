@@ -117,7 +117,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
     @SuppressWarnings("unchecked")
     @Override
     public void savePushMessageToUsers(String appkey, List<String> lstUids, PushMessage thePushmsg) {
-        LOGGER.info("push log step4 content:{},msg:{}", thePushmsg.getContent(), JSONUtil.toJSONIgnoreException(thePushmsg));
+        LOGGER.info("push log step4 msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
         Map<String, Object> rtn = new LinkedHashMap<>();
         Map<String, Object> deviceConf = (Map<String, Object>) Mapl.cell(globalInfo.getPushConfigs(),
             appkey + ".device");
@@ -158,11 +158,9 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
                 if (StringUtil.isNotEmpty(d.getPushToken())) {
                     PushMsgEntity dbMsg = createMsgVO(thePushmsg, appkey, d);
                     lstMsgs.add(dbMsg);
-                    LOGGER.info("doSendMsgToDevices:saveMsg:pushId:{},msgConent:{}",
-                        dbMsg.getId(), JSONUtil.toJSONIgnoreException(thePushmsg));
+                    LOGGER.info("doSendMsgToDevices:saveMsg:push token:{}", d.getPushToken());
                 } else {
-                    LOGGER.info("doSendMsgToDevices:saveMsgError:push token is empty:appkey:{},device:{},msg:{}"
-                        + appkey, d.getDeviceid(), JSONUtil.toJSONIgnoreException(thePushmsg));
+                    LOGGER.info("doSendMsgToDevices:saveMsgError:push token is empty:appkey:{},device:{}", appkey, d.getDeviceid());
                 }
             }
             try {
@@ -179,7 +177,7 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
             int sendCount = pushService.pushMsg(lstMsgs);
             rtn.put(appkey + "_" + deviceType + "_" + pushMode, sendCount);
         } else {
-            LOGGER.info("doSendMsgToDevices,lstMsgs is empty,then no need send!msg:{}", JSONUtil.toJSONIgnoreException(thePushmsg));
+            LOGGER.info("doSendMsgToDevices,lstMsgs is empty,then no need send!");
         }
     }
 
