@@ -14,11 +14,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 推送服务类
- *
- * @author 沈东生
- */
 public class XiaomiPushApp extends BasePushApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(XiaomiPushApp.class);
     Sender client;
