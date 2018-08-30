@@ -36,6 +36,10 @@ class AdminFeedbackControllerTest extends AbstractTest {
         userFeedBackDocument.setUserTel("12345678901")
         FeedBackDocument document = new FeedBackDocument()
         document.setFeedback("reply a data !")
+        document.setMobileModel("iphone")
+        document.setNetType("4G")
+        document.setAppVersion("v4.0.2")
+        document.setPlatform("IOS")
         List<FeedBackDocument> arrayList = new ArrayList<>()
         arrayList.add(document)
         userFeedBackDocument.setFeedBackDocuments(arrayList)
@@ -45,6 +49,10 @@ class AdminFeedbackControllerTest extends AbstractTest {
         def list = resOfGet("/admin/feedback/" + "/" + userFeedBackDocument.getUserId(), HttpStatus.OK)
         assert list.size() == 2
         assert list.get(0).get("feedback") == "reply a data !"
+        assert list.get(0).get("mobileModel") == "iphone"
+        assert list.get(0).get("netType") == "4G"
+        assert list.get(0).get("appVersion") == "v4.0.2"
+        assert list.get(0).get("platform") == "IOS"
     }
 
     @Test
