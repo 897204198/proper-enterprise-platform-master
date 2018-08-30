@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.push.controller
 
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.DateUtil
+import com.proper.enterprise.platform.push.api.PushMsg
 import com.proper.enterprise.platform.push.client.PusherApp
 import com.proper.enterprise.platform.push.client.service.IPushApiServiceRequest
 import com.proper.enterprise.platform.push.common.model.enums.PushMode
@@ -105,7 +107,7 @@ class PushStatisticControllerTest extends PushAbstractTest {
         Pageable pageable = new PageRequest(0, 3)
 
         PushMsgEntity entity = new PushMsgEntity()
-        entity.setMcontent("content1")
+        entity.setMcontent("content1abcdef")
         entity.setAppkey("test")
         entity.setPushMode(PushMode.valueOf("xiaomi"))
 
@@ -114,13 +116,16 @@ class PushStatisticControllerTest extends PushAbstractTest {
 
         assert page1.getTotalElements() == 1
 
-        pushMsgService.findByDateTypeAndAppkey(example, pageable)
+        DataTrunk<? extends PushMsg> dataTrunk = pushMsgService.findByDateTypeAndAppkey(example, pageable)
+        assert dataTrunk.count == 1
+        assert dataTrunk.getData().findAll().get(0).mcontent == "content1ab"
+        assert dataTrunk.getData().findAll().get(0).userid == "123****8901"
 
         try {
             HashMap<String, Object> params = new LinkedHashMap<String, Object>()
             params.put("pageNo", 1)
             params.put("pageSize", 3)
-            params.put("mcontent", "content1")
+            params.put("mcontent", "content1abcdef")
             params.put("appkey", "test")
             params.put("pushMode", "xiaomi")
 //            pusherApp.doRequestApis(params)
