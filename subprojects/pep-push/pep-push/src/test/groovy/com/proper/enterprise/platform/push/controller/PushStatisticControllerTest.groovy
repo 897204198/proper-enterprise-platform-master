@@ -11,11 +11,15 @@ import com.proper.enterprise.platform.push.repository.PushMsgStatisticRepository
 import com.proper.enterprise.platform.push.service.PushMsgService
 import com.proper.enterprise.platform.push.service.PushMsgStatisticService
 import com.proper.enterprise.platform.push.test.PushAbstractTest
+import com.proper.enterprise.platform.push.vo.PushMsgPieVO
+import com.proper.enterprise.platform.sys.i18n.I18NUtil
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.*
+import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 
 import java.text.SimpleDateFormat
@@ -221,5 +225,40 @@ class PushStatisticControllerTest extends PushAbstractTest {
         String requestServiceServer(String baseUrl, Map<String, Object> params, int timeout) throws Exception {
             return JSONUtil.toJSON(apiRequest(baseUrl, params))
         }
+    }
+
+    /**
+     * 忽略的原因
+     * 通过当前时间统计前一天的消息推送数量
+     * 无法预知前一天是否有数据,不知道应该为OK,还是INTERNAL_SERVER_ERROR
+     * 导致无法获取期望返回值
+     */
+    @Test
+    @Ignore
+    void testPushMsgPieDefault() {
+        List<PushMsgPieVO> pieVO = JSONUtil.parse(get('/push/statistic/pie',HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert null != pieVO
+    }
+
+    @Test
+    void testPushMsgPieDate() {
+        List<PushMsgPieVO> pieVO = JSONUtil.parse(get('/push/statistic/pie?startDate=2018-07-08&endDate=2018-07-22',HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert null != pieVO
+    }
+
+    @Test
+    void testPushMsgPieDateAppKey() {
+        List<PushMsgPieVO> pieVO = JSONUtil.parse(get('/push/statistic/pie?startDate=2018-07-08&endDate=2018-07-22&appKey=test',HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert null != pieVO
+        String mes = get('/push/statistic/pie?startDate=2018-07-08&endDate=2018-07-22&appKey=aaa',HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        assert I18NUtil.getMessage("pep.push.no.data") == mes
+    }
+
+    @Test
+    void testPushMsgPieAppKey() {
+        List<PushMsgPieVO> pieVO = JSONUtil.parse(get('/push/statistic/pie?appKey=test',HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert null != pieVO
+        String mes = get('/push/statistic/pie?appKey=aaa',HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        assert I18NUtil.getMessage("pep.push.no.data") == mes
     }
 }
