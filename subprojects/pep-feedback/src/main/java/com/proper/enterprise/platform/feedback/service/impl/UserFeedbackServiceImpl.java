@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.feedback.document.FeedBackDocument;
 import com.proper.enterprise.platform.feedback.document.UserFeedBackDocument;
 import com.proper.enterprise.platform.feedback.repository.UserFeedBackRepository;
@@ -54,7 +55,7 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
     @Override
     public DataTrunk<UserFeedBackDocument> findByConditionAndPage(String feedbackStatus, String query, PageRequest pageRequest) {
         Page<UserFeedBackDocument> userFeedBackDocumentPage =
-            userFeedBackRepo.findByUserAndStatus(feedbackStatus, feedbackStatus + "==-1", query, pageRequest);
+                userFeedBackRepo.findByUserAndStatus(feedbackStatus, feedbackStatus + "==-1", query, pageRequest);
         List<UserFeedBackDocument> userFeedBackDocumentList = userFeedBackDocumentPage.getContent();
         for (UserFeedBackDocument userFeedBackDocument : userFeedBackDocumentList) {
             List<FeedBackDocument> documentList = userFeedBackDocument.getFeedBackDocuments();
@@ -142,6 +143,21 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
         FeedBackDocument feedBackDocument = new FeedBackDocument();
         feedBackDocument.setFeedbackTime(DateUtil.toString(new Date(), "yyyy-MM-dd HH:mm"));
         feedBackDocument.setFeedback(feedback);
+        ListIterator<FeedBackDocument> it = list.listIterator(list.size());
+        while (it.hasPrevious()) {
+            try {
+                FeedBackDocument feedBackDoc = it.previous();
+                if (StringUtil.isBlank(feedBackDoc.getFeedback())) {
+                    feedBackDocument.setMobileModel(feedBackDoc.getMobileModel());
+                    feedBackDocument.setNetType(feedBackDoc.getNetType());
+                    feedBackDocument.setPlatform(feedBackDoc.getPlatform());
+                    feedBackDocument.setAppVersion(feedBackDoc.getAppVersion());
+                    break;
+                }
+            } catch (Exception e) {
+                LOGGER.debug("Not Found Element！", e);
+            }
+        }
         list.add(feedBackDocument);
         userFeedBackDocument.setFeedBackDocuments(list);
         userFeedBackDocument = userFeedBackRepo.save(userFeedBackDocument);
