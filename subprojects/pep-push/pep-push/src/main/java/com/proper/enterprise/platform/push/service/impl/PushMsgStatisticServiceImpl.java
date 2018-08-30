@@ -100,16 +100,17 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             list = pushMsgStatisticRepository.findPushMsgByDefault(dateStr);
         }
         List<PushMsgPieVO> pieVOS = new ArrayList<>();
+
+        if (null != list && list.size() == 0) {
+            return  pieVOS;
+        }
         orgData(list, pieVOS);
-
-
-
         return pieVOS;
     }
 
     private void orgData(List list, List<PushMsgPieVO> pieVOS) {
-        if (list.size() == 0) {
-            throw new ErrMsgException(I18NUtil.getMessage("pep.push.no.data"));
+        if (list == null) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.push.data.exception"));
         }
         List<PushChannelEntity> channelAll = pushChannelRepository.findAll();
         for (Object row : list) {
