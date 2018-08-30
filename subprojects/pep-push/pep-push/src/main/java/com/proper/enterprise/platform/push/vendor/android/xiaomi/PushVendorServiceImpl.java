@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.push.vendor.android.xiaomi;
 
-import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.vendor.AbstractPushVendorService;
@@ -41,8 +40,7 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
         int notifyId1 = getNextNotifyId();
         // 向指定的设备推送数据。
         for (PushMsgEntity dm : lstMsgs) {
-            LOGGER.info("xiaomi push log step5 pushId:{}, content:{},msg:{}",
-                dm.getId(), dm.getMcontent(), JSONUtil.toJSONIgnoreException(dm));
+            LOGGER.info("xiaomi push log step5 pushId:{}", dm.getId());
             // 发送次数+1
             dm.setSendCount(dm.getSendCount() + 1);
             // 向手机端推送一条消息，手机端收到消息后，请求web服务器,再获取消息内容

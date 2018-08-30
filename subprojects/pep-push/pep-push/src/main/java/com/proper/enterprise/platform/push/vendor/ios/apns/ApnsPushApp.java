@@ -79,8 +79,7 @@ public class ApnsPushApp extends BasePushApp {
      * @return true：推送成功；false：推送失败
      */
     public boolean pushOneMsg(PushMsgEntity msg) {
-        LOGGER.info("ios push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(),
-            msg.getId(), JSONUtil.toJSONIgnoreException(msg));
+        LOGGER.info("ios push log step6 pushId:{}", msg.getId());
         boolean result = false;
         try {
             initApnsClient();

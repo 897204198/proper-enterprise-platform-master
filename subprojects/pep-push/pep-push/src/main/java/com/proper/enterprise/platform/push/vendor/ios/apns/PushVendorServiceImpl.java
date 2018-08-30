@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.push.vendor.ios.apns;
 
-import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.push.common.model.enums.PushMsgStatus;
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.vendor.AbstractPushVendorService;
@@ -40,8 +39,7 @@ public class PushVendorServiceImpl extends AbstractPushVendorService {
         if (lstMsgs != null && lstMsgs.size() > 0) {
             // 向指定的设备推送数据。
             for (PushMsgEntity dm : lstMsgs) {
-                LOGGER.info("ios push log step5 pushId:{}, content:{},msg:{}",
-                    dm.getId(), dm.getMcontent(), JSONUtil.toJSONIgnoreException(lstMsgs));
+                LOGGER.info("ios push log step5 pushId:{}", dm.getId());
                 // 发送次数+1
                 dm.setSendCount(dm.getSendCount() + 1);
                 // 向手机端推送一条消息
