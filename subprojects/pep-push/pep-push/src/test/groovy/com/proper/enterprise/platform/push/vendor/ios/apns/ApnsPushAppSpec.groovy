@@ -1,9 +1,8 @@
-package com.proper.enterprise.platform.push.vendor
+package com.proper.enterprise.platform.push.vendor.ios.apns
 
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.push.entity.PushDeviceEntity
 import com.proper.enterprise.platform.push.entity.PushMsgEntity
-import com.proper.enterprise.platform.push.vendor.ios.apns.ApnsPushApp
 import com.proper.enterprise.platform.test.utils.TestResource
 import spock.lang.Specification
 
@@ -14,7 +13,7 @@ class ApnsPushAppSpec extends Specification {
         // Token of test iPhone 5 device
         def token = '7fbdc8b7c74f678e088c267cd57cf7abb2e2d14cd6aeec4231e1ef3d656ed3bc'
         def msgTitle = System.getProperty('os.name')
-        def msgContent = "$msgTitle ${System.getProperty('os.arch')} push this notification at ${new Date().format('yyyy-MM-dd HH:mm:ss')} in test case"
+        def msgContent = "$msgTitle ${System.getProperty('os.arch')} push this notification to test APNs push app at ${new Date().format('yyyy-MM-dd HH:mm:ss')} in test case"
 
         ApnsPushApp apnsPushApp = new ApnsPushApp()
         apnsPushApp.setEnvProduct(true)
