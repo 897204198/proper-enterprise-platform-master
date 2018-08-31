@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.push.vendor.android.xiaomi;
 
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.push.entity.PushMsgEntity;
 import com.proper.enterprise.platform.push.vendor.BasePushApp;
 import com.xiaomi.push.sdk.ErrorCode;
@@ -16,6 +17,14 @@ import java.util.Map;
 
 public class XiaomiPushApp extends BasePushApp {
     private static final Logger LOGGER = LoggerFactory.getLogger(XiaomiPushApp.class);
+    /**
+     * 标题最大长度
+     */
+    private static final int TITLE_MAX_LENGTH = 15;
+    /**
+     * 描述最大长度
+     */
+    private static final int DESCRIPTION_MAX_LENGTH = 127;
     Sender client;
     private String theAppPackage;
     private String theAppSecret;
@@ -50,8 +59,8 @@ public class XiaomiPushApp extends BasePushApp {
 
     boolean pushOneMsg(PushMsgEntity msg, int notifyId) {
         Message.Builder msgBuilder = new Message.Builder()
-            .title(msg.getMtitle())
-            .description(msg.getMcontent())
+            .title(StringUtil.abbreviate(msg.getMtitle(), TITLE_MAX_LENGTH))
+            .description(StringUtil.abbreviate(msg.getMcontent(), DESCRIPTION_MAX_LENGTH))
             .restrictedPackageName(theAppPackage)
             // 使用默认提示音提示
             .notifyType(1)
@@ -99,10 +108,11 @@ public class XiaomiPushApp extends BasePushApp {
         return result;
     }
 
+
+
     private boolean doSendMsg(PushMsgEntity msg, Message toMsg) throws IOException, ParseException {
         String pushToken = msg.getDevice().getPushToken();
         msg.setPushToken(pushToken);
-
         LOGGER.debug("Prepare to send msg to xiaomi push: {}:{} with token {}", msg.getId(), msg.getMcontent(), pushToken);
 
         if (!isReallySendMsg()) {
@@ -112,7 +122,7 @@ public class XiaomiPushApp extends BasePushApp {
 
         com.xiaomi.xmpush.server.Result rsp = getClient().send(toMsg, pushToken, 1);
         msg.setMresponse(JSONUtil.toJSON(rsp));
-
+        LOGGER.debug("Check XiaoMi Message Param title:{} and message:{}", toMsg.getTitle(), JSONUtil.toJSONIgnoreException(toMsg));
         if (rsp.getErrorCode() == ErrorCode.Success) {
             LOGGER.debug("success xiaomi push log step6 pushId:{}, rsp:{}", msg.getId(), JSONUtil.toJSONIgnoreException(rsp));
             return true;

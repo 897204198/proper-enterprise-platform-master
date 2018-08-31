@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 华为推送消息
+ * 小米推送消息
  *
  * @author shen
  */
