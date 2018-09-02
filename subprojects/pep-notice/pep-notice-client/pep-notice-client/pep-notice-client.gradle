@@ -1,0 +1,10 @@
+dependencies {
+    compile project(':pep-sys'),
+            project(':pep-auth-api'),
+            project(':pep-notice-server-api'),
+            project(':pep-notice-set'),
+            project(':pep-template')
+    testCompile project(':pep-test'),
+            project(':pep-auth-common-jpa')
+}
+

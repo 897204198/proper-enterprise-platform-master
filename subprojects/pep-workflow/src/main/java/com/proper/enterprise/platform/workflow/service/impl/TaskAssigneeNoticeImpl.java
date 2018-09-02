@@ -8,6 +8,8 @@ import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.client.NoticeSender;
+import com.proper.enterprise.platform.template.service.TemplateService;
+import com.proper.enterprise.platform.template.vo.TemplateVO;
 import com.proper.enterprise.platform.workflow.api.AbstractWorkFlowNoticeSupport;
 import com.proper.enterprise.platform.workflow.api.TaskAssigneeOrCandidateNotice;
 import com.proper.enterprise.platform.workflow.util.VariableUtil;
@@ -35,13 +37,17 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
 
     private NoticeSender noticeSender;
 
+    private TemplateService templateService;
+
     @Autowired
     TaskAssigneeNoticeImpl(NoticeSender noticeSender,
                            UserGroupDao userGroupDao,
-                           RoleDao roleDao) {
+                           RoleDao roleDao,
+                           TemplateService templateService) {
         this.userGroupDao = userGroupDao;
         this.roleDao = roleDao;
         this.noticeSender = noticeSender;
+        this.templateService = templateService;
     }
 
     @Override
@@ -60,8 +66,9 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
             custom.put("url", buildTaskUrl(task) + "&from=app");
             custom.put("title", task.getName());
             String noticeCode = (String) task.getVariable(TASK_ASSIGNEE_NOTICE_CODE_KEY);
-            noticeSender.sendNotice(StringUtil.isEmpty(noticeCode) ? "TaskAssignee" : noticeCode,
-                custom, userIds, templateParams);
+            TemplateVO templateVO = templateService.getTemplates(StringUtil.isEmpty(noticeCode) ? "TaskAssignee" :
+                noticeCode, templateParams);
+            noticeSender.sendNotice(userIds, templateVO, custom);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);
         }

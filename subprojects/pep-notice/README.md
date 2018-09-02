@@ -1,3 +1,3 @@
-pep-notice (center)
+pep-notice
 ============
 Proper Enterprise Platform

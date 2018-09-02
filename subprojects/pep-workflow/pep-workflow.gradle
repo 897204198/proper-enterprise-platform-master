@@ -13,7 +13,8 @@ dependencies {
     compile project(':pep-auth-api'),
             project(':pep-cache-api'),
             project(':pep-core-jpa'),
-            project(':pep-notice-client')
+            project(':pep-notice-client'),
+            project(':pep-template')
 
     runtime libraries.commons_fileupload,
             libraries.flowable_web_designer

@@ -13,6 +13,8 @@ import com.proper.enterprise.platform.notice.client.NoticeSender;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
+import com.proper.enterprise.platform.template.service.TemplateService;
+import com.proper.enterprise.platform.template.vo.TemplateVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,9 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 
     @Autowired
     private I18NService i18NService;
+
+    @Autowired
+    private TemplateService templateService;
 
     @Override
     public void save(UserFeedBackDocument feedbackInfo) {
@@ -163,13 +168,11 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
         userFeedBackDocument = userFeedBackRepo.save(userFeedBackDocument);
 
         if (dataDicService.get(FEEDBACK_REPLIED).getCode().equals(userFeedBackDocument.getStatusCode())) {
-            String pushContent = i18NService.getMessage("pep.feedback.message.content");
-            String pushType = "feedback";
             List<Map<String, String>> paramMapList = new ArrayList<>();
             Map<String, String> paramMap = new HashMap<>(1);
             paramMap.put("opinionId", userFeedBackDocument.getId());
             paramMapList.add(paramMap);
-            pushInfo(pushContent, pushType, userFeedBackDocument.getUserId(), paramMapList);
+            pushInfo(userFeedBackDocument.getUserId(), paramMapList);
             LOGGER.debug("Push feedback information !");
             LOGGER.debug("feedback Id :" + userFeedBackDocument.getId());
         }
@@ -196,17 +199,16 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
     /**
      * 掌上医院推送反馈意见消息
      *
-     * @param pushContent 推送消息内容
-     * @param pushType    推送消息类别
      * @param userId      接收人
      * @param paramList   推送参数列表
      * @throws Exception 异常信息
      */
     @Override
-    public void pushInfo(String pushContent, String pushType, String userId, List<Map<String, String>> paramList) throws Exception {
-        String title = i18NService.getMessage("pep.feedback.message.title");
+    public void pushInfo(String userId, List<Map<String, String>> paramList) throws Exception {
+
+        TemplateVO templateVO = templateService.getTips("feedback");
         Map<String, Object> custom = new HashMap<>(1);
-        custom.put("pageUrl", pushType);
+        custom.put("pageUrl", "feedback");
         for (Map<String, String> pushMap : paramList) {
             Iterator<Map.Entry<String, String>> paraIter = pushMap.entrySet().iterator();
             while (paraIter.hasNext()) {
@@ -214,6 +216,6 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
                 custom.put(entry.getKey(), entry.getValue());
             }
         }
-        noticeSender.sendNotice("feedBack", "MESSAGE", custom, userId, title, pushContent);
+        noticeSender.sendNotice(userId, templateVO, custom);
     }
 }

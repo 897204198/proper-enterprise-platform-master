@@ -4,6 +4,8 @@ import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.client.NoticeSender;
+import com.proper.enterprise.platform.template.service.TemplateService;
+import com.proper.enterprise.platform.template.vo.TemplateVO;
 import com.proper.enterprise.platform.workflow.api.EndNotice;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import org.flowable.engine.RepositoryService;
@@ -30,13 +32,15 @@ public class EndNoticeImpl implements EndNotice {
 
     private UserDao userDao;
 
-    @Autowired
     private NoticeSender noticeSender;
 
+    private TemplateService templateService;
+
     @Autowired
-    EndNoticeImpl(UserDao userDao, RepositoryService repositoryService) {
+    EndNoticeImpl(UserDao userDao, RepositoryService repositoryService, TemplateService templateService) {
         this.userDao = userDao;
         this.repositoryService = repositoryService;
+        this.templateService = templateService;
     }
 
     @Override
@@ -57,8 +61,11 @@ public class EndNoticeImpl implements EndNotice {
                 ? (String) execution.getVariable(endNoticeUserKey)
                 : "";
             String endNoticeCode = (String) execution.getVariable(END_NOTICE_CODE_KEY);
-            noticeSender.sendNotice(StringUtil.isEmpty(endNoticeCode) ? "EndCode" : endNoticeCode, custom,
-                StringUtil.isEmpty(endNoticeUserId) ? initiator : endNoticeUserId, templateParams);
+
+            TemplateVO templateVO = templateService.getTemplates(StringUtil.isEmpty(endNoticeCode) ? "EndCode" :
+                endNoticeCode, templateParams);
+            noticeSender.sendNotice(StringUtil.isEmpty(endNoticeUserId) ? initiator : endNoticeUserId,
+                templateVO, custom);
         } catch (Exception e) {
             LOGGER.error("endNoticeError", e);
         }
