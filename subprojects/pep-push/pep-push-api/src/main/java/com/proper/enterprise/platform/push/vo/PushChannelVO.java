@@ -37,6 +37,9 @@ public class PushChannelVO extends BaseVO {
     @JsonProperty("diplomaId")
     private String diplomaId;
 
+    @JsonProperty("color")
+    private String color;
+
     public String getChannelName() {
         return channelName;
     }
@@ -99,6 +102,14 @@ public class PushChannelVO extends BaseVO {
 
     public void setDiplomaId(String diplomaId) {
         this.diplomaId = diplomaId;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public static class Android implements Serializable {
