@@ -61,6 +61,8 @@ class PushChannelTest extends AbstractTest {
         assert vo.getMsgSaveDays() == 2
 
         assert getChannel().count == 1
+        assert getChannel().data.findAll().get(0).enable == true
+        assert getChannel().data.findAll().get(0).color == "red"
         deleteChannel(vo.getId())
         assert getChannel().count == 0
 
@@ -173,6 +175,8 @@ class PushChannelTest extends AbstractTest {
         pushChannelVo.setSecretKey("aaaaa")
         pushChannelVo.setAndroid(getAndroid())
         pushChannelVo.setIos(getIOS())
+        pushChannelVo.setEnable(true)
+        pushChannelVo.setColor("red")
         return pushChannelVo
     }
 
