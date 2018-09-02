@@ -35,6 +35,11 @@
             <column name="USERID" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
+    <changeSet id="201808301730" author="wyiyi201808301730">
+        <addColumn tableName="PEP_PUSH_DEVICE">
+            <column name="COLOR" type="VARCHAR(255)"></column>
+        </addColumn>
+    </changeSet>
     <changeSet author="alphahinex (generated)" id="1526968403001-8">
         <createTable tableName="PEP_PUSH_MSG">
             <column name="ID" type="VARCHAR(255)">
