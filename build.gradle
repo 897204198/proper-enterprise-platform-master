@@ -104,8 +104,8 @@ subprojects {
     targetCompatibility = 1.8
 
     group = 'com.proper.enterprise.platform'
-    // Needs to change version code in core.properties TOGETHER!!
-    // Needs to change version in dependencies.gradle TOGETHER!!
+    // Needs to change version in dependencies.gradle:6:32 TOGETHER!!
+    // Needs to change version code in core.properties:18:14 TOGETHER!!
     version = '0.4.5-SNAPSHOT'
 
     test {

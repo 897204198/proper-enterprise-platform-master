@@ -208,7 +208,7 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 
         TemplateVO templateVO = templateService.getTips("feedback");
         Map<String, Object> custom = new HashMap<>(1);
-        custom.put("pageUrl", "feedback");
+        custom.put("gdpr_mpage", "feedback");
         for (Map<String, String> pushMap : paramList) {
             Iterator<Map.Entry<String, String>> paraIter = pushMap.entrySet().iterator();
             while (paraIter.hasNext()) {
