@@ -206,7 +206,7 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
     public void pushInfo(String pushContent, String pushType, String userId, List<Map<String, String>> paramList) throws Exception {
         String title = i18NService.getMessage("pep.feedback.message.title");
         Map<String, Object> custom = new HashMap<>(1);
-        custom.put("pageUrl", pushType);
+        custom.put("gdpr_mpage", pushType);
         for (Map<String, String> pushMap : paramList) {
             Iterator<Map.Entry<String, String>> paraIter = pushMap.entrySet().iterator();
             while (paraIter.hasNext()) {
