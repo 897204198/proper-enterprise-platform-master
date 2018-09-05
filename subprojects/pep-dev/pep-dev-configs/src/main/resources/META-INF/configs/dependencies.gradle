@@ -54,9 +54,7 @@ configurations.all {
         def groupVers = [
             'com.fasterxml.jackson.core': versions.jackson,
             'com.fasterxml.jackson.dataformat': versions.jackson,
-            'org.codehaus.groovy': versions.groovy,
-            // spring security 被 flowable 直接依赖
-            'org.springframework.security': versions.spring_security
+            'org.codehaus.groovy': versions.groovy
         ]
         groupVers.each { group, ver ->
             if (req.group == group) {
@@ -70,6 +68,9 @@ configurations.all {
     exclude group: 'org.apache.commons.logging'
     exclude group: 'org.apache.log4j'
     exclude group: 'log4j'
+    exclude group: 'org.springframework.security', module: 'spring-security-web'
+    exclude group: 'org.springframework.security', module: 'spring-security-config'
+    exclude group: 'org.springframework.security', module: 'spring-security-crypto'
 
     // Exclude Woodstox implement of Stax API
     // which has different behaviours with JDK default implement
