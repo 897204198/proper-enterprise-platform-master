@@ -233,4 +233,15 @@ public class DateUtil {
     public static Date getBeginningOfYear(Date date) {
         return date == null ? null : new DateTime(date).withDayOfYear(1).toDate();
     }
+
+    /**
+     * 日期添加指定月份
+     *
+     * @param date 要添加天数的日期,如果为负数，则为减少的月份
+     * @param month  添加的月份
+     * @return 添加指定月份的新的Date对象
+     */
+    public static Date addMonth(Date date, int month) {
+        return date == null ? null : new DateTime(date.getTime()).plusMonths(month).toDate();
+    }
 }

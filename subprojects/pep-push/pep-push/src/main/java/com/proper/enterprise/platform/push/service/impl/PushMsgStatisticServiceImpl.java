@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -30,6 +31,10 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
     implements PushMsgStatisticService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PushMsgStatisticServiceImpl.class);
+    private static final String DATE_RANGE_DAY = "day";
+    private static final String DATE_RANGE_WEEK = "week";
+    private static final String DATE_RANGE_MONTH = "month";
+    private static final int WEEK_RANGE = 8;
     @Autowired
     private PushMsgStatisticRepository pushMsgStatisticRepository;
     @Autowired
@@ -43,15 +48,13 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
 
     @Override
     public List<PushMsgStatisticVO> findByDateTypeAndAppkey(String dateType, String appkey) {
-        final String day = "day";
-        final String week = "week";
-        final String month = "month";
+
         LOGGER.info("dateType:{}; appkey:{}", dateType, appkey);
-        if (day.equals(dateType)) {
+        if (DATE_RANGE_DAY.equals(dateType)) {
             return findPushStatisticByDay(appkey);
-        } else if (week.equals(dateType)) {
+        } else if (DATE_RANGE_WEEK.equals(dateType)) {
             return findPushStatisticByWeek(appkey);
-        } else if (month.equals(dateType)) {
+        } else if (DATE_RANGE_MONTH.equals(dateType)) {
             return findPushStatisticByMonth(appkey);
         } else {
             return null;
@@ -144,7 +147,7 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             List result = pushMsgStatisticRepository.findByAppkeyAndMsendedDateAfterOrderByMsendedDate(appkey, dateStr);
             toEntity(result, list);
         }
-        List<PushMsgStatisticVO> pushList = supplement(list);
+        List<PushMsgStatisticVO> pushList = supplement(list, DATE_RANGE_DAY);
         return pushList;
     }
 
@@ -160,12 +163,14 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             List result = pushMsgStatisticRepository.findByAppkeyAndMsendedDateAfterGroupByWeekOfYear(appkey, dateStr);
             toEntity(result, list);
         }
-        List<PushMsgStatisticVO> pushList = supplement(list);
+        List<PushMsgStatisticVO> pushList = supplement(list, DATE_RANGE_WEEK);
         return pushList;
     }
 
     public List<PushMsgStatisticVO> findPushStatisticByMonth(String appkey) {
-        String dateStr = DateUtil.toString(DateUtil.getBeginningOfYear(new Date()), PEPConstants.DEFAULT_DATE_FORMAT);
+        Date date = new Date();
+        Date beginMonth = DateUtil.addMonth(date, -7);
+        String dateStr = DateUtil.toString(beginMonth, PEPConstants.DEFAULT_MONTH_FORMAT);
         List list = new ArrayList<PushMsgStatisticVO>();
         if (appkey == null) {
             List result = pushMsgStatisticRepository.findByMsendedDateAfterGroupByMonthOfYear(dateStr);
@@ -174,7 +179,7 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             List result = pushMsgStatisticRepository.findByAppkeyAndMsendedDateAfterGroupByMonthOfYear(appkey, dateStr);
             toEntity(result, list);
         }
-        List<PushMsgStatisticVO> pushList = supplement(list);
+        List<PushMsgStatisticVO> pushList = supplement(list, DATE_RANGE_MONTH);
         return pushList;
     }
 
@@ -233,7 +238,7 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
         }
     }
 
-    private List<PushMsgStatisticVO> supplement(List<PushMsgStatisticVO> list) {
+    private List<PushMsgStatisticVO> supplement(List<PushMsgStatisticVO> list, String dateType) {
 
         Map<String, List<PushMsgStatisticVO>> listMap = new LinkedHashMap<>(50);
         for (PushMsgStatisticVO push : list) {
@@ -245,6 +250,17 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
                 pushList.add(push);
                 listMap.put(push.getMsendedDate(), pushList);
             }
+        }
+
+        //补齐当前分组无数据的情况
+        addVacancy(listMap, dateType);
+        //如果执行了手动刷新包含了当天的统计,前端只要七天数据,去除最早一天的。
+        Date today = new Date();
+        String dateStr = DateUtil.toString(today, PEPConstants.DEFAULT_DATE_FORMAT);
+        if (listMap.containsKey(dateStr)) {
+            Date firstDay = DateUtil.addDay(new Date(), -7);
+            String firstDayStr = DateUtil.toString(firstDay, PEPConstants.DEFAULT_DATE_FORMAT);
+            listMap.remove(firstDayStr);
         }
         List<PushMsgStatisticVO> pushAllList = new ArrayList<>();
 
@@ -304,5 +320,137 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             list.add(pushVO);
         }
         return list;
+    }
+
+    /**
+     * 获取根据每周分组集合
+     * @param startDate 开始日期
+     * @param endDate 结束日期
+     * @return 每周分组集合(2018-07-23~2018-07-29)
+     */
+    private  List<String> getBetweenWeeks(String startDate, String endDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat(PEPConstants.DEFAULT_DATE_FORMAT);
+        List<Map<String, String>> result = new ArrayList<>();
+        try {
+            //定义起始日期
+            Date start = sdf.parse(startDate);
+            //定义结束日期
+            Date end = sdf.parse(endDate);
+
+            Calendar tempStart = Calendar.getInstance();
+            tempStart.setTime(start);
+
+            Calendar tempEnd = Calendar.getInstance();
+            tempEnd.setTime(end);
+            while (tempStart.before(tempEnd) || tempStart.equals(tempEnd)) {
+                Map<String, String> map = new HashMap<>(10);
+                int we = tempStart.get(Calendar.DAY_OF_WEEK);
+                if (we == 2) {
+                    map.put("mon", sdf.format(tempStart.getTime()));
+                }
+                //检测map是否为空
+                if (map.isEmpty()) {
+                    tempStart.add(Calendar.DAY_OF_YEAR, 1);
+                } else {
+                    tempStart.add(Calendar.DAY_OF_YEAR, 6);
+                    map.put("week", sdf.format(tempStart.getTime()));
+                    result.add(map);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("supplement error:{}", e, e.getStackTrace());
+        }
+        List<String> weekList = new ArrayList<>();
+        for (Map<String, String> weekMap : result) {
+            weekList.add(weekMap.get("mon") + "～" + weekMap.get("week"));
+        }
+        if (weekList.size() == WEEK_RANGE) {
+            weekList.remove(0);
+        }
+        return weekList;
+    }
+
+    /**
+     * 获取月份或天日期范围
+     * @param minDate 开始日期
+     * @param maxDate 结束日期
+     * @param month 是否按照月份显示
+     * @return 按月显示月份(2018-08)
+     */
+    private List<String> getMonthOrDayBetween(String minDate, String maxDate, boolean month) {
+        List<String> result = new ArrayList<>();
+        //定义起始日期
+        try {
+            Date d1 = new SimpleDateFormat(PEPConstants.DEFAULT_DATE_FORMAT).parse(minDate);
+            //定义结束日期
+            Date d2 = new SimpleDateFormat(PEPConstants.DEFAULT_DATE_FORMAT).parse(maxDate);
+
+            //定义日期实例
+            Calendar dd = Calendar.getInstance();
+            //设置日期起始时间
+            dd.setTime(d1);
+            //判断是否到结束日期
+            while (dd.getTime().before(d2)) {
+                if (month) {
+                    SimpleDateFormat sdf = new SimpleDateFormat(PEPConstants.DEFAULT_MONTH_FORMAT);
+                    String str = sdf.format(dd.getTime());
+                    result.add(str);
+                    dd.add(Calendar.MONTH, 1);
+                } else {
+                    SimpleDateFormat sdf = new SimpleDateFormat(PEPConstants.DEFAULT_DATE_FORMAT);
+                    String str = sdf.format(dd.getTime());
+                    result.add(str);
+                    dd.add(Calendar.DATE, 1);
+                }
+
+            }
+        } catch (Exception e) {
+            LOGGER.error("supplement error:{}", e, e.getStackTrace());
+        }
+        return result;
+    }
+
+    private void addVacancy(Map<String, List<PushMsgStatisticVO>> listMap, String type) {
+        List<String> dayRange = new ArrayList<>();
+        if (type.equals(DATE_RANGE_DAY)) {
+            Date start = DateUtil.addDay(new Date(), -7);
+            String startStr = DateUtil.toString(start, PEPConstants.DEFAULT_DATE_FORMAT);
+            Date end = new Date();
+            String endStr = DateUtil.toString(end, PEPConstants.DEFAULT_DATE_FORMAT);
+            dayRange = getMonthOrDayBetween(startStr, endStr, false);
+        }
+
+        if (type.equals(DATE_RANGE_WEEK)) {
+            Date start = DateUtil.getDayOfWeek(DateUtil.addWeek(new Date(), -7), 1);
+            String startStr = DateUtil.toString(start, PEPConstants.DEFAULT_DATE_FORMAT);
+            Date end = DateUtil.addDay(new Date(), -1);
+            String endStr = DateUtil.toString(end, PEPConstants.DEFAULT_DATE_FORMAT);
+            dayRange = getBetweenWeeks(startStr, endStr);
+        }
+
+        if (type.equals(DATE_RANGE_MONTH)) {
+            Date date = new Date();
+            Date beginMonth = DateUtil.addMonth(date, -7);
+            String startStr = DateUtil.toString(beginMonth, PEPConstants.DEFAULT_DATE_FORMAT);
+            Date end = DateUtil.addDay(new Date(), -1);
+            String endStr = DateUtil.toString(end, PEPConstants.DEFAULT_DATE_FORMAT);
+            dayRange = getMonthOrDayBetween(startStr, endStr, true);
+
+        }
+
+        for (String range : dayRange) {
+            if (!listMap.containsKey(range)) {
+                PushMsgStatisticVO pushVO = new PushMsgStatisticVO();
+                pushVO.setMnum(0);
+                pushVO.setMstatus(PushMsgStatus.UNSEND.name());
+                pushVO.setPushMode("apns");
+                pushVO.setMsendedDate(range);
+                List<PushMsgStatisticVO> pushMsgStatisticVOS = new ArrayList<>();
+                pushMsgStatisticVOS.add(pushVO);
+                listMap.put(range, pushMsgStatisticVOS);
+            }
+        }
+
+
     }
 }

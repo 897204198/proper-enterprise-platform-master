@@ -57,7 +57,7 @@ public interface PushMsgStatisticRepository extends BaseJpaRepository<PushMsgSta
      * @return List 统计实体集合
      */
     @Query("SELECT SUM(S.mnum), S.mstatus, S.pushMode, S.month  FROM PushMsgStatisticEntity S "
-        + "WHERE S.msendedDate >= :msendDate GROUP BY S.month, S.mstatus, S.pushMode ORDER BY S.month")
+        + "WHERE S.month >= :msendDate GROUP BY S.month, S.mstatus, S.pushMode ORDER BY S.month")
     List findByMsendedDateAfterGroupByMonthOfYear(@Param("msendDate") String msendDate);
 
     /**
@@ -173,4 +173,18 @@ public interface PushMsgStatisticRepository extends BaseJpaRepository<PushMsgSta
         + "where S.appkey = :appKey "
         + "group by S.mstatus, S.appkey")
     List findByAppKey(@Param("appKey") String appKey);
+
+    /**
+     * 查询渠道统计总数
+     * @param appKey 渠道名称
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @return
+     */
+    @Query("SELECT SUM(b.mnum) FROM PushMsgStatisticEntity b "
+        + "where b.appkey = :appKey "
+        + "and b.msendedDate between :startDate and :endDate group by b.appkey")
+    String findPushCount(@Param("appKey") String appKey,
+                         @Param("startDate") String startDate,
+                         @Param("endDate") String endDate);
 }
