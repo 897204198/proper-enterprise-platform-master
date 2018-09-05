@@ -10,4 +10,5 @@ public interface PushChannelRepository extends BaseJpaRepository<PushChannelEnti
      * @return PushChannelDocument
      */
     PushChannelEntity findByChannelName(String channelName);
+
 }
