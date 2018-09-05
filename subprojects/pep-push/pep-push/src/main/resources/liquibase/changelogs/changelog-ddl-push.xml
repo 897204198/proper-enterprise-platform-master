@@ -216,4 +216,10 @@
             <column name="DEVICETYPE" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="201809051629" author="zl">
+        <addColumn tableName="PEP_PUSH_CHANNEL">
+            <column name="COLOR" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
