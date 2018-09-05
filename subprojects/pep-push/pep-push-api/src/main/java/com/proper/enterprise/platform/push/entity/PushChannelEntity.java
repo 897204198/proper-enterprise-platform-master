@@ -105,4 +105,5 @@ public class PushChannelEntity extends BaseEntity {
     public void setColor(String color) {
         this.color = color;
     }
+
 }

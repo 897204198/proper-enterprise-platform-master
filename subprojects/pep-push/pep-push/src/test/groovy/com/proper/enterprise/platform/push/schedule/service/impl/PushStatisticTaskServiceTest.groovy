@@ -14,7 +14,8 @@ import org.springframework.test.context.jdbc.Sql
 @Sql([
     "/com/proper/enterprise/platform/push/push-users.sql",
     "/com/proper/enterprise/platform/push/push-devices.sql",
-    "/com/proper/enterprise/platform/push/push-msgs.sql"
+    "/com/proper/enterprise/platform/push/push-msgs.sql",
+    "/com/proper/enterprise/platform/push/datadisc.sql"
 ])
 class PushStatisticTaskServiceTest extends PushAbstractTest {
     @Autowired
@@ -41,5 +42,24 @@ class PushStatisticTaskServiceTest extends PushAbstractTest {
         //PushMsgStatisticVO vo = array.get(0)
         //assert vo.getMnum() == 4
         //assert "2018-07-25".equals(vo.getMsendedDate())
+    }
+
+    @Test
+    void findPushStatisticByDayTest() {
+
+        List<PushMsgStatisticVO> pushList = pushMsgStatisticService.findByDateTypeAndAppkey("day", "")
+        assert pushList.size() == 42
+    }
+
+    @Test
+    void findPushStatisticByWeekTest() {
+        List<PushMsgStatisticVO> pushList = pushMsgStatisticService.findByDateTypeAndAppkey("week", "")
+        assert pushList.size() == 42
+    }
+
+    @Test
+    void findPushStatisticByMonth() {
+        List<PushMsgStatisticVO> pushList = pushMsgStatisticService.findByDateTypeAndAppkey("month", "")
+        assert pushList.size() == 42
     }
 }

@@ -40,6 +40,9 @@ public class PushChannelVO extends BaseVO {
     @JsonProperty("color")
     private String color;
 
+    @JsonProperty("channelCount")
+    private String channelCount;
+
     public String getChannelName() {
         return channelName;
     }
@@ -110,6 +113,14 @@ public class PushChannelVO extends BaseVO {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public String getChannelCount() {
+        return channelCount;
+    }
+
+    public void setChannelCount(String channelCount) {
+        this.channelCount = channelCount;
     }
 
     public static class Android implements Serializable {
@@ -280,6 +291,18 @@ public class PushChannelVO extends BaseVO {
             pushChannelEntity.setAndroid(JSONUtil.toJSON(pushChannelVO.getAndroid()));
             pushChannelEntity.setIos(JSONUtil.toJSON(pushChannelVO.getIos()));
             return pushChannelEntity;
+        } catch (Exception e) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.push.formatting.error"));
+        }
+    }
+
+    public static PushChannelVO convertEntityToVo(PushChannelEntity pushChannelEntity, String channelCount) {
+        try {
+            PushChannelVO pushChannelVO = BeanUtil.convert(pushChannelEntity, PushChannelVO.class);
+            pushChannelVO.setAndroid(JSONUtil.parse(pushChannelEntity.getAndroid(), PushChannelVO.Android.class));
+            pushChannelVO.setIos(JSONUtil.parse(pushChannelEntity.getIos(), PushChannelVO.IOS.class));
+            pushChannelVO.setChannelCount(channelCount);
+            return pushChannelVO;
         } catch (Exception e) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.formatting.error"));
         }
