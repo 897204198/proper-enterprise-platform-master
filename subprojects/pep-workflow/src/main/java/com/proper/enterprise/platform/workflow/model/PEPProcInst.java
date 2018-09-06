@@ -7,7 +7,7 @@ import com.proper.enterprise.platform.core.utils.*;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
-import com.proper.enterprise.platform.workflow.util.TmplUtil;
+import com.proper.enterprise.platform.core.utils.TmplUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import org.flowable.bpmn.model.ValuedDataObject;

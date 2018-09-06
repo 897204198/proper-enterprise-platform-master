@@ -15,6 +15,10 @@ public final class PEPConstants {
      */
     public static final Charset DEFAULT_CHARSET = Charset.forName(ConfCenter.get("core.default_charset", "UTF-8"));
     /**
+     * 默认年份日期表示格式
+     */
+    public static final String DEFAULT_YEAR_FORMAT = ConfCenter.get("core.default_year_format", "yyyy");
+    /**
      * 默认月份日期表示格式
      */
     public static final String DEFAULT_MONTH_FORMAT = ConfCenter.get("core.default_month_format", "yyyy-MM");

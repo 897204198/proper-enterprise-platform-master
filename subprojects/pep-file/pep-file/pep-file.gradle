@@ -4,4 +4,6 @@ dependencies {
 
     runtime libraries.commons_fileupload
 
+    testCompile project(':pep-test')
+    testRuntime project(':pep-dfs-mongo')
 }
