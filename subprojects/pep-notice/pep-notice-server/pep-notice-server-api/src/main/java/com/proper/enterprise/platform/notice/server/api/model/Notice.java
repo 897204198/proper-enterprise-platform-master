@@ -1,115 +1,59 @@
 package com.proper.enterprise.platform.notice.server.api.model;
 
-import com.proper.enterprise.platform.notice.server.api.enums.NoticeStatus;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 
-import java.util.Map;
-
-public interface Notice {
-
-    /**
-     * 获取消息Id
-     *
-     * @return 消息Id
-     */
-    String getId();
+/**
+ * 消息接口 所有权限
+ */
+public interface Notice extends BusinessNotice {
 
     /**
-     * 获取消息批次号
+     * 设置同一批消息的批次Id
      *
-     * @return 消息批次号
+     * @param batchId 同一批消息的批次Id
      */
-    String getBatchId();
+    void setBatchId(String batchId);
 
     /**
-     * 获取应用标识
+     * 设置消息类型
      *
-     * @return 应用标识
+     * @param noticeType 消息类型
      */
-    String getAppKey();
+    void setNoticeType(NoticeType noticeType);
 
     /**
-     * 获取消息标题
+     * 设置应用唯一标识
      *
-     * @return 消息标题
+     * @param appKey 应用唯一标识
      */
-    String getTitle();
+    void setAppKey(String appKey);
 
     /**
-     * 获取消息内容
+     * 设置发送目标唯一标识
      *
-     * @return 消息内容
+     * @param targetTo 发送目标唯一标识
      */
-    String getContent();
+    void setTargetTo(String targetTo);
 
     /**
-     * 获取消息目标唯一标识
+     * 设置异常信息
      *
-     * @return 消息目标唯一标识
+     * @param errorMsg 异常信息
      */
-    String getTargetTo();
+    void setErrorMsg(String errorMsg);
 
     /**
-     * 获取消息目标扩展信息
+     * 设置状态
      *
-     * @return 消息目标扩展信息
+     * @param status 状态
      */
-    Map<String, Object> getTargetExtMsgMap();
+    void setStatus(NoticeStatus status);
 
     /**
-     * 批量设置消息目标扩展信息
+     * 设置重试次数
      *
-     * @param targetExtMsgMap 消息目标扩展信息
+     * @param retryCount 重试次数
      */
-    void setAllTargetExtMsg(Map<String, Object> targetExtMsgMap);
-
-    /**
-     * 设置消息目标扩展信息
-     *
-     * @param key 扩展key
-     * @param msg 扩展内容
-     */
-    void setTargetExtMsg(String key, Object msg);
-
-    /**
-     * 获取消息扩展信息
-     *
-     * @return 消息扩展信息
-     */
-    Map<String, Object> getNoticeExtMsgMap();
-
-    /**
-     * 批量设置消息扩展信息
-     *
-     * @param noticeExtMsgMap 消息目标扩展信息
-     */
-    void setAllNoticeExtMsg(Map<String, Object> noticeExtMsgMap);
-
-    /**
-     * 设置消息扩展信息
-     *
-     * @param key 扩展key
-     * @param msg 扩展内容
-     */
-    void setNoticeExtMsg(String key, Object msg);
-
-    /**
-     * 获取消息异常
-     *
-     * @return 消息异常
-     */
-    String getErrorMsg();
-
-    /**
-     * 获取消息重试次数
-     *
-     * @return 消息重试次数
-     */
-    Integer getRetryCount();
-
-    /**
-     * 获取消息状态
-     *
-     * @return 消息状态
-     */
-    NoticeStatus getStatus();
+    void setRetryCount(Integer retryCount);
 }

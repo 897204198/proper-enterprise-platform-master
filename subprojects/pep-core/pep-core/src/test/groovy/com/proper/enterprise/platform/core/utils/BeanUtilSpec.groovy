@@ -24,7 +24,14 @@ class BeanUtilSpec extends Specification {
         b.setCv(c)
         b.setCstr('a')
 
+        def map = [:]
+        map.put('name', 'bname')
+        map.put('strs', strs)
+        map.put('cs', cs)
+        map.put('cv', c)
+
         A a = BeanUtil.convert(b, A.class)
+        A a2 = BeanUtil.convert(map, A.class, ['cv', 'cstr'] as String[])
         expect:
         assert a.getName() == "bname"
         assert a.getStrs().size() == 1
@@ -33,6 +40,14 @@ class BeanUtilSpec extends Specification {
         assert a.getCs()[0].sort == 1
         assert a.getCv().getSort() == 1
         assert null == a.getCstr()
+
+        assert a2.getName() == "bname"
+        assert a2.getStrs().size() == 1
+        assert a2.getStrs()[0] == "1"
+        assert a2.getCs().size() == 1
+        assert a2.getCs()[0].sort == 1
+        assert null == a2.getCv()
+        assert null == a2.getCstr()
     }
 
 }

@@ -15,15 +15,15 @@ public interface NoticeConfigurator {
      * @param config 配置信息
      * @return config 配置信息
      */
-    Map post(@NotEmpty(message = "notice.server.param.appKey.cantBeEmpty") String appKey,
-             @NotEmpty(message = "notice.server.config.content.cantBeEmpty") Map config);
+    Map post(@NotEmpty(message = "{notice.server.param.appKey.cantBeEmpty}") String appKey,
+             @NotEmpty(message = "{notice.server.config.content.cantBeEmpty}") Map<String, Object> config);
 
     /**
      * 删除配置
      *
      * @param appKey 应用唯一标识
      */
-    void delete(@NotEmpty(message = "notice.server.param.appKey.cantBeEmpty") String appKey);
+    void delete(@NotEmpty(message = "{notice.server.param.appKey.cantBeEmpty}") String appKey);
 
     /**
      * 修改配置
@@ -32,8 +32,8 @@ public interface NoticeConfigurator {
      * @param config 配置信息
      * @return config 修改后配置信息
      */
-    Map put(@NotEmpty(message = "notice.server.param.appKey.cantBeEmpty") String appKey,
-            @NotEmpty(message = "notice.server.config.content.cantBeEmpty") Map config);
+    Map put(@NotEmpty(message = "{notice.server.param.appKey.cantBeEmpty}") String appKey,
+            @NotEmpty(message = "{notice.server.config.content.cantBeEmpty}") Map<String, Object> config);
 
     /**
      * 获取配置
@@ -41,5 +41,5 @@ public interface NoticeConfigurator {
      * @param appKey 应用唯一标识
      * @return 配置信息
      */
-    Map get(@NotEmpty(message = "notice.server.param.appKey.cantBeEmpty") String appKey);
+    Map get(@NotEmpty(message = "{notice.server.param.appKey.cantBeEmpty}") String appKey);
 }

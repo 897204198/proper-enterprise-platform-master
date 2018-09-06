@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.AccessTokenDAO;
 import com.proper.enterprise.platform.api.auth.model.AccessToken;
 import com.proper.enterprise.platform.auth.common.jpa.entity.AccessTokenEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.AccessTokenRepository;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -39,7 +40,9 @@ public class AccessTokenDAOImpl implements AccessTokenDAO {
 
     @Override
     public AccessToken saveOrUpdate(AccessToken accessToken) {
-        AccessTokenEntity entity = repository.findOne(accessToken.getId());
+        AccessTokenEntity entity = StringUtil.isEmpty(accessToken.getId())
+            ? null
+            : repository.findOne(accessToken.getId());
         if (entity == null) {
             entity = new AccessTokenEntity();
         }

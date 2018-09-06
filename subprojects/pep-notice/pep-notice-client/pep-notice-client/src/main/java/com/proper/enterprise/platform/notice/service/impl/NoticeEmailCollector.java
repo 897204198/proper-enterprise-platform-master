@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.notice.service.impl;
 
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.notice.server.api.enums.NoticeType;
-import com.proper.enterprise.platform.notice.server.api.request.NoticeRequest;
-import com.proper.enterprise.platform.notice.server.api.request.NoticeTarget;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
+import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
+import com.proper.enterprise.platform.notice.server.sdk.request.NoticeTarget;
 import com.proper.enterprise.platform.notice.service.NoticeCollector;
 import com.proper.enterprise.platform.template.vo.TemplateVO;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class NoticeEmailCollector implements NoticeCollector {
         noticeVO.setTitle(templateVO.getEmailTitle());
         noticeVO.setContent(templateVO.getEmailTemplate());
         noticeVO.setNoticeType(noticeType);
-        noticeVO.addNoticeExtMsg("from", fromUserId);
+        noticeVO.setNoticeExtMsg("from", fromUserId);
         return noticeVO;
     }
 

@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.notice.service.impl;
 
 import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
-import com.proper.enterprise.platform.notice.server.api.enums.NoticeType;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import com.proper.enterprise.platform.notice.service.NoticeCollector;
 
 public class CollectorBuilder {
@@ -15,7 +15,7 @@ public class CollectorBuilder {
         } else if (noticeType.equals(NoticeType.SMS)) {
             return (NoticeCollector) PEPApplicationContext.getBean("noticeSmsCollector");
         } else {
-            throw new ErrMsgException("can not find Notice Channel " + noticeType);
+            throw new ErrMsgException("can not find ReadOnlyNotice Channel " + noticeType);
         }
     }
 

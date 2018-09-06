@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.notice.service;
 
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.notice.server.api.enums.NoticeType;
-import com.proper.enterprise.platform.notice.server.api.request.NoticeRequest;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
+import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
 import com.proper.enterprise.platform.template.vo.TemplateVO;
 
 import java.util.Map;

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="2018-09-05-notice-data-dic-add" author="zjl">
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="PEP_NOTICE_TYPE"/>
+            <column name="DD_CATALOG_CODE" value="NOTICE_TYPE"/>
+            <column name="DD_CATALOG_NAME" value="消息类型"/>
+            <column name="DD_CATALOG_ORDER" value="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_type_email"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="NOTICE_TYPE"/>
+            <column name="DD_CODE" value="EMAIL"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="邮件类型"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_type_sms"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="NOTICE_TYPE"/>
+            <column name="DD_CODE" value="SMS"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="短信类型"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_type_push"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="NOTICE_TYPE"/>
+            <column name="DD_CODE" value="PUSH"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="推送类型"/>
+            <column name="DD_ORDER" valueNumeric="3"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="PEP_NOTICE_STATUS"/>
+            <column name="DD_CATALOG_CODE" value="NOTICE_STATUS"/>
+            <column name="DD_CATALOG_NAME" value="消息状态"/>
+            <column name="DD_CATALOG_ORDER" value="2"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_status_success"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="NOTICE_STATUS"/>
+            <column name="DD_CODE" value="SUCCESS"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="发送成功"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_status_pending"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="NOTICE_STATUS"/>
+            <column name="DD_CODE" value="PENDING"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="发送中"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_status_retry"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="NOTICE_STATUS"/>
+            <column name="DD_CODE" value="RETRY"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="待重试"/>
+            <column name="DD_ORDER" valueNumeric="3"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_status_fail"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="NOTICE_STATUS"/>
+            <column name="DD_CODE" value="FAIL"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="发送失败"/>
+            <column name="DD_ORDER" valueNumeric="4"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

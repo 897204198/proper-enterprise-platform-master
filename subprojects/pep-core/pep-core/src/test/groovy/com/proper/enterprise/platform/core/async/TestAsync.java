@@ -9,6 +9,9 @@ public class TestAsync extends AbstractTest {
     @Autowired
     private TestAsyncBean testAsyncBean;
 
+    @Autowired
+    private TestAsyncService testAsyncService;
+
     private volatile ThreadValid threadValid = new ThreadValid();
 
     public static class ThreadValid {
@@ -24,4 +27,12 @@ public class TestAsync extends AbstractTest {
         }
     }
 
+    @Test
+    public void testServiceAsync() throws InterruptedException {
+        testAsyncService.testAsync(threadValid);
+        Thread.sleep(5 * 1000);
+        if (1 == threadValid.value) {
+            throw new RuntimeException();
+        }
+    }
 }
