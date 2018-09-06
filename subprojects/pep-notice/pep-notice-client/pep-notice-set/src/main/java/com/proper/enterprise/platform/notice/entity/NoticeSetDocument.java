@@ -21,9 +21,9 @@ public class NoticeSetDocument extends BaseDocument {
     private String userId;
 
     /**
-     *  通知类型
+     *  目录
      */
-    private String noticeType;
+    private String catalog;
 
     private boolean isPush;
 
@@ -39,12 +39,12 @@ public class NoticeSetDocument extends BaseDocument {
         this.userId = userId;
     }
 
-    public String getNoticeType() {
-        return noticeType;
+    public String getCatalog() {
+        return catalog;
     }
 
-    public void setNoticeType(String noticeType) {
-        this.noticeType = noticeType;
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
     }
 
     public boolean isPush() {

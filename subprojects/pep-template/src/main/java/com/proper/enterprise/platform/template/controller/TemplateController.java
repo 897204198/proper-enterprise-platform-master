@@ -14,13 +14,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/notice/template")
 public class TemplateController extends BaseController {
 
+    private TemplateService templateService;
+
     @Autowired
-    TemplateService templateService;
+    public TemplateController(TemplateService templateService) {
+        this.templateService = templateService;
+    }
 
     @AuthcIgnore
     @GetMapping(path = "/tips/{code}")
     public ResponseEntity<String> getTipInfo(@PathVariable String code) {
-        return responseOfGet(templateService.getTips(code).getPushTemplate());
+        return responseOfGet(templateService.getTips(code));
     }
 
     @PostMapping
@@ -55,10 +59,9 @@ public class TemplateController extends BaseController {
                                @RequestParam(defaultValue = "") String name,
                                @RequestParam(defaultValue = "") String title,
                                @RequestParam(defaultValue = "") String template,
-                               @RequestParam(defaultValue = "") String description,
-                               @RequestParam(defaultValue = "") String type) {
+                               @RequestParam(defaultValue = "") String description) {
         return isPageSearch()
-            ? responseOfGet(templateService.findPagination(code, name, title, template, description, type)) :
+            ? responseOfGet(templateService.findPagination(code, name, title, template, description)) :
             responseOfGet(templateService.findAll());
     }
 

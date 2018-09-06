@@ -7,9 +7,7 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.notice.client.NoticeSender;
-import com.proper.enterprise.platform.template.service.TemplateService;
-import com.proper.enterprise.platform.template.vo.TemplateVO;
+import com.proper.enterprise.platform.notice.service.NoticeSender;
 import com.proper.enterprise.platform.workflow.api.AbstractWorkFlowNoticeSupport;
 import com.proper.enterprise.platform.workflow.api.TaskAssigneeOrCandidateNotice;
 import com.proper.enterprise.platform.workflow.util.VariableUtil;
@@ -27,7 +25,8 @@ import java.util.Set;
 
 
 @Service("taskAssigneeOrCandidateNotice")
-public class TaskAssigneeOrCandidateNoticeImpl extends AbstractWorkFlowNoticeSupport implements TaskAssigneeOrCandidateNotice {
+public class TaskAssigneeOrCandidateNoticeImpl extends AbstractWorkFlowNoticeSupport implements
+    TaskAssigneeOrCandidateNotice {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskAssigneeOrCandidateNoticeImpl.class);
 
@@ -37,17 +36,13 @@ public class TaskAssigneeOrCandidateNoticeImpl extends AbstractWorkFlowNoticeSup
 
     private NoticeSender noticeSender;
 
-    private TemplateService templateService;
-
     @Autowired
     TaskAssigneeOrCandidateNoticeImpl(NoticeSender noticeSender,
                                       UserGroupDao userGroupDao,
-                                      RoleDao roleDao,
-                                      TemplateService templateService) {
+                                      RoleDao roleDao) {
         this.userGroupDao = userGroupDao;
         this.roleDao = roleDao;
         this.noticeSender = noticeSender;
-        this.templateService = templateService;
     }
 
     @Override
@@ -66,9 +61,8 @@ public class TaskAssigneeOrCandidateNoticeImpl extends AbstractWorkFlowNoticeSup
             custom.put("url", buildTaskUrl(task) + "&from=app");
             custom.put("title", task.getName());
             String noticeCode = (String) task.getVariable(TASK_ASSIGNEE_NOTICE_CODE_KEY);
-            TemplateVO templateVO = templateService.getTemplates(StringUtil.isEmpty(noticeCode) ? "TaskAssignee" :
-                noticeCode, templateParams);
-            noticeSender.sendNotice(userIds, templateVO, custom);
+            noticeSender.sendNotice(userIds, StringUtil.isEmpty(noticeCode) ? "TaskAssignee" :
+                noticeCode, templateParams, custom);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);
         }

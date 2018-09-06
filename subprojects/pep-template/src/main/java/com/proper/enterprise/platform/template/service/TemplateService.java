@@ -2,8 +2,10 @@ package com.proper.enterprise.platform.template.service;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
+import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 import com.proper.enterprise.platform.template.vo.TemplateVO;
 
+import java.util.List;
 import java.util.Map;
 
 public interface TemplateService extends BaseJpaService<TemplateVO, String> {
@@ -11,19 +13,38 @@ public interface TemplateService extends BaseJpaService<TemplateVO, String> {
     /**
      * 查询指定业务的模板集合
      *
-     * @param code           模板标识
+     * @param code           关键字
      * @param templateParams 模板参数
      * @return 模板集合
      */
-    TemplateVO getTemplates(String code, Map<String, Object> templateParams);
+    Map<String, TemplateVO> getTemplates(String code, Map<String, Object> templateParams);
 
     /**
-     * 获得纯文本类型的小贴士
+     * 查询指定业务的模板集合
      *
-     * @param code 模板标识
-     * @return 小贴士
+     * @param code 关键字
+     * @return 模板集合
      */
-    TemplateVO getTips(String code);
+    Map<String, TemplateVO> getTemplates(String code);
+
+    /**
+     * 查询指定类型的模板集合
+     *
+     * @param code           关键字
+     * @param noticeTypes    类型
+     * @param templateParams 模板参数
+     * @return 模板集合
+     */
+    Map<String, TemplateVO> getTemplatesByCodeAndTypesWithinCatalog(String code, List<DataDicLiteBean> noticeTypes,
+                                                                    Map<String, Object> templateParams);
+
+    /**
+     * 获得纯文本类型的正文
+     *
+     * @param code 关键字
+     * @return 正文
+     */
+    String getTips(String code);
 
     /**
      * 保存模板
@@ -60,23 +81,13 @@ public interface TemplateService extends BaseJpaService<TemplateVO, String> {
     /**
      * 获得模板分页信息
      *
-     * @param code        标识
+     * @param code        关键字
      * @param name        名称
      * @param title       标题
      * @param template    模板
      * @param description 解释
-     * @param type        类型
      * @return 模板分页信息
      */
-    DataTrunk<TemplateVO> findPagination(String code, String name, String title, String template, String description,
-                                         String type);
-
-    /**
-     * 获取模板
-     *
-     * @param code 标识
-     * @return 模板
-     */
-    TemplateVO getTemplateByCode(String code);
+    DataTrunk<TemplateVO> findPagination(String code, String name, String title, String template, String description);
 
 }

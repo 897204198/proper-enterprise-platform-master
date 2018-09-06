@@ -3,7 +3,6 @@ dependencies {
             libraries.spring_context_support,
             libraries.nutz,
             libraries.spring_jms,
-            libraries.activemq_broker,
             libraries.push_vendor_apns,
             libraries.push_vendor_huawei,
             libraries.push_vendor_xiaomi

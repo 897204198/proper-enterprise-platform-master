@@ -1,8 +1,9 @@
 package com.proper.enterprise.platform.template.repository;
 
 import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
-import com.proper.enterprise.platform.template.entity.TemplateEntity;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
+import com.proper.enterprise.platform.template.entity.TemplateEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -14,19 +15,28 @@ public interface TemplateRepository extends BaseJpaRepository<TemplateEntity, St
     /**
      * 查询指定业务的模板列表
      *
-     * @param catelog 业务
-     * @param code    模板标识
+     * @param code    关键字
      * @return 模板列表
      */
-    List<TemplateEntity> findByCatelogAndCode(DataDicLiteBean catelog, String code);
+    List<TemplateEntity> findByCode(String code);
 
     /**
-     * 查询指定业务的模板列表
+     * 查询指定类型且目录不为空的模板列表
      *
-     * @param code    模板标识
+     * @param code   关键字
+     * @param type   类型集合
      * @return 模板列表
      */
-    TemplateEntity findByCode(String code);
+    List<TemplateEntity> findByCodeAndTypeInAndCatalogIsNotNull(String code, List<DataDicLiteBean> type);
+
+    /**
+     * 查询指定类型的模板
+     *
+     * @param code 关键字
+     * @param type 模板类型
+     * @return 模板
+     */
+    TemplateEntity findByCodeAndType(String code, DataDicLite type);
 
     /**
      * 分页
@@ -41,12 +51,8 @@ public interface TemplateRepository extends BaseJpaRepository<TemplateEntity, St
      */
     @Query("select t from TemplateEntity t where t.code like %?1% "
                                         + "and t.name like %?2% "
-                                        + "and t.pushTitle like %?3% "
-                                        + "and t.pushTemplate like %?4% "
-                                        + "and t.emailTitle like %?3% "
-                                        + "and t.emailTemplate like %?4% "
-                                        + "and t.smsTitle like %?3% "
-                                        + "and t.smsTemplate like %?4% "
+                                        + "and t.title like %?3% "
+                                        + "and t.template like %?4% "
                                         + "and t.description like %?5% ")
     Page<TemplateEntity> findPagination(String code,
                                         String name,

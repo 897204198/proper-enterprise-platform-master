@@ -22,7 +22,7 @@ class NoticeServiceClientTest extends AbstractTest {
         userIds.add("test_bpm_user01")
         userIds.add("test_bpm_user02")
         userIds.add("test_bpm_user03")
-        Map<String, NoticeSetDocument> result = noticeSetService.findMapByNoticeTypeAndUserIds("BPM", userIds)
+        Map<String, NoticeSetDocument> result = noticeSetService.findMapByCatalogAndUserIds("BPM", userIds)
         NoticeSetDocument noticeSetDocument = result.get("test_bpm_user01")
         assert noticeSetDocument.email == true
         assert noticeSetDocument.push == false
@@ -41,7 +41,7 @@ class NoticeServiceClientTest extends AbstractTest {
     void init() {
         NoticeSetDocument noticeSetDocument1 = new NoticeSetDocument()
         noticeSetDocument1.setUserId("test_bpm_user01")
-        noticeSetDocument1.setNoticeType("BPM")
+        noticeSetDocument1.setCatalog("BPM")
         noticeSetDocument1.setPush(false)
         noticeSetDocument1.setSms(true)
         noticeSetDocument1.setEmail(true)
@@ -49,7 +49,7 @@ class NoticeServiceClientTest extends AbstractTest {
 
         NoticeSetDocument noticeSetDocument2 = new NoticeSetDocument()
         noticeSetDocument2.setUserId("test_bpm_user02")
-        noticeSetDocument2.setNoticeType("BPM")
+        noticeSetDocument2.setCatalog("BPM")
         noticeSetDocument2.setPush(false)
         noticeSetDocument2.setSms(true)
         noticeSetDocument2.setEmail(true)

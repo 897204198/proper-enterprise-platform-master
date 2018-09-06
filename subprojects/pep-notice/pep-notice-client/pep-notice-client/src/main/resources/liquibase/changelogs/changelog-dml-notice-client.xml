@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="wanghp" id="data-dic-20180905-01">
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_type_push"/>
+            <column name="CREATE_TIME" value="2019-09-05 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2019-09-05 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="NOTICE_TYPE"/>
+            <column name="DD_CODE" value="PUSH"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="推送"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+            <column name="ENABLE" value="Y"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_type_email"/>
+            <column name="CREATE_TIME" value="2019-09-05 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2019-09-05 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="NOTICE_TYPE"/>
+            <column name="DD_CODE" value="EMAIL"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="邮件"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+            <column name="ENABLE" value="Y"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_type_sms"/>
+            <column name="CREATE_TIME" value="2019-09-05 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2019-09-05 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="NOTICE_TYPE"/>
+            <column name="DD_CODE" value="SMS"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="短信"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+            <column name="ENABLE" value="Y"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

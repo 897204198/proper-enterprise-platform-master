@@ -11,14 +11,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "PEP_NOTICE_TEMPLATE")
+@Table(name = "PEP_TEMPLATE")
 @CacheEntity
 public class TemplateEntity extends BaseEntity {
 
     /**
      * 标识
      */
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String code;
 
     /**
@@ -28,50 +28,33 @@ public class TemplateEntity extends BaseEntity {
     private String name;
 
     /**
-     * 推送标题
+     * 标题
      */
     @Column(nullable = true, columnDefinition = "VARCHAR(255) DEFAULT ''")
-    private String pushTitle;
-    /**
-     * 短信标题
-     */
-    @Column(nullable = true, columnDefinition = "VARCHAR(255) DEFAULT ''")
-    private String smsTitle;
+    private String title;
 
     /**
-     * 邮件标题
+     * 模板
      */
-    @Column(nullable = true, columnDefinition = "VARCHAR(255) DEFAULT ''")
-    private String emailTitle;
+    @Column(nullable = true, columnDefinition = "VARCHAR(1000) DEFAULT ''")
+    private String template;
 
     /**
-     * 推送模板
-     */
-    @Column(nullable = true, columnDefinition = "VARCHAR(255) DEFAULT ''")
-    private String pushTemplate;
-
-    /**
-     * 短信模板
-     */
-    @Column(nullable = true, columnDefinition = "VARCHAR(255) DEFAULT ''")
-    private String smsTemplate;
-
-    /**
-     * 邮件模板
-     */
-    @Column(nullable = true, columnDefinition = "VARCHAR(255) DEFAULT ''")
-    private String emailTemplate;
-
-    /**
-     * 目录
+     * 目录（对应个人设置）
      */
     @Convert(converter = DataDicLiteConverter.class)
-    private DataDicLite catelog;
+    private DataDicLite catalog;
+
+    /**
+     * 类型
+     */
+    @Convert(converter = DataDicLiteConverter.class)
+    private DataDicLite type;
 
     /**
      * 解释
      */
-    @Column
+    @Column(nullable = true, columnDefinition = "VARCHAR(800) DEFAULT ''")
     private String description;
 
     public String getCode() {
@@ -90,60 +73,12 @@ public class TemplateEntity extends BaseEntity {
         this.name = name;
     }
 
-    public String getPushTitle() {
-        return pushTitle;
+    public DataDicLite getCatalog() {
+        return catalog;
     }
 
-    public void setPushTitle(String pushTitle) {
-        this.pushTitle = pushTitle;
-    }
-
-    public String getSmsTitle() {
-        return smsTitle;
-    }
-
-    public void setSmsTitle(String smsTitle) {
-        this.smsTitle = smsTitle;
-    }
-
-    public String getEmailTitle() {
-        return emailTitle;
-    }
-
-    public void setEmailTitle(String emailTitle) {
-        this.emailTitle = emailTitle;
-    }
-
-    public String getPushTemplate() {
-        return pushTemplate;
-    }
-
-    public void setPushTemplate(String pushTemplate) {
-        this.pushTemplate = pushTemplate;
-    }
-
-    public String getSmsTemplate() {
-        return smsTemplate;
-    }
-
-    public void setSmsTemplate(String smsTemplate) {
-        this.smsTemplate = smsTemplate;
-    }
-
-    public String getEmailTemplate() {
-        return emailTemplate;
-    }
-
-    public void setEmailTemplate(String emailTemplate) {
-        this.emailTemplate = emailTemplate;
-    }
-
-    public DataDicLite getCatelog() {
-        return catelog;
-    }
-
-    public void setCatelog(DataDicLite catelog) {
-        this.catelog = catelog;
+    public void setCatalog(DataDicLite catalog) {
+        this.catalog = catalog;
     }
 
     public String getDescription() {
@@ -152,5 +87,29 @@ public class TemplateEntity extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
+    public DataDicLite getType() {
+        return type;
+    }
+
+    public void setType(DataDicLite type) {
+        this.type = type;
     }
 }

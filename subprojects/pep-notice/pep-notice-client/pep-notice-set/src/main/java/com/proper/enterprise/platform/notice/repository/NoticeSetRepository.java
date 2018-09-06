@@ -19,19 +19,19 @@ public interface NoticeSetRepository extends MongoRepository<NoticeSetDocument, 
     /**
      * 查询指定通知类型下的人员设置
      *
-     * @param noticeType 通知类型
+     * @param catalog 通知类型
      * @param userId     当前人员编号
      * @return 通知设置列表
      */
-    List<NoticeSetDocument> findByNoticeTypeAndUserId(String noticeType, String userId);
+    List<NoticeSetDocument> findByCatalogAndUserId(String catalog, String userId);
 
     /**
      * 查询指定通知类型下的人员设置
      *
-     * @param noticeType 通知类型
+     * @param catalog 通知类型
      * @param userId     当前人员列表
      * @return 通知设置列表
      */
-    List<NoticeSetDocument> findByNoticeTypeAndUserIdIn(String noticeType, Set<String> userId);
+    List<NoticeSetDocument> findByCatalogAndUserIdIn(String catalog, Set<String> userId);
 
 }

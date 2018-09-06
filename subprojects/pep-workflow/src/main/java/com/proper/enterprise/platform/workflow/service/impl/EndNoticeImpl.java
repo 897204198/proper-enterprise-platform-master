@@ -3,9 +3,7 @@ package com.proper.enterprise.platform.workflow.service.impl;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.notice.client.NoticeSender;
-import com.proper.enterprise.platform.template.service.TemplateService;
-import com.proper.enterprise.platform.template.vo.TemplateVO;
+import com.proper.enterprise.platform.notice.service.NoticeSender;
 import com.proper.enterprise.platform.workflow.api.EndNotice;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import org.flowable.engine.RepositoryService;
@@ -34,13 +32,11 @@ public class EndNoticeImpl implements EndNotice {
 
     private NoticeSender noticeSender;
 
-    private TemplateService templateService;
-
     @Autowired
-    EndNoticeImpl(UserDao userDao, RepositoryService repositoryService, TemplateService templateService) {
+    EndNoticeImpl(UserDao userDao, RepositoryService repositoryService, NoticeSender noticeSender) {
         this.userDao = userDao;
         this.repositoryService = repositoryService;
-        this.templateService = templateService;
+        this.noticeSender = noticeSender;
     }
 
     @Override
@@ -61,11 +57,9 @@ public class EndNoticeImpl implements EndNotice {
                 ? (String) execution.getVariable(endNoticeUserKey)
                 : "";
             String endNoticeCode = (String) execution.getVariable(END_NOTICE_CODE_KEY);
-
-            TemplateVO templateVO = templateService.getTemplates(StringUtil.isEmpty(endNoticeCode) ? "EndCode" :
-                endNoticeCode, templateParams);
             noticeSender.sendNotice(StringUtil.isEmpty(endNoticeUserId) ? initiator : endNoticeUserId,
-                templateVO, custom);
+                StringUtil.isEmpty(endNoticeCode) ? "EndCode" :
+                    endNoticeCode, templateParams, custom);
         } catch (Exception e) {
             LOGGER.error("endNoticeError", e);
         }

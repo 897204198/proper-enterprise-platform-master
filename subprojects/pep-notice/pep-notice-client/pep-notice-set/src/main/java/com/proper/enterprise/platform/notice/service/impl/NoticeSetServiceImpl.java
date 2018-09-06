@@ -20,29 +20,15 @@ public class NoticeSetServiceImpl implements NoticeSetService {
     private static final String NOTICE_TYPE_BPM = "BPM";
 
     @Override
-    public NoticeSetDocument findByNoticeTypeAndUserId(String noticeType, String userId) {
-        List<NoticeSetDocument> list = noticeSetRepository.findByNoticeTypeAndUserId(noticeType, userId);
-        NoticeSetDocument noticeSetEntity;
-        if (!list.isEmpty()) {
-            noticeSetEntity = list.get(0);
-        } else {
-            noticeSetEntity = new NoticeSetDocument();
-            noticeSetEntity.setPush(true);
-            noticeSetEntity.setEmail(true);
-        }
-        return noticeSetEntity;
-    }
-
-    @Override
-    public Map<String, NoticeSetDocument> findMapByNoticeTypeAndUserIds(String noticeType, Set<String> userIds) {
-        List<NoticeSetDocument> list = noticeSetRepository.findByNoticeTypeAndUserIdIn(noticeType, userIds);
+    public Map<String, NoticeSetDocument> findMapByCatalogAndUserIds(String catalog, Set<String> userIds) {
+        List<NoticeSetDocument> list = noticeSetRepository.findByCatalogAndUserIdIn(catalog, userIds);
         Map<String, NoticeSetDocument> result = new HashMap<>(1);
         if (!list.isEmpty()) {
             for (NoticeSetDocument noticeSetDocument : list) {
                 result.put(noticeSetDocument.getUserId(), noticeSetDocument);
             }
         }
-        NoticeSetDocument defaultSet = getDefaultByNoticeType(noticeType);
+        NoticeSetDocument defaultSet = getDefaultByCatalog(catalog);
         Set<String> sameUsers = result.keySet();
         userIds.removeAll(sameUsers);
         for (String userId : userIds) {
@@ -51,9 +37,9 @@ public class NoticeSetServiceImpl implements NoticeSetService {
         return result;
     }
 
-    private NoticeSetDocument getDefaultByNoticeType(String noticeType) {
+    private NoticeSetDocument getDefaultByCatalog(String catalog) {
         NoticeSetDocument noticeSetDocument = new NoticeSetDocument(true, false, false);
-        if (NOTICE_TYPE_BPM.equals(noticeType)) {
+        if (NOTICE_TYPE_BPM.equals(catalog)) {
             noticeSetDocument = new NoticeSetDocument(true, true, false);
         }
         return noticeSetDocument;

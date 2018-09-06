@@ -8,9 +8,7 @@ import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.notice.client.NoticeSender;
-import com.proper.enterprise.platform.template.service.TemplateService;
-import com.proper.enterprise.platform.template.vo.TemplateVO;
+import com.proper.enterprise.platform.notice.service.NoticeSender;
 import com.proper.enterprise.platform.workflow.api.AbstractWorkFlowNoticeSupport;
 import com.proper.enterprise.platform.workflow.api.TaskAssigneeOrCandidateNotice;
 import com.proper.enterprise.platform.workflow.service.impl.TaskAssigneeOrCandidateNoticeImpl;
@@ -44,17 +42,13 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
 
     private NoticeSender noticeSender;
 
-    private TemplateService templateService;
-
     @Autowired
     TaskAssigneeNoticeImpl(NoticeSender noticeSender,
                            UserGroupDao userGroupDao,
-                           RoleDao roleDao,
-                           TemplateService templateService) {
+                           RoleDao roleDao) {
         this.userGroupDao = userGroupDao;
         this.roleDao = roleDao;
         this.noticeSender = noticeSender;
-        this.templateService = templateService;
     }
 
     @Override
@@ -74,14 +68,12 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
             custom.put("title", task.getName());
             String noticeCode = (String) task.getVariable(TASK_ASSIGNEE_NOTICE_CODE_KEY);
             Authentication.setCurrentUserId(buildTaskUrl(task));
-            TemplateVO templateVO = templateService.getTemplates(StringUtil.isEmpty(noticeCode) ? "TaskAssignee" :
-                noticeCode, templateParams);
-            noticeSender.sendNotice(userIds, templateVO, custom);
+            noticeSender.sendNotice(userIds, StringUtil.isEmpty(noticeCode) ? "TaskAssignee" :
+                noticeCode, templateParams, custom);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);
         }
     }
-
 
     protected Set<String> queryUserIds(TaskEntity task) {
         Set<String> userIds = new HashSet<>();
