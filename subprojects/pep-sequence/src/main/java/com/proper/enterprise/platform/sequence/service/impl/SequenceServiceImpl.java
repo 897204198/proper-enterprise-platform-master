@@ -46,8 +46,8 @@ public class SequenceServiceImpl implements SequenceService {
             String[] idArr = ids.split(",");
             List<String> idList = new ArrayList<>();
             Collections.addAll(idList, idArr);
-            Collection<SequenceEntity> list = sequenceRepository.findAll(idList);
-            sequenceRepository.delete(list);
+            Collection<SequenceEntity> list = sequenceRepository.findAllById(idList);
+            sequenceRepository.deleteAll(list);
             return list.size() > 0;
         }
         return false;
