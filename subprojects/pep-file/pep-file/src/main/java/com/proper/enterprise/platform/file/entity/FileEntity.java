@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.file.entity;
 
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.file.api.File;
 
 import javax.persistence.*;
@@ -79,6 +80,9 @@ public class FileEntity extends BaseEntity implements File {
     }
 
     public Map<String, String> getFileExtMsgMap() {
+        if (StringUtil.isEmpty(fileExtMsg)) {
+            return null;
+        }
         try {
             return JSONUtil.parse(fileExtMsg, Map.class);
         } catch (IOException e) {
