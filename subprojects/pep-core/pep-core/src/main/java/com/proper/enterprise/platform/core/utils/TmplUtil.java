@@ -1,6 +1,4 @@
-package com.proper.enterprise.platform.workflow.util;
-
-import com.proper.enterprise.platform.core.utils.StringUtil;
+package com.proper.enterprise.platform.core.utils;
 
 import java.util.Map;
 import java.util.regex.Matcher;
