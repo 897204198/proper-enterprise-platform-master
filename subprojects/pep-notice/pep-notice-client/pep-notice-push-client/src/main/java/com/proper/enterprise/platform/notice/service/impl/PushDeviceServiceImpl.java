@@ -22,14 +22,9 @@ public class PushDeviceServiceImpl implements PushDeviceService {
     @Override
     public void saveStartpush(String userid, String deviceid, String pushToken, String appkey,
                               PushDeviceType deviceType, PushMode pushMode, String deviceOtherInfo) {
-
-
-        //TODO Deviceid does it exist.
         if (StringUtil.isNotEmpty(deviceid)) {
             bindDevice(userid, deviceid, pushToken, appkey, deviceType, pushMode, deviceOtherInfo);
-
         }
-
     }
 
     @Override
@@ -48,7 +43,7 @@ public class PushDeviceServiceImpl implements PushDeviceService {
     }
 
     /**
-     * 设备信息操作方法。*
+     * 设备信息操作方法。
      * @param userid 用户id
      * @param deviceid 设备id
      * @param pushToken 推送的token,由手机端第三方推送框架产生，用于第三方推送惟一标识一台设备，用于向第三方式推送服务器推送消息

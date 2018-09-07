@@ -21,6 +21,9 @@ class EmailNoticeConfiguratorTest extends AbstractTest {
     }
 
     void addData() {
+        deleteData("appkey")
+        deleteData("icmp")
+
         def config = [:]
         config.put('mailServerHost', 'localhost')
         config.put('mailServerPort', 25)

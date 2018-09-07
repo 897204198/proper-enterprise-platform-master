@@ -3,7 +3,8 @@ dependencies {
             project(':pep-auth-api'),
             project(':pep-notice-server-sdk'),
             project(':pep-notice-set'),
-            project(':pep-template')
+            project(':pep-template'),
+            project(':pep-notice-push-client')
     testCompile project(':pep-test'),
             project(':pep-auth-common-jpa')
 }

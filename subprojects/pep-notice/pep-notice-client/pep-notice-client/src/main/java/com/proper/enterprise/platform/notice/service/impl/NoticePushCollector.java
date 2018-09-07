@@ -3,9 +3,12 @@ package com.proper.enterprise.platform.notice.service.impl;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.notice.document.NoticeDocument;
 import com.proper.enterprise.platform.notice.entity.NoticeSetDocument;
+import com.proper.enterprise.platform.notice.entity.PushDeviceEntity;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeTarget;
 import com.proper.enterprise.platform.notice.service.NoticeCollector;
+import com.proper.enterprise.platform.notice.service.PushDeviceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,9 @@ import java.util.Set;
 
 @Service
 public class NoticePushCollector implements NoticeCollector {
+
+    @Autowired
+    private PushDeviceService pushDeviceService;
 
     @Value("${pep.push.packageName:unUsed}")
     private String packageName;
@@ -43,7 +49,12 @@ public class NoticePushCollector implements NoticeCollector {
             NoticeTarget targetModel = new NoticeTarget();
             targetModel.setTo(user.getUsername());
             noticeDocument.setTarget(targetModel);
-            //TODO add device
+            PushDeviceEntity pushDeviceEntity = pushDeviceService.findDeviceByUserId(user.getId());
+            if (pushDeviceEntity != null) {
+                targetModel.setTargetExtMsg("pushToken", pushDeviceEntity.getPushToken());
+                targetModel.setTargetExtMsg("deviceType", pushDeviceEntity.getDevicetype());
+                targetModel.setTargetExtMsg("pushMode", pushDeviceEntity.getPushMode());
+            }
         }
         return noticeDocument;
     }

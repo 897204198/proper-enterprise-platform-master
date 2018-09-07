@@ -46,7 +46,6 @@ public class PushDeviceController {
             if (StringUtil.isNotEmpty(strPushMode)) {
                 pushMode = Enum.valueOf(PushMode.class, strPushMode);
             }
-
             service.saveStartpush(userid, deviceid, pushToken, appkey, deviceType, pushMode, deviceOtherInfo);
         } catch (Exception ex) {
             throw new ErrMsgException("system error");
