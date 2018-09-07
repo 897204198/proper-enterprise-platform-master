@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.push.schedule.service.impl
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.push.api.openapi.service.PushChannelService
 import com.proper.enterprise.platform.push.entity.PushChannelEntity
+import com.proper.enterprise.platform.push.repository.PushChannelRepository
 import com.proper.enterprise.platform.push.vo.PushChannelVO
 import com.proper.enterprise.platform.sys.i18n.I18NUtil
 import com.proper.enterprise.platform.test.AbstractTest
@@ -15,6 +16,9 @@ class PushChannelTest extends AbstractTest {
 
     @Autowired
     private PushChannelService pushChannelService;
+
+    @Autowired
+    private PushChannelRepository pushChannelRepository;
 
     def url = "/push/channels"
 
@@ -208,5 +212,42 @@ class PushChannelTest extends AbstractTest {
         pushChannelDocument.setIos("{ \"envProduct\": true, \"keystorePassword\": \"1234\", \"topic\": \"sss.sss.sss.sss\" }")
         return pushChannelDocument
     }
+
+    @Test
+    void testFindEnableChannel() {
+        PushChannelVO pushChannelVo = new PushChannelVO()
+        pushChannelVo.setId("aaa")
+        pushChannelVo.setChannelDesc("医院")
+        pushChannelVo.setChannelName("MobileOA")
+        pushChannelVo.setDiplomaId("aaa")
+        pushChannelVo.setMaxSendCount(1)
+        pushChannelVo.setMsgSaveDays(1)
+        pushChannelVo.setSecretKey("aaaaa")
+        pushChannelVo.setAndroid(getAndroid())
+        pushChannelVo.setIos(getIOS())
+        pushChannelVo.setEnable(true)
+        pushChannelVo.setColor("red")
+
+        PushChannelVO pushChannelVo2 = new PushChannelVO()
+        pushChannelVo2.setId("bbb")
+        pushChannelVo2.setChannelDesc("银行")
+        pushChannelVo2.setChannelName("MobileOB")
+        pushChannelVo2.setDiplomaId("bbb")
+        pushChannelVo2.setMaxSendCount(1)
+        pushChannelVo2.setMsgSaveDays(1)
+        pushChannelVo2.setSecretKey("bbbbb")
+        pushChannelVo2.setAndroid(getAndroid())
+        pushChannelVo2.setIos(getIOS())
+        pushChannelVo2.setEnable(false)
+        pushChannelVo2.setColor("blue")
+        addChannel(pushChannelVo)
+        addChannel(pushChannelVo2)
+
+        List<PushChannelEntity> pushList = pushChannelRepository.findByEnable(true)
+        assert pushList.size() == 1
+
+
+    }
+
 
 }
