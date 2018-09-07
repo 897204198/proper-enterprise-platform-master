@@ -15,9 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PushChannelServiceImpl implements PushChannelService {
@@ -66,7 +64,7 @@ public class PushChannelServiceImpl implements PushChannelService {
         String dateStr = DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATE_FORMAT);
         Date endtDate = new Date();
         String endDateStr = DateUtil.toString(endtDate, PEPConstants.DEFAULT_DATE_FORMAT);
-        Iterable<PushChannelEntity> pushChannelEntities = pushChannelRepository.findAll();
+        Iterable<PushChannelEntity> pushChannelEntities = pushChannelRepository.findByEnable(true);
         List<PushChannelVO> vos = new ArrayList<>();
         for (PushChannelEntity entity : pushChannelEntities) {
             String channelCount = pushMsgStatisticRepository.findPushCount(entity.getChannelName(), dateStr, endDateStr);
@@ -76,6 +74,15 @@ public class PushChannelServiceImpl implements PushChannelService {
             }
             vos.add(PushChannelVO.convertEntityToVo(entity, channelCount));
         }
+        Collections.sort(vos, new Comparator<PushChannelVO>() {
+            @Override
+            public int compare(PushChannelVO o1, PushChannelVO o2) {
+                if (Integer.parseInt(o1.getChannelCount()) > Integer.parseInt(o2.getChannelCount())) {
+                    return -1;
+                }
+                return 1;
+            }
+        });
         result.setData(vos);
         result.setCount(vos.size());
         return result;

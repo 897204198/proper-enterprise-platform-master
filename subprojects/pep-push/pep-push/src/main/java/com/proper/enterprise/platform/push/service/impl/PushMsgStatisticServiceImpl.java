@@ -253,18 +253,19 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
         }
 
         //补齐当前分组无数据的情况
-        addVacancy(listMap, dateType);
+        Map<String, List<PushMsgStatisticVO>> supplementMap = addVacancy(listMap, dateType);
         //如果执行了手动刷新包含了当天的统计,前端只要七天数据,去除最早一天的。
         Date today = new Date();
         String dateStr = DateUtil.toString(today, PEPConstants.DEFAULT_DATE_FORMAT);
         if (listMap.containsKey(dateStr)) {
             Date firstDay = DateUtil.addDay(new Date(), -7);
             String firstDayStr = DateUtil.toString(firstDay, PEPConstants.DEFAULT_DATE_FORMAT);
-            listMap.remove(firstDayStr);
+            supplementMap.remove(firstDayStr);
+            supplementMap.put(dateStr, listMap.get(dateStr));
         }
         List<PushMsgStatisticVO> pushAllList = new ArrayList<>();
 
-        for (Map.Entry<String, List<PushMsgStatisticVO>> entry : listMap.entrySet()) {
+        for (Map.Entry<String, List<PushMsgStatisticVO>> entry : supplementMap.entrySet()) {
             pushAllList.addAll(completion(entry.getValue()));
         }
         return pushAllList;
@@ -407,10 +408,13 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
         } catch (Exception e) {
             LOGGER.error("supplement error:{}", e, e.getStackTrace());
         }
+        if (month) {
+            result.add(DateUtil.toString(new Date(), PEPConstants.DEFAULT_MONTH_FORMAT));
+        }
         return result;
     }
 
-    private void addVacancy(Map<String, List<PushMsgStatisticVO>> listMap, String type) {
+    private Map<String, List<PushMsgStatisticVO>> addVacancy(Map<String, List<PushMsgStatisticVO>> listMap, String type) {
         List<String> dayRange = new ArrayList<>();
         if (type.equals(DATE_RANGE_DAY)) {
             Date start = DateUtil.addDay(new Date(), -7);
@@ -430,13 +434,15 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
 
         if (type.equals(DATE_RANGE_MONTH)) {
             Date date = new Date();
-            Date beginMonth = DateUtil.addMonth(date, -7);
+            Date beginMonth = DateUtil.addMonth(date, -6);
             String startStr = DateUtil.toString(beginMonth, PEPConstants.DEFAULT_DATE_FORMAT);
             Date end = DateUtil.addDay(new Date(), -1);
             String endStr = DateUtil.toString(end, PEPConstants.DEFAULT_DATE_FORMAT);
             dayRange = getMonthOrDayBetween(startStr, endStr, true);
 
         }
+
+        Map<String, List<PushMsgStatisticVO>> tempListMap = new LinkedHashMap<>();
 
         for (String range : dayRange) {
             if (!listMap.containsKey(range)) {
@@ -447,10 +453,12 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
                 pushVO.setMsendedDate(range);
                 List<PushMsgStatisticVO> pushMsgStatisticVOS = new ArrayList<>();
                 pushMsgStatisticVOS.add(pushVO);
-                listMap.put(range, pushMsgStatisticVOS);
+                tempListMap.put(range, pushMsgStatisticVOS);
+            } else {
+                tempListMap.put(range, listMap.get(range));
             }
         }
-
+        return tempListMap;
 
     }
 }
