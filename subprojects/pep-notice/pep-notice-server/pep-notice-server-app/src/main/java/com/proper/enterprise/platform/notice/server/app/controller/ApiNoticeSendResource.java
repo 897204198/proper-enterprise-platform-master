@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.model.Notice;
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender;
@@ -35,7 +36,7 @@ public class ApiNoticeSendResource extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity sendNotice(@RequestParam String accessToken, @RequestBody NoticeRequest noticeRequest) {
+    public ResponseEntity sendNotice(@RequestParam String accessToken, @RequestBody NoticeRequest noticeRequest) throws NoticeException {
         if (validAppKeyIsNull(accessToken)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }

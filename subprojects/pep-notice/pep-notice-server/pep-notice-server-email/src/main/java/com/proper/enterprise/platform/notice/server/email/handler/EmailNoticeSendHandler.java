@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.notice.server.email.handler;
 
-import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
@@ -37,7 +37,7 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
     }
 
     @Override
-    public void send(ReadOnlyNotice notice) {
+    public void send(ReadOnlyNotice notice) throws NoticeException {
         LOGGER.info("start email: " + JSONUtil.toJSONIgnoreException(notice));
         JavaMailSenderImpl javaMailSender = (JavaMailSenderImpl) noticeConfigurator.getJavaMailSender(notice.getAppKey());
         MimeMessage mailMessage = javaMailSender.createMimeMessage();
@@ -83,10 +83,10 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
             javaMailSender.send(mailMessage);
         } catch (MessagingException me) {
             LOGGER.error("NoticeServiceImpl.emailNotice[MessagingException]:{}", me);
-            throw new ErrMsgException(i18NService.getMessage("pep.email.notice.send.error"));
+            throw new NoticeException(i18NService.getMessage("pep.email.notice.send.error"), me);
         } catch (Exception e) {
             LOGGER.error("NoticeServiceImpl.emailNotice[Exception]:{}", e);
-            throw new ErrMsgException(i18NService.getMessage("pep.email.notice.send.error"));
+            throw new NoticeException(i18NService.getMessage("pep.email.notice.send.error"), e);
         }
     }
 

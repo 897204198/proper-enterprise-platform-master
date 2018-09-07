@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender;
 import com.proper.enterprise.platform.notice.server.app.convert.RequestConvert;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
@@ -43,7 +44,7 @@ public class NoticeSenderImpl implements NoticeSender {
     }
 
     @Override
-    public List<Notice> beforeSend(String appKey, NoticeRequest noticeRequest) {
+    public List<Notice> beforeSend(String appKey, NoticeRequest noticeRequest) throws NoticeException {
         List<Notice> notices = RequestConvert.convert(noticeRequest);
         NoticeSendHandler noticeSendHandler = NoticeSenderFactory.product(noticeRequest.getNoticeType());
         for (Notice notice : notices) {

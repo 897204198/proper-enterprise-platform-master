@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.notice.server.api.handler;
 
+import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
@@ -11,8 +12,10 @@ public interface NoticeSendHandler {
      * 根据消息对象发送消息SingletonMap
      *
      * @param notice 消息对象
+     * @throws NoticeException 消息异常 业务发送失败后抛出
      */
-    void send(ReadOnlyNotice notice);
+
+    void send(ReadOnlyNotice notice) throws NoticeException;
 
     /**
      * 发送前处理
@@ -21,8 +24,9 @@ public interface NoticeSendHandler {
      * 也可根据BusinessNotice所具有的权限 对消息进行赋值
      *
      * @param notice 业务消息模型
+     * @throws NoticeException 消息异常 业务处理失败后抛出
      */
-    void beforeSend(BusinessNotice notice);
+    void beforeSend(BusinessNotice notice) throws NoticeException;
 
     /**
      * 发送后处理
@@ -39,6 +43,7 @@ public interface NoticeSendHandler {
      *
      * @param notice 消息对象
      * @return 消息发送状态
+     * @throws NoticeException 消息异常  业务获取状态失败后抛出
      */
-    NoticeStatus getStatus(ReadOnlyNotice notice);
+    NoticeStatus getStatus(ReadOnlyNotice notice) throws NoticeException;
 }

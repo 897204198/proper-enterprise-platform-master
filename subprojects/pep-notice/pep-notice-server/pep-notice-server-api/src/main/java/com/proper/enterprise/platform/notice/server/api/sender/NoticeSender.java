@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.notice.server.api.sender;
 
+import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.api.model.Notice;
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
@@ -21,10 +22,11 @@ public interface NoticeSender {
      * @param appKey        应用唯一标识
      * @param noticeRequest 消息发送Request
      * @return 消息对象集合
+     * @throws NoticeException 消息异常 业务处理失败后抛出
      */
     @Validated(value = NoticeRequest.NoticeSendApi.class)
     List<Notice> beforeSend(@NotEmpty(message = "{notice.server.param.appKey.cantBeEmpty}") String appKey,
-                            @Valid NoticeRequest noticeRequest);
+                            @Valid NoticeRequest noticeRequest) throws NoticeException;
 
     /**
      * 消息发送
