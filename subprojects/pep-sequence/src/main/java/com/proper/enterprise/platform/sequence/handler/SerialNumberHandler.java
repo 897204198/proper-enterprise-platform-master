@@ -8,8 +8,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
-
 @Service
 @CacheDuration(cacheName = "pep.cache.serialNumberHandler")
 public class SerialNumberHandler {
@@ -31,15 +29,10 @@ public class SerialNumberHandler {
      */
     public Long getNextID(String atomicName) {
         Cache cache = getCache();
-        Optional<Cache.ValueWrapper> valueWrapper = Optional.ofNullable(cache.get(atomicName));
-        if (!valueWrapper.isPresent()) {
-            cache.putIfAbsent(atomicName, 0L);
-        }
         synchronized (SerialNumberHandler.class) {
-            valueWrapper = Optional.ofNullable(cache.get(atomicName));
-            Long object =  Optional.ofNullable((Long) valueWrapper.get().get()).orElse(0L);
-            cache.put(atomicName, object + 1);
-            return object + 1;
+            Long currentId = getCurrentID(atomicName);
+            cache.put(atomicName, currentId + 1);
+            return currentId + 1;
         }
     }
 
@@ -51,12 +44,12 @@ public class SerialNumberHandler {
      */
     public Long getCurrentID(String atomicName) {
         Cache cache = getCache();
-        Optional<Cache.ValueWrapper> valueWrapper = Optional.ofNullable(cache.get(atomicName));
-        if (!valueWrapper.isPresent()) {
+        Cache.ValueWrapper valueWrapper = cache.get(atomicName);
+        if (valueWrapper == null) {
+            cache.putIfAbsent(atomicName, 0L);
             return 0L;
-        } else {
-            return Optional.ofNullable((Long) valueWrapper.get().get()).orElse(0L);
         }
+        return (Long) valueWrapper.get();
     }
 
     /**
@@ -76,7 +69,8 @@ public class SerialNumberHandler {
      * @return Cache
      */
     private Cache getCache() {
-        Assert.notNull(cacheManager.getCache(CACHE_NAME), I18NUtil.getMessage("sequence.cache.get.fail"));
-        return cacheManager.getCache(CACHE_NAME);
+        Cache cache = cacheManager.getCache(CACHE_NAME);
+        Assert.notNull(cache, I18NUtil.getMessage("sequence.cache.get.fail"));
+        return cache;
     }
 }
