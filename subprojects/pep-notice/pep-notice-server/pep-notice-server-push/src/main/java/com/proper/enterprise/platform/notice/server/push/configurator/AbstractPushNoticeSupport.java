@@ -7,8 +7,6 @@ import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfi
 import com.proper.enterprise.platform.notice.server.push.document.PushDocument;
 import com.proper.enterprise.platform.notice.server.push.repository.PushConfigMongoRepository;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,18 +14,19 @@ import java.util.Map;
 
 public abstract class AbstractPushNoticeSupport extends AbstractPushChannelSupport implements NoticeConfigurator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPushNoticeSupport.class);
-
     @Autowired
     private PushConfigMongoRepository pushRepository;
 
 
     @Override
     public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {
-        PushDocument pushDocument = BeanUtil.convert(config, PushDocument.class);
-        pushDocument.setAppKey(appKey);
-        pushDocument.setPushChannel(getPushChannel(request));
-        pushRepository.save(pushDocument);
+        if (null == config.get("appSecret")) {
+            throw new ErrMsgException("appSecret can't be null");
+        }
+        if (null == config.get("pushPackage")) {
+            throw new ErrMsgException("pushPackage can't be null");
+        }
+        pushRepository.save(buildPushDocument(appKey, config, request));
         return config;
     }
 
@@ -43,9 +42,14 @@ public abstract class AbstractPushNoticeSupport extends AbstractPushChannelSuppo
         if (existDocument == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.notice.config.notExist"));
         }
+        if (null == config.get("appSecret")) {
+            throw new ErrMsgException("appSecret can't be null");
+        }
+        if (null == config.get("pushPackage")) {
+            throw new ErrMsgException("pushPackage can't be null");
+        }
         String pushDocumentId = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(request)).getId();
-        PushDocument pushDocument = BeanUtil.convert(config, PushDocument.class);
-        pushDocument.setAppKey(appKey);
+        PushDocument pushDocument = buildPushDocument(appKey, config, request);
         pushDocument.setId(pushDocumentId);
         return JSONUtil.parseIgnoreException(pushRepository.save(pushDocument).toString(), Map.class);
     }
@@ -60,5 +64,12 @@ public abstract class AbstractPushNoticeSupport extends AbstractPushChannelSuppo
         return null;
     }
 
+
+    protected PushDocument buildPushDocument(String appKey, Map<String, Object> config, HttpServletRequest request) {
+        PushDocument pushDocument = BeanUtil.convert(config, PushDocument.class);
+        pushDocument.setAppKey(appKey);
+        pushDocument.setPushChannel(getPushChannel(request));
+        return pushDocument;
+    }
 
 }
