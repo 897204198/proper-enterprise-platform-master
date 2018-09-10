@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.notice.server.push.document.PushDocument;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface PushRepository extends MongoRepository<PushDocument, String> {
+public interface PushConfigMongoRepository extends MongoRepository<PushDocument, String> {
 
     /**
      * 根据appKey删除配置
