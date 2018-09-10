@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 
-public abstract class AbstractPushNoticeConfigurator {
+public abstract class AbstractPushChannelSupport {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPushNoticeConfigurator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPushChannelSupport.class);
 
     /**
      * 在request中获取推送渠道

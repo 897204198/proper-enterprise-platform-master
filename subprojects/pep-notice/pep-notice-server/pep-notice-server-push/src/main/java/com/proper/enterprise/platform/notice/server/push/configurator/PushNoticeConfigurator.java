@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Service("pushNoticeConfigurator")
-public class PushNoticeConfigurator extends AbstractPushNoticeConfigurator implements NoticeConfigurator {
+public class PushNoticeConfigurator extends AbstractPushChannelSupport implements NoticeConfigurator {
 
     @Override
     public Map post(String appKey, Map config, HttpServletRequest request) {
