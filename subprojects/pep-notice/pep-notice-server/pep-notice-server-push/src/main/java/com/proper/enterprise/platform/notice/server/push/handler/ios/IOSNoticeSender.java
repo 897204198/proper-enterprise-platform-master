@@ -37,7 +37,10 @@ public class IOSNoticeSender extends AbstractPushNoticeSender implements NoticeS
             payloadBuilder.setBadgeNumber(badgeNumber);
         }
         final String payload = payloadBuilder.buildWithDefaultMaximumLength();
-        SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(notice.getTargetTo(), "a", payload);
+        SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(notice.getTargetTo(),
+            iosNoticeClient
+                .getConf(notice.getAppKey())
+                .getPushPackage(), payload);
         iosNoticeClient.getClient(notice.getAppKey()).sendNotification(pushNotification);
     }
 

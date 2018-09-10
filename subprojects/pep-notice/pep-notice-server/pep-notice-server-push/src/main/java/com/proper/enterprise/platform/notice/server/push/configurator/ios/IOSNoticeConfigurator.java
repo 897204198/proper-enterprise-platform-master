@@ -3,7 +3,8 @@ package com.proper.enterprise.platform.notice.server.push.configurator.ios;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.notice.server.push.configurator.AbstractPushNoticeSupport;
-import com.proper.enterprise.platform.notice.server.push.document.PushDocument;
+import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
+import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class IOSNoticeConfigurator extends AbstractPushNoticeSupport implements 
             throw new ErrMsgException("certificateId can't be null");
         }
         Map postConf = super.post(appKey, config, request);
-        PushDocument pushDocument = buildPushDocument(appKey, config, request);
+        PushConfDocument pushDocument = buildPushDocument(appKey, config, request);
         try {
             apnsClientPool.put(appKey, initClient(pushDocument));
         } catch (IOException e) {
@@ -63,7 +64,7 @@ public class IOSNoticeConfigurator extends AbstractPushNoticeSupport implements 
     @Override
     public Map put(String appKey, Map<String, Object> config, HttpServletRequest request) {
         Map updateConf = super.put(appKey, config, request);
-        PushDocument pushDocument = buildPushDocument(appKey, config, request);
+        PushConfDocument pushDocument = buildPushDocument(appKey, config, request);
         try {
             ApnsClient apnsClient = apnsClientPool.get(appKey);
             if (null != apnsClient) {
@@ -82,7 +83,7 @@ public class IOSNoticeConfigurator extends AbstractPushNoticeSupport implements 
         return super.get(appKey, request);
     }
 
-    private ApnsClient initClient(PushDocument pushDocument) throws IOException {
+    private ApnsClient initClient(PushConfDocument pushDocument) throws IOException {
         String applePushUrl = envProduct ? ApnsClientBuilder.PRODUCTION_APNS_HOST
             : ApnsClientBuilder.DEVELOPMENT_APNS_HOST;
         ApnsClientBuilder builder = new ApnsClientBuilder().setApnsServer(applePushUrl);
@@ -96,5 +97,10 @@ public class IOSNoticeConfigurator extends AbstractPushNoticeSupport implements 
     @Override
     public ApnsClient getClient(String appKey) {
         return apnsClientPool.get(appKey);
+    }
+
+    @Override
+    public PushConfDocument getConf(String appKey) {
+        return getConf(appKey, PushChannelEnum.IOS);
     }
 }

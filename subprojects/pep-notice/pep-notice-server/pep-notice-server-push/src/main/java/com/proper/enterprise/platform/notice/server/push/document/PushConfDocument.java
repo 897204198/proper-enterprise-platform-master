@@ -6,11 +6,11 @@ import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "PEP_NOTICE_PUSH")
+@Document(collection = "PEP_NOTICE_PUSH_CONF")
 @CompoundIndex(unique = true, name = "UK_APPKEY_PUSHCHANNEL", def = "{'appKey': 1, 'pushChannel': -1}")
-public class PushDocument extends BaseDocument {
+public class PushConfDocument extends BaseDocument {
 
-    public PushDocument() {
+    public PushConfDocument() {
     }
 
     /**
