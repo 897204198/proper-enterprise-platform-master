@@ -3,10 +3,9 @@ package com.proper.enterprise.platform.notice.server.email.handler
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler
 import com.proper.enterprise.platform.notice.server.api.model.Notice
-import com.proper.enterprise.platform.notice.server.email.entity.NoticeEntity
+import com.proper.enterprise.platform.notice.server.email.entity.MockNotice
 import com.proper.enterprise.platform.sys.i18n.I18NUtil
 import com.proper.enterprise.platform.test.AbstractTest
-import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -42,7 +41,7 @@ class EmailNoticeSendHandlerTest extends AbstractTest {
             emailNoticeConfigurator.post('icmp', config)
 
             //测试邮件全参数配置
-            Notice noticeOperation2 = new NoticeEntity()
+            Notice noticeOperation2 = new MockNotice()
             noticeOperation2.setAppKey('icmp')
             noticeOperation2.setTargetTo('收件人<test@test.cn>,收件人<test2@test.cn>')
             noticeOperation2.setTargetExtMsg('cc', '抄送<test2@test.cn>')
@@ -56,14 +55,14 @@ class EmailNoticeSendHandlerTest extends AbstractTest {
             emailNoticeSender.send(noticeOperation2)
 
             // 测试正常发送
-            Notice noticeOperation1 = new NoticeEntity()
+            Notice noticeOperation1 = new MockNotice()
             noticeOperation1.setAppKey('pep')
             noticeOperation1.setTargetTo('收件人<test2@test.cn>')
             noticeOperation1.setTitle('测试邮件')
             noticeOperation1.setContent('测试邮件, 请勿回复')
             emailNoticeSender.send(noticeOperation1)
 
-            Notice noticeOperation3 = new NoticeEntity()
+            Notice noticeOperation3 = new MockNotice()
             noticeOperation3.setAppKey('pep')
             emailNoticeSender.send(noticeOperation3)
         } catch (Exception e) {
