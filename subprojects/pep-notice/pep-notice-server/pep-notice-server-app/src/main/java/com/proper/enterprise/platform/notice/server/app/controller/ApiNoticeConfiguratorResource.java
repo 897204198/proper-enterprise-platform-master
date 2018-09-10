@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class ApiNoticeConfiguratorResource extends BaseController {
     }
 
     @PostMapping("/{noticeType}")
-    public ResponseEntity post(@PathVariable NoticeType noticeType, @RequestParam String accessToken, @RequestBody Map config) {
+    public ResponseEntity post(@PathVariable NoticeType noticeType, @RequestParam String accessToken, @RequestBody Map config, HttpServletRequest request) {
         if (validAppKeyIsNull(accessToken)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
@@ -33,7 +34,7 @@ public class ApiNoticeConfiguratorResource extends BaseController {
     }
 
     @DeleteMapping("/{noticeType}")
-    public ResponseEntity delete(@PathVariable NoticeType noticeType, @RequestParam String accessToken) {
+    public ResponseEntity delete(@PathVariable NoticeType noticeType, @RequestParam String accessToken, HttpServletRequest request) {
         if (validAppKeyIsNull(accessToken)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
@@ -44,7 +45,7 @@ public class ApiNoticeConfiguratorResource extends BaseController {
     }
 
     @PutMapping("/{noticeType}")
-    public ResponseEntity put(@PathVariable NoticeType noticeType, @RequestParam String accessToken, @RequestBody Map config) {
+    public ResponseEntity put(@PathVariable NoticeType noticeType, @RequestParam String accessToken, @RequestBody Map config, HttpServletRequest request) {
         if (validAppKeyIsNull(accessToken)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
@@ -54,7 +55,7 @@ public class ApiNoticeConfiguratorResource extends BaseController {
     }
 
     @GetMapping("/{noticeType}")
-    public ResponseEntity get(@PathVariable NoticeType noticeType, @RequestParam String accessToken) {
+    public ResponseEntity get(@PathVariable NoticeType noticeType, @RequestParam String accessToken, HttpServletRequest request) {
         if (validAppKeyIsNull(accessToken)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--数据变更-->
+    <!--初始化OOPSEARCH 数据-->
+    <changeSet author="generator(generator)" id="notice-server-push_generator_dml_oopsearch_init">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="notice-server-push_test"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <!--别名 与controller中的参数对应-->
+            <column name="COLUMN_ALIAS" value="test"/>
+            <!--字段的描述(展示于回显)-->
+            <column name="COLUMN_DESC" value="测试"/>
+            <column name="COLUMN_TYPE" value="int"/>
+            <!--模块名称需要提前与前台确认-->
+            <column name="MODULE_NAME" value="notice-server-push"/>
+            <!--在表中的列名称-->
+            <column name="SEARCH_COLUMN" value="test"/>
+            <!--表名-->
+            <column name="TABLE_NAME" value="pep_notice_server_push"/>
+            <!--controller对应的url(支持restful)-->
+            <column name="URL" value="/notice-server-push"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
