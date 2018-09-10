@@ -38,6 +38,11 @@ public class PushConfDocument extends BaseDocument {
      */
     private String certificateId;
 
+    /**
+     * 推送应用ID(华为)
+     */
+    private String appId;
+
     public String getAppKey() {
         return appKey;
     }
@@ -76,6 +81,14 @@ public class PushConfDocument extends BaseDocument {
 
     public void setCertificateId(String certificateId) {
         this.certificateId = certificateId;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
     @Override
