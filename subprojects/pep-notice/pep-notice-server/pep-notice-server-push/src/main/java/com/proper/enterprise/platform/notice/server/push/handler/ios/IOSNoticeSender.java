@@ -1,5 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.handler.ios;
 
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
@@ -59,7 +61,10 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
 
     @Override
     public void beforeSend(BusinessNotice notice) throws NoticeException {
-
+        iosNoticeClient.getClient(notice.getAppKey());
+        if (StringUtil.isEmpty(iosNoticeClient.getPushPackage(notice.getAppKey()))) {
+            throw new ErrMsgException("ios push can't send without pushPackage");
+        }
     }
 
     @Override
