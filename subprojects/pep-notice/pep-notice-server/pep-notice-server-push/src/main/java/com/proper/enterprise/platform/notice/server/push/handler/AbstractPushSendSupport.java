@@ -62,6 +62,26 @@ public abstract class AbstractPushSendSupport {
     }
 
     /**
+     * 是否透传
+     *
+     * @param readOnlyNotice 只读消息
+     * @return true需要 false不需要 默认不需要
+     */
+    protected boolean isCmdMessage(ReadOnlyNotice readOnlyNotice) {
+        Map<String, Object> noticeExtMsg = readOnlyNotice.getNoticeExtMsgMap();
+        if (null == noticeExtMsg) {
+            return false;
+        }
+        Map customs = (Map) noticeExtMsg.get(CUSTOM_PROPERTY_KEY);
+        if (customs != null) {
+            Object pushType = customs.get("_proper_pushtype");
+            String cmdPush = "cmd";
+            return cmdPush.equals(pushType);
+        }
+        return false;
+    }
+
+    /**
      * 获取自定义配置
      *
      * @param readOnlyNotice 只读消息
