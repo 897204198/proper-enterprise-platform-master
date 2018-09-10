@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.notice.server.push.configurator.ios;
 
-import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
 import com.turo.pushy.apns.ApnsClient;
 
 public interface IOSNoticeClient {
@@ -14,10 +13,10 @@ public interface IOSNoticeClient {
     ApnsClient getClient(String appKey);
 
     /**
-     * 根据IOS appKey获取客户端
+     * 根据IOS appKey获取pushPackage
      *
      * @param appKey 系统唯一标识
-     * @return PushConfDocument 推送配置
+     * @return pushPackage
      */
-    PushConfDocument getConf(String appKey);
+    String getPushPackage(String appKey);
 }

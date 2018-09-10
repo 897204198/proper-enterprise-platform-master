@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public abstract class AbstractPushNoticeSender {
+public abstract class AbstractPushSendSupport {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPushNoticeSender.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPushSendSupport.class);
 
     /**
      * 推送渠道

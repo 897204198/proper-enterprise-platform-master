@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.notice.server.push.repository;
 
-
 import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import org.springframework.data.mongodb.repository.MongoRepository;

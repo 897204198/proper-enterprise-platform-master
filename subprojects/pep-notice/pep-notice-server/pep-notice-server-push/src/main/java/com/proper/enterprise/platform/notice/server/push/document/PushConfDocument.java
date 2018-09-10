@@ -24,7 +24,7 @@ public class PushConfDocument extends BaseDocument {
     private PushChannelEnum pushChannel;
 
     /**
-     * 推送密钥
+     * 推送密钥或IOS的证书密码
      */
     private String appSecret;
 

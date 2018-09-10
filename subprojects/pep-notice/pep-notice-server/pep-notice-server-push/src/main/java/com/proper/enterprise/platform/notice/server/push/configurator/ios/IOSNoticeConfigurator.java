@@ -1,8 +1,9 @@
 package com.proper.enterprise.platform.notice.server.push.configurator.ios;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.file.service.FileService;
-import com.proper.enterprise.platform.notice.server.push.configurator.AbstractPushNoticeSupport;
+import com.proper.enterprise.platform.notice.server.push.configurator.AbstractPushConfigSupport;
 import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.turo.pushy.apns.ApnsClient;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service("iosNoticeConfigurator")
-public class IOSNoticeConfigurator extends AbstractPushNoticeSupport implements IOSNoticeClient {
+public class IOSNoticeConfigurator extends AbstractPushConfigSupport implements IOSNoticeClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IOSNoticeConfigurator.class);
 
@@ -30,14 +31,16 @@ public class IOSNoticeConfigurator extends AbstractPushNoticeSupport implements 
         this.fileService = fileService;
     }
 
+    public static final String CERT_ID = "certificateId";
+
     /**
      * ios客户端管理池
      */
-    private Map<String, ApnsClient> apnsClientPool = new HashMap<>();
+    private Map<String, ApnsClient> apnsClientPool = new HashMap<>(16);
 
     @Override
     public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {
-        if (null == config.get("certificateId")) {
+        if (null == config.get(CERT_ID)) {
             throw new ErrMsgException("certificateId can't be null");
         }
         Map postConf = super.post(appKey, config, request);
@@ -84,8 +87,7 @@ public class IOSNoticeConfigurator extends AbstractPushNoticeSupport implements 
     }
 
     private ApnsClient initClient(PushConfDocument pushDocument) throws IOException {
-        String applePushUrl = envProduct ? ApnsClientBuilder.PRODUCTION_APNS_HOST
-            : ApnsClientBuilder.DEVELOPMENT_APNS_HOST;
+        String applePushUrl = ApnsClientBuilder.PRODUCTION_APNS_HOST;
         ApnsClientBuilder builder = new ApnsClientBuilder().setApnsServer(applePushUrl);
         InputStream certInputStream = fileService.download(pushDocument.getCertificateId());
         builder = builder.setClientCredentials(certInputStream,
@@ -96,11 +98,27 @@ public class IOSNoticeConfigurator extends AbstractPushNoticeSupport implements 
 
     @Override
     public ApnsClient getClient(String appKey) {
+        if (StringUtil.isEmpty(appKey)) {
+            throw new ErrMsgException("appKey can't be empty");
+        }
+        ApnsClient client = apnsClientPool.get(appKey);
+        if (null == client) {
+            PushConfDocument pushConf = getConf(appKey, PushChannelEnum.IOS);
+            if (null == pushConf) {
+                throw new ErrMsgException("can't find conf by appKey:" + appKey);
+            }
+            try {
+                apnsClientPool.put(appKey, initClient(pushConf));
+            } catch (IOException e) {
+                LOGGER.error("init ios client error,config:{}", pushConf.toString(), e);
+                throw new ErrMsgException("init ios client error");
+            }
+        }
         return apnsClientPool.get(appKey);
     }
 
     @Override
-    public PushConfDocument getConf(String appKey) {
-        return getConf(appKey, PushChannelEnum.IOS);
+    public String getPushPackage(String appKey) {
+        return getPushPackage(appKey, PushChannelEnum.IOS);
     }
 }
