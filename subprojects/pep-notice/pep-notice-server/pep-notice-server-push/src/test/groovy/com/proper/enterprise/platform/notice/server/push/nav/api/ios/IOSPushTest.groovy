@@ -1,7 +1,8 @@
-package com.proper.enterprise.platform.notice.server.push.nav.api.ios
+package com.proper.enterprise.platform.notice.server.push.ios
 
 import com.proper.enterprise.platform.core.utils.AntResourceUtil
 import com.proper.enterprise.platform.notice.server.push.handler.AbstractPushSendSupport
+import com.proper.enterprise.platform.test.AbstractTest
 import com.turo.pushy.apns.ApnsClient
 import com.turo.pushy.apns.ApnsClientBuilder
 import com.turo.pushy.apns.PushNotificationResponse
@@ -14,8 +15,8 @@ import org.junit.Test
 import org.springframework.core.io.Resource
 import spock.lang.Specification
 
-@Ignore
-class IOSPushSpec extends Specification {
+
+class IOSPushTest extends Specification {
 
     public static
     final String CENT_PATH = 'classpath*:com/proper/enterprise/platform/notice/server/push/ios/cert/icmp_dev_pro.p12'
@@ -51,9 +52,13 @@ class IOSPushSpec extends Specification {
         }
         String payload = payloadBuilder.buildWithDefaultMaximumLength()
         SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(TokenUtil.sanitizeTokenString(TARGET_TO), TOPIC, payload)
-        Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = apnsClient.sendNotification(pushNotification)
-        PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse = sendNotificationFuture.get()
+        final Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = apnsClient.sendNotification(pushNotification)
+        final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse = sendNotificationFuture.get()
         expect:
         assert pushNotificationResponse.isAccepted()
+        apnsClient.close()
+        final Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture2 = apnsClient.sendNotification(pushNotification)
+        final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse2 = sendNotificationFuture.get()
+        println()
     }
 }
