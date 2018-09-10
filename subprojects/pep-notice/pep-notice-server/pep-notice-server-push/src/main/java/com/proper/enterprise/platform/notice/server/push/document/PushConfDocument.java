@@ -4,20 +4,18 @@ import com.proper.enterprise.platform.core.mongo.document.BaseDocument;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "PEP_NOTICE_PUSH")
+@Document(collection = "PEP_NOTICE_PUSH_CONF")
 @CompoundIndex(unique = true, name = "UK_APPKEY_PUSHCHANNEL", def = "{'appKey': 1, 'pushChannel': -1}")
-public class PushDocument extends BaseDocument {
+public class PushConfDocument extends BaseDocument {
 
-    public PushDocument() {
+    public PushConfDocument() {
     }
 
     /**
      * 唯一标识
      */
-    @Indexed(unique = true)
     private String appKey;
 
     /**
@@ -26,14 +24,14 @@ public class PushDocument extends BaseDocument {
     private PushChannelEnum pushChannel;
 
     /**
-     * 推送密钥
+     * 推送密钥或IOS的证书密码
      */
     private String appSecret;
 
     /**
      * 推送包名
      */
-    private String pushPackageName;
+    private String pushPackage;
 
     /**
      * 证书Id
@@ -56,12 +54,12 @@ public class PushDocument extends BaseDocument {
         this.appSecret = appSecret;
     }
 
-    public String getPushPackageName() {
-        return pushPackageName;
+    public String getPushPackage() {
+        return pushPackage;
     }
 
-    public void setPushPackageName(String pushPackageName) {
-        this.pushPackageName = pushPackageName;
+    public void setPushPackage(String pushPackage) {
+        this.pushPackage = pushPackage;
     }
 
     public PushChannelEnum getPushChannel() {
