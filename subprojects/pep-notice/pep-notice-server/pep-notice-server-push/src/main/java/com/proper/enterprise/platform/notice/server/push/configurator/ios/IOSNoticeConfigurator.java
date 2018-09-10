@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfi
 import com.proper.enterprise.platform.notice.server.push.configurator.AbstractPushNoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.push.document.PushDocument;
 import com.proper.enterprise.platform.notice.server.push.repository.PushRepository;
+import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,21 +42,22 @@ public class IOSNoticeConfigurator extends AbstractPushNoticeConfigurator implem
         PushDocument pushDocument = BeanUtil.convert(config, PushDocument.class);
         pushDocument.setAppKey(appKey);
         pushDocument.setPushChannel(getPushChannel(request));
+        apnsClientPool.put(appKey, initClient(pushDocument));
         return null;
     }
 
     @Override
     public void delete(String appKey, HttpServletRequest request) {
-
+        initClient(pushDocument).close()
     }
 
     @Override
     public Map put(String appKey, Map<String, Object> config, HttpServletRequest request) {
-        PushDocument existDocument = pushRepository.findByAppKey(appKey);
+        PushDocument existDocument = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(request));
         if (existDocument == null) {
-            throw new ErrMsgException(i18NService.getMessage("pep.push.notice.config.notExist"));
+            throw new ErrMsgException(I18NUtil.getMessage("pep.push.notice.config.notExist"));
         }
-        String pushDocumentId = pushRepository.findByAppKey(appKey).getId();
+        String pushDocumentId = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(request)).getId();
         PushDocument pushDocument = BeanUtil.convert(config, PushDocument.class);
         pushDocument.setAppKey(appKey);
         pushDocument.setId(pushDocumentId);
