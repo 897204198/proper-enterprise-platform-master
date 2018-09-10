@@ -1,8 +1,7 @@
-package com.proper.enterprise.platform.notice.server.push.ios
+package com.proper.enterprise.platform.notice.server.push.nav.api.ios
 
 import com.proper.enterprise.platform.core.utils.AntResourceUtil
 import com.proper.enterprise.platform.notice.server.push.handler.AbstractPushSendSupport
-import com.proper.enterprise.platform.test.AbstractTest
 import com.turo.pushy.apns.ApnsClient
 import com.turo.pushy.apns.ApnsClientBuilder
 import com.turo.pushy.apns.PushNotificationResponse
@@ -13,9 +12,10 @@ import io.netty.util.concurrent.Future
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.core.io.Resource
+import spock.lang.Specification
 
 @Ignore
-class IOSPushTest extends AbstractTest {
+class IOSPushSpec extends Specification {
 
     public static
     final String CENT_PATH = 'classpath*:com/proper/enterprise/platform/notice/server/push/ios/cert/icmp_dev_pro.p12'
@@ -53,6 +53,7 @@ class IOSPushTest extends AbstractTest {
         SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(TokenUtil.sanitizeTokenString(TARGET_TO), TOPIC, payload)
         Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = apnsClient.sendNotification(pushNotification)
         PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse = sendNotificationFuture.get()
+        expect:
         assert pushNotificationResponse.isAccepted()
     }
 }

@@ -43,6 +43,12 @@ public class IOSNoticeConfigurator extends AbstractPushConfigSupport implements 
         if (null == config.get(CERT_ID)) {
             throw new ErrMsgException("certificateId can't be null");
         }
+        try {
+            InputStream inputStream = fileService.download((String) config.get(CERT_ID));
+            inputStream.close();
+        } catch (Exception e) {
+            throw new ErrMsgException("can't find ios cert by cert_id:" + config.get(CERT_ID));
+        }
         Map postConf = super.post(appKey, config, request);
         PushConfDocument pushDocument = buildPushDocument(appKey, config, request);
         try {

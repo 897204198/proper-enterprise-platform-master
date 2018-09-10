@@ -15,7 +15,9 @@ import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 import com.turo.pushy.apns.util.TokenUtil;
 import io.netty.util.concurrent.Future;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service("iosNoticeSender")
 public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
     private IOSNoticeClient iosNoticeClient;

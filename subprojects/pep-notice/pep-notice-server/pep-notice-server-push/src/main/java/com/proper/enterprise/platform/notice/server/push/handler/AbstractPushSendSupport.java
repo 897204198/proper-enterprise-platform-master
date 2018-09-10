@@ -58,7 +58,15 @@ public abstract class AbstractPushSendSupport {
         if (null == readOnlyNotice.getNoticeExtMsgMap()) {
             return null;
         }
-        return (Integer) readOnlyNotice.getNoticeExtMsgMap().get(BADGE_NUMBER_KEY);
+        Map<String, Object> noticeExtMsg = readOnlyNotice.getNoticeExtMsgMap();
+        if (null == noticeExtMsg) {
+            return null;
+        }
+        Map customs = (Map) noticeExtMsg.get(CUSTOM_PROPERTY_KEY);
+        if (null == customs) {
+            return null;
+        }
+        return (Integer) customs.get(BADGE_NUMBER_KEY);
     }
 
     /**
