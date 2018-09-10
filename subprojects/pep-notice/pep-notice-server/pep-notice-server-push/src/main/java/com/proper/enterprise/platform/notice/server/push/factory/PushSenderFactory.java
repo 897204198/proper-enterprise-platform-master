@@ -2,7 +2,6 @@ package com.proper.enterprise.platform.notice.server.push.factory;
 
 import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
-import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 

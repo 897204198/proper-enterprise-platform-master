@@ -11,4 +11,12 @@ public interface IOSNoticeClient {
      * @return IOS客户端
      */
     ApnsClient getClient(String appKey);
+
+    /**
+     * 根据IOS appKey获取pushPackage
+     *
+     * @param appKey 系统唯一标识
+     * @return pushPackage
+     */
+    String getPushPackage(String appKey);
 }

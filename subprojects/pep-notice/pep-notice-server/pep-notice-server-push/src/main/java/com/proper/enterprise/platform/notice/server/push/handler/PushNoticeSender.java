@@ -9,7 +9,7 @@ import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.stereotype.Service;
 
 @Service("pushNoticeSender")
-public class PushNoticeSender extends AbstractPushNoticeSender implements NoticeSendHandler {
+public class PushNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
     @Override
     public void send(ReadOnlyNotice notice) throws NoticeException {

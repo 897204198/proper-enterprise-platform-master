@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-public abstract class AbstractPushNoticeSender {
+public abstract class AbstractPushSendSupport {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPushNoticeSender.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPushSendSupport.class);
 
     /**
      * 推送渠道
@@ -59,6 +59,26 @@ public abstract class AbstractPushNoticeSender {
             return null;
         }
         return (Integer) readOnlyNotice.getNoticeExtMsgMap().get(BADGE_NUMBER_KEY);
+    }
+
+    /**
+     * 是否透传
+     *
+     * @param readOnlyNotice 只读消息
+     * @return true需要 false不需要 默认不需要
+     */
+    protected boolean isCmdMessage(ReadOnlyNotice readOnlyNotice) {
+        Map<String, Object> noticeExtMsg = readOnlyNotice.getNoticeExtMsgMap();
+        if (null == noticeExtMsg) {
+            return false;
+        }
+        Map customs = (Map) noticeExtMsg.get(CUSTOM_PROPERTY_KEY);
+        if (customs != null) {
+            Object pushType = customs.get("_proper_pushtype");
+            String cmdPush = "cmd";
+            return cmdPush.equals(pushType);
+        }
+        return false;
     }
 
     /**
