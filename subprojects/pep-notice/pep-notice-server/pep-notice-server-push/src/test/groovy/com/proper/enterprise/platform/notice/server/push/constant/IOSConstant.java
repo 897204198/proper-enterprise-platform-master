@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.constant;
 public class IOSConstant {
 
     public static
-        final String CENT_PATH = "classpath*:com/proper/enterprise/platform/notice/server/push/ios/cert/icmp_dev_pro.p12";
+    final String CENT_PATH = "classpath*:com/proper/enterprise/platform/notice/server/push/ios/cert/icmp_dev_pro.p12";
 
     public static final String PASSWORD = "1234";
 

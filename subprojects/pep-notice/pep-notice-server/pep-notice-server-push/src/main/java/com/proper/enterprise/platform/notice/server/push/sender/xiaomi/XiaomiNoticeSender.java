@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+import static java.lang.Math.*;
+
 @Service("xiaomiNoticeSender")
 public class XiaomiNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
@@ -127,6 +129,6 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
         if (notifyId <= MIN_NOTIFY_ID || notifyId == Integer.MAX_VALUE) {
             notifyId = MIN_NOTIFY_ID;
         }
-        return notifyId++;
+        return (int) (random() * 9000) +1000 + notifyId++;
     }
 }
