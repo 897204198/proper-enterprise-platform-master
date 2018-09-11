@@ -22,10 +22,6 @@ public class XiaomiNoticeConfigurator extends AbstractPushConfigSupport implemen
      * 小米消息发送类管理池
      */
     private Map<String, Sender> xiaomiSenderMap = new HashMap<>();
-    /**
-     * 小米推送的密钥
-     */
-    private static final String APP_SECRET = "appSecret";
 
     @Override
     public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {

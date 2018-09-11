@@ -17,7 +17,11 @@ import com.xiaomi.xmpush.server.Sender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
+@Service("xiaomiNoticeSender")
 public class XiaomiNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XiaomiNoticeSender.class);
@@ -77,7 +81,8 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
         } else {
             Integer badgeNumber = getBadgeNumber(notice);
             if (null != badgeNumber) {
-                notice.getNoticeExtMsgMap().put(BADGE_NUMBER_KEY, badgeNumber);
+                Map<String, Object> noticeExtMsgMap = notice.getNoticeExtMsgMap();
+                noticeExtMsgMap.put(BADGE_NUMBER_KEY, badgeNumber);
             }
             // 消息使用通知栏
             msgBuilder.passThrough(0);
