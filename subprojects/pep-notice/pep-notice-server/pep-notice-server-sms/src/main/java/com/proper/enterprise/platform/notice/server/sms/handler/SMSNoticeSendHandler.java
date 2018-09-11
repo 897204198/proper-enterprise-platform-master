@@ -3,12 +3,12 @@ package com.proper.enterprise.platform.notice.server.sms.handler;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.http.Callback;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
-import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
+import com.proper.enterprise.platform.notice.server.sms.configurator.SMSConfigurator;
 import com.proper.enterprise.platform.notice.server.sms.service.SMSLimitCheckService;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class SMSNoticeSendHandler implements NoticeSendHandler {
     private SMSLimitCheckService smsLimitCheckService;
 
     @Autowired
-    private NoticeConfigurator noticeConfigurator;
+    private SMSConfigurator noticeConfigurator;
 
     @Autowired
     private I18NService i18NService;
