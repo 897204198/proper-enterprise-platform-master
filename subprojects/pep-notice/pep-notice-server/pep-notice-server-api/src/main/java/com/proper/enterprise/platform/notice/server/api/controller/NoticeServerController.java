@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.app.controller;
+package com.proper.enterprise.platform.notice.server.api.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService;

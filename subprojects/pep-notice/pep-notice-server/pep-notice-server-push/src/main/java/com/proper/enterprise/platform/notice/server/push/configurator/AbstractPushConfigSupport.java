@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.notice.server.push.configurator;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.repository.PushConfigMongoRepository;
@@ -13,20 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-public abstract class AbstractPushConfigSupport extends AbstractPushChannelSupport implements NoticeConfigurator {
+public abstract class AbstractPushConfigSupport extends AbstractPushChannelSupport implements BasePushConfigApi {
 
     @Autowired
     private PushConfigMongoRepository pushRepository;
 
-    public static final String APP_SECRET = "appSecret";
-
-    public static final String PUSH_PACKAGE = "pushPackage";
+    private static final String PUSH_PACKAGE = "pushPackage";
 
     @Override
     public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {
-        if (null == config.get(APP_SECRET)) {
-            throw new ErrMsgException("appSecret can't be null");
-        }
         if (null == config.get(PUSH_PACKAGE)) {
             throw new ErrMsgException("pushPackage can't be null");
         }
@@ -45,9 +39,6 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
         PushConfDocument existDocument = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(request));
         if (existDocument == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.notice.config.notExist"));
-        }
-        if (null == config.get(APP_SECRET)) {
-            throw new ErrMsgException("appSecret can't be null");
         }
         if (null == config.get(PUSH_PACKAGE)) {
             throw new ErrMsgException("pushPackage can't be null");
@@ -68,10 +59,12 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
         return null;
     }
 
+    @Override
     public PushConfDocument getConf(String appKey, PushChannelEnum pushChannel) {
         return pushRepository.findByAppKeyAndPushChannel(appKey, pushChannel);
     }
 
+    @Override
     public String getPushPackage(String appKey, PushChannelEnum pushChannel) {
         PushConfDocument pushConf = pushRepository.findByAppKeyAndPushChannel(appKey, pushChannel);
         if (null == pushConf) {

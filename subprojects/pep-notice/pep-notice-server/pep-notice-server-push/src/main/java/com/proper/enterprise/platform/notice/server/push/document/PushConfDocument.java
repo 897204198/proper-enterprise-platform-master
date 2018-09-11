@@ -39,9 +39,9 @@ public class PushConfDocument extends BaseDocument {
     private String certificateId;
 
     /**
-     * 推送应用ID(华为)
+     * 证书密码
      */
-    private String appId;
+    private String p12Password;
 
     public String getAppKey() {
         return appKey;
@@ -83,12 +83,12 @@ public class PushConfDocument extends BaseDocument {
         this.certificateId = certificateId;
     }
 
-    public String getAppId() {
-        return appId;
+    public String getP12Password() {
+        return p12Password;
     }
 
-    public void setAppId(String appId) {
-        this.appId = appId;
+    public void setP12Password(String p12Password) {
+        this.p12Password = p12Password;
     }
 
     @Override

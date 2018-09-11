@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.push.handler.huawei;
+package com.proper.enterprise.platform.notice.server.push.sender.huawei;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -146,24 +146,7 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
         msg.put("type", type);
         //消息点击动作
         JSONObject action = new JSONObject();
-        //消息点击动作参数
-        JSONObject param = new JSONObject();
-        switch (pushType) {
-            case chat:
-                //类型1为跳转页面
-                action.put("type", 1);
-                param.put("intent", ext.get("uri"));
-                break;
-            case video:
-            case other:
-            default:
-                //类型3为打开APP，其他行为请参考接口文档设置
-                action.put("type", 3);
-                //定义需要打开的appPkgName
-                param.put("appPkgName", packageName);
-                break;
-        }
-        action.put("param", param);
+        handleAction(action, pushType, ext, packageName);
         msg.put("action", action);
         //通知栏消息body内容
         msg.put("body", body);
@@ -216,6 +199,30 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
             LOGGER.debug("Error occurs when parsing response of " + notice.getId(), ex);
             throw new NoticeException("Error occurs when parsing response of " + notice.getId(), ex);
         }
+    }
+
+    /**
+     * 处理消息点击相关参数
+     */
+    private void handleAction(JSONObject action, PushType pushType, Map<String, Object> ext, String packageName) {
+        //消息点击动作参数
+        JSONObject param = new JSONObject();
+        switch (pushType) {
+            case chat:
+                //类型1为跳转页面
+                action.put("type", 1);
+                param.put("intent", ext.get("uri"));
+                break;
+            case video:
+            case other:
+            default:
+                //类型3为打开APP，其他行为请参考接口文档设置
+                action.put("type", 3);
+                //定义需要打开的appPkgName
+                param.put("appPkgName", packageName);
+                break;
+        }
+        action.put("param", param);
     }
 
     enum PushType {

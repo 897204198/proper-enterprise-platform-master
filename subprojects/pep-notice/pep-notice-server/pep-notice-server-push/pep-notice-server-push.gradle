@@ -8,6 +8,8 @@ dependencies {
             libraries.push_vendor_xiaomi
 
     testCompile project(':pep-auth-common'),
+                project(':pep-auth-common-jpa'),
+                project(':pep-dfs-mongo'),
                 project(':pep-test')
     testRuntime project(':pep-cache-ehcache')
 }
