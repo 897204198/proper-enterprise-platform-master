@@ -9,4 +9,12 @@ public interface XiaomiNoticeClient {
      * @return 消息发送类
      */
     Sender getClient(String appSecret);
+
+    /**
+     * 根据xiaomi appKey获取pushPackage
+     *
+     * @param appKey 系统唯一标识
+     * @return pushPackage
+     */
+    String getPushPackage(String appKey);
 }
