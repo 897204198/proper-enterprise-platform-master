@@ -123,12 +123,13 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
 
     /**
      * 设置不同的 NOTIFY_ID 以便于显示多条推送
+     *
      * @return NOTIFY_ID
      */
     private synchronized int getNextNotifyId() {
         if (notifyId <= MIN_NOTIFY_ID || notifyId == Integer.MAX_VALUE) {
             notifyId = MIN_NOTIFY_ID;
         }
-        return (int) (random() * 9000) +1000 + notifyId++;
+        return (int) (random() * 9000) + 1000 + notifyId++;
     }
 }
