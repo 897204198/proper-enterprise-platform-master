@@ -5,13 +5,11 @@ import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
 import com.proper.enterprise.platform.notice.server.push.repository.PushConfigMongoRepository
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.mock.web.MockHttpServletRequest
 
-@Ignore
 class XiaomiNoticeConfiguratorTest extends AbstractTest {
 
     @Autowired
