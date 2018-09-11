@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.app.factory;
+package com.proper.enterprise.platform.notice.server.api.factory;
 
 import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;

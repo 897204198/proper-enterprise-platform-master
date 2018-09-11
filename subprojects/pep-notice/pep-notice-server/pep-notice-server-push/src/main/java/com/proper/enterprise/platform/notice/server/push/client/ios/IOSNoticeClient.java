@@ -3,32 +3,34 @@ package com.proper.enterprise.platform.notice.server.push.client.ios;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.file.service.FileService;
-import com.proper.enterprise.platform.notice.server.push.configurator.ios.IOSNoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.push.repository.PushConfigMongoRepository;
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class IOSNoticeClient implements IOSNoticeClientApi {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IOSNoticeClient.class);
 
     private FileService fileService;
 
-    @Autowired
-    private IOSNoticeConfigurator iosNoticeConfigurator;
+    private PushConfigMongoRepository pushConfigMongoRepository;
 
     @Autowired
-    public IOSNoticeClient(FileService fileService) {
+    public IOSNoticeClient(FileService fileService, PushConfigMongoRepository pushConfigMongoRepository) {
         this.fileService = fileService;
+        this.pushConfigMongoRepository = pushConfigMongoRepository;
     }
 
     /**
@@ -43,7 +45,7 @@ public class IOSNoticeClient implements IOSNoticeClientApi {
         }
         ApnsClient client = apnsClientPool.get(appKey);
         if (null == client) {
-            PushConfDocument pushConf = iosNoticeConfigurator.getConf(appKey, PushChannelEnum.IOS);
+            PushConfDocument pushConf = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.IOS);
             if (null == pushConf) {
                 throw new ErrMsgException("can't find conf by appKey:" + appKey);
             }
@@ -61,8 +63,7 @@ public class IOSNoticeClient implements IOSNoticeClientApi {
         String applePushUrl = ApnsClientBuilder.PRODUCTION_APNS_HOST;
         ApnsClientBuilder builder = new ApnsClientBuilder().setApnsServer(applePushUrl);
         InputStream certInputStream = fileService.download(pushDocument.getCertificateId());
-        builder = builder.setClientCredentials(certInputStream,
-            pushDocument.getAppSecret());
+        builder = builder.setClientCredentials(certInputStream, pushDocument.getP12Password());
         certInputStream.close();
         return builder.build();
     }

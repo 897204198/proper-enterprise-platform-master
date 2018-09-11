@@ -17,15 +17,10 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
     @Autowired
     private PushConfigMongoRepository pushRepository;
 
-    public static final String APP_SECRET = "appSecret";
-
-    public static final String PUSH_PACKAGE = "pushPackage";
+    private static final String PUSH_PACKAGE = "pushPackage";
 
     @Override
     public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {
-        if (null == config.get(APP_SECRET)) {
-            throw new ErrMsgException("appSecret can't be null");
-        }
         if (null == config.get(PUSH_PACKAGE)) {
             throw new ErrMsgException("pushPackage can't be null");
         }
@@ -44,9 +39,6 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
         PushConfDocument existDocument = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(request));
         if (existDocument == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.notice.config.notExist"));
-        }
-        if (null == config.get(APP_SECRET)) {
-            throw new ErrMsgException("appSecret can't be null");
         }
         if (null == config.get(PUSH_PACKAGE)) {
             throw new ErrMsgException("pushPackage can't be null");

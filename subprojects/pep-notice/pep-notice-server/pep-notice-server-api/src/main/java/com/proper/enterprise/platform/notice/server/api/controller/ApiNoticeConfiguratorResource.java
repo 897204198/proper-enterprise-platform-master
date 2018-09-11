@@ -1,9 +1,9 @@
-package com.proper.enterprise.platform.notice.server.app.controller;
+package com.proper.enterprise.platform.notice.server.api.controller;
 
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.notice.server.api.factory.NoticeConfiguratorFactory;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
-import com.proper.enterprise.platform.notice.server.app.factory.NoticeConfiguratorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ public class ApiNoticeConfiguratorResource extends BaseController {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
         return responseOfPost(NoticeConfiguratorFactory.product(noticeType)
-            .post(accessTokenService.getUserId(accessToken).get(), config));
+            .post(accessTokenService.getUserId(accessToken).get(), config, request));
     }
 
     @DeleteMapping("/{noticeType}")
@@ -40,7 +40,7 @@ public class ApiNoticeConfiguratorResource extends BaseController {
         }
         NoticeConfiguratorFactory.product(noticeType).delete(accessTokenService
             .getUserId(accessToken)
-            .get());
+            .get(), request);
         return responseOfDelete(true);
     }
 
@@ -51,7 +51,7 @@ public class ApiNoticeConfiguratorResource extends BaseController {
         }
         return responseOfPut(NoticeConfiguratorFactory.product(noticeType).put(accessTokenService
             .getUserId(accessToken)
-            .get(), config));
+            .get(), config, request));
     }
 
     @GetMapping("/{noticeType}")
@@ -61,12 +61,12 @@ public class ApiNoticeConfiguratorResource extends BaseController {
         }
         return responseOfGet(NoticeConfiguratorFactory.product(noticeType).get(accessTokenService
             .getUserId(accessToken)
-            .get()));
+            .get(), request));
     }
 
     private boolean validAppKeyIsNull(String accessToken) {
         Optional<String> appKey = accessTokenService.getUserId(accessToken);
-        return null == appKey;
+        return !appKey.isPresent();
     }
 
 }

@@ -22,13 +22,13 @@ import org.springframework.stereotype.Service;
 @Service("iosNoticeSender")
 public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
+    @Autowired
     private IOSNoticeClientApi iosNoticeClient;
 
     private IOSNoticeConfigurator iosNoticeConfigurator;
 
     @Autowired
-    public IOSNoticeSender(IOSNoticeClientApi iosNoticeClient, IOSNoticeConfigurator iosNoticeConfigurator) {
-        this.iosNoticeClient = iosNoticeClient;
+    public IOSNoticeSender(IOSNoticeConfigurator iosNoticeConfigurator) {
         this.iosNoticeConfigurator = iosNoticeConfigurator;
     }
 
@@ -53,7 +53,7 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
         SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(TokenUtil
             .sanitizeTokenString(notice.getTargetTo()), topic, payload);
         final Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = iosNoticeClient
-            .getClient(notice.getAppKey())
+            .get(notice.getAppKey())
             .sendNotification(pushNotification);
         try {
             final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse = sendNotificationFuture.get();
@@ -68,7 +68,7 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
 
     @Override
     public void beforeSend(BusinessNotice notice) throws NoticeException {
-        iosNoticeClient.getClient(notice.getAppKey());
+        iosNoticeClient.get(notice.getAppKey());
         if (StringUtil.isEmpty(iosNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.IOS))) {
             throw new ErrMsgException("ios push can't send without pushPackage");
         }
