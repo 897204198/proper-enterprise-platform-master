@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.notice.server.push.configurator.huawei;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.push.client.huawei.HuaweiNoticeClientApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.AbstractPushConfigSupport;
@@ -26,7 +27,7 @@ public class HuaweiNoticeConfigurator extends AbstractPushConfigSupport implemen
 
     @Override
     public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {
-        if (null == config.get(APP_ID)) {
+        if (StringUtil.isBlank(config.get(APP_ID).toString())) {
             throw new ErrMsgException("appId can't be null");
         }
         Map result = super.post(appKey, config, request);

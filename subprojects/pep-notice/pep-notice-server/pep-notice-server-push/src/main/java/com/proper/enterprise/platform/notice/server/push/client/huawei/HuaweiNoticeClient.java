@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.client.huawei;
 
 import com.alibaba.fastjson.JSONObject;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository;
@@ -36,6 +37,9 @@ public class HuaweiNoticeClient implements HuaweiNoticeClientApi {
         Map<String, Object> accessTokenDetail = accessTokenPool.get(appKey);
         if (accessTokenDetail == null) {
             PushConfDocument pushExistDocument = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.HUAWEI);
+            if (pushExistDocument == null) {
+                throw new ErrMsgException("Can't get Huawei push config");
+            }
             refreshAccessTokenAndExpiredTime(pushExistDocument);
             accessTokenDetail = accessTokenPool.get(appKey);
         }
@@ -85,6 +89,7 @@ public class HuaweiNoticeClient implements HuaweiNoticeClientApi {
             accessTokenPool.put(pushDocument.getAppKey(), accessTokenDetail);
         } catch (Exception e) {
             LOGGER.error("get accessToken failed with Exception {}", e);
+            throw new ErrMsgException("Please check Huawei push config");
         }
     }
 

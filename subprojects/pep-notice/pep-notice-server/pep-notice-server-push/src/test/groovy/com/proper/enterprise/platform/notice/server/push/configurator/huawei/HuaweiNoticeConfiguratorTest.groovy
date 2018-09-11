@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.notice.server.push.configurator.huawei
 
+import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
 import com.proper.enterprise.platform.test.AbstractTest
@@ -42,6 +43,13 @@ class HuaweiNoticeConfiguratorTest extends AbstractTest {
         config.put('pushPackage', 'com.proper.icmp')
 
         pushNoticeConfigurator.post('icmp', config, request)
+
+        try {
+            config.put('appId', '')
+            pushNoticeConfigurator.post('icmp2', config, request)
+        } catch (ErrMsgException e) {
+            e.getMessage().contains("appId can't be null")
+        }
     }
 
     void deleteData(String appKey) {
@@ -52,13 +60,25 @@ class HuaweiNoticeConfiguratorTest extends AbstractTest {
 
     void updateData() {
         def config = [:]
-        config.put('appSecret', 'XX')
-        config.put('pushPackage', 'XXX.XXX.XXX.XXX')
-        config.put('appId', 'XX')
+        config.put('appSecret', 'a31f53301ed9f45e94530235dd933d25')
+        config.put('pushPackage', 'com.proper.icmp')
+        config.put('appId', '100029163')
 
         MockHttpServletRequest request = new MockHttpServletRequest()
         request.setParameter("pushChannel", PushChannelEnum.HUAWEI.toString())
         Map res = pushNoticeConfigurator.put('appkey', config, request)
-        assert res.get('appSecret') == 'XX'
+        assert res.get('appSecret') == 'a31f53301ed9f45e94530235dd933d25'
+
+        try {
+            config.put('appSecret', 'XX')
+            config.put('pushPackage', 'XXX.XXX.XXX.XXX')
+            config.put('appId', 'XX')
+
+            request = new MockHttpServletRequest()
+            request.setParameter("pushChannel", PushChannelEnum.HUAWEI.toString())
+            pushNoticeConfigurator.put('appkey', config, request)
+        } catch (Exception e) {
+            e.getMessage().contains("Please check Huawei push config")
+        }
     }
 }
