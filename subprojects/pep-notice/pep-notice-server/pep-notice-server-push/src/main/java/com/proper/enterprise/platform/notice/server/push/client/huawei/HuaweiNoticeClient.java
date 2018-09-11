@@ -27,7 +27,7 @@ public class HuaweiNoticeClient implements HuaweiNoticeClientApi {
     private PushConfigMongoRepository pushConfigMongoRepository;
 
     /**
-     * accessToken的过期时间
+     * Huawei access token 池
      */
     private Map<String, Map<String, Object>> accessTokenPool = new HashMap<>();
 
@@ -37,13 +37,15 @@ public class HuaweiNoticeClient implements HuaweiNoticeClientApi {
         if (accessTokenDetail == null) {
             PushConfDocument pushExistDocument = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.HUAWEI);
             refreshAccessTokenAndExpiredTime(pushExistDocument);
+            accessTokenDetail = accessTokenPool.get(appKey);
         }
         long tokenExpiredTime = Long.parseLong(accessTokenDetail.get("token_expired_time").toString());
         if (tokenExpiredTime <= System.currentTimeMillis()) {
             PushConfDocument pushDocument = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.HUAWEI);
             refreshAccessTokenAndExpiredTime(pushDocument);
+            accessTokenDetail = accessTokenPool.get(appKey);
         }
-        return (String) accessTokenPool.get(appKey).get("access_token");
+        return (String) accessTokenDetail.get("access_token");
     }
 
     @Override
