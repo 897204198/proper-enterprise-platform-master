@@ -36,6 +36,9 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
      */
     private static final int DESCRIPTION_MAX_LENGTH = 127;
 
+    /**
+     * 通知栏要显示多条推送消息需配置不同的notifyId
+     */
     private static final int MIN_NOTIFY_ID = 10000;
 
     private int notifyId = MIN_NOTIFY_ID;
@@ -85,15 +88,16 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
             // 消息使用透传消息
             msgBuilder.passThrough(1);
         } else {
-            Integer badgeNumber = getBadgeNumber(notice);
-            if (null != badgeNumber) {
-                Map<String, Object> noticeExtMsgMap = notice.getNoticeExtMsgMap();
-                noticeExtMsgMap.put(BADGE_NUMBER_KEY, badgeNumber);
-            }
             // 消息使用通知栏
             msgBuilder.passThrough(0);
         }
-        //TODO 获取自定义配置
+        // 获取角标数
+        Integer badgeNumber = getBadgeNumber(notice);
+        if (null != badgeNumber) {
+            Map<String, Object> noticeExtMsgMap = notice.getNoticeExtMsgMap();
+            noticeExtMsgMap.put(BADGE_NUMBER_KEY, badgeNumber);
+        }
+        // 获取自定义配置
         msgBuilder.payload(JSONUtil.toJSONIgnoreException(this.getCustomProperty(notice)));
         return msgBuilder.build();
     }
@@ -115,6 +119,10 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
         return NoticeStatus.SUCCESS;
     }
 
+    /**
+     * 设置不同的 NOTIFY_ID 以便于显示多条推送
+     * @return NOTIFY_ID
+     */
     private synchronized int getNextNotifyId() {
         if (notifyId <= MIN_NOTIFY_ID || notifyId == Integer.MAX_VALUE) {
             notifyId = MIN_NOTIFY_ID;

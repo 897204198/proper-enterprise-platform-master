@@ -2,8 +2,13 @@ package com.proper.enterprise.platform.notice.server.push.client.xiaomi;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
+import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
+import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository;
+import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.xiaomi.xmpush.server.Sender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -12,10 +17,19 @@ import java.util.Map;
 @Service
 public class XiaomiNoticeClient implements XiaomiNoticeClientApi {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(XiaomiNoticeClient.class);
+
+    private PushConfigMongoRepository pushConfigMongoRepository;
+
+    @Autowired
+    public XiaomiNoticeClient(PushConfigMongoRepository pushConfigMongoRepository) {
+        this.pushConfigMongoRepository = pushConfigMongoRepository;
+    }
+
     /**
      * 小米消息发送类管理池
      */
-    private Map<String, Sender> xiaomiSenderMap = new HashMap<>();
+    private Map<String, Sender> xiaomiSenderMap = new HashMap<>(16);
 
     @Override
     public Sender getClient(String appKey) {
@@ -24,9 +38,22 @@ public class XiaomiNoticeClient implements XiaomiNoticeClientApi {
         }
         Sender sender = xiaomiSenderMap.get(appKey);
         if (null == sender) {
-            throw new ErrMsgException("init xiaomi sender error");
+            PushConfDocument confDocument = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.XIAOMI);
+            if (null == confDocument) {
+                throw new ErrMsgException("can't find confDocument by appKey:" + appKey);
+            }
+            try {
+                xiaomiSenderMap.put(appKey, initClient(confDocument));
+            } catch (Exception e) {
+                LOGGER.error("init xiaomi sender error,confDocument:{}", confDocument.toString(), e);
+                throw new ErrMsgException("init xiaomi sender error");
+            }
         }
-        return sender;
+        return xiaomiSenderMap.get(appKey);
+    }
+
+    private Sender initClient(PushConfDocument confDocument) {
+        return new Sender(confDocument.getAppSecret());
     }
 
     @Override
@@ -37,6 +64,7 @@ public class XiaomiNoticeClient implements XiaomiNoticeClientApi {
         Sender sender = new Sender(pushConf.getAppSecret());
         xiaomiSenderMap.put(appKey, sender);
     }
+
 
     @Override
     public void delete(String appKey) {

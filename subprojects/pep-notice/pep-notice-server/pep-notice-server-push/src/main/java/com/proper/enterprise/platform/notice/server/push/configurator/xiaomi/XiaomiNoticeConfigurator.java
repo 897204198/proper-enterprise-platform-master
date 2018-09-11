@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.notice.server.push.configurator.xiaomi;
 
 import com.proper.enterprise.platform.notice.server.push.client.xiaomi.XiaomiNoticeClientApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.AbstractPushConfigSupport;
-import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
+import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
