@@ -24,6 +24,11 @@ public class PushConfDocument extends BaseDocument {
     private PushChannelEnum pushChannel;
 
     /**
+     * 推送应用ID(华为)
+     */
+    private String appId;
+
+    /**
      * 推送密钥或IOS的证书密码
      */
     private String appSecret;
@@ -49,6 +54,14 @@ public class PushConfDocument extends BaseDocument {
 
     public void setAppKey(String appKey) {
         this.appKey = appKey;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
     public String getAppSecret() {

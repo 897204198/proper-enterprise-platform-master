@@ -9,9 +9,9 @@ import com.proper.enterprise.platform.notice.server.api.exception.NoticeExceptio
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
-import com.proper.enterprise.platform.notice.server.push.configurator.huawei.HuaweiNoticeClient;
+import com.proper.enterprise.platform.notice.server.push.client.huawei.HuaweiNoticeClientApi;
 import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
-import com.proper.enterprise.platform.notice.server.push.handler.AbstractPushSendSupport;
+import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
@@ -38,7 +38,7 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
     private static final String API_URL = "https://api.push.hicloud.com/pushsend.do";
 
     @Autowired
-    private HuaweiNoticeClient huaweiNoticeClient;
+    private HuaweiNoticeClientApi huaweiNoticeClient;
 
     @Override
     public void send(ReadOnlyNotice notice) throws NoticeException {
