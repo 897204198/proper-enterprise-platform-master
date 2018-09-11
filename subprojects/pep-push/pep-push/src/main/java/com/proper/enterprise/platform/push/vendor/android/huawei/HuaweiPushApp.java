@@ -208,6 +208,7 @@ public class HuaweiPushApp extends BasePushApp {
             "grant_type=client_credentials&client_secret={0}&client_id={1}",
             URLEncoder.encode(theAppSecret, "UTF-8"), theAppid);
         String response = post(tokenUrl, msgBody);
+
         JSONObject obj = JSONObject.parseObject(response);
         accessToken = obj.getString("access_token");
         tokenExpiredTime = System.currentTimeMillis() + obj.getLong("expires_in") - 5 * 60 * 1000;
