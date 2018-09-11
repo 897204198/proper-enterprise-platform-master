@@ -40,6 +40,7 @@ public class HuaweiNoticeConfigurator extends AbstractPushConfigSupport implemen
         }
         Map result = super.post(appKey, config, request);
         PushConfDocument pushDocument = BeanUtil.convert(config, PushConfDocument.class);
+        pushDocument.setAppKey(appKey);
         refreshAccessTokenAndExpiredTime(pushDocument);
         return result;
     }
@@ -54,6 +55,7 @@ public class HuaweiNoticeConfigurator extends AbstractPushConfigSupport implemen
     public Map put(String appKey, Map<String, Object> config, HttpServletRequest request) {
         Map result = super.put(appKey, config, request);
         PushConfDocument pushDocument = BeanUtil.convert(config, PushConfDocument.class);
+        pushDocument.setAppKey(appKey);
         refreshAccessTokenAndExpiredTime(pushDocument);
         return result;
     }
@@ -79,6 +81,12 @@ public class HuaweiNoticeConfigurator extends AbstractPushConfigSupport implemen
         return getConf(appKey, PushChannelEnum.HUAWEI);
     }
 
+    @Override
+    public String handlePost(String postUrl, String postBody) throws IOException {
+        ResponseEntity<byte[]> post = HttpClient.post(postUrl, MediaType.APPLICATION_FORM_URLENCODED, postBody);
+        return new String(post.getBody(), "UTF-8");
+    }
+
     /**
      * 获取并刷新下发通知消息的认证 Token 及 Token 过期时间
      *
@@ -93,7 +101,7 @@ public class HuaweiNoticeConfigurator extends AbstractPushConfigSupport implemen
             msgBody = MessageFormat.format(
                 "grant_type=client_credentials&client_secret={0}&client_id={1}",
                 URLEncoder.encode(pushDocument.getAppSecret(), "UTF-8"), pushDocument.getAppId());
-            response = post(tokenUrl, msgBody);
+            response = handlePost(tokenUrl, msgBody);
             obj = JSONObject.parseObject(response);
 
             Long tokenExpiredTime = System.currentTimeMillis() + obj.getLong("expires_in") - 5 * 60 * 1000;
@@ -105,11 +113,5 @@ public class HuaweiNoticeConfigurator extends AbstractPushConfigSupport implemen
         } catch (Exception e) {
             LOGGER.error("get accessToken failed with Exception {}", e);
         }
-    }
-
-    @Override
-    public String post(String postUrl, String postBody) throws IOException {
-        ResponseEntity<byte[]> post = HttpClient.post(postUrl, MediaType.APPLICATION_FORM_URLENCODED, postBody);
-        return new String(post.getBody(), "UTF-8");
     }
 }

@@ -6,9 +6,29 @@ import java.io.IOException;
 
 public interface HuaweiNoticeClient {
 
+    /**
+     * 根据华为 appKey获取access token
+     *
+     * @param appKey 系统唯一标识
+     * @return access token
+     */
     String getAccessToken(String appKey);
 
+    /**
+     * 根据华为 appKey获取华为配置信息
+     *
+     * @param appKey 系统唯一标识
+     * @return 华为配置信息
+     */
     PushConfDocument getConf(String appKey);
 
-    String post(String postUrl, String postBody) throws IOException;
+    /**
+     * http post请求处理
+     *
+     * @param postUrl  url
+     * @param postBody 主体
+     * @return 响应内容
+     * @throws IOException 异常
+     */
+    String handlePost(String postUrl, String postBody) throws IOException;
 }

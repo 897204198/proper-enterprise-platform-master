@@ -2,6 +2,8 @@ package com.proper.enterprise.platform.notice.server.push.handler.huawei;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
@@ -15,14 +17,17 @@ import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
+@Service("huaweiNoticeSender")
 public class HuaweiNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HuaweiNoticeSender.class);
@@ -32,12 +37,23 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
      */
     private static final String API_URL = "https://api.push.hicloud.com/pushsend.do";
 
+    @Autowired
     private HuaweiNoticeClient huaweiNoticeClient;
 
     @Override
     public void send(ReadOnlyNotice notice) throws NoticeException {
-        if (!isCmdMessage(notice)) {
-
+        try {
+            doPushNotice(notice);
+        } catch (Exception e) {
+            LOGGER.error("Error occurs when 1st time push to huawei " + notice.getId(), e);
+            try {
+                LOGGER.debug("Try to send {} to huawei push 2nd time", notice.getId());
+                doPushNotice(notice);
+            } catch (Exception e1) {
+                // 第二次发送失败才真的发送失败 TODO why?
+                LOGGER.error("Error occurs when 2nd time push to huawei " + notice.getId(), e1);
+                throw new NoticeException(e1.getMessage());
+            }
         }
 
     }
@@ -54,28 +70,65 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
 
     @Override
     public NoticeStatus getStatus(ReadOnlyNotice notice) throws NoticeException {
-        return null;
+        return NoticeStatus.SUCCESS;
+    }
+
+    private void doPushNotice(ReadOnlyNotice notice) throws NoticeException {
+        String resp = "";
+        if (isCmdMessage(notice)) {
+            resp = doPushCmd(notice, notice.getNoticeExtMsgMap());
+            try {
+                isSuccess(resp, notice);
+            } catch (NoticeException e) {
+                throw new NoticeException(e.getMessage());
+            }
+        } else {
+            JSONObject body = new JSONObject();
+            //消息标题
+            body.put("title", notice.getTitle());
+            //消息内容体
+            body.put("content", notice.getContent());
+            resp = sendPushMessage(3, body.toString(), notice);
+            Integer badgeNumber = getBadgeNumber(notice);
+            //角标不为空，且当前消息为通知栏消息，则发送一条透传消息，设置应用角标
+            if (badgeNumber != null) {
+                Map<String, Object> data = new HashMap<>(2);
+                //系统消息类型：设置角标
+                data.put("_proper_mpage", "badge");
+                //应用角标数
+                data.put("_proper_badge", badgeNumber);
+                doPushCmd(notice, data);
+            }
+            try {
+                isSuccess(resp, notice);
+            } catch (NoticeException e) {
+                throw new NoticeException(e.getMessage());
+            }
+        }
+    }
+
+    private String doPushCmd(ReadOnlyNotice notice, Map<String, Object> custom) throws NoticeException {
+        String s = Json.toJson(custom, JsonFormat.compact());
+        return sendPushMessage(1, s, notice);
     }
 
     /**
      * 发送推送
      *
-     * @param type  1透传 3消息
+     * @param type   1透传 3消息
+     * @param body   消息主体
      * @param notice 消息内容
      * @return result
      * @throws NoticeException 自定义异常
      */
-    private String sendPushMessage(int type, ReadOnlyNotice notice) throws NoticeException {
+    private String sendPushMessage(int type, String body, ReadOnlyNotice notice) throws NoticeException {
         String accessToken = huaweiNoticeClient.getAccessToken(notice.getAppKey());
         //目标设备Token
         JSONArray deviceTokens = new JSONArray();
         deviceTokens.add(notice.getTargetTo());
         PushType pushType = PushType.other;
         PushConfDocument pushConfDocument = huaweiNoticeClient.getConf(notice.getAppKey());
-        String packageName = "c";
-        if (StringUtil.isNotNull(pushConfDocument.getPushPackage())) {
-            packageName = pushConfDocument.getPushPackage();
-        }
+        String packageName = StringUtil.isNull(pushConfDocument.getPushPackage()) ? "c" : pushConfDocument.getPushPackage();
         Map<String, Object> ext = notice.getNoticeExtMsgMap();
         if (ext != null) {
             String extPushType = (String) ext.get("push_type");
@@ -95,14 +148,11 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
         JSONObject action = new JSONObject();
         //消息点击动作参数
         JSONObject param = new JSONObject();
-        //消息体
-        String body = "";
         switch (pushType) {
             case chat:
                 //类型1为跳转页面
                 action.put("type", 1);
                 param.put("intent", ext.get("uri"));
-                body = Json.toJson(ext, JsonFormat.compact());
                 break;
             case video:
             case other:
@@ -111,10 +161,6 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
                 action.put("type", 3);
                 //定义需要打开的appPkgName
                 param.put("appPkgName", packageName);
-                JSONObject msgbody = new JSONObject();
-                msgbody.put("title", notice.getTitle());
-                msgbody.put("content", notice.getContent());
-                body = msgbody.toString();
                 break;
         }
         action.put("param", param);
@@ -150,11 +196,26 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
             LOGGER.debug("postBody: {}", postBody);
             postUrl = API_URL + "?nsp_ctx="
                 + URLEncoder.encode("{\"ver\":\"1\", \"appId\":\"" + pushConfDocument.getAppId() + "\"}", "UTF-8");
-            resBody = huaweiNoticeClient.post(postUrl, postBody);
+            resBody = huaweiNoticeClient.handlePost(postUrl, postBody);
         } catch (Exception e) {
-            throw new NoticeException("Fallback to default push type of ", e);
+            throw new NoticeException("Huawei push post with error", e);
         }
         return resBody;
+    }
+
+    private void isSuccess(String res, ReadOnlyNotice notice) throws NoticeException {
+        LOGGER.debug("Push to huawei with noticeId:{} has response:{}", notice.getId(), res);
+        String key = "msg";
+        try {
+            JsonNode result = JSONUtil.parse(res, JsonNode.class);
+            String successValue = "Success";
+            if (!successValue.equals(result.get(key).textValue())) {
+                throw new NoticeException("Push to huawei failed with noticeId:" + notice.getId());
+            }
+        } catch (Exception ex) {
+            LOGGER.debug("Error occurs when parsing response of " + notice.getId(), ex);
+            throw new NoticeException("Error occurs when parsing response of " + notice.getId(), ex);
+        }
     }
 
     enum PushType {
