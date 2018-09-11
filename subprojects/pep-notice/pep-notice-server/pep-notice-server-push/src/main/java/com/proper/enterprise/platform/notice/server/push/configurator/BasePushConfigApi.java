@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.configurator;
 
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator;
-import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
+import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 
 public interface BasePushConfigApi extends NoticeConfigurator {

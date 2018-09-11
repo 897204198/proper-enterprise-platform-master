@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.notice.server.push.client;
 
-import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
+import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 
 public interface BasePushNoticeClientApi {
 
