@@ -57,6 +57,7 @@ class IOSPushTest extends Specification {
         expect:
         assert pushNotificationResponse.isAccepted()
         apnsClient.close()
+        Thread.sleep(5000)
         final Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture2 = apnsClient.sendNotification(pushNotification)
         final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse2 = sendNotificationFuture.get()
         println()

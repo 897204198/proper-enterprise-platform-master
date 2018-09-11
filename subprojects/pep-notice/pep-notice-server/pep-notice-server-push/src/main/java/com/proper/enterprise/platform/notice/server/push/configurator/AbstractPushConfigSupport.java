@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-public abstract class AbstractPushConfigSupport extends AbstractPushChannelSupport implements NoticeConfigurator {
+public abstract class AbstractPushConfigSupport extends AbstractPushChannelSupport implements PushConfigApi {
 
     @Autowired
     private PushConfigMongoRepository pushRepository;
@@ -68,10 +68,12 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
         return null;
     }
 
+    @Override
     public PushConfDocument getConf(String appKey, PushChannelEnum pushChannel) {
         return pushRepository.findByAppKeyAndPushChannel(appKey, pushChannel);
     }
 
+    @Override
     public String getPushPackage(String appKey, PushChannelEnum pushChannel) {
         PushConfDocument pushConf = pushRepository.findByAppKeyAndPushChannel(appKey, pushChannel);
         if (null == pushConf) {

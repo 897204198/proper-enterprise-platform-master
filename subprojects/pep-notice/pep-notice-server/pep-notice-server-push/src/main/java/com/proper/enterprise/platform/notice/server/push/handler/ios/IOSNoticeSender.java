@@ -6,7 +6,9 @@ import com.proper.enterprise.platform.notice.server.api.exception.NoticeExceptio
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
-import com.proper.enterprise.platform.notice.server.push.configurator.ios.IOSNoticeClient;
+import com.proper.enterprise.platform.notice.server.push.client.ios.IOSNoticeClientApi;
+import com.proper.enterprise.platform.notice.server.push.configurator.ios.IOSNoticeConfigurator;
+import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.handler.AbstractPushSendSupport;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.turo.pushy.apns.PushNotificationResponse;
@@ -20,11 +22,14 @@ import org.springframework.stereotype.Service;
 @Service("iosNoticeSender")
 public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
-    private IOSNoticeClient iosNoticeClient;
+    private IOSNoticeClientApi iosNoticeClient;
+
+    private IOSNoticeConfigurator iosNoticeConfigurator;
 
     @Autowired
-    public IOSNoticeSender(IOSNoticeClient iosNoticeClient) {
+    public IOSNoticeSender(IOSNoticeClientApi iosNoticeClient, IOSNoticeConfigurator iosNoticeConfigurator) {
         this.iosNoticeClient = iosNoticeClient;
+        this.iosNoticeConfigurator = iosNoticeConfigurator;
     }
 
     @Override
@@ -44,7 +49,7 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
             payloadBuilder.setBadgeNumber(badgeNumber);
         }
         String payload = payloadBuilder.buildWithDefaultMaximumLength();
-        String topic = iosNoticeClient.getPushPackage(notice.getAppKey());
+        String topic = iosNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.IOS);
         SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(TokenUtil
             .sanitizeTokenString(notice.getTargetTo()), topic, payload);
         final Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = iosNoticeClient
@@ -64,7 +69,7 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
     @Override
     public void beforeSend(BusinessNotice notice) throws NoticeException {
         iosNoticeClient.getClient(notice.getAppKey());
-        if (StringUtil.isEmpty(iosNoticeClient.getPushPackage(notice.getAppKey()))) {
+        if (StringUtil.isEmpty(iosNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.IOS))) {
             throw new ErrMsgException("ios push can't send without pushPackage");
         }
     }
