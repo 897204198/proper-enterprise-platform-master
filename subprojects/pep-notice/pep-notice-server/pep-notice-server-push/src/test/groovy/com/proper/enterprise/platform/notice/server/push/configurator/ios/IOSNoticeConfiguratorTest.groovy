@@ -4,9 +4,10 @@ import com.proper.enterprise.platform.api.auth.service.AccessTokenService
 import com.proper.enterprise.platform.auth.common.vo.AccessTokenVO
 import com.proper.enterprise.platform.core.utils.AntResourceUtil
 import com.proper.enterprise.platform.file.vo.FileVO
-import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument
+import com.proper.enterprise.platform.notice.server.push.constant.IOSConstant
+import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
-import com.proper.enterprise.platform.notice.server.push.repository.PushConfigMongoRepository
+import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
@@ -26,19 +27,21 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
     @Autowired
     private PushConfigMongoRepository pushConfigMongoRepository
 
+    private String fileId = ""
+
     @Test
-    public void IOSConfPostTest() {
+    public void iosConfPostTest() {
         String appKey = 'iosConfToken'
         def accessToken = new AccessTokenVO(appKey, 'for test using', appKey, 'GET:/test')
         accessTokenService.saveOrUpdate(accessToken)
         Map conf = new HashMap()
-        conf.put("p12Password", "1234")
+        conf.put("p12Password", IOSConstant.PASSWORD)
         conf.put("pushPackage", "1234")
         conf.put("certificateId", "111")
         assert "ios cert is not find" == post('/notice/server/config/' + NoticeType.PUSH + "?accessToken=" +
             appKey + "&pushChannel=IOS", JSONUtil.toJSON(conf), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
         //上传测试证书
-        Resource[] resources = AntResourceUtil.getResources('classpath*:com/proper/enterprise/platform/notice/server/push/ios/cert/icmp_dev_pro.p12')
+        Resource[] resources = AntResourceUtil.getResources(IOSConstant.CENT_PATH)
         String result = mockMvc.perform(
             MockMvcRequestBuilders
                 .fileUpload("/file")
@@ -53,7 +56,7 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
             appKey + "&pushChannel=IOS", JSONUtil.toJSON(conf), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
 
         //上传P12证书
-        Resource[] resourcesP12 = AntResourceUtil.getResources('classpath*:com/proper/enterprise/platform/notice/server/push/ios/cert/icmp_dev_pro.p12')
+        Resource[] resourcesP12 = AntResourceUtil.getResources(IOSConstant.CENT_PATH)
         String resultP12 = mockMvc.perform(
             MockMvcRequestBuilders
                 .fileUpload("/file")
@@ -65,12 +68,36 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
         FileVO fileP12VO = JSONUtil.parse(get("/file/" + resultP12 + "/meta", HttpStatus.OK).getResponse().getContentAsString(), FileVO.class)
         assert fileP12VO.getFileName() == "icmp_dev_pro.p12"
         conf.put("certificateId", fileP12VO.getId())
-
         post('/notice/server/config/' + NoticeType.PUSH + "?accessToken=" +
             appKey + "&pushChannel=IOS", JSONUtil.toJSON(conf), HttpStatus.CREATED)
         PushConfDocument pushConf = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.IOS)
         assert pushConf.appKey == appKey
-//        accessTokenService.deleteByToken(appKey)
-//        pushConfigMongoRepository.deleteAll()
+        fileId = fileP12VO.getId()
     }
+
+    @Test
+    public void iosConfPutGetDelTest() {
+        String appKey = 'iosConfToken'
+        iosConfPostTest()
+        Map conf = new HashMap()
+        conf.put("p12Password", "12345")
+        conf.put("pushPackage", "6666")
+        conf.put("certificateId", fileId)
+        assert "Certificate and password do not match" == put('/notice/server/config/' + NoticeType.PUSH + "?accessToken=" +
+            appKey + "&pushChannel=IOS", JSONUtil.toJSON(conf), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        conf.put("p12Password", "1234")
+        put('/notice/server/config/' + NoticeType.PUSH + "?accessToken=" +
+            appKey + "&pushChannel=IOS", JSONUtil.toJSON(conf), HttpStatus.OK)
+        PushConfDocument pushConf = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.IOS)
+        assert pushConf.pushPackage == "6666"
+
+        Map getConf = JSONUtil.parse(get('/notice/server/config/' + NoticeType.PUSH + "?accessToken=" + appKey + "&pushChannel=IOS",
+            HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert getConf.get("pushPackage") == "6666"
+
+        delete('/notice/server/config/' + NoticeType.PUSH + "?accessToken=" + appKey + "&pushChannel=IOS", HttpStatus.NO_CONTENT)
+        PushConfDocument delConf = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.IOS)
+        assert null == delConf
+    }
+
 }

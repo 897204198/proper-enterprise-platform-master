@@ -3,9 +3,9 @@ package com.proper.enterprise.platform.notice.server.push.configurator;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
+import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
-import com.proper.enterprise.platform.notice.server.push.repository.PushConfigMongoRepository;
+import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,6 +23,10 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
     public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {
         if (null == config.get(PUSH_PACKAGE)) {
             throw new ErrMsgException("pushPackage can't be null");
+        }
+        PushConfDocument pushConf = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(request));
+        if (null != pushConf) {
+            throw new ErrMsgException("The current configuration of the appKey and push channels already exists");
         }
         pushRepository.save(buildPushDocument(appKey, config, request));
         return config;
