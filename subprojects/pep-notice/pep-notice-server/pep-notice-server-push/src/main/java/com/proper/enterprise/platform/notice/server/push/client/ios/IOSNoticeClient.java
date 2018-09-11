@@ -81,7 +81,9 @@ public class IOSNoticeClient implements IOSNoticeClientApi {
     public void post(String appKey, PushConfDocument pushConf) {
         try {
             apnsClientPool.put(appKey, this.initClient(pushConf));
-        } catch (IOException e) {
+        } catch (ErrMsgException e) {
+            throw e;
+        } catch (Exception e) {
             LOGGER.error("init ios client error,config:{}", pushConf.toString(), e);
             throw new ErrMsgException("init ios client error");
         }
@@ -104,7 +106,9 @@ public class IOSNoticeClient implements IOSNoticeClientApi {
                 apnsClient.close();
             }
             apnsClientPool.put(appKey, initClient(pushConf));
-        } catch (IOException e) {
+        } catch (ErrMsgException e) {
+            throw e;
+        } catch (Exception e) {
             LOGGER.error("init ios client error,config:{}", pushConf.toString(), e);
             throw new ErrMsgException("init ios client error");
         }
