@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.push.handler.xiaomi
+package com.proper.enterprise.platform.notice.server.push.nav.api.ios
 
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.test.AbstractTest
@@ -12,9 +12,9 @@ import org.junit.Test
 import static com.proper.enterprise.platform.test.utils.JSONUtil.toJSON
 import static com.xiaomi.push.sdk.ErrorCode.Success
 
-class XiaomiPushMessageTest extends AbstractTest{
+@Ignore
+class XiaomiPushTest extends AbstractTest{
 
-    @Ignore
     @Test
     void testPushMessage(){
         def mCustomer = new HashMap()
@@ -35,7 +35,9 @@ class XiaomiPushMessageTest extends AbstractTest{
         assert result.getErrorCode() == Success
     }
 
-    @Ignore
+    /**
+     * 追踪Api不好用
+     */
     @Test
     void testFailTracer(){
         Tracer tracer = new Tracer("RGW+NA+T2ucpEX0a6bxyhA==")
@@ -43,7 +45,6 @@ class XiaomiPushMessageTest extends AbstractTest{
         println("tracer :" + string)
     }
 
-    @Ignore
     @Test
     void testFailTracer2(){
         Tracer tracer = new Tracer("RGW+NA+T2ucpEX0a6bxyhA==")

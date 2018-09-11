@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.push.handler.xiaomi;
+package com.proper.enterprise.platform.notice.server.push.sender.xiaomi;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
@@ -7,8 +7,10 @@ import com.proper.enterprise.platform.notice.server.api.exception.NoticeExceptio
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
-import com.proper.enterprise.platform.notice.server.push.configurator.xiaomi.XiaomiNoticeClient;
-import com.proper.enterprise.platform.notice.server.push.handler.AbstractPushSendSupport;
+import com.proper.enterprise.platform.notice.server.push.client.xiaomi.XiaomiNoticeClientApi;
+import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi;
+import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.xiaomi.push.sdk.ErrorCode;
 import com.xiaomi.xmpush.server.Message;
@@ -37,11 +39,15 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
     private static final int MIN_NOTIFY_ID = 10000;
 
     private int notifyId = MIN_NOTIFY_ID;
-    private XiaomiNoticeClient xiaomiNoticeClient;
 
     @Autowired
-    public XiaomiNoticeSender(XiaomiNoticeClient xiaomiNoticeClient) {
-        this.xiaomiNoticeClient = xiaomiNoticeClient;
+    private XiaomiNoticeClientApi xiaomiNoticeClient;
+
+    private BasePushConfigApi xiaomiNoticeConfigurator;
+
+    @Autowired
+    public XiaomiNoticeSender(BasePushConfigApi xiaomiNoticeConfigurator) {
+        this.xiaomiNoticeConfigurator = xiaomiNoticeConfigurator;
     }
 
     @Override
@@ -70,7 +76,7 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
         // 推送详情描述
         msgBuilder.description(StringUtil.abbreviate(notice.getContent(), DESCRIPTION_MAX_LENGTH));
         // 设置app的包名packageName
-        msgBuilder.restrictedPackageName(xiaomiNoticeClient.getPushPackage(notice.getAppKey()));
+        msgBuilder.restrictedPackageName(xiaomiNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.XIAOMI));
         // 推送提醒方式
         msgBuilder.notifyType(1);
         // 通知栏要显示多条推送消息需配置不同的notifyId
@@ -94,7 +100,7 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
 
     @Override
     public void beforeSend(BusinessNotice notice) throws NoticeException {
-        if (StringUtil.isNull(xiaomiNoticeClient.getPushPackage(notice.getAppKey()))) {
+        if (StringUtil.isNull(xiaomiNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.XIAOMI))) {
             throw new ErrMsgException("xiaomi push need pushPackage");
         }
     }
@@ -106,7 +112,7 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
 
     @Override
     public NoticeStatus getStatus(ReadOnlyNotice notice) throws NoticeException {
-        return null;
+        return NoticeStatus.SUCCESS;
     }
 
     private synchronized int getNextNotifyId() {

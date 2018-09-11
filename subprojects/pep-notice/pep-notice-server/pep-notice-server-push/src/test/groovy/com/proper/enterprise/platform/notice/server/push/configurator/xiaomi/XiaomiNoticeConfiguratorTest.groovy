@@ -18,7 +18,7 @@ class XiaomiNoticeConfiguratorTest extends AbstractTest {
     private NoticeConfigurator xiaomiNoticeConfigurator
 
     @Autowired
-    private PushConfigMongoRepository pushRepository;
+    private PushConfigMongoRepository pushRepository
 
 
     @Before

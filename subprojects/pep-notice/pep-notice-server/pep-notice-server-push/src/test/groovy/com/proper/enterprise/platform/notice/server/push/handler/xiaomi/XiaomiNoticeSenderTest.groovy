@@ -1,13 +1,12 @@
 package com.proper.enterprise.platform.notice.server.push.handler.xiaomi
 
-import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler
+import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
 import com.proper.enterprise.platform.notice.server.push.pushentity.MockPushEntity
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -15,12 +14,12 @@ import org.springframework.mock.web.MockHttpServletRequest
 
 class XiaomiNoticeSenderTest extends AbstractTest{
 
+    @Autowired
+    private BasePushConfigApi xiaomiNoticeConfigurator
 
     @Autowired
     private NoticeSendHandler xiaomiNoticeSender
-    @Autowired
-    @Qualifier("xiaomiNoticeConfigurator")
-    private NoticeConfigurator xiaomiNoticeConfigurator
+
 
     @Before
     void initData() {
@@ -41,7 +40,6 @@ class XiaomiNoticeSenderTest extends AbstractTest{
         xiaomiNoticeConfigurator.delete(appKey, mockHttpServletRequest)
     }
 
-    @Ignore
     @Test
     void testSendMessage() {
         for (int i = 0; i < 4 ; i++) {
@@ -53,8 +51,5 @@ class XiaomiNoticeSenderTest extends AbstractTest{
             notice.setTargetTo("o4gN1LuTsk6/CM7TKf0tTbj2MIWimxTGxRo8yZFQTJAhNsGlEeZLbMIeYnZ9BshJ")
             xiaomiNoticeSender.send(notice)
         }
-
-
     }
-
 }
