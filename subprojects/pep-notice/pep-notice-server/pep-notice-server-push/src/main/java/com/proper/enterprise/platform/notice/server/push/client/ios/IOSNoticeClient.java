@@ -3,9 +3,9 @@ package com.proper.enterprise.platform.notice.server.push.client.ios;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.file.service.FileService;
-import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
+import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
-import com.proper.enterprise.platform.notice.server.push.repository.PushConfigMongoRepository;
+import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository;
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
 import org.slf4j.Logger;
@@ -26,6 +26,8 @@ public class IOSNoticeClient implements IOSNoticeClientApi {
     private FileService fileService;
 
     private PushConfigMongoRepository pushConfigMongoRepository;
+
+    private static final String P12_PASSWORD_ERROR_MSG = "Given final block not properly padded";
 
     @Autowired
     public IOSNoticeClient(FileService fileService, PushConfigMongoRepository pushConfigMongoRepository) {
@@ -63,9 +65,16 @@ public class IOSNoticeClient implements IOSNoticeClientApi {
         String applePushUrl = ApnsClientBuilder.PRODUCTION_APNS_HOST;
         ApnsClientBuilder builder = new ApnsClientBuilder().setApnsServer(applePushUrl);
         InputStream certInputStream = fileService.download(pushDocument.getCertificateId());
-        builder = builder.setClientCredentials(certInputStream, pushDocument.getP12Password());
-        certInputStream.close();
-        return builder.build();
+        try {
+            builder = builder.setClientCredentials(certInputStream, pushDocument.getP12Password());
+            certInputStream.close();
+            return builder.build();
+        } catch (IOException e) {
+            if (e.getMessage().contains(P12_PASSWORD_ERROR_MSG)) {
+                throw new ErrMsgException("Certificate and password do not match");
+            }
+            throw e;
+        }
     }
 
     @Override

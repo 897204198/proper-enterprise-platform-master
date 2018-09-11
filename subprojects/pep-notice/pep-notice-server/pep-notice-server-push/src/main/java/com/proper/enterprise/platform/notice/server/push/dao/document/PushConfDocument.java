@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.push.document;
+package com.proper.enterprise.platform.notice.server.push.dao.document;
 
 import com.proper.enterprise.platform.core.mongo.document.BaseDocument;
 import com.proper.enterprise.platform.core.utils.JSONUtil;

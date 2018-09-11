@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Service("smsNoticeConfigurator")
-public class SMSNoticeConfigurator implements NoticeConfigurator {
+public class SMSNoticeConfigurator implements SMSConfigurator {
 
     @Autowired
     private SMSRepository smsRepository;
@@ -49,6 +49,11 @@ public class SMSNoticeConfigurator implements NoticeConfigurator {
 
     @Override
     public Map get(String appKey, HttpServletRequest request) {
+        return get(appKey);
+    }
+
+    @Override
+    public Map get(String appKey) {
         SMSDocument smsDocument = smsRepository.findByAppKey(appKey);
         if (smsDocument != null) {
             return JSONUtil.parseIgnoreException(smsDocument.toString(), Map.class);

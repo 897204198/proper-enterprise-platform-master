@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.file.api.File;
 import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.notice.server.push.client.ios.IOSNoticeClientApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.AbstractPushConfigSupport;
-import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
+import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +18,6 @@ public class IOSNoticeConfigurator extends AbstractPushConfigSupport {
     private FileService fileService;
 
     private IOSNoticeClientApi iosNoticeClientApi;
-
-    private static final String PUSH_PACKAGE = "pushPackage";
 
     @Autowired
     public IOSNoticeConfigurator(FileService fileService, IOSNoticeClientApi iosNoticeClientApi) {

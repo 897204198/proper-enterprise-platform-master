@@ -22,7 +22,7 @@ public class PushNoticeConfigurator extends AbstractPushChannelSupport implement
 
     @Override
     public Map put(String appKey, Map config, HttpServletRequest request) {
-        return PushConfiguratorFactory.product(getPushChannel(request)).post(appKey, config, request);
+        return PushConfiguratorFactory.product(getPushChannel(request)).put(appKey, config, request);
     }
 
     @Override

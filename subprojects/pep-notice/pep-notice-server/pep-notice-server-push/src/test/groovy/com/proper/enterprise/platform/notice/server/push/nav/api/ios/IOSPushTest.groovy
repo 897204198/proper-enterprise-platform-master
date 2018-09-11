@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.ios
 
 import com.proper.enterprise.platform.core.utils.AntResourceUtil
+import com.proper.enterprise.platform.notice.server.push.constant.IOSConstant
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport
 import com.turo.pushy.apns.ApnsClient
 import com.turo.pushy.apns.ApnsClientBuilder
@@ -9,27 +10,21 @@ import com.turo.pushy.apns.util.ApnsPayloadBuilder
 import com.turo.pushy.apns.util.SimpleApnsPushNotification
 import com.turo.pushy.apns.util.TokenUtil
 import io.netty.util.concurrent.Future
+import org.junit.Ignore
 import org.junit.Test
 import org.springframework.core.io.Resource
 import spock.lang.Specification
 
-
+@Ignore
 class IOSPushTest extends Specification {
 
-    public static
-    final String CENT_PATH = 'classpath*:com/proper/enterprise/platform/notice/server/push/ios/cert/icmp_dev_pro.p12'
 
-    public static final String PASSWORD = "1234"
-
-    public static final String TOPIC = "com.proper.icmp.dev"
-
-    public static final String TARGET_TO = "7fbdc8b7c74f678e088c267cd57cf7abb2e2d14cd6aeec4231e1ef3d656ed3bc"
 
     @Test
     public void apnsSendTest() throws IOException {
         ApnsClientBuilder builder = new ApnsClientBuilder().setApnsServer(ApnsClientBuilder.PRODUCTION_APNS_HOST)
-        Resource[] resources = AntResourceUtil.getResources(CENT_PATH)
-        builder = builder.setClientCredentials(resources[0].inputStream, PASSWORD)
+        Resource[] resources = AntResourceUtil.getResources(IOSConstant.CENT_PATH)
+        builder = builder.setClientCredentials(resources[0].inputStream, IOSConstant.PASSWORD)
         ApnsClient apnsClient = builder.build()
 
         ApnsPayloadBuilder payloadBuilder = new ApnsPayloadBuilder()
@@ -49,7 +44,7 @@ class IOSPushTest extends Specification {
             payloadBuilder.setBadgeNumber(badgeNumber)
         }
         String payload = payloadBuilder.buildWithDefaultMaximumLength()
-        SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(TokenUtil.sanitizeTokenString(TARGET_TO), TOPIC, payload)
+        SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(TokenUtil.sanitizeTokenString(IOSConstant.TARGET_TO), IOSConstant.TOPIC, payload)
         final Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = apnsClient.sendNotification(pushNotification)
         final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse = sendNotificationFuture.get()
         expect:

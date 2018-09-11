@@ -7,7 +7,7 @@ import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandle
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.client.ios.IOSNoticeClientApi;
-import com.proper.enterprise.platform.notice.server.push.configurator.ios.IOSNoticeConfigurator;
+import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
@@ -17,19 +17,22 @@ import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 import com.turo.pushy.apns.util.TokenUtil;
 import io.netty.util.concurrent.Future;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("iosNoticeSender")
 public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
-    @Autowired
+
     private IOSNoticeClientApi iosNoticeClient;
 
-    private IOSNoticeConfigurator iosNoticeConfigurator;
+    @Autowired
+    @Qualifier("iosNoticeConfigurator")
+    private BasePushConfigApi iosNoticeConfigurator;
 
     @Autowired
-    public IOSNoticeSender(IOSNoticeConfigurator iosNoticeConfigurator) {
-        this.iosNoticeConfigurator = iosNoticeConfigurator;
+    public IOSNoticeSender(IOSNoticeClientApi iosNoticeClient) {
+        this.iosNoticeClient = iosNoticeClient;
     }
 
     @Override
