@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.notice.server.push.handler.xiaomi;
 
-
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;

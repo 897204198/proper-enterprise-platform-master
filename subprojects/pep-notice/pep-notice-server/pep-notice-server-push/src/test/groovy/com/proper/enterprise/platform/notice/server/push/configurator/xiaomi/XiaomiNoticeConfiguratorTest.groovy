@@ -50,6 +50,7 @@ class XiaomiNoticeConfiguratorTest extends AbstractTest {
         def appKey = "testDev"
         def configMap = new HashMap()
         configMap.put("appSecret", "RGW+NA+T2ucpEX0a6bxyhA==")
+        configMap.put("pushPackage", "pushPackage")
         MockHttpServletRequest request = new MockHttpServletRequest()
         request.setParameter("pushChannel", PushChannelEnum.XIAOMI.toString())
         [appKey, configMap, request]
