@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.push.handler.ios;
+package com.proper.enterprise.platform.notice.server.push.sender.ios;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -9,7 +9,7 @@ import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.client.ios.IOSNoticeClientApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.ios.IOSNoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
-import com.proper.enterprise.platform.notice.server.push.handler.AbstractPushSendSupport;
+import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.turo.pushy.apns.PushNotificationResponse;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;

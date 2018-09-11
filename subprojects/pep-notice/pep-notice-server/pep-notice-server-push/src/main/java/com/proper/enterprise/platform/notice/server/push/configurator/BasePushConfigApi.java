@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfi
 import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 
-public interface PushConfigApi extends NoticeConfigurator {
+public interface BasePushConfigApi extends NoticeConfigurator {
 
 
     /**

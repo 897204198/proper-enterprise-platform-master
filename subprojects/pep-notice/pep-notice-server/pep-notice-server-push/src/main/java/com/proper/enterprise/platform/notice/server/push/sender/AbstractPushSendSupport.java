@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.push.handler;
+package com.proper.enterprise.platform.notice.server.push.sender;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;

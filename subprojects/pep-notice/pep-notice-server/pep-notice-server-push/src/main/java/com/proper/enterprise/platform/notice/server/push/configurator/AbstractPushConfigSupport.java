@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.notice.server.push.configurator;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.push.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.repository.PushConfigMongoRepository;
@@ -13,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
-public abstract class AbstractPushConfigSupport extends AbstractPushChannelSupport implements PushConfigApi {
+public abstract class AbstractPushConfigSupport extends AbstractPushChannelSupport implements BasePushConfigApi {
 
     @Autowired
     private PushConfigMongoRepository pushRepository;
