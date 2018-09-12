@@ -36,4 +36,10 @@ public interface PushChannelService {
      */
     DataTrunk<PushChannelVO> findAll();
 
+    /**
+     * 查询可用的渠道
+     * @return
+     */
+    DataTrunk<PushChannelVO> findByEnable();
+
 }
