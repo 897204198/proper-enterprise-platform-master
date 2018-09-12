@@ -72,7 +72,7 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
             return findPushStatisticByWeek(startDate, appKey);
         }
         if (DATE_RANGE_MONTH.equals(dateType)) {
-            return findPushStatisticByWeek(startDate, appKey);
+            return findPushStatisticByMonth(startDate, appKey);
         }
         return null;
     }
