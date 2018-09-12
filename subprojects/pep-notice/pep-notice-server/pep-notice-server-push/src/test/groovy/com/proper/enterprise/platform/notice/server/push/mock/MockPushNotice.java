@@ -72,6 +72,61 @@ public class MockPushNotice implements Notice {
     }
 
     @Override
+    public void setId(String id) {
+
+    }
+
+    @Override
+    public String getCreateUserId() {
+        return null;
+    }
+
+    @Override
+    public void setCreateUserId(String createUserId) {
+
+    }
+
+    @Override
+    public String getCreateTime() {
+        return null;
+    }
+
+    @Override
+    public void setCreateTime(String createTime) {
+
+    }
+
+    @Override
+    public String getLastModifyUserId() {
+        return null;
+    }
+
+    @Override
+    public void setLastModifyUserId(String lastModifyUserId) {
+
+    }
+
+    @Override
+    public String getLastModifyTime() {
+        return "2018-09-12 00:00:00";
+    }
+
+    @Override
+    public void setLastModifyTime(String lastModifyTime) {
+
+    }
+
+    @Override
+    public Boolean getEnable() {
+        return null;
+    }
+
+    @Override
+    public void setEnable(Boolean enable) {
+
+    }
+
+    @Override
     public String getBatchId() {
         return batchId;
     }

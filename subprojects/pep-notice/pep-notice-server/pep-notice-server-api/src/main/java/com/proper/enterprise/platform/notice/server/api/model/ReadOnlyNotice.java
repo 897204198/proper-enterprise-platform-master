@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.notice.server.api.model;
 
+import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 
@@ -8,7 +9,7 @@ import java.util.Map;
 /**
  * 消息接口  只读权限
  */
-public interface ReadOnlyNotice {
+public interface ReadOnlyNotice extends IBase {
 
     /**
      * 获取消息Id
