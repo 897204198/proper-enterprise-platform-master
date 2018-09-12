@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.client.ios;
 import com.proper.enterprise.platform.notice.server.push.client.BasePushNoticeClientApi;
 import com.turo.pushy.apns.ApnsClient;
 
-public interface IOSNoticeClientApi extends BasePushNoticeClientApi {
+public interface IOSNoticeClientManagerApi extends BasePushNoticeClientApi {
 
     /**
      * 根据IOS appKey获取客户端

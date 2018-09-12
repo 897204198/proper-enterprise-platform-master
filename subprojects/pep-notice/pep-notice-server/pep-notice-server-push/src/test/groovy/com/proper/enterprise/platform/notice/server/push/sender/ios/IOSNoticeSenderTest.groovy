@@ -8,9 +8,13 @@ import com.proper.enterprise.platform.file.vo.FileVO
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler
 import com.proper.enterprise.platform.notice.server.push.constant.IOSConstant
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument
+import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository
+import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgJpaRepository
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
+import com.proper.enterprise.platform.notice.server.push.enums.PushDeviceTypeEnum
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
+import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.test.AbstractTest
@@ -35,6 +39,9 @@ class IOSNoticeSenderTest extends AbstractTest {
 
     @Autowired
     PushConfigMongoRepository pushConfigMongoRepository
+
+    @Autowired
+    PushNoticeMsgJpaRepository pushNoticeMsgJpaRepository
 
     @Test
     public void iosNoticeSendTest() {
@@ -109,6 +116,27 @@ class IOSNoticeSenderTest extends AbstractTest {
         save.setPushPackage(IOSConstant.TOPIC)
         PushConfDocument update = pushConfigMongoRepository.save(save)
         iosNoticeSender.beforeSend(mockPushNotice)
+    }
+
+    @Test
+    public void afterSend() {
+        MockPushNotice mockPushNotice = new MockPushNotice()
+        mockPushNotice.setTargetTo(IOSConstant.TARGET_TO)
+        mockPushNotice.setTitle("555")
+        mockPushNotice.setContent("66666qwe")
+        mockPushNotice.setAppKey("appKeyAfterSend")
+        mockPushNotice.setRetryCount(22)
+        mockPushNotice.setStatus(NoticeStatus.SUCCESS)
+        mockPushNotice.setTargetExtMsg(AbstractPushSendSupport.PUSH_CHANNEL_KEY, "IOS")
+        iosNoticeSender.afterSend(mockPushNotice)
+        Thread.sleep(3000)
+        for (PushNoticeMsgEntity pushNoticeMsg : pushNoticeMsgJpaRepository.findAll()) {
+            if ("appKeyAfterSend" == pushNoticeMsg.getAppkey()
+                && PushDeviceTypeEnum.IOS == pushNoticeMsg.getDeviceType()) {
+                return
+            }
+        }
+        throw new ErrMsgException("can't find sync entity")
     }
 
     @Test

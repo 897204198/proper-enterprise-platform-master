@@ -17,10 +17,10 @@ import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-class IOSClientTest extends AbstractTest {
+class IOSClientManagerTest extends AbstractTest {
 
     @Autowired
-    IOSNoticeClientApi iosNoticeClientApi
+    IOSNoticeClientManagerApi iosNoticeClientApi
 
     @Autowired
     PushConfigMongoRepository pushConfigMongoRepository

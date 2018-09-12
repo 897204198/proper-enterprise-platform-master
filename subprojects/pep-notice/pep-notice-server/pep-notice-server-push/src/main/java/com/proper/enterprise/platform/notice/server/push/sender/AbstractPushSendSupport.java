@@ -3,9 +3,11 @@ package com.proper.enterprise.platform.notice.server.push.sender;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
+import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgService;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
@@ -13,6 +15,8 @@ public abstract class AbstractPushSendSupport {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPushSendSupport.class);
 
+    @Autowired
+    private PushNoticeMsgService pushNoticeMsgService;
     /**
      * 推送渠道
      */
@@ -100,5 +104,15 @@ public abstract class AbstractPushSendSupport {
             return null;
         }
         return (Map) readOnlyNotice.getNoticeExtMsgMap().get(CUSTOM_PROPERTY_KEY);
+    }
+
+    /**
+     * 根据消息服务端框架回调 同步插入推送记录
+     *
+     * @param readOnlyNotice 只读消息
+     * @param pushChannel    推送渠道
+     */
+    public void savePushMsg(ReadOnlyNotice readOnlyNotice, PushChannelEnum pushChannel) {
+        pushNoticeMsgService.savePushMsg(readOnlyNotice, pushChannel);
     }
 }
