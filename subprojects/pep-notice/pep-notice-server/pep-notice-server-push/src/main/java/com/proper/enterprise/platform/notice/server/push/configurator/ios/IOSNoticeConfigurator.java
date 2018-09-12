@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.configurator.ios;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.file.api.File;
 import com.proper.enterprise.platform.file.service.FileService;
-import com.proper.enterprise.platform.notice.server.push.client.ios.IOSNoticeClientApi;
+import com.proper.enterprise.platform.notice.server.push.client.ios.IOSNoticeClientManagerApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.AbstractPushConfigSupport;
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +17,10 @@ public class IOSNoticeConfigurator extends AbstractPushConfigSupport {
 
     private FileService fileService;
 
-    private IOSNoticeClientApi iosNoticeClientApi;
+    private IOSNoticeClientManagerApi iosNoticeClientApi;
 
     @Autowired
-    public IOSNoticeConfigurator(FileService fileService, IOSNoticeClientApi iosNoticeClientApi) {
+    public IOSNoticeConfigurator(FileService fileService, IOSNoticeClientManagerApi iosNoticeClientApi) {
         this.fileService = fileService;
         this.iosNoticeClientApi = iosNoticeClientApi;
     }

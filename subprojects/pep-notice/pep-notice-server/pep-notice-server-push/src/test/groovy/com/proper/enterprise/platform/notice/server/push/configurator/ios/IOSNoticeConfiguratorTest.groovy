@@ -27,11 +27,14 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
     @Autowired
     private PushConfigMongoRepository pushConfigMongoRepository
 
-    private String fileId = ""
-
     @Test
     public void iosConfPostTest() {
-        String appKey = 'iosConfToken'
+        String appKey = 'iosConfPostToken'
+        post(appKey)
+    }
+
+    private FileVO post(String appKey) {
+
         def accessToken = new AccessTokenVO(appKey, 'for test using', appKey, 'GET:/test')
         accessTokenService.saveOrUpdate(accessToken)
         Map conf = new HashMap()
@@ -72,17 +75,17 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
             appKey + "&pushChannel=IOS", JSONUtil.toJSON(conf), HttpStatus.CREATED)
         PushConfDocument pushConf = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.IOS)
         assert pushConf.appKey == appKey
-        fileId = fileP12VO.getId()
+        return fileP12VO
     }
 
     @Test
     public void iosConfPutGetDelTest() {
-        String appKey = 'iosConfToken'
-        iosConfPostTest()
+        String appKey = 'iosConfGetToken'
+        FileVO fileVO = post(appKey)
         Map conf = new HashMap()
         conf.put("p12Password", "12345")
         conf.put("pushPackage", "6666")
-        conf.put("certificateId", fileId)
+        conf.put("certificateId", fileVO.getId())
         assert "Certificate and password do not match" == put('/notice/server/config/' + NoticeType.PUSH + "?accessToken=" +
             appKey + "&pushChannel=IOS", JSONUtil.toJSON(conf), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
         conf.put("p12Password", "1234")

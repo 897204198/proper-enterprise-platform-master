@@ -18,8 +18,6 @@ import spock.lang.Specification
 @Ignore
 class IOSPushTest extends Specification {
 
-
-
     @Test
     public void apnsSendTest() throws IOException {
         ApnsClientBuilder builder = new ApnsClientBuilder().setApnsServer(ApnsClientBuilder.PRODUCTION_APNS_HOST)

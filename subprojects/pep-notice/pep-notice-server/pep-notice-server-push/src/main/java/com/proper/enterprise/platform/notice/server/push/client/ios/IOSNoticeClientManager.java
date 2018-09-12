@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class IOSNoticeClient implements IOSNoticeClientApi {
+public class IOSNoticeClientManager implements IOSNoticeClientManagerApi {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IOSNoticeClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IOSNoticeClientManager.class);
 
     private FileService fileService;
 
@@ -30,7 +30,7 @@ public class IOSNoticeClient implements IOSNoticeClientApi {
     private static final String P12_PASSWORD_ERROR_MSG = "Given final block not properly padded";
 
     @Autowired
-    public IOSNoticeClient(FileService fileService, PushConfigMongoRepository pushConfigMongoRepository) {
+    public IOSNoticeClientManager(FileService fileService, PushConfigMongoRepository pushConfigMongoRepository) {
         this.fileService = fileService;
         this.pushConfigMongoRepository = pushConfigMongoRepository;
     }
@@ -70,7 +70,7 @@ public class IOSNoticeClient implements IOSNoticeClientApi {
             certInputStream.close();
             return builder.build();
         } catch (IOException e) {
-            if (e.getMessage().contains(P12_PASSWORD_ERROR_MSG)) {
+            if (null != e.getMessage() && e.getMessage().contains(P12_PASSWORD_ERROR_MSG)) {
                 throw new ErrMsgException("Certificate and password do not match");
             }
             throw e;
@@ -81,7 +81,9 @@ public class IOSNoticeClient implements IOSNoticeClientApi {
     public void post(String appKey, PushConfDocument pushConf) {
         try {
             apnsClientPool.put(appKey, this.initClient(pushConf));
-        } catch (IOException e) {
+        } catch (ErrMsgException e) {
+            throw e;
+        } catch (Exception e) {
             LOGGER.error("init ios client error,config:{}", pushConf.toString(), e);
             throw new ErrMsgException("init ios client error");
         }
@@ -104,7 +106,9 @@ public class IOSNoticeClient implements IOSNoticeClientApi {
                 apnsClient.close();
             }
             apnsClientPool.put(appKey, initClient(pushConf));
-        } catch (IOException e) {
+        } catch (ErrMsgException e) {
+            throw e;
+        } catch (Exception e) {
             LOGGER.error("init ios client error,config:{}", pushConf.toString(), e);
             throw new ErrMsgException("init ios client error");
         }
