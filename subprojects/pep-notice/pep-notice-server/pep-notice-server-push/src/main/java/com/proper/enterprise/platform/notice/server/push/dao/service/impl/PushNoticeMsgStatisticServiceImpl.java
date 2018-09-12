@@ -1,0 +1,366 @@
+package com.proper.enterprise.platform.notice.server.push.dao.service.impl;
+
+import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgStatisticEntity;
+import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgStatisticRepository;
+import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgStatisticService;
+import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnalysisVO;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+@Service
+public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatisticService {
+
+    public static final String DATE_RANGE_DAY = "day";
+    public static final String DATE_RANGE_WEEK = "week";
+    public static final String DATE_RANGE_MONTH = "month";
+    public static final int WEEK_RANGE = 8;
+
+    private PushNoticeMsgStatisticRepository pushNoticeMsgStatisticRepository;
+
+    public PushNoticeMsgStatisticServiceImpl(PushNoticeMsgStatisticRepository pushNoticeMsgStatisticRepository) {
+        this.pushNoticeMsgStatisticRepository = pushNoticeMsgStatisticRepository;
+    }
+
+    @Override
+    public List<PushNoticeMsgStatisticEntity> getPushStatistic(Date startDate, Date endDate) {
+        List<Object[]> statisticList = pushNoticeMsgStatisticRepository.getPushStatistic(
+            DateUtil.toString(startDate, PEPConstants.DEFAULT_DATE_FORMAT),
+            DateUtil.toString(endDate, PEPConstants.DEFAULT_DATE_FORMAT));
+        List<PushNoticeMsgStatisticEntity> entityList = new ArrayList<>();
+        if (CollectionUtil.isEmpty(statisticList)) {
+            return new ArrayList<>();
+        }
+        for (Object[] rows : statisticList) {
+            PushNoticeMsgStatisticEntity entity = new PushNoticeMsgStatisticEntity();
+            entity.setAppKey((String) rows[0]);
+            entity.setPushChannel(PushChannelEnum.valueOf((String) rows[1]));
+            Date sendDate = DateUtil.toDate((String) rows[2], PEPConstants.DEFAULT_DATE_FORMAT);
+            entity.setSendDate(DateUtil.toString(sendDate, PEPConstants.DEFAULT_DATE_FORMAT));
+            entity.setWeek(buildWeekRange(sendDate));
+            entity.setMonth(DateUtil.toString(sendDate, PEPConstants.DEFAULT_MONTH_FORMAT));
+            entity.setStatus(NoticeStatus.valueOf((String) rows[3]));
+            String obj4 = rows[4].toString();
+            entity.setMsgCount(Integer.valueOf(obj4));
+            entityList.add(entity);
+        }
+        return entityList;
+    }
+
+    @Override
+    public void saveAll(List<PushNoticeMsgStatisticEntity> pushMsgStatistics) {
+        pushNoticeMsgStatisticRepository.save(pushMsgStatistics);
+    }
+
+    @Override
+    public void deleteBySendDate(Date sendDate) {
+        pushNoticeMsgStatisticRepository.deleteBySendDate(DateUtil.toString(sendDate, PEPConstants.DEFAULT_DATE_FORMAT));
+    }
+
+    @Override
+    public List<PushServiceDataAnalysisVO> findByDateTypeAndAppKey(Date startDate, String dateType, String appKey) {
+        if (DATE_RANGE_DAY.equals(dateType)) {
+            return findPushStatisticByDay(startDate, appKey);
+        }
+        if (DATE_RANGE_WEEK.equals(dateType)) {
+            return findPushStatisticByWeek(startDate, appKey);
+        }
+        if (DATE_RANGE_MONTH.equals(dateType)) {
+            return findPushStatisticByWeek(startDate, appKey);
+        }
+        return null;
+    }
+
+
+    /**
+     * 根据天数统计 基础日期及前六天数据
+     *
+     * @param startDate 基础日期
+     * @param appKey    应用唯一标识
+     * @return 统计结果
+     */
+    private List<PushServiceDataAnalysisVO> findPushStatisticByDay(Date startDate, String appKey) {
+        Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap = new HashMap<>();
+        //构造每天视图 共七天
+        String oneDate = DateUtil.toString(startDate, PEPConstants.DEFAULT_DATE_FORMAT);
+        PushServiceDataAnalysisVO one = new PushServiceDataAnalysisVO();
+        one.setDataAnalysisDate(oneDate);
+        pushServiceDataAnalysisMap.put(oneDate, one);
+
+        String twoDate = DateUtil.toString(DateUtil.addDay(startDate, -1), PEPConstants.DEFAULT_DATE_FORMAT);
+        PushServiceDataAnalysisVO two = new PushServiceDataAnalysisVO();
+        two.setDataAnalysisDate(twoDate);
+        pushServiceDataAnalysisMap.put(twoDate, two);
+
+        String threeDate = DateUtil.toString(DateUtil.addDay(startDate, -2), PEPConstants.DEFAULT_DATE_FORMAT);
+        PushServiceDataAnalysisVO three = new PushServiceDataAnalysisVO();
+        three.setDataAnalysisDate(threeDate);
+        pushServiceDataAnalysisMap.put(threeDate, three);
+
+        String fourDate = DateUtil.toString(DateUtil.addDay(startDate, -3), PEPConstants.DEFAULT_DATE_FORMAT);
+        PushServiceDataAnalysisVO four = new PushServiceDataAnalysisVO();
+        four.setDataAnalysisDate(fourDate);
+        pushServiceDataAnalysisMap.put(fourDate, four);
+
+        String fiveDate = DateUtil.toString(DateUtil.addDay(startDate, -4), PEPConstants.DEFAULT_DATE_FORMAT);
+        PushServiceDataAnalysisVO five = new PushServiceDataAnalysisVO();
+        five.setDataAnalysisDate(fiveDate);
+        pushServiceDataAnalysisMap.put(fiveDate, five);
+
+        String sixDate = DateUtil.toString(DateUtil.addDay(startDate, -5), PEPConstants.DEFAULT_DATE_FORMAT);
+        PushServiceDataAnalysisVO six = new PushServiceDataAnalysisVO();
+        six.setDataAnalysisDate(sixDate);
+        pushServiceDataAnalysisMap.put(sixDate, six);
+
+        String sevenDate = DateUtil.toString(DateUtil.addDay(startDate, -6), PEPConstants.DEFAULT_DATE_FORMAT);
+        PushServiceDataAnalysisVO seven = new PushServiceDataAnalysisVO();
+        seven.setDataAnalysisDate(sevenDate);
+        pushServiceDataAnalysisMap.put(sevenDate, seven);
+
+        //获取七天内统计数据
+        Date sendDate = DateUtil.addDay(startDate, -6);
+        String sendDateStr = DateUtil.toString(sendDate, PEPConstants.DEFAULT_DATE_FORMAT);
+        List<PushNoticeMsgStatisticEntity> result = new ArrayList<>();
+        if (StringUtil.isEmpty(appKey)) {
+            result = convert(pushNoticeMsgStatisticRepository.findAllGroupDay(sendDateStr));
+        } else {
+            result = convert(pushNoticeMsgStatisticRepository.findAllGroupDay(appKey, sendDateStr));
+        }
+
+        //根据统计数据 填充天数视图
+        buildDataAnalysisView(result, pushServiceDataAnalysisMap);
+
+        List<PushServiceDataAnalysisVO> list = new ArrayList<>();
+        list.add(one);
+        list.add(two);
+        list.add(three);
+        list.add(four);
+        list.add(five);
+        list.add(six);
+        list.add(seven);
+        return list;
+    }
+
+
+    /**
+     * 根据周统计 基础日期及前六周数据
+     *
+     * @param startDate 基础日期
+     * @param appKey    应用唯一标识
+     * @return 统计结果
+     */
+    private List<PushServiceDataAnalysisVO> findPushStatisticByWeek(Date startDate, String appKey) {
+
+        Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap = new HashMap<>();
+        //构造每周视图 共七周
+        String oneDate = buildWeekRange(startDate);
+
+        PushServiceDataAnalysisVO one = new PushServiceDataAnalysisVO();
+        one.setDataAnalysisDate(oneDate);
+        pushServiceDataAnalysisMap.put(oneDate, one);
+
+        String twoDate = buildWeekRange(DateUtil.addWeek(startDate, -1));
+        PushServiceDataAnalysisVO two = new PushServiceDataAnalysisVO();
+        two.setDataAnalysisDate(twoDate);
+        pushServiceDataAnalysisMap.put(twoDate, two);
+
+        String threeDate = buildWeekRange(DateUtil.addWeek(startDate, -2));
+        PushServiceDataAnalysisVO three = new PushServiceDataAnalysisVO();
+        three.setDataAnalysisDate(threeDate);
+        pushServiceDataAnalysisMap.put(threeDate, three);
+
+        String fourDate = buildWeekRange(DateUtil.addWeek(startDate, -3));
+        PushServiceDataAnalysisVO four = new PushServiceDataAnalysisVO();
+        four.setDataAnalysisDate(fourDate);
+        pushServiceDataAnalysisMap.put(fourDate, four);
+
+        String fiveDate = buildWeekRange(DateUtil.addWeek(startDate, -4));
+        PushServiceDataAnalysisVO five = new PushServiceDataAnalysisVO();
+        five.setDataAnalysisDate(fiveDate);
+        pushServiceDataAnalysisMap.put(fiveDate, five);
+
+        String sixDate = buildWeekRange(DateUtil.addWeek(startDate, -5));
+        PushServiceDataAnalysisVO six = new PushServiceDataAnalysisVO();
+        six.setDataAnalysisDate(sixDate);
+        pushServiceDataAnalysisMap.put(sixDate, six);
+
+        String sevenDate = buildWeekRange(DateUtil.addWeek(startDate, -6));
+        PushServiceDataAnalysisVO seven = new PushServiceDataAnalysisVO();
+        seven.setDataAnalysisDate(sevenDate);
+        pushServiceDataAnalysisMap.put(sevenDate, seven);
+
+
+        //获取七天内统计数据
+        Date sendDate = DateUtil.addWeek(startDate, -6);
+        String sendDateStr = DateUtil.toString(sendDate, PEPConstants.DEFAULT_DATE_FORMAT);
+        List<PushNoticeMsgStatisticEntity> result = new ArrayList<>();
+        if (StringUtil.isEmpty(appKey)) {
+            result = convert(pushNoticeMsgStatisticRepository.findAllGroupWeek(sendDateStr));
+        } else {
+            result = convert(pushNoticeMsgStatisticRepository.findAllGroupWeek(appKey, sendDateStr));
+        }
+
+        //根据统计数据 填充每周视图
+        buildDataAnalysisView(result, pushServiceDataAnalysisMap);
+
+        List<PushServiceDataAnalysisVO> list = new ArrayList<>();
+        list.add(one);
+        list.add(two);
+        list.add(three);
+        list.add(four);
+        list.add(five);
+        list.add(six);
+        list.add(seven);
+        return list;
+    }
+
+    /**
+     * 根据月统计 基础日期及前六月数据
+     *
+     * @param startDate 基础日期
+     * @param appKey    应用唯一标识
+     * @return 统计结果
+     */
+    public List<PushServiceDataAnalysisVO> findPushStatisticByMonth(Date startDate, String appKey) {
+        Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap = new HashMap<>();
+        //构造每月视图 共七月
+        String oneDate = DateUtil.toString(startDate, PEPConstants.DEFAULT_MONTH_FORMAT);
+        PushServiceDataAnalysisVO one = new PushServiceDataAnalysisVO();
+        one.setDataAnalysisDate(oneDate);
+        pushServiceDataAnalysisMap.put(oneDate, one);
+
+        String twoDate = DateUtil.toString(DateUtil.addMonth(startDate, -1), PEPConstants.DEFAULT_MONTH_FORMAT);
+        PushServiceDataAnalysisVO two = new PushServiceDataAnalysisVO();
+        two.setDataAnalysisDate(twoDate);
+        pushServiceDataAnalysisMap.put(twoDate, two);
+
+        String threeDate = DateUtil.toString(DateUtil.addMonth(startDate, -2), PEPConstants.DEFAULT_MONTH_FORMAT);
+        PushServiceDataAnalysisVO three = new PushServiceDataAnalysisVO();
+        three.setDataAnalysisDate(threeDate);
+        pushServiceDataAnalysisMap.put(threeDate, three);
+
+        String fourDate = DateUtil.toString(DateUtil.addMonth(startDate, -3), PEPConstants.DEFAULT_MONTH_FORMAT);
+        PushServiceDataAnalysisVO four = new PushServiceDataAnalysisVO();
+        four.setDataAnalysisDate(fourDate);
+        pushServiceDataAnalysisMap.put(fourDate, four);
+
+        String fiveDate = DateUtil.toString(DateUtil.addMonth(startDate, -4), PEPConstants.DEFAULT_MONTH_FORMAT);
+        PushServiceDataAnalysisVO five = new PushServiceDataAnalysisVO();
+        five.setDataAnalysisDate(fiveDate);
+        pushServiceDataAnalysisMap.put(fiveDate, five);
+
+        String sixDate = DateUtil.toString(DateUtil.addMonth(startDate, -5), PEPConstants.DEFAULT_MONTH_FORMAT);
+        PushServiceDataAnalysisVO six = new PushServiceDataAnalysisVO();
+        six.setDataAnalysisDate(sixDate);
+        pushServiceDataAnalysisMap.put(sixDate, six);
+
+        String sevenDate = DateUtil.toString(DateUtil.addMonth(startDate, -6), PEPConstants.DEFAULT_MONTH_FORMAT);
+        PushServiceDataAnalysisVO seven = new PushServiceDataAnalysisVO();
+        seven.setDataAnalysisDate(sevenDate);
+        pushServiceDataAnalysisMap.put(sevenDate, seven);
+
+        //获取七月内统计数据
+        Date beginMonth = DateUtil.addMonth(startDate, -7);
+        String sendDateStr = DateUtil.toString(beginMonth, PEPConstants.DEFAULT_MONTH_FORMAT);
+        List<PushNoticeMsgStatisticEntity> result = new ArrayList<>();
+        if (StringUtil.isEmpty(appKey)) {
+            result = convert(pushNoticeMsgStatisticRepository.findAllGroupMonth(sendDateStr));
+        } else {
+            result = convert(pushNoticeMsgStatisticRepository.findAllGroupMonth(appKey, sendDateStr));
+        }
+
+        //根据统计数据 填充每月视图
+        buildDataAnalysisView(result, pushServiceDataAnalysisMap);
+
+        List<PushServiceDataAnalysisVO> list = new ArrayList<>();
+        list.add(one);
+        list.add(two);
+        list.add(three);
+        list.add(four);
+        list.add(five);
+        list.add(six);
+        list.add(seven);
+        return list;
+    }
+
+    /**
+     * 根据统计结果和视图集合 构造视图对象
+     * 引用传递修改存放于视图集合中的视图对象
+     *
+     * @param result                     统计结果
+     * @param pushServiceDataAnalysisMap 视图集合
+     */
+    private void buildDataAnalysisView(List<PushNoticeMsgStatisticEntity> result, Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap) {
+
+        for (PushNoticeMsgStatisticEntity pushNoticeMsgStatisticEntity : result) {
+            PushServiceDataAnalysisVO pushServiceDataAnalysisVO = pushServiceDataAnalysisMap.get(pushNoticeMsgStatisticEntity.getSendDate());
+            switch (pushNoticeMsgStatisticEntity.getPushChannel()) {
+                case XIAOMI:
+                    if (NoticeStatus.SUCCESS == pushNoticeMsgStatisticEntity.getStatus()) {
+                        pushServiceDataAnalysisVO.getXiaomiDataAnalysis().setSuccessCount(pushNoticeMsgStatisticEntity.getMsgCount());
+                    }
+                    if (NoticeStatus.FAIL == pushNoticeMsgStatisticEntity.getStatus()) {
+                        pushServiceDataAnalysisVO.getXiaomiDataAnalysis().setFailCount(pushNoticeMsgStatisticEntity.getMsgCount());
+                    }
+                    break;
+                case HUAWEI:
+                    if (NoticeStatus.SUCCESS == pushNoticeMsgStatisticEntity.getStatus()) {
+                        pushServiceDataAnalysisVO.getHuaweiDataAnalysis().setSuccessCount(pushNoticeMsgStatisticEntity.getMsgCount());
+                    }
+                    if (NoticeStatus.FAIL == pushNoticeMsgStatisticEntity.getStatus()) {
+                        pushServiceDataAnalysisVO.getHuaweiDataAnalysis().setFailCount(pushNoticeMsgStatisticEntity.getMsgCount());
+                    }
+                    break;
+                case IOS:
+                    if (NoticeStatus.SUCCESS == pushNoticeMsgStatisticEntity.getStatus()) {
+                        pushServiceDataAnalysisVO.getIosDataAnalysis().setSuccessCount(pushNoticeMsgStatisticEntity.getMsgCount());
+                    }
+                    if (NoticeStatus.FAIL == pushNoticeMsgStatisticEntity.getStatus()) {
+                        pushServiceDataAnalysisVO.getIosDataAnalysis().setFailCount(pushNoticeMsgStatisticEntity.getMsgCount());
+                    }
+                    break;
+            }
+
+        }
+    }
+
+    /**
+     * 根据时间 获取时间周范围
+     *
+     * @param date 给定时间
+     * @return 时间周范围 例如:2018-07-02~2018-07-08
+     */
+    private String buildWeekRange(Date date) {
+        StringBuilder sb = new StringBuilder();
+        Date mondayOfThisWeek = DateUtil.getDayOfWeek(date, 1);
+        Date sundayOfThisWeek = DateUtil.getDayOfWeek(date, 7);
+        sb.append(DateUtil.toString(mondayOfThisWeek, PEPConstants.DEFAULT_DATE_FORMAT))
+            .append("～")
+            .append(DateUtil.toString(sundayOfThisWeek, PEPConstants.DEFAULT_DATE_FORMAT));
+        return sb.toString();
+    }
+
+    private List<PushNoticeMsgStatisticEntity> convert(List<Object[]> list) {
+        List<PushNoticeMsgStatisticEntity> pushNoticeMsgStatistics = new ArrayList<>();
+        if (CollectionUtil.isEmpty(list)) {
+            return pushNoticeMsgStatistics;
+        }
+        for (Object row : list) {
+            Object[] cells = (Object[]) row;
+            PushNoticeMsgStatisticEntity pushNoticeMsgStatisticEntity = new PushNoticeMsgStatisticEntity();
+            pushNoticeMsgStatisticEntity.setMsgCount(Integer.valueOf(cells[0].toString()));
+            pushNoticeMsgStatisticEntity.setStatus(NoticeStatus.valueOf(cells[1].toString()));
+            pushNoticeMsgStatisticEntity.setPushChannel(PushChannelEnum.valueOf(cells[2].toString()));
+            pushNoticeMsgStatisticEntity.setSendDate(cells[3].toString());
+            pushNoticeMsgStatistics.add(pushNoticeMsgStatisticEntity);
+        }
+        return pushNoticeMsgStatistics;
+    }
+
+}

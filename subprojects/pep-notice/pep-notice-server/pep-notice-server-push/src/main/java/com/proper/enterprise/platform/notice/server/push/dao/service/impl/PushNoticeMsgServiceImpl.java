@@ -24,7 +24,7 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
     @Override
     public void savePushMsg(ReadOnlyNotice readOnlyNotice, PushChannelEnum pushChannel) {
         PushNoticeMsgEntity pushNoticeMsg = new PushNoticeMsgEntity();
-        pushNoticeMsg.setAppkey(readOnlyNotice.getAppKey());
+        pushNoticeMsg.setAppKey(readOnlyNotice.getAppKey());
         pushNoticeMsg.setContent(readOnlyNotice.getContent());
         pushNoticeMsg.setSendCount(readOnlyNotice.getRetryCount() + 1);
         pushNoticeMsg.setSendDate(DateUtil.toDate(readOnlyNotice.getLastModifyTime(),
