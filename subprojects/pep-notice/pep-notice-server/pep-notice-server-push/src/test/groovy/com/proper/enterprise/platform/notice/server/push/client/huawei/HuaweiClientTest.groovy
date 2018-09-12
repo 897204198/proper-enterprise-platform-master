@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 class HuaweiClientTest extends AbstractTest {
 
     @Autowired
-    private HuaweiNoticeClientApi huaweiNoticeClientApi
+    private HuaweiNoticeClientManagerApi huaweiNoticeClientApi
 
     @Autowired
     private PushConfigMongoRepository pushConfigMongoRepository
@@ -20,7 +20,12 @@ class HuaweiClientTest extends AbstractTest {
     @Test
     void test() {
         try {
-            huaweiNoticeClientApi.getAccessToken("test")
+            huaweiNoticeClientApi.get()
+        } catch (ErrMsgException e) {
+            e.getMessage().contains("appKey can't be empty")
+        }
+        try {
+            huaweiNoticeClientApi.get("test")
         } catch (ErrMsgException e) {
             e.getMessage().contains("Can't get Huawei push config")
         }
@@ -32,7 +37,7 @@ class HuaweiClientTest extends AbstractTest {
         pushConfDocument.setPushChannel(PushChannelEnum.HUAWEI)
         pushConfDocument = pushConfigMongoRepository.save(pushConfDocument)
         try {
-            huaweiNoticeClientApi.getAccessToken("testHuawei")
+            huaweiNoticeClientApi.get("testHuawei")
         } catch (ErrMsgException e) {
             e.getMessage().contains("Please check Huawei push config")
         }
@@ -40,6 +45,6 @@ class HuaweiClientTest extends AbstractTest {
         pushConfDocument.setAppSecret(HuaweiConstant.CLIENT_SECRET)
         pushConfigMongoRepository.save(pushConfDocument)
 
-        assert null != huaweiNoticeClientApi.getAccessToken("testHuawei")
+        assert null != huaweiNoticeClientApi.get("testHuawei")
     }
 }
