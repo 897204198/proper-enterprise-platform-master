@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.push.schedule.service.impl
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.push.api.openapi.service.PushChannelService
 import com.proper.enterprise.platform.push.entity.PushChannelEntity
-import com.proper.enterprise.platform.push.repository.PushChannelRepository
 import com.proper.enterprise.platform.push.vo.PushChannelVO
 import com.proper.enterprise.platform.sys.i18n.I18NUtil
 import com.proper.enterprise.platform.test.AbstractTest
@@ -16,9 +15,6 @@ class PushChannelTest extends AbstractTest {
 
     @Autowired
     private PushChannelService pushChannelService;
-
-    @Autowired
-    private PushChannelRepository pushChannelRepository;
 
     def url = "/push/channels"
 
@@ -214,7 +210,7 @@ class PushChannelTest extends AbstractTest {
     }
 
     @Test
-    void testFindEnableChannel() {
+    void testFindChannel() {
         PushChannelVO pushChannelVo = new PushChannelVO()
         pushChannelVo.setId("aaa")
         pushChannelVo.setChannelDesc("医院")
@@ -243,10 +239,11 @@ class PushChannelTest extends AbstractTest {
         addChannel(pushChannelVo)
         addChannel(pushChannelVo2)
 
-        List<PushChannelEntity> pushList = pushChannelRepository.findByEnable(true)
-        assert pushList.size() == 1
+        DataTrunk<PushChannelVO> pushList = pushChannelService.findByEnable()
+        assert pushList.getData().size() == 1
 
-
+        DataTrunk<PushChannelVO> pushs = pushChannelService.findAll()
+        assert pushs.getData().size() == 2
     }
 
 

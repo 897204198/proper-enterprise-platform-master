@@ -254,15 +254,7 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
 
         //补齐当前分组无数据的情况
         Map<String, List<PushMsgStatisticVO>> supplementMap = addVacancy(listMap, dateType);
-        //如果执行了手动刷新包含了当天的统计,前端只要七天数据,去除最早一天的。
-        Date today = new Date();
-        String dateStr = DateUtil.toString(today, PEPConstants.DEFAULT_DATE_FORMAT);
-        if (listMap.containsKey(dateStr)) {
-            Date firstDay = DateUtil.addDay(new Date(), -7);
-            String firstDayStr = DateUtil.toString(firstDay, PEPConstants.DEFAULT_DATE_FORMAT);
-            supplementMap.remove(firstDayStr);
-            supplementMap.put(dateStr, listMap.get(dateStr));
-        }
+
         List<PushMsgStatisticVO> pushAllList = new ArrayList<>();
 
         for (Map.Entry<String, List<PushMsgStatisticVO>> entry : supplementMap.entrySet()) {
@@ -329,7 +321,7 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
      * @param endDate 结束日期
      * @return 每周分组集合(2018-07-23~2018-07-29)
      */
-    private  List<String> getBetweenWeeks(String startDate, String endDate) {
+    private static List<String> getBetweenWeeks(String startDate, String endDate) {
         SimpleDateFormat sdf = new SimpleDateFormat(PEPConstants.DEFAULT_DATE_FORMAT);
         List<Map<String, String>> result = new ArrayList<>();
         try {
@@ -417,9 +409,9 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
     private Map<String, List<PushMsgStatisticVO>> addVacancy(Map<String, List<PushMsgStatisticVO>> listMap, String type) {
         List<String> dayRange = new ArrayList<>();
         if (type.equals(DATE_RANGE_DAY)) {
-            Date start = DateUtil.addDay(new Date(), -7);
+            Date start = DateUtil.addDay(new Date(), -6);
             String startStr = DateUtil.toString(start, PEPConstants.DEFAULT_DATE_FORMAT);
-            Date end = new Date();
+            Date end = DateUtil.addDay(new Date(), 1);
             String endStr = DateUtil.toString(end, PEPConstants.DEFAULT_DATE_FORMAT);
             dayRange = getMonthOrDayBetween(startStr, endStr, false);
         }
@@ -427,7 +419,7 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
         if (type.equals(DATE_RANGE_WEEK)) {
             Date start = DateUtil.getDayOfWeek(DateUtil.addWeek(new Date(), -7), 1);
             String startStr = DateUtil.toString(start, PEPConstants.DEFAULT_DATE_FORMAT);
-            Date end = DateUtil.addDay(new Date(), -1);
+            Date end = new Date();
             String endStr = DateUtil.toString(end, PEPConstants.DEFAULT_DATE_FORMAT);
             dayRange = getBetweenWeeks(startStr, endStr);
         }
@@ -436,7 +428,7 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             Date date = new Date();
             Date beginMonth = DateUtil.addMonth(date, -6);
             String startStr = DateUtil.toString(beginMonth, PEPConstants.DEFAULT_DATE_FORMAT);
-            Date end = DateUtil.addDay(new Date(), -1);
+            Date end = new Date();
             String endStr = DateUtil.toString(end, PEPConstants.DEFAULT_DATE_FORMAT);
             dayRange = getMonthOrDayBetween(startStr, endStr, true);
 
@@ -461,4 +453,5 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
         return tempListMap;
 
     }
+
 }

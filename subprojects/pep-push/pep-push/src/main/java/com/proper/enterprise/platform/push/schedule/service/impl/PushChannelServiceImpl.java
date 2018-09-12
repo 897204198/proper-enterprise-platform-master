@@ -58,12 +58,26 @@ public class PushChannelServiceImpl implements PushChannelService {
     @Override
     public DataTrunk<PushChannelVO> findAll() {
         DataTrunk<PushChannelVO> result = new DataTrunk<>();
+        List<PushChannelVO> vos = new ArrayList<>();
+
+        Iterable<PushChannelEntity> pushChannelEntities = pushChannelRepository.findAll();
+        for (PushChannelEntity entity : pushChannelEntities) {
+            vos.add(PushChannelVO.convertEntityToVo(entity));
+        }
+        result.setData(vos);
+        result.setCount(vos.size());
+        return result;
+    }
+
+    @Override
+    public DataTrunk<PushChannelVO> findByEnable() {
+        DataTrunk<PushChannelVO> result = new DataTrunk<>();
+        List<PushChannelVO> vos = new ArrayList<>();
         Date msendDate = DateUtil.addDay(new Date(), -7);
         String dateStr = DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATE_FORMAT);
         Date endtDate = new Date();
         String endDateStr = DateUtil.toString(endtDate, PEPConstants.DEFAULT_DATE_FORMAT);
         Iterable<PushChannelEntity> pushChannelEntities = pushChannelRepository.findByEnable(true);
-        List<PushChannelVO> vos = new ArrayList<>();
         for (PushChannelEntity entity : pushChannelEntities) {
             String channelCount = pushMsgStatisticRepository.findPushCount(entity.getChannelName(), dateStr, endDateStr);
 
