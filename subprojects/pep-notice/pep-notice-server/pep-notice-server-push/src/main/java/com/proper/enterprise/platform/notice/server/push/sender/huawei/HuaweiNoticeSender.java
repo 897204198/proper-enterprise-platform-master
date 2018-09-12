@@ -1,8 +1,6 @@
 package com.proper.enterprise.platform.notice.server.push.sender.huawei;
 
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
@@ -64,11 +62,10 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
     private void doPushNotice(ReadOnlyNotice notice) throws NoticeException {
         String resp = "";
         if (isCmdMessage(notice)) {
-            resp = doPushCmd(notice, notice.getNoticeExtMsgMap());
             try {
-                isSuccess(resp, notice);
+                doPushCmd(notice, notice.getNoticeExtMsgMap());
             } catch (NoticeException e) {
-                throw new NoticeException(e.getMessage());
+                throw e;
             }
         } else {
             JSONObject body = new JSONObject();
@@ -77,9 +74,9 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
             //消息内容体
             body.put("content", notice.getContent());
             try {
-                resp = huaweiNoticeClient.get(notice.getAppKey()).send(3, body.toString(), notice);
-            } catch (Exception e) {
-                throw new NoticeException(e.getMessage());
+                huaweiNoticeClient.get(notice.getAppKey()).send(3, body.toString(), notice);
+            } catch (NoticeException e) {
+                throw e;
             }
             Integer badgeNumber = getBadgeNumber(notice);
             //角标不为空，且当前消息为通知栏消息，则发送一条透传消息，设置应用角标
@@ -89,37 +86,22 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
                 data.put("_proper_mpage", "badge");
                 //应用角标数
                 data.put("_proper_badge", badgeNumber);
-                doPushCmd(notice, data);
-            }
-            try {
-                isSuccess(resp, notice);
-            } catch (NoticeException e) {
-                throw new NoticeException(e.getMessage());
+                try {
+                    doPushCmd(notice, data);
+                } catch (NoticeException e) {
+                    throw e;
+                }
             }
         }
     }
 
-    private String doPushCmd(ReadOnlyNotice notice, Map<String, Object> custom) throws NoticeException {
+    private void doPushCmd(ReadOnlyNotice notice, Map<String, Object> custom) throws NoticeException {
         String s = Json.toJson(custom, JsonFormat.compact());
         try {
-            return huaweiNoticeClient.get(notice.getAppKey()).send(1, s, notice);
-        } catch (Exception e) {
-            throw new NoticeException(e.getMessage());
+            huaweiNoticeClient.get(notice.getAppKey()).send(1, s, notice);
+        } catch (NoticeException e) {
+            throw e;
         }
     }
 
-    private void isSuccess(String res, ReadOnlyNotice notice) throws NoticeException {
-        LOGGER.debug("Push to huawei with noticeId:{} has response:{}", notice.getId(), res);
-        String key = "msg";
-        try {
-            JsonNode result = JSONUtil.parse(res, JsonNode.class);
-            String successValue = "Success";
-            if (!successValue.equals(result.get(key).textValue())) {
-                throw new NoticeException("Push to huawei failed with noticeId:" + notice.getId());
-            }
-        } catch (Exception ex) {
-            LOGGER.debug("Error occurs when parsing response of " + notice.getId(), ex);
-            throw new NoticeException("Error occurs when parsing response of " + notice.getId(), ex);
-        }
-    }
 }

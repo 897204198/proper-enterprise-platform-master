@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 
 class HuaweiPushTest extends AbstractTest {
 
-    //@Ignore
+    @Ignore
     @Test
     void "testHuaweiPushApp"() {
         // Token of test device

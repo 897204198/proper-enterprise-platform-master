@@ -40,11 +40,6 @@ public class HuaweiNoticeClientManager implements HuaweiNoticeClientManagerApi {
                 throw new ErrMsgException("Can't get Huawei push config");
             }
             huaweiNoticeClientPool.put(appKey, initClient(pushConf1));
-            huaweiNoticeClient = huaweiNoticeClientPool.get(appKey);
-        }
-        if (huaweiNoticeClient.getTokenExpiredTime() <= System.currentTimeMillis()) {
-            PushConfDocument pushConf2 = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.HUAWEI);
-            huaweiNoticeClientPool.put(appKey, initClient(pushConf2));
         }
         return huaweiNoticeClientPool.get(appKey);
     }

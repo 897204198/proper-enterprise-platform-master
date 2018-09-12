@@ -2,9 +2,11 @@ package com.proper.enterprise.platform.notice.server.push.client.huawei;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
+import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import org.slf4j.Logger;
@@ -40,17 +42,12 @@ public class HuaweiNoticeClient {
     /**
      * accessToken的过期时间
      */
-    private Long tokenExpiredTime;
+    private long tokenExpiredTime;
 
     public HuaweiNoticeClient(PushConfDocument pushDocument) {
         this.appId = pushDocument.getAppId();
         this.appSecret = pushDocument.getAppSecret();
         this.packageName = pushDocument.getPushPackage();
-        refreshAccessTokenAndExpiredTime(pushDocument);
-    }
-
-    public Long getTokenExpiredTime() {
-        return tokenExpiredTime;
     }
 
     /**
@@ -59,10 +56,12 @@ public class HuaweiNoticeClient {
      * @param type   1透传 3消息
      * @param body   消息主体
      * @param notice 消息内容
-     * @return result
-     * @throws ErrMsgException 自定义异常
+     * @throws NoticeException 自定义异常
      */
-    public String send(int type, String body, ReadOnlyNotice notice) {
+    public void send(int type, String body, ReadOnlyNotice notice) throws NoticeException {
+        if (tokenExpiredTime <= System.currentTimeMillis()) {
+            refreshAccessTokenAndExpiredTime();
+        }
         //目标设备Token
         JSONArray deviceTokens = new JSONArray();
         deviceTokens.add(notice.getTargetTo());
@@ -120,17 +119,21 @@ public class HuaweiNoticeClient {
                 + URLEncoder.encode("{\"ver\":\"1\", \"appId\":\"" + this.appId + "\"}", "UTF-8");
             resBody = post(postUrl, postBody);
         } catch (IOException e) {
-            throw new ErrMsgException("Huawei push post with error");
+            throw new NoticeException("Huawei push post with error");
         }
-        return resBody;
+        try {
+            isSuccess(resBody, notice);
+        } catch (NoticeException e) {
+            throw e;
+        }
     }
 
-    private void refreshAccessTokenAndExpiredTime(PushConfDocument pushDocument) {
+    private void refreshAccessTokenAndExpiredTime() throws NoticeException {
         String tokenUrl = "https://login.cloud.huawei.com/oauth2/v2/token";
         try {
             String msgBody = MessageFormat.format(
                 "grant_type=client_credentials&client_secret={0}&client_id={1}",
-                URLEncoder.encode(pushDocument.getAppSecret(), "UTF-8"), pushDocument.getAppId());
+                URLEncoder.encode(appSecret, "UTF-8"), appId);
             String response = post(tokenUrl, msgBody);
             LOGGER.debug("Get huawei access token response: {}", response);
             JSONObject obj = JSONObject.parseObject(response);
@@ -139,7 +142,7 @@ public class HuaweiNoticeClient {
             accessToken = obj.getString("access_token");
         } catch (Exception e) {
             LOGGER.error("get accessToken failed with Exception {}", e);
-            throw new ErrMsgException("Please check Huawei push config");
+            throw new NoticeException("Please check Huawei push config");
         }
     }
 
@@ -170,6 +173,21 @@ public class HuaweiNoticeClient {
                 break;
         }
         action.put("param", param);
+    }
+
+    private void isSuccess(String res, ReadOnlyNotice notice) throws NoticeException {
+        LOGGER.debug("Push to huawei with noticeId:{} has response:{}", notice.getId(), res);
+        String key = "msg";
+        try {
+            JsonNode result = JSONUtil.parse(res, JsonNode.class);
+            String successValue = "Success";
+            if (!successValue.equals(result.get(key).textValue())) {
+                throw new NoticeException("Push to huawei failed with noticeId:" + notice.getId());
+            }
+        } catch (Exception ex) {
+            LOGGER.debug("Error occurs when parsing response of " + notice.getId(), ex);
+            throw new NoticeException("Error occurs when parsing response of " + notice.getId(), ex);
+        }
     }
 
     enum PushType {
