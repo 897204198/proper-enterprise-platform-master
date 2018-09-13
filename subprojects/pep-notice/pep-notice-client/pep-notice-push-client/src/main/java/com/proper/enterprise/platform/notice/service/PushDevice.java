@@ -1,9 +1,8 @@
 package com.proper.enterprise.platform.notice.service;
 
 import com.proper.enterprise.platform.core.api.IBase;
-import com.proper.enterprise.platform.notice.server.api.enums.PushDeviceType;
-import com.proper.enterprise.platform.notice.server.api.enums.PushMode;
-
+import com.proper.enterprise.platform.notice.enums.PushDeviceType;
+import com.proper.enterprise.platform.notice.enums.PushMode;
 
 public interface PushDevice extends IBase {
 

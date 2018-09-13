@@ -1,6 +1,7 @@
 dependencies {
     compile project(':pep-core-mongo'),
             project(':pep-file'),
+            project(':pep-notice-push-sdk'),
             project(':pep-notice-server-api'),
             libraries.push_vendor_apns,
             libraries.push_vendor_huawei,

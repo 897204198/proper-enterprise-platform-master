@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.notice.service;
 
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity;
-import com.proper.enterprise.platform.notice.server.api.enums.PushDeviceType;
-import com.proper.enterprise.platform.notice.server.api.enums.PushMode;
+import com.proper.enterprise.platform.notice.enums.PushDeviceType;
+import com.proper.enterprise.platform.notice.enums.PushMode;
 
 /**
  * 移动客户端调用的公用的相关的接口

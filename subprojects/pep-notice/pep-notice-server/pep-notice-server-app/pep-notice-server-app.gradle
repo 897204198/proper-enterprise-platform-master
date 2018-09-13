@@ -1,6 +1,9 @@
 dependencies {
     compile project(':pep-auth-api'),
             project(':pep-notice-server-api'),
+            project(':pep-notice-server-email'),
+            project(':pep-notice-server-push'),
+            project(':pep-notice-server-sms'),
             project(':pep-sys'),
             project(':pep-schedule-cluster')
 
