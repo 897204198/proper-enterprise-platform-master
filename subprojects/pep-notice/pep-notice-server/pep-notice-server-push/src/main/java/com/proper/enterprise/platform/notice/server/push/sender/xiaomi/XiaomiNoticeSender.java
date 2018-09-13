@@ -60,14 +60,15 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
         Message message = buildMessage(notice);
         Sender sender = xiaomiNoticeClient.getClient(notice.getAppKey());
         LOGGER.debug("xiaomi push check Message :{}", JSONUtil.toJSONIgnoreException(message));
+        Result result = null;
         try {
-            Result result = sender.send(message, notice.getTargetTo(), 1);
-            if (result.getErrorCode() != ErrorCode.Success) {
-                LOGGER.error("xiaomi push send message fail  pushId:{}, rsp:{}", notice.getId(), JSONUtil.toJSONIgnoreException(result));
-            }
+            result = sender.send(message, notice.getTargetTo(), 1);
         } catch (Exception e) {
-            LOGGER.error("error xiaomi push  notice:{}, exception:{}", JSONUtil.toJSONIgnoreException(notice), e);
-            throw new NoticeException("xiaomi push send message exception", e);
+            LOGGER.error("error xiaomi push message exception:{}", e);
+        }
+        if (result.getErrorCode() != ErrorCode.Success) {
+            LOGGER.error("xiaomi push send message fail  pushId:{}, rsp:{}", notice.getId(), JSONUtil.toJSONIgnoreException(result));
+            throw new NoticeException("xiaomi push send message fail");
         }
 
     }
@@ -117,7 +118,7 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
 
     @Override
     public void afterSend(ReadOnlyNotice notice) {
-
+        super.savePushMsg(notice, PushChannelEnum.XIAOMI);
     }
 
     @Override
