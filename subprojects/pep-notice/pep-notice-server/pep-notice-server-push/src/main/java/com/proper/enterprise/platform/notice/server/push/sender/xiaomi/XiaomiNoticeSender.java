@@ -85,25 +85,26 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
         msgBuilder.notifyType(1);
         // 通知栏要显示多条推送消息需配置不同的notifyId
         msgBuilder.notifyId(getNextNotifyId());
+        // 获取自定义配置
+        Map msg = this.getCustomProperty(notice);
         if (isCmdMessage(notice)) {
             // 消息使用透传消息
             msgBuilder.passThrough(1);
+            // 获取角标数
+            Integer badgeNumber = getBadgeNumber(notice);
+            if (null != badgeNumber) {
+                msgBuilder.passThrough(1);
+                // 系统消息类型：设置角标
+                msg.put("_proper_mpage", "badge");
+                // 需要手机端自己生成一个notification通知
+                // 因为在小米手机的设置角标接口里，角标接口是与通知栏消息绑定在一起的，需要程序自己发送notification,并带上角标数
+                msg.put("_proper_badge_type", "notification");
+                msg.put("_proper_badge", badgeNumber);
+                msg.remove("uri");
+            }
         } else {
             // 消息使用通知栏
             msgBuilder.passThrough(0);
-        }
-        // 获取角标数
-        Integer badgeNumber = getBadgeNumber(notice);
-        // 获取自定义配置
-        Map msg = this.getCustomProperty(notice);
-        if (null != badgeNumber) {
-            // 系统消息类型：设置角标
-            msg.put("_proper_mpage", "badge");
-            // 需要手机端自己生成一个notification通知
-            // 因为在小米手机的设置角标接口里，角标接口是与通知栏消息绑定在一起的，需要程序自己发送notification,并带上角标数
-            msg.put("_proper_badge_type", "notification");
-            msg.put("_proper_badge", badgeNumber);
-            msg.remove("uri");
         }
         msgBuilder.payload(JSONUtil.toJSONIgnoreException(msg));
         return msgBuilder.build();

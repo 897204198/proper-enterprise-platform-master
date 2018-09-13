@@ -55,10 +55,7 @@ class XiaomiNoticeSenderTest extends AbstractTest{
         notice.setTitle("test")
         notice.setContent("test")
         notice.setTargetTo(PUSHTOKEN)
-        Map<String, Object> customs = new HashMap()
-        customs.put("_proper_badge", 5)
-        notice.setNoticeExtMsg("customs",  customs)
-            xiaomiNoticeSender.send(notice)
+        xiaomiNoticeSender.send(notice)
     }
 
     @Test
@@ -70,7 +67,6 @@ class XiaomiNoticeSenderTest extends AbstractTest{
         notice.setTargetTo(PUSHTOKEN)
         Map<String, Object> customs = new HashMap()
         customs.put("_proper_badge", 5)
-        notice.setNoticeExtMsg("customs",  customs)
         customs.put("_proper_pushtype", "cmd")
         notice.setNoticeExtMsg("customs",  customs)
         xiaomiNoticeSender.send(notice)
