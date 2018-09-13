@@ -19,6 +19,7 @@ import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class HuaweiNoticeClient {
@@ -39,11 +40,6 @@ public class HuaweiNoticeClient {
      */
     private String accessToken;
 
-    /**
-     * accessToken的过期时间
-     */
-    private long tokenExpiredTime;
-
     public HuaweiNoticeClient(PushConfDocument pushDocument) {
         this.appId = pushDocument.getAppId();
         this.appSecret = pushDocument.getAppSecret();
@@ -53,20 +49,19 @@ public class HuaweiNoticeClient {
     /**
      * 发送推送
      *
-     * @param type   1透传 3消息
-     * @param body   消息主体
-     * @param notice 消息内容
+     * @param type    1透传 3消息
+     * @param notice 消息主体
+     * @param body   消息内容
      * @throws NoticeException 自定义异常
      */
-    public void send(int type, String body, ReadOnlyNotice notice) throws NoticeException {
-        if (tokenExpiredTime <= System.currentTimeMillis()) {
-            refreshAccessTokenAndExpiredTime();
-        }
-        //目标设备Token
+    public void send(int type, ReadOnlyNotice notice, String body) throws NoticeException {
+        // 目标设备Token
         JSONArray deviceTokens = new JSONArray();
         deviceTokens.add(notice.getTargetTo());
-        PushType pushType = PushType.other;
+        // 获取app端打开包名
         String packageName = StringUtil.isNull(this.packageName) ? "c" : this.packageName;
+        // 获取消息类型(chat, video, other)
+        PushType pushType = PushType.other;
         Map<String, Object> ext = notice.getNoticeExtMsgMap();
         if (ext != null) {
             String extPushType = (String) ext.get("push_type");
@@ -79,15 +74,19 @@ public class HuaweiNoticeClient {
                 pushType = PushType.other;
             }
         }
+        // msg 结构体, 包含 type/body/action
         JSONObject msg = new JSONObject();
-        //3: 通知栏消息，异步透传消息请根据接口文档设置
+        // type 1: 透传异步消息 3: 系统通知栏异步消息
         msg.put("type", type);
-        //消息点击动作
-        JSONObject action = new JSONObject();
-        handleAction(action, pushType, ext, packageName);
-        msg.put("action", action);
         //通知栏消息body内容
         msg.put("body", body);
+        //消息点击动作, 包含 type(1.自定义intent,2.url跳转,3.打开APP)/param(intent,url,appPkgName)
+        JSONObject action = new JSONObject();
+        Map<String, Object> params = new HashMap<>(2);
+        params.put("intent", ext.get("uri"));
+        params.put("appPkgName", packageName);
+        handleAction(action, pushType, params);
+        msg.put("action", action);
         //华为PUSH消息总结构体
         JSONObject hps = new JSONObject();
         hps.put("msg", msg);
@@ -103,32 +102,58 @@ public class HuaweiNoticeClient {
 
         String format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(new Date(System.currentTimeMillis() + 3600 * 1000));
         String postBody = "";
-        String postUrl = "";
         String resBody = "";
         try {
+            Map<String, String> ctx = new HashMap<>(2);
+            ctx.put("ver", "1");
+            ctx.put("appId", appId);
             postBody = MessageFormat.format(
-                "access_token={0}&nsp_svc={1}&nsp_ts={2}&device_token_list={3}&payload={4}&expire_time={5}",
-                URLEncoder.encode(accessToken, "UTF-8"),
+                "access_token={0}&nsp_ctx={1}&nsp_svc={2}&nsp_ts={3}&device_token_list={4}&payload={5}&expire_time={6}",
+                StringUtil.isBlank(accessToken) ? "" : URLEncoder.encode(accessToken, "UTF-8"),
+                URLEncoder.encode(JSONUtil.toJSON(ctx), "UTF-8"),
                 URLEncoder.encode("openpush.message.api.send", "UTF-8"),
                 URLEncoder.encode(String.valueOf(System.currentTimeMillis() / 1000), "UTF-8"),
                 URLEncoder.encode(deviceTokens.toString(), "UTF-8"),
                 URLEncoder.encode(payload.toString(), "UTF-8"),
                 URLEncoder.encode(format, "UTF-8"));
             LOGGER.debug("postBody: {}", postBody);
-            postUrl = API_URL + "?nsp_ctx="
-                + URLEncoder.encode("{\"ver\":\"1\", \"appId\":\"" + this.appId + "\"}", "UTF-8");
-            resBody = post(postUrl, postBody);
+            resBody = post(API_URL, postBody);
         } catch (IOException e) {
             throw new NoticeException("Huawei push post with error");
         }
-        try {
-            isSuccess(resBody, notice);
-        } catch (NoticeException e) {
-            throw e;
-        }
+        isSuccess(resBody, type, notice, body);
     }
 
-    private void refreshAccessTokenAndExpiredTime() throws NoticeException {
+    /**
+     * 处理消息点击相关参数
+     */
+    private void handleAction(JSONObject action, PushType pushType, Map<String, Object> params) {
+        //消息点击动作参数
+        JSONObject param = new JSONObject();
+        switch (pushType) {
+            case chat:
+                //类型1为跳转页面
+                action.put("type", 1);
+                param.put("intent", params.get("intent"));
+                break;
+            case video:
+            case other:
+            default:
+                //类型3为打开APP，其他行为请参考接口文档设置
+                action.put("type", 3);
+                //定义需要打开的appPkgName
+                param.put("appPkgName", params.get("appPkgName"));
+                break;
+        }
+        action.put("param", param);
+    }
+
+    /**
+     * 获取AccessToken
+     *
+     * @throws NoticeException 自定义异常
+     */
+    private void refreshAccessToken() throws NoticeException {
         String tokenUrl = "https://login.cloud.huawei.com/oauth2/v2/token";
         try {
             String msgBody = MessageFormat.format(
@@ -138,7 +163,8 @@ public class HuaweiNoticeClient {
             LOGGER.debug("Get huawei access token response: {}", response);
             JSONObject obj = JSONObject.parseObject(response);
 
-            tokenExpiredTime = System.currentTimeMillis() + obj.getLong("expires_in") - 5 * 60 * 1000;
+            // tokenExpiredTime = System.currentTimeMillis() + obj.getLong("expires_in") - 5 * 60 * 1000;
+            // 设置 access token
             accessToken = obj.getString("access_token");
         } catch (Exception e) {
             LOGGER.error("get accessToken failed with Exception {}", e);
@@ -151,38 +177,21 @@ public class HuaweiNoticeClient {
         return new String(post.getBody(), "UTF-8");
     }
 
-    /**
-     * 处理消息点击相关参数
-     */
-    private void handleAction(JSONObject action, PushType pushType, Map<String, Object> ext, String packageName) {
-        //消息点击动作参数
-        JSONObject param = new JSONObject();
-        switch (pushType) {
-            case chat:
-                //类型1为跳转页面
-                action.put("type", 1);
-                param.put("intent", ext.get("uri"));
-                break;
-            case video:
-            case other:
-            default:
-                //类型3为打开APP，其他行为请参考接口文档设置
-                action.put("type", 3);
-                //定义需要打开的appPkgName
-                param.put("appPkgName", packageName);
-                break;
-        }
-        action.put("param", param);
-    }
 
-    private void isSuccess(String res, ReadOnlyNotice notice) throws NoticeException {
+    private void isSuccess(String res, int type, ReadOnlyNotice notice, String body) throws NoticeException {
         LOGGER.debug("Push to huawei with noticeId:{} has response:{}", notice.getId(), res);
         String key = "msg";
         try {
             JsonNode result = JSONUtil.parse(res, JsonNode.class);
             String successValue = "Success";
-            if (!successValue.equals(result.get(key).textValue())) {
+            if (result.get(key) != null && !successValue.equals(result.get(key).textValue())) {
                 throw new NoticeException("Push to huawei failed with noticeId:" + notice.getId());
+            }
+            key = "error";
+            String tokenExpired = "session timeout";
+            if (result.get(key) != null && tokenExpired.equals(result.get(key).textValue())) {
+                refreshAccessToken();
+                send(type, notice, body);
             }
         } catch (Exception ex) {
             LOGGER.debug("Error occurs when parsing response of " + notice.getId(), ex);

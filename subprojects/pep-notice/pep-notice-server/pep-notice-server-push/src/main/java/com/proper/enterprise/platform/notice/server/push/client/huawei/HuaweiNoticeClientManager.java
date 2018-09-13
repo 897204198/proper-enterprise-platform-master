@@ -5,28 +5,26 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Service("huaweiNoticeClientManager")
-@Primary
 public class HuaweiNoticeClientManager implements HuaweiNoticeClientManagerApi {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HuaweiNoticeClientManager.class);
-
-    @Autowired
     private PushConfigMongoRepository pushConfigMongoRepository;
 
     /**
      * Huawei client 池
      */
     private Map<String, HuaweiNoticeClient> huaweiNoticeClientPool = new HashMap<>(16);
+
+    @Autowired
+    public HuaweiNoticeClientManager(PushConfigMongoRepository pushConfigMongoRepository) {
+        this.pushConfigMongoRepository = pushConfigMongoRepository;
+    }
 
     @Override
     public HuaweiNoticeClient get(String appKey) {
@@ -45,8 +43,7 @@ public class HuaweiNoticeClientManager implements HuaweiNoticeClientManagerApi {
     }
 
     private HuaweiNoticeClient initClient(PushConfDocument pushConfDocument) {
-        HuaweiNoticeClient huaweiNoticeClient = new HuaweiNoticeClient(pushConfDocument);
-        return huaweiNoticeClient;
+        return new HuaweiNoticeClient(pushConfDocument);
     }
 
     @Override

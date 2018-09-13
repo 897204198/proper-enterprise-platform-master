@@ -32,15 +32,7 @@ class HuaweiClientTest extends AbstractTest {
         PushConfDocument pushConfDocument = new PushConfDocument()
 
         pushConfDocument.setAppKey("testHuawei")
-        pushConfDocument.setAppId("xxx")
-        pushConfDocument.setAppSecret("xxx")
         pushConfDocument.setPushChannel(PushChannelEnum.HUAWEI)
-        pushConfDocument = pushConfigMongoRepository.save(pushConfDocument)
-        try {
-            huaweiNoticeClientApi.get("testHuawei")
-        } catch (Exception e) {
-            e.getMessage().contains("Please check Huawei push config")
-        }
         pushConfDocument.setAppId(HuaweiConstant.CLIENT_ID)
         pushConfDocument.setAppSecret(HuaweiConstant.CLIENT_SECRET)
         pushConfigMongoRepository.save(pushConfDocument)
