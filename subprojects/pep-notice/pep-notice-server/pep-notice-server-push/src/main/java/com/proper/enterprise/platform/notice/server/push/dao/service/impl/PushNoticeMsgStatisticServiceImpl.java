@@ -333,6 +333,8 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
                         pushServiceDataAnalysisVO.getIosDataAnalysis().setFailCount(pushNoticeMsgStatisticEntity.getMsgCount());
                     }
                     break;
+                default:
+                    break;
             }
 
         }

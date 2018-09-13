@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.notice.server.push.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgService;

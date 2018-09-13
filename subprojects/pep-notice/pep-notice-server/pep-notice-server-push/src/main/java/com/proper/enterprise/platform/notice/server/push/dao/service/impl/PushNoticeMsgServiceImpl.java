@@ -1,9 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.dao.service.impl;
 
-import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
-import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgJpaRepository;
@@ -50,6 +48,8 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
             case HUAWEI:
             case XIAOMI:
                 pushNoticeMsg.setDeviceType(PushDeviceTypeEnum.ANDROID);
+                break;
+            default:
                 break;
         }
         pushMsgJpaRepository.save(pushNoticeMsg);
