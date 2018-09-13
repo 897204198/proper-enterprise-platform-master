@@ -40,6 +40,11 @@ public class HuaweiNoticeClient {
      */
     private String accessToken;
 
+    /**
+     * accessToken的过期时间
+     */
+    private long tokenExpiredTime;
+
     public HuaweiNoticeClient(PushConfDocument pushDocument) {
         this.appId = pushDocument.getAppId();
         this.appSecret = pushDocument.getAppSecret();
@@ -55,6 +60,10 @@ public class HuaweiNoticeClient {
      * @throws NoticeException 自定义异常
      */
     public void send(int type, ReadOnlyNotice notice, String body) throws NoticeException {
+        // accessToken 如果过期则重新获取 accessToken
+        if (tokenExpiredTime <= System.currentTimeMillis()) {
+            refreshAccessTokenAndExpiredTime();
+        }
         // 目标设备Token
         JSONArray deviceTokens = new JSONArray();
         deviceTokens.add(notice.getTargetTo());
@@ -109,7 +118,7 @@ public class HuaweiNoticeClient {
             ctx.put("appId", appId);
             postBody = MessageFormat.format(
                 "access_token={0}&nsp_ctx={1}&nsp_svc={2}&nsp_ts={3}&device_token_list={4}&payload={5}&expire_time={6}",
-                StringUtil.isBlank(accessToken) ? "" : URLEncoder.encode(accessToken, "UTF-8"),
+                URLEncoder.encode(accessToken, "UTF-8"),
                 URLEncoder.encode(JSONUtil.toJSON(ctx), "UTF-8"),
                 URLEncoder.encode("openpush.message.api.send", "UTF-8"),
                 URLEncoder.encode(String.valueOf(System.currentTimeMillis() / 1000), "UTF-8"),
@@ -121,7 +130,7 @@ public class HuaweiNoticeClient {
         } catch (IOException e) {
             throw new NoticeException("Huawei push post with error");
         }
-        isSuccess(resBody, type, notice, body);
+        isSuccess(resBody, notice);
     }
 
     /**
@@ -153,7 +162,7 @@ public class HuaweiNoticeClient {
      *
      * @throws NoticeException 自定义异常
      */
-    private void refreshAccessToken() throws NoticeException {
+    private void refreshAccessTokenAndExpiredTime() throws NoticeException {
         String tokenUrl = "https://login.cloud.huawei.com/oauth2/v2/token";
         try {
             String msgBody = MessageFormat.format(
@@ -163,8 +172,8 @@ public class HuaweiNoticeClient {
             LOGGER.debug("Get huawei access token response: {}", response);
             JSONObject obj = JSONObject.parseObject(response);
 
-            // tokenExpiredTime = System.currentTimeMillis() + obj.getLong("expires_in") - 5 * 60 * 1000;
-            // 设置 access token
+            // 设置 access token 过期时间
+            tokenExpiredTime = System.currentTimeMillis() + obj.getLong("expires_in") * 1000 - 5 * 60 * 1000;
             accessToken = obj.getString("access_token");
         } catch (Exception e) {
             LOGGER.error("get accessToken failed with Exception {}", e);
@@ -178,7 +187,7 @@ public class HuaweiNoticeClient {
     }
 
 
-    private void isSuccess(String res, int type, ReadOnlyNotice notice, String body) throws NoticeException {
+    private void isSuccess(String res, ReadOnlyNotice notice) throws NoticeException {
         LOGGER.debug("Push to huawei with noticeId:{} has response:{}", notice.getId(), res);
         String key = "msg";
         try {
@@ -186,12 +195,6 @@ public class HuaweiNoticeClient {
             String successValue = "Success";
             if (result.get(key) != null && !successValue.equals(result.get(key).textValue())) {
                 throw new NoticeException("Push to huawei failed with noticeId:" + notice.getId());
-            }
-            key = "error";
-            String tokenExpired = "session timeout";
-            if (result.get(key) != null && tokenExpired.equals(result.get(key).textValue())) {
-                refreshAccessToken();
-                send(type, notice, body);
             }
         } catch (Exception ex) {
             LOGGER.debug("Error occurs when parsing response of " + notice.getId(), ex);

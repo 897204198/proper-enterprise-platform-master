@@ -12,6 +12,6 @@ public class HuaweiConstant {
 
     public static final String PACKAGE_NAME = "com.proper.icmp.dev";
 
-    public static final String TARGET_TO = "0867130030077355300001436000CN01";
+    public static final String TARGET_TO = "0867110029070702300001436000CN01";
 
 }
