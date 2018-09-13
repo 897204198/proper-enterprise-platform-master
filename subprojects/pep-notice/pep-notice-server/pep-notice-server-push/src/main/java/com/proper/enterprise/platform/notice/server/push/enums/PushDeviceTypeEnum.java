@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.push.sdk.enums;
+package com.proper.enterprise.platform.notice.server.push.enums;
 
 /**
  * 推送设备类型
