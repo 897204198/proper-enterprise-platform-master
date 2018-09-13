@@ -118,7 +118,7 @@ public class MockPushNotice implements Notice {
 
     @Override
     public Boolean getEnable() {
-        return null;
+        return true;
     }
 
     @Override
