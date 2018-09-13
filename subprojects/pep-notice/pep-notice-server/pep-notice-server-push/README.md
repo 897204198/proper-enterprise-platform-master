@@ -4,7 +4,7 @@ pep-notice-server-push
 
 
 ======================
-# 小米推送
+# 小米推送 https://dev.mi.com/doc/?p=533
 
 ### 核心参数描述  
 
@@ -32,5 +32,5 @@ pep-notice-server-push
 
 7 payload(String payload)	(JSON格式,扩展的数据存在这里,方便app端获取)设置要发送的消息内容payload，不允许全是空白字符，长度小于4K，中英文均以一个计算。
 
-### 满足上述参数生成Message 调用Sender.send(Message, registrationId, 发送失败的重试次数) 就可以发送推送
+### 满足上述参数生成Message 调用Sender.send(Message, registrationId, 发送失败的重试次数) 就可以发送推送 
 Proper Enterprise Platform
