@@ -1,83 +1,59 @@
-package com.proper.enterprise.platform.notice.server.push.dao.entity;
+package com.proper.enterprise.platform.notice.server.push.vo;
 
-import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
-import com.proper.enterprise.platform.notice.server.push.enums.PushDeviceTypeEnum;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 
-import javax.persistence.*;
+public class PushNoticeMsgVO extends BaseVO {
 
-@Entity
-@Table(name = "PEP_PUSH_NOTICE_MSG")
-public class PushNoticeMsgEntity extends BaseEntity {
+    public interface Single extends VOCommonView {
+    }
 
     /**
      * 应用唯一标识
      */
-    @Column(nullable = false)
+    @JsonView(Single.class)
     private String appKey;
 
     /**
      * 同一批消息的批次Id
      */
-    @Column(length = 36)
+    @JsonView(Single.class)
     private String batchId;
-
-    /**
-     * 消息Id
-     */
-    @Column
-    private String noticeId;
 
     /**
      * 消息正文
      */
-    @Column(nullable = false, length = 2048)
+    @JsonView(Single.class)
     private String content;
-    /**
-     * 消息标题
-     */
-    @Column(length = 36)
-    private String title;
 
     /**
      * 消息状态，是否发送
      */
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @JsonView(Single.class)
     private NoticeStatus status;
 
     /**
-     * 消息发送次数
+     * 消息发送日期
      */
-    @Column(length = 3)
-    private Integer sendCount;
+    @JsonView(Single.class)
+    private String sendDate;
 
     /**
      * 推送渠道
      */
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @JsonView(Single.class)
     private PushChannelEnum pushChannel;
 
-    /**
-     * 设备类型
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PushDeviceTypeEnum deviceType;
-
-    /**
-     * 发送目标
-     */
-    @Column(nullable = false)
+    @JsonView(Single.class)
     private String targetTo;
 
     /**
      * 异常信息
      */
-    @Column(length = 2048)
+    @JsonView(Single.class)
     private String errorMsg;
 
     public String getAppKey() {
@@ -96,14 +72,6 @@ public class PushNoticeMsgEntity extends BaseEntity {
         this.content = content;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public NoticeStatus getStatus() {
         return status;
     }
@@ -112,12 +80,12 @@ public class PushNoticeMsgEntity extends BaseEntity {
         this.status = status;
     }
 
-    public Integer getSendCount() {
-        return sendCount;
+    public String getSendDate() {
+        return sendDate;
     }
 
-    public void setSendCount(Integer sendCount) {
-        this.sendCount = sendCount;
+    public void setSendDate(String sendDate) {
+        this.sendDate = sendDate;
     }
 
     public PushChannelEnum getPushChannel() {
@@ -126,14 +94,6 @@ public class PushNoticeMsgEntity extends BaseEntity {
 
     public void setPushChannel(PushChannelEnum pushChannel) {
         this.pushChannel = pushChannel;
-    }
-
-    public PushDeviceTypeEnum getDeviceType() {
-        return deviceType;
-    }
-
-    public void setDeviceType(PushDeviceTypeEnum deviceType) {
-        this.deviceType = deviceType;
     }
 
     public String getTargetTo() {
@@ -150,14 +110,6 @@ public class PushNoticeMsgEntity extends BaseEntity {
 
     public void setBatchId(String batchId) {
         this.batchId = batchId;
-    }
-
-    public String getNoticeId() {
-        return noticeId;
-    }
-
-    public void setNoticeId(String noticeId) {
-        this.noticeId = noticeId;
     }
 
     public String getErrorMsg() {
