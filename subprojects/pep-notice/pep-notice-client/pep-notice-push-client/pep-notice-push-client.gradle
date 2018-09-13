@@ -1,6 +1,5 @@
 dependencies {
     compile project(':pep-sys'),
-            project(':pep-notice-push-sdk'),
             project(':pep-notice-server-api'),
             project(':pep-auth-api')
     testCompile project(':pep-test'),
