@@ -24,7 +24,7 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
     @Override
     public void savePushMsg(ReadOnlyNotice readOnlyNotice, PushChannelEnum pushChannel) {
         PushNoticeMsgEntity pushNoticeMsg = new PushNoticeMsgEntity();
-        pushNoticeMsg.setAppkey(readOnlyNotice.getAppKey());
+        pushNoticeMsg.setAppKey(readOnlyNotice.getAppKey());
         pushNoticeMsg.setContent(readOnlyNotice.getContent());
         pushNoticeMsg.setSendCount(readOnlyNotice.getRetryCount() + 1);
         pushNoticeMsg.setSendDate(DateUtil.toDate(readOnlyNotice.getLastModifyTime(),
@@ -33,6 +33,8 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
         pushNoticeMsg.setStatus(readOnlyNotice.getStatus());
         pushNoticeMsg.setTitle(readOnlyNotice.getTitle());
         pushNoticeMsg.setTargetTo(readOnlyNotice.getTargetTo());
+        pushNoticeMsg.setNoticeId(readOnlyNotice.getId());
+        pushNoticeMsg.setBatchId(readOnlyNotice.getBatchId());
         switch (pushChannel) {
             case IOS:
                 pushNoticeMsg.setDeviceType(PushDeviceTypeEnum.IOS);
