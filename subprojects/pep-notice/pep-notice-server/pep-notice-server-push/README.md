@@ -7,7 +7,7 @@ config
 POST  
 requestBody  
 IOS： {"pushPackage":"###","certificateId":"###","certPassword":"*###*"}  
-Xiaomi： {"appSecret":"###"}  
+Xiaomi： {"pushPackage":"###","appSecret":"###"}  
 PUT  同上  
 GET  /notice/server/config/PUSH?accessToken=###&pushChannel=###(IOS,HUAWEI,XIAOMI)  
 DELETE  /notice/server/config/PUSH?accessToken=###&pushChannel=###(IOS,HUAWEI,XIAOMI)  
