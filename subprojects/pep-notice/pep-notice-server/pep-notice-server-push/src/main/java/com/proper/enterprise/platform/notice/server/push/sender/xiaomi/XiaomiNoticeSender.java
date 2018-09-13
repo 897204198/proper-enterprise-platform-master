@@ -7,7 +7,7 @@ import com.proper.enterprise.platform.notice.server.api.exception.NoticeExceptio
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
-import com.proper.enterprise.platform.notice.server.push.client.xiaomi.XiaomiNoticeClientApi;
+import com.proper.enterprise.platform.notice.server.push.client.xiaomi.XiaomiNoticeClientManagerApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport;
@@ -46,7 +46,7 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
     private int notifyId = MIN_NOTIFY_ID;
 
     @Autowired
-    private XiaomiNoticeClientApi xiaomiNoticeClient;
+    private XiaomiNoticeClientManagerApi xiaomiNoticeClient;
 
     private BasePushConfigApi xiaomiNoticeConfigurator;
 
@@ -59,17 +59,15 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
     public void send(ReadOnlyNotice notice) throws NoticeException {
         Message message = buildMessage(notice);
         Sender sender = xiaomiNoticeClient.getClient(notice.getAppKey());
+        LOGGER.debug("xiaomi push check Message :{}", JSONUtil.toJSONIgnoreException(message));
         try {
-            LOGGER.debug("xiaomi push check Message :{}", JSONUtil.toJSONIgnoreException(message));
             Result result = sender.send(message, notice.getTargetTo(), 1);
-            if (result.getErrorCode() == ErrorCode.Success) {
-                LOGGER.debug("success xiaomi push  pushId:{}, rsp:{}", notice.getId(), JSONUtil.toJSONIgnoreException(result));
-            } else {
-                LOGGER.error("error xiaomi push  pushId:{}, rsp:{}", notice.getId(), JSONUtil.toJSONIgnoreException(result));
+            if (result.getErrorCode() != ErrorCode.Success) {
+                LOGGER.error("xiaomi push send message fail  pushId:{}, rsp:{}", notice.getId(), JSONUtil.toJSONIgnoreException(result));
             }
-
         } catch (Exception e) {
-            throw new NoticeException("xiaomi push send message fail", e);
+            LOGGER.error("error xiaomi push  notice:{}, exception:{}", JSONUtil.toJSONIgnoreException(notice), e);
+            throw new NoticeException("xiaomi push send message exception", e);
         }
 
     }
@@ -95,12 +93,18 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
         }
         // 获取角标数
         Integer badgeNumber = getBadgeNumber(notice);
-        if (null != badgeNumber) {
-            Map<String, Object> noticeExtMsgMap = notice.getNoticeExtMsgMap();
-            noticeExtMsgMap.put(BADGE_NUMBER_KEY, badgeNumber);
-        }
         // 获取自定义配置
-        msgBuilder.payload(JSONUtil.toJSONIgnoreException(this.getCustomProperty(notice)));
+        Map msg = this.getCustomProperty(notice);
+        if (null != badgeNumber) {
+            // 系统消息类型：设置角标
+            msg.put("_proper_mpage", "badge");
+            // 需要手机端自己生成一个notification通知
+            // 因为在小米手机的设置角标接口里，角标接口是与通知栏消息绑定在一起的，需要程序自己发送notification,并带上角标数
+            msg.put("_proper_badge_type", "notification");
+            msg.put("_proper_badge", badgeNumber);
+            msg.remove("uri");
+        }
+        msgBuilder.payload(JSONUtil.toJSONIgnoreException(msg));
         return msgBuilder.build();
     }
 

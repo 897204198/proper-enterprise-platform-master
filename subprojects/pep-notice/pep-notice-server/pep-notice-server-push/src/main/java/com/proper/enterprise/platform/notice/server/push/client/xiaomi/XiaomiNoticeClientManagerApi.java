@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.client.xiaomi;
 import com.proper.enterprise.platform.notice.server.push.client.BasePushNoticeClientApi;
 import com.xiaomi.xmpush.server.Sender;
 
-public interface XiaomiNoticeClientApi extends BasePushNoticeClientApi {
+public interface XiaomiNoticeClientManagerApi extends BasePushNoticeClientApi {
 
     /**
      *  通过密钥获取消息发送类

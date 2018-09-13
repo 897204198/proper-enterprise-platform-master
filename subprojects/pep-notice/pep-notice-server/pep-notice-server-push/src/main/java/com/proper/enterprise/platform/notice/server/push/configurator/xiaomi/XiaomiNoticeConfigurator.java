@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.notice.server.push.configurator.xiaomi;
 
-import com.proper.enterprise.platform.notice.server.push.client.xiaomi.XiaomiNoticeClientApi;
+import com.proper.enterprise.platform.notice.server.push.client.xiaomi.XiaomiNoticeClientManagerApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.AbstractPushConfigSupport;
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +15,10 @@ import java.util.Map;
 @Service("xiaomiNoticeConfigurator")
 public class XiaomiNoticeConfigurator extends AbstractPushConfigSupport {
 
-    private XiaomiNoticeClientApi xiaomiNoticeClient;
+    private XiaomiNoticeClientManagerApi xiaomiNoticeClient;
 
     @Autowired
-    public XiaomiNoticeConfigurator(XiaomiNoticeClientApi xiaomiNoticeClient) {
+    public XiaomiNoticeConfigurator(XiaomiNoticeClientManagerApi xiaomiNoticeClient) {
         this.xiaomiNoticeClient = xiaomiNoticeClient;
     }
 

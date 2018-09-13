@@ -1,9 +1,5 @@
 package com.proper.enterprise.platform.notice.server.push.constant
 
-/**
- * @Author: LeiLei
- * @Date: 2018/9/11 16:25
- */
 class XiaomiConstant {
 
     public static final String APPKEY = "MobileOADev"

@@ -15,14 +15,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class XiaomiNoticeClient implements XiaomiNoticeClientApi {
+public class XiaomiNoticeClientManager implements XiaomiNoticeClientManagerApi {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XiaomiNoticeClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XiaomiNoticeClientManager.class);
 
     private PushConfigMongoRepository pushConfigMongoRepository;
 
     @Autowired
-    public XiaomiNoticeClient(PushConfigMongoRepository pushConfigMongoRepository) {
+    public XiaomiNoticeClientManager(PushConfigMongoRepository pushConfigMongoRepository) {
         this.pushConfigMongoRepository = pushConfigMongoRepository;
     }
 

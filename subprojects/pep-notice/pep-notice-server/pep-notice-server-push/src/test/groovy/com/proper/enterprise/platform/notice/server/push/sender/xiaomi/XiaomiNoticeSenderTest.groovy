@@ -50,13 +50,30 @@ class XiaomiNoticeSenderTest extends AbstractTest{
 
     @Test
     void testSendMessage() {
-        for (int i = 0; i < 4 ; i++) {
-            def notice = new MockPushNotice()
-            notice.setAppKey(APPKEY)
-            notice.setTitle("test")
-            notice.setContent("test")
-            notice.setTargetTo(PUSHTOKEN)
+        def notice = new MockPushNotice()
+        notice.setAppKey(APPKEY)
+        notice.setTitle("test")
+        notice.setContent("test")
+        notice.setTargetTo(PUSHTOKEN)
+        Map<String, Object> customs = new HashMap()
+        customs.put("_proper_badge", 5)
+        notice.setNoticeExtMsg("customs",  customs)
             xiaomiNoticeSender.send(notice)
-        }
     }
+
+    @Test
+    void testPassThrough(){
+        def notice = new MockPushNotice()
+        notice.setAppKey(APPKEY)
+        notice.setTitle("test")
+        notice.setContent("test")
+        notice.setTargetTo(PUSHTOKEN)
+        Map<String, Object> customs = new HashMap()
+        customs.put("_proper_badge", 5)
+        notice.setNoticeExtMsg("customs",  customs)
+        customs.put("_proper_pushtype", "cmd")
+        notice.setNoticeExtMsg("customs",  customs)
+        xiaomiNoticeSender.send(notice)
+    }
+
 }
