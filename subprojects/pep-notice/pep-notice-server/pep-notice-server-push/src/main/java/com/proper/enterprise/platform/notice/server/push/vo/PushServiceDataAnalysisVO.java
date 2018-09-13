@@ -13,17 +13,20 @@ public class PushServiceDataAnalysisVO {
     /**
      * 小米数据分析
      */
-    private PushChannelDataAnalysisVO xiaomiDataAnalysis = new PushChannelDataAnalysisVO();
+    private PushChannelDataAnalysisVO xiaomiDataAnalysis;
     /**
      * 华为数据分析
      */
-    private PushChannelDataAnalysisVO huaweiDataAnalysis = new PushChannelDataAnalysisVO();
+    private PushChannelDataAnalysisVO huaweiDataAnalysis;
     /**
      * IOS数据分析
      */
-    private PushChannelDataAnalysisVO iosDataAnalysis = new PushChannelDataAnalysisVO();
+    private PushChannelDataAnalysisVO iosDataAnalysis;
 
     public PushChannelDataAnalysisVO getXiaomiDataAnalysis() {
+        if (null == xiaomiDataAnalysis) {
+            xiaomiDataAnalysis = new PushChannelDataAnalysisVO();
+        }
         return xiaomiDataAnalysis;
     }
 
@@ -32,6 +35,9 @@ public class PushServiceDataAnalysisVO {
     }
 
     public PushChannelDataAnalysisVO getHuaweiDataAnalysis() {
+        if (null == huaweiDataAnalysis) {
+            huaweiDataAnalysis = new PushChannelDataAnalysisVO();
+        }
         return huaweiDataAnalysis;
     }
 
@@ -40,6 +46,9 @@ public class PushServiceDataAnalysisVO {
     }
 
     public PushChannelDataAnalysisVO getIosDataAnalysis() {
+        if (null == iosDataAnalysis) {
+            iosDataAnalysis = new PushChannelDataAnalysisVO();
+        }
         return iosDataAnalysis;
     }
 

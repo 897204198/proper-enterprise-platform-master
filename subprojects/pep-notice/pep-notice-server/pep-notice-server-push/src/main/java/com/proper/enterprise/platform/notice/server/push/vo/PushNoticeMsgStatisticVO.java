@@ -27,7 +27,7 @@ public class PushNoticeMsgStatisticVO {
     /**
      * 消息数量
      */
-    private Integer msgCount = 0;
+    private Integer msgCount;
 
     public String getPushChannel() {
         return pushChannel;
@@ -54,6 +54,9 @@ public class PushNoticeMsgStatisticVO {
     }
 
     public Integer getMsgCount() {
+        if (null == msgCount) {
+            this.msgCount = 0;
+        }
         return msgCount;
     }
 

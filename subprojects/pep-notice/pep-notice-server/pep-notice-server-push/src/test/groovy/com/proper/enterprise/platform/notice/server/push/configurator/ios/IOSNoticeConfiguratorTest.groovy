@@ -38,7 +38,7 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
         def accessToken = new AccessTokenVO(appKey, 'for test using', appKey, 'GET:/test')
         accessTokenService.saveOrUpdate(accessToken)
         Map conf = new HashMap()
-        conf.put("p12Password", IOSConstant.PASSWORD)
+        conf.put("certPassword", IOSConstant.PASSWORD)
         conf.put("pushPackage", "1234")
         conf.put("certificateId", "111")
         assert "ios cert is not find" == post('/notice/server/config/' + NoticeType.PUSH + "?accessToken=" +
@@ -83,12 +83,12 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
         String appKey = 'iosConfGetToken'
         FileVO fileVO = post(appKey)
         Map conf = new HashMap()
-        conf.put("p12Password", "12345")
+        conf.put("certPassword", "12345")
         conf.put("pushPackage", "6666")
         conf.put("certificateId", fileVO.getId())
         assert "Certificate and password do not match" == put('/notice/server/config/' + NoticeType.PUSH + "?accessToken=" +
             appKey + "&pushChannel=IOS", JSONUtil.toJSON(conf), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
-        conf.put("p12Password", "1234")
+        conf.put("certPassword", "1234")
         put('/notice/server/config/' + NoticeType.PUSH + "?accessToken=" +
             appKey + "&pushChannel=IOS", JSONUtil.toJSON(conf), HttpStatus.OK)
         PushConfDocument pushConf = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.IOS)

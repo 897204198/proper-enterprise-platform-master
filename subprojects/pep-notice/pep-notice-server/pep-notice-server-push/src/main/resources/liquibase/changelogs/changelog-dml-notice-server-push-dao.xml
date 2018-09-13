@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="2018-09-13-notice-push-data-dic-add" author="zjl">
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="PEP_NOTICE_TYPE"/>
+            <column name="DD_CATALOG_CODE" value="PUSH_CHANNEL"/>
+            <column name="DD_CATALOG_NAME" value="推送渠道"/>
+            <column name="DD_CATALOG_ORDER" value="4"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="PUSH_CHANNEL_HUAWEI"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="PUSH_CHANNEL"/>
+            <column name="DD_CODE" value="HUAWEI"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="华为"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_type_sms"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="PUSH_CHANNEL"/>
+            <column name="DD_CODE" value="XIAOMI"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="小米"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_type_push"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="PUSH_CHANNEL"/>
+            <column name="DD_CODE" value="IOS"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="IOS"/>
+            <column name="DD_ORDER" valueNumeric="3"/>
+        </insert>
+    </changeSet>
+    <changeSet id="2018-09-13-notice-push-msg-oopsearch" author="zjl">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="PUSH-SERVER-NOTICE-001"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="content"/>
+            <column name="COLUMN_DESC" value="推送状态"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="servernoticepush"/>
+            <column name="SEARCH_COLUMN" value="content"/>
+            <column name="TABLE_NAME" value="pep_push_notice_msg"/>
+            <column name="URL" value="/notice/server/push"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

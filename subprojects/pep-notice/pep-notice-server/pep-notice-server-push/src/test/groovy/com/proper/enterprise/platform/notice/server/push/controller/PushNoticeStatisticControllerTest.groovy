@@ -6,7 +6,6 @@ import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.test.context.jdbc.Sql
 
 class PushNoticeStatisticControllerTest extends AbstractTest {
 
@@ -18,7 +17,7 @@ class PushNoticeStatisticControllerTest extends AbstractTest {
 
     @Test
     public void get() {
-        get("/notice/server/push/statistic/dataAnalysis", HttpStatus.OK)
+        get("/notice/server/push/statistic/dataAnalysis/DAY", HttpStatus.OK)
     }
 
     @Test

@@ -1,15 +1,22 @@
 package com.proper.enterprise.platform.notice.server.push.dao.service.impl;
 
-import com.proper.enterprise.platform.core.PEPConstants;
-import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgJpaRepository;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgService;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.enums.PushDeviceTypeEnum;
+import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgVO;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
@@ -27,14 +34,13 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
         pushNoticeMsg.setAppKey(readOnlyNotice.getAppKey());
         pushNoticeMsg.setContent(readOnlyNotice.getContent());
         pushNoticeMsg.setSendCount(readOnlyNotice.getRetryCount() + 1);
-        pushNoticeMsg.setSendDate(DateUtil.toDate(readOnlyNotice.getLastModifyTime(),
-            PEPConstants.DEFAULT_DATETIME_FORMAT));
         pushNoticeMsg.setPushChannel(pushChannel);
         pushNoticeMsg.setStatus(readOnlyNotice.getStatus());
         pushNoticeMsg.setTitle(readOnlyNotice.getTitle());
         pushNoticeMsg.setTargetTo(readOnlyNotice.getTargetTo());
         pushNoticeMsg.setNoticeId(readOnlyNotice.getId());
         pushNoticeMsg.setBatchId(readOnlyNotice.getBatchId());
+        pushNoticeMsg.setErrorMsg(readOnlyNotice.getErrorMsg());
         switch (pushChannel) {
             case IOS:
                 pushNoticeMsg.setDeviceType(PushDeviceTypeEnum.IOS);
@@ -43,7 +49,29 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
             case XIAOMI:
                 pushNoticeMsg.setDeviceType(PushDeviceTypeEnum.ANDROID);
                 break;
+            default:
+                break;
         }
         pushMsgJpaRepository.save(pushNoticeMsg);
+    }
+
+    @Override
+    public DataTrunk<PushNoticeMsgVO> findPagination(String content, NoticeStatus status,
+                                                     String appKey, PushChannelEnum pushChannel, Pageable pageable) {
+        Page<PushNoticeMsgEntity> page = pushMsgJpaRepository.findPagination(content, status, appKey, pushChannel, pageable);
+        return convert(page);
+    }
+
+    private DataTrunk<PushNoticeMsgVO> convert(Page<PushNoticeMsgEntity> page) {
+        DataTrunk<PushNoticeMsgVO> dataTrunk = new DataTrunk<>();
+        dataTrunk.setCount(page.getTotalElements());
+        List<PushNoticeMsgVO> list = new ArrayList<>();
+        for (PushNoticeMsgEntity pushNoticeMsgEntity : page.getContent()) {
+            PushNoticeMsgVO pushNoticeMsgVO = BeanUtil.convert(pushNoticeMsgEntity, PushNoticeMsgVO.class);
+            pushNoticeMsgVO.setSendDate(pushNoticeMsgEntity.getLastModifyTime());
+            list.add(pushNoticeMsgVO);
+        }
+        dataTrunk.setData(list);
+        return dataTrunk;
     }
 }
