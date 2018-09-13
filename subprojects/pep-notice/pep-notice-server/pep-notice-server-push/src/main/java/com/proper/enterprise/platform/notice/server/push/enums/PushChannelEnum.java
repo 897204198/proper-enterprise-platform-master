@@ -1,7 +1,5 @@
 package com.proper.enterprise.platform.notice.server.push.enums;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 /**
  * 推送渠道
  */
