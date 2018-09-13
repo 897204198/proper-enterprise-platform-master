@@ -67,20 +67,21 @@ public class HuaweiNoticeClient {
         // 目标设备Token
         JSONArray deviceTokens = new JSONArray();
         deviceTokens.add(notice.getTargetTo());
-        // 获取app端打开包名
-        String packageName = StringUtil.isNull(this.packageName) ? "c" : this.packageName;
         // 获取消息类型(chat, video, other)
         PushType pushType = PushType.other;
         Map<String, Object> ext = notice.getNoticeExtMsgMap();
         if (ext != null) {
-            String extPushType = (String) ext.get("push_type");
-            try {
-                if (StringUtil.isNotBlank(extPushType)) {
-                    pushType = PushType.valueOf(extPushType);
+            Map customs = (Map) ext.get("customs");
+            if (customs != null) {
+                String extPushType = (String) customs.get("push_type");
+                try {
+                    if (StringUtil.isNotBlank(extPushType)) {
+                        pushType = PushType.valueOf(extPushType);
+                    }
+                } catch (Exception e) {
+                    LOGGER.debug("Fallback to default push type of " + extPushType, e);
+                    pushType = PushType.other;
                 }
-            } catch (Exception e) {
-                LOGGER.debug("Fallback to default push type of " + extPushType, e);
-                pushType = PushType.other;
             }
         }
         // msg 结构体, 包含 type/body/action
@@ -92,7 +93,9 @@ public class HuaweiNoticeClient {
         //消息点击动作, 包含 type(1.自定义intent,2.url跳转,3.打开APP)/param(intent,url,appPkgName)
         JSONObject action = new JSONObject();
         Map<String, Object> params = new HashMap<>(2);
-        params.put("intent", ext.get("uri"));
+        params.put("intent", ext == null ? null : ext.get("uri"));
+        // 获取app端打开包名
+        String packageName = StringUtil.isNull(this.packageName) ? "c" : this.packageName;
         params.put("appPkgName", packageName);
         handleAction(action, pushType, params);
         msg.put("action", action);
