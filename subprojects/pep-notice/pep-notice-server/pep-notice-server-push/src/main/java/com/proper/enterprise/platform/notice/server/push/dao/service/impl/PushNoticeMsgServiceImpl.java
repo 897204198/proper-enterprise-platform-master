@@ -33,6 +33,8 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
         pushNoticeMsg.setStatus(readOnlyNotice.getStatus());
         pushNoticeMsg.setTitle(readOnlyNotice.getTitle());
         pushNoticeMsg.setTargetTo(readOnlyNotice.getTargetTo());
+        pushNoticeMsg.setNoticeId(readOnlyNotice.getId());
+        pushNoticeMsg.setBatchId(readOnlyNotice.getBatchId());
         switch (pushChannel) {
             case IOS:
                 pushNoticeMsg.setDeviceType(PushDeviceTypeEnum.IOS);

@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMs
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgStatisticRepository;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgStatisticService;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnalysisVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,6 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
     public static final String DATE_RANGE_DAY = "day";
     public static final String DATE_RANGE_WEEK = "week";
     public static final String DATE_RANGE_MONTH = "month";
-    public static final int WEEK_RANGE = 8;
 
     private PushNoticeMsgStatisticRepository pushNoticeMsgStatisticRepository;
 
@@ -64,17 +64,25 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
     }
 
     @Override
-    public List<PushServiceDataAnalysisVO> findByDateTypeAndAppKey(Date startDate, String dateType, String appKey) {
-        if (DATE_RANGE_DAY.equals(dateType)) {
-            return findPushStatisticByDay(startDate, appKey);
+    public List<PushServiceDataAnalysisVO> findByDateTypeAndAppKey(Date startDate, PushDataAnalysisDateRangeEnum dateType, String appKey) {
+        switch (dateType) {
+            case DAY:
+                return findPushStatisticByDay(startDate, appKey);
+            case WEEK:
+                return findPushStatisticByWeek(startDate, appKey);
+            case MONTH:
+                return findPushStatisticByMonth(startDate, appKey);
+            default:
+                return null;
         }
-        if (DATE_RANGE_WEEK.equals(dateType)) {
-            return findPushStatisticByWeek(startDate, appKey);
-        }
-        if (DATE_RANGE_MONTH.equals(dateType)) {
-            return findPushStatisticByMonth(startDate, appKey);
-        }
-        return null;
+    }
+
+    @Override
+    public void saveStatisticSomeday(String date) {
+        Date dateStart = DateUtil.toDate(date, PEPConstants.DEFAULT_DATE_FORMAT);
+        Date dateEnd = DateUtil.addDay(dateStart, 1);
+        List<PushNoticeMsgStatisticEntity> pushNoticeMsgStatistics = this.getPushStatistic(dateStart, dateEnd);
+        this.saveAll(pushNoticeMsgStatistics);
     }
 
 

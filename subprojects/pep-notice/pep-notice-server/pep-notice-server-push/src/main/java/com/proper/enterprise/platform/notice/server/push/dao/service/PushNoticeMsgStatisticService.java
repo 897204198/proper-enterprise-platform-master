@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.dao.service;
 
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgStatisticEntity;
+import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnalysisVO;
 
 import java.util.Date;
@@ -35,11 +36,19 @@ public interface PushNoticeMsgStatisticService {
 
     /**
      * 根据基础日期获取推送统计数据
+     * 数据分析视图
      *
      * @param startDate 基础日期
-     * @param dateType 日期类型
-     * @param appKey   应用
+     * @param dateType  日期类型
+     * @param appKey    应用
      * @return List 推送集合
      */
-    List<PushServiceDataAnalysisVO> findByDateTypeAndAppKey(Date startDate, String dateType, String appKey);
+    List<PushServiceDataAnalysisVO> findByDateTypeAndAppKey(Date startDate, PushDataAnalysisDateRangeEnum dateType, String appKey);
+
+    /**
+     * 统计某一天的推送数据
+     *
+     * @param date 日期
+     */
+    void saveStatisticSomeday(String date);
 }

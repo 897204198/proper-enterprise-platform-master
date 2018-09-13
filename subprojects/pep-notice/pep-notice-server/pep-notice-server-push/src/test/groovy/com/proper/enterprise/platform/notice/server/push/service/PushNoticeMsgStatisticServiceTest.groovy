@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMs
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgJpaRepository
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgStatisticRepository
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgStatisticService
-import com.proper.enterprise.platform.notice.server.push.dao.service.impl.PushNoticeMsgStatisticServiceImpl
+import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum
 import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnalysisVO
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
@@ -54,7 +54,7 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
         pushNoticeMsgStatisticService.saveAll(pushNoticeMsgStatistics21)
 
         List<PushServiceDataAnalysisVO> day = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
-            PushNoticeMsgStatisticServiceImpl.DATE_RANGE_DAY, null)
+            PushDataAnalysisDateRangeEnum.DAY, null)
 
         assert day.size() == 7
         //25号
@@ -77,14 +77,14 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
         pushNoticeMsgStatisticService.saveAll(pushNoticeMsgStatistics25Again)
 
         List<PushServiceDataAnalysisVO> dayAppKeyTest = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
-            PushNoticeMsgStatisticServiceImpl.DATE_RANGE_DAY, "test")
+            PushDataAnalysisDateRangeEnum.DAY, "test")
         //25号
         assert dayAppKeyTest.get(0).getIosDataAnalysis().getSuccessCount() == 1
         assert dayAppKeyTest.get(0).getHuaweiDataAnalysis().getFailCount() == 1
         assert dayAppKeyTest.get(0).getXiaomiDataAnalysis().getFailCount() == 1
 
         List<PushServiceDataAnalysisVO> dayAppKeyTest2 = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
-            PushNoticeMsgStatisticServiceImpl.DATE_RANGE_DAY, "test2")
+            PushDataAnalysisDateRangeEnum.DAY, "test2")
 
         assert dayAppKeyTest2.get(0).getIosDataAnalysis().getSuccessCount() == 0
         assert dayAppKeyTest2.get(0).getHuaweiDataAnalysis().getFailCount() == 0
@@ -101,7 +101,7 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
         pushNoticeMsgStatisticService.saveAll(pushNoticeMsgStatistics)
 
         List<PushServiceDataAnalysisVO> week = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
-            PushNoticeMsgStatisticServiceImpl.DATE_RANGE_WEEK, null)
+            PushDataAnalysisDateRangeEnum.WEEK, null)
 
         assert week.size() == 7
         //第一周 23-29
@@ -119,7 +119,7 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
         assert week.get(3).getHuaweiDataAnalysis().getFailCount() == 1
 
         List<PushServiceDataAnalysisVO> weekAppKeyTest = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
-            PushNoticeMsgStatisticServiceImpl.DATE_RANGE_WEEK, "test")
+            PushDataAnalysisDateRangeEnum.WEEK, "test")
         //第一周 appKey TEST
         assert weekAppKeyTest.get(0).getIosDataAnalysis().getSuccessCount() == 1
         assert weekAppKeyTest.get(0).getHuaweiDataAnalysis().getFailCount() == 1
@@ -127,7 +127,7 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
 
         //第一周 appKey TEST2
         List<PushServiceDataAnalysisVO> weekAppKeyTest2 = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
-            PushNoticeMsgStatisticServiceImpl.DATE_RANGE_WEEK, "test2")
+            PushDataAnalysisDateRangeEnum.WEEK, "test2")
 
         assert weekAppKeyTest2.get(0).getIosDataAnalysis().getSuccessCount() == 0
         assert weekAppKeyTest2.get(0).getHuaweiDataAnalysis().getFailCount() == 0
@@ -145,7 +145,7 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
         pushNoticeMsgStatisticService.saveAll(pushNoticeMsgStatistics)
 
         List<PushServiceDataAnalysisVO> month = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
-            PushNoticeMsgStatisticServiceImpl.DATE_RANGE_MONTH, null)
+            PushDataAnalysisDateRangeEnum.MONTH, null)
 
         assert month.size() == 7
         //第一月
@@ -163,7 +163,7 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
         assert month.get(3).getHuaweiDataAnalysis().getFailCount() == 1
 
         List<PushServiceDataAnalysisVO> monthAppKeyTest = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
-            PushNoticeMsgStatisticServiceImpl.DATE_RANGE_MONTH, "test")
+            PushDataAnalysisDateRangeEnum.MONTH, "test")
         //第一月
         assert monthAppKeyTest.get(0).getIosDataAnalysis().getSuccessCount() == 1
         assert monthAppKeyTest.get(0).getHuaweiDataAnalysis().getFailCount() == 1
@@ -171,11 +171,22 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
 
         //第一月
         List<PushServiceDataAnalysisVO> monthAppKeyTest2 = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
-            PushNoticeMsgStatisticServiceImpl.DATE_RANGE_MONTH, "test2")
+            PushDataAnalysisDateRangeEnum.MONTH, "test2")
 
         assert monthAppKeyTest2.get(0).getIosDataAnalysis().getSuccessCount() == 0
         assert monthAppKeyTest2.get(0).getHuaweiDataAnalysis().getFailCount() == 0
         assert monthAppKeyTest2.get(0).getXiaomiDataAnalysis().getFailCount() == 0
+    }
+
+    @Test
+    @Sql([
+        "/com/proper/enterprise/platform/notice/server/push/statistic/push-msg-findByDateTypeAndAppKeyDay.sql"
+    ])
+    public void saveStatisticSomedayTest() {
+        assert pushNoticeMsgJpaRepository.count() == 6
+        assert pushNoticeMsgStatisticRepository.count() == 0
+        pushNoticeMsgStatisticService.saveStatisticSomeday("2018-07-25")
+        assert pushNoticeMsgStatisticRepository.count() == 3
     }
 
 }

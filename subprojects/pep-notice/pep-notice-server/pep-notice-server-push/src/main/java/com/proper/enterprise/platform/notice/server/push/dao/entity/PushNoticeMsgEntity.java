@@ -42,6 +42,18 @@ public class PushNoticeMsgEntity extends BaseEntity {
     private Integer sendCount;
 
     /**
+     * 同一批消息的批次Id
+     */
+    @Column(length = 36)
+    private String batchId;
+
+    /**
+     * 消息Id
+     */
+    @Column(length = 36)
+    private String noticeId;
+
+    /**
      * 推送渠道
      */
     @Enumerated(EnumType.STRING)
@@ -126,6 +138,22 @@ public class PushNoticeMsgEntity extends BaseEntity {
 
     public void setTargetTo(String targetTo) {
         this.targetTo = targetTo;
+    }
+
+    public String getBatchId() {
+        return batchId;
+    }
+
+    public void setBatchId(String batchId) {
+        this.batchId = batchId;
+    }
+
+    public String getNoticeId() {
+        return noticeId;
+    }
+
+    public void setNoticeId(String noticeId) {
+        this.noticeId = noticeId;
     }
 
     @Override
