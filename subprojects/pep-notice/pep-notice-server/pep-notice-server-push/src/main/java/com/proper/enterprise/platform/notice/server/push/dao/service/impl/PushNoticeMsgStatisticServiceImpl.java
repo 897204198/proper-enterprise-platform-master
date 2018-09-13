@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnalysisVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,12 +19,9 @@ import java.util.*;
 @Service
 public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatisticService {
 
-    public static final String DATE_RANGE_DAY = "day";
-    public static final String DATE_RANGE_WEEK = "week";
-    public static final String DATE_RANGE_MONTH = "month";
-
     private PushNoticeMsgStatisticRepository pushNoticeMsgStatisticRepository;
 
+    @Autowired
     public PushNoticeMsgStatisticServiceImpl(PushNoticeMsgStatisticRepository pushNoticeMsgStatisticRepository) {
         this.pushNoticeMsgStatisticRepository = pushNoticeMsgStatisticRepository;
     }
@@ -134,7 +132,7 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
         //获取七天内统计数据
         Date sendDate = DateUtil.addDay(startDate, -6);
         String sendDateStr = DateUtil.toString(sendDate, PEPConstants.DEFAULT_DATE_FORMAT);
-        List<PushNoticeMsgStatisticEntity> result = new ArrayList<>();
+        List<PushNoticeMsgStatisticEntity> result;
         if (StringUtil.isEmpty(appKey)) {
             result = convert(pushNoticeMsgStatisticRepository.findAllGroupDay(sendDateStr));
         } else {
@@ -207,7 +205,7 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
         //获取七天内统计数据
         Date sendDate = DateUtil.addWeek(startDate, -6);
         String sendDateStr = DateUtil.toString(sendDate, PEPConstants.DEFAULT_DATE_FORMAT);
-        List<PushNoticeMsgStatisticEntity> result = new ArrayList<>();
+        List<PushNoticeMsgStatisticEntity> result;
         if (StringUtil.isEmpty(appKey)) {
             result = convert(pushNoticeMsgStatisticRepository.findAllGroupWeek(sendDateStr));
         } else {
@@ -276,7 +274,7 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
         //获取七月内统计数据
         Date beginMonth = DateUtil.addMonth(startDate, -7);
         String sendDateStr = DateUtil.toString(beginMonth, PEPConstants.DEFAULT_MONTH_FORMAT);
-        List<PushNoticeMsgStatisticEntity> result = new ArrayList<>();
+        List<PushNoticeMsgStatisticEntity> result;
         if (StringUtil.isEmpty(appKey)) {
             result = convert(pushNoticeMsgStatisticRepository.findAllGroupMonth(sendDateStr));
         } else {

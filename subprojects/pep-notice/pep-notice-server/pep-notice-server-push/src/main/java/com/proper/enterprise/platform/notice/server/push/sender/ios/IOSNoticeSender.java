@@ -8,7 +8,6 @@ import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.client.ios.IOSNoticeClientManagerApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi;
-import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgService;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
@@ -31,12 +30,10 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
     @Qualifier("iosNoticeConfigurator")
     private BasePushConfigApi iosNoticeConfigurator;
 
-    private PushNoticeMsgService pushNoticeMsgService;
 
     @Autowired
-    public IOSNoticeSender(IOSNoticeClientManagerApi iosNoticeClientManager, PushNoticeMsgService pushNoticeMsgService) {
+    public IOSNoticeSender(IOSNoticeClientManagerApi iosNoticeClientManager) {
         this.iosNoticeClientManager = iosNoticeClientManager;
-        this.pushNoticeMsgService = pushNoticeMsgService;
     }
 
     @Override

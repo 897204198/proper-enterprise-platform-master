@@ -4,7 +4,6 @@ import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDo
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
 import com.proper.enterprise.platform.test.AbstractTest
-import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DuplicateKeyException
