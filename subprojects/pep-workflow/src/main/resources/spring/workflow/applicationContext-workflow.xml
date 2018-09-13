@@ -14,8 +14,6 @@
 
     <context:component-scan base-package="org.flowable.app.conf" />
 
-    <mvc:annotation-driven/>
-
     <mvc:resources mapping="/workflow/*.html"     location="classpath:/META-INF/resources/"/>
     <mvc:resources mapping="/workflow/editor-app/**"  location="classpath:/META-INF/resources/editor-app/"/>
     <mvc:resources mapping="/workflow/fonts/**"   location="classpath:/META-INF/resources/fonts/"/>

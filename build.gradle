@@ -128,7 +128,8 @@ subprojects {
 
     dependencies {
         compile libraries.slf4j_api,
-                libraries.spring_webmvc
+                libraries.spring_webmvc,
+                libraries.springfox
 
         runtime libraries.druid,
                 libraries.logback_classic

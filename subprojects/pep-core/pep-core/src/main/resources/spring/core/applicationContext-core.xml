@@ -16,4 +16,5 @@
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="packagesToScan" value="com.proper.enterprise" />
     </bean>
+
 </beans>

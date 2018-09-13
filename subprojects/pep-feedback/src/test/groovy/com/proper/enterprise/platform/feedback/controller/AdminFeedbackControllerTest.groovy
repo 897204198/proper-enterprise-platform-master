@@ -29,13 +29,14 @@ class AdminFeedbackControllerTest extends AbstractTest {
     @Test
     void testAdminGetAndPostFeedback() {
         mockUser('id1', 'name1', 'pwd')
-        // admin post && get && post
+
+        // add user feedback data
         UserFeedBackDocument userFeedBackDocument = new UserFeedBackDocument()
         userFeedBackDocument.setUserId("id1")
         userFeedBackDocument.setUserName("name1")
         userFeedBackDocument.setUserTel("12345678901")
         FeedBackDocument document = new FeedBackDocument()
-        document.setFeedback("reply a data !")
+        document.setOpinion("hello")
         document.setMobileModel("iphone")
         document.setNetType("4G")
         document.setAppVersion("v4.0.2")
@@ -44,15 +45,17 @@ class AdminFeedbackControllerTest extends AbstractTest {
         arrayList.add(document)
         userFeedBackDocument.setFeedBackDocuments(arrayList)
         userFeedBackDocument = userFeedBackRepo.save(userFeedBackDocument)
-        post('/admin/feedback/' + userFeedBackDocument.getUserId(), JSONUtil.toJSON(userFeedBackDocument), HttpStatus.OK)
 
-        def list = resOfGet("/admin/feedback/" + "/" + userFeedBackDocument.getUserId(), HttpStatus.OK)
+        // admin reply && get
+        post('/admin/feedback/' + userFeedBackDocument.getUserId(), JSONUtil.toJSON(['feedback': 'reply a data !']), HttpStatus.OK)
+
+        def list = resOfGet("/admin/feedback/" + userFeedBackDocument.getUserId(), HttpStatus.OK)
         assert list.size() == 2
-        assert list.get(0).get("feedback") == "reply a data !"
-        assert list.get(0).get("mobileModel") == "iphone"
-        assert list.get(0).get("netType") == "4G"
-        assert list.get(0).get("appVersion") == "v4.0.2"
-        assert list.get(0).get("platform") == "IOS"
+        assert list.get(1).get("feedback") == "reply a data !"
+        assert list.get(1).get("mobileModel") == "iphone"
+        assert list.get(1).get("netType") == "4G"
+        assert list.get(1).get("appVersion") == "v4.0.2"
+        assert list.get(1).get("platform") == "IOS"
     }
 
     @Test

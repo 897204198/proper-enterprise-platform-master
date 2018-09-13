@@ -41,8 +41,7 @@ dependencies {
     // available choices: libraries.h2, libraries.mysql_driver
     runtime libraries.h2,
             // available choices: project(':pep-oopsearch-sync-h2'), project(':pep-oopsearch-sync-mysql')
-            project(':pep-oopsearch-sync-h2'),
-            project(":pep-oopsearch-sync-mongo")
+            project(':pep-oopsearch-sync-h2')
 
     // Necessary when using Web Service
     // runtime libraries.jaxws_rt
@@ -50,15 +49,19 @@ dependencies {
     // Select when need datasource monitor
     //runtime project(':pep-datasource-monitor')
 
-    // Mandatory for PEP
-    runtime project(':pep-configs')
+    // Select when need swagger
+    runtime project(':pep-swagger')
 
-    // Select on demand
+    // Mandatory for PEP
     runtime project(':pep-auth-common-jpa'),
-            project(':pep-auth-jwt'),
-            project(':pep-av-backend'),
             // Needs one cache implementation if use cache API
             project(':pep-cache-ehcache'),
+            project(':pep-configs'),
+            project(':pep-oopsearch-config')
+
+    // Select on demand
+    runtime project(':pep-auth-jwt'),
+            project(':pep-av-backend'),
             project(':pep-dev-tools'),
             // Needs one dfs implementation if use DFS API
             // MUST change 'dfs.upload.rootpath' together
@@ -66,8 +69,8 @@ dependencies {
             project(':pep-feedback'),
             project(':pep-file'),
             project(':pep-image-handler'),
-            project(':pep-oopsearch-config'),
             project(':pep-oopsearch'),
+            project(":pep-oopsearch-sync-mongo"),
             project(':pep-workflow')
 
 }

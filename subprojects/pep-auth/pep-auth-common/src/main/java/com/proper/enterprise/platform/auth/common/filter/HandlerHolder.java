@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
@@ -14,7 +15,8 @@ public class HandlerHolder {
     private RequestMappingHandlerMapping mapping;
 
     @Autowired
-    public HandlerHolder(RequestMappingHandlerMapping mapping) {
+    public HandlerHolder(@Qualifier("org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping")
+                         RequestMappingHandlerMapping mapping) {
         this.mapping = mapping;
     }
 

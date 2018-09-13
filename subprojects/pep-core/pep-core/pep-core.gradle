@@ -1,5 +1,6 @@
 dependencies {
-    compile libraries.commons_codec,
+    compile libraries.aspectjweaver,
+            libraries.commons_codec,
             libraries.commons_lang3,
             libraries.hibernate_validator,
             libraries.jackson_databind,
@@ -11,11 +12,8 @@ dependencies {
             libraries.servlet_api,
             libraries.spring_oxm,
             libraries.spring_data_commons,
-            libraries.aspectjweaver,
             libraries.spring_context_support,
             libraries.validation_api
-
-
 
     testCompile project(':pep-test'),
             libraries.hibernate_entitymanager,

@@ -18,6 +18,7 @@ versions.spring             = '5.0.7.RELEASE'
 versions.spring_data        = 'Kay-SR8'
 versions.spring_integration = '5.0.6.RELEASE'
 versions.spring_security    = '5.0.6.RELEASE'
+versions.springfox          = '2.9.2'
 
 configurations.all {
 //    //Don't cache snapshots, need to check work or not
@@ -41,6 +42,7 @@ configurations.all {
             'jboss-logging': '3.3.1.Final',
             'jcl-over-slf4j': versions.slf4j,
             'logback': versions.logback ,
+            'springloaded': '1.2.8.RELEASE',
             // xalan < 2.7.0 的版本会导致与 spring-ws 的冲突
             // http://stackoverflow.com/questions/12467186/java-spring-ws-org-springframework-ws-soap-saaj-saajsoapenvelopeexception-could/13156775#13156775
             'xalan': '2.7.2'
@@ -90,7 +92,7 @@ libraries.aspectjweaver = "org.aspectj:aspectjweaver:1.8.6"
 
 //libraries.cglib = 'cglib:cglib:2.2'
 
-//libraries.commons_collections = 'commons-collections:commons-collections:3.2.1'
+libraries.commons_collections = 'commons-collections:commons-collections:3.2.1'
 
 libraries.cmb_b2b = 'com.cmb.b2b:cmb-b2b:1.0.0'
 libraries.cmb_pay = 'com.cmb.pay:cmb-pay:1.0.0'
@@ -258,6 +260,11 @@ libraries.spring_integration_jdbc = "org.springframework.integration:spring-inte
 //libraries.spring_security_test = "org.springframework.security:spring-security-test:${versions.spring_security}"
 //libraries.spring_security_web = "org.springframework.security:spring-security-web:${versions.spring_security}"
 
+libraries.springfox = [
+    "io.springfox:springfox-swagger2:${versions.springfox}",
+    "io.springfox:springfox-swagger-ui:${versions.springfox}"
+]
+
 //libraries.urlrewritefilter = 'org.tuckey:urlrewritefilter:4.0.3'
 libraries.thumbnailator = 'net.coobird:thumbnailator:0.4.8'
 libraries.validation_api = "javax.validation:validation-api:2.0.1.Final"
@@ -322,6 +329,7 @@ libraries.pep_push = "com.proper.enterprise.platform:pep-push:${versions.pep}"
 libraries.pep_push_api = "com.proper.enterprise.platform:pep-push-api:${versions.pep}"
 libraries.pep_push_client = "com.proper.enterprise.platform:pep-push-client:${versions.pep}"
 libraries.pep_schedule_cluster = "com.proper.enterprise.platform:pep-schedule-cluster:${versions.pep}"
+libraries.pep_swagger = "com.proper.enterprise.platform:pep-swagger:${versions.pep}"
 libraries.pep_sys = "com.proper.enterprise.platform:pep-sys:${versions.pep}"
 libraries.pep_test = "com.proper.enterprise.platform:pep-test:${versions.pep}"
 libraries.pep_workflow = "com.proper.enterprise.platform:pep-workflow:${versions.pep}"
