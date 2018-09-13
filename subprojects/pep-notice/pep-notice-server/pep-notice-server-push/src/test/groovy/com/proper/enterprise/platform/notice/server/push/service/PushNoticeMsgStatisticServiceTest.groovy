@@ -23,6 +23,7 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
     @Autowired
     private PushNoticeMsgJpaRepository pushNoticeMsgJpaRepository
 
+
     @Test
     @Sql([
         "/com/proper/enterprise/platform/notice/server/push/statistic/push-msg-saveYesterdayPushStatistic.sql"

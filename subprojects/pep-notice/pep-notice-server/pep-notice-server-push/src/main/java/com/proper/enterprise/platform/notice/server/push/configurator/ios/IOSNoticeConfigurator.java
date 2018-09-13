@@ -27,14 +27,14 @@ public class IOSNoticeConfigurator extends AbstractPushConfigSupport {
 
     private static final String CERT_ID = "certificateId";
 
-    private static final String P12_PASSWORD = "p12Password";
+    private static final String CERT_PASSWORD = "certPassword";
 
     private static final String CERT_TYPE = "p12";
 
     @Override
     public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {
-        if (null == config.get(P12_PASSWORD)) {
-            throw new ErrMsgException("p12Password can't be null");
+        if (null == config.get(CERT_PASSWORD)) {
+            throw new ErrMsgException("certPassword can't be null");
         }
         if (null == config.get(CERT_ID)) {
             throw new ErrMsgException("certificateId can't be null");

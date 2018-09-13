@@ -9,13 +9,16 @@ public class PushChannelDataAnalysisVO {
     /**
      * 发送成功数量
      */
-    private Integer successCount = 0;
+    private Integer successCount;
     /**
      * 发送失败数量
      */
-    private Integer failCount = 0;
+    private Integer failCount;
 
     public Integer getSuccessCount() {
+        if (null == successCount) {
+            this.successCount = 0;
+        }
         return successCount;
     }
 
@@ -24,6 +27,9 @@ public class PushChannelDataAnalysisVO {
     }
 
     public Integer getFailCount() {
+        if (null == failCount) {
+            this.failCount = 0;
+        }
         return failCount;
     }
 

@@ -92,7 +92,7 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
      * @return 统计结果
      */
     private List<PushServiceDataAnalysisVO> findPushStatisticByDay(Date startDate, String appKey) {
-        Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap = new HashMap<>();
+        Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap = new HashMap<>(16);
         //构造每天视图 共七天
         String oneDate = DateUtil.toString(startDate, PEPConstants.DEFAULT_DATE_FORMAT);
         PushServiceDataAnalysisVO one = new PushServiceDataAnalysisVO();
@@ -163,7 +163,7 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
      */
     private List<PushServiceDataAnalysisVO> findPushStatisticByWeek(Date startDate, String appKey) {
 
-        Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap = new HashMap<>();
+        Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap = new HashMap<>(16);
         //构造每周视图 共七周
         String oneDate = buildWeekRange(startDate);
 
@@ -234,7 +234,7 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
      * @return 统计结果
      */
     public List<PushServiceDataAnalysisVO> findPushStatisticByMonth(Date startDate, String appKey) {
-        Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap = new HashMap<>();
+        Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap = new HashMap<>(16);
         //构造每月视图 共七月
         String oneDate = DateUtil.toString(startDate, PEPConstants.DEFAULT_MONTH_FORMAT);
         PushServiceDataAnalysisVO one = new PushServiceDataAnalysisVO();

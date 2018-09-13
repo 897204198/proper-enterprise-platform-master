@@ -53,7 +53,7 @@ class IOSClientManagerTest extends AbstractTest {
 
         pushConfDocument.setAppKey(appKey)
         pushConfDocument.setCertificateId(fileP12VO.getId())
-        pushConfDocument.setP12Password(IOSConstant.PASSWORD)
+        pushConfDocument.setCertPassword(IOSConstant.PASSWORD)
         pushConfDocument.setPushChannel(PushChannelEnum.IOS)
         pushConfigMongoRepository.save(pushConfDocument)
 
