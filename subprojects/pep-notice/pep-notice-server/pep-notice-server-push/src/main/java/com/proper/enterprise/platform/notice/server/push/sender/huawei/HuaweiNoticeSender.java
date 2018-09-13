@@ -32,7 +32,9 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
     public void send(ReadOnlyNotice notice) throws NoticeException {
         HuaweiNoticeClient huaweiNoticeClient = huaweiNoticeClientManagerApi.get(notice.getAppKey());
         if (isCmdMessage(notice)) {
-            huaweiNoticeClient.send(1, notice, Json.toJson(notice.getNoticeExtMsgMap(), JsonFormat.compact()));
+            Map<String, Object> noticeExtMsg = notice.getNoticeExtMsgMap();
+            Map customs = (Map) noticeExtMsg.get(CUSTOM_PROPERTY_KEY);
+            huaweiNoticeClient.send(1, notice, Json.toJson(customs, JsonFormat.compact()));
             return;
         }
         JSONObject body = new JSONObject();

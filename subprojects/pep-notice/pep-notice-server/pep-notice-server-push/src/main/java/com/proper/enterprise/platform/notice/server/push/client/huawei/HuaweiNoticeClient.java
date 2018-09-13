@@ -186,7 +186,6 @@ public class HuaweiNoticeClient {
         return new String(post.getBody(), "UTF-8");
     }
 
-
     private void isSuccess(String res, ReadOnlyNotice notice) throws NoticeException {
         LOGGER.debug("Push to huawei with noticeId:{} has response:{}", notice.getId(), res);
         String key = "msg";
@@ -194,7 +193,7 @@ public class HuaweiNoticeClient {
             JsonNode result = JSONUtil.parse(res, JsonNode.class);
             String successValue = "Success";
             if (result.get(key) != null && !successValue.equals(result.get(key).textValue())) {
-                throw new NoticeException("Push to huawei failed with noticeId:" + notice.getId());
+                throw new NoticeException("Push to huawei failed, msg:" + result.get(key).textValue());
             }
         } catch (Exception ex) {
             LOGGER.debug("Error occurs when parsing response of " + notice.getId(), ex);

@@ -33,11 +33,11 @@ public class HuaweiNoticeClientManager implements HuaweiNoticeClientManagerApi {
         }
         HuaweiNoticeClient huaweiNoticeClient = huaweiNoticeClientPool.get(appKey);
         if (huaweiNoticeClient == null) {
-            PushConfDocument pushConf1 = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.HUAWEI);
-            if (pushConf1 == null) {
+            PushConfDocument pushConf = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.HUAWEI);
+            if (pushConf == null) {
                 throw new ErrMsgException("Can't get Huawei push config");
             }
-            huaweiNoticeClientPool.put(appKey, initClient(pushConf1));
+            huaweiNoticeClientPool.put(appKey, initClient(pushConf));
         }
         return huaweiNoticeClientPool.get(appKey);
     }
