@@ -46,7 +46,7 @@ public class PushConfDocument extends BaseDocument {
     /**
      * 证书密码
      */
-    private String p12Password;
+    private String certPassword;
 
     public String getAppKey() {
         return appKey;
@@ -96,12 +96,12 @@ public class PushConfDocument extends BaseDocument {
         this.certificateId = certificateId;
     }
 
-    public String getP12Password() {
-        return p12Password;
+    public String getCertPassword() {
+        return certPassword;
     }
 
-    public void setP12Password(String p12Password) {
-        this.p12Password = p12Password;
+    public void setCertPassword(String certPassword) {
+        this.certPassword = certPassword;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.dao.entity;
 
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.enums.PushDeviceTypeEnum;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
@@ -13,7 +14,7 @@ import java.util.Date;
 public class PushNoticeMsgEntity extends BaseEntity {
 
     @Column(nullable = false)
-    private String appkey;
+    private String appKey;
 
     /**
      * 消息正文
@@ -41,6 +42,18 @@ public class PushNoticeMsgEntity extends BaseEntity {
     private Integer sendCount;
 
     /**
+     * 同一批消息的批次Id
+     */
+    @Column(length = 36)
+    private String batchId;
+
+    /**
+     * 消息Id
+     */
+    @Column(length = 36)
+    private String noticeId;
+
+    /**
      * 推送渠道
      */
     @Enumerated(EnumType.STRING)
@@ -55,12 +68,12 @@ public class PushNoticeMsgEntity extends BaseEntity {
     @Column(nullable = false)
     private String targetTo;
 
-    public String getAppkey() {
-        return appkey;
+    public String getAppKey() {
+        return appKey;
     }
 
-    public void setAppkey(String appkey) {
-        this.appkey = appkey;
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
     }
 
     public String getContent() {
@@ -125,5 +138,26 @@ public class PushNoticeMsgEntity extends BaseEntity {
 
     public void setTargetTo(String targetTo) {
         this.targetTo = targetTo;
+    }
+
+    public String getBatchId() {
+        return batchId;
+    }
+
+    public void setBatchId(String batchId) {
+        this.batchId = batchId;
+    }
+
+    public String getNoticeId() {
+        return noticeId;
+    }
+
+    public void setNoticeId(String noticeId) {
+        this.noticeId = noticeId;
+    }
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJSONIgnoreException(this);
     }
 }

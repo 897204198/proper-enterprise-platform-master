@@ -66,7 +66,7 @@ public class IOSNoticeClientManager implements IOSNoticeClientManagerApi {
         ApnsClientBuilder builder = new ApnsClientBuilder().setApnsServer(applePushUrl);
         InputStream certInputStream = fileService.download(pushDocument.getCertificateId());
         try {
-            builder = builder.setClientCredentials(certInputStream, pushDocument.getP12Password());
+            builder = builder.setClientCredentials(certInputStream, pushDocument.getCertPassword());
             certInputStream.close();
             return builder.build();
         } catch (IOException e) {
