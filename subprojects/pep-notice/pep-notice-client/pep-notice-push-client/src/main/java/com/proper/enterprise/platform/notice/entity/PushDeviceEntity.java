@@ -3,8 +3,8 @@ package com.proper.enterprise.platform.notice.entity;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
-import com.proper.enterprise.platform.notice.server.api.enums.PushDeviceType;
-import com.proper.enterprise.platform.notice.server.api.enums.PushMode;
+import com.proper.enterprise.platform.notice.enums.PushDeviceType;
+import com.proper.enterprise.platform.notice.enums.PushMode;
 import com.proper.enterprise.platform.notice.service.PushDevice;
 import javax.persistence.*;
 

@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.controller
 
 import com.proper.enterprise.platform.core.entity.DataTrunk
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
+import PushChannelEnum
 import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgVO
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
