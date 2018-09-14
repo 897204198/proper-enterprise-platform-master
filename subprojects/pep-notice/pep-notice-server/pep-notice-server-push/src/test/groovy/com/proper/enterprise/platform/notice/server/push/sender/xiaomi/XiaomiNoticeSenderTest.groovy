@@ -17,7 +17,7 @@ import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiC
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.PACKAGENAME
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.APPKEY
 
-class XiaomiNoticeSenderTest extends AbstractTest{
+class XiaomiNoticeSenderTest extends AbstractTest {
 
 
     @Autowired
@@ -49,15 +49,18 @@ class XiaomiNoticeSenderTest extends AbstractTest{
     @Test
     void testSendMessage() {
         def notice = new MockPushNotice()
+        notice.setTargetTo(PUSHTOKEN)
         notice.setAppKey(APPKEY)
         notice.setTitle("test")
         notice.setContent("test")
-        notice.setTargetTo(PUSHTOKEN)
+        xiaomiNoticeSender.beforeSend(notice)
         xiaomiNoticeSender.send(notice)
+        xiaomiNoticeSender.afterSend(notice)
+        xiaomiNoticeSender.getStatus(notice)
     }
 
     @Test
-    void testPassThrough(){
+    void testPassThrough() {
         def notice = new MockPushNotice()
         notice.setAppKey(APPKEY)
         notice.setTitle("test")
@@ -66,7 +69,7 @@ class XiaomiNoticeSenderTest extends AbstractTest{
         Map<String, Object> customs = new HashMap()
         customs.put("_proper_badge", 5)
         customs.put("_proper_pushtype", "cmd")
-        notice.setNoticeExtMsg("customs",  customs)
+        notice.setNoticeExtMsg("customs", customs)
         xiaomiNoticeSender.send(notice)
     }
 

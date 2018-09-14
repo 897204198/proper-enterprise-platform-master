@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-import static java.lang.Math.*;
+import java.util.Random;
 
 @Service("xiaomiNoticeSender")
 public class XiaomiNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
@@ -65,6 +65,9 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
             result = sender.send(message, notice.getTargetTo(), 1);
         } catch (Exception e) {
             LOGGER.error("error xiaomi push message exception:{}", e);
+        }
+        if (result == null) {
+            throw new NoticeException("xiaomi push return result is null");
         }
         if (result.getErrorCode() != ErrorCode.Success) {
             LOGGER.error("xiaomi push send message fail  pushId:{}, rsp:{}", notice.getId(), JSONUtil.toJSONIgnoreException(result));
@@ -136,6 +139,6 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
         if (notifyId <= MIN_NOTIFY_ID || notifyId == Integer.MAX_VALUE) {
             notifyId = MIN_NOTIFY_ID;
         }
-        return (int) (random() * 9000) + 1000 + notifyId++;
+        return new Random().nextInt(9999) + notifyId++;
     }
 }
