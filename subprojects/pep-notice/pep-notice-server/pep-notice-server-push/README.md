@@ -7,7 +7,9 @@ config
 POST  
 requestBody  
 IOS： {"pushPackage":"###","certificateId":"###","certPassword":"*###*"}  
+Xiaomi： {"pushPackage":"###","appSecret":"###"}  
 HUAWEI: {"pushPackage":"###","appId":"###","appSecret":"*###*"}  
+
 PUT  同上  
 GET  /notice/server/config/PUSH?accessToken=###&pushChannel=###(IOS,HUAWEI,XIAOMI)  
 DELETE  /notice/server/config/PUSH?accessToken=###&pushChannel=###(IOS,HUAWEI,XIAOMI)  
@@ -22,9 +24,10 @@ noticeExtMsg中添加原来的customs {"customs":customsMap}
 customsMap中的公共key含义  
 _proper_badge 角标 类型Integer  
 _proper_pushtype 是否透传  
-
 IOS特殊key:无      
-小米特殊key:      
+小米特殊key:无      
 华为特殊key:  
 customsMap
 push_type 消息推送类型(chat/video/other)  
+
+Proper Enterprise Platform
