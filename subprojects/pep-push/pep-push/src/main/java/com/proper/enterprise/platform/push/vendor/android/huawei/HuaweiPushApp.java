@@ -216,7 +216,7 @@ public class HuaweiPushApp extends BasePushApp {
             throw e;
         }
         accessToken = obj.getString("access_token");
-        tokenExpiredTime = System.currentTimeMillis() + obj.getLong("expires_in") - 5 * 60 * 1000;
+        tokenExpiredTime = System.currentTimeMillis() + obj.getLong("expires_in") * 1000 - 5 * 60 * 1000;
     }
 
     private String post(String postUrl, String postBody) throws IOException {
