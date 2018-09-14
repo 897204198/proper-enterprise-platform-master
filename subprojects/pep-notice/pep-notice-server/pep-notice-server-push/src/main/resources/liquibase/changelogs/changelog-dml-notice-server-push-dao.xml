@@ -5,7 +5,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet id="2018-09-13-notice-push-data-dic-add" author="zjl">
         <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
-            <column name="ID" value="PEP_NOTICE_TYPE"/>
+            <column name="ID" value="PEP_NOTICE_PUSH_SERVER_TYPE"/>
             <column name="DD_CATALOG_CODE" value="PUSH_CHANNEL"/>
             <column name="DD_CATALOG_NAME" value="推送渠道"/>
             <column name="DD_CATALOG_ORDER" value="4"/>

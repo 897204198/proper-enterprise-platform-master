@@ -5,13 +5,13 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet id="2018-09-05-notice-data-dic-add" author="zjl">
         <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
-            <column name="ID" value="PEP_NOTICE_TYPE"/>
+            <column name="ID" value="PEP_NOTICE_SERVER_TYPE"/>
             <column name="DD_CATALOG_CODE" value="NOTICE_TYPE"/>
             <column name="DD_CATALOG_NAME" value="消息类型"/>
             <column name="DD_CATALOG_ORDER" value="1"/>
         </insert>
         <insert tableName="PEP_SYS_DATA_DIC">
-            <column name="ID" value="notice_type_email"/>
+            <column name="ID" value="notice_server_type_email"/>
             <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
             <column name="CREATE_USER_ID" value="PEP"/>
             <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
@@ -23,7 +23,7 @@
             <column name="DD_ORDER" valueNumeric="1"/>
         </insert>
         <insert tableName="PEP_SYS_DATA_DIC">
-            <column name="ID" value="notice_type_sms"/>
+            <column name="ID" value="notice_server_type_sms"/>
             <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
             <column name="CREATE_USER_ID" value="PEP"/>
             <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
@@ -35,7 +35,7 @@
             <column name="DD_ORDER" valueNumeric="2"/>
         </insert>
         <insert tableName="PEP_SYS_DATA_DIC">
-            <column name="ID" value="notice_type_push"/>
+            <column name="ID" value="notice_server_type_push"/>
             <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
             <column name="CREATE_USER_ID" value="PEP"/>
             <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
