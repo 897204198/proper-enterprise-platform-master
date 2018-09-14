@@ -11,6 +11,8 @@ public interface App {
 
     /**
      * 设置应用名称
+     *
+     * @param appName 应用名称
      */
     void setAppName(String appName);
 
@@ -23,6 +25,8 @@ public interface App {
 
     /**
      * 设置应用唯一标识
+     *
+     * @param appKey 应用唯一标识
      */
     void setAppKey(String appKey);
 
@@ -35,6 +39,8 @@ public interface App {
 
     /**
      * 设置应用token
+     *
+     * @param appToken 应用token
      */
     void setAppToken(String appToken);
 
