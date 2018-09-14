@@ -25,7 +25,8 @@ public class ApiNoticeConfiguratorResource extends BaseController {
     }
 
     @PostMapping("/{noticeType}")
-    public ResponseEntity post(@PathVariable NoticeType noticeType, @RequestParam String accessToken, @RequestBody Map config, HttpServletRequest request) {
+    public ResponseEntity post(@PathVariable NoticeType noticeType, @RequestParam String accessToken,
+                               @RequestBody Map config, HttpServletRequest request) {
         if (validAppKeyIsNull(accessToken)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
@@ -45,7 +46,8 @@ public class ApiNoticeConfiguratorResource extends BaseController {
     }
 
     @PutMapping("/{noticeType}")
-    public ResponseEntity put(@PathVariable NoticeType noticeType, @RequestParam String accessToken, @RequestBody Map config, HttpServletRequest request) {
+    public ResponseEntity put(@PathVariable NoticeType noticeType, @RequestParam String accessToken,
+                              @RequestBody Map config, HttpServletRequest request) {
         if (validAppKeyIsNull(accessToken)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
