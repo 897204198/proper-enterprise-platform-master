@@ -34,9 +34,9 @@ class XiaomiClientManagerTest extends AbstractTest{
             assert "appKey can't be empty" == e.getMessage()
         }
         try {
-            xiaomiNoticeClientManager.getClient(APPKEY)
+            xiaomiNoticeClientManager.getClient("test")
         } catch (ErrMsgException e) {
-            assert "can't find confDocument by appKey:" + APPKEY == e.getMessage()
+            assert "can't find confDocument by appKey:" + "test" == e.getMessage()
         }
         def pushConfDocument = new PushConfDocument()
         pushConfDocument.setAppKey(APPKEY)

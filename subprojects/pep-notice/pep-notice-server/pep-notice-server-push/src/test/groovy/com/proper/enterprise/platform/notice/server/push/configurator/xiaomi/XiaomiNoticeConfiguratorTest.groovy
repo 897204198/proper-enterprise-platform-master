@@ -32,7 +32,7 @@ class XiaomiNoticeConfiguratorTest extends AbstractTest {
         assert "RGW+NA+T2ucpEX0a6bxyhA==" == map.get("appSecret")
         map = xiaomiNoticeConfigurator.get(appKey, request)
         assert "RGW+NA+T2ucpEX0a6bxyhA==" == map.get("appSecret")
-        pushRepository.deleteAll()
+        xiaomiNoticeConfigurator.delete(appKey, request)
     }
 
     @Test
