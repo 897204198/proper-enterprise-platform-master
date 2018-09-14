@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.api.vo;
 
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.api.model.App;
 
 public class AppVO extends BaseVO implements App {
@@ -76,5 +77,10 @@ public class AppVO extends BaseVO implements App {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJSONIgnoreException(this);
     }
 }

@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 public interface PushNoticeMsgService {
 
@@ -33,9 +33,9 @@ public interface PushNoticeMsgService {
      * @param status      消息状态
      * @param appKey      系统唯一标识
      * @param pushChannel 推送渠道
-     * @param pageable    分页参数
+     * @param pageRequest    分页参数
      * @return 分页集合
      */
     DataTrunk<PushNoticeMsgVO> findPagination(String content, NoticeStatus status, String appKey,
-                                              PushChannelEnum pushChannel, Pageable pageable);
+                                              PushChannelEnum pushChannel, PageRequest pageRequest);
 }

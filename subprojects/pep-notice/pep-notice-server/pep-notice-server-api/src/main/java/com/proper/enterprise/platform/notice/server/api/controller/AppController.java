@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.notice.server.api.model.App;
 import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
 import com.proper.enterprise.platform.notice.server.api.vo.AppVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +27,14 @@ public class AppController extends BaseController {
         this.accessTokenService = accessTokenService;
     }
 
-
     @GetMapping
     public ResponseEntity<DataTrunk<App>> get(String appKey, String appName, String describe, Boolean enable) {
-        return responseOfGet(appDaoService.findAll(appKey, appName, describe, enable, getPageRequest()));
+        return responseOfGet(appDaoService.findAll(appKey, appName, describe, enable, getPageRequest(new Sort(Sort.Direction.DESC, "createTime"))));
+    }
+
+    @GetMapping(value = "/appId/{appId}")
+    public ResponseEntity<App> get(@PathVariable String appId) {
+        return responseOfGet(appDaoService.get(appId));
     }
 
     @GetMapping(value = "/appKey")
@@ -40,11 +45,6 @@ public class AppController extends BaseController {
     @GetMapping(value = "/token")
     public ResponseEntity<String> getToken() {
         return responseOfGet(accessTokenService.generate());
-    }
-
-    @GetMapping(value = "/appId/{appId}")
-    public ResponseEntity<App> get(@PathVariable String appId) {
-        return responseOfGet(appDaoService.get(appId));
     }
 
     @PostMapping

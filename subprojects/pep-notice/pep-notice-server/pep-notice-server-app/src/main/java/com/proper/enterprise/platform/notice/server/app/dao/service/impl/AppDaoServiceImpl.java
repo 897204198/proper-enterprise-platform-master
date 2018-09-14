@@ -42,9 +42,8 @@ public class AppDaoServiceImpl implements AppDaoService {
 
     @Override
     public DataTrunk<App> findAll(String appKey, String appName, String describe, Boolean enable, PageRequest pageRequest) {
-        pageRequest.getSort().and(new Sort(Sort.Direction.DESC, "lastModifyTime"));
         DataTrunk<App> data = new DataTrunk<>();
-        Page<AppEntity> page = appRepository.findAll(appKey, appName, describe, pageRequest);
+        Page<AppEntity> page = appRepository.findAll(appKey, appName, describe, enable, pageRequest);
         data.setData(new ArrayList<>(BeanUtil.convert(page.getContent(), AppVO.class)));
         data.setCount(page.getTotalElements());
         return data;

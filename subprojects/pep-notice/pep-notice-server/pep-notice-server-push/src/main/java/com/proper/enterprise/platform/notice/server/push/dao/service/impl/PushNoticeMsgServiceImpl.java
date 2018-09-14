@@ -12,7 +12,7 @@ import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -80,8 +80,8 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
 
     @Override
     public DataTrunk<PushNoticeMsgVO> findPagination(String content, NoticeStatus status,
-                                                     String appKey, PushChannelEnum pushChannel, Pageable pageable) {
-        Page<PushNoticeMsgEntity> page = pushMsgJpaRepository.findPagination(content, status, appKey, pushChannel, pageable);
+                                                     String appKey, PushChannelEnum pushChannel, PageRequest pageRequest) {
+        Page<PushNoticeMsgEntity> page = pushMsgJpaRepository.findPagination(content, status, appKey, pushChannel, pageRequest);
         return convert(page);
     }
 

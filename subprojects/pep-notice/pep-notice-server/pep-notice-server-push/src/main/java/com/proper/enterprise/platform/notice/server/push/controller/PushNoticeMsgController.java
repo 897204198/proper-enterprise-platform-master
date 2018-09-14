@@ -35,7 +35,7 @@ public class PushNoticeMsgController extends BaseController {
     public ResponseEntity<DataTrunk<PushNoticeMsgVO>> get(String content, NoticeStatus status,
                                                           String appKey, PushChannelEnum pushChannel) {
         return new ResponseEntity<>(pushNoticeMsgService.findPagination(content, status, appKey, pushChannel,
-            getPageRequest(new Sort(Sort.Direction.DESC, "lastModifyTime"))), HttpStatus.OK);
+            getPageRequest(new Sort(Sort.Direction.DESC, "createTime"))), HttpStatus.OK);
     }
 
 }
