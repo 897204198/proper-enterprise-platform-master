@@ -3,55 +3,63 @@ package com.proper.enterprise.platform.template.vo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.view.BaseView;
-import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
+
+import java.util.List;
 
 public class TemplateVO extends BaseVO {
 
+    public TemplateVO(){
+
+    }
+
     public interface Detail extends BaseView {
+
+    }
+
+    public interface Details extends BaseView {
 
     }
 
     /**
      * 标识
      */
-    @JsonView(value = {Detail.class})
+    @JsonView(value = {Detail.class, Details.class})
     private String code;
 
     /**
      * 名称
      */
-    @JsonView(value = {Detail.class})
+    @JsonView(value = {Detail.class, Details.class})
     private String name;
-
-    /**
-     * 标题
-     */
-    @JsonView(value = {Detail.class})
-    private String title;
-
-    /**
-     * 正文
-     */
-    @JsonView(value = {Detail.class})
-    private String template;
 
     /**
      * 目录
      */
-    @JsonView(value = {Detail.class})
+    @JsonView(value = {Detail.class, Details.class})
     private String catalog;
-
-    /**
-     * 分类
-     */
-    @JsonView(value = {Detail.class})
-    private DataDicLiteBean type;
 
     /**
      * 解释
      */
-    @JsonView(value = {Detail.class})
+    @JsonView(value = {Detail.class, Details.class})
     private String description;
+
+    /**
+     * 模板
+     */
+    @JsonView(value = {Detail.class})
+    private TemplateDetailVO detail;
+
+    /**
+     * 模板
+     */
+    @JsonView(value = {Details.class})
+    private List<TemplateDetailVO> details;
+
+    /**
+     * 是否多文案
+     */
+    private Boolean muti;
 
     public String getCode() {
         return code;
@@ -85,31 +93,31 @@ public class TemplateVO extends BaseVO {
         this.description = description;
     }
 
+    public TemplateDetailVO getDetail() {
+        return detail;
+    }
+
+    public void setDetail(TemplateDetailVO detail) {
+        this.detail = detail;
+    }
+
+    public List<TemplateDetailVO> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<TemplateDetailVO> details) {
+        this.details = details;
+    }
+
     public String toString() {
         return "id:" + id;
     }
 
-    public String getTitle() {
-        return title;
+    public Boolean getMuti() {
+        return muti;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTemplate() {
-        return template;
-    }
-
-    public void setTemplate(String template) {
-        this.template = template;
-    }
-
-    public DataDicLiteBean getType() {
-        return type;
-    }
-
-    public void setType(DataDicLiteBean type) {
-        this.type = type;
+    public void setMuti(Boolean muti) {
+        this.muti = muti;
     }
 }

@@ -15,7 +15,7 @@ public class NoticeDocument extends BaseDocument {
     public NoticeDocument() {
     }
 
-    @Indexed
+    @Indexed(unique = true)
     private String batchId;
 
     private String title;

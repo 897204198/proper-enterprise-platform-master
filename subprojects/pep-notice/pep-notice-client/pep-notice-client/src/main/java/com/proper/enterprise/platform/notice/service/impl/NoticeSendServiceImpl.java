@@ -17,9 +17,9 @@ import com.proper.enterprise.platform.notice.service.NoticeCollector;
 import com.proper.enterprise.platform.notice.service.NoticeSetService;
 import com.proper.enterprise.platform.notice.util.NoticeAnalysisUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
-import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import com.proper.enterprise.platform.template.service.TemplateService;
+import com.proper.enterprise.platform.template.vo.TemplateDetailVO;
 import com.proper.enterprise.platform.template.vo.TemplateVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,18 +56,22 @@ public class NoticeSendServiceImpl {
     public void sendNoticeChannel(String fromUserId, Set<String> toUserIds, String code, Map<String, Object>
         templateParams, Map<String, Object> custom) {
         toUserIds = checkUserNull(toUserIds);
-        List<DataDic> noticeTypes = (List<DataDic>) DataDicUtil.findByCatalog("NOTICE_TYPE");
-        Map<String, TemplateVO> templates = templateService.getTemplatesByCodeAndTypesWithinCatalog(code,
-            getNoticeTypes(noticeTypes), templateParams);
-        String catalog = this.getCatalogFromTemplates(templates);
-        Map<String, NoticeSetDocument> noticeSetMap = noticeSetService.findMapByCatalogAndUserIds(catalog, toUserIds);
-        for (Map.Entry<String, TemplateVO> entry : templates.entrySet()) {
-            TemplateVO templateVO = entry.getValue();
-            if (templateVO == null) {
-                continue;
+        TemplateVO template = templateService.getTemplate(code, templateParams);
+        Map<String, NoticeSetDocument> noticeSetMap = noticeSetService.findMapByCatalogAndUserIds(template.getCatalog(), toUserIds);
+        List<TemplateDetailVO> details = template.getDetails();
+        if (details != null && details.size() > 0) {
+            for (TemplateDetailVO templateDetailVO : details) {
+                if (templateDetailVO == null) {
+                    continue;
+                }
+                sendNoticeChannel(fromUserId,
+                                  toUserIds,
+                                  noticeSetMap,
+                                  templateDetailVO.getTitle(),
+                                  templateDetailVO.getTemplate(),
+                                  custom,
+                                  NoticeType.valueOf(templateDetailVO.getType()));
             }
-            sendNoticeChannel(fromUserId, toUserIds, noticeSetMap, templateVO.getTitle(),
-                templateVO.getTemplate(), custom, NoticeType.valueOf(entry.getKey()));
         }
     }
 
@@ -128,29 +132,6 @@ public class NoticeSendServiceImpl {
         TargetModel targetModel = new TargetModel();
         targetModel.setId(user.getId());
         return targetModel;
-    }
-
-    private List<DataDicLiteBean> getNoticeTypes(List<DataDic> noticeTypes) {
-        List<DataDicLiteBean> result = new ArrayList<>();
-        for (DataDic dataDic : noticeTypes) {
-            DataDicLiteBean dataDicLiteBean = new DataDicLiteBean();
-            dataDicLiteBean.setCode(dataDic.getCode());
-            dataDicLiteBean.setCatalog(dataDic.getCatalog());
-            result.add(dataDicLiteBean);
-        }
-        return result;
-    }
-
-    private String getCatalogFromTemplates(Map<String, TemplateVO> templates) {
-        String catalog = null;
-        for (Map.Entry<String, TemplateVO> entry : templates.entrySet()) {
-            TemplateVO templateVO = entry.getValue();
-            if (templateVO != null) {
-                catalog = templateVO.getCatalog();
-                break;
-            }
-        }
-        return catalog;
     }
 
     private Set<String> checkUserNull(Set<String> userIds) {

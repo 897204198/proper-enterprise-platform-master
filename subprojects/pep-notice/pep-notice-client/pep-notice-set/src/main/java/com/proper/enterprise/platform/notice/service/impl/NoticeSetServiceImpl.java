@@ -6,10 +6,7 @@ import com.proper.enterprise.platform.notice.service.NoticeSetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class NoticeSetServiceImpl implements NoticeSetService {
@@ -29,9 +26,11 @@ public class NoticeSetServiceImpl implements NoticeSetService {
             }
         }
         NoticeSetDocument defaultSet = getDefaultByCatalog(catalog);
+        Set<String> calSet = new HashSet<>();
         Set<String> sameUsers = result.keySet();
-        userIds.removeAll(sameUsers);
-        for (String userId : userIds) {
+        calSet.addAll(userIds);
+        calSet.removeAll(sameUsers);
+        for (String userId : calSet) {
             result.put(userId, defaultSet);
         }
         return result;
