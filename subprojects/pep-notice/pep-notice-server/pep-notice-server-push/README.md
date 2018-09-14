@@ -1,12 +1,13 @@
 pep-notice-server-push
 ======================
 
-config
-注册配置
+config  
+注册配置  
 /notice/server/config/PUSH?accessToken=###&pushChannel=###(IOS,HUAWEI,XIAOMI)    
 POST  
 requestBody  
 IOS： {"pushPackage":"###","certificateId":"###","certPassword":"*###*"}  
+HUAWEI: {"pushPackage":"###","appId":"###","appSecret":"*###*"}  
 PUT  同上  
 GET  /notice/server/config/PUSH?accessToken=###&pushChannel=###(IOS,HUAWEI,XIAOMI)  
 DELETE  /notice/server/config/PUSH?accessToken=###&pushChannel=###(IOS,HUAWEI,XIAOMI)  
@@ -24,5 +25,6 @@ _proper_pushtype 是否透传
 
 IOS特殊key:无      
 小米特殊key:      
-华为特殊key:      
-Proper Enterprise Platform
+华为特殊key:  
+customsMap
+push_type 消息推送类型(chat/video/other)  
