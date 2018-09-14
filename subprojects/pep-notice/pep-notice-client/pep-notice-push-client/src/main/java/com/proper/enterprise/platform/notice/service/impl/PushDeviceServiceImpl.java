@@ -3,9 +3,9 @@ package com.proper.enterprise.platform.notice.service.impl;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity;
 
+import com.proper.enterprise.platform.notice.enums.PushDeviceType;
+import com.proper.enterprise.platform.notice.enums.PushMode;
 import com.proper.enterprise.platform.notice.repository.PushDeviceRepository;
-import com.proper.enterprise.platform.notice.server.api.enums.PushDeviceType;
-import com.proper.enterprise.platform.notice.server.api.enums.PushMode;
 import com.proper.enterprise.platform.notice.service.PushDeviceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ public class PushDeviceServiceImpl implements PushDeviceService {
      * @param deviceOtherInfo 设备的其它信息
      */
     private void bindDevice(String userid, String deviceid, String pushToken, String appkey, PushDeviceType deviceType,
-        PushMode pushMode, String deviceOtherInfo) {
+                            PushMode pushMode, String deviceOtherInfo) {
         try {
             unbindDevice(userid);
         } catch (Exception e) {

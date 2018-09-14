@@ -9,5 +9,7 @@ class PushConfiguratorFactoryTest extends AbstractTest{
     @Test
     public void test() {
         assert null != PushConfiguratorFactory.product(PushChannelEnum.IOS)
+        assert null != PushConfiguratorFactory.product(PushChannelEnum.HUAWEI)
+        assert null != PushConfiguratorFactory.product(PushChannelEnum.XIAOMI)
     }
 }
