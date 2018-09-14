@@ -5,16 +5,16 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class AppVersionVO {
 
-    @ApiModelProperty("版本号")
+    @ApiModelProperty("‍版本号")
     private String version;
 
-    @ApiModelProperty("android下载地址")
+    @ApiModelProperty("‍android下载地址")
     private String androidURL;
 
-    @ApiModelProperty("ios下载地址")
+    @ApiModelProperty("‍ios下载地址")
     private String iosURL;
 
-    @ApiModelProperty("版本说明")
+    @ApiModelProperty("‍版本说明")
     private String note;
 
     public String getVersion() {
