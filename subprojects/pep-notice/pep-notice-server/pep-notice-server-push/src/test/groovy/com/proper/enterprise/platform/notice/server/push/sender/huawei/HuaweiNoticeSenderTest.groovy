@@ -99,6 +99,6 @@ class HuaweiNoticeSenderTest extends AbstractTest {
 
         notice.setTargetExtMsg('pushChannel', 'HUAWEI')
 
-        assert NoticeStatus.SUCCESS == pushNoticeSender.getStatus(notice)
+        assert NoticeStatus.SUCCESS == pushNoticeSender.getStatus(notice).getNoticeStatus()
     }
 }

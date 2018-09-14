@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.client.xiaomi.XiaomiNoticeClientManagerApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi;
@@ -63,6 +64,7 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
         Result result = null;
         try {
             result = sender.send(message, notice.getTargetTo(), 1);
+            super.savePushMsg(result.getMessageId(), notice, PushChannelEnum.XIAOMI);
         } catch (Exception e) {
             LOGGER.error("error xiaomi push message exception:{}", e);
         }
@@ -122,12 +124,12 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
 
     @Override
     public void afterSend(ReadOnlyNotice notice) {
-        super.savePushMsg(notice, PushChannelEnum.XIAOMI);
+        super.updatePushMsg(notice, PushChannelEnum.XIAOMI);
     }
 
     @Override
-    public NoticeStatus getStatus(ReadOnlyNotice notice) throws NoticeException {
-        return NoticeStatus.SUCCESS;
+    public BusinessNoticeResult getStatus(ReadOnlyNotice notice) throws NoticeException {
+        return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }
 
     /**

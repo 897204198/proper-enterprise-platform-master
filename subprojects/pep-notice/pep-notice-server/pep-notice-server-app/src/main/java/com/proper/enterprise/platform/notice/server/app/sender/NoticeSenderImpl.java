@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender;
 import com.proper.enterprise.platform.notice.server.app.convert.RequestConvert;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
@@ -122,19 +123,28 @@ public class NoticeSenderImpl implements NoticeSender {
                 return;
             }
             NoticeSendHandler noticeSendHandler = NoticeSenderFactory.product(notice.getNoticeType());
-            NoticeStatus noticeStatus = noticeSendHandler.getStatus(notice);
-            if (NoticeStatus.SUCCESS == noticeStatus) {
-                noticeDaoService.updateStatus(notice.getId(), NoticeStatus.SUCCESS);
-                return;
+            BusinessNoticeResult businessNoticeResult = noticeSendHandler.getStatus(notice);
+            switch (businessNoticeResult.getNoticeStatus()) {
+                case SUCCESS:
+                    noticeDaoService.updateStatus(notice.getId(), NoticeStatus.SUCCESS);
+                    return;
+                case PENDING:
+                    return;
+                case FAIL:
+                    noticeDaoService.updateToFail(notice.getId(), businessNoticeResult.getMessage());
+                    return;
+                case RETRY:
+                    //超过最大重试次数 记异常不再重试
+                    if (notice.getRetryCount() >= maxRetryCount) {
+                        noticeDaoService.updateToFail(notice.getId(), "Max retry");
+                        return;
+                    }
+                    //未超过最大重试次数 重试
+                    noticeDaoService.addRetryCount(notice.getId());
+                    noticeDaoService.updateStatus(notice.getId(), NoticeStatus.RETRY);
+                default:
+                    noticeDaoService.updateToFail(notice.getId(), "business status is not support");
             }
-            //超过最大重试次数 记异常不再重试
-            if (notice.getRetryCount() >= maxRetryCount) {
-                noticeDaoService.updateToFail(notice.getId(), "Max retry");
-                return;
-            }
-            //未超过最大重试次数 重试
-            noticeDaoService.addRetryCount(notice.getId());
-            noticeDaoService.updateStatus(notice.getId(), NoticeStatus.RETRY);
         } catch (Exception e) {
             String stackTrace = getStackTrace(e);
             Notice updateNoticeVO = noticeDaoService.updateToFail(notice.getId(),

@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.core.utils.http.HttpClient;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.proper.enterprise.platform.notice.server.sms.configurator.SMSConfigurator;
@@ -97,7 +98,7 @@ public class SMSNoticeSendHandler implements NoticeSendHandler {
     }
 
     @Override
-    public NoticeStatus getStatus(ReadOnlyNotice notice) {
-        return NoticeStatus.SUCCESS;
+    public BusinessNoticeResult getStatus(ReadOnlyNotice notice) {
+        return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }
 }

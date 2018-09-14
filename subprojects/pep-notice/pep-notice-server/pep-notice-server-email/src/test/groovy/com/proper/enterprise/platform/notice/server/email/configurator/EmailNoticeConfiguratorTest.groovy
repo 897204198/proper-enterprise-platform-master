@@ -14,10 +14,10 @@ class EmailNoticeConfiguratorTest extends AbstractTest {
     void testAll() {
         addData()
         updateData()
-        assert false == emailNoticeConfigurator.get('appkey').isEmpty()
-        assert false == emailNoticeConfigurator.get('icmp').isEmpty()
+        assert false == emailNoticeConfigurator.get('appkey',null).isEmpty()
+        assert false == emailNoticeConfigurator.get('icmp',null).isEmpty()
         deleteData('icmp')
-        assert null == emailNoticeConfigurator.get('icmp')
+        assert null == emailNoticeConfigurator.get('icmp',null)
     }
 
     void addData() {
@@ -32,7 +32,7 @@ class EmailNoticeConfiguratorTest extends AbstractTest {
         config.put('mailServerUseSSL', true)
         config.put('mailServerDefaultFrom', 'localhost@localhost')
 
-        Map res = emailNoticeConfigurator.post('appkey', config)
+        Map res = emailNoticeConfigurator.post('appkey', config,null)
         assert res.get('appKey') == 'appkey'
         assert res.get('mailServerHost') == 'localhost'
         assert res.get('mailServerPort') == 25
@@ -49,11 +49,11 @@ class EmailNoticeConfiguratorTest extends AbstractTest {
         config.put('mailServerUseTLS', true)
         config.put('mailServerDefaultFrom', 'localhost@localhost')
 
-        emailNoticeConfigurator.post('icmp', config)
+        emailNoticeConfigurator.post('icmp', config,null)
     }
 
     void deleteData(String appKey) {
-        emailNoticeConfigurator.delete(appKey)
+        emailNoticeConfigurator.delete(appKey,null)
     }
 
     void updateData() {
@@ -65,7 +65,7 @@ class EmailNoticeConfiguratorTest extends AbstractTest {
         config.put('mailServerUseSSL', true)
         config.put('mailServerDefaultFrom', 'localhost@localhost')
 
-        Map res = emailNoticeConfigurator.put('appkey', config)
+        Map res = emailNoticeConfigurator.put('appkey', config,null)
         assert res.get('mailServerHost') == 'localhost2'
     }
 

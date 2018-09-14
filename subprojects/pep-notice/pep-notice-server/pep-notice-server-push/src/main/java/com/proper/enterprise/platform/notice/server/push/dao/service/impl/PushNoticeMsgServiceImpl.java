@@ -29,11 +29,33 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
     }
 
     @Override
-    public void savePushMsg(ReadOnlyNotice readOnlyNotice, PushChannelEnum pushChannel) {
+    public void updatePushMsg(ReadOnlyNotice readOnlyNotice, PushChannelEnum pushChannel) {
+        if (null == readOnlyNotice.getId()) {
+            return;
+        }
+        PushNoticeMsgEntity pushNoticeMsgEntity = pushMsgJpaRepository.findPushNoticeMsgEntitiesByNoticeId(readOnlyNotice.getId());
+        if (null == pushNoticeMsgEntity) {
+            return;
+        }
+        pushNoticeMsgEntity.setAppKey(readOnlyNotice.getAppKey());
+        pushNoticeMsgEntity.setContent(readOnlyNotice.getContent());
+        pushNoticeMsgEntity.setSendCount((readOnlyNotice.getRetryCount() == null ? 0 : readOnlyNotice.getRetryCount()) + 1);
+        pushNoticeMsgEntity.setPushChannel(pushChannel);
+        pushNoticeMsgEntity.setStatus(readOnlyNotice.getStatus());
+        pushNoticeMsgEntity.setTitle(readOnlyNotice.getTitle());
+        pushNoticeMsgEntity.setTargetTo(readOnlyNotice.getTargetTo());
+        pushNoticeMsgEntity.setNoticeId(readOnlyNotice.getId());
+        pushNoticeMsgEntity.setBatchId(readOnlyNotice.getBatchId());
+        pushNoticeMsgEntity.setErrorMsg(readOnlyNotice.getErrorMsg());
+        pushMsgJpaRepository.updateForSelective(pushNoticeMsgEntity);
+    }
+
+    @Override
+    public void savePushMsg(String messageId, ReadOnlyNotice readOnlyNotice, PushChannelEnum pushChannel) {
         PushNoticeMsgEntity pushNoticeMsg = new PushNoticeMsgEntity();
         pushNoticeMsg.setAppKey(readOnlyNotice.getAppKey());
         pushNoticeMsg.setContent(readOnlyNotice.getContent());
-        pushNoticeMsg.setSendCount(readOnlyNotice.getRetryCount() + 1);
+        pushNoticeMsg.setSendCount((readOnlyNotice.getRetryCount() == null ? 0 : readOnlyNotice.getRetryCount()) + 1);
         pushNoticeMsg.setPushChannel(pushChannel);
         pushNoticeMsg.setStatus(readOnlyNotice.getStatus());
         pushNoticeMsg.setTitle(readOnlyNotice.getTitle());
@@ -41,6 +63,7 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
         pushNoticeMsg.setNoticeId(readOnlyNotice.getId());
         pushNoticeMsg.setBatchId(readOnlyNotice.getBatchId());
         pushNoticeMsg.setErrorMsg(readOnlyNotice.getErrorMsg());
+        pushNoticeMsg.setMessageId(messageId);
         switch (pushChannel) {
             case IOS:
                 pushNoticeMsg.setDeviceType(PushDeviceTypeEnum.IOS);

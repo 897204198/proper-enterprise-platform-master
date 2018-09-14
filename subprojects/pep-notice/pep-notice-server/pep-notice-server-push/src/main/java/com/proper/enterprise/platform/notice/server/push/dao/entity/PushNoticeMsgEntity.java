@@ -80,6 +80,12 @@ public class PushNoticeMsgEntity extends BaseEntity {
     @Column(length = 2048)
     private String errorMsg;
 
+    /**
+     * 第三方唯一标识
+     * 调用第三方接口返回的唯一标识 用于追踪消息状态
+     */
+    private String messageId;
+
     public String getAppKey() {
         return appKey;
     }
@@ -166,6 +172,14 @@ public class PushNoticeMsgEntity extends BaseEntity {
 
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     @Override

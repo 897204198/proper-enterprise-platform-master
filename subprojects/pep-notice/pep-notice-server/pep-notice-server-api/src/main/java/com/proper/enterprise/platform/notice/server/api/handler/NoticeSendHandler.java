@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.notice.server.api.handler;
 
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
-import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import org.springframework.scheduling.annotation.Async;
 
@@ -42,8 +42,8 @@ public interface NoticeSendHandler {
      * 根据消息对象获取消息对象的发送状态
      *
      * @param notice 消息对象
-     * @return 消息发送状态
+     * @return BusinessNoticeResult 业务返回模型
      * @throws NoticeException 消息异常  业务获取状态失败后抛出
      */
-    NoticeStatus getStatus(ReadOnlyNotice notice) throws NoticeException;
+    BusinessNoticeResult getStatus(ReadOnlyNotice notice) throws NoticeException;
 }

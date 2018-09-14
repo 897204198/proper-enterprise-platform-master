@@ -30,4 +30,12 @@ public interface PushNoticeMsgJpaRepository extends BaseJpaRepository<PushNotice
                                              @Param("appKey") String appKey,
                                              @Param("pushChannel") PushChannelEnum pushChannel,
                                              Pageable pageable);
+
+    /**
+     * 根据消息id查询推送记录
+     *
+     * @param noticeId 消息id
+     * @return 推送记录
+     */
+    PushNoticeMsgEntity findPushNoticeMsgEntitiesByNoticeId(String noticeId);
 }

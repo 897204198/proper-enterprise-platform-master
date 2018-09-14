@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.client.huawei.HuaweiNoticeClient;
 import com.proper.enterprise.platform.notice.server.push.client.huawei.HuaweiNoticeClientManagerApi;
@@ -30,6 +31,7 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
             Map<String, Object> noticeExtMsg = notice.getNoticeExtMsgMap();
             Map customs = (Map) noticeExtMsg.get(CUSTOM_PROPERTY_KEY);
             huaweiNoticeClient.send(1, notice, JSONUtil.toJSONIgnoreException(customs));
+            super.savePushMsg(null, notice, PushChannelEnum.HUAWEI);
             return;
         }
         JSONObject body = new JSONObject();
@@ -47,6 +49,7 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
             //应用角标数
             data.put("_proper_badge", badgeNumber);
             huaweiNoticeClient.send(1, notice, JSONUtil.toJSONIgnoreException(data));
+            super.savePushMsg(null, notice, PushChannelEnum.HUAWEI);
         }
     }
 
@@ -57,12 +60,12 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
 
     @Override
     public void afterSend(ReadOnlyNotice notice) {
-        super.savePushMsg(notice, PushChannelEnum.HUAWEI);
+        super.updatePushMsg(notice, PushChannelEnum.HUAWEI);
     }
 
     @Override
-    public NoticeStatus getStatus(ReadOnlyNotice notice) {
-        return NoticeStatus.SUCCESS;
+    public BusinessNoticeResult getStatus(ReadOnlyNotice notice) {
+        return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }
 
 }

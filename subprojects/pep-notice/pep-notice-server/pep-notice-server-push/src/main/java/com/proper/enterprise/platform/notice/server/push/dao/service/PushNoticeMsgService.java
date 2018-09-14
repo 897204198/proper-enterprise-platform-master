@@ -10,12 +10,21 @@ import org.springframework.data.domain.Pageable;
 public interface PushNoticeMsgService {
 
     /**
-     * 根据消息服务端框架回调 同步插入推送记录
+     * 将消息同步至推送
      *
      * @param readOnlyNotice 只读消息
      * @param pushChannel    推送渠道
      */
-    void savePushMsg(ReadOnlyNotice readOnlyNotice, PushChannelEnum pushChannel);
+    void updatePushMsg(ReadOnlyNotice readOnlyNotice, PushChannelEnum pushChannel);
+
+    /**
+     * 将消息同步至推送
+     *
+     * @param messageId      第三方消息唯一标识
+     * @param readOnlyNotice 只读消息
+     * @param pushChannel    推送渠道
+     */
+    void savePushMsg(String messageId, ReadOnlyNotice readOnlyNotice, PushChannelEnum pushChannel);
 
     /**
      * 分页查询推送消息

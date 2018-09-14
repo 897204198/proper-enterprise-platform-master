@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.client.ios.IOSNoticeClientManagerApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi;
@@ -16,6 +17,8 @@ import com.turo.pushy.apns.util.ApnsPayloadBuilder;
 import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 import com.turo.pushy.apns.util.TokenUtil;
 import io.netty.util.concurrent.Future;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 @Service("iosNoticeSender")
 public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(IOSNoticeSender.class);
 
     private IOSNoticeClientManagerApi iosNoticeClientManager;
 
@@ -62,10 +66,12 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
         try {
             final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse = sendNotificationFuture.get();
             if (pushNotificationResponse.isAccepted()) {
+                super.savePushMsg(pushNotificationResponse.getApnsId().toString(), notice, PushChannelEnum.IOS);
                 return;
             }
             throw new NoticeException(pushNotificationResponse.getRejectionReason());
         } catch (Exception e) {
+            LOGGER.error("ios get response error", e);
             throw new NoticeException("ios get response error", e);
         }
     }
@@ -80,11 +86,11 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
 
     @Override
     public void afterSend(ReadOnlyNotice notice) {
-        super.savePushMsg(notice, PushChannelEnum.IOS);
+        super.updatePushMsg(notice, PushChannelEnum.IOS);
     }
 
     @Override
-    public NoticeStatus getStatus(ReadOnlyNotice notice) throws NoticeException {
-        return NoticeStatus.SUCCESS;
+    public BusinessNoticeResult getStatus(ReadOnlyNotice notice) throws NoticeException {
+        return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }
 }

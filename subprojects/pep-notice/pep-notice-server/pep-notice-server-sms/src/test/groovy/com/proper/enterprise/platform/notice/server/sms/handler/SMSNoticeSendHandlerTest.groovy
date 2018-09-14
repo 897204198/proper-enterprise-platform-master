@@ -46,6 +46,6 @@ class SMSNoticeSendHandlerTest extends AbstractTest {
         noticeOperation.setTargetTo('18502410459')
         noticeOperation.setContent("测试短信 - ${DateUtil.timestamp}")
         smsNoticeSender.afterSend(noticeOperation)
-        assert NoticeStatus.SUCCESS == smsNoticeSender.getStatus(noticeOperation)
+        assert NoticeStatus.SUCCESS == smsNoticeSender.getStatus(noticeOperation).getNoticeStatus()
     }
 }

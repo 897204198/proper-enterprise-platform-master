@@ -29,7 +29,7 @@ class EmailNoticeSendHandlerTest extends AbstractTest {
             config.put('mailServerUseSSL', true)
             config.put('mailServerDefaultFrom', 'test@test.cn')
 
-            emailNoticeConfigurator.post('pep', config)
+            emailNoticeConfigurator.post('pep', config,null)
 
             config.put('mailServerHost', 'smtp.exmail.qq.com')
             config.put('mailServerPort', 465)
@@ -38,7 +38,7 @@ class EmailNoticeSendHandlerTest extends AbstractTest {
             config.put('mailServerUseSSL', true)
             config.put('mailServerDefaultFrom', '测试邮箱<test2@test.cn>')
 
-            emailNoticeConfigurator.post('icmp', config)
+            emailNoticeConfigurator.post('icmp', config,null)
 
             //测试邮件全参数配置
             Notice noticeOperation2 = new MockNotice()

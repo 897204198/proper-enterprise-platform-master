@@ -46,7 +46,7 @@ class XiaomiPushTest extends AbstractTest {
     @Test
     void testFailTracer() {
         Tracer tracer = new Tracer(APPSECRET)
-        def string = tracer.getMessageStatus(" ", 1)
+        def string = tracer.getMessageStatus("qweqew", 1)
         Map<String, Object> map = JSONUtil.parse(string, Map.class)
         assert "ok" == map.get("result")
     }
