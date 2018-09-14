@@ -123,8 +123,7 @@ public class HuaweiPushApp extends BasePushApp {
             refreshAccessTokenAndExpiredTime();
         }
         //PushManager.requestToken为客户端申请token的方法，可以调用多次以防止申请token失败
-        //PushToken不支持手动编写，需使用客户端的onToken方法获取
-        //目标设备Token
+        //PushToken不支持手动编写，需使用客户端的onToken方法获取目标设备Token
         JSONArray deviceTokens = new JSONArray();
         deviceTokens.add(token);
         PushType pushType = PushType.other;
@@ -175,12 +174,15 @@ public class HuaweiPushApp extends BasePushApp {
         JSONObject extJson = new JSONObject();
         //设置消息标签，如果带了这个标签，会在回执中推送给CP用于检测某种类型消息的到达率和状态
         extJson.put("biTag", "Trump");
-        // TODO 自定义推送消息在通知栏的图标可在 extJson 中加入 icon 属性，value 为一个公网可以访问的URL
-        hps.put("ext", extJson);
 
+        if (ext != null) {
+            JSONArray customize = new JSONArray();
+            customize.add(ext);
+            extJson.put("customize", customize);
+        }
+        hps.put("ext", extJson);
         JSONObject payload = new JSONObject();
         payload.put("hps", hps);
-
         String format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(new Date(System.currentTimeMillis() + 3600 * 1000));
         String postBody = MessageFormat.format(
             "access_token={0}&nsp_svc={1}&nsp_ts={2}&device_token_list={3}&payload={4}&expire_time={5}",
