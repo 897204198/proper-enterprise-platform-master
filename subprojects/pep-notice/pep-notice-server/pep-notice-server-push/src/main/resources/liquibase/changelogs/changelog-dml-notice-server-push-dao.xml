@@ -57,7 +57,7 @@
             <column name="COLUMN_ALIAS" value="content"/>
             <column name="COLUMN_DESC" value="推送状态"/>
             <column name="COLUMN_TYPE" value="string"/>
-            <column name="MODULE_NAME" value="servernoticepush"/>
+            <column name="MODULE_NAME" value="noticeserverpush"/>
             <column name="SEARCH_COLUMN" value="content"/>
             <column name="TABLE_NAME" value="pep_push_notice_msg"/>
             <column name="URL" value="/notice/server/push"/>

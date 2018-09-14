@@ -38,6 +38,9 @@ public class EmailNoticeConfigurator implements EmailNoticeExtConfigurator {
     @Override
     public Map post(String appKey, Map config, HttpServletRequest request) {
         EmailDocument emailDocument = BeanUtil.convert(config, EmailDocument.class);
+        if (null != emailRepository.findByAppKey(appKey)) {
+            throw new ErrMsgException("The current configuration of the appKey already exists");
+        }
         emailDocument.setAppKey(appKey);
         emailDocument = emailRepository.insert(emailDocument);
         JavaMailSenderImpl javaMailSender = initJavaMailSender(emailDocument);

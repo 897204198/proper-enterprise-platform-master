@@ -1,8 +1,30 @@
 package com.proper.enterprise.platform.notice.server.api.service;
 
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.notice.server.api.model.App;
+import org.springframework.data.domain.PageRequest;
 
 public interface AppDaoService {
+
+    /**
+     * 根据Id获取应用
+     *
+     * @param appId 应用Id
+     * @return 应用
+     */
+    App get(String appId);
+
+    /**
+     * 分页查询app
+     *
+     * @param appKey      应用唯一标识
+     * @param appName     应用名称
+     * @param describe    应用描述
+     * @param enable      启用停用
+     * @param pageRequest 分页参数
+     * @return 分页对象
+     */
+    DataTrunk<App> findAll(String appKey, String appName, String describe, Boolean enable, PageRequest pageRequest);
 
     /**
      * 保存应用
@@ -13,37 +35,34 @@ public interface AppDaoService {
     App save(App app);
 
     /**
-     * 刷新应用token
+     * 更新app
      *
-     * @param appKey 应用唯一标识
-     * @return 应用token
+     * @param app 应用
+     * @return 更新后的app
      */
-    App updateAppToken(String appKey);
+    App updateApp(App app);
 
     /**
-     * 应用起停用
+     * 删除App
      *
-     * @param appKey 应用唯一标识
+     * @param appId 应用
+     * @return true删除 false不存在
+     */
+    boolean delete(String appId);
+
+    /**
+     * 批量启用停用
+     *
+     * @param appIds appId集合 逗号分隔
      * @param enable true启用 false停用
-     * @return 应用token
      */
-    App updateAppStatus(String appKey, boolean enable);
+    void updateAppsEnable(String appIds, boolean enable);
 
     /**
-     * 修改应用名称
+     * app是否为启用状态 且app未被删除
      *
-     * @param appKey  应用唯一标识
-     * @param appName 应用名称
-     * @return 应用token
+     * @param appKey 应用唯一标识
+     * @return true false
      */
-    App updateAppName(String appKey, String appName);
-
-    /**
-     * 修改应用描述
-     *
-     * @param appKey   应用唯一标识
-     * @param describe 应用描述
-     * @return 应用token
-     */
-    App updateAppDescribe(String appKey, String describe);
+    boolean isEnable(String appKey);
 }

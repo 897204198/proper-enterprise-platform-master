@@ -45,10 +45,10 @@ public class MockNoticeSender implements NoticeSendHandler {
     @Override
     public BusinessNoticeResult getStatus(ReadOnlyNotice notice) {
         if (MOCK_RETRY_STATUS.equals(notice.getAppKey())) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL, "error");
+            return new BusinessNoticeResult(NoticeStatus.RETRY);
         }
         if (MOCK_ERR_EXCEPTION.equals(notice.getAppKey())) {
-            throw new ErrMsgException(MOCK_ERR_EXCEPTION);
+            return new BusinessNoticeResult(NoticeStatus.FAIL, "error");
         }
         return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }

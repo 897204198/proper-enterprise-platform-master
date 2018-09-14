@@ -91,7 +91,7 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
         List<PushNoticeMsgVO> list = new ArrayList<>();
         for (PushNoticeMsgEntity pushNoticeMsgEntity : page.getContent()) {
             PushNoticeMsgVO pushNoticeMsgVO = BeanUtil.convert(pushNoticeMsgEntity, PushNoticeMsgVO.class);
-            pushNoticeMsgVO.setSendDate(pushNoticeMsgEntity.getLastModifyTime());
+            pushNoticeMsgVO.setSendDate(pushNoticeMsgEntity.getCreateTime());
             list.add(pushNoticeMsgVO);
         }
         dataTrunk.setData(list);

@@ -1,34 +1,23 @@
-package com.proper.enterprise.platform.notice.server.app.dao.entity;
+package com.proper.enterprise.platform.notice.server.api.vo;
 
-import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
-import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.notice.server.api.model.App;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "PEP_NOTICE_APP")
-public class AppEntity extends BaseEntity implements App {
-
-    public AppEntity() {
-    }
+public class AppVO extends BaseVO implements App {
 
     /**
      * 应用名称
      */
-    @Column(nullable = false)
     private String appName;
 
     /**
      * 应用唯一标识
      */
-    @Column(nullable = false, unique = true)
     private String appKey;
 
     /**
      * 应用token
      */
-    @Column(nullable = false, unique = true)
     private String appToken;
 
     /**
@@ -40,11 +29,6 @@ public class AppEntity extends BaseEntity implements App {
      * app颜色
      */
     private String color;
-
-    @Override
-    public String toString() {
-        return JSONUtil.toJSONIgnoreException(this);
-    }
 
     @Override
     public String getAppName() {

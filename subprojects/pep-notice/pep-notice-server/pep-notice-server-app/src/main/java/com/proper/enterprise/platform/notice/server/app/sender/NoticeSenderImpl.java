@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender;
+import com.proper.enterprise.platform.notice.server.api.util.AppUtil;
 import com.proper.enterprise.platform.notice.server.app.convert.RequestConvert;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
@@ -15,7 +16,7 @@ import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.api.model.Notice;
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
 import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService;
-import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO;
+import com.proper.enterprise.platform.notice.server.api.vo.NoticeVO;
 import com.proper.enterprise.platform.notice.server.api.factory.NoticeSenderFactory;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
@@ -46,6 +47,10 @@ public class NoticeSenderImpl implements NoticeSender {
 
     @Override
     public List<Notice> beforeSend(String appKey, NoticeRequest noticeRequest) throws NoticeException {
+        //已禁用或已删除的app不发送
+        if (!AppUtil.isEnable(appKey)) {
+            throw new ErrMsgException(appKey + " is disabled");
+        }
         List<Notice> notices = RequestConvert.convert(noticeRequest);
         NoticeSendHandler noticeSendHandler = NoticeSenderFactory.product(noticeRequest.getNoticeType());
         for (Notice notice : notices) {
@@ -142,6 +147,7 @@ public class NoticeSenderImpl implements NoticeSender {
                     //未超过最大重试次数 重试
                     noticeDaoService.addRetryCount(notice.getId());
                     noticeDaoService.updateStatus(notice.getId(), NoticeStatus.RETRY);
+                    return;
                 default:
                     noticeDaoService.updateToFail(notice.getId(), "business status is not support");
             }

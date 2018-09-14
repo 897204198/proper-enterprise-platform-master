@@ -2,16 +2,25 @@ package com.proper.enterprise.platform.notice.server.app.dao.service.impl;
 
 import com.proper.enterprise.platform.api.auth.model.AccessToken;
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.model.App;
 import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
 import com.proper.enterprise.platform.notice.server.app.dao.entity.AppEntity;
 import com.proper.enterprise.platform.notice.server.app.dao.repository.AppRepository;
+import com.proper.enterprise.platform.notice.server.api.vo.AppVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class AppDaoServiceImpl implements AppDaoService {
@@ -27,59 +36,98 @@ public class AppDaoServiceImpl implements AppDaoService {
     }
 
     @Override
+    public App get(String appId) {
+        return BeanUtil.convert(appRepository.findOne(appId), AppVO.class);
+    }
+
+    @Override
+    public DataTrunk<App> findAll(String appKey, String appName, String describe, Boolean enable, PageRequest pageRequest) {
+        pageRequest.getSort().and(new Sort(Sort.Direction.DESC, "lastModifyTime"));
+        DataTrunk<App> data = new DataTrunk<>();
+        Page<AppEntity> page = appRepository.findAll(appKey, appName, describe, pageRequest);
+        data.setData(new ArrayList<>(BeanUtil.convert(page.getContent(), AppVO.class)));
+        data.setCount(page.getTotalElements());
+        return data;
+    }
+
+
+    @Override
     public App save(App app) {
-        return appRepository.save(BeanUtil.convert(app, AppEntity.class));
+        if (null == app.getEnable()) {
+            app.setEnable(true);
+        }
+        accessTokenService.saveOrUpdate(buildToken(app.getAppKey(), app.getAppToken()));
+        return BeanUtil.convert(appRepository.save(BeanUtil.convert(app, AppEntity.class)), AppVO.class);
     }
 
     @Override
-    public App updateAppToken(String appKey) {
-        AppEntity appEntity = appRepository.findByAppKey(appKey);
-        accessTokenService.deleteByToken(appEntity.getAppToken());
-        AccessToken accessToken = accessTokenService.saveOrUpdate(buildToken(appKey));
-        appEntity.setAppToken(accessToken.getToken());
-        return appRepository.updateForSelective(appEntity);
+    public App updateApp(App app) {
+        App oldApp = appRepository.findOne(app.getId());
+        if (!oldApp.getAppKey().equals(app.getAppKey())) {
+            throw new ErrMsgException("appKey can't change");
+        }
+        if (!oldApp.getAppToken().equals(app.getAppToken())) {
+            accessTokenService.deleteByToken(oldApp.getAppToken());
+            accessTokenService.saveOrUpdate(buildToken(app.getAppKey(), app.getAppToken()));
+        }
+        return BeanUtil.convert(appRepository.updateForSelective(BeanUtil.convert(app, AppEntity.class)), AppVO.class);
     }
 
     @Override
-    public App updateAppStatus(String appKey, boolean enable) {
-        AppEntity appEntity = appRepository.findByAppKey(appKey);
-        appEntity.setEnable(enable);
-        return appRepository.updateForSelective(appEntity);
+    public boolean delete(String appId) {
+        App app = appRepository.findOne(appId);
+        if (null == app) {
+            return false;
+        }
+        accessTokenService.deleteByToken(app.getAppToken());
+        return appRepository.deleteById(appId);
     }
 
     @Override
-    public App updateAppName(String appKey, String appName) {
-        AppEntity appEntity = appRepository.findByAppKey(appKey);
-        appEntity.setAppName(appName);
-        return appRepository.updateForSelective(appEntity);
+    public void updateAppsEnable(String appIds, boolean enable) {
+        if (StringUtil.isEmpty(appIds)) {
+            return;
+        }
+        String[] ids = appIds.split(",");
+        List<AppEntity> apps = appRepository.findAll(Arrays.asList(ids));
+        for (AppEntity appEntity : apps) {
+            appEntity.setEnable(enable);
+            appRepository.updateForSelective(appEntity);
+        }
     }
 
     @Override
-    public App updateAppDescribe(String appKey, String describe) {
+    public boolean isEnable(String appKey) {
+        if (StringUtil.isEmpty(appKey)) {
+            return false;
+        }
         AppEntity appEntity = appRepository.findByAppKey(appKey);
-        appEntity.setDescribe(describe);
-        return appRepository.updateForSelective(appEntity);
+        if (null == appEntity) {
+            return false;
+        }
+        return appEntity.getEnable();
     }
 
     /**
      * 根据appKey 构造token
      *
      * @param appKey 应用唯一标识
+     * @param token  token
      * @return token
      */
-    private AppToken buildToken(String appKey) {
+    private AppToken buildToken(String appKey, String token) {
         AppToken appToken = new AppToken();
         appToken.setUserId(appKey);
         appToken.setName(appKey);
         appToken.setResourcesDescription(appKey + "token");
-        appToken.setToken(UUID.randomUUID().toString());
+        appToken.setToken(token);
         return appToken;
     }
 
     /**
      * token模型
      */
-    public class AppToken extends BaseVO implements AccessToken {
+    public static class AppToken extends BaseVO implements AccessToken {
         private String userId;
         private String name;
         private String token;

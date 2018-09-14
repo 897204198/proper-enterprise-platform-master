@@ -23,6 +23,9 @@ public class SMSNoticeConfigurator implements SMSConfigurator {
 
     @Override
     public Map post(String appKey, Map config, HttpServletRequest request) {
+        if (null != smsRepository.findByAppKey(appKey)) {
+            throw new ErrMsgException("The current configuration of the appKey already exists");
+        }
         SMSDocument smsDocument = BeanUtil.convert(config, SMSDocument.class);
         smsDocument.setAppKey(appKey);
         return JSONUtil.parseIgnoreException(smsRepository.insert(smsDocument).toString(), Map.class);

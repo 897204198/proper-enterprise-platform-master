@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.notice.server.api.model;
 
-public interface App {
+import com.proper.enterprise.platform.core.api.IBase;
+
+public interface App extends IBase {
 
     /**
      * 获取应用名称
