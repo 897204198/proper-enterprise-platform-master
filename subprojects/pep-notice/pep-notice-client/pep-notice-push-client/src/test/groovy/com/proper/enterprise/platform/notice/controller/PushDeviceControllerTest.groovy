@@ -4,9 +4,9 @@ import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.core.utils.http.HttpClient
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity
+import com.proper.enterprise.platform.notice.enums.PushDeviceType
+import com.proper.enterprise.platform.notice.enums.PushMode
 import com.proper.enterprise.platform.notice.repository.PushDeviceRepository
-import com.proper.enterprise.platform.notice.server.api.enums.PushDeviceType
-import com.proper.enterprise.platform.notice.server.api.enums.PushMode
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.After
 import org.junit.Test

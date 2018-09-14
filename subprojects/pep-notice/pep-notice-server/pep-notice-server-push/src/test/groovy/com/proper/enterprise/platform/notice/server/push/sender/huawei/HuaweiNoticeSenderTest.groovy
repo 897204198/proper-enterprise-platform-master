@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.test.AbstractTest
+import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.mock.web.MockHttpServletRequest
@@ -54,7 +55,7 @@ class HuaweiNoticeSenderTest extends AbstractTest {
         pushNoticeSender.send(notice)
 
         notice.setAppKey("testFail")
-        try{
+        try {
             pushNoticeSender.send(notice)
         } catch (Exception e) {
             e.getMessage().contains("Please check Huawei push config")
@@ -76,6 +77,7 @@ class HuaweiNoticeSenderTest extends AbstractTest {
     }
 
     @Test
+    @Ignore
     void testAfterSend() {
         def notice = new MockPushNotice()
         notice.setTargetTo(HuaweiConstant.TARGET_TO)

@@ -11,8 +11,8 @@ import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDo
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgJpaRepository
-import PushChannelEnum
-import PushDeviceTypeEnum
+import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
+import com.proper.enterprise.platform.notice.server.push.enums.PushDeviceTypeEnum
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus

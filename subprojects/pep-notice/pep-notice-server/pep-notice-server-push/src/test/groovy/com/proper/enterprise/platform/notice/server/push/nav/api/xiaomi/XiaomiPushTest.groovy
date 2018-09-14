@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.push.nav.api.ios
+package com.proper.enterprise.platform.notice.server.push.nav.api.xiaomi
 
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.test.AbstractTest

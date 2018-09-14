@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.notice.server.push.repository
 
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository
-import PushChannelEnum
+import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired

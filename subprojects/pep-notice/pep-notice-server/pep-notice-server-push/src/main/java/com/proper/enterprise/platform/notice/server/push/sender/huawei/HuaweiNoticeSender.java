@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.sender.huawei;
 
 import com.alibaba.fastjson.JSONObject;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
@@ -10,10 +11,6 @@ import com.proper.enterprise.platform.notice.server.push.client.huawei.HuaweiNot
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
-import org.nutz.json.Json;
-import org.nutz.json.JsonFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +19,6 @@ import java.util.Map;
 
 @Service("huaweiNoticeSender")
 public class HuaweiNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HuaweiNoticeSender.class);
 
     @Autowired
     private HuaweiNoticeClientManagerApi huaweiNoticeClientManagerApi;
@@ -34,7 +29,7 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
         if (isCmdMessage(notice)) {
             Map<String, Object> noticeExtMsg = notice.getNoticeExtMsgMap();
             Map customs = (Map) noticeExtMsg.get(CUSTOM_PROPERTY_KEY);
-            huaweiNoticeClient.send(1, notice, Json.toJson(customs, JsonFormat.compact()));
+            huaweiNoticeClient.send(1, notice, JSONUtil.toJSONIgnoreException(customs));
             return;
         }
         JSONObject body = new JSONObject();
@@ -51,7 +46,7 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
             data.put("_proper_mpage", "badge");
             //应用角标数
             data.put("_proper_badge", badgeNumber);
-            huaweiNoticeClient.send(1, notice, Json.toJson(data, JsonFormat.compact()));
+            huaweiNoticeClient.send(1, notice, JSONUtil.toJSONIgnoreException(data));
         }
     }
 

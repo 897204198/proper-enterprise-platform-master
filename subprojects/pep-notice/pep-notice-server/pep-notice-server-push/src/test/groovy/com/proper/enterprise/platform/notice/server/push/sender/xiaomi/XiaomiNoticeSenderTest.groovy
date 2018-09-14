@@ -8,7 +8,6 @@ import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.mock.web.MockHttpServletRequest
@@ -18,7 +17,6 @@ import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiC
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.PACKAGENAME
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.APPKEY
 
-@Ignore
 class XiaomiNoticeSenderTest extends AbstractTest{
 
 
