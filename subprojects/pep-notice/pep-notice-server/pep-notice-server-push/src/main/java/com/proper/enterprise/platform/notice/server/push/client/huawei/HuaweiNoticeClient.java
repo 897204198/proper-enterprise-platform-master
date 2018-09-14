@@ -54,7 +54,7 @@ public class HuaweiNoticeClient {
     /**
      * 发送推送
      *
-     * @param type    1透传 3消息
+     * @param type   1透传 3消息
      * @param notice 消息主体
      * @param body   消息内容
      * @throws NoticeException 自定义异常
@@ -69,19 +69,16 @@ public class HuaweiNoticeClient {
         deviceTokens.add(notice.getTargetTo());
         // 获取消息类型(chat, video, other)
         PushType pushType = PushType.other;
-        Map<String, Object> ext = notice.getNoticeExtMsgMap();
-        if (ext != null) {
-            Map customs = (Map) ext.get("customs");
-            if (customs != null) {
-                String extPushType = (String) customs.get("push_type");
-                try {
-                    if (StringUtil.isNotBlank(extPushType)) {
-                        pushType = PushType.valueOf(extPushType);
-                    }
-                } catch (Exception e) {
-                    LOGGER.debug("Fallback to default push type of " + extPushType, e);
-                    pushType = PushType.other;
+        Map customs = notice.getNoticeExtMsgMap();
+        if (customs != null) {
+            String extPushType = (String) customs.get("push_type");
+            try {
+                if (StringUtil.isNotBlank(extPushType)) {
+                    pushType = PushType.valueOf(extPushType);
                 }
+            } catch (Exception e) {
+                LOGGER.debug("Fallback to default push type of " + extPushType, e);
+                pushType = PushType.other;
             }
         }
         // msg 结构体, 包含 type/body/action
@@ -93,7 +90,7 @@ public class HuaweiNoticeClient {
         //消息点击动作, 包含 type(1.自定义intent,2.url跳转,3.打开APP)/param(intent,url,appPkgName)
         JSONObject action = new JSONObject();
         Map<String, Object> params = new HashMap<>(2);
-        params.put("intent", ext == null ? null : ext.get("uri"));
+        params.put("intent", customs == null ? null : customs.get("uri"));
         // 获取app端打开包名
         String packageName = StringUtil.isNull(this.packageName) ? "c" : this.packageName;
         params.put("appPkgName", packageName);

@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.sender.huawei;
 
 import com.alibaba.fastjson.JSONObject;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
@@ -21,6 +22,8 @@ import java.util.Map;
 @Service("huaweiNoticeSender")
 public class HuaweiNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
+    private static final String PUSH_TYPE = "push_type";
+
     @Autowired
     private HuaweiNoticeClientManagerApi huaweiNoticeClientManagerApi;
 
@@ -28,9 +31,7 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
     public void send(ReadOnlyNotice notice) throws NoticeException {
         HuaweiNoticeClient huaweiNoticeClient = huaweiNoticeClientManagerApi.get(notice.getAppKey());
         if (isCmdMessage(notice)) {
-            Map<String, Object> noticeExtMsg = notice.getNoticeExtMsgMap();
-            Map customs = (Map) noticeExtMsg.get(CUSTOM_PROPERTY_KEY);
-            huaweiNoticeClient.send(1, notice, JSONUtil.toJSONIgnoreException(customs));
+            huaweiNoticeClient.send(1, notice, JSONUtil.toJSONIgnoreException(notice.getNoticeExtMsgMap()));
             super.savePushMsg(null, notice, PushChannelEnum.HUAWEI);
             return;
         }
@@ -55,6 +56,12 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
 
     @Override
     public void beforeSend(BusinessNotice notice) throws NoticeException {
+        if (null == notice.getNoticeExtMsgMap()) {
+            throw new ErrMsgException("huawei config can't missing push_type in noticeExtMap");
+        }
+        if (null == notice.getNoticeExtMsgMap().get(PUSH_TYPE)) {
+            throw new ErrMsgException("huawei config can't missing push_type in noticeExtMap");
+        }
         huaweiNoticeClientManagerApi.get(notice.getAppKey());
     }
 

@@ -27,10 +27,6 @@ public abstract class AbstractPushSendSupport {
      */
     public static final String BADGE_NUMBER_KEY = "_proper_badge";
 
-    /**
-     * 自定义配置
-     */
-    public static final String CUSTOM_PROPERTY_KEY = "customs";
 
     /**
      * 在request中获取推送渠道
@@ -66,11 +62,7 @@ public abstract class AbstractPushSendSupport {
         if (null == noticeExtMsg) {
             return null;
         }
-        Map customs = (Map) noticeExtMsg.get(CUSTOM_PROPERTY_KEY);
-        if (null == customs) {
-            return null;
-        }
-        return (Integer) customs.get(BADGE_NUMBER_KEY);
+        return (Integer) noticeExtMsg.get(BADGE_NUMBER_KEY);
     }
 
     /**
@@ -84,13 +76,9 @@ public abstract class AbstractPushSendSupport {
         if (null == noticeExtMsg) {
             return false;
         }
-        Map customs = (Map) noticeExtMsg.get(CUSTOM_PROPERTY_KEY);
-        if (customs != null) {
-            Object pushType = customs.get("_proper_pushtype");
-            String cmdPush = "cmd";
-            return cmdPush.equals(pushType);
-        }
-        return false;
+        Object pushType = noticeExtMsg.get("_proper_pushtype");
+        String cmdPush = "cmd";
+        return cmdPush.equals(pushType);
     }
 
     /**
@@ -103,7 +91,7 @@ public abstract class AbstractPushSendSupport {
         if (null == readOnlyNotice.getNoticeExtMsgMap()) {
             return null;
         }
-        return (Map) readOnlyNotice.getNoticeExtMsgMap().get(CUSTOM_PROPERTY_KEY);
+        return readOnlyNotice.getNoticeExtMsgMap();
     }
 
     /**

@@ -20,8 +20,8 @@ DELETE  /notice/server/config/PUSH?accessToken=###&pushChannel=###(IOS,HUAWEI,XI
 requestBody  
 NoticeRequest  
 targetExtMsg添加{"pushChannel":"IOS,HUAWEI,XIAOMI"}确定推送渠道  
-noticeExtMsg中添加原来的customs {"customs":customsMap}  
-customsMap中的公共key含义  
+noticeExtMsg定位同原customs 
+公共key含义  
 _proper_badge 角标 类型Integer  
 _proper_pushtype 是否透传  
 IOS特殊key:无      
