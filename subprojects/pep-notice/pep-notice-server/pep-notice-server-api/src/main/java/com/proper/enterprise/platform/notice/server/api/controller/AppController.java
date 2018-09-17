@@ -30,7 +30,8 @@ public class AppController extends BaseController {
 
     @GetMapping
     public ResponseEntity<DataTrunk<App>> get(String appKey, String appName, String describe, Boolean enable) {
-        return responseOfGet(appDaoService.findAll(appKey, appName, describe, enable, getPageRequest(new Sort(Sort.Direction.DESC, "createTime"))));
+        return responseOfGet(appDaoService.findAll(appKey, appName,
+            describe, enable, getPageRequest(new Sort(Sort.Direction.DESC, "createTime"))));
     }
 
     @GetMapping(value = "/appId/{appId}")
