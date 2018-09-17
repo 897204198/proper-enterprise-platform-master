@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.notice.document;
 
 import com.proper.enterprise.platform.core.mongo.document.BaseDocument;
-import com.proper.enterprise.platform.notice.entity.NoticeSetDocument;
+import com.proper.enterprise.platform.notice.enums.AnalysisResult;
+import com.proper.enterprise.platform.notice.model.TargetModel;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
-import com.proper.enterprise.platform.notice.server.sdk.request.NoticeTarget;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,7 +15,7 @@ public class NoticeDocument extends BaseDocument {
     public NoticeDocument() {
     }
 
-    @Indexed
+    @Indexed(unique = true)
     private String batchId;
 
     private String title;
@@ -24,17 +24,17 @@ public class NoticeDocument extends BaseDocument {
 
     private Set<String> users;
 
-    private List<NoticeTarget> targets;
+    private List<TargetModel> targets;
 
     private NoticeType noticeType;
 
     private Map<String, Object> noticeExtMsg;
 
-    private NoticeSetDocument noticeSetDocument;
-
     private String exception;
 
-    private String note;
+    private List<String> notes;
+
+    private AnalysisResult analysisResult;
 
     public String getBatchId() {
         return batchId;
@@ -60,15 +60,15 @@ public class NoticeDocument extends BaseDocument {
         this.content = content;
     }
 
-    public List<NoticeTarget> getTargets() {
+    public List<TargetModel> getTargets() {
         return targets;
     }
 
-    public void setTargets(List<NoticeTarget> targets) {
+    public void setTargets(List<TargetModel> targets) {
         this.targets = targets;
     }
 
-    public void setTarget(NoticeTarget target) {
+    public void setTarget(TargetModel target) {
         if (targets == null) {
             targets = new ArrayList<>();
         }
@@ -106,12 +106,26 @@ public class NoticeDocument extends BaseDocument {
         this.exception = exception;
     }
 
-    public String getNote() {
-        return note;
+    public List<String> getNotes() {
+        return notes;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setNotes(List<String> notes) {
+        this.notes = notes;
+    }
+
+    public void setNotes(String note) {
+        if (notes == null) {
+            notes = new ArrayList<>();
+        }
+        notes.add(note);
+    }
+
+    public void setNotes(String note, Object... args) {
+        if (notes == null) {
+            notes = new ArrayList<>();
+        }
+        notes.add(String.format(note, args));
     }
 
     public Set<String> getUsers() {
@@ -122,11 +136,11 @@ public class NoticeDocument extends BaseDocument {
         this.users = users;
     }
 
-    public NoticeSetDocument getNoticeSetDocument() {
-        return noticeSetDocument;
+    public AnalysisResult getAnalysisResult() {
+        return analysisResult;
     }
 
-    public void setNoticeSetDocument(NoticeSetDocument noticeSetDocument) {
-        this.noticeSetDocument = noticeSetDocument;
+    public void setAnalysisResult(AnalysisResult analysisResult) {
+        this.analysisResult = analysisResult;
     }
 }

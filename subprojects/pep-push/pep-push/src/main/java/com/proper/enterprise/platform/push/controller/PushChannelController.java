@@ -46,4 +46,11 @@ public class PushChannelController extends BaseController {
         return responseOfGet(
             pushChannelService.findAll());
     }
+
+    @GetMapping("/enable")
+    public ResponseEntity<DataTrunk<PushChannelVO>> getEnable() {
+        return responseOfGet(
+            pushChannelService.findByEnable());
+    }
+
 }

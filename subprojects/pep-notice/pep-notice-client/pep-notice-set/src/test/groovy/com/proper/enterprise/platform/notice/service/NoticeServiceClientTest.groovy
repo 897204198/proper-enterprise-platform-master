@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.notice.service
 
-
 import com.proper.enterprise.platform.notice.entity.NoticeSetDocument
 import com.proper.enterprise.platform.notice.repository.NoticeSetRepository
 import com.proper.enterprise.platform.test.AbstractTest

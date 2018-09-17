@@ -9,20 +9,21 @@ import com.proper.enterprise.platform.core.utils.http.HttpClient;
 import com.proper.enterprise.platform.notice.document.NoticeDocument;
 import com.proper.enterprise.platform.notice.entity.NoticeSetDocument;
 import com.proper.enterprise.platform.notice.factory.NoticeCollectorFactory;
+import com.proper.enterprise.platform.notice.model.TargetModel;
 import com.proper.enterprise.platform.notice.repository.NoticeMsgRepository;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
 import com.proper.enterprise.platform.notice.service.NoticeCollector;
 import com.proper.enterprise.platform.notice.service.NoticeSetService;
+import com.proper.enterprise.platform.notice.util.NoticeAnalysisUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
-import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import com.proper.enterprise.platform.template.service.TemplateService;
+import com.proper.enterprise.platform.template.vo.TemplateDetailVO;
 import com.proper.enterprise.platform.template.vo.TemplateVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -34,12 +35,6 @@ public class NoticeSendServiceImpl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeSenderImpl.class);
 
-    @Value("${pep.push.properpushAppkey:unUsed}")
-    private String systemId;
-
-    @Value("${pep.push.pushUrl:unUsed}")
-    private String serverUrl;
-
     private final NoticeSetService noticeSetService;
 
     private final UserService userService;
@@ -47,8 +42,6 @@ public class NoticeSendServiceImpl {
     private final NoticeMsgRepository noticeMsgRepository;
 
     private final TemplateService templateService;
-
-    private static final String UNEXPECTED_URL = "unexpected url";
 
     @Autowired
     public NoticeSendServiceImpl(NoticeSetService noticeSetService, UserService userService, NoticeMsgRepository
@@ -63,19 +56,22 @@ public class NoticeSendServiceImpl {
     public void sendNoticeChannel(String fromUserId, Set<String> toUserIds, String code, Map<String, Object>
         templateParams, Map<String, Object> custom) {
         toUserIds = checkUserNull(toUserIds);
-        List<DataDic> noticeTypes = (List<DataDic>) DataDicUtil.findByCatalog("NOTICE_TYPE");
-        Map<String, TemplateVO> templates = templateService.getTemplatesByCodeAndTypesWithinCatalog(code,
-            getNoticeTypes(noticeTypes), templateParams);
-        String catalog = getCatalogFromTemplates(templates);
-        Map<String, NoticeSetDocument> noticeSetMap = noticeSetService.findMapByCatalogAndUserIds(catalog, toUserIds);
-        Collection<? extends User> users = userService.getUsersByIds(new ArrayList<>(toUserIds));
-        for (Map.Entry<String, TemplateVO> entry : templates.entrySet()) {
-            TemplateVO templateVO = entry.getValue();
-            if (templateVO == null) {
-                continue;
+        TemplateVO template = templateService.getTemplate(code, templateParams);
+        Map<String, NoticeSetDocument> noticeSetMap = noticeSetService.findMapByCatalogAndUserIds(template.getCatalog(), toUserIds);
+        List<TemplateDetailVO> details = template.getDetails();
+        if (details != null && details.size() > 0) {
+            for (TemplateDetailVO templateDetailVO : details) {
+                if (templateDetailVO == null) {
+                    continue;
+                }
+                sendNoticeChannel(fromUserId,
+                                  toUserIds,
+                                  noticeSetMap,
+                                  templateDetailVO.getTitle(),
+                                  templateDetailVO.getTemplate(),
+                                  custom,
+                                  NoticeType.valueOf(templateDetailVO.getType()));
             }
-            sendNoticeChannel(fromUserId, toUserIds, users, noticeSetMap, templateVO.getTitle(),
-                templateVO.getTemplate(), custom, NoticeType.valueOf(entry.getKey()));
         }
     }
 
@@ -84,52 +80,58 @@ public class NoticeSendServiceImpl {
                                   Map<String, Object> custom, String catalog, NoticeType noticeType) {
         toUserIds = checkUserNull(toUserIds);
         Map<String, NoticeSetDocument> noticeSetMap = noticeSetService.findMapByCatalogAndUserIds(catalog, toUserIds);
-        Collection<? extends User> users = userService.getUsersByIds(new ArrayList<>(toUserIds));
-        sendNoticeChannel(fromUserId, toUserIds, users, noticeSetMap, title, content, custom, noticeType);
+        sendNoticeChannel(fromUserId, toUserIds, noticeSetMap, title, content, custom, noticeType);
     }
 
     private void sendNoticeChannel(String fromUserId,
                                    Set<String> toUserIds,
-                                   Collection<? extends User> users,
                                    Map<String, NoticeSetDocument> noticeSetMap,
                                    String title,
                                    String content,
                                    Map<String, Object> custom,
                                    NoticeType noticeType) {
+        Collection<? extends User> users = userService.getUsersByIds(new ArrayList<>(toUserIds));
         NoticeCollector noticeCollector = NoticeCollectorFactory.create(noticeType);
-        NoticeDocument noticeDocument = noticeCollector.packageNoticeRequest(fromUserId, toUserIds, custom,
-            title, content);
+        NoticeDocument noticeDocument = this.packageNoticeDocument(fromUserId, toUserIds, custom, noticeType, title, content);
+        noticeCollector.addNoticeDocument(noticeDocument);
         for (User user : users) {
             NoticeSetDocument noticeSetDocument = noticeSetMap.get(user.getId());
-            noticeCollector.addNoticeTarget(noticeDocument, user, noticeSetDocument);
+            TargetModel targetModel = this.packageTargetModel(user);
+            noticeCollector.addNoticeTarget(noticeDocument, targetModel, noticeDocument.getNoticeType(), user, noticeSetDocument);
         }
-        NoticeRequest noticeVO = saveNotice(noticeDocument);
-        if (noticeVO.getTargets() != null && noticeVO.getTargets().size() > 0) {
+        analysis(noticeDocument, users);
+        NoticeRequest noticeVO = this.saveNotice(noticeDocument);
+        if (!NoticeAnalysisUtil.isNecessaryResult(noticeDocument)) {
             accessNoticeServer(noticeVO);
         }
     }
 
-    private List<DataDicLiteBean> getNoticeTypes(List<DataDic> noticeTypes) {
-        List<DataDicLiteBean> result = new ArrayList<>();
-        for (DataDic dataDic : noticeTypes) {
-            DataDicLiteBean dataDicLiteBean = new DataDicLiteBean();
-            dataDicLiteBean.setCode(dataDic.getCode());
-            dataDicLiteBean.setCatalog(dataDic.getCatalog());
-            result.add(dataDicLiteBean);
-        }
-        return result;
+    private void analysis(NoticeDocument noticeDocument, Collection<? extends User> users) {
+        NoticeAnalysisUtil.isUsersExist(noticeDocument);
+        NoticeAnalysisUtil.isThereATarget(noticeDocument);
+        NoticeAnalysisUtil.isUsersMoreThanTargets(noticeDocument, users);
     }
 
-    private String getCatalogFromTemplates(Map<String, TemplateVO> templates) {
-        String catalog = null;
-        for (Map.Entry<String, TemplateVO> entry : templates.entrySet()) {
-            TemplateVO templateVO = entry.getValue();
-            if (templateVO != null) {
-                catalog = templateVO.getCatalog();
-                break;
-            }
-        }
-        return catalog;
+    private NoticeDocument packageNoticeDocument(String fromUserId,
+                                                 Set<String> toUserIds,
+                                                 Map<String, Object> custom,
+                                                 NoticeType noticeType,
+                                                 String title,
+                                                 String content) {
+        NoticeDocument noticeDocument = new NoticeDocument();
+        noticeDocument.setTitle(title);
+        noticeDocument.setContent(content);
+        noticeDocument.setNoticeType(noticeType);
+        noticeDocument.setUsers(toUserIds);
+        noticeDocument.setNoticeExtMsg(custom);
+        noticeDocument.setNoticeExtMsg("from", fromUserId);
+        return noticeDocument;
+    }
+
+    private TargetModel packageTargetModel(User user) {
+        TargetModel targetModel = new TargetModel();
+        targetModel.setId(user.getId());
+        return targetModel;
     }
 
     private Set<String> checkUserNull(Set<String> userIds) {
@@ -148,37 +150,37 @@ public class NoticeSendServiceImpl {
 
     private NoticeRequest saveNotice(NoticeDocument noticeDocument) {
         noticeDocument.setBatchId(UUID.randomUUID().toString());
-        if (noticeDocument.getTargets() == null && noticeDocument.getUsers().size() == 0) {
-            noticeDocument.setNote("Entered empty user.");
-        }
-        if (noticeDocument.getTargets() == null && noticeDocument.getUsers().size() > 0) {
-            noticeDocument.setNote("User does not exist or user does not config " + noticeDocument.getNoticeType()
-                + " reminder.");
-        }
         NoticeRequest noticeRequest = BeanUtil.convert(noticeDocument, NoticeRequest.class);
         noticeMsgRepository.save(noticeDocument);
         return noticeRequest;
     }
 
-    private void updateNotice(String batchId, String exception) {
+    private void updateNotice(String batchId, String noticeServerUrl, String exception) {
         NoticeDocument noticeDocument = noticeMsgRepository.findByBatchId(batchId);
-        noticeDocument.setException(exception);
-        if (exception.contains(UNEXPECTED_URL)) {
-            noticeDocument.setNote("The notice server url configuration error.");
-        }
+        NoticeAnalysisUtil.accessNoticeServer(noticeDocument, exception, noticeServerUrl);
         noticeMsgRepository.save(noticeDocument);
     }
 
     private void accessNoticeServer(NoticeRequest noticeModel) {
+        String noticeServerUrl = null;
+        DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "URL");
+        if (dataDic != null) {
+            noticeServerUrl = dataDic.getName();
+        }
+        String noticeServerToken = null;
+        dataDic = DataDicUtil.get("NOTICE_SERVER", "TOKEN");
+        if (dataDic != null) {
+            noticeServerToken = dataDic.getName();
+        }
         try {
             String data = JSONUtil.toJSON(noticeModel);
             LOGGER.debug("NOTICE SENDER SEND:" + data);
-            HttpClient.post(serverUrl
+            HttpClient.post(noticeServerUrl
                 + "/notice/server/send?accessToken="
-                + systemId, MediaType.APPLICATION_JSON, data);
+                + noticeServerToken, MediaType.APPLICATION_JSON, data);
         } catch (Exception e) {
             LOGGER.error("NoticeSender.accessNoticeServer[Exception]:", e);
-            updateNotice(noticeModel.getBatchId(), e.getMessage());
+            updateNotice(noticeModel.getBatchId(), noticeServerUrl, e.getMessage());
         }
     }
 

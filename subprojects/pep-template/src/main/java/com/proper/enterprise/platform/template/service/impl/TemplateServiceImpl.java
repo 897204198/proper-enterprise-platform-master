@@ -2,26 +2,24 @@ package com.proper.enterprise.platform.template.service.impl;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
-import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
-import com.proper.enterprise.platform.template.entity.TemplateEntity;
+import com.proper.enterprise.platform.template.document.TemplateDocument;
 import com.proper.enterprise.platform.template.repository.TemplateRepository;
 import com.proper.enterprise.platform.template.service.TemplateService;
 import com.proper.enterprise.platform.template.util.TemplateUtil;
+import com.proper.enterprise.platform.template.vo.TemplateDetailVO;
 import com.proper.enterprise.platform.template.vo.TemplateVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateVO, TemplateRepository, String> implements
-    TemplateService {
+public class TemplateServiceImpl implements TemplateService {
 
     private TemplateRepository templateRepository;
 
@@ -31,94 +29,89 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateVO, T
     }
 
     @Override
-    public Map<String, TemplateVO> getTemplates(String code) {
-        List<TemplateEntity> templateEntitys = templateRepository.findByCode(code);
-        Map<String, TemplateVO> templates = new HashMap<>(1);
-        for (TemplateEntity template : templateEntitys) {
-            TemplateVO templateVO = BeanUtil.convert(template, TemplateVO.class);
-            templates.put(template.getType().getCode(), templateVO);
-        }
-        return templates;
-    }
-
-    @Override
-    public Map<String, TemplateVO> getTemplates(String code, Map<String, Object> templateParams) {
-        List<TemplateEntity> templateEntitys = templateRepository.findByCode(code);
-        return convertListToMap(templateEntitys, templateParams);
-    }
-
-    @Override
-    public Map<String, TemplateVO> getTemplatesByCodeAndTypesWithinCatalog(String code, List<DataDicLiteBean>
-        noticeTypes, Map<String, Object> templateParams) {
-        List<TemplateEntity> templateEntitys = templateRepository.findByCodeAndTypeInAndCatalogIsNotNull(code,
-            noticeTypes);
-        return convertListToMap(templateEntitys, templateParams);
-    }
-
-    private Map<String, TemplateVO> convertListToMap(List<TemplateEntity> templateEntitys, Map<String, Object>
-        templateParams) {
-        if (templateEntitys == null || templateEntitys.size() == 0) {
+    public TemplateVO getTemplate(String code, Map<String, Object> templateParams) {
+        TemplateDocument templateDocument = templateRepository.findByCodeAndEnableTrue(code);
+        if (templateDocument == null || templateDocument.getDetails() == null || templateDocument.getDetails().size()
+            == 0) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.template.no.templates"));
         }
-        Map<String, TemplateVO> templates = new HashMap<>(1);
-        for (TemplateEntity template : templateEntitys) {
-            TemplateVO templateVO = BeanUtil.convert(template, TemplateVO.class);
-            templateVO.setCatalog(template.getCatalog().getCode());
-            templateVO.setTitle(TemplateUtil.template2Content(template.getTitle(), templateParams));
-            templateVO.setTemplate(TemplateUtil.template2Content(template.getTemplate(), templateParams));
-            templates.put(template.getType().getCode(), templateVO);
+        List<TemplateDetailVO> details = templateDocument.getDetails();
+        TemplateVO templateVO = BeanUtil.convert(templateDocument, TemplateVO.class);
+        if (templateVO.getMuti()) {
+            for (TemplateDetailVO template : details) {
+                template.setTitle(TemplateUtil.template2Content(template.getTitle(), templateParams));
+                template.setTemplate(TemplateUtil.template2Content(template.getTemplate(), templateParams));
+            }
+            templateVO.setDetails(details);
+        } else {
+            TemplateDetailVO template = details.get(0);
+            template.setTitle(TemplateUtil.template2Content(template.getTitle(), templateParams));
+            template.setTemplate(TemplateUtil.template2Content(template.getTemplate(), templateParams));
+            templateVO.setDetail(template);
         }
-        return templates;
+        return templateVO;
     }
 
     @Override
     public String getTips(String code) {
-        List<TemplateEntity> templateEntitys = templateRepository.findByCode(code);
-        if (templateEntitys != null && templateEntitys.size() > 0) {
-            return templateEntitys.get(0).getTemplate();
+        TemplateDocument templateDocument = templateRepository.findByCodeAndEnableTrue(code);
+        List<TemplateDetailVO> details = templateDocument.getDetails();
+        if (details != null && details.size() > 0) {
+            return details.get(0).getTemplate();
         }
         return "";
     }
 
     @Override
     public TemplateVO save(TemplateVO template) {
-        TemplateEntity valid = templateRepository.findByCodeAndType(template.getCode(), template.getType());
+        if (StringUtil.isNull(template.getCode())) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.template.vo.code.not.null"));
+        }
+        TemplateDocument valid = templateRepository.findByCode(template.getCode());
         if (valid != null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.template.repeat"));
         }
-        return saveOrUpdate(template);
+        return this.saveOrUpdate(template);
     }
 
     @Override
     public TemplateVO update(TemplateVO template) {
-        TemplateEntity valid = templateRepository.findByCodeAndType(template.getCode(), template.getType());
-        boolean isExist = valid != null;
-        if (isExist && !valid.getId().equals(template.getId())) {
+        if (StringUtil.isNull(template.getCode())) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.template.vo.code.not.null"));
+        }
+        TemplateDocument valid = templateRepository.findByCode(template.getCode());
+        if (valid != null && !valid.getId().equals(template.getId())) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.template.repeat"));
         }
-        return saveOrUpdate(template);
+        return this.saveOrUpdate(template);
     }
 
     private TemplateVO saveOrUpdate(TemplateVO template) {
-        DataDicLiteBean catalog = new DataDicLiteBean("TEMPLATE_CATALOG", template.getCatalog());
-        TemplateEntity templateEntity = BeanUtil.convert(template, TemplateEntity.class);
-        templateEntity.setCatalog(catalog);
-        templateEntity.setType(template.getType());
-        templateEntity.setEnable(true);
-        templateEntity = templateRepository.save(templateEntity);
-        template = BeanUtil.convert(templateEntity, TemplateVO.class);
-        template.setCatalog(templateEntity.getCatalog().getCode());
-        template.setType((DataDicLiteBean) templateEntity.getType());
+        TemplateDocument templateDocument = BeanUtil.convert(template, TemplateDocument.class);
+        if (!template.getMuti()) {
+            templateDocument.setDetails(template.getDetail());
+        }
+        templateDocument = templateRepository.save(templateDocument);
+        template = BeanUtil.convert(templateDocument, TemplateVO.class);
+        if (!template.getMuti() && templateDocument.getDetails() != null && templateDocument.getDetails().size() > 0) {
+            template.setDetail(templateDocument.getDetails().get(0));
+        }
         return template;
     }
 
     @Override
     public TemplateVO get(String id) {
-        TemplateVO template;
-        TemplateEntity templateEntity = templateRepository.findOne(id);
-        template = BeanUtil.convert(templateEntity, TemplateVO.class);
-        template.setCatalog(templateEntity.getCatalog().getCode());
-        return template;
+        TemplateDocument templateDocument = templateRepository.findByIdAndEnableTrue(id);
+        if (templateDocument == null) {
+            throw new ErrMsgException(I18NUtil.getMessage("Please add one template"));
+        }
+        TemplateVO templateVO = BeanUtil.convert(templateDocument, TemplateVO.class);
+        if (!templateVO.getMuti()
+            && templateDocument.getDetails() != null
+            && templateDocument.getDetails().size() > 0) {
+            templateVO.setDetail(templateDocument.getDetails().get(0));
+        }
+        return templateVO;
     }
 
     @Override
@@ -127,30 +120,28 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateVO, T
             String[] idArr = ids.split(",");
             List<String> list = new ArrayList<>();
             Collections.addAll(list, idArr);
-            List<TemplateEntity> collection = templateRepository.findAll(list);
+            Iterable<TemplateDocument> collection = templateRepository.findAll(list);
             templateRepository.delete(collection);
         }
         return true;
     }
 
     @Override
-    public DataTrunk<TemplateVO> findPagination(String code, String name, String title, String template, String
-        description) {
-        Page<TemplateEntity> page = templateRepository.findPagination(code, name, title, template, description, this
-            .getPageRequest());
-        List<TemplateVO> templateVOS = new ArrayList<>();
-        for (TemplateEntity templateEntity : page.getContent()) {
-            TemplateVO templateVO = BeanUtil.convert(templateEntity, TemplateVO.class);
-            templateVO.setCatalog(templateEntity.getCatalog().getCode());
-            templateVOS.add(templateVO);
-        }
-        Page<TemplateVO> pageVO = new PageImpl<>(templateVOS, this.getPageRequest(), page.getTotalElements());
-        return new DataTrunk<>(pageVO);
+    public DataTrunk<TemplateVO> findPagination(String query, PageRequest pageRequest) {
+        Page<TemplateDocument> page = templateRepository.findPagination(query, pageRequest);
+        List<TemplateDocument> list = page.getContent();
+        List<TemplateVO> voList = (List<TemplateVO>) BeanUtil.convert(list, TemplateVO.class);
+        DataTrunk<TemplateVO> result = new DataTrunk<>();
+        result.setCount(voList.size());
+        result.setData(voList);
+        return result;
     }
 
     @Override
-    public TemplateRepository getRepository() {
-        return templateRepository;
+    public List<TemplateVO> findAll() {
+        List<TemplateDocument> list = templateRepository.findByEnableTrue();
+        Collection<TemplateVO> result = BeanUtil.convert(list, TemplateVO.class);
+        return (List<TemplateVO>) result;
     }
 
 }

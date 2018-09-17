@@ -7,14 +7,15 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.template.service.TemplateService;
 import com.proper.enterprise.platform.template.vo.TemplateVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/notice/template")
+@RequestMapping(path = "/template")
 public class TemplateController extends BaseController {
 
-    private TemplateService templateService;
+    public TemplateService templateService;
 
     @Autowired
     public TemplateController(TemplateService templateService) {
@@ -30,6 +31,7 @@ public class TemplateController extends BaseController {
     @PostMapping
     @JsonView(TemplateVO.Detail.class)
     public ResponseEntity<TemplateVO> add(@RequestBody TemplateVO templateVO) {
+        templateVO.setMuti(false);
         return responseOfPost(templateService.save(templateVO));
     }
 
@@ -38,6 +40,7 @@ public class TemplateController extends BaseController {
     public ResponseEntity<TemplateVO> update(@PathVariable String id, @RequestBody TemplateVO templateVO) {
         if (StringUtil.isNotBlank(id)) {
             templateVO.setId(id);
+            templateVO.setMuti(false);
             return responseOfPut(templateService.update(templateVO));
         }
         return responseOfPut(null);
@@ -55,13 +58,10 @@ public class TemplateController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity find(@RequestParam(defaultValue = "") String code,
-                               @RequestParam(defaultValue = "") String name,
-                               @RequestParam(defaultValue = "") String title,
-                               @RequestParam(defaultValue = "") String template,
-                               @RequestParam(defaultValue = "") String description) {
+    public ResponseEntity find(@RequestParam(defaultValue = "") String query) {
         return isPageSearch()
-            ? responseOfGet(templateService.findPagination(code, name, title, template, description)) :
+            ? responseOfGet(templateService.findPagination(query,
+            getPageRequest(Sort.Direction.DESC, "createTime"))) :
             responseOfGet(templateService.findAll());
     }
 

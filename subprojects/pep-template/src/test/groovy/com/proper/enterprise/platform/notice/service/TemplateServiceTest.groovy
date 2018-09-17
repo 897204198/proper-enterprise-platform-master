@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.notice.service
 
-import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean
-import com.proper.enterprise.platform.template.entity.TemplateEntity
+import com.proper.enterprise.platform.template.document.TemplateDocument
 import com.proper.enterprise.platform.template.repository.TemplateRepository
 import com.proper.enterprise.platform.template.service.TemplateService
+import com.proper.enterprise.platform.template.vo.TemplateDetailVO
 import com.proper.enterprise.platform.template.vo.TemplateVO
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
@@ -18,30 +18,51 @@ class TemplateServiceTest extends AbstractTest {
     TemplateRepository templateRepository
 
     @Test
-    void getTemplate1() {
-        TemplateEntity templateEntity = new TemplateEntity()
-        templateEntity.setCode("code")
-        templateEntity.setName("name")
-        templateEntity.setTitle("title-test")
-        String template = "订单号:{orderNum};病历号:{clinicNum}"
-        templateEntity.setTemplate(template)
-        templateEntity.setDescription("orderNum : 订单号, clinicNum : 病历号")
-        DataDicLiteBean business = new DataDicLiteBean("NOTICE_BUSINESS", "TEST")
-        templateEntity.setCatalog(business)
-        DataDicLiteBean type = new DataDicLiteBean("NOTICE_TYPE", "PUSH")
-        templateEntity.setType(type)
-        templateRepository.save(templateEntity)
+    void getTemplate() {
+        TemplateDocument templateDocument = new TemplateDocument()
+        templateDocument.code = "code"
+        templateDocument.name = "name"
+        templateDocument.description = "orderNum : 订单号, clinicNum : 病历号"
+        templateDocument.setMuti(false)
+        templateDocument.catalog = "TEST"
+        List<TemplateDetailVO> details = new ArrayList<>()
+        TemplateDetailVO detail = new TemplateDetailVO()
+        detail.title = "title-test"
+        detail.template = "订单号:{orderNum};病历号:{clinicNum}"
+        detail.type = "PUSH"
+        details.add(detail)
+        templateDocument.details = details
+        templateRepository.save(templateDocument)
 
         Map<String, Object> templateParams = new HashMap<>()
         templateParams.put("orderNum", "123456")
         templateParams.put("clinicNum", "654321")
-        Map<String, TemplateVO> templates = templateService.getTemplates( 'code', templateParams)
-        assert '订单号:123456;病历号:654321' == templates.get("PUSH").getTemplate()
+        TemplateVO templates = templateService.getTemplate('code', templateParams)
+        assert '订单号:123456;病历号:654321' == templates.getDetail().getTemplate()
     }
 
     @Test
-    void getTemplate() {
-        getTemplateInit()
+    void getTemplates() {
+        TemplateDocument templateDocument = new TemplateDocument()
+        templateDocument.code = "code2"
+        templateDocument.name = "name2"
+        templateDocument.description = "name : 体检人, idcard : 身份证号, package : 体检套餐, date : 体检日期, address : 体检地点"
+        templateDocument.setMuti(true)
+        templateDocument.catalog = "TEST"
+        List<TemplateDetailVO> details = new ArrayList<>()
+        TemplateDetailVO detail = new TemplateDetailVO()
+        detail.title = "title-push"
+        detail.template = "体检预约成功！体检人:{name};身份证号:{idcard};体检套餐:{package};体检日期:{date};体检地点:{address};备注:请于体检当日携带有效证件，早晨7：50空腹，到体检中心。"
+        detail.type = "PUSH"
+        TemplateDetailVO detail2 = new TemplateDetailVO()
+        detail2.title = "title-email"
+        detail2.template = "【{name}】于【{startDate}】至【{endDate}】请假【{time}】小时，<a href='{url}'>{note}</a>"
+        detail2.type = "EMAIL"
+        details.add(detail)
+        details.add(detail2)
+        templateDocument.details = details
+        templateRepository.save(templateDocument)
+
         Map<String, String> templateParams = new HashMap<>()
         templateParams.put("name", "wanghp")
         templateParams.put("idcard", "2306241989XXXXXXXX55")
@@ -53,40 +74,13 @@ class TemplateServiceTest extends AbstractTest {
         templateParams.put("time", "4")
         templateParams.put("url", "http://docs.easemob.com/im/start")
         templateParams.put("note", "请悉知")
-        Map<String, TemplateVO> templates = templateService.getTemplates("code", templateParams)
-        assert templates.get("PUSH") != null
-        String content = templates.get("PUSH")
-        assert content.indexOf("{") == -1
-    }
-
-    void getTemplateInit() {
-        TemplateEntity templateEntity1 = new TemplateEntity()
-        templateEntity1.setCode("code")
-        templateEntity1.setName("name")
-        templateEntity1.setTitle("title-push")
-        String template = "体检预约成功！体检人:{name};身份证号:{idcard};体检套餐:{package};体检日期:{date};体检地点:{address};备注:请于体检当日携带有效证件，早晨7：50空腹，到体检中心。"
-        templateEntity1.setTemplate(template)
-        templateEntity1.setDescription("name : 体检人, idcard : 身份证号, package : 体检套餐, date : 体检日期, address : 体检地点")
-        DataDicLiteBean business = new DataDicLiteBean("NOTICE_BUSINESS", "TEST")
-        templateEntity1.setCatalog(business)
-        DataDicLiteBean type = new DataDicLiteBean("NOTICE_TYPE", "PUSH")
-        templateEntity1.setType(type)
-        templateRepository.save(templateEntity1)
-
-        TemplateEntity templateEntity2 = new TemplateEntity()
-        templateEntity2.setCode("code")
-        templateEntity2.setName("name")
-        templateEntity2.setTitle("title-email")
-        String emailTemplate = "【{name}】于【{startDate}】至【{endDate}】请假【{time}】小时，<a href='{url}'>{note}</a>"
-        templateEntity2.setTemplate(emailTemplate)
-        templateEntity2.setDescription("name : 体检人, idcard : 身份证号, package : 体检套餐, date : 体检日期, address : 体检地点")
-        business = new DataDicLiteBean("NOTICE_BUSINESS", "TEST")
-        templateEntity2.setCatalog(business)
-        type = new DataDicLiteBean("NOTICE_TYPE", "EMAIL")
-        templateEntity2.setType(type)
-        templateEntity2.setDescription("name : 姓名, startDate : 起始日期, endDate : 结束日期, time : 持续时间, url : 连接，note : 说明")
-        templateRepository.save(templateEntity2)
-
+        TemplateVO templates = templateService.getTemplate("code2", templateParams)
+        List<TemplateDetailVO> list = templates.getDetails()
+        assert list.size() == 2
+        for (TemplateDetailVO templateDetailVO : list) {
+            assert templateDetailVO != null
+            assert templateDetailVO.getTemplate().indexOf("{") == -1
+        }
     }
 
 }
