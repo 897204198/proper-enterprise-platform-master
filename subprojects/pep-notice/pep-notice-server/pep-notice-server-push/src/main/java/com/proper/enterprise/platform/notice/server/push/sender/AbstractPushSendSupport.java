@@ -35,6 +35,9 @@ public abstract class AbstractPushSendSupport {
      * @return 推送渠道
      */
     protected PushChannelEnum getPushChannel(ReadOnlyNotice readOnlyNotice) {
+        if (null == readOnlyNotice.getTargetExtMsgMap()) {
+            throw new ErrMsgException("the pushChannel can't be null");
+        }
         String pushChannel = (String) readOnlyNotice.getTargetExtMsgMap().get(PUSH_CHANNEL_KEY);
         if (StringUtil.isEmpty(pushChannel)) {
             throw new ErrMsgException("the pushChannel can't be null");

@@ -75,7 +75,10 @@ class IOSNoticeSenderTest extends AbstractTest {
         mockPushNotice.setTargetTo(IOSConstant.TARGET_TO)
         mockPushNotice.setTitle("555")
         mockPushNotice.setContent("66666qwe")
+        mockPushNotice.setId("testtest")
         iosNoticeSender.send(mockPushNotice)
+        Thread.sleep(5000)
+       assert pushNoticeMsgJpaRepository.findPushNoticeMsgEntitiesByNoticeId("testtest").getContent()=="66666qwe"
     }
 
     @Test
