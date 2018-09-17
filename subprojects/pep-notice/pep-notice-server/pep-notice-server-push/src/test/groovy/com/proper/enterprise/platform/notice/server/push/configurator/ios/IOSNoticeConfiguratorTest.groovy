@@ -80,7 +80,9 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
 
     @Test
     public void iosConfPutGetDelTest() {
-        String appKey = 'iosConfGetToken'
+        String appKey = 'iosConfPutGetDelToken'
+        def accessToken = new AccessTokenVO(appKey, 'for test using', appKey, 'GET:/test')
+        accessTokenService.saveOrUpdate(accessToken)
         FileVO fileVO = post(appKey)
         Map conf = new HashMap()
         conf.put("certPassword", "12345")
