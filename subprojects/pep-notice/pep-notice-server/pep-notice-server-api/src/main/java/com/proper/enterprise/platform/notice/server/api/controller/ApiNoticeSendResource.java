@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.notice.server.api.controller;
 
+import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/notice/server/send")
+@AuthcIgnore
 public class ApiNoticeSendResource extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiNoticeSendResource.class);

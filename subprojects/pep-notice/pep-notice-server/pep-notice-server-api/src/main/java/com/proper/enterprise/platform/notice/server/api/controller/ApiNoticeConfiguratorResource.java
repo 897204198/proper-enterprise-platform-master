@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.notice.server.api.controller;
 
+import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.notice.server.api.factory.NoticeConfiguratorFactory;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/notice/server/config")
+@AuthcIgnore
 public class ApiNoticeConfiguratorResource extends BaseController {
 
 
