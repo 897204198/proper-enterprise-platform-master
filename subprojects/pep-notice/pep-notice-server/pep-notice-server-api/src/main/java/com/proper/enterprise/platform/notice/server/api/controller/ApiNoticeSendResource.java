@@ -12,6 +12,7 @@ import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class ApiNoticeSendResource extends BaseController {
     private AccessTokenService accessTokenService;
 
     @Autowired
-    public ApiNoticeSendResource(NoticeSender noticeSendService, AccessTokenService accessTokenService) {
+    public ApiNoticeSendResource(NoticeSender noticeSendService,@Qualifier("accessTokenService") AccessTokenService accessTokenService) {
         this.noticeSendService = noticeSendService;
         this.accessTokenService = accessTokenService;
     }

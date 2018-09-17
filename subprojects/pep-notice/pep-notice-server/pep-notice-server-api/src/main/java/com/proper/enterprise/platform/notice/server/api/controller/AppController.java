@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.notice.server.api.model.App;
 import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
 import com.proper.enterprise.platform.notice.server.api.vo.AppVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class AppController extends BaseController {
     private AccessTokenService accessTokenService;
 
     @Autowired
-    public AppController(AppDaoService appDaoService, AccessTokenService accessTokenService) {
+    public AppController(AppDaoService appDaoService,@Qualifier("accessTokenService") AccessTokenService accessTokenService) {
         this.appDaoService = appDaoService;
         this.accessTokenService = accessTokenService;
     }

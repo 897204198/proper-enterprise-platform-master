@@ -13,6 +13,7 @@ import com.proper.enterprise.platform.notice.server.app.dao.entity.AppEntity;
 import com.proper.enterprise.platform.notice.server.app.dao.repository.AppRepository;
 import com.proper.enterprise.platform.notice.server.api.vo.AppVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class AppDaoServiceImpl implements AppDaoService {
     private AccessTokenService accessTokenService;
 
     @Autowired
-    public AppDaoServiceImpl(AppRepository appRepository, AccessTokenService accessTokenService) {
+    public AppDaoServiceImpl(AppRepository appRepository, @Qualifier("accessTokenService") AccessTokenService accessTokenService) {
         this.appRepository = appRepository;
         this.accessTokenService = accessTokenService;
     }

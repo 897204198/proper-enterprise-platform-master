@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.notice.server.api.factory.NoticeConfiguratorFactory;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +18,11 @@ import java.util.Optional;
 @RequestMapping(path = "/notice/server/config")
 public class ApiNoticeConfiguratorResource extends BaseController {
 
+
     private AccessTokenService accessTokenService;
 
     @Autowired
-    public ApiNoticeConfiguratorResource(AccessTokenService accessTokenService) {
+    public ApiNoticeConfiguratorResource(@Qualifier("accessTokenService") AccessTokenService accessTokenService) {
         this.accessTokenService = accessTokenService;
     }
 
