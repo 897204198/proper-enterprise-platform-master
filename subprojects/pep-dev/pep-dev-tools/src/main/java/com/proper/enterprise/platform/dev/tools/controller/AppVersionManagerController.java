@@ -33,7 +33,7 @@ public class AppVersionManagerController extends BaseController {
      * @return 返回添加后的版本信息
      */
     @PostMapping
-    @ApiOperation("‍添加新的版本，版本号需唯一,返回添加后的版本信息")
+    @ApiOperation("‍添加新的版本，版本号需唯一，返回添加后的版本信息")
     public ResponseEntity<AppVersionDocument> create(@RequestBody AppVersionVO appVersionVO) {
         AppVersionDocument appVersionDocument = new AppVersionDocument();
         BeanUtils.copyProperties(appVersionVO, appVersionDocument);
@@ -47,7 +47,7 @@ public class AppVersionManagerController extends BaseController {
      * @return 更新后的版本信息
      */
     @PutMapping
-    @ApiOperation("‍更新版本信息, 返回更新后的版本信息")
+    @ApiOperation("‍更新版本信息，返回更新后的版本信息")
     public ResponseEntity<AppVersionDocument> update(@RequestBody AppVersionVO appVersionVO) {
         AppVersionDocument appVersionDocument = new AppVersionDocument();
         BeanUtils.copyProperties(appVersionVO, appVersionDocument);
@@ -84,11 +84,10 @@ public class AppVersionManagerController extends BaseController {
      * @return 发布的版本信息
      */
     @PostMapping(path = "/latest")
-    @ApiOperation("‍保存并发布版本")
+    @ApiOperation("保存并发布版本")
     public ResponseEntity<AppVersionDocument> saveAndRelease(@RequestBody AppVersionVO appVersionVO) {
         AppVersionDocument appVersionDocument = new AppVersionDocument();
         BeanUtils.copyProperties(appVersionVO, appVersionDocument);
         return responseOfPost(appVersionService.release(appVersionDocument));
     }
-
 }
