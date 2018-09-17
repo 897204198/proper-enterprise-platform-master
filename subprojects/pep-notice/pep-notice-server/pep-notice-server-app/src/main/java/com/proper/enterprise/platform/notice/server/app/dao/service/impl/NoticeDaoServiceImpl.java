@@ -7,7 +7,7 @@ import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 
 import com.proper.enterprise.platform.notice.server.api.model.Notice;
 import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService;
-import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO;
+import com.proper.enterprise.platform.notice.server.api.vo.NoticeVO;
 import com.proper.enterprise.platform.notice.server.app.dao.entity.NoticeEntity;
 import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;

@@ -3,14 +3,14 @@ package com.proper.enterprise.platform.notice.server.app.sender
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.notice.server.api.model.Notice
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender
+import com.proper.enterprise.platform.notice.server.app.AbstractServerAppTest
 import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository
 import com.proper.enterprise.platform.notice.server.app.global.SingletonMap
-import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO
+import com.proper.enterprise.platform.notice.server.api.vo.NoticeVO
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeTarget
-import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +19,7 @@ import org.springframework.test.context.jdbc.Sql
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class NoticeSenderTest extends AbstractTest {
+class NoticeSenderTest extends AbstractServerAppTest {
 
     @Autowired
     private NoticeSender noticeSender
@@ -29,6 +29,7 @@ class NoticeSenderTest extends AbstractTest {
 
     @Test
     public void beforeSendTest() {
+        def token = initApp("qqq")
         NoticeRequest noticeRequest = new NoticeRequest()
         noticeRequest.setBatchId("batchId")
         noticeRequest.setNoticeType(NoticeType.MOCK)

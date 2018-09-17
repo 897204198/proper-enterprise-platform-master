@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 
 public interface FileService extends BaseJpaService<File, String> {
 
@@ -48,5 +49,14 @@ public interface FileService extends BaseJpaService<File, String> {
      */
     void download(String id, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
+
+    /**
+     * 下载文件
+     *
+     * @param id 文件id
+     * @return 文件流
+     * @throws IOException io异常
+     */
+    InputStream download(String id) throws IOException;
 
 }

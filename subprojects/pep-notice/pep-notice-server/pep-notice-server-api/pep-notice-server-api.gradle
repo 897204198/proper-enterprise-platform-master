@@ -1,4 +1,5 @@
 dependencies {
-    compile project(':pep-core'),
+    compile project(':pep-auth-api'),
+            project(':pep-core'),
             project(':pep-notice-server-sdk')
  }

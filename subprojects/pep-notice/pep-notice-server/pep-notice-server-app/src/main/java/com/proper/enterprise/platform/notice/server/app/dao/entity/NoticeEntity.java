@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Entity
-@Table(name = "PEP_NOTICE")
+@Table(name = "PEP_NOTICE_MSG")
 public class NoticeEntity extends BaseEntity implements Notice {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeEntity.class);
