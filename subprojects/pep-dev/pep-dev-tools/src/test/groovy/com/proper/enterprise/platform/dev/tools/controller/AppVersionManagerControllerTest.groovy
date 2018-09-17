@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.dev.tools.controller
 
-import com.proper.enterprise.platform.app.controller.vo.AppVersionVO
 import com.proper.enterprise.platform.app.document.AppVersionDocument
 import com.proper.enterprise.platform.app.repository.AppVersionRepository
 import com.proper.enterprise.platform.app.service.AppVersionService
