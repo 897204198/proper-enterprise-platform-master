@@ -72,8 +72,10 @@ public class IOSNoticeClientManager implements IOSNoticeClientManagerApi {
             certInputStream.close();
             return builder.build();
         } catch (IOException e) {
-            if (null != e.getMessage() && (e.getMessage().contains(P12_PASSWORD_ERROR_MSG)
-                || e.getMessage().contains(P12_PASSWORD_INCORRECT_MSG))) {
+            if (null != e.getMessage() && e.getMessage().contains(P12_PASSWORD_ERROR_MSG)) {
+                throw new ErrMsgException("Certificate and password do not match");
+            }
+            if (null != e.getMessage() && e.getMessage().contains(P12_PASSWORD_INCORRECT_MSG)) {
                 throw new ErrMsgException("Certificate and password do not match");
             }
             throw e;
