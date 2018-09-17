@@ -23,7 +23,7 @@ public class AppController extends BaseController {
     private AccessTokenService accessTokenService;
 
     @Autowired
-    public AppController(AppDaoService appDaoService,@Qualifier("accessTokenService") AccessTokenService accessTokenService) {
+    public AppController(AppDaoService appDaoService, @Qualifier("accessTokenService") AccessTokenService accessTokenService) {
         this.appDaoService = appDaoService;
         this.accessTokenService = accessTokenService;
     }
