@@ -84,7 +84,7 @@ public class AppVersionManagerController extends BaseController {
      * @return 发布的版本信息
      */
     @PostMapping(path = "/latest")
-    @ApiOperation("保存并发布版本")
+    @ApiOperation("‍保存并发布版本")
     public ResponseEntity<AppVersionDocument> saveAndRelease(@RequestBody AppVersionVO appVersionVO) {
         AppVersionDocument appVersionDocument = new AppVersionDocument();
         BeanUtils.copyProperties(appVersionVO, appVersionDocument);
