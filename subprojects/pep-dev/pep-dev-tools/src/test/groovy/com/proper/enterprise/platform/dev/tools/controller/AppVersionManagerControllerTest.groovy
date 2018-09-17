@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.dev.tools.controller
 
+import com.proper.enterprise.platform.app.controller.vo.AppVersionVO
 import com.proper.enterprise.platform.app.document.AppVersionDocument
 import com.proper.enterprise.platform.app.repository.AppVersionRepository
 import com.proper.enterprise.platform.app.service.AppVersionService
@@ -60,7 +61,7 @@ class AppVersionManagerControllerTest extends AbstractTest {
 
     @Test
     void saveThenReleaseThenUpdate() {
-        AppVersionDocument ver = new AppVersionDocument('vt1', '.apk', 'abc')
+        AppVersionVO ver = new AppVersionVO('vt1', '.apk', 'abc')
         post(prefix, JSONUtil.toJSON(ver), HttpStatus.CREATED)
 
         post("$prefix/latest", JSONUtil.toJSON(ver), HttpStatus.CREATED)
@@ -78,7 +79,7 @@ class AppVersionManagerControllerTest extends AbstractTest {
 
         assert resOfGet("/app/versions/latest", HttpStatus.OK) == ''
 
-        AppVersionDocument newreleaseapp = new AppVersionDocument()
+        AppVersionVO newreleaseapp = new AppVersionVO()
         newreleaseapp.setVersion('300005')
 
         MvcResult releaseapp1 = post(prefix + "/latest", JSONUtil.toJSON(newreleaseapp), HttpStatus.CREATED)
@@ -90,8 +91,8 @@ class AppVersionManagerControllerTest extends AbstractTest {
 
     @Test
     void list() {
-        def v05 = new AppVersionDocument('000500', '*.apk', 'abcdef')
-        def v05003 = new AppVersionDocument('0005000003', '*.apk', 'xcv')
+        def v05 = new AppVersionVO('000500', '*.apk', 'abcdef')
+        def v05003 = new AppVersionVO('0005000003', '*.apk', 'xcv')
 
         post("$prefix/latest", JSONUtil.toJSON(v05), HttpStatus.CREATED)
         post("$prefix/latest", JSONUtil.toJSON(v05003), HttpStatus.CREATED)

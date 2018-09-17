@@ -17,6 +17,14 @@ public class AppVersionVO {
     @ApiModelProperty("‍版本说明")
     private String note;
 
+    public AppVersionVO() { }
+
+    public AppVersionVO(String version, String androidURL, String note) {
+        this.version = version;
+        this.androidURL = androidURL;
+        this.note = note;
+    }
+
     public String getVersion() {
         return version;
     }
