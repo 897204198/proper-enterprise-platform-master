@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.feedback.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.feedback.controller.vo.AdminFeedbackVO;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.feedback.document.FeedBackDocument;
 import com.proper.enterprise.platform.feedback.document.UserFeedBackDocument;
 import com.proper.enterprise.platform.feedback.service.UserFeedbackService;
@@ -62,6 +62,26 @@ public class AdminFeedbackController extends BaseController {
             @ApiParam(value = "‍用户ID", required = true) @PathVariable String userId) {
         UserFeedBackDocument userFeedBackDocument = feedbackService.getUserOpinions(userId);
         return responseOfPut(feedbackService.saveCloseFeedback(userFeedBackDocument));
+    }
+
+    public static class AdminFeedbackVO {
+
+        @ApiModelProperty("‍反馈内容")
+        private String feedback;
+
+        public String getFeedback() {
+            return feedback;
+        }
+
+        public void setFeedback(String feedback) {
+            this.feedback = feedback;
+        }
+
+        @Override
+        public String toString() {
+            return JSONUtil.toJSONIgnoreException(this);
+        }
+
     }
 
 }

@@ -18,7 +18,7 @@ versions.spring             = '5.0.7.RELEASE'
 versions.spring_data        = 'Kay-SR8'
 versions.spring_integration = '5.0.6.RELEASE'
 versions.spring_security    = '5.0.6.RELEASE'
-versions.springfox          = '2.9.2'
+versions.springfox          = '3.0.0-SNAPSHOT'
 
 configurations.all {
 //    //Don't cache snapshots, need to check work or not
@@ -167,8 +167,6 @@ libraries.jaxws_rt = 'com.sun.xml.ws:jaxws-rt:2.1.7'
 
 libraries.jpa_api = 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final'
 
-libraries.joda_time = 'joda-time:joda-time:2.9.4'
-
 libraries.junit = 'junit:junit:4.12'
 
 //libraries.json_lib = 'net.sf.json-lib:json-lib:2.4:jdk15@jar'
@@ -261,6 +259,7 @@ libraries.spring_integration_jdbc = "org.springframework.integration:spring-inte
 //libraries.spring_security_web = "org.springframework.security:spring-security-web:${versions.spring_security}"
 
 libraries.springfox = [
+    "io.springfox:springfox-spring-webmvc:${versions.springfox}",
     "io.springfox:springfox-swagger2:${versions.springfox}",
     "io.springfox:springfox-swagger-ui:${versions.springfox}"
 ]
