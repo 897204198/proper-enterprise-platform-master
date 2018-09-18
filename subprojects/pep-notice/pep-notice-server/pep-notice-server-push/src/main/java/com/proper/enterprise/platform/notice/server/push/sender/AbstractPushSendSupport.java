@@ -28,6 +28,7 @@ public abstract class AbstractPushSendSupport {
     public static final String BADGE_NUMBER_KEY = "_proper_badge";
 
     public static final String CUSTOM_PROPERTY_KEY = "customs";
+
     /**
      * 在request中获取推送渠道
      *
