@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.api.controller;
+package com.proper.enterprise.platform.notice.server.app.controller;
 
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.core.controller.BaseController;
@@ -30,12 +30,13 @@ public class AppController extends BaseController {
 
     @GetMapping
     public ResponseEntity<DataTrunk<App>> get(String appKey, String appName, String describe, Boolean enable) {
-        return responseOfGet(appDaoService.findAll(appKey, appName, describe, enable, getPageRequest(new Sort(Sort.Direction.DESC, "createTime"))));
+        return responseOfGet(appDaoService.findAll(appKey, appName,
+            describe, enable, getPageRequest(new Sort(Sort.Direction.DESC, "createTime"))));
     }
 
-    @GetMapping(value = "/appId/{appId}")
-    public ResponseEntity<App> get(@PathVariable String appId) {
-        return responseOfGet(appDaoService.get(appId));
+    @GetMapping(value = "/appKey/{appKey}")
+    public ResponseEntity<App> get(@PathVariable String appKey) {
+        return responseOfGet(appDaoService.get(appKey));
     }
 
     @GetMapping(value = "/appKey")

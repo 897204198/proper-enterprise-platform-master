@@ -27,6 +27,7 @@ public abstract class AbstractPushSendSupport {
      */
     public static final String BADGE_NUMBER_KEY = "_proper_badge";
 
+    public static final String CUSTOM_PROPERTY_KEY = "customs";
 
     /**
      * 在request中获取推送渠道
@@ -35,6 +36,9 @@ public abstract class AbstractPushSendSupport {
      * @return 推送渠道
      */
     protected PushChannelEnum getPushChannel(ReadOnlyNotice readOnlyNotice) {
+        if (null == readOnlyNotice.getTargetExtMsgMap()) {
+            throw new ErrMsgException("the pushChannel can't be null");
+        }
         String pushChannel = (String) readOnlyNotice.getTargetExtMsgMap().get(PUSH_CHANNEL_KEY);
         if (StringUtil.isEmpty(pushChannel)) {
             throw new ErrMsgException("the pushChannel can't be null");

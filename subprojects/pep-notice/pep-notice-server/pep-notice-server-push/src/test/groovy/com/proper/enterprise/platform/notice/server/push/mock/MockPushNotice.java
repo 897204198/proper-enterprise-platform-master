@@ -14,6 +14,8 @@ import java.util.Map;
 
 public class MockPushNotice implements Notice {
 
+    private String id;
+
     /**
      * 同一批消息的批次Id
      */
@@ -68,12 +70,12 @@ public class MockPushNotice implements Notice {
 
     @Override
     public String getId() {
-        return null;
+        return this.id;
     }
 
     @Override
     public void setId(String id) {
-
+        this.id = id;
     }
 
     @Override

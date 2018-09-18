@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.api.controller;
+package com.proper.enterprise.platform.notice.server.app.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService;
@@ -9,13 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/notice/server")
-public class NoticeServerController extends BaseController {
+@RequestMapping("/notice/server/msg")
+public class NoticeMsgController extends BaseController {
 
     private NoticeDaoService noticeDaoService;
 
     @Autowired
-    public NoticeServerController(NoticeDaoService noticeDaoService) {
+    public NoticeMsgController(NoticeDaoService noticeDaoService) {
         this.noticeDaoService = noticeDaoService;
     }
 
