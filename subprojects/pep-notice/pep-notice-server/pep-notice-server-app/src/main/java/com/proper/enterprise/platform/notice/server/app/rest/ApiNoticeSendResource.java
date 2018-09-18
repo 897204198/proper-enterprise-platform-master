@@ -37,10 +37,11 @@ public class ApiNoticeSendResource extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity sendNotice(String access_token, @RequestBody NoticeRequest noticeRequest,
+    public ResponseEntity sendNotice(@RequestParam(required = false, name = "access_token") String accessToken,
+                                     @RequestBody NoticeRequest noticeRequest,
                                      HttpServletRequest request) throws NoticeException {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
-        String token = StringUtil.isEmpty(accessTokenHeader) ? access_token : accessTokenHeader;
+        String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
         if (validAppKeyIsNull(token)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }

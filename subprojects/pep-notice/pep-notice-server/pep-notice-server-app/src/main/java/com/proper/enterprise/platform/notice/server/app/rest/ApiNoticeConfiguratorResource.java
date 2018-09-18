@@ -29,10 +29,11 @@ public class ApiNoticeConfiguratorResource extends BaseController {
     }
 
     @PostMapping("/{noticeType}")
-    public ResponseEntity post(@PathVariable NoticeType noticeType, String access_token,
+    public ResponseEntity post(@PathVariable NoticeType noticeType,
+                               @RequestParam(required = false, name = "access_token") String accessToken,
                                @RequestBody Map config, HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
-        String token = StringUtil.isEmpty(accessTokenHeader) ? access_token : accessTokenHeader;
+        String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
         if (validAppKeyIsNull(token)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
@@ -41,9 +42,11 @@ public class ApiNoticeConfiguratorResource extends BaseController {
     }
 
     @DeleteMapping("/{noticeType}")
-    public ResponseEntity delete(@PathVariable NoticeType noticeType, String access_token, HttpServletRequest request) {
+    public ResponseEntity delete(@PathVariable NoticeType noticeType,
+                                 @RequestParam(required = false, name = "access_token") String accessToken,
+                                 HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
-        String token = StringUtil.isEmpty(accessTokenHeader) ? access_token : accessTokenHeader;
+        String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
         if (validAppKeyIsNull(token)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
@@ -52,10 +55,11 @@ public class ApiNoticeConfiguratorResource extends BaseController {
     }
 
     @PutMapping("/{noticeType}")
-    public ResponseEntity put(@PathVariable NoticeType noticeType, String access_token,
+    public ResponseEntity put(@PathVariable NoticeType noticeType,
+                              @RequestParam(required = false, name = "access_token") String accessToken,
                               @RequestBody Map config, HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
-        String token = StringUtil.isEmpty(accessTokenHeader) ? access_token : accessTokenHeader;
+        String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
         if (validAppKeyIsNull(token)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
@@ -64,9 +68,11 @@ public class ApiNoticeConfiguratorResource extends BaseController {
     }
 
     @GetMapping("/{noticeType}")
-    public ResponseEntity get(@PathVariable NoticeType noticeType, String access_token, HttpServletRequest request) {
+    public ResponseEntity get(@PathVariable NoticeType noticeType,
+                              @RequestParam(required = false, name = "access_token") String accessToken,
+                              HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
-        String token = StringUtil.isEmpty(accessTokenHeader) ? access_token : accessTokenHeader;
+        String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
         if (validAppKeyIsNull(token)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
