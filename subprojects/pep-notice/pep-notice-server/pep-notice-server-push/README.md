@@ -11,8 +11,8 @@ Xiaomi： {"pushPackage":"###","appSecret":"###"}
 HUAWEI: {"pushPackage":"###","appId":"###","appSecret":"*###*"}  
 
 PUT  同上  
-GET  /notice/server/config/PUSH?access_token=###&pushChannel=###(IOS,HUAWEI,XIAOMI)  
-DELETE  /notice/server/config/PUSH?access_token=###&pushChannel=###(IOS,HUAWEI,XIAOMI)  
+GET  /rest/notice/server/config/PUSH?access_token=###&pushChannel=###(IOS,HUAWEI,XIAOMI)  
+DELETE  /rest/notice/server/config/PUSH?access_token=###&pushChannel=###(IOS,HUAWEI,XIAOMI)  
 ==================================================================================================  
 
 发送推送 (token支持请求头或参数传递 请求头key:X-PEP-TOKEN)  

@@ -9,7 +9,7 @@ POST
 requestBody  
 {"smsUrl":"####","smsTemplate":"####","smsCharset":"####"}  
 PUT  同上  
-GET  /notice/server/config/SMS?access_token=###  
+GET  /rest/notice/server/config/SMS?access_token=###  
 DELETE  /notice/server/config/SMS?access_token=###  
 ==================================================================================================  
 

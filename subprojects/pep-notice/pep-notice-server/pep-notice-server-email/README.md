@@ -10,8 +10,8 @@ requestBody
 {"mailServerHost":"####","mailServerPort":"####","mailServerUsername":"####","mailServerPassword":"####","mailServerUseSSL":true/false,"mailServerUseTLS":true/false,"mailServerDefaultFrom":"####"}  
 腾讯邮箱服务 mailServerUseSSL 为 true, mailServerUseTLS 为 false  
 PUT  同上  
-GET  /notice/server/config/EMAIL?access_token=###  
-DELETE  /notice/server/config/EMAIL?access_token=###  
+GET  /rest/notice/server/config/EMAIL?access_token=###  
+DELETE  /rest/notice/server/config/EMAIL?access_token=###  
 ==================================================================================================  
 
 发送邮件

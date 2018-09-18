@@ -8,13 +8,11 @@ import com.proper.enterprise.platform.notice.server.api.factory.NoticeConfigurat
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/rest/notice/server/config")
@@ -34,9 +32,6 @@ public class ApiNoticeConfiguratorResource extends BaseController {
                                @RequestBody Map config, HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
-        if (validAppKeyIsNull(token)) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
         return responseOfPost(NoticeConfiguratorFactory.product(noticeType)
             .post(accessTokenService.getUserId(token).get(), config, request));
     }
@@ -47,9 +42,6 @@ public class ApiNoticeConfiguratorResource extends BaseController {
                                  HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
-        if (validAppKeyIsNull(token)) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
         NoticeConfiguratorFactory.product(noticeType).delete(accessTokenService.getUserId(token).get(), request);
         return responseOfDelete(true);
     }
@@ -60,9 +52,6 @@ public class ApiNoticeConfiguratorResource extends BaseController {
                               @RequestBody Map config, HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
-        if (validAppKeyIsNull(token)) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
         return responseOfPut(NoticeConfiguratorFactory.product(noticeType).put(accessTokenService
             .getUserId(token).get(), config, request));
     }
@@ -73,16 +62,7 @@ public class ApiNoticeConfiguratorResource extends BaseController {
                               HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
-        if (validAppKeyIsNull(token)) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
         return responseOfGet(NoticeConfiguratorFactory.product(noticeType).get(accessTokenService
             .getUserId(token).get(), request));
     }
-
-    private boolean validAppKeyIsNull(String accessToken) {
-        Optional<String> appKey = accessTokenService.getUserId(accessToken);
-        return !appKey.isPresent();
-    }
-
 }

@@ -12,13 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/rest/notice/server/send")
@@ -42,23 +40,12 @@ public class ApiNoticeSendResource extends BaseController {
                                      HttpServletRequest request) throws NoticeException {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
-        if (validAppKeyIsNull(token)) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
         LOGGER.info("Receive client messages batchId:{}", noticeRequest.getBatchId());
         List<Notice> notices = noticeSendService
             .beforeSend(accessTokenService.getUserId(token).get(), noticeRequest);
         LOGGER.info("client messages check batchId:{}", noticeRequest.getBatchId());
         noticeSendService.sendAsync(notices);
         return responseOfPost(null);
-    }
-
-    private boolean validAppKeyIsNull(String access_token) {
-        if (StringUtil.isEmpty(access_token)) {
-            return false;
-        }
-        Optional<String> appKey = accessTokenService.getUserId(access_token);
-        return !appKey.isPresent();
     }
 
 }
