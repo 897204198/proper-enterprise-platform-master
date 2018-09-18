@@ -21,7 +21,7 @@ public class NoticeEmailCollector implements NoticeCollector {
     public void addNoticeTarget(NoticeDocument noticeDocument, TargetModel targetModel, NoticeType noticeType, User user, NoticeSetDocument
         noticeSetDocument) {
         if (noticeSetDocument.isEmail() && noticeType.equals(NoticeType.EMAIL)) {
-            String target = user.getUsername() + "<" + user.getEmail() + ">";
+            String target = user.getName() + "<" + user.getEmail() + ">";
             targetModel.setTo(target);
             noticeDocument.setTarget(targetModel);
         }

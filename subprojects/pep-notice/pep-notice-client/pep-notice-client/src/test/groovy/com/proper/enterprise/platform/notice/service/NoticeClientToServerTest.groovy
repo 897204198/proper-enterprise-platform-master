@@ -59,9 +59,8 @@ class NoticeClientToServerTest extends AbstractTest {
         Map<String, String> headers = new HashMap<>(1)
         headers.put("X-PEP-TOKEN", noticeServerToken)
         ResponseEntity<byte[]> response = HttpClient.post(noticeServerUrl
-            + "/rest/notice/server/config/EMAIL" + headers
-            + noticeServerToken, MediaType.APPLICATION_JSON, '{"mailServerHost":"smtp.exmail.qq.com","mailServerPort":465,"mailServerUsername":"Wf@propersoft.cn","mailServerPassword":"9x5qDmxsyrzMra5W","mailServerUseSSL":true,"mailServerDefaultFrom":"Wf@propersoft.cn"}');
-        println StringUtil.toEncodedString(response.getBody())
+            + "/rest/notice/server/config/EMAIL", headers, MediaType.APPLICATION_JSON, '{"mailServerHost":"smtp.exmail.qq.com","mailServerPort":465,"mailServerUsername":"Wf@propersoft.cn","mailServerPassword":"9x5qDmxsyrzMra5W","mailServerUseSSL":true,"mailServerDefaultFrom":"Wf@propersoft.cn"}');
+        println "response:" + StringUtil.toEncodedString(response.getBody())
     }
 
     @Test
@@ -79,9 +78,8 @@ class NoticeClientToServerTest extends AbstractTest {
         Map<String, String> headers = new HashMap<>(1)
         headers.put("X-PEP-TOKEN", noticeServerToken)
         ResponseEntity<byte[]> response = HttpClient.post(noticeServerUrl
-            + "/rest/notice/server/config/SMS" + headers
-            + noticeServerToken, MediaType.APPLICATION_JSON, '{"smsUrl":"http://118.145.22.173:9887/smsservice/SendSMS","smsSend":"465","smsCharset":"GBK"}');
-        println StringUtil.toEncodedString(response.getBody())
+            + "/rest/notice/server/config/SMS", headers, MediaType.APPLICATION_JSON, '{"smsUrl":"http://118.145.22.173:9887/smsservice/SendSMS","smsTemplate":"UserId=10417&Password=YKrm_180612&Mobiles={0}&Content={1}","smsCharset":"GBK"}');
+        println "response:" +  StringUtil.toEncodedString(response.getBody())
     }
 
     @Test
