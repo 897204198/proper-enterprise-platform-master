@@ -131,8 +131,8 @@ public class DateUtil {
      */
     @Deprecated
     public static Date toDate(String dateStr, String format) {
-        LocalDate localDate = toLocalDate(dateStr, format);
-        Instant instant = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        LocalDateTime localDateTime = toLocalDateTime(dateStr, format);
+        Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
         return Date.from(instant);
     }
 
@@ -186,7 +186,18 @@ public class DateUtil {
      * @return 日期对象
      */
     public static LocalDateTime toLocalDateTime(String dateTimeStr) {
-        return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern(DEFAULT_DATETIME_FORMAT));
+        return toLocalDateTime(dateTimeStr, DEFAULT_DATETIME_FORMAT);
+    }
+
+    /**
+     * 按照默认时间戳格式转换字符串为日期对象
+     *
+     * @param  dateTimeStr 日期时间字符串
+     * @param  format      时间格式
+     * @return 日期对象
+     */
+    public static LocalDateTime toLocalDateTime(String dateTimeStr, String format) {
+        return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern(format));
     }
 
     /**
