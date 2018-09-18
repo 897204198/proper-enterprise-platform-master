@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.dev.tools.controller;
 import com.proper.enterprise.platform.app.document.AppVersionDocument;
 import com.proper.enterprise.platform.app.service.AppVersionService;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -120,5 +121,10 @@ public class AppVersionManagerController extends BaseController {
         public void setNote(String note) {
             this.note = note;
         }
+    }
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJSONIgnoreException(this);
     }
 }
