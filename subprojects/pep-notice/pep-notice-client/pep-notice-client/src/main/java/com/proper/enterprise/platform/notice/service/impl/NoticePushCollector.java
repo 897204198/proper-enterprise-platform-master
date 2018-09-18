@@ -36,7 +36,7 @@ public class NoticePushCollector implements NoticeCollector {
             boolean isOk = NoticeAnalysisUtil.isDeviceInfoOk(noticeDocument, user, pushDeviceEntity);
             if (isOk) {
                 targetModel.setTargetExtMsg("pushToken", pushDeviceEntity.getPushToken());
-                targetModel.setTargetExtMsg("deviceType", pushDeviceEntity.getDevicetype());
+                targetModel.setTargetExtMsg("deviceType", pushDeviceEntity.getDeviceType());
                 targetModel.setTargetExtMsg("pushMode", pushDeviceEntity.getPushMode());
             }
             noticeDocument.setTarget(targetModel);

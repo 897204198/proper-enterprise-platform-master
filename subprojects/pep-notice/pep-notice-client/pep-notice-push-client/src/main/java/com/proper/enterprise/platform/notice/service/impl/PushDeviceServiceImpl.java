@@ -41,11 +41,11 @@ public class PushDeviceServiceImpl implements PushDeviceService {
 
     @Override
     public PushDeviceEntity findDeviceByUserId(String userId) {
-        return deviceRepo.findByUserid(userId);
+        return deviceRepo.findByUserId(userId);
     }
 
     private void unbindDevice(String userId) {
-        deviceRepo.deleteByUserid(userId);
+        deviceRepo.deleteByUserId(userId);
         LOGGER.info("unbindDevice of user:" + userId);
     }
 
@@ -58,12 +58,12 @@ public class PushDeviceServiceImpl implements PushDeviceService {
                             PushDeviceType deviceType) {
         unbindDevice(userId);
         PushDeviceEntity device =  new PushDeviceEntity();
-        device.setAppkey(appKey);
-        device.setDeviceid(deviceId);
-        device.setDevicetype(deviceType);
-        device.setOtherInfo(deviceOtherInfo);
+        device.setAppKey(appKey);
+        device.setDeviceId(deviceId);
+        device.setDeviceType(deviceType);
+        device.setDeviceOtherInfo(deviceOtherInfo);
         device.setPushMode(pushMode);
-        device.setUserid(userId);
+        device.setUserId(userId);
         device.setPushToken(pushToken);
         deviceRepo.save(device);
     }

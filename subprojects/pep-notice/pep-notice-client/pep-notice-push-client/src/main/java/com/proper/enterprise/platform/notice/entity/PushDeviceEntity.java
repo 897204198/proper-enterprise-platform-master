@@ -1,29 +1,52 @@
 package com.proper.enterprise.platform.notice.entity;
 
-import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.notice.enums.PushDeviceType;
 import com.proper.enterprise.platform.notice.enums.PushMode;
-import com.proper.enterprise.platform.notice.service.PushDevice;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "PEP_PUSH_DEVICE")
 @CacheEntity
-public class PushDeviceEntity extends BaseEntity implements PushDevice {
-    private static final long serialVersionUID = PEPConstants.VERSION;
+public class PushDeviceEntity extends BaseEntity {
+
+    /**
+     * 应用标识
+     */
     @Column(nullable = false)
-    private String appkey;
-    private String deviceid;
-    private String userid;
+    private String appKey;
+
+    /**
+     * 设备的唯一标识
+     */
+    private String deviceId;
+
+    /**
+     * 用户的唯一标识
+     */
+    private String userId;
+
+    /**
+     * 设备类型
+     */
     @Enumerated(EnumType.STRING)
-    private PushDeviceType devicetype;
-    private String otherInfo;
+    private PushDeviceType deviceType;
+
+    /**
+     * 设备的其它信息
+     */
+    private String deviceOtherInfo;
+
+    /**
+     * 推送方式
+     */
     @Enumerated(EnumType.STRING)
     private PushMode pushMode;
+
     /**
-     * 推送标识
+     * 推送的token
      */
     private String pushToken;
 
@@ -35,44 +58,12 @@ public class PushDeviceEntity extends BaseEntity implements PushDevice {
         this.pushToken = pushToken;
     }
 
-    public String getAppkey() {
-        return appkey;
+    public String getDeviceOtherInfo() {
+        return deviceOtherInfo;
     }
 
-    public void setAppkey(String appkey) {
-        this.appkey = appkey;
-    }
-
-    public String getDeviceid() {
-        return deviceid;
-    }
-
-    public void setDeviceid(String deviceid) {
-        this.deviceid = deviceid;
-    }
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
-    }
-
-    public PushDeviceType getDevicetype() {
-        return devicetype;
-    }
-
-    public void setDevicetype(PushDeviceType devicetype) {
-        this.devicetype = devicetype;
-    }
-
-    public String getOtherInfo() {
-        return otherInfo;
-    }
-
-    public void setOtherInfo(String otherInfo) {
-        this.otherInfo = otherInfo;
+    public void setDeviceOtherInfo(String deviceOtherInfo) {
+        this.deviceOtherInfo = deviceOtherInfo;
     }
 
     public PushMode getPushMode() {
@@ -83,4 +74,35 @@ public class PushDeviceEntity extends BaseEntity implements PushDevice {
         this.pushMode = pushMode;
     }
 
+    public String getAppKey() {
+        return appKey;
+    }
+
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public PushDeviceType getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(PushDeviceType deviceType) {
+        this.deviceType = deviceType;
+    }
 }
