@@ -176,7 +176,7 @@ public class NoticeSendServiceImpl {
             String data = JSONUtil.toJSON(noticeModel);
             LOGGER.debug("NOTICE SENDER SEND:" + data);
             HttpClient.post(noticeServerUrl
-                + "/notice/server/send?access_token="
+                + "/rest/notice/server/send?access_token="
                 + noticeServerToken, MediaType.APPLICATION_JSON, data);
         } catch (Exception e) {
             LOGGER.error("NoticeSender.accessNoticeServer[Exception]:", e);
