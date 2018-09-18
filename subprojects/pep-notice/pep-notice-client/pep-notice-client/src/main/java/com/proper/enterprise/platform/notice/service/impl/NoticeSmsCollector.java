@@ -21,6 +21,7 @@ public class NoticeSmsCollector implements NoticeCollector {
         noticeSetDocument) {
         if (noticeSetDocument.isSms() && noticeType.equals(NoticeType.SMS)) {
             targetModel.setTo(user.getPhone());
+            noticeDocument.setTarget(targetModel);
         }
     }
 

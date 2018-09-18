@@ -39,8 +39,8 @@ public class NoticePushCollector implements NoticeCollector {
                 targetModel.setTargetExtMsg("deviceType", pushDeviceEntity.getDevicetype());
                 targetModel.setTargetExtMsg("pushMode", pushDeviceEntity.getPushMode());
             }
+            noticeDocument.setTarget(targetModel);
         }
-        noticeDocument.setTarget(targetModel);
     }
 
 }
