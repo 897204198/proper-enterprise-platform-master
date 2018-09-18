@@ -157,10 +157,10 @@
             <column name="COLUMN_ALIAS" value="appKey"/>
             <column name="COLUMN_DESC" value="appKey"/>
             <column name="COLUMN_TYPE" value="string"/>
-            <column name="MODULE_NAME" value="noticeserver"/>
+            <column name="MODULE_NAME" value="noticeservermsg"/>
             <column name="SEARCH_COLUMN" value="app_key"/>
             <column name="TABLE_NAME" value="pep_notice_msg"/>
-            <column name="URL" value="/notice/server"/>
+            <column name="URL" value="/notice/server/msg"/>
         </insert>
         <insert tableName="PEP_OOPSEARCH_CONFIG">
             <column name="ID" value="NOTICE-SERVER-NOTICE-002"/>
@@ -171,10 +171,10 @@
             <column name="COLUMN_ALIAS" value="batchId"/>
             <column name="COLUMN_DESC" value="批次号"/>
             <column name="COLUMN_TYPE" value="string"/>
-            <column name="MODULE_NAME" value="noticeserver"/>
+            <column name="MODULE_NAME" value="noticeservermsg"/>
             <column name="SEARCH_COLUMN" value="batch_id"/>
             <column name="TABLE_NAME" value="pep_notice_msg"/>
-            <column name="URL" value="/notice/server"/>
+            <column name="URL" value="/notice/server/msg"/>
         </insert>
         <insert tableName="PEP_OOPSEARCH_CONFIG">
             <column name="ID" value="NOTICE-SERVER-NOTICE-003"/>
@@ -185,10 +185,10 @@
             <column name="COLUMN_ALIAS" value="targetTo"/>
             <column name="COLUMN_DESC" value="发送目标"/>
             <column name="COLUMN_TYPE" value="string"/>
-            <column name="MODULE_NAME" value="noticeserver"/>
+            <column name="MODULE_NAME" value="noticeservermsg"/>
             <column name="SEARCH_COLUMN" value="target_to"/>
             <column name="TABLE_NAME" value="pep_notice_msg"/>
-            <column name="URL" value="/notice/server"/>
+            <column name="URL" value="/notice/server/msg"/>
         </insert>
         <insert tableName="PEP_OOPSEARCH_CONFIG">
             <column name="ID" value="NOTICE-SERVER-NOTICE-004"/>
@@ -199,10 +199,10 @@
             <column name="COLUMN_ALIAS" value="content"/>
             <column name="COLUMN_DESC" value="发送内容"/>
             <column name="COLUMN_TYPE" value="string"/>
-            <column name="MODULE_NAME" value="noticeserver"/>
+            <column name="MODULE_NAME" value="noticeservermsg"/>
             <column name="SEARCH_COLUMN" value="content"/>
             <column name="TABLE_NAME" value="pep_notice_msg"/>
-            <column name="URL" value="/notice/server"/>
+            <column name="URL" value="/notice/server/msg"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

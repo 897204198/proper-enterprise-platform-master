@@ -9,7 +9,7 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
-class ApiNoticeConfiguratorResourceTest extends AbstractTest {
+class ApiNoticeConfigControllerTest extends AbstractTest {
 
     @Autowired
     private AccessTokenService accessTokenService
