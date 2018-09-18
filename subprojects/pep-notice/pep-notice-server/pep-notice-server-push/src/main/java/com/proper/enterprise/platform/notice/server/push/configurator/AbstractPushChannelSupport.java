@@ -6,7 +6,6 @@ import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public abstract class AbstractPushChannelSupport {

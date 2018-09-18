@@ -10,7 +10,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.mock.web.MockHttpServletRequest
 
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.PUSHTOKEN
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.APPSECRET

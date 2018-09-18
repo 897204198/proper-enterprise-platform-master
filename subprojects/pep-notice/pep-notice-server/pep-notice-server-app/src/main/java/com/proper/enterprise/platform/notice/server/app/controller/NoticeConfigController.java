@@ -67,7 +67,7 @@ public class NoticeConfigController extends BaseController {
     }
 
     private Map<String, Object> buildRequestMap(HttpServletRequest request) {
-        Map<String, Object> requestParams = new HashMap<>();
+        Map<String, Object> requestParams = new HashMap<>(16);
         Enumeration em = request.getParameterNames();
         while (em.hasMoreElements()) {
             String name = (String) em.nextElement();
