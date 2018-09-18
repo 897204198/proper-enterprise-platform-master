@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.util.Date;
 import java.util.TimeZone;
@@ -197,7 +198,13 @@ public class DateUtil {
      * @return 日期对象
      */
     public static LocalDateTime toLocalDateTime(String dateTimeStr, String format) {
-        return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern(format));
+        LocalDateTime localDateTime;
+        try {
+            localDateTime = LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern(format));
+        } catch (DateTimeParseException e) {
+            localDateTime = LocalDate.parse(dateTimeStr, DateTimeFormatter.ofPattern(format)).atStartOfDay();
+        }
+        return localDateTime;
     }
 
     /**
