@@ -68,7 +68,7 @@ class XiaomiNoticeSenderTest extends AbstractTest {
         Map<String, Object> customs = new HashMap()
         customs.put("_proper_badge", 5)
         customs.put("_proper_pushtype", "cmd")
-        notice.setNoticeExtMsg("customs", customs)
+        notice.setAllNoticeExtMsg(customs)
         xiaomiNoticeSender.send(notice)
     }
 

@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.api.vo;
+package com.proper.enterprise.platform.notice.server.app.vo;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;

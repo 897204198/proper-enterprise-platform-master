@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.notice.server.app
 
-import com.proper.enterprise.platform.notice.server.api.vo.AppVO
+import com.proper.enterprise.platform.notice.server.app.vo.AppVO
 import com.proper.enterprise.platform.test.AbstractTest
 import org.springframework.http.HttpStatus
 
