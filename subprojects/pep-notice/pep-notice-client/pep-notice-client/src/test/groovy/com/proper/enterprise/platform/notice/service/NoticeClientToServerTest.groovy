@@ -1,10 +1,14 @@
 package com.proper.enterprise.platform.notice.service
 
 import com.proper.enterprise.platform.api.auth.service.UserService
+import com.proper.enterprise.platform.core.utils.StringUtil
+import com.proper.enterprise.platform.core.utils.http.HttpClient
 import com.proper.enterprise.platform.notice.entity.NoticeSetDocument
 import com.proper.enterprise.platform.notice.repository.NoticeMsgRepository
 import com.proper.enterprise.platform.notice.repository.NoticeSetRepository
+import com.proper.enterprise.platform.sys.datadic.DataDic
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
+import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil
 import com.proper.enterprise.platform.template.document.TemplateDocument
 import com.proper.enterprise.platform.template.repository.TemplateRepository
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO
@@ -14,6 +18,8 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.test.context.jdbc.Sql
 
 @Ignore
@@ -39,9 +45,43 @@ class NoticeClientToServerTest extends AbstractTest {
     private DataDicRepository repository;
 
     @Test
-    void clientToServer() {
-        post("/notice/config/email", '{"mailServerHost":"smtp.exmail.qq.com","mailServerPort":465,"mailServerUsername":"Wf@propersoft.cn","mailServerPassword":"9x5qDmxsyrzMra5W","mailServerUseSSL":true,"mailServerDefaultFrom":"Wf@propersoft.cn"}', HttpStatus.CREATED)
-        post("/notice/config/sms", '{"smsUrl":"http://118.145.22.173:9887/smsservice/SendSMS","smsSend":"465","smsCharset":"GBK"}', HttpStatus.CREATED)
+    void configEmail() {
+        String noticeServerUrl = null;
+        DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "URL");
+        if (dataDic != null) {
+            noticeServerUrl = dataDic.getName();
+        }
+        String noticeServerToken = null;
+        dataDic = DataDicUtil.get("NOTICE_SERVER", "TOKEN");
+        if (dataDic != null) {
+            noticeServerToken = dataDic.getName();
+        }
+        ResponseEntity<byte[]> response = HttpClient.post(noticeServerUrl
+            + "/notice/server/config/EMAIL?accessToken="
+            + noticeServerToken, MediaType.APPLICATION_JSON, '{"mailServerHost":"smtp.exmail.qq.com","mailServerPort":465,"mailServerUsername":"Wf@propersoft.cn","mailServerPassword":"9x5qDmxsyrzMra5W","mailServerUseSSL":true,"mailServerDefaultFrom":"Wf@propersoft.cn"}');
+        println StringUtil.toEncodedString(response.getBody())
+    }
+
+    @Test
+    void configSMS() {
+        String noticeServerUrl = null;
+        DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "URL");
+        if (dataDic != null) {
+            noticeServerUrl = dataDic.getName();
+        }
+        String noticeServerToken = null;
+        dataDic = DataDicUtil.get("NOTICE_SERVER", "TOKEN");
+        if (dataDic != null) {
+            noticeServerToken = dataDic.getName();
+        }
+        ResponseEntity<byte[]> response = HttpClient.post(noticeServerUrl
+            + "/notice/server/config/SMS?accessToken="
+            + noticeServerToken, MediaType.APPLICATION_JSON, '{"smsUrl":"http://118.145.22.173:9887/smsservice/SendSMS","smsSend":"465","smsCharset":"GBK"}');
+        println StringUtil.toEncodedString(response.getBody())
+    }
+
+    @Test
+    void sendEmailAndSms() {
         Map<String, Object> custom = new HashMap<>()
         custom.put("url", "1")
         Map<String, Object> templateParams = new HashMap<>()
