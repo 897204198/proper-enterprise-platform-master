@@ -29,6 +29,12 @@ public class AppDaoServiceImpl implements AppDaoService {
 
     private AccessTokenService accessTokenService;
 
+    private static final String RESOURCE_DESC = "POST:/rest/notice/server/send,"
+        + "POST:/rest/notice/server/config,"
+        + "PUT:/rest/notice/server/config,"
+        + "DELETE:/rest/notice/server/config,"
+        + "GET:/rest/notice/server/config";
+
     @Autowired
     public AppDaoServiceImpl(AppRepository appRepository, @Qualifier("accessTokenService") AccessTokenService accessTokenService) {
         this.appRepository = appRepository;
@@ -118,7 +124,7 @@ public class AppDaoServiceImpl implements AppDaoService {
         AppToken appToken = new AppToken();
         appToken.setUserId(appKey);
         appToken.setName(appKey);
-        appToken.setResourcesDescription(appKey + "token");
+        appToken.setResourcesDescription(RESOURCE_DESC);
         appToken.setToken(token);
         return appToken;
     }

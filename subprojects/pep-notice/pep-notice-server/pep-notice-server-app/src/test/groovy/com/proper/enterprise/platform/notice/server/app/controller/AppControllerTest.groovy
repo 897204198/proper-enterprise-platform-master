@@ -30,7 +30,7 @@ class AppControllerTest extends AbstractTest {
         //验证token
         Map config = new HashMap()
         config.put("a", "a")
-        post("/notice/server/config/" + NoticeType.MOCK + "?accessToken=" + token, JSONUtil.toJSON(config), HttpStatus.CREATED)
+        post("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + token, JSONUtil.toJSON(config), HttpStatus.CREATED)
 
         assert null != get(putApp.getId())
 
@@ -39,7 +39,7 @@ class AppControllerTest extends AbstractTest {
         assert !AppUtil.isEnable(putApp.getAppKey())
 
         delete(putApp.getId())
-        post("/notice/server/config/" + NoticeType.MOCK + "?accessToken=" + token, JSONUtil.toJSON(config), HttpStatus.UNAUTHORIZED)
+        post("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + token, JSONUtil.toJSON(config), HttpStatus.UNAUTHORIZED)
     }
 
     private AppVO post(AppVO appVO) {

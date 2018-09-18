@@ -1,8 +1,9 @@
-package com.proper.enterprise.platform.notice.server.api.controller;
+package com.proper.enterprise.platform.notice.server.app.rest;
 
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.factory.NoticeConfiguratorFactory;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,9 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/notice/server/config")
+@RequestMapping(path = "/rest/notice/server/config")
 @AuthcIgnore
 public class ApiNoticeConfiguratorResource extends BaseController {
-
 
     private AccessTokenService accessTokenService;
 
@@ -29,45 +29,49 @@ public class ApiNoticeConfiguratorResource extends BaseController {
     }
 
     @PostMapping("/{noticeType}")
-    public ResponseEntity post(@PathVariable NoticeType noticeType, @RequestParam String accessToken,
+    public ResponseEntity post(@PathVariable NoticeType noticeType, String access_token,
                                @RequestBody Map config, HttpServletRequest request) {
-        if (validAppKeyIsNull(accessToken)) {
+        String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
+        String token = StringUtil.isEmpty(accessTokenHeader) ? access_token : accessTokenHeader;
+        if (validAppKeyIsNull(token)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
         return responseOfPost(NoticeConfiguratorFactory.product(noticeType)
-            .post(accessTokenService.getUserId(accessToken).get(), config, request));
+            .post(accessTokenService.getUserId(token).get(), config, request));
     }
 
     @DeleteMapping("/{noticeType}")
-    public ResponseEntity delete(@PathVariable NoticeType noticeType, @RequestParam String accessToken, HttpServletRequest request) {
-        if (validAppKeyIsNull(accessToken)) {
+    public ResponseEntity delete(@PathVariable NoticeType noticeType, String access_token, HttpServletRequest request) {
+        String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
+        String token = StringUtil.isEmpty(accessTokenHeader) ? access_token : accessTokenHeader;
+        if (validAppKeyIsNull(token)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
-        NoticeConfiguratorFactory.product(noticeType).delete(accessTokenService
-            .getUserId(accessToken)
-            .get(), request);
+        NoticeConfiguratorFactory.product(noticeType).delete(accessTokenService.getUserId(token).get(), request);
         return responseOfDelete(true);
     }
 
     @PutMapping("/{noticeType}")
-    public ResponseEntity put(@PathVariable NoticeType noticeType, @RequestParam String accessToken,
+    public ResponseEntity put(@PathVariable NoticeType noticeType, String access_token,
                               @RequestBody Map config, HttpServletRequest request) {
-        if (validAppKeyIsNull(accessToken)) {
+        String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
+        String token = StringUtil.isEmpty(accessTokenHeader) ? access_token : accessTokenHeader;
+        if (validAppKeyIsNull(token)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
         return responseOfPut(NoticeConfiguratorFactory.product(noticeType).put(accessTokenService
-            .getUserId(accessToken)
-            .get(), config, request));
+            .getUserId(token).get(), config, request));
     }
 
     @GetMapping("/{noticeType}")
-    public ResponseEntity get(@PathVariable NoticeType noticeType, @RequestParam String accessToken, HttpServletRequest request) {
-        if (validAppKeyIsNull(accessToken)) {
+    public ResponseEntity get(@PathVariable NoticeType noticeType, String access_token, HttpServletRequest request) {
+        String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
+        String token = StringUtil.isEmpty(accessTokenHeader) ? access_token : accessTokenHeader;
+        if (validAppKeyIsNull(token)) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
         return responseOfGet(NoticeConfiguratorFactory.product(noticeType).get(accessTokenService
-            .getUserId(accessToken)
-            .get(), request));
+            .getUserId(token).get(), request));
     }
 
     private boolean validAppKeyIsNull(String accessToken) {
