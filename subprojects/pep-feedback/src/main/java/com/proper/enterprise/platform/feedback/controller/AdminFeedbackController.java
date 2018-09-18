@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.feedback.service.UserFeedbackService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,13 +48,14 @@ public class AdminFeedbackController extends BaseController {
     }
 
     @PostMapping(path = "/{userId}")
+    @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("‍根据用户Id保存管理端反馈意见")
-    public UserFeedBackDocument addOpinionFeedback(
+    public ResponseEntity<UserFeedBackDocument> addOpinionFeedback(
             @ApiParam(value = "‍用户ID", required = true) @PathVariable String userId,
             @RequestBody AdminFeedbackVO param) throws Exception {
         String feedback = param.getFeedback();
         UserFeedBackDocument feedBackDocument = feedbackService.getUserOpinions(userId);
-        return feedbackService.addAdminReplyFeedbackOpinion(feedback, feedBackDocument);
+        return responseOfPost(feedbackService.addAdminReplyFeedbackOpinion(feedback, feedBackDocument));
     }
 
     @PutMapping(path = "/{userId}/close")

@@ -47,7 +47,7 @@ class AdminFeedbackControllerTest extends AbstractTest {
         userFeedBackDocument = userFeedBackRepo.save(userFeedBackDocument)
 
         // admin reply && get
-        post('/admin/feedback/' + userFeedBackDocument.getUserId(), JSONUtil.toJSON(['feedback': 'reply a data !']), HttpStatus.OK)
+        post('/admin/feedback/' + userFeedBackDocument.getUserId(), JSONUtil.toJSON(['feedback': 'reply a data !']), HttpStatus.CREATED)
 
         def list = resOfGet("/admin/feedback/" + userFeedBackDocument.getUserId(), HttpStatus.OK)
         assert list.size() == 2

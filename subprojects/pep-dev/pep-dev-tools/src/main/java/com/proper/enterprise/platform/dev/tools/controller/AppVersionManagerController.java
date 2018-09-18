@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class AppVersionManagerController extends BaseController {
 
     @PostMapping
     @ApiOperation("‍添加新的版本，版本号需唯一，返回添加后的版本信息")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AppVersionDocument> create(@RequestBody AppVersionVO appVersionVO) {
         AppVersionDocument appVersionDocument = new AppVersionDocument();
         BeanUtils.copyProperties(appVersionVO, appVersionDocument);
@@ -51,6 +53,7 @@ public class AppVersionManagerController extends BaseController {
 
     @DeleteMapping(path = "/{version}")
     @ApiOperation("‍删除版本")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity delete(@ApiParam(value = "‍版本号", required = true) @PathVariable String version) {
         AppVersionDocument ver = appVersionService.get(version);
         if (ver == null) {
@@ -62,6 +65,7 @@ public class AppVersionManagerController extends BaseController {
 
     @PostMapping(path = "/latest")
     @ApiOperation("‍保存并发布版本")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AppVersionDocument> saveAndRelease(@RequestBody AppVersionVO appVersionVO) {
         AppVersionDocument appVersionDocument = new AppVersionDocument();
         BeanUtils.copyProperties(appVersionVO, appVersionDocument);
