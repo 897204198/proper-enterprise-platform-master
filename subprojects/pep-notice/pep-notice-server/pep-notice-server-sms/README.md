@@ -7,7 +7,7 @@ config
 /notice/server/config/SMS?accessToken=###
 POST  
 requestBody  
-{"smsUrl":"####","smsSend":"####","smsCharset":"####"}  
+{"smsUrl":"####","smsTemplate":"####","smsCharset":"####"}  
 PUT  同上  
 GET  /notice/server/config/SMS?accessToken=###  
 DELETE  /notice/server/config/SMS?accessToken=###  

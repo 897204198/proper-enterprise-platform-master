@@ -24,7 +24,7 @@ class SMSNoticeSendHandlerTest extends AbstractTest {
         try{
             def config = [:]
             config.put('smsUrl', 'http://localhost:8080/smsservice/SendSMS')
-            config.put('smsSend', 'UserId=****&Password=****&Mobiles={0}&Content={1}')
+            config.put('smsTemplate', 'UserId=****&Password=****&Mobiles={0}&Content={1}')
             config.put('smsCharset', 'GBK')
             smsNoticeConfigurator.post('pep', config,null)
             Notice noticeOperation = new MockNotice()
