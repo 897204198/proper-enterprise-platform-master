@@ -3,7 +3,12 @@ package com.proper.enterprise.platform.dev.tools.controller;
 import com.proper.enterprise.platform.app.document.AppVersionDocument;
 import com.proper.enterprise.platform.app.service.AppVersionService;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,41 +27,31 @@ public class AppVersionManagerController extends BaseController {
         this.appVersionService = appVersionService;
     }
 
-    /**
-     * 添加新的版本，版本号需唯一
-     *
-     * @param  appVersionDocument 版本信息
-     * @return 返回添加后的版本信息
-     */
     @PostMapping
-    public ResponseEntity<AppVersionDocument> create(@RequestBody AppVersionDocument appVersionDocument) {
+    @ApiOperation("‍添加新的版本，版本号需唯一，返回添加后的版本信息")
+    public ResponseEntity<AppVersionDocument> create(@RequestBody AppVersionVO appVersionVO) {
+        AppVersionDocument appVersionDocument = new AppVersionDocument();
+        BeanUtils.copyProperties(appVersionVO, appVersionDocument);
         return responseOfPost(appVersionService.saveOrUpdate(appVersionDocument));
     }
 
-    /**
-     * 更新版本信息
-     *
-     * @param  appVersionDocument 版本信息
-     * @return 更新后的版本信息
-     */
     @PutMapping
-    public ResponseEntity<AppVersionDocument> update(@RequestBody AppVersionDocument appVersionDocument) {
+    @ApiOperation("‍更新版本信息，返回更新后的版本信息")
+    public ResponseEntity<AppVersionDocument> update(@RequestBody AppVersionVO appVersionVO) {
+        AppVersionDocument appVersionDocument = new AppVersionDocument();
+        BeanUtils.copyProperties(appVersionVO, appVersionDocument);
         return responseOfPut(appVersionService.saveOrUpdate(appVersionDocument));
     }
 
     @GetMapping
+    @ApiOperation("‍获取版本信息列表")
     public ResponseEntity<List<AppVersionDocument>> list() {
         return responseOfGet(appVersionService.list());
     }
 
-    /**
-     * 删除某版本
-     *
-     * @param  version 版本号
-     * @return 删除响应
-     */
     @DeleteMapping(path = "/{version}")
-    public ResponseEntity delete(@PathVariable String version) {
+    @ApiOperation("‍删除版本")
+    public ResponseEntity delete(@ApiParam(value = "‍版本号", required = true) @PathVariable String version) {
         AppVersionDocument ver = appVersionService.get(version);
         if (ver == null) {
             return responseOfDelete(false);
@@ -65,15 +60,71 @@ public class AppVersionManagerController extends BaseController {
         return responseOfDelete(true);
     }
 
-    /**
-     * 保存并发布版本
-     *
-     * @param  appVersionDocument 版本信息
-     * @return 发布的版本信息
-     */
     @PostMapping(path = "/latest")
-    public ResponseEntity<AppVersionDocument> saveAndRelease(@RequestBody AppVersionDocument appVersionDocument) {
+    @ApiOperation("‍保存并发布版本")
+    public ResponseEntity<AppVersionDocument> saveAndRelease(@RequestBody AppVersionVO appVersionVO) {
+        AppVersionDocument appVersionDocument = new AppVersionDocument();
+        BeanUtils.copyProperties(appVersionVO, appVersionDocument);
         return responseOfPost(appVersionService.release(appVersionDocument));
     }
 
+    public static class AppVersionVO {
+
+        @ApiModelProperty("‍版本号")
+        private String version;
+
+        @ApiModelProperty("‍android下载地址")
+        private String androidURL;
+
+        @ApiModelProperty("‍ios下载地址")
+        private String iosURL;
+
+        @ApiModelProperty("‍版本说明")
+        private String note;
+
+        private AppVersionVO() { }
+
+        private AppVersionVO(String version, String androidURL, String note) {
+            this.version = version;
+            this.androidURL = androidURL;
+            this.note = note;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+
+        public void setVersion(String version) {
+            this.version = version;
+        }
+
+        public String getAndroidURL() {
+            return androidURL;
+        }
+
+        public void setAndroidURL(String androidURL) {
+            this.androidURL = androidURL;
+        }
+
+        public String getIosURL() {
+            return iosURL;
+        }
+
+        public void setIosURL(String iosURL) {
+            this.iosURL = iosURL;
+        }
+
+        public String getNote() {
+            return note;
+        }
+
+        public void setNote(String note) {
+            this.note = note;
+        }
+
+        @Override
+        public String toString() {
+            return JSONUtil.toJSONIgnoreException(this);
+        }
+    }
 }
