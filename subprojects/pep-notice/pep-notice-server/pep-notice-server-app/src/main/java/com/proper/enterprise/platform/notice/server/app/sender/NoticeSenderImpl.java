@@ -5,7 +5,9 @@ import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender;
+import com.proper.enterprise.platform.notice.server.api.util.AppUtil;
 import com.proper.enterprise.platform.notice.server.app.convert.RequestConvert;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
@@ -14,8 +16,8 @@ import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.api.model.Notice;
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
 import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService;
-import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO;
-import com.proper.enterprise.platform.notice.server.app.factory.NoticeSenderFactory;
+import com.proper.enterprise.platform.notice.server.api.vo.NoticeVO;
+import com.proper.enterprise.platform.notice.server.api.factory.NoticeSenderFactory;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,10 @@ public class NoticeSenderImpl implements NoticeSender {
 
     @Override
     public List<Notice> beforeSend(String appKey, NoticeRequest noticeRequest) throws NoticeException {
+        //已禁用或已删除的app不发送
+        if (!AppUtil.isEnable(appKey)) {
+            throw new ErrMsgException(appKey + " is disabled");
+        }
         List<Notice> notices = RequestConvert.convert(noticeRequest);
         NoticeSendHandler noticeSendHandler = NoticeSenderFactory.product(noticeRequest.getNoticeType());
         for (Notice notice : notices) {
@@ -122,19 +128,29 @@ public class NoticeSenderImpl implements NoticeSender {
                 return;
             }
             NoticeSendHandler noticeSendHandler = NoticeSenderFactory.product(notice.getNoticeType());
-            NoticeStatus noticeStatus = noticeSendHandler.getStatus(notice);
-            if (NoticeStatus.SUCCESS == noticeStatus) {
-                noticeDaoService.updateStatus(notice.getId(), NoticeStatus.SUCCESS);
-                return;
+            BusinessNoticeResult businessNoticeResult = noticeSendHandler.getStatus(notice);
+            switch (businessNoticeResult.getNoticeStatus()) {
+                case SUCCESS:
+                    noticeDaoService.updateStatus(notice.getId(), NoticeStatus.SUCCESS);
+                    return;
+                case PENDING:
+                    return;
+                case FAIL:
+                    noticeDaoService.updateToFail(notice.getId(), businessNoticeResult.getMessage());
+                    return;
+                case RETRY:
+                    //超过最大重试次数 记异常不再重试
+                    if (notice.getRetryCount() >= maxRetryCount) {
+                        noticeDaoService.updateToFail(notice.getId(), "Max retry");
+                        return;
+                    }
+                    //未超过最大重试次数 重试
+                    noticeDaoService.addRetryCount(notice.getId());
+                    noticeDaoService.updateStatus(notice.getId(), NoticeStatus.RETRY);
+                    return;
+                default:
+                    noticeDaoService.updateToFail(notice.getId(), "business status is not support");
             }
-            //超过最大重试次数 记异常不再重试
-            if (notice.getRetryCount() >= maxRetryCount) {
-                noticeDaoService.updateToFail(notice.getId(), "Max retry");
-                return;
-            }
-            //未超过最大重试次数 重试
-            noticeDaoService.addRetryCount(notice.getId());
-            noticeDaoService.updateStatus(notice.getId(), NoticeStatus.RETRY);
         } catch (Exception e) {
             String stackTrace = getStackTrace(e);
             Notice updateNoticeVO = noticeDaoService.updateToFail(notice.getId(),

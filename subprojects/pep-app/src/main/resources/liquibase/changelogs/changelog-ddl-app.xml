@@ -86,7 +86,9 @@
             </column>
         </createTable>
     </changeSet>
-
+    <changeSet author="Wangyi (generated)-0917" id="1533780274460-201809170932">
+        <modifyDataType  tableName="PEP_USER_APPLICATIONS" columnName="APP_ID" newDataType="VARCHAR(1024)"/>
+    </changeSet>
     <changeSet author="Wangyi (generated)-0804" id="1533780274460-201808091013">
         <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_USER_APPLICATION_ID" tableName="PEP_USER_APPLICATIONS"/>
     </changeSet>

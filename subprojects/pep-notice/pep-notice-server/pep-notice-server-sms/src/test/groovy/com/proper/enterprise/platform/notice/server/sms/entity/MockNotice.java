@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.sms.entity;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -12,7 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MockNotice implements Notice {
+public class MockNotice extends BaseVO implements Notice {
     public MockNotice() {
     }
 

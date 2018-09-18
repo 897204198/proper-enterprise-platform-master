@@ -210,13 +210,8 @@ public class HuaweiPushApp extends BasePushApp {
             "grant_type=client_credentials&client_secret={0}&client_id={1}",
             URLEncoder.encode(theAppSecret, "UTF-8"), theAppid);
         String response = post(tokenUrl, msgBody);
-        JSONObject obj = null;
-        try {
-            obj = JSONObject.parseObject(response);
-        } catch (Exception e) {
-            LOGGER.error("huawei push get params tokenUrl {}, msgBody {}, response {}, exception {}", tokenUrl, msgBody, response, e);
-            throw e;
-        }
+
+        JSONObject obj = JSONObject.parseObject(response);
         accessToken = obj.getString("access_token");
         tokenExpiredTime = System.currentTimeMillis() + obj.getLong("expires_in") * 1000 - 5 * 60 * 1000;
     }

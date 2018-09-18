@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
+@Service("accessTokenService")
 public class AccessTokenServiceImpl implements AccessTokenService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenServiceImpl.class);

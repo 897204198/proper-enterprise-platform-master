@@ -1,0 +1,14 @@
+dependencies {
+    compile project(':pep-core-mongo'),
+            project(':pep-file'),
+            project(':pep-notice-server-api'),
+            libraries.push_vendor_apns,
+            libraries.push_vendor_huawei,
+            libraries.push_vendor_xiaomi
+
+    testCompile project(':pep-auth-common'),
+                project(':pep-auth-common-jpa'),
+                project(':pep-dfs-mongo'),
+                project(':pep-test')
+    testRuntime project(':pep-cache-ehcache')
+}

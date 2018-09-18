@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -29,30 +30,33 @@ public class EmailNoticeConfigurator implements EmailNoticeExtConfigurator {
         this.emailRepository = emailRepository;
         this.i18NService = i18NService;
         for (EmailDocument emailDocument : emailRepository.findAll()) {
-            JavaMailSenderImpl javaMailSender = handlerDocument(emailDocument);
+            JavaMailSenderImpl javaMailSender = initJavaMailSender(emailDocument);
             configMap.put(emailDocument.getAppKey(), javaMailSender);
         }
     }
 
     @Override
-    public Map post(String appKey, Map config) {
+    public Map post(String appKey, Map config, HttpServletRequest request) {
         EmailDocument emailDocument = BeanUtil.convert(config, EmailDocument.class);
+        if (null != emailRepository.findByAppKey(appKey)) {
+            throw new ErrMsgException("The current configuration of the appKey already exists");
+        }
         emailDocument.setAppKey(appKey);
         emailDocument = emailRepository.insert(emailDocument);
-        JavaMailSenderImpl javaMailSender = handlerDocument(emailDocument);
+        JavaMailSenderImpl javaMailSender = initJavaMailSender(emailDocument);
         configMap.put(emailDocument.getAppKey(), javaMailSender);
         return JSONUtil.parseIgnoreException(emailDocument.toString(), Map.class);
     }
 
     @Override
-    public void delete(String appKey) {
+    public void delete(String appKey, HttpServletRequest request) {
         if (emailRepository.deleteByAppKey(appKey) > 0) {
             configMap.remove(appKey);
         }
     }
 
     @Override
-    public Map put(String appKey, Map config) {
+    public Map put(String appKey, Map config, HttpServletRequest request) {
         EmailDocument existDocument = emailRepository.findByAppKey(appKey);
         if (existDocument == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.email.notice.config.notExist"));
@@ -62,13 +66,13 @@ public class EmailNoticeConfigurator implements EmailNoticeExtConfigurator {
         emailDocument.setAppKey(appKey);
         emailDocument.setId(emailDocumentId);
         emailDocument = emailRepository.save(emailDocument);
-        JavaMailSenderImpl javaMailSender = handlerDocument(emailDocument);
+        JavaMailSenderImpl javaMailSender = initJavaMailSender(emailDocument);
         configMap.put(emailDocument.getAppKey(), javaMailSender);
         return JSONUtil.parseIgnoreException(emailDocument.toString(), Map.class);
     }
 
     @Override
-    public Map get(String appKey) {
+    public Map get(String appKey, HttpServletRequest request) {
         EmailDocument emailDocument = emailRepository.findByAppKey(appKey);
         if (emailDocument != null) {
             Map result = JSONUtil.parseIgnoreException(emailDocument.toString(), Map.class);
@@ -83,7 +87,7 @@ public class EmailNoticeConfigurator implements EmailNoticeExtConfigurator {
      * @param emailDocument 邮件配置信息
      * @return 邮件发送服务器
      */
-    private JavaMailSenderImpl handlerDocument(EmailDocument emailDocument) {
+    private JavaMailSenderImpl initJavaMailSender(EmailDocument emailDocument) {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setHost(emailDocument.getMailServerHost());
         javaMailSender.setUsername(emailDocument.getMailServerUsername());
@@ -94,7 +98,6 @@ public class EmailNoticeConfigurator implements EmailNoticeExtConfigurator {
         javaMailProperties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         javaMailProperties.setProperty("mail.smtp.starttls.enable", "true");
         javaMailProperties.setProperty("mail.from", emailDocument.getMailServerDefaultFrom());
-
         javaMailSender.setJavaMailProperties(javaMailProperties);
         return javaMailSender;
     }

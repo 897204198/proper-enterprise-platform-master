@@ -3,17 +3,17 @@ package com.proper.enterprise.platform.notice.server.sms.configurator;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.sms.document.SMSDocument;
 import com.proper.enterprise.platform.notice.server.sms.repository.SMSRepository;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Service("smsNoticeConfigurator")
-public class SMSNoticeConfigurator implements NoticeConfigurator {
+public class SMSNoticeConfigurator implements SMSConfigurator {
 
     @Autowired
     private SMSRepository smsRepository;
@@ -22,19 +22,22 @@ public class SMSNoticeConfigurator implements NoticeConfigurator {
     private I18NService i18NService;
 
     @Override
-    public Map post(String appKey, Map config) {
+    public Map post(String appKey, Map config, HttpServletRequest request) {
+        if (null != smsRepository.findByAppKey(appKey)) {
+            throw new ErrMsgException("The current configuration of the appKey already exists");
+        }
         SMSDocument smsDocument = BeanUtil.convert(config, SMSDocument.class);
         smsDocument.setAppKey(appKey);
         return JSONUtil.parseIgnoreException(smsRepository.insert(smsDocument).toString(), Map.class);
     }
 
     @Override
-    public void delete(String appKey) {
+    public void delete(String appKey, HttpServletRequest request) {
         smsRepository.deleteByAppKey(appKey);
     }
 
     @Override
-    public Map put(String appKey, Map config) {
+    public Map put(String appKey, Map config, HttpServletRequest request) {
         SMSDocument existDocument = smsRepository.findByAppKey(appKey);
         if (existDocument == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.sms.notice.config.notExist"));
@@ -44,6 +47,11 @@ public class SMSNoticeConfigurator implements NoticeConfigurator {
         smsDocument.setAppKey(appKey);
         smsDocument.setId(smsDocumentId);
         return JSONUtil.parseIgnoreException(smsRepository.save(smsDocument).toString(), Map.class);
+    }
+
+    @Override
+    public Map get(String appKey, HttpServletRequest request) {
+        return get(appKey);
     }
 
     @Override

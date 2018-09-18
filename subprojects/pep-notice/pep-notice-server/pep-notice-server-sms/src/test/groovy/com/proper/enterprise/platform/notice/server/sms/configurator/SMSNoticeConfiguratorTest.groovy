@@ -25,33 +25,33 @@ class SMSNoticeConfiguratorTest extends AbstractTest {
         deleteData('icmp')
         def config = [:]
         config.put('smsUrl', 'test')
-        config.put('smsSend', 'test')
+        config.put('smsTemplate', 'test')
         config.put('smsCharset', 'UTF-8')
 
-        Map res = smsNoticeConfigurator.post('appkey', config)
+        Map res = smsNoticeConfigurator.post('appkey', config, null)
         assert res.get('appKey') == 'appkey'
         assert res.get('smsUrl') == 'test'
-        assert res.get('smsSend') == 'test'
+        assert res.get('smsTemplate') == 'test'
         assert res.get('smsCharset') == 'UTF-8'
 
         config.put('smsUrl', 'test')
-        config.put('smsSend', 'test')
+        config.put('smsTemplate', 'test')
         config.put('smsCharset', 'UTF-8')
 
-        smsNoticeConfigurator.post('icmp', config)
+        smsNoticeConfigurator.post('icmp', config, null)
     }
 
     void deleteData(String appKey) {
-        smsNoticeConfigurator.delete(appKey)
+        smsNoticeConfigurator.delete(appKey, null)
     }
 
     void updateData() {
         def config = [:]
         config.put('smsUrl', 'test22')
-        config.put('smsSend', 'test')
+        config.put('smsTemplate', 'test')
         config.put('smsCharset', 'UTF-8')
 
-        Map res = smsNoticeConfigurator.put('appkey', config)
+        Map res = smsNoticeConfigurator.put('appkey', config, null)
         assert res.get('smsUrl') == 'test22'
     }
 }

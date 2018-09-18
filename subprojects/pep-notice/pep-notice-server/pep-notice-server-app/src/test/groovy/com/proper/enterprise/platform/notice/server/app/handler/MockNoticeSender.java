@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.notice.server.app.handler;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.app.global.SingletonMap;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
@@ -42,13 +43,13 @@ public class MockNoticeSender implements NoticeSendHandler {
     }
 
     @Override
-    public NoticeStatus getStatus(ReadOnlyNotice notice) {
+    public BusinessNoticeResult getStatus(ReadOnlyNotice notice) {
         if (MOCK_RETRY_STATUS.equals(notice.getAppKey())) {
-            return NoticeStatus.FAIL;
+            return new BusinessNoticeResult(NoticeStatus.RETRY);
         }
         if (MOCK_ERR_EXCEPTION.equals(notice.getAppKey())) {
-            throw new ErrMsgException(MOCK_ERR_EXCEPTION);
+            return new BusinessNoticeResult(NoticeStatus.FAIL, "error");
         }
-        return NoticeStatus.SUCCESS;
+        return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }
 }

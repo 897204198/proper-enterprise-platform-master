@@ -25,7 +25,7 @@ public class SMSDocument extends BaseDocument {
     /**
      * 短信服务发送模板
      */
-    private String smsSend;
+    private String smsTemplate;
 
     /**
      * 短信服务发送编码
@@ -48,12 +48,12 @@ public class SMSDocument extends BaseDocument {
         this.smsUrl = smsUrl;
     }
 
-    public String getSmsSend() {
-        return smsSend;
+    public String getSmsTemplate() {
+        return smsTemplate;
     }
 
-    public void setSmsSend(String smsSend) {
-        this.smsSend = smsSend;
+    public void setSmsTemplate(String smsTemplate) {
+        this.smsTemplate = smsTemplate;
     }
 
     public String getSmsCharset() {
