@@ -28,7 +28,7 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IOSNoticeSender.class);
 
-    private static final String CUSTOM_PROPERTY_KEY = "customs";
+
 
     private IOSNoticeClientManagerApi iosNoticeClientManager;
 

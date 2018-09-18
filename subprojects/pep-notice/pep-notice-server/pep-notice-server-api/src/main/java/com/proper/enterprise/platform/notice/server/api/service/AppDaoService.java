@@ -9,10 +9,10 @@ public interface AppDaoService {
     /**
      * 根据Id获取应用
      *
-     * @param appId 应用Id
+     * @param appKey 应用唯一标识
      * @return 应用
      */
-    App get(String appId);
+    App get(String appKey);
 
     /**
      * 分页查询app

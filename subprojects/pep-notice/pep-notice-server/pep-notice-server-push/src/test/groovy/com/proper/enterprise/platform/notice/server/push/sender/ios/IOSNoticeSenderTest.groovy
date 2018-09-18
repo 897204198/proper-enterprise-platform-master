@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.auth.common.vo.AccessTokenVO
 import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.core.utils.AntResourceUtil
 import com.proper.enterprise.platform.file.vo.FileVO
+import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler
 import com.proper.enterprise.platform.notice.server.push.constant.IOSConstant
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument
@@ -16,7 +17,6 @@ import com.proper.enterprise.platform.notice.server.push.enums.PushDeviceTypeEnu
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
-import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Ignore
@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
+import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -43,6 +44,9 @@ class IOSNoticeSenderTest extends AbstractTest {
 
     @Autowired
     PushNoticeMsgJpaRepository pushNoticeMsgJpaRepository
+
+    @Autowired
+    private NoticeConfigurator pushNoticeConfigurator
 
     @Test
     public void iosNoticeSendTest() {
@@ -67,15 +71,20 @@ class IOSNoticeSenderTest extends AbstractTest {
         conf.put("certPassword", IOSConstant.PASSWORD)
         conf.put("pushPackage", IOSConstant.TOPIC)
         conf.put("certificateId", fileP12VO.getId())
-        post('/notice/server/config/' + NoticeType.PUSH + "?accessToken=" +
-            appKey + "&pushChannel=IOS", JSONUtil.toJSON(conf), HttpStatus.CREATED)
+
+        MockHttpServletRequest request = new MockHttpServletRequest()
+        request.setParameter("pushChannel", PushChannelEnum.IOS.toString())
+        pushNoticeConfigurator.post(appKey, conf, request)
 
         MockPushNotice mockPushNotice = new MockPushNotice()
         mockPushNotice.setAppKey(appKey)
         mockPushNotice.setTargetTo(IOSConstant.TARGET_TO)
         mockPushNotice.setTitle("555")
         mockPushNotice.setContent("66666qwe")
+        mockPushNotice.setId("testtest")
         iosNoticeSender.send(mockPushNotice)
+        waitExecutorDone()
+        assert pushNoticeMsgJpaRepository.findPushNoticeMsgEntitiesByNoticeId("testtest").getContent() == "66666qwe"
     }
 
     @Test
@@ -131,7 +140,7 @@ class IOSNoticeSenderTest extends AbstractTest {
         mockPushNotice.setStatus(NoticeStatus.SUCCESS)
         mockPushNotice.setTargetExtMsg(AbstractPushSendSupport.PUSH_CHANNEL_KEY, "IOS")
         iosNoticeSender.afterSend(mockPushNotice)
-        Thread.sleep(3000)
+        waitExecutorDone()
         boolean flag = false
         for (PushNoticeMsgEntity pushNoticeMsg : pushNoticeMsgJpaRepository.findAll()) {
             if ("appKeyAfterSend" == pushNoticeMsg.getAppKey()

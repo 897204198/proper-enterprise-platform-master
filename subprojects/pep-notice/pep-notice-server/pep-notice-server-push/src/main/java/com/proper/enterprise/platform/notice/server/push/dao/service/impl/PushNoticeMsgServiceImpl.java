@@ -75,6 +75,7 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
             default:
                 break;
         }
+        pushNoticeMsg.setStatus(NoticeStatus.PENDING);
         pushMsgJpaRepository.save(pushNoticeMsg);
     }
 

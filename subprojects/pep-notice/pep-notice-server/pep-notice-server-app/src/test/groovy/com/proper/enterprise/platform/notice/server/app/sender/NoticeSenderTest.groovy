@@ -55,7 +55,7 @@ class NoticeSenderTest extends AbstractServerAppTest {
         noticeVO.setNoticeType(NoticeType.MOCK)
         noticeSender.afterSend(noticeVO)
         assert "a" == SingletonMap.getSingletMap().get("mockErrAfter")
-        Thread.sleep(3000)
+        waitExecutorDone()
         assert "b" == SingletonMap.getSingletMap().get("mockErrAfter")
     }
 
@@ -70,7 +70,7 @@ class NoticeSenderTest extends AbstractServerAppTest {
         noticeVO.setContent("content")
         noticeVO.setTargetTo("aa")
         noticeSender.sendAsync(noticeVO)
-        Thread.sleep(5000)
+        waitExecutorDone()
         assert appKey == SingletonMap.getSingletMap().get(appKey)
         assert noticeRepository.findAll().size() == 1
         assert noticeRepository.findAll().get(0).getBatchId() == "batchId"
@@ -83,7 +83,7 @@ class NoticeSenderTest extends AbstractServerAppTest {
         DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)
         noticeSender.syncPendingNoticesStatusAsync(LocalDateTime.parse("2018-09-03 17:30:21", dfm),
             LocalDateTime.parse("2018-09-03 17:32:22", dfm))
-        Thread.sleep(5000)
+        waitExecutorDone()
         assert noticeRepository.findOne('1-PENDING').getStatus() == NoticeStatus.SUCCESS
         assert noticeRepository.findOne('4-PENDING').getStatus() == NoticeStatus.RETRY
         assert noticeRepository.findOne('4-PENDING').getRetryCount() == 2
@@ -99,7 +99,7 @@ class NoticeSenderTest extends AbstractServerAppTest {
         DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)
         noticeSender.retryNoticesAsync(LocalDateTime.parse("2018-09-03 17:30:21", dfm),
             LocalDateTime.parse("2018-09-03 17:32:22", dfm))
-        Thread.sleep(5000)
+        waitExecutorDone()
         assert noticeRepository.findOne('1-RETRY').getStatus() == NoticeStatus.PENDING
         assert noticeRepository.findOne('2-RETRY').getStatus() == NoticeStatus.PENDING
         assert noticeRepository.findOne('4-RETRY').getStatus() == NoticeStatus.FAIL
