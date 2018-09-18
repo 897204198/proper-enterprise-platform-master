@@ -30,12 +30,12 @@ public class PushDeviceController {
             @RequestParam(value = "device_other_info", defaultValue = "") final String deviceOtherInfo) {
         LOGGER.debug("appkey:" + appkey);
         LOGGER.debug("userid:" + userid);
-        LOGGER.debug("deviceid:" + deviceid);
-        LOGGER.debug("device_type:" + strDeviceType);
-        LOGGER.debug("push_token:" + pushToken);
         LOGGER.debug("push_mode:" + strPushMode);
+        LOGGER.debug("push_token:" + pushToken);
+        LOGGER.debug("deviceid:" + deviceid);
         LOGGER.debug("device_other_info:" + deviceOtherInfo);
-        service.save(userid, deviceid, pushToken, appkey, strDeviceType, strPushMode, deviceOtherInfo);
+        LOGGER.debug("device_type:" + strDeviceType);
+        service.save(appkey, userid, strPushMode, pushToken, deviceid, deviceOtherInfo, strDeviceType);
     }
 
 }

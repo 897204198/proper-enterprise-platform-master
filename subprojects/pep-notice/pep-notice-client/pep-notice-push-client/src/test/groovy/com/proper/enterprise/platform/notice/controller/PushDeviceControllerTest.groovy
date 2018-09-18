@@ -33,7 +33,7 @@ class PushDeviceControllerTest extends AbstractTest{
     }
 
     @Test
-    void startpushTest() {
+    void save() {
 
         Map<String, Object> param = new HashMap<>()
 
@@ -53,7 +53,7 @@ class PushDeviceControllerTest extends AbstractTest{
         param.put("deviceid", deviceid)
         pushRequest(URL_STARTPUSH, param)
         PushDeviceEntity p = deviceRepo.findByUserId(userid)
-        assert p.userId() == userid
+        assert p.userId == userid
     }
 
     /**
