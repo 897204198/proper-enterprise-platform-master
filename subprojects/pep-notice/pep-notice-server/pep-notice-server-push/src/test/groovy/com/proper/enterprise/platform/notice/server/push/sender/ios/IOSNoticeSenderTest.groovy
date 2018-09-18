@@ -84,7 +84,7 @@ class IOSNoticeSenderTest extends AbstractTest {
         mockPushNotice.setContent("66666qwe")
         mockPushNotice.setId("testtest")
         iosNoticeSender.send(mockPushNotice)
-        Thread.sleep(5000)
+        waitExecutorDone()
         assert pushNoticeMsgJpaRepository.findPushNoticeMsgEntitiesByNoticeId("testtest").getContent() == "66666qwe"
     }
 
@@ -141,7 +141,7 @@ class IOSNoticeSenderTest extends AbstractTest {
         mockPushNotice.setStatus(NoticeStatus.SUCCESS)
         mockPushNotice.setTargetExtMsg(AbstractPushSendSupport.PUSH_CHANNEL_KEY, "IOS")
         iosNoticeSender.afterSend(mockPushNotice)
-        Thread.sleep(3000)
+        waitExecutorDone()
         boolean flag = false
         for (PushNoticeMsgEntity pushNoticeMsg : pushNoticeMsgJpaRepository.findAll()) {
             if ("appKeyAfterSend" == pushNoticeMsg.getAppKey()

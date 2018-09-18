@@ -45,9 +45,9 @@ class NoticeStatusSyncSchedulerTest extends AbstractTest {
         noticeRetryVO.setContent("content")
         noticeRetryVO.setTargetTo("aa")
         noticeSender.sendAsync(noticeRetryVO)
-        Thread.sleep(3000)
+        waitExecutorDone()
         noticeStatusSyncScheduler.syncPending()
-        Thread.sleep(3000)
+        waitExecutorDone()
         List<NoticeEntity> notices = noticeRepository.findAll()
         assert notices.size() == 3
         for (NoticeEntity notice : notices) {
@@ -87,9 +87,9 @@ class NoticeStatusSyncSchedulerTest extends AbstractTest {
         noticeFail.setStatus(NoticeStatus.RETRY)
         noticeFail.setRetryCount(1)
         noticeRepository.save(noticeFail)
-        Thread.sleep(3000)
+        waitExecutorDone()
         noticeStatusSyncScheduler.syncRetry()
-        Thread.sleep(3000)
+        waitExecutorDone()
         List<NoticeEntity> notices = noticeRepository.findAll()
         assert notices.size() == 2
         for (NoticeEntity notice : notices) {
