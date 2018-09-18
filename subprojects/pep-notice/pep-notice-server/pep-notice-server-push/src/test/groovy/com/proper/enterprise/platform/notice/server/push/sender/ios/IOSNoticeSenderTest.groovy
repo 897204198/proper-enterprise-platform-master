@@ -17,7 +17,6 @@ import com.proper.enterprise.platform.notice.server.push.enums.PushDeviceTypeEnu
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
-import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Ignore
