@@ -4,9 +4,14 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.utils.MacAddressUtil;
 import org.bson.Document;
-import org.joda.time.LocalDateTime;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 public class MongoDBAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     private static final String MAC_COMPRESSED_ADDRESS;
@@ -21,7 +26,8 @@ public class MongoDBAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     protected void append(ILoggingEvent eventObject) {
         Document document = new Document();
         document.append("lv", eventObject.getLevel().toString());
-        String timestamp = new LocalDateTime(eventObject.getTimeStamp()).toString("yyyy-MM-dd HH:mm:ss.SSS");
+        String timestamp = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventObject.getTimeStamp()), ZoneId.of("GMT")).format(DateTimeFormatter
+                .ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT));
         document.append("tm", timestamp);
         StackTraceElement stackTraceElement = eventObject.getCallerData()[0];
         document.append("clz", stackTraceElement.getClassName() + ":" + stackTraceElement.getLineNumber());

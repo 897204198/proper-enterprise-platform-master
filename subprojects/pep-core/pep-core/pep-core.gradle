@@ -5,7 +5,6 @@ dependencies {
             libraries.hibernate_validator,
             libraries.jackson_databind,
             libraries.javax_el,
-            libraries.joda_time,
             libraries.mail,
             libraries.okhttp,
             libraries.pinyin4j,
