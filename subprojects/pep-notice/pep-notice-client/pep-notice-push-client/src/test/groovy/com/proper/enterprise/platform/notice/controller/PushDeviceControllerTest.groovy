@@ -16,7 +16,7 @@ import org.springframework.http.MediaType
 
 class PushDeviceControllerTest extends AbstractTest{
 
-    private static final String URL_STARTPUSH = "/push/device/startpush"
+    private static final String URL_STARTPUSH = "/push/device"
 
     @Autowired
     PushDeviceRepository deviceRepo
@@ -52,8 +52,8 @@ class PushDeviceControllerTest extends AbstractTest{
         param.put("userid", userid)
         param.put("deviceid", deviceid)
         pushRequest(URL_STARTPUSH, param)
-        PushDeviceEntity p = deviceRepo.findByUserid(userid)
-        assert p.getUserid() == userid
+        PushDeviceEntity p = deviceRepo.findByUserId(userid)
+        assert p.userId() == userid
     }
 
     /**
