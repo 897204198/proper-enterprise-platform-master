@@ -21,8 +21,8 @@ class ApiNoticeConfiguratorResourceTest extends AbstractTest {
         accessTokenService.saveOrUpdate(accessToken)
         Map config = new HashMap()
         config.put("a", "a")
-        post("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, JSONUtil.toJSON(config), HttpStatus.CREATED)
-        Map searchConf = JSONUtil.parse(get("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        post("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, JSONUtil.toJSON(config), HttpStatus.CREATED)
+        Map searchConf = JSONUtil.parse(get("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert searchConf.get("a") == "a"
     }
 
@@ -33,12 +33,12 @@ class ApiNoticeConfiguratorResourceTest extends AbstractTest {
         accessTokenService.saveOrUpdate(accessToken)
         Map config = new HashMap()
         config.put("a", "a")
-        post("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, JSONUtil.toJSON(config), HttpStatus.CREATED)
-        Map searchConf = JSONUtil.parse(get("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        post("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, JSONUtil.toJSON(config), HttpStatus.CREATED)
+        Map searchConf = JSONUtil.parse(get("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert searchConf.get("a") == "a"
         config.put("a", "a1")
-        put("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, JSONUtil.toJSON(config), HttpStatus.OK)
-        Map searchPutConf = JSONUtil.parse(get("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        put("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, JSONUtil.toJSON(config), HttpStatus.OK)
+        Map searchPutConf = JSONUtil.parse(get("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert searchPutConf.get("a") == "a1"
         waitExecutorDone()
     }
@@ -50,10 +50,10 @@ class ApiNoticeConfiguratorResourceTest extends AbstractTest {
         accessTokenService.saveOrUpdate(accessToken)
         Map config = new HashMap()
         config.put("a", "a")
-        post("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, JSONUtil.toJSON(config), HttpStatus.CREATED)
-        Map searchConf = JSONUtil.parse(get("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        post("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, JSONUtil.toJSON(config), HttpStatus.CREATED)
+        Map searchConf = JSONUtil.parse(get("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         assert searchConf.get("a") == "a"
-        delete("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.NO_CONTENT)
-        assert get("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.OK).getResponse().getContentAsString() == ""
+        delete("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.NO_CONTENT)
+        assert get("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + appKey, HttpStatus.OK).getResponse().getContentAsString() == ""
     }
 }

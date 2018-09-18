@@ -29,11 +29,11 @@ public class AppDaoServiceImpl implements AppDaoService {
 
     private AccessTokenService accessTokenService;
 
-    private static final String RESOURCE_DESC = "POST:/rest/notice/server/send,"
-        + "POST:/rest/notice/server/config,"
-        + "PUT:/rest/notice/server/config,"
-        + "DELETE:/rest/notice/server/config,"
-        + "GET:/rest/notice/server/config";
+    private static final String RESOURCE_DESC = "POST:/notice/server/send,"
+        + "POST:/notice/server/config,"
+        + "PUT:/notice/server/config,"
+        + "DELETE:/notice/server/config,"
+        + "GET:/notice/server/config";
 
     @Autowired
     public AppDaoServiceImpl(AppRepository appRepository, @Qualifier("accessTokenService") AccessTokenService accessTokenService) {
@@ -42,8 +42,8 @@ public class AppDaoServiceImpl implements AppDaoService {
     }
 
     @Override
-    public App get(String appId) {
-        return BeanUtil.convert(appRepository.findOne(appId), AppVO.class);
+    public App get(String appKey) {
+        return BeanUtil.convert(appRepository.findByAppKey(appKey), AppVO.class);
     }
 
     @Override

@@ -42,13 +42,13 @@ class ApiNoticeSendResourceTest extends AbstractServerAppTest {
         noticeRequest.setNoticeExtMsg("noticeExt", "noticeExt")
         //token验证
         AppVO appVO = initAppReturnVO('sendNoticeTest')
-        post("/rest/notice/server/send?access_token=" + appVO.getAppToken(), JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
+        post("/notice/server/send?access_token=" + appVO.getAppToken(), JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
         enableApp(appVO.getId(), false)
-        "sendNoticeTest is disabled" == post("/rest/notice/server/send?access_token=" + appVO.getAppToken(), JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        "sendNoticeTest is disabled" == post("/notice/server/send?access_token=" + appVO.getAppToken(), JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
         enableApp(appVO.getId(), true)
-        post("/rest/notice/server/send?access_token=" + appVO.getAppToken(), JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
+        post("/notice/server/send?access_token=" + appVO.getAppToken(), JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
         deleteApp(appVO.getId())
-        post("/rest/notice/server/send?access_token=" + appVO.getAppToken(), JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR)
+        post("/notice/server/send?access_token=" + appVO.getAppToken(), JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     @Test
@@ -65,19 +65,19 @@ class ApiNoticeSendResourceTest extends AbstractServerAppTest {
         noticeRequest.setTargets(targets)
         noticeRequest.setNoticeExtMsg("noticeExt", "noticeExt")
         //token验证
-        post("/rest/notice/server/send?access_token=sendNoticeTest", JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR)
+        post("/notice/server/send?access_token=sendNoticeTest", JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR)
 
         def accessToken = initApp('sendNoticeTest')
         noticeRequest.setBatchId("sendNoticeTestsendNoticeTestsendNoticeTestsendNoticeTestsendNoticeTestsendNoticeTestsendNoticeTestsendNoticeTest")
         //测批次号长度
-        assert I18NUtil.getMessage("notice.server.param.batchId.isTooLong") == post("/rest/notice/server/send?access_token=" + accessToken,
+        assert I18NUtil.getMessage("notice.server.param.batchId.isTooLong") == post("/notice/server/send?access_token=" + accessToken,
             JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
         //测target扩展信息长度
         noticeRequest.setBatchId("sendNoticeTest")
         for (int i = 0; i < 2048; i++) {
             target.setTargetExtMsg("targetExt" + i, "targetExt")
         }
-        assert I18NUtil.getMessage("notice.server.param.targetExtMsg.isTooLong") == post("/rest/notice/server/send?access_token=" + accessToken,
+        assert I18NUtil.getMessage("notice.server.param.targetExtMsg.isTooLong") == post("/notice/server/send?access_token=" + accessToken,
             JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
         //测notice扩展信息长度
         Map targetExtMap = new HashMap()
@@ -86,14 +86,14 @@ class ApiNoticeSendResourceTest extends AbstractServerAppTest {
         for (int i = 0; i < 2048; i++) {
             noticeRequest.setNoticeExtMsg("noticeExt" + i, "noticeExt")
         }
-        assert I18NUtil.getMessage("notice.server.param.noticeExtMsg.isTooLong") == post("/rest/notice/server/send?access_token=" + accessToken,
+        assert I18NUtil.getMessage("notice.server.param.noticeExtMsg.isTooLong") == post("/notice/server/send?access_token=" + accessToken,
             JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
         //测targetTo为空
         Map noticeExtMap = new HashMap()
         noticeExtMap.put("noticeExt", "noticeExt")
         noticeRequest.setNoticeExtMsg(noticeExtMap)
         target.setTo("")
-        assert I18NUtil.getMessage("notice.server.param.target.cantBeEmpty") == post("/rest/notice/server/send?access_token=" + accessToken,
+        assert I18NUtil.getMessage("notice.server.param.target.cantBeEmpty") == post("/notice/server/send?access_token=" + accessToken,
             JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
     }
 
@@ -114,7 +114,7 @@ class ApiNoticeSendResourceTest extends AbstractServerAppTest {
         targets.add(target)
         noticeRequest.setTargets(targets)
         noticeRequest.setNoticeExtMsg("noticeExt", "noticeExt")
-        post("/rest/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
+        post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
         waitExecutorDone()
         List searchPendingList = JSONUtil.parse(get("/notice/server?appKey=sendNoticeTest&batchId=sendNoticeTest",
             HttpStatus.OK).getResponse().getContentAsString(), List.class)
@@ -146,7 +146,7 @@ class ApiNoticeSendResourceTest extends AbstractServerAppTest {
         targets.add(target)
         noticeRequest.setTargets(targets)
         noticeRequest.setNoticeExtMsg("noticeExt", "noticeExt")
-        post("/rest/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
+        post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
         waitExecutorDone()
         mockUser("1", "admin")
         List searchErrList = JSONUtil.parse(get("/notice/server?appKey=mockErrSend&batchId=mockErrSend",
@@ -172,7 +172,7 @@ class ApiNoticeSendResourceTest extends AbstractServerAppTest {
         targets.add(target)
         noticeRequest.setTargets(targets)
         noticeRequest.setNoticeExtMsg("noticeExt", "noticeExt")
-        post("/rest/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
+        post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
         waitExecutorDone()
         List searchPendingList = JSONUtil.parse(get("/notice/server?appKey=mockRetryStatus&batchId=mockRetryStatus",
             HttpStatus.OK).getResponse().getContentAsString(), List.class)

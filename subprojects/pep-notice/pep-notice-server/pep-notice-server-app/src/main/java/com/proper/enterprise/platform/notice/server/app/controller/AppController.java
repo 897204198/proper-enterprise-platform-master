@@ -34,9 +34,9 @@ public class AppController extends BaseController {
             describe, enable, getPageRequest(new Sort(Sort.Direction.DESC, "createTime"))));
     }
 
-    @GetMapping(value = "/appId/{appId}")
-    public ResponseEntity<App> get(@PathVariable String appId) {
-        return responseOfGet(appDaoService.get(appId));
+    @GetMapping(value = "/appKey/{appKey}")
+    public ResponseEntity<App> get(@PathVariable String appKey) {
+        return responseOfGet(appDaoService.get(appKey));
     }
 
     @GetMapping(value = "/appKey")

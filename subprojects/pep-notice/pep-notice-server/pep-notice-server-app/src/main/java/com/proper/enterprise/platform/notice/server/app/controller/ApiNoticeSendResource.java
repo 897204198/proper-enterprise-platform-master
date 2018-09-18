@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.app.rest;
+package com.proper.enterprise.platform.notice.server.app.controller;
 
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.core.controller.BaseController;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/rest/notice/server/send")
+@RequestMapping(path = "/notice/server/send")
 public class ApiNoticeSendResource extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiNoticeSendResource.class);

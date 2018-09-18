@@ -30,16 +30,16 @@ class AppControllerTest extends AbstractTest {
         //验证token
         Map config = new HashMap()
         config.put("a", "a")
-        post("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + token, JSONUtil.toJSON(config), HttpStatus.CREATED)
+        post("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + token, JSONUtil.toJSON(config), HttpStatus.CREATED)
 
-        assert null != get(putApp.getId())
+        assert null != get(putApp.getAppKey())
 
         //验证停用
         enable(putApp.getId(), false)
         assert !AppUtil.isEnable(putApp.getAppKey())
 
         delete(putApp.getId())
-        post("/rest/notice/server/config/" + NoticeType.MOCK + "?access_token=" + token, JSONUtil.toJSON(config), HttpStatus.INTERNAL_SERVER_ERROR)
+        post("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + token, JSONUtil.toJSON(config), HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     private AppVO post(AppVO appVO) {
@@ -50,8 +50,8 @@ class AppControllerTest extends AbstractTest {
         return JSONUtil.parse(put('/notice/server/app/' + appVO.getId(), JSONUtil.toJSON(appVO), HttpStatus.OK).getResponse().getContentAsString(), AppVO.class)
     }
 
-    private AppVO get(String appId) {
-        return JSONUtil.parse(get('/notice/server/app/appId/' + appId, HttpStatus.OK).getResponse().getContentAsString(), AppVO.class)
+    private AppVO get(String appKey) {
+        return JSONUtil.parse(get('/notice/server/app/appKey/' + appKey, HttpStatus.OK).getResponse().getContentAsString(), AppVO.class)
     }
 
     private void enable(String appIds, boolean enable) {
