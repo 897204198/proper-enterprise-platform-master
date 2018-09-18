@@ -67,7 +67,7 @@ public class AppVersionManagerController extends BaseController {
         return responseOfPost(appVersionService.release(appVersionDocument));
     }
 
-    private class AppVersionVO {
+    public static class AppVersionVO {
 
         @ApiModelProperty("‍版本号")
         private String version;
