@@ -20,16 +20,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/notice/server/send")
-public class ApiNoticeSendResource extends BaseController {
+public class NoticeSendController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApiNoticeSendResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NoticeSendController.class);
 
     private NoticeSender noticeSendService;
 
     private AccessTokenService accessTokenService;
 
     @Autowired
-    public ApiNoticeSendResource(NoticeSender noticeSendService, @Qualifier("accessTokenService") AccessTokenService accessTokenService) {
+    public NoticeSendController(NoticeSender noticeSendService, @Qualifier("accessTokenService") AccessTokenService accessTokenService) {
         this.noticeSendService = noticeSendService;
         this.accessTokenService = accessTokenService;
     }

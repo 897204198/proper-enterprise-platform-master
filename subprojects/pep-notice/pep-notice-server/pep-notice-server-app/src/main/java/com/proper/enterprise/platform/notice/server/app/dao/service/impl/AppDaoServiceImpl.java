@@ -29,6 +29,9 @@ public class AppDaoServiceImpl implements AppDaoService {
 
     private AccessTokenService accessTokenService;
 
+    /**
+     * 应用拥有的权限
+     */
     private static final String RESOURCE_DESC = "POST:/notice/server/send,"
         + "POST:/notice/server/config,"
         + "PUT:/notice/server/config,"

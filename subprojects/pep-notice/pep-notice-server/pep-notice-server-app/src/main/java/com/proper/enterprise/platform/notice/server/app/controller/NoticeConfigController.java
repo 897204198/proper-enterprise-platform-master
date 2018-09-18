@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.notice.server.app.controller;
 
-import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -16,13 +15,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/notice/server/config")
-@AuthcIgnore
-public class ApiNoticeConfiguratorResource extends BaseController {
+public class NoticeConfigController extends BaseController {
 
     private AccessTokenService accessTokenService;
 
     @Autowired
-    public ApiNoticeConfiguratorResource(@Qualifier("accessTokenService") AccessTokenService accessTokenService) {
+    public NoticeConfigController(@Qualifier("accessTokenService") AccessTokenService accessTokenService) {
         this.accessTokenService = accessTokenService;
     }
 
