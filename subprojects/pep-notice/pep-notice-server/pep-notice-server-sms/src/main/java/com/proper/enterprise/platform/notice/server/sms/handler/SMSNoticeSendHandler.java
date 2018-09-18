@@ -31,7 +31,7 @@ public class SMSNoticeSendHandler implements NoticeSendHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SMSNoticeSendHandler.class);
 
-    private static final String SUCCESS = "0:";
+    private static final String SUCCESS = "Status=Succ";
 
     @Autowired
     private SMSLimitCheckService smsLimitCheckService;
@@ -57,7 +57,7 @@ public class SMSNoticeSendHandler implements NoticeSendHandler {
         String charset = (String) smsNoticeConfigurator.get("smsCharset");
         String data = "";
         try {
-            data = MessageFormat.format((String) smsNoticeConfigurator.get("smsSend"), phone,
+            data = MessageFormat.format((String) smsNoticeConfigurator.get("smsTemplate"), phone,
                 URLEncoder.encode(message, charset));
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("Exception occurs when composing POST data: phone({}), message({})", phone, message, e);
@@ -69,7 +69,7 @@ public class SMSNoticeSendHandler implements NoticeSendHandler {
             @Override
             public void onSuccess(ResponseEntity<byte[]> responseEntity) {
                 String resBody = new String(responseEntity.getBody(), Charset.forName(charset));
-                if (!resBody.startsWith(SUCCESS)) {
+                if (!resBody.contains(SUCCESS)) {
                     LOGGER.error("Send sms (POST: {}, data: {}) FAILED! Status code: {}, Response body: {}",
                         url, finalData, responseEntity.getStatusCode(), resBody);
                     throw new ErrMsgException(i18NService.getMessage("pep.notice.sms.send.error"));
