@@ -11,7 +11,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -36,7 +35,7 @@ public class EmailNoticeConfigurator implements EmailNoticeExtConfigurator {
     }
 
     @Override
-    public Map post(String appKey, Map config, HttpServletRequest request) {
+    public Map post(String appKey, Map<String, Object> config, Map<String, Object> params) {
         EmailDocument emailDocument = BeanUtil.convert(config, EmailDocument.class);
         if (null != emailRepository.findByAppKey(appKey)) {
             throw new ErrMsgException("The current configuration of the appKey already exists");
@@ -49,14 +48,14 @@ public class EmailNoticeConfigurator implements EmailNoticeExtConfigurator {
     }
 
     @Override
-    public void delete(String appKey, HttpServletRequest request) {
+    public void delete(String appKey, Map<String, Object> params) {
         if (emailRepository.deleteByAppKey(appKey) > 0) {
             configMap.remove(appKey);
         }
     }
 
     @Override
-    public Map put(String appKey, Map config, HttpServletRequest request) {
+    public Map put(String appKey, Map<String, Object> config, Map<String, Object> params) {
         EmailDocument existDocument = emailRepository.findByAppKey(appKey);
         if (existDocument == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.email.notice.config.notExist"));
@@ -72,7 +71,7 @@ public class EmailNoticeConfigurator implements EmailNoticeExtConfigurator {
     }
 
     @Override
-    public Map get(String appKey, HttpServletRequest request) {
+    public Map get(String appKey, Map<String, Object> params) {
         EmailDocument emailDocument = emailRepository.findByAppKey(appKey);
         if (emailDocument != null) {
             Map result = JSONUtil.parseIgnoreException(emailDocument.toString(), Map.class);

@@ -15,7 +15,6 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
-import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -44,8 +43,8 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
         conf.put("certPassword", IOSConstant.PASSWORD)
         conf.put("pushPackage", "1234")
         conf.put("certificateId", "111")
-        MockHttpServletRequest request = new MockHttpServletRequest()
-        request.setParameter("pushChannel", PushChannelEnum.IOS.toString())
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.IOS.toString())
         try {
             pushNoticeConfigurator.post(appKey, conf, request)
         } catch (Exception e) {
@@ -95,8 +94,8 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
         String appKey = 'iosConfPutGetDelToken'
         def accessToken = new AccessTokenVO(appKey, 'for test using', appKey, 'GET:/test')
         accessTokenService.saveOrUpdate(accessToken)
-        MockHttpServletRequest request = new MockHttpServletRequest()
-        request.setParameter("pushChannel", PushChannelEnum.IOS.toString())
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.IOS.toString())
         //上传P12证书
         Resource[] resourcesP12 = AntResourceUtil.getResources(IOSConstant.CENT_PATH)
         String resultP12 = mockMvc.perform(

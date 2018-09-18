@@ -33,17 +33,17 @@ class XiaomiNoticeSenderTest extends AbstractTest {
         Map<String, Object> config = new HashMap<>()
         config.put("appSecret", APPSECRET)
         config.put("pushPackage", PACKAGENAME)
-        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest()
-        mockHttpServletRequest.setParameter("pushChannel", PushChannelEnum.XIAOMI.toString())
-        xiaomiNoticeConfigurator.post(appKey, config, mockHttpServletRequest)
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.XIAOMI.toString())
+        xiaomiNoticeConfigurator.post(appKey, config, request)
     }
 
     @After
     void destroyData() {
         String appKey = APPKEY
-        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest()
-        mockHttpServletRequest.setParameter("pushChannel", PushChannelEnum.XIAOMI.toString())
-        xiaomiNoticeConfigurator.delete(appKey, mockHttpServletRequest)
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.XIAOMI.toString())
+        xiaomiNoticeConfigurator.delete(appKey, request)
     }
 
     @Test

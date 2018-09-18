@@ -10,7 +10,6 @@ import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.mock.web.MockHttpServletRequest
 
 class HuaweiNoticeSenderTest extends AbstractTest {
 
@@ -27,8 +26,8 @@ class HuaweiNoticeSenderTest extends AbstractTest {
         config.put('pushPackage', HuaweiConstant.PACKAGE_NAME)
         config.put('appId', HuaweiConstant.CLIENT_ID)
 
-        MockHttpServletRequest request = new MockHttpServletRequest()
-        request.setParameter("pushChannel", PushChannelEnum.HUAWEI.toString())
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.HUAWEI.toString())
         pushNoticeConfigurator.post('MobileOADev', config, request)
 
         def notice = new MockPushNotice()

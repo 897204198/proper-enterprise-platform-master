@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
-import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -72,8 +71,8 @@ class IOSNoticeSenderTest extends AbstractTest {
         conf.put("pushPackage", IOSConstant.TOPIC)
         conf.put("certificateId", fileP12VO.getId())
 
-        MockHttpServletRequest request = new MockHttpServletRequest()
-        request.setParameter("pushChannel", PushChannelEnum.IOS.toString())
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.IOS.toString())
         pushNoticeConfigurator.post(appKey, conf, request)
 
         MockPushNotice mockPushNotice = new MockPushNotice()

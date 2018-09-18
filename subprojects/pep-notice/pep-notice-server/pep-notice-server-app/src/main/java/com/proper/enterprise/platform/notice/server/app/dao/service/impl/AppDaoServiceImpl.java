@@ -14,6 +14,7 @@ import com.proper.enterprise.platform.notice.server.app.dao.repository.AppReposi
 import com.proper.enterprise.platform.notice.server.api.vo.AppVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,14 +30,8 @@ public class AppDaoServiceImpl implements AppDaoService {
 
     private AccessTokenService accessTokenService;
 
-    /**
-     * 应用拥有的权限
-     */
-    private static final String RESOURCE_DESC = "POST:/notice/server/send,"
-        + "POST:/notice/server/config,"
-        + "PUT:/notice/server/config,"
-        + "DELETE:/notice/server/config,"
-        + "GET:/notice/server/config";
+    @Value("${notice.server.app.resource}")
+    private String resourceDesc;
 
     @Autowired
     public AppDaoServiceImpl(AppRepository appRepository, @Qualifier("accessTokenService") AccessTokenService accessTokenService) {
@@ -127,7 +122,7 @@ public class AppDaoServiceImpl implements AppDaoService {
         AppToken appToken = new AppToken();
         appToken.setUserId(appKey);
         appToken.setName(appKey);
-        appToken.setResourcesDescription(RESOURCE_DESC);
+        appToken.setResourcesDescription(resourceDesc);
         appToken.setToken(token);
         return appToken;
     }

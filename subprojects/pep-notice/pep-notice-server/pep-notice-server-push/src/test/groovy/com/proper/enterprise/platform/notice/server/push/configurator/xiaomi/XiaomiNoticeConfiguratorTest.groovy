@@ -8,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.mock.web.MockHttpServletRequest
 
 class XiaomiNoticeConfiguratorTest extends AbstractTest {
 
@@ -27,7 +26,7 @@ class XiaomiNoticeConfiguratorTest extends AbstractTest {
 
     @Test
     void "post"() {
-        def (String appKey, HashMap configMap, MockHttpServletRequest request) = initData()
+        def (String appKey, HashMap configMap, HashMap request) = initData()
         def map = xiaomiNoticeConfigurator.post(appKey, configMap, request)
         assert "RGW+NA+T2ucpEX0a6bxyhA==" == map.get("appSecret")
         map = xiaomiNoticeConfigurator.get(appKey, request)
@@ -37,7 +36,7 @@ class XiaomiNoticeConfiguratorTest extends AbstractTest {
 
     @Test
     void "put"() {
-        def (String appKey, HashMap configMap, MockHttpServletRequest request) = initData()
+        def (String appKey, HashMap configMap, HashMap request) = initData()
         xiaomiNoticeConfigurator.post(appKey, configMap, request)
         configMap.put("appSecret", "aaa")
         def map = xiaomiNoticeConfigurator.put(appKey, configMap, request)
@@ -50,8 +49,8 @@ class XiaomiNoticeConfiguratorTest extends AbstractTest {
         def configMap = new HashMap()
         configMap.put("appSecret", "RGW+NA+T2ucpEX0a6bxyhA==")
         configMap.put("pushPackage", "pushPackage")
-        MockHttpServletRequest request = new MockHttpServletRequest()
-        request.setParameter("pushChannel", PushChannelEnum.XIAOMI.toString())
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.XIAOMI.toString())
         [appKey, configMap, request]
     }
 }

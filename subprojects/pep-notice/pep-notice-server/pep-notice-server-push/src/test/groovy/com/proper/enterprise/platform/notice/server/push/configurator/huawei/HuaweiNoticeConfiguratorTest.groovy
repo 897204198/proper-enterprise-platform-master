@@ -6,7 +6,6 @@ import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.mock.web.MockHttpServletRequest
 
 class HuaweiNoticeConfiguratorTest extends AbstractTest {
 
@@ -17,8 +16,8 @@ class HuaweiNoticeConfiguratorTest extends AbstractTest {
     void testAll() {
         addData()
         updateData()
-        MockHttpServletRequest request = new MockHttpServletRequest()
-        request.setParameter("pushChannel", PushChannelEnum.HUAWEI.toString())
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.HUAWEI.toString())
         assert !pushNoticeConfigurator.get('appkey', request).isEmpty()
         assert !pushNoticeConfigurator.get('icmp', request).isEmpty()
         deleteData('icmp')
@@ -31,8 +30,8 @@ class HuaweiNoticeConfiguratorTest extends AbstractTest {
         config.put('pushPackage', 'com.proper.icmp.dev')
         config.put('appId', '100213965')
 
-        MockHttpServletRequest request = new MockHttpServletRequest()
-        request.setParameter("pushChannel", PushChannelEnum.HUAWEI.toString())
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.HUAWEI.toString())
         Map res = pushNoticeConfigurator.post('appkey', config, request)
         assert res.get('appSecret') == 'cb5b99c684477aaa3b6a28b2c7cbe7b2'
         assert res.get('pushPackage') == 'com.proper.icmp.dev'
@@ -53,8 +52,8 @@ class HuaweiNoticeConfiguratorTest extends AbstractTest {
     }
 
     void deleteData(String appKey) {
-        MockHttpServletRequest request = new MockHttpServletRequest()
-        request.setParameter("pushChannel", PushChannelEnum.HUAWEI.toString())
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.HUAWEI.toString())
         pushNoticeConfigurator.delete(appKey, request)
     }
 
@@ -64,8 +63,8 @@ class HuaweiNoticeConfiguratorTest extends AbstractTest {
         config.put('pushPackage', 'com.proper.icmp')
         config.put('appId', '100029163')
 
-        MockHttpServletRequest request = new MockHttpServletRequest()
-        request.setParameter("pushChannel", PushChannelEnum.HUAWEI.toString())
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.HUAWEI.toString())
         Map res = pushNoticeConfigurator.put('appkey', config, request)
         assert res.get('appSecret') == 'a31f53301ed9f45e94530235dd933d25'
 
@@ -74,8 +73,8 @@ class HuaweiNoticeConfiguratorTest extends AbstractTest {
             config.put('pushPackage', 'XXX.XXX.XXX.XXX')
             config.put('appId', 'XX')
 
-            request = new MockHttpServletRequest()
-            request.setParameter("pushChannel", PushChannelEnum.HUAWEI.toString())
+            request = new HashMap()
+            request.put("pushChannel", PushChannelEnum.HUAWEI.toString())
             pushNoticeConfigurator.put('appkey', config, request)
         } catch (Exception e) {
             e.getMessage().contains("Please check Huawei push config")

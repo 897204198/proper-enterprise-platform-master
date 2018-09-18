@@ -6,7 +6,6 @@ import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDo
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -23,28 +22,28 @@ public class XiaomiNoticeConfigurator extends AbstractPushConfigSupport {
     }
 
     @Override
-    public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {
-        PushConfDocument pushDocument = buildPushDocument(appKey, config, request);
+    public Map post(String appKey, Map<String, Object> config, Map<String, Object> params) {
+        PushConfDocument pushDocument = buildPushDocument(appKey, config, params);
         xiaomiNoticeClient.post(appKey, pushDocument);
-        return super.post(appKey, config, request);
+        return super.post(appKey, config, params);
     }
 
     @Override
-    public void delete(String appKey, HttpServletRequest request) {
+    public void delete(String appKey, Map<String, Object> params) {
         xiaomiNoticeClient.delete(appKey);
-        super.delete(appKey, request);
+        super.delete(appKey, params);
     }
 
     @Override
-    public Map put(String appKey, Map<String, Object> config, HttpServletRequest request) {
-        PushConfDocument pushDocument = buildPushDocument(appKey, config, request);
+    public Map put(String appKey, Map<String, Object> config, Map<String, Object> params) {
+        PushConfDocument pushDocument = buildPushDocument(appKey, config, params);
         xiaomiNoticeClient.put(appKey, pushDocument);
-        return super.put(appKey, config, request);
+        return super.put(appKey, config, params);
     }
 
     @Override
-    public Map get(String appKey, HttpServletRequest request) {
-        return super.get(appKey, request);
+    public Map get(String appKey, Map<String, Object> params) {
+        return super.get(appKey, params);
     }
 
 }

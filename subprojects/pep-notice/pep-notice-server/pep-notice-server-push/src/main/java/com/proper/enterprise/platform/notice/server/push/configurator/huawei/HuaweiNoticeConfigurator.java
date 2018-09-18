@@ -10,7 +10,6 @@ import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDo
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Service("huaweiNoticeConfigurator")
@@ -26,33 +25,33 @@ public class HuaweiNoticeConfigurator extends AbstractPushConfigSupport implemen
     }
 
     @Override
-    public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {
+    public Map post(String appKey, Map<String, Object> config, Map<String, Object> params) {
         if (StringUtil.isBlank(config.get(APP_ID).toString())) {
             throw new ErrMsgException("appId can't be null");
         }
-        Map result = super.post(appKey, config, request);
+        Map result = super.post(appKey, config, params);
         PushConfDocument pushDocument = BeanUtil.convert(config, PushConfDocument.class);
         huaweiNoticeClientManagerApi.post(appKey, pushDocument);
         return result;
     }
 
     @Override
-    public void delete(String appKey, HttpServletRequest request) {
-        super.delete(appKey, request);
+    public void delete(String appKey, Map<String, Object> params) {
+        super.delete(appKey, params);
         huaweiNoticeClientManagerApi.delete(appKey);
     }
 
     @Override
-    public Map put(String appKey, Map<String, Object> config, HttpServletRequest request) {
-        Map result = super.put(appKey, config, request);
+    public Map put(String appKey, Map<String, Object> config, Map<String, Object> params) {
+        Map result = super.put(appKey, config, params);
         PushConfDocument pushDocument = BeanUtil.convert(config, PushConfDocument.class);
         huaweiNoticeClientManagerApi.put(appKey, pushDocument);
         return result;
     }
 
     @Override
-    public Map get(String appKey, HttpServletRequest request) {
-        return super.get(appKey, request);
+    public Map get(String appKey, Map<String, Object> params) {
+        return super.get(appKey, params);
     }
 
 
