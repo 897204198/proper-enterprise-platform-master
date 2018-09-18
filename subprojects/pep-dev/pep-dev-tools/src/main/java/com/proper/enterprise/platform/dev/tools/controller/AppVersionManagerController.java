@@ -121,10 +121,10 @@ public class AppVersionManagerController extends BaseController {
         public void setNote(String note) {
             this.note = note;
         }
-    }
 
-    @Override
-    public String toString() {
-        return JSONUtil.toJSONIgnoreException(this);
+        @Override
+        public String toString() {
+            return JSONUtil.toJSONIgnoreException(this);
+        }
     }
 }
