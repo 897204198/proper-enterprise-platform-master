@@ -71,7 +71,7 @@ public class NoticeAnalysisUtil {
                 noticeDocument.setAnalysisResult(AnalysisResult.PARTLY);
                 noticeDocument.setNotes("%s is missing push token, please re login to the app.", user.getName());
             }
-            if (pushDeviceEntity.getDevicetype() == null) {
+            if (pushDeviceEntity.getDeviceType() == null) {
                 result = false;
                 noticeDocument.setAnalysisResult(AnalysisResult.PARTLY);
                 noticeDocument.setNotes("%s is missing device type, please re login to the app.", user.getName());

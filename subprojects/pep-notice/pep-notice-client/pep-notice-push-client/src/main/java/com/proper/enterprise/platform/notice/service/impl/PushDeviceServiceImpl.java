@@ -2,7 +2,6 @@ package com.proper.enterprise.platform.notice.service.impl;
 
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity;
-
 import com.proper.enterprise.platform.notice.enums.PushDeviceType;
 import com.proper.enterprise.platform.notice.enums.PushMode;
 import com.proper.enterprise.platform.notice.repository.PushDeviceRepository;
@@ -20,53 +19,53 @@ public class PushDeviceServiceImpl implements PushDeviceService {
     PushDeviceRepository deviceRepo;
 
     @Override
-    public void saveStartpush(String userid, String deviceid, String pushToken, String appkey,
-                              PushDeviceType deviceType, PushMode pushMode, String deviceOtherInfo) {
-        if (StringUtil.isNotEmpty(deviceid)) {
-            bindDevice(userid, deviceid, pushToken, appkey, deviceType, pushMode, deviceOtherInfo);
+    public void save(String appKey,
+                     String userId,
+                     String pushMode,
+                     String pushToken,
+                     String deviceId,
+                     String deviceOtherInfo,
+                     String deviceType) {
+        PushDeviceType enumDeviceType = null;
+        if (StringUtil.isNotEmpty(deviceType)) {
+            enumDeviceType = Enum.valueOf(PushDeviceType.class, deviceType.trim());
+        }
+        PushMode enumPushMode = null;
+        if (StringUtil.isNotEmpty(pushMode)) {
+            enumPushMode = Enum.valueOf(PushMode.class, pushMode.trim());
+        }
+        if (StringUtil.isNotEmpty(deviceId)) {
+            bindDevice(appKey, userId, enumPushMode, pushToken, deviceId, deviceOtherInfo, enumDeviceType);
         }
     }
 
     @Override
     public PushDeviceEntity findDeviceByUserId(String userId) {
-        return deviceRepo.findByUserid(userId);
+        return deviceRepo.findByUserId(userId);
     }
 
-    /**
-     * 解绑设备操作方法。
-     * @param userid 用户id
-     */
-    private void unbindDevice(String userid) {
-        deviceRepo.deleteByUserid(userid);
-        LOGGER.info("unbindDevice of user:" + userid);
-
+    private void unbindDevice(String userId) {
+        deviceRepo.deleteByUserId(userId);
+        LOGGER.info("unbindDevice of user:" + userId);
     }
 
-    /**
-     * 设备信息操作方法。
-     * @param userid 用户id
-     * @param deviceid 设备id
-     * @param pushToken 推送的token,由手机端第三方推送框架产生，用于第三方推送惟一标识一台设备，用于向第三方式推送服务器推送消息
-     * @param appkey 应用标识
-     * @param deviceType 设备类型
-     * @param pushMode 推送方式
-     * @param deviceOtherInfo 设备的其它信息
-     */
-    private void bindDevice(String userid, String deviceid, String pushToken, String appkey, PushDeviceType deviceType,
-                            PushMode pushMode, String deviceOtherInfo) {
-        try {
-            unbindDevice(userid);
-        } catch (Exception e) {
-            LOGGER.error("unbindDevice error occurred :" + "deviceid :" + deviceid);
-        }
+    private void bindDevice(String appKey,
+                            String userId,
+                            PushMode pushMode,
+                            String pushToken,
+                            String deviceId,
+                            String deviceOtherInfo,
+                            PushDeviceType deviceType) {
+        unbindDevice(userId);
         PushDeviceEntity device =  new PushDeviceEntity();
-        device.setAppkey(appkey);
-        device.setDeviceid(deviceid);
-        device.setDevicetype(deviceType);
-        device.setOtherInfo(deviceOtherInfo);
+        device.setAppKey(appKey);
+        device.setDeviceId(deviceId);
+        device.setDeviceType(deviceType);
+        device.setDeviceOtherInfo(deviceOtherInfo);
         device.setPushMode(pushMode);
-        device.setUserid(userid);
+        device.setUserId(userId);
         device.setPushToken(pushToken);
         deviceRepo.save(device);
     }
+
 }
