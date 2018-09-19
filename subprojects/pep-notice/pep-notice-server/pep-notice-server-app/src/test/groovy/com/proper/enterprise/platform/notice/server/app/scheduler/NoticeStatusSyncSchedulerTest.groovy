@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.app.scheduler
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender
 import com.proper.enterprise.platform.notice.server.app.dao.entity.NoticeEntity
 import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository
-import com.proper.enterprise.platform.notice.server.api.vo.NoticeVO
+import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.test.AbstractTest

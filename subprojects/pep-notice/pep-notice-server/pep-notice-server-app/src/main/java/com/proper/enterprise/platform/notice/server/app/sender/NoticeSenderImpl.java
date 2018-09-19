@@ -16,7 +16,7 @@ import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.api.model.Notice;
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
 import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService;
-import com.proper.enterprise.platform.notice.server.api.vo.NoticeVO;
+import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO;
 import com.proper.enterprise.platform.notice.server.api.factory.NoticeSenderFactory;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;

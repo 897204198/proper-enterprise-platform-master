@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender
 import com.proper.enterprise.platform.notice.server.app.AbstractServerAppTest
 import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository
 import com.proper.enterprise.platform.notice.server.app.global.SingletonMap
-import com.proper.enterprise.platform.notice.server.api.vo.NoticeVO
+import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest

@@ -10,7 +10,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.mock.web.MockHttpServletRequest
 
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.PUSHTOKEN
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.APPSECRET
@@ -33,17 +32,17 @@ class XiaomiNoticeSenderTest extends AbstractTest {
         Map<String, Object> config = new HashMap<>()
         config.put("appSecret", APPSECRET)
         config.put("pushPackage", PACKAGENAME)
-        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest()
-        mockHttpServletRequest.setParameter("pushChannel", PushChannelEnum.XIAOMI.toString())
-        xiaomiNoticeConfigurator.post(appKey, config, mockHttpServletRequest)
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.XIAOMI.toString())
+        xiaomiNoticeConfigurator.post(appKey, config, request)
     }
 
     @After
     void destroyData() {
         String appKey = APPKEY
-        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest()
-        mockHttpServletRequest.setParameter("pushChannel", PushChannelEnum.XIAOMI.toString())
-        xiaomiNoticeConfigurator.delete(appKey, mockHttpServletRequest)
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.XIAOMI.toString())
+        xiaomiNoticeConfigurator.delete(appKey, request)
     }
 
     @Test
@@ -69,7 +68,7 @@ class XiaomiNoticeSenderTest extends AbstractTest {
         Map<String, Object> customs = new HashMap()
         customs.put("_proper_badge", 5)
         customs.put("_proper_pushtype", "cmd")
-        notice.setNoticeExtMsg("customs", customs)
+        notice.setAllNoticeExtMsg(customs)
         xiaomiNoticeSender.send(notice)
     }
 

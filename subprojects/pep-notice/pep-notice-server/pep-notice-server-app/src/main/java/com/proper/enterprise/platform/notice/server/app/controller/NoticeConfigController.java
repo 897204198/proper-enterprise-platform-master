@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -31,7 +33,7 @@ public class NoticeConfigController extends BaseController {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
         return responseOfPost(NoticeConfiguratorFactory.product(noticeType)
-            .post(accessTokenService.getUserId(token).get(), config, request));
+            .post(accessTokenService.getUserId(token).get(), config, buildRequestMap(request)));
     }
 
     @DeleteMapping("/{noticeType}")
@@ -40,7 +42,7 @@ public class NoticeConfigController extends BaseController {
                                  HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
-        NoticeConfiguratorFactory.product(noticeType).delete(accessTokenService.getUserId(token).get(), request);
+        NoticeConfiguratorFactory.product(noticeType).delete(accessTokenService.getUserId(token).get(), buildRequestMap(request));
         return responseOfDelete(true);
     }
 
@@ -51,7 +53,7 @@ public class NoticeConfigController extends BaseController {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
         return responseOfPut(NoticeConfiguratorFactory.product(noticeType).put(accessTokenService
-            .getUserId(token).get(), config, request));
+            .getUserId(token).get(), config, buildRequestMap(request)));
     }
 
     @GetMapping("/{noticeType}")
@@ -61,6 +63,16 @@ public class NoticeConfigController extends BaseController {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
         return responseOfGet(NoticeConfiguratorFactory.product(noticeType).get(accessTokenService
-            .getUserId(token).get(), request));
+            .getUserId(token).get(), buildRequestMap(request)));
+    }
+
+    private Map<String, Object> buildRequestMap(HttpServletRequest request) {
+        Map<String, Object> requestParams = new HashMap<>(16);
+        Enumeration em = request.getParameterNames();
+        while (em.hasMoreElements()) {
+            String name = (String) em.nextElement();
+            requestParams.put(name, request.getParameter(name));
+        }
+        return requestParams;
     }
 }

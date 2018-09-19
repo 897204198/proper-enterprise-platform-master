@@ -9,7 +9,6 @@ import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConf
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public abstract class AbstractPushConfigSupport extends AbstractPushChannelSupport implements BasePushConfigApi {
@@ -20,41 +19,41 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
     private static final String PUSH_PACKAGE = "pushPackage";
 
     @Override
-    public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {
+    public Map post(String appKey, Map<String, Object> config, Map<String, Object> params) {
         if (null == config.get(PUSH_PACKAGE)) {
             throw new ErrMsgException("pushPackage can't be null");
         }
-        PushConfDocument pushConf = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(request));
+        PushConfDocument pushConf = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(params));
         if (null != pushConf) {
             throw new ErrMsgException("The current configuration of the appKey and push channels already exists");
         }
-        pushRepository.save(buildPushDocument(appKey, config, request));
+        pushRepository.save(buildPushDocument(appKey, config, params));
         return config;
     }
 
     @Override
-    public void delete(String appKey, HttpServletRequest request) {
-        pushRepository.deleteByAppKeyAndPushChannel(appKey, getPushChannel(request));
+    public void delete(String appKey, Map<String, Object> params) {
+        pushRepository.deleteByAppKeyAndPushChannel(appKey, getPushChannel(params));
     }
 
 
     @Override
-    public Map put(String appKey, Map<String, Object> config, HttpServletRequest request) {
-        PushConfDocument existDocument = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(request));
+    public Map put(String appKey, Map<String, Object> config, Map<String, Object> params) {
+        PushConfDocument existDocument = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(params));
         if (existDocument == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.notice.config.notExist"));
         }
         if (null == config.get(PUSH_PACKAGE)) {
             throw new ErrMsgException("pushPackage can't be null");
         }
-        String pushDocumentId = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(request)).getId();
-        PushConfDocument pushDocument = buildPushDocument(appKey, config, request);
+        String pushDocumentId = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(params)).getId();
+        PushConfDocument pushDocument = buildPushDocument(appKey, config, params);
         pushDocument.setId(pushDocumentId);
         return JSONUtil.parseIgnoreException(pushRepository.save(pushDocument).toString(), Map.class);
     }
 
     @Override
-    public Map get(String appKey, HttpServletRequest request) {
+    public Map get(String appKey, Map<String, Object> request) {
         PushConfDocument pushDocument = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(request));
         if (pushDocument != null) {
             Map result = JSONUtil.parseIgnoreException(pushDocument.toString(), Map.class);
@@ -77,10 +76,10 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
         return pushConf.getPushPackage();
     }
 
-    protected PushConfDocument buildPushDocument(String appKey, Map<String, Object> config, HttpServletRequest request) {
+    protected PushConfDocument buildPushDocument(String appKey, Map<String, Object> config, Map<String, Object> params) {
         PushConfDocument pushDocument = BeanUtil.convert(config, PushConfDocument.class);
         pushDocument.setAppKey(appKey);
-        pushDocument.setPushChannel(getPushChannel(request));
+        pushDocument.setPushChannel(getPushChannel(params));
         return pushDocument;
     }
 

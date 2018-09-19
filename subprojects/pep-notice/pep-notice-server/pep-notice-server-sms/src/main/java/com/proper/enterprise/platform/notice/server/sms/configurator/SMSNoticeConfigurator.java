@@ -9,7 +9,6 @@ import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Service("smsNoticeConfigurator")
@@ -22,7 +21,7 @@ public class SMSNoticeConfigurator implements SMSConfigurator {
     private I18NService i18NService;
 
     @Override
-    public Map post(String appKey, Map config, HttpServletRequest request) {
+    public Map post(String appKey, Map<String, Object> config, Map<String, Object> params) {
         if (null != smsRepository.findByAppKey(appKey)) {
             throw new ErrMsgException("The current configuration of the appKey already exists");
         }
@@ -32,12 +31,12 @@ public class SMSNoticeConfigurator implements SMSConfigurator {
     }
 
     @Override
-    public void delete(String appKey, HttpServletRequest request) {
+    public void delete(String appKey, Map<String, Object> params) {
         smsRepository.deleteByAppKey(appKey);
     }
 
     @Override
-    public Map put(String appKey, Map config, HttpServletRequest request) {
+    public Map put(String appKey, Map<String, Object> config, Map<String, Object> params) {
         SMSDocument existDocument = smsRepository.findByAppKey(appKey);
         if (existDocument == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.sms.notice.config.notExist"));
@@ -50,7 +49,7 @@ public class SMSNoticeConfigurator implements SMSConfigurator {
     }
 
     @Override
-    public Map get(String appKey, HttpServletRequest request) {
+    public Map get(String appKey, Map<String, Object> params) {
         return get(appKey);
     }
 

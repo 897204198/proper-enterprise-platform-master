@@ -9,7 +9,6 @@ import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDo
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Service("iosNoticeConfigurator")
@@ -32,7 +31,7 @@ public class IOSNoticeConfigurator extends AbstractPushConfigSupport {
     private static final String CERT_TYPE = "p12";
 
     @Override
-    public Map post(String appKey, Map<String, Object> config, HttpServletRequest request) {
+    public Map post(String appKey, Map<String, Object> config, Map<String, Object> params) {
         if (null == config.get(CERT_PASSWORD)) {
             throw new ErrMsgException("certPassword can't be null");
         }
@@ -46,31 +45,31 @@ public class IOSNoticeConfigurator extends AbstractPushConfigSupport {
         if (!CERT_TYPE.equals(file.getFileType())) {
             throw new ErrMsgException("ios cert type must be p12");
         }
-        PushConfDocument pushDocument = buildPushDocument(appKey, config, request);
+        PushConfDocument pushDocument = buildPushDocument(appKey, config, params);
         iosNoticeClientApi.post(appKey, pushDocument);
-        return super.post(appKey, config, request);
+        return super.post(appKey, config, params);
     }
 
     @Override
-    public void delete(String appKey, HttpServletRequest request) {
+    public void delete(String appKey, Map<String, Object> params) {
         iosNoticeClientApi.delete(appKey);
-        super.delete(appKey, request);
+        super.delete(appKey, params);
     }
 
     @Override
-    public Map put(String appKey, Map<String, Object> config, HttpServletRequest request) {
+    public Map put(String appKey, Map<String, Object> config,  Map<String, Object> params) {
         File file = fileService.findOne((String) config.get(CERT_ID));
         if (!CERT_TYPE.equals(file.getFileType())) {
             throw new ErrMsgException("ios cert type must be p12");
         }
-        PushConfDocument pushDocument = buildPushDocument(appKey, config, request);
+        PushConfDocument pushDocument = buildPushDocument(appKey, config, params);
         iosNoticeClientApi.put(appKey, pushDocument);
-        return super.put(appKey, config, request);
+        return super.put(appKey, config, params);
     }
 
     @Override
-    public Map get(String appKey, HttpServletRequest request) {
-        return super.get(appKey, request);
+    public Map get(String appKey, Map<String, Object> params) {
+        return super.get(appKey, params);
     }
 
 }

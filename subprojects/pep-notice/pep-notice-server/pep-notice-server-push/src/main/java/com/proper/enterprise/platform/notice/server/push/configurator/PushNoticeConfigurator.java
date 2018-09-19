@@ -4,30 +4,29 @@ import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfi
 import com.proper.enterprise.platform.notice.server.push.factory.PushConfiguratorFactory;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Service("pushNoticeConfigurator")
 public class PushNoticeConfigurator extends AbstractPushChannelSupport implements NoticeConfigurator {
 
     @Override
-    public Map post(String appKey, Map config, HttpServletRequest request) {
+    public Map post(String appKey, Map<String, Object> config, Map<String, Object> request) {
         return PushConfiguratorFactory.product(getPushChannel(request)).post(appKey, config, request);
     }
 
     @Override
-    public void delete(String appKey, HttpServletRequest request) {
-        PushConfiguratorFactory.product(getPushChannel(request)).delete(appKey, request);
+    public void delete(String appKey, Map<String, Object> params) {
+        PushConfiguratorFactory.product(getPushChannel(params)).delete(appKey, params);
     }
 
     @Override
-    public Map put(String appKey, Map config, HttpServletRequest request) {
-        return PushConfiguratorFactory.product(getPushChannel(request)).put(appKey, config, request);
+    public Map put(String appKey, Map<String, Object> config, Map<String, Object> params) {
+        return PushConfiguratorFactory.product(getPushChannel(params)).put(appKey, config, params);
     }
 
     @Override
-    public Map get(String appKey, HttpServletRequest request) {
-        return PushConfiguratorFactory.product(getPushChannel(request)).get(appKey, request);
+    public Map get(String appKey, Map<String, Object> params) {
+        return PushConfiguratorFactory.product(getPushChannel(params)).get(appKey, params);
     }
 
 

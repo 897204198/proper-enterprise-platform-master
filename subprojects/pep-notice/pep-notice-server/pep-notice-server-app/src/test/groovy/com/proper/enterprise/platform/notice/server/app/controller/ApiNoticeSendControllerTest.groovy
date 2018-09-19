@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.notice.server.app.controller
 
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
-import com.proper.enterprise.platform.notice.server.api.vo.AppVO
+import com.proper.enterprise.platform.notice.server.app.vo.AppVO
 import com.proper.enterprise.platform.notice.server.app.AbstractServerAppTest
 import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository
 import com.proper.enterprise.platform.notice.server.app.scheduler.NoticeStatusSyncScheduler
