@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus
 abstract class AbstractServerAppTest extends AbstractTest {
 
     public String initApp(String appKey) {
-        String token = get('/notice/server/app/token', HttpStatus.OK).getResponse().getContentAsString()
+        String token = get('/notice/server/app/token/init', HttpStatus.OK).getResponse().getContentAsString()
         AppVO appVO = new AppVO()
         appVO.setAppName("appName")
         appVO.setAppKey(appKey)
@@ -19,7 +19,7 @@ abstract class AbstractServerAppTest extends AbstractTest {
     }
 
     public AppVO initAppReturnVO(String appKey) {
-        String token = get('/notice/server/app/token', HttpStatus.OK).getResponse().getContentAsString()
+        String token = get('/notice/server/app/token/init', HttpStatus.OK).getResponse().getContentAsString()
         AppVO appVO = new AppVO()
         appVO.setAppName("appName")
         appVO.setAppKey(appKey)

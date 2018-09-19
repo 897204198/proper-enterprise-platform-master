@@ -12,8 +12,8 @@ class AppControllerTest extends AbstractTest {
 
     @Test
     public void crud() {
-        String appKey = get('/notice/server/app/appKey', HttpStatus.OK).getResponse().getContentAsString()
-        String token = get('/notice/server/app/token', HttpStatus.OK).getResponse().getContentAsString()
+        String appKey = get('/notice/server/app/appKey/init', HttpStatus.OK).getResponse().getContentAsString()
+        String token = get('/notice/server/app/token/init', HttpStatus.OK).getResponse().getContentAsString()
         AppVO appVO = new AppVO()
         appVO.setAppName("appName")
         appVO.setAppKey(appKey)
@@ -32,7 +32,9 @@ class AppControllerTest extends AbstractTest {
         config.put("a", "a")
         post("/notice/server/config/" + NoticeType.MOCK + "?access_token=" + token, JSONUtil.toJSON(config), HttpStatus.CREATED)
 
-        assert null != get(putApp.getAppKey())
+        AppVO app = get(putApp.getAppKey())
+        assert null != app
+        assert !app.getHaveEmailConf()
 
         //验证停用
         enable(putApp.getId(), false)

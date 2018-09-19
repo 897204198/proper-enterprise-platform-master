@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.notice.server.app.controller;
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.model.App;
 import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
 import com.proper.enterprise.platform.notice.server.app.vo.AppVO;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 @RestController
@@ -40,11 +42,20 @@ public class AppController extends BaseController {
     }
 
     @GetMapping(value = "/appKey")
+    public ResponseEntity<App> get(@RequestParam(required = false, name = "access_token") String accessToken,
+                                   HttpServletRequest request) {
+        String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
+        String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
+        return responseOfGet(appDaoService.get(accessTokenService
+            .getUserId(token).get()));
+    }
+
+    @GetMapping(value = "/appKey/init")
     public ResponseEntity<String> getAppKey() {
         return responseOfGet(UUID.randomUUID().toString());
     }
 
-    @GetMapping(value = "/token")
+    @GetMapping(value = "/token/init")
     public ResponseEntity<String> getToken() {
         return responseOfGet(accessTokenService.generate());
     }

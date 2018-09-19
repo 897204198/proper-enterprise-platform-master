@@ -7,11 +7,14 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.notice.server.api.factory.NoticeConfiguratorFactory;
 import com.proper.enterprise.platform.notice.server.api.model.App;
 import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
 import com.proper.enterprise.platform.notice.server.app.dao.entity.AppEntity;
 import com.proper.enterprise.platform.notice.server.app.dao.repository.AppRepository;
 import com.proper.enterprise.platform.notice.server.app.vo.AppVO;
+import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class AppDaoServiceImpl implements AppDaoService {
@@ -41,14 +42,19 @@ public class AppDaoServiceImpl implements AppDaoService {
 
     @Override
     public App get(String appKey) {
-        return BeanUtil.convert(appRepository.findByAppKey(appKey), AppVO.class);
+        return buildHaveConf(BeanUtil.convert(appRepository.findByAppKey(appKey), AppVO.class));
     }
 
     @Override
     public DataTrunk<App> findAll(String appKey, String appName, String describe, Boolean enable, PageRequest pageRequest) {
         DataTrunk<App> data = new DataTrunk<>();
         Page<AppEntity> page = appRepository.findAll(appKey, appName, describe, enable, pageRequest);
-        data.setData(new ArrayList<>(BeanUtil.convert(page.getContent(), AppVO.class)));
+
+        List<AppVO> appVOs = new ArrayList<>(BeanUtil.convert(page.getContent(), AppVO.class));
+        for (AppVO app : appVOs) {
+            buildHaveConf(app);
+        }
+        data.setData(new ArrayList<>(appVOs));
         data.setCount(page.getTotalElements());
         return data;
     }
@@ -109,6 +115,36 @@ public class AppDaoServiceImpl implements AppDaoService {
             return false;
         }
         return appEntity.getEnable();
+    }
+
+    private AppVO buildHaveConf(AppVO appVO) {
+        appVO.setHaveEmailConf(false);
+        appVO.setHaveSMSConf(false);
+        appVO.setHavePushConf(false);
+        if (null != NoticeConfiguratorFactory.product(NoticeType.EMAIL).get(appVO.getAppKey(), null)) {
+            appVO.setHaveEmailConf(true);
+        }
+        if (null != NoticeConfiguratorFactory.product(NoticeType.SMS).get(appVO.getAppKey(), null)) {
+            appVO.setHaveSMSConf(true);
+        }
+        Map<String, Object> xiaoMiConf = new HashMap<>(16);
+        xiaoMiConf.put("pushChannel", PushChannelEnum.XIAOMI.name());
+        if (null != NoticeConfiguratorFactory.product(NoticeType.PUSH).get(appVO.getAppKey(), xiaoMiConf)) {
+            appVO.setHavePushConf(true);
+            return appVO;
+        }
+        Map<String, Object> huaweiConf = new HashMap<>(16);
+        huaweiConf.put("pushChannel", PushChannelEnum.HUAWEI.name());
+        if (null != NoticeConfiguratorFactory.product(NoticeType.PUSH).get(appVO.getAppKey(), huaweiConf)) {
+            appVO.setHavePushConf(true);
+            return appVO;
+        }
+        Map<String, Object> iosConf = new HashMap<>(16);
+        iosConf.put("pushChannel", PushChannelEnum.IOS.name());
+        if (null != NoticeConfiguratorFactory.product(NoticeType.PUSH).get(appVO.getAppKey(), iosConf)) {
+            appVO.setHavePushConf(true);
+        }
+        return appVO;
     }
 
     /**

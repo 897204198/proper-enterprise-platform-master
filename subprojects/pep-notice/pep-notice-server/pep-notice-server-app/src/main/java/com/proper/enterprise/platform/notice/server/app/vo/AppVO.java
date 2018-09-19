@@ -31,6 +31,21 @@ public class AppVO extends BaseVO implements App {
      */
     private String color;
 
+    /**
+     * 是否包含email配置
+     */
+    private Boolean haveEmailConf;
+
+    /**
+     * 是否包含短信配置
+     */
+    private Boolean haveSMSConf;
+
+    /**
+     * 是否包含推送配置
+     */
+    private Boolean havePushConf;
+
     @Override
     public String getAppName() {
         return appName;
@@ -77,6 +92,30 @@ public class AppVO extends BaseVO implements App {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public Boolean getHaveEmailConf() {
+        return haveEmailConf;
+    }
+
+    public void setHaveEmailConf(Boolean haveEmailConf) {
+        this.haveEmailConf = haveEmailConf;
+    }
+
+    public Boolean getHaveSMSConf() {
+        return haveSMSConf;
+    }
+
+    public void setHaveSMSConf(Boolean haveSMSConf) {
+        this.haveSMSConf = haveSMSConf;
+    }
+
+    public Boolean getHavePushConf() {
+        return havePushConf;
+    }
+
+    public void setHavePushConf(Boolean havePushConf) {
+        this.havePushConf = havePushConf;
     }
 
     @Override
