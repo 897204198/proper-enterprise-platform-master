@@ -44,7 +44,8 @@ public class PushDeviceServiceImpl implements PushDeviceService {
         return deviceRepo.findByUserId(userId);
     }
 
-    private void unbindDevice(String userId) {
+    @Override
+    public void deleteByUserId(String userId) {
         deviceRepo.deleteByUserId(userId);
         LOGGER.info("unbindDevice of user:" + userId);
     }
@@ -56,7 +57,7 @@ public class PushDeviceServiceImpl implements PushDeviceService {
                             String deviceId,
                             String deviceOtherInfo,
                             PushDeviceType deviceType) {
-        unbindDevice(userId);
+        deleteByUserId(userId);
         PushDeviceEntity device =  new PushDeviceEntity();
         device.setAppKey(appKey);
         device.setDeviceId(deviceId);

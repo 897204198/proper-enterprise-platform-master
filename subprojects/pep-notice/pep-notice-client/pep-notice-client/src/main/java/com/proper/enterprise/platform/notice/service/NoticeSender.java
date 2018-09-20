@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.service;
 
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
+import org.springframework.scheduling.annotation.Async;
 
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +16,7 @@ public interface NoticeSender {
      * @param templateParams   模板参数
      * @param custom           扩展字段
      */
+    @Async
     void sendNotice(String toUserId, String code, Map<String, Object> templateParams, Map<String, Object> custom);
 
     /**
@@ -24,6 +26,7 @@ public interface NoticeSender {
      * @param code             模板关键字
      * @param custom           扩展字段
      */
+    @Async
     void sendNotice(String toUserId, String code, Map<String, Object> custom);
 
     /**
@@ -36,6 +39,7 @@ public interface NoticeSender {
      * @param catalog     目录
      * @param noticeType  消息渠道
      */
+    @Async
     void sendNotice(String toUserId, String title, String content, Map<String, Object> custom, String catalog, NoticeType noticeType);
 
     /**
@@ -46,6 +50,7 @@ public interface NoticeSender {
      * @param templateParams   模板参数
      * @param custom           扩展字段
      */
+    @Async
     void sendNotice(Set<String> toUserIds, String code, Map<String, Object> templateParams, Map<String, Object> custom);
 
     /**
@@ -55,6 +60,7 @@ public interface NoticeSender {
      * @param code             模板关键字
      * @param custom           扩展字段
      */
+    @Async
     void sendNotice(Set<String> toUserIds, String code, Map<String, Object> custom);
 
     /**
@@ -67,6 +73,7 @@ public interface NoticeSender {
      * @param catalog     目录
      * @param noticeType  消息渠道
      */
+    @Async
     void sendNotice(Set<String> toUserIds, String title, String content, Map<String, Object> custom, String catalog, NoticeType noticeType);
 
     /**
@@ -78,6 +85,7 @@ public interface NoticeSender {
      * @param templateParams   模板参数
      * @param custom           扩展字段
      */
+    @Async
     void sendNotice(String fromUserId, String toUserId, String code, Map<String, Object> templateParams, Map<String,
         Object> custom);
 
@@ -89,6 +97,7 @@ public interface NoticeSender {
      * @param code             模板关键字
      * @param custom           扩展字段
      */
+    @Async
     void sendNotice(String fromUserId, String toUserId, String code, Map<String, Object> custom);
 
     /**
@@ -102,6 +111,7 @@ public interface NoticeSender {
      * @param catalog     目录
      * @param noticeType  消息渠道
      */
+    @Async
     void sendNotice(String fromUserId, String toUserId, String title, String content, Map<String, Object> custom,
                     String catalog, NoticeType noticeType);
 
@@ -114,6 +124,7 @@ public interface NoticeSender {
      * @param templateParams   模板参数
      * @param custom           扩展字段
      */
+    @Async
     void sendNotice(String fromUserId, Set<String> toUserIds, String code, Map<String, Object> templateParams, Map<String,
         Object> custom);
 
@@ -125,6 +136,7 @@ public interface NoticeSender {
      * @param code             模板关键字
      * @param custom           扩展字段
      */
+    @Async
     void sendNotice(String fromUserId, Set<String> toUserIds, String code, Map<String,
         Object> custom);
 
@@ -139,6 +151,7 @@ public interface NoticeSender {
      * @param catalog     目录
      * @param noticeType  消息渠道
      */
+    @Async
     void sendNotice(String fromUserId, Set<String> toUserIds, String title, String content, Map<String,
         Object> custom, String catalog, NoticeType noticeType);
 

@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -52,7 +51,6 @@ public class NoticeSendServiceImpl {
         this.templateService = templateService;
     }
 
-    @Async
     public void sendNoticeChannel(String fromUserId, Set<String> toUserIds, String code, Map<String, Object>
         templateParams, Map<String, Object> custom) {
         toUserIds = checkUserNull(toUserIds);
@@ -75,7 +73,6 @@ public class NoticeSendServiceImpl {
         }
     }
 
-    @Async
     public void sendNoticeChannel(String fromUserId, Set<String> toUserIds, String title, String content,
                                   Map<String, Object> custom, String catalog, NoticeType noticeType) {
         toUserIds = checkUserNull(toUserIds);

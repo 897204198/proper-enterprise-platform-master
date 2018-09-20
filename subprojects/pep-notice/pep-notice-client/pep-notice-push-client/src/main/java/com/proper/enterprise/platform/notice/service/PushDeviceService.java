@@ -28,5 +28,12 @@ public interface PushDeviceService {
      * @return 设备实体
      */
     PushDeviceEntity findDeviceByUserId(String userId);
+
+    /**
+     * 清除指定用户的设备信息
+     *
+     * @param userId 用户唯一标识
+     */
+    void deleteByUserId(String userId);
 }
 
