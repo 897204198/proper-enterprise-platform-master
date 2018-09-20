@@ -19,6 +19,19 @@ public class PushMsgPieVO {
      */
     private String appKey;
 
+    /**
+     * app描述
+     */
+    private String appName;
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
     public Integer getMsgSum() {
         return msgSum;
     }

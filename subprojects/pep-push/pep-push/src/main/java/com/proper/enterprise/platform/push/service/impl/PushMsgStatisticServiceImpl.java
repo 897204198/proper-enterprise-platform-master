@@ -82,40 +82,49 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
     }
 
     @Override
-    public List<PushMsgPieVO> findAllWithPie(String startDate, String endDate, String appKey) {
-        List list = null;
-        if (StringUtil.isNotNull(startDate) && StringUtil.isNotNull(endDate) && StringUtil.isNull(appKey)) {
-            list = pushMsgStatisticRepository.findByBetweenStartDataEndDate(startDate, endDate);
-            LOGGER.debug("startDate,endDate,noAppKey startDate:" + startDate + "endDate:" + endDate);
+    public Map<String, Object> findAllWithPie(String startDate, String endDate, String appKey) {
+        if (StringUtil.isNull(appKey)) {
+            throw new ErrMsgException("appkey is not null");
         }
-        if (StringUtil.isNotNull(startDate) && StringUtil.isNotNull(endDate) && StringUtil.isNotNull(appKey)) {
-            list = pushMsgStatisticRepository.findByBetweenStartDataEndDateAndAppKey(startDate, endDate, appKey);
-        }
-        if (StringUtil.isNull(startDate) && StringUtil.isNull(endDate) && StringUtil.isNotNull(appKey)) {
-            list = pushMsgStatisticRepository.findByAppKey(appKey);
-        }
-        Boolean isDefault = StringUtil.isNull(startDate) && StringUtil.isNull(endDate) && StringUtil.isNull(appKey);
-        if (isDefault) {
-            Date msendDate = DateUtil.addDay(new Date(), -1);
-            LOGGER.debug(DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATETIME_FORMAT)
-                + ":::" + DateUtil.toString(new Date(), PEPConstants.DEFAULT_DATETIME_FORMAT));
-            String dateStr = DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATE_FORMAT);
-            list = pushMsgStatisticRepository.findPushMsgByDefault(dateStr);
-        }
-        List<PushMsgPieVO> pieVOS = new ArrayList<>();
+        List list;
+        List<String> appKeys = Arrays.asList(appKey.split(","));
+        boolean hasDate = StringUtil.isNotNull(startDate) && StringUtil.isNotNull(endDate);
 
-        if (null != list && list.size() == 0) {
-            return  pieVOS;
+        if (hasDate) {
+            list = pushMsgStatisticRepository.findByBetweenStartDataEndDate(startDate, endDate, appKeys);
+        } else {
+            Date sendDate = DateUtil.addDay(new Date(), -1);
+            String dateStr = DateUtil.toString(sendDate, PEPConstants.DEFAULT_DATE_FORMAT);
+            list = pushMsgStatisticRepository.findPushMsgByDefault(dateStr, appKeys);
         }
-        orgData(list, pieVOS);
-        return pieVOS;
-    }
-
-    private void orgData(List list, List<PushMsgPieVO> pieVOS) {
+        List<String> appKeyList = new ArrayList<>();
+        List appKeysOrder = pushMsgStatisticRepository.findOrderByMsgNumberDesc(appKeys);
+        if (null == appKeysOrder) {
+            throw new ErrMsgException("appKey is illegal");
+        }
+        for (Object row : appKeysOrder) {
+            Object[] cells = (Object[]) row;
+            appKeyList.add(String.valueOf(cells[1].toString()));
+        }
         if (list == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.data.exception"));
         }
+        List<PushMsgPieVO> pieVOS = new ArrayList<>();
         List<PushChannelEntity> channelAll = pushChannelRepository.findAll();
+        //封装数据,并且数据补全
+        orgData(list, pieVOS, channelAll, appKeys, appKeyList);
+        Map<String, Object> result = new HashMap<>(2);
+        result.put("appKeyOrder", appKeyList);
+        result.put("pieData", pieVOS);
+        return result;
+    }
+
+    private void orgData(List list, List<PushMsgPieVO> pieVOS, List<PushChannelEntity> channelAll, List<String> appKeys, List<String> appKeyList) {
+
+        if (null != channelAll && channelAll.size() == 0) {
+            throw new ErrMsgException("channel is not Configuration");
+        }
+
         for (Object row : list) {
             Object[] cells = (Object[]) row;
             PushMsgPieVO pieVO = new PushMsgPieVO();
@@ -123,10 +132,31 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
             pieVO.setMsgStatus(String.valueOf(cells[1].toString()));
             for (PushChannelEntity channel : channelAll) {
                 if (String.valueOf(cells[2].toString()).equals(channel.getChannelName())) {
-                    pieVO.setAppKey(channel.getChannelDesc());
+                    pieVO.setAppName(channel.getChannelDesc());
+                    pieVO.setAppKey(channel.getChannelName());
                 }
             }
             pieVOS.add(pieVO);
+        }
+        //补全数据
+        List<String> haveAppKeys = new ArrayList<>();
+        for (PushMsgPieVO pieVO : pieVOS) {
+            haveAppKeys.add(pieVO.getAppKey());
+        }
+        for (String key : appKeys) {
+            if (!haveAppKeys.contains(key)) {
+                PushMsgPieVO pushMsgPieVO = new PushMsgPieVO();
+                pushMsgPieVO.setAppKey(key);
+                for (PushChannelEntity channelEntity : channelAll) {
+                    if (key.equalsIgnoreCase(channelEntity.getChannelName())) {
+                        pushMsgPieVO.setAppName(channelEntity.getChannelDesc());
+                    }
+                }
+                pushMsgPieVO.setMsgStatus("SENDED");
+                pushMsgPieVO.setMsgSum(0);
+                pieVOS.add(pushMsgPieVO);
+                appKeyList.add(key);
+            }
         }
     }
 
@@ -317,9 +347,10 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
 
     /**
      * 获取根据每周分组集合
+     *
      * @param startDate 开始日期
-     * @param endDate 结束日期
-     * @return 每周分组集合(2018-07-23~2018-07-29)
+     * @param endDate   结束日期
+     * @return 每周分组集合(2018 - 07 - 23 ~ 2018 - 07 - 29)
      */
     private static List<String> getBetweenWeeks(String startDate, String endDate) {
         SimpleDateFormat sdf = new SimpleDateFormat(PEPConstants.DEFAULT_DATE_FORMAT);
@@ -365,10 +396,11 @@ public class PushMsgStatisticServiceImpl extends AbstractJpaServiceSupport<PushM
 
     /**
      * 获取月份或天日期范围
+     *
      * @param minDate 开始日期
      * @param maxDate 结束日期
-     * @param month 是否按照月份显示
-     * @return 按月显示月份(2018-08)
+     * @param month   是否按照月份显示
+     * @return 按月显示月份(2018 - 08)
      */
     private List<String> getMonthOrDayBetween(String minDate, String maxDate, boolean month) {
         List<String> result = new ArrayList<>();

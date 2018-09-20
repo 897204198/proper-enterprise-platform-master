@@ -38,8 +38,10 @@ public interface PushChannelService {
 
     /**
      * 查询可用的渠道
-     * @return
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @return 数据
      */
-    DataTrunk<PushChannelVO> findByEnable();
+    DataTrunk<PushChannelVO> findByEnable(String startDate, String endDate);
 
 }
