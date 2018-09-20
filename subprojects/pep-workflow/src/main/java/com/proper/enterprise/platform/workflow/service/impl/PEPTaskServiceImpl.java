@@ -70,9 +70,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
 
     @Override
     public void complete(String taskId, Map<String, Object> variables) {
-        Task task = taskService.createTaskQuery()
-            .includeIdentityLinks()
-            .taskId(taskId).singleResult();
+        Task task = getTask(taskId);
         validAssigneeIsCurrentUser(task);
         variables = VariableUtil.handleVariableSpecialType(variables);
         if (MapUtils.isEmpty(variables)) {
@@ -96,6 +94,20 @@ public class PEPTaskServiceImpl implements PEPTaskService {
             taskService.claim(taskId, Authentication.getCurrentUserId());
         }
         taskService.complete(taskId, globalVariables);
+    }
+
+    private Task getTask(String taskId) {
+        Task task = taskService.createTaskQuery()
+            .includeIdentityLinks()
+            .taskId(taskId).singleResult();
+        if (null != task) {
+            return task;
+        }
+        HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+        if (null != historicTask) {
+            throw new ErrMsgException(I18NUtil.getMessage("workflow.task.completed"));
+        }
+        throw new ErrMsgException(I18NUtil.getMessage("workflow.task.not.exist"));
     }
 
     private void validAssigneeIsCurrentUser(Task task) {
