@@ -50,7 +50,7 @@ dependencies {
     //runtime project(':pep-datasource-monitor')
 
     // Select when need swagger
-    runtime project(':pep-swagger')
+    // runtime project(':pep-swagger')
 
     // Mandatory for PEP
     runtime project(':pep-auth-common-jpa'),
