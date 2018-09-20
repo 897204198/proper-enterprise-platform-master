@@ -73,25 +73,39 @@ class SampleControllerTest extends AbstractTest {
     void query() {
         def document = [:]
         document['name'] = 'test'
+        document['TT'] = '2018-05-29 09:59:06'
         CreateReturnModel returnModel1 = createDocument(collectionName, document)
         QueryReturnModel queryReturnModel = queryDocument(collectionName, null)
         List<Document> list = queryReturnModel.getResults()
         Map idMap = list.get(0).get("_id")
         assert returnModel1.getObjectId() == idMap.get("\$oid")
-
+        document['TT'] = '2018-05-29 09:59:07'
         document['name'] = 'test2'
         CreateReturnModel returnModel2 = createDocument(collectionName, document)
+        document['TT'] = '2018-05-29 09:59:08'
         document['name'] = 'test3'
         CreateReturnModel returnModel3 = createDocument(collectionName, document)
 
         /*limit*/
-        QueryReturnModel querySkipLimit2 = queryDocument(collectionName, null, 1, 2)
+        QueryReturnModel querySkipLimit2 = queryDocument(collectionName, null, 1, 2, null)
         List listlimit2 = querySkipLimit2.getResults()
         assert listlimit2.size() == 2
-        QueryReturnModel querySkipLimit1 = queryDocument(collectionName, null, 1, 1)
+        QueryReturnModel querySkipLimit1 = queryDocument(collectionName, null, 1, 1, null)
         List listlimit1 = querySkipLimit1.getResults()
         assert listlimit1.size() == 1
 
+        /*order*/
+        QueryReturnModel sortQueryModelCtDescNameAsc = queryDocument(collectionName, new HashMap(), "-TT,name")
+        List<Document> sortQueryModelCtDescNameAscList = sortQueryModelCtDescNameAsc.getResults()
+        assert sortQueryModelCtDescNameAscList.get(0).get("name") == "test3"
+        assert sortQueryModelCtDescNameAscList.get(1).get("name") == "test2"
+        assert sortQueryModelCtDescNameAscList.get(2).get("name") == "test"
+
+        QueryReturnModel sortQueryModelNameAscCtDesc = queryDocument(collectionName, new HashMap(), "name,-TT")
+        List<Document> sortQueryModelNameAscCtDescList = sortQueryModelNameAscCtDesc.getResults()
+        assert sortQueryModelNameAscCtDescList.get(0).get("name") == "test"
+        assert sortQueryModelNameAscCtDescList.get(1).get("name") == "test2"
+        assert sortQueryModelNameAscCtDescList.get(2).get("name") == "test3"
         /*where*/
         Map equalQuery = new HashMap()
         equalQuery.put("name", "test3")
@@ -161,10 +175,14 @@ class SampleControllerTest extends AbstractTest {
     }
 
     private QueryReturnModel queryDocument(String collectionName, Map where) {
-        return queryDocument(collectionName, where, null, null)
+        return queryDocument(collectionName, where, null, null, null)
     }
 
-    private QueryReturnModel queryDocument(String collectionName, Map where, Integer skip, Integer limit) {
+    private QueryReturnModel queryDocument(String collectionName, Map where, String orders) {
+        return queryDocument(collectionName, where, null, null, orders)
+    }
+
+    private QueryReturnModel queryDocument(String collectionName, Map where, Integer skip, Integer limit, String orders) {
         if (null == where) {
             where = new HashMap()
         }
@@ -176,6 +194,9 @@ class SampleControllerTest extends AbstractTest {
         }
         if (null != limit) {
             baseMap.put("limit", limit)
+        }
+        if (StringUtil.isNotEmpty(orders)) {
+            baseMap.put("order", orders)
         }
         QueryReturnModel returnModel = JSONUtil.parse(post(URL + "/" + collectionName, JSONUtil.toJSON(baseMap),
             HttpStatus.OK).getResponse().getContentAsString(), QueryReturnModel.class)

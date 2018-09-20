@@ -16,10 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MongoDataBaseServiceImpl implements MongoDataBaseService {
@@ -104,7 +101,7 @@ public class MongoDataBaseServiceImpl implements MongoDataBaseService {
         LOGGER.debug("orders are {}", order);
         int skip = root.has("skip") ? root.get("skip").asInt() : 0;
         whereNode = handleId(whereNode);
-        Map<String, Integer> sort = new HashMap<>(2);
+        Map<String, Integer> sort = new LinkedHashMap<>(2);
         if (StringUtil.isNotNull(order)) {
             String[] orders = order.split(",");
             for (String o : orders) {
