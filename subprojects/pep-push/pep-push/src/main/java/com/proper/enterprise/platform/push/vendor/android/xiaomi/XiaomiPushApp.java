@@ -113,7 +113,7 @@ public class XiaomiPushApp extends BasePushApp {
     private boolean doSendMsg(PushMsgEntity msg, Message toMsg) throws IOException, ParseException {
         String pushToken = msg.getDevice().getPushToken();
         msg.setPushToken(pushToken);
-        LOGGER.debug("Prepare to send msg to xiaomi push: {}:{} with token {}", msg.getId(), msg.getMcontent(), pushToken);
+        LOGGER.debug("Prepare to send msg to xiaomi push: {} with token {}", msg.getId(), pushToken);
 
         if (!isReallySendMsg()) {
             LOGGER.debug("Pretend to push a notice({}) to Xiaomi push server... and then success.", msg.getId());
