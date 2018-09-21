@@ -38,6 +38,9 @@ public class PushChannelServiceImpl implements PushChannelService {
 
     @Override
     public PushChannelVO updateChannel(PushChannelVO pushChannelVO) {
+        if (checkChannelNameExist(pushChannelVO)) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.push.channel.name.add.error"));
+        }
         checkVo(pushChannelVO);
         boolean exists = pushChannelRepository.existsById(pushChannelVO.getId());
         if (!exists) {
@@ -70,17 +73,22 @@ public class PushChannelServiceImpl implements PushChannelService {
     }
 
     @Override
-    public DataTrunk<PushChannelVO> findByEnable() {
-        DataTrunk<PushChannelVO> result = new DataTrunk<>();
+    public DataTrunk<PushChannelVO> findByEnable(String startDate, String endDate) {
         List<PushChannelVO> vos = new ArrayList<>();
-        Date msendDate = DateUtil.addDay(new Date(), -7);
-        String dateStr = DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATE_FORMAT);
-        Date endtDate = new Date();
-        String endDateStr = DateUtil.toString(endtDate, PEPConstants.DEFAULT_DATE_FORMAT);
+        String dateStr;
+        String endDateStr;
+        if (StringUtil.isNotNull(startDate) && StringUtil.isNotNull(endDate)) {
+            dateStr = startDate;
+            endDateStr = endDate;
+        } else {
+            Date msendDate = DateUtil.addDay(new Date(), -7);
+            dateStr = DateUtil.toString(msendDate, PEPConstants.DEFAULT_DATE_FORMAT);
+            Date endtDate = new Date();
+            endDateStr = DateUtil.toString(endtDate, PEPConstants.DEFAULT_DATE_FORMAT);
+        }
         Iterable<PushChannelEntity> pushChannelEntities = pushChannelRepository.findByEnable(true);
         for (PushChannelEntity entity : pushChannelEntities) {
             String channelCount = pushMsgStatisticRepository.findPushCount(entity.getChannelName(), dateStr, endDateStr);
-
             if (StringUtil.isNull(channelCount)) {
                 channelCount = "0";
             }
@@ -95,12 +103,15 @@ public class PushChannelServiceImpl implements PushChannelService {
                 return 1;
             }
         });
+        DataTrunk<PushChannelVO> result = new DataTrunk<>();
         result.setData(vos);
         result.setCount(vos.size());
         return result;
     }
 
     private void checkVo(PushChannelVO pushChannelVO) {
+
+
         if (PushChannelVO.checkEmpty(pushChannelVO)) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.formatting.error"));
         } else if (StringUtils.isEmpty(pushChannelVO.getId()) && checkChannelNameExist(pushChannelVO)) {

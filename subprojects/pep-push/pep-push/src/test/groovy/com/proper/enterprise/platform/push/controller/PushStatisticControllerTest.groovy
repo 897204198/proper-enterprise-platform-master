@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.push.controller
 
 import com.proper.enterprise.platform.core.entity.DataTrunk
+import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.push.api.PushMsg
 import com.proper.enterprise.platform.push.client.PusherApp
@@ -14,7 +15,6 @@ import com.proper.enterprise.platform.push.repository.PushMsgStatisticRepository
 import com.proper.enterprise.platform.push.service.PushMsgService
 import com.proper.enterprise.platform.push.service.PushMsgStatisticService
 import com.proper.enterprise.platform.push.test.PushAbstractTest
-import com.proper.enterprise.platform.push.vo.PushMsgPieVO
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Before
 import org.junit.Test
@@ -143,10 +143,10 @@ class PushStatisticControllerTest extends PushAbstractTest {
 
         pushMsgStatisticService.saveStatisticOfSomeday(msendDate)
         List list = statisticRepository.findAll()
-        assert list.size() == 16
+        assert list.size() == 19
         statisticRepository.deleteByMsendedDate(msendDate)
         List listAfterDelete = statisticRepository.findAll()
-        assert listAfterDelete.size() == 15
+        assert listAfterDelete.size() == 18
 
         try {
             HashMap<String, Object> params = new LinkedHashMap<String, Object>()
@@ -233,17 +233,25 @@ class PushStatisticControllerTest extends PushAbstractTest {
         }
     }
 
+    @Sql(["/com/proper/enterprise/platform/push/push-channel.sql",
+        "/com/proper/enterprise/platform/push/push-statistic.sql"])
     @Test
-    void testPushMsgPieDefault() {
-        initDataPie()
-        List<PushMsgPieVO> pieVO2 = JSONUtil.parse(get('/push/statistic/pie',HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert pieVO2 != null && pieVO2.size() >= 2
+    void testPushMsgPieHasDate() {
+        Map haveData = JSONUtil.parse(get('/push/statistic/pie?startDate=2018-07-08&endDate=2018-07-22&appKey=test,MobileOADev', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert null != haveData && haveData.size() > 0
+        try {
+            get('/push/statistic/pie?startDate=2018-07-08&endDate=2018-07-22&appKey=aaa', HttpStatus.OK)
+        } catch (ErrMsgException e) {
+            assert "appKey is illegal" == e.getMessage()
+        }
     }
 
+    @Sql("/com/proper/enterprise/platform/push/push-channel.sql")
     @Test
-    void testPushMsgPieDefaultNoData() {
-        List<PushMsgPieVO> pieVO = JSONUtil.parse(get('/push/statistic/pie',HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert pieVO != null && pieVO.size() == 0
+    void testPushMsgPieNotDate() {
+        initDataPie()
+        Map<String, Object> haveData = JSONUtil.parse(get('/push/statistic/pie?appKey=MobileOAPr', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert null != haveData && haveData.size() > 0
     }
 
     private void initDataPie() {
@@ -263,27 +271,5 @@ class PushStatisticControllerTest extends PushAbstractTest {
 
         pushMsgStatisticRepository.save(pushFail)
         pushMsgStatisticRepository.save(pushSuccess)
-    }
-
-    @Test
-    void testPushMsgPieDate() {
-        List<PushMsgPieVO> pieVO = JSONUtil.parse(get('/push/statistic/pie?startDate=2018-07-08&endDate=2018-07-22',HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert null != pieVO
-    }
-
-    @Test
-    void testPushMsgPieDateAppKey() {
-        List<PushMsgPieVO> haveData = JSONUtil.parse(get('/push/statistic/pie?startDate=2018-07-08&endDate=2018-07-22&appKey=test',HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert null != haveData && haveData.size() > 0
-        List<PushMsgPieVO> noData = JSONUtil.parse(get('/push/statistic/pie?startDate=2018-07-08&endDate=2018-07-22&appKey=aaa',HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert noData != null && noData.size() == 0
-    }
-
-    @Test
-    void testPushMsgPieAppKey() {
-        List<PushMsgPieVO> haveData = JSONUtil.parse(get('/push/statistic/pie?appKey=test',HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert null != haveData && haveData.size() > 0
-        List<PushMsgPieVO> noData = JSONUtil.parse(get('/push/statistic/pie?appKey=aaa',HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert noData != null && noData.size() == 0
     }
 }

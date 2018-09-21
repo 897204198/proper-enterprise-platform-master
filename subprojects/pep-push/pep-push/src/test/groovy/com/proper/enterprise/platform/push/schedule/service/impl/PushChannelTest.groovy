@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.push.schedule.service.impl
 
 import com.proper.enterprise.platform.core.entity.DataTrunk
+import com.proper.enterprise.platform.core.exception.ErrMsgException
+import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.push.api.openapi.service.PushChannelService
 import com.proper.enterprise.platform.push.entity.PushChannelEntity
 import com.proper.enterprise.platform.push.vo.PushChannelVO
@@ -54,11 +56,11 @@ class PushChannelTest extends AbstractTest {
         vo.setId(id)
         vo.getAndroid().getHuawei().setTheAppId("app_id222")
         vo.setMsgSaveDays(2)
-        vo = updateChannel(vo)
-        assert vo != null
-
-        assert vo.getAndroid().getHuawei().getTheAppId().equals("app_id222")
-        assert vo.getMsgSaveDays() == 2
+        try {
+            put(url, JSONUtil.toJSON(vo), HttpStatus.INTERNAL_SERVER_ERROR)
+        } catch (ErrMsgException e) {
+            assert e.getMessage() == I18NUtil.getMessage("pep.push.channel.name.add.error")
+        }
 
         assert getChannel().count == 1
         assert getChannel().data.findAll().get(0).enable == true
@@ -239,11 +241,15 @@ class PushChannelTest extends AbstractTest {
         addChannel(pushChannelVo)
         addChannel(pushChannelVo2)
 
-        DataTrunk<PushChannelVO> pushList = pushChannelService.findByEnable()
+        DataTrunk<PushChannelVO> pushList = pushChannelService.findByEnable(null, null)
         assert pushList.getData().size() == 1
 
         DataTrunk<PushChannelVO> pushs = pushChannelService.findAll()
         assert pushs.getData().size() == 2
+
+        String date = DateUtil.toDateString(new Date())
+        DataTrunk<PushChannelVO> pushList2 = pushChannelService.findByEnable(date, date)
+        assert pushList2.getData().size() == 1
     }
 
 
