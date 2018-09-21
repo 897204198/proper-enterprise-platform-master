@@ -55,7 +55,7 @@ public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository,
     }
 
     @Override
-    public Collection<? extends Menu> findAllEq(String name) {
+    public Collection<? extends Menu> findAllEq(String name, String route) {
         Specification<Menu> specification = new Specification<Menu>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
@@ -63,6 +63,10 @@ public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository,
                 if (StringUtil.isNotNull(name)) {
                     predicates.add(cb.equal(root.get("name"), name));
                 }
+                if (StringUtil.isNotNull(route)) {
+                    predicates.add(cb.equal(root.get("route"), route));
+                }
+
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };

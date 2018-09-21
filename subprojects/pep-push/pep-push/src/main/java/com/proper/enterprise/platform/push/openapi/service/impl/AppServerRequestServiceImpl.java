@@ -165,10 +165,9 @@ public class AppServerRequestServiceImpl implements AppServerRequestService {
             }
             try {
                 msgRepo.saveAll(lstMsgs);
-                lstMsgs.forEach(msg -> LOGGER.info("doSendMsgToDevices:success saveMsg:pushId:{},msgConent:{}",
-                    msg.getId(), msg.toString()));
+                lstMsgs.forEach(msg -> LOGGER.info("doSendMsgToDevices:success saveMsg:pushId:{}", msg.getId()));
             } catch (Exception e) {
-                LOGGER.error("doSendMsgToDevices saveMsg error:msg:{}", e, JSONUtil.toJSONIgnoreException(thePushmsg));
+                LOGGER.error("doSendMsgToDevices saveMsg error!", e);
             }
         } else {
             LOGGER.info("doSendMsgToDevices,device is empty,then no need send msg!");

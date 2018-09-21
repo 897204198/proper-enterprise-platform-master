@@ -69,12 +69,6 @@ public class RoleServiceImpl implements RoleService {
             Collection<? extends Role> list = roleDao.findAllById(idList);
             for (Role roleEntity : list) {
                 validateBeforeDelete(roleEntity);
-                if (CollectionUtil.isNotEmpty(roleEntity.getUserGroups())) {
-                    throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.role.has.usergroup"));
-                }
-                if (CollectionUtil.isNotEmpty(roleEntity.getUsers())) {
-                    throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.role.has.user"));
-                }
             }
             Collection<? extends Role> childRoles = roleDao.findRolesByParentId(idList);
             if (CollectionUtil.isNotEmpty(childRoles)) {
@@ -406,7 +400,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private void validateRoleAndParentCircle(Role role) {
-        if (role == null || StringUtil.isBlank(role.getId())) {
+        //TODO 保存的时候怎么可能会存在id.
+        if (role == null) {
             return;
         }
         String parentId = role.getParentId();

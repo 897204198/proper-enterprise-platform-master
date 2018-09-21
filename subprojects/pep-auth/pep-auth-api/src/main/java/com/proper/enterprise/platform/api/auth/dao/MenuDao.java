@@ -23,11 +23,12 @@ public interface MenuDao extends BaseService<Menu, String> {
     Collection<? extends Menu> findParents(EnableEnum menuEnable);
 
     /**
-     * 根据姓名查询菜单
+     * 根据姓名路由查询菜单
      * @param name 姓名
+     * @param route 路由
      * @return  菜单集合
      */
-    Collection<? extends Menu> findAllEq(String name);
+    Collection<? extends Menu> findAllEq(String name, String route);
 
     /**
      * 多条件组合查询菜单
