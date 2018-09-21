@@ -109,28 +109,25 @@ public class ApnsPushApp extends BasePushApp {
                     .get();
                 msg.setMresponse(JSONUtil.toJSON(pushNotificationResponse));
                 if (pushNotificationResponse.isAccepted()) {
-                    LOGGER.info("Push notitification accepted by APNs gateway. {}", msg.getMcontent());
-                    LOGGER.info("success ios push log step6 content:{},pushId:{},msg:{}", msg.getMcontent(),
-                        msg.getId(), JSONUtil.toJSONIgnoreException(msg));
+                    LOGGER.info("Push notitification accepted by APNs gateway. {}", msg.getId());
+                    LOGGER.info("success ios push log step6 pushId:{}", msg.getId());
                     result = true;
                 } else {
                     LOGGER.info(
-                        "Notification rejected by the APNs pushId:{},gateway:{},msg:{}", msg.getId(),
-                        pushNotificationResponse.getRejectionReason(), JSONUtil.toJSONIgnoreException(msg));
+                        "Notification rejected by the APNs pushId:{},gateway:{}", msg.getId(), pushNotificationResponse.getRejectionReason());
                     pushService.onPushTokenInvalid(msg);
                     // 发送消息失败
                     result = false;
                     if (pushNotificationResponse.getTokenInvalidationTimestamp() != null) {
-                        LOGGER.info("\t…and the token is invalid as of {}, msg: {}",
-                            pushNotificationResponse.getTokenInvalidationTimestamp(), msg.getMcontent());
+                        LOGGER.info("\t…and the token is invalid as of {}, msgId: {}",
+                            pushNotificationResponse.getTokenInvalidationTimestamp(), msg.getId());
                     }
                 }
             } else {
-                LOGGER.info("No need to push notice to real APNs server when 'push_env' set to 'test'! {}", msg.getMcontent());
+                LOGGER.info("No need to push notice to real APNs server when 'push_env' set to 'test'! {}", msg.getId());
             }
         } catch (Exception e) {
-            LOGGER.error("Failed to send push notification pushId:{},msg:{},errMsg:{} ",
-                msg.getId(), JSONUtil.toJSONIgnoreException(msg), e, e.getMessage());
+            LOGGER.error("Failed to send push notification pushId:{},errMsg:{} ", msg.getId(), e.getMessage());
             msg.setMresponse(e + "\t" + e.getMessage());
             result = false;
         }
