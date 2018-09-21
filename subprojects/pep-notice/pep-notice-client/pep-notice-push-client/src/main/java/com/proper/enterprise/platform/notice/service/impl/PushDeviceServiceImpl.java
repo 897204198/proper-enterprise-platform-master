@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.notice.service.impl;
 
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity;
 import com.proper.enterprise.platform.notice.enums.PushDeviceType;
@@ -25,7 +26,8 @@ public class PushDeviceServiceImpl implements PushDeviceService {
                      String pushToken,
                      String deviceId,
                      String deviceOtherInfo,
-                     String deviceType) {
+                     String deviceType,
+                     String unbindOtherDevice) {
         PushDeviceType enumDeviceType = null;
         if (StringUtil.isNotEmpty(deviceType)) {
             enumDeviceType = Enum.valueOf(PushDeviceType.class, deviceType.trim());
@@ -34,7 +36,15 @@ public class PushDeviceServiceImpl implements PushDeviceService {
         if (StringUtil.isNotEmpty(pushMode)) {
             enumPushMode = Enum.valueOf(PushMode.class, pushMode.trim());
         }
-        if (StringUtil.isNotEmpty(deviceId)) {
+        if (StringUtil.isEmpty(userId)) {
+            throw new ErrMsgException("no user_id");
+        }
+        deleteByUserId(userId);
+        boolean isBind = "true".equals(unbindOtherDevice);
+        if (isBind && StringUtil.isEmpty(deviceId)) {
+            throw new ErrMsgException("no device_id");
+        }
+        if (isBind) {
             bindDevice(appKey, userId, enumPushMode, pushToken, deviceId, deviceOtherInfo, enumDeviceType);
         }
     }
@@ -57,7 +67,6 @@ public class PushDeviceServiceImpl implements PushDeviceService {
                             String deviceId,
                             String deviceOtherInfo,
                             PushDeviceType deviceType) {
-        deleteByUserId(userId);
         PushDeviceEntity device =  new PushDeviceEntity();
         device.setAppKey(appKey);
         device.setDeviceId(deviceId);

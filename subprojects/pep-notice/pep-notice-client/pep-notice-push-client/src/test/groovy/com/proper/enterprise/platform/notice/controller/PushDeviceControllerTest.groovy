@@ -4,8 +4,6 @@ import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.core.utils.http.HttpClient
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity
-import com.proper.enterprise.platform.notice.enums.PushDeviceType
-import com.proper.enterprise.platform.notice.enums.PushMode
 import com.proper.enterprise.platform.notice.repository.PushDeviceRepository
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.After
@@ -34,20 +32,10 @@ class PushDeviceControllerTest extends AbstractTest{
 
     @Test
     void save() {
-
         Map<String, Object> param = new HashMap<>()
-
-        param.put("appkey", appkey)
-
-        //合法deviceType
-        param.put("device_type", PushDeviceType.android.toString())
-        pushRequest(URL_STARTPUSH, param)
-
-        //合法的push_mode
-        param.put("push_mode", PushMode.huawei)
-        pushRequest(URL_STARTPUSH, param)
-
         //注册设备
+        param.put("appkey", appkey)
+        param.put("unbind_other_device", "true")
         param.put("push_token", pushToken)
         param.put("userid", userid)
         param.put("deviceid", deviceid)
