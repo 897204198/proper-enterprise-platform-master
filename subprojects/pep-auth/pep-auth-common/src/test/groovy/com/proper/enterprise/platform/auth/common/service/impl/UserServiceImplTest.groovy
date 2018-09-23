@@ -107,7 +107,7 @@ class UserServiceImplTest extends AbstractTest {
 
     @Test
     void testUpdateChangePassword() {
-        def userEntity = userDao.findOne("user3")
+        def userEntity = userDao.findById("user3")
         def oldPassword = userEntity.getPassword()
         def changePasswordUser = userService.updateChangePassword(userEntity.id, "123456", 'test3')
         def newPassword = changePasswordUser.getPassword()
@@ -116,34 +116,32 @@ class UserServiceImplTest extends AbstractTest {
 
     @Test
     void testGet() {
-        def userEntity = userDao.findOne("user3")
+        def userEntity = userDao.findById("user3")
         def user = userService.get(userEntity.id)
         assert 'testuser3' == user.username
     }
 
     @Test
     void testGetByUsername() {
-        def userEntity = userDao.findOne("user3")
+        def userEntity = userDao.findById("user3")
         def user = userService.getByUsername(userEntity.username, EnableEnum.ENABLE)
         assert 'testuser3' == user.username
     }
 
     @Test
     void testDelete() {
-        def userEntity = userDao.findOne("user3")
-        def result = userService.delete(userEntity.id)
-        assert true == result
+        def userEntity = userDao.findById("user3")
+        assert userService.delete(userEntity.id)
     }
 
     @Test
     void testDeleteByIds() {
-        def result = userService.deleteByIds('user2,user3')
-        assert true == result
+        assert userService.deleteByIds('user2,user3')
     }
 
     @Test
     void testGetUserMenus() {
-        def userEntity = userDao.findOne("user3")
+        def userEntity = userDao.findById("user3")
         userEntity.setSuperuser(true)
         def menus = userService.getUserMenus(userEntity.id, EnableEnum.ENABLE)
         assert menus.size() > 0
@@ -154,7 +152,7 @@ class UserServiceImplTest extends AbstractTest {
         def resources1 = userService.getUserResources("userId", EnableEnum.ENABLE)
         assert null != resources1 && resources1.size() == 0
         def user = userDao.getByUsername("testuser2", EnableEnum.ENABLE)
-        def resources2 = userService.getUserResources(user.getId(), EnableEnum.ENABLE)
+        userService.getUserResources(user.getId(), EnableEnum.ENABLE)
         addResources()
         def userEntity = userInit()
         def resources = userService.getUserResources(userEntity.id, EnableEnum.ENABLE)
