@@ -395,7 +395,7 @@ public class MenuServiceImpl implements MenuService {
         if (StringUtil.isEmpty(menu.getName())) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.menu.name.empty"));
         }
-        Collection<? extends Menu> oldNameMenus = menuDao.findAllEq(menu.getName());
+        Collection<? extends Menu> oldNameMenus = menuDao.findAllEq(menu.getName(), "");
         if (oldNameMenus.size() > 0) {
             for (Menu nameMenu : oldNameMenus) {
                 if (!nameMenu.getId().equals(menu.getId())) {
@@ -403,7 +403,7 @@ public class MenuServiceImpl implements MenuService {
                 }
             }
         }
-        Collection<? extends Menu> oldRouteMenus = menuDao.findAllEq(menu.getName());
+        Collection<? extends Menu> oldRouteMenus = menuDao.findAllEq("", menu.getRoute());
         if (oldRouteMenus.size() > 0) {
             for (Menu routeMenu : oldRouteMenus) {
                 if (!routeMenu.getId().equals(menu.getId())) {

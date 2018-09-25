@@ -33,6 +33,7 @@ class AccessTokenFilterTest extends AbstractTest {
 
         def token = service.generate()
         def accessToken = new AccessTokenVO('test', 'for test using', token, 'GET:/test')
+        accessToken.setId("201808311853")
         service.saveOrUpdate(accessToken)
         get("/test?access_token=$token", HttpStatus.NOT_FOUND)
         get("/test/notexist?access_token=$token", HttpStatus.FORBIDDEN)

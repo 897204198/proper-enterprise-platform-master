@@ -3,6 +3,9 @@ dependencies {
             libraries.spring_context_support,
             project(':pep-auth-api')
 
-    testCompile project(':pep-test')
+    testCompile project(':pep-test'),
+                project(':pep-auth-common-jpa')
     testRuntime project(':pep-cache-ehcache')
+
+
 }

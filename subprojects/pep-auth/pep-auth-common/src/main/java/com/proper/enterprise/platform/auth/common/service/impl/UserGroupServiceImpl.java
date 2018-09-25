@@ -141,11 +141,11 @@ public class UserGroupServiceImpl implements UserGroupService {
     public UserGroup saveUserGroupRole(String id, String roleId) {
         UserGroup userGroup = get(id, EnableEnum.ENABLE);
         if (userGroup == null) {
-            throw new ErrMsgException("can't save beacuse userGropu not find");
+            throw new ErrMsgException("can't save because userGropu not find");
         }
         Role role = roleService.get(roleId);
         if (role == null) {
-            throw new ErrMsgException("can't save beacuse role not find");
+            throw new ErrMsgException("can't save because role not find");
         }
         userGroup.add(role);
         userGroup = save(userGroup);
@@ -156,11 +156,11 @@ public class UserGroupServiceImpl implements UserGroupService {
     public UserGroup deleteUserGroupRole(String id, String roleId) {
         UserGroup userGroup = get(id, EnableEnum.ENABLE);
         if (userGroup == null) {
-            throw new ErrMsgException("can't save beacuse userGropu not find");
+            throw new ErrMsgException("can't save because userGropu not find");
         }
         Role role = roleService.get(roleId);
         if (role == null) {
-            throw new ErrMsgException("can't save beacuse role not find");
+            throw new ErrMsgException("can't save because role not find");
         }
         userGroup.remove(role);
         userGroup = save(userGroup);
@@ -180,11 +180,11 @@ public class UserGroupServiceImpl implements UserGroupService {
     public UserGroup addGroupUser(String groupId, String userId) {
         UserGroup userGroup = get(groupId, EnableEnum.ENABLE);
         if (userGroup == null) {
-            throw new ErrMsgException("can't save beacuse userGropu not find");
+            throw new ErrMsgException("can't save because userGropu not find");
         }
         User user = userService.get(userId);
         if (user == null) {
-            throw new ErrMsgException("can't save beacuse user not find");
+            throw new ErrMsgException("can't save because user not find");
         }
         user.add(userGroup);
         userService.save(user);
@@ -195,11 +195,11 @@ public class UserGroupServiceImpl implements UserGroupService {
     public UserGroup deleteGroupUser(String groupId, String userId) {
         UserGroup userGroup = get(groupId, EnableEnum.ENABLE);
         if (userGroup == null) {
-            throw new ErrMsgException("can't save beacuse userGropu not find");
+            throw new ErrMsgException("can't save because userGropu not find");
         }
         User user = userService.get(userId);
         if (user == null) {
-            throw new ErrMsgException("can't save beacuse user not find");
+            throw new ErrMsgException("can't save because user not find");
         }
         user.remove(userGroup);
         userService.save(user);
@@ -230,7 +230,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     public UserGroup addGroupUserByUserIds(String groupId, List<String> userIds) {
         UserGroup userGroup = get(groupId, EnableEnum.ENABLE);
         if (userGroup == null) {
-            throw new ErrMsgException("can't save beacuse userGropu not find");
+            throw new ErrMsgException("can't save because userGropu not find");
         }
 
         Collection<? extends User> collection = userService.getUsersByIds(userIds);
