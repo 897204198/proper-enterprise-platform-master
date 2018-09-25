@@ -232,7 +232,7 @@ public class HuaweiPushApp extends BasePushApp {
         return new String(body, PEPConstants.DEFAULT_CHARSET);
     }
 
-    private boolean isSuccess(String msgId, String res) {
+    private boolean isSuccess(String msgId, String res) throws IOException {
         LOGGER.debug("Push to huawei with pushId:{} has response:{}", msgId, res);
         String key = "msg";
         try {
@@ -240,11 +240,11 @@ public class HuaweiPushApp extends BasePushApp {
             return "Success".equals(result.get(key).textValue());
         } catch (Exception ex) {
             LOGGER.debug("Error occurs when parsing response of " + msgId, ex);
+            throw ex;
         }
-        return false;
     }
 
-    private boolean handlePushCmdResp(String res, PushMsgEntity msg) {
+    private boolean handlePushCmdResp(String res, PushMsgEntity msg) throws IOException {
         msg.setMresponse(res);
         return isSuccess(msg.getId(), res);
     }
