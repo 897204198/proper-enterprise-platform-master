@@ -4,8 +4,12 @@ import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.core.utils.http.HttpClient
 import com.proper.enterprise.platform.notice.entity.NoticeSetDocument
+import com.proper.enterprise.platform.notice.entity.PushDeviceEntity
+import com.proper.enterprise.platform.notice.enums.PushDeviceType
+import com.proper.enterprise.platform.notice.enums.PushMode
 import com.proper.enterprise.platform.notice.repository.NoticeMsgRepository
 import com.proper.enterprise.platform.notice.repository.NoticeSetRepository
+import com.proper.enterprise.platform.notice.repository.PushDeviceRepository
 import com.proper.enterprise.platform.sys.datadic.DataDic
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil
@@ -42,7 +46,10 @@ class NoticeClientToServerTest extends AbstractTest {
     TemplateRepository templateRepository
 
     @Autowired
-    private DataDicRepository repository;
+    DataDicRepository repository
+
+    @Autowired
+    PushDeviceRepository deviceRepository
 
     @Test
     void configEmail() {
@@ -79,11 +86,30 @@ class NoticeClientToServerTest extends AbstractTest {
         headers.put("X-PEP-TOKEN", noticeServerToken)
         ResponseEntity<byte[]> response = HttpClient.post(noticeServerUrl
             + "/rest/notice/server/config/SMS", headers, MediaType.APPLICATION_JSON, '{"smsUrl":"http://118.145.22.173:9887/smsservice/SendSMS","smsTemplate":"UserId=10417&Password=YKrm_180612&Mobiles={0}&Content={1}","smsCharset":"GBK"}');
-        println "response:" +  StringUtil.toEncodedString(response.getBody())
+        println "response:" + StringUtil.toEncodedString(response.getBody())
     }
 
     @Test
-    void sendEmailAndSms() {
+    void configPush() {
+        String noticeServerUrl = null;
+        DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "URL");
+        if (dataDic != null) {
+            noticeServerUrl = dataDic.getName();
+        }
+        String noticeServerToken = null;
+        dataDic = DataDicUtil.get("NOTICE_SERVER", "TOKEN");
+        if (dataDic != null) {
+            noticeServerToken = dataDic.getName();
+        }
+        Map<String, String> headers = new HashMap<>(1)
+        headers.put("X-PEP-TOKEN", noticeServerToken)
+        ResponseEntity<byte[]> response = HttpClient.post(noticeServerUrl
+            + "/rest/notice/server/config/PUSH?pushChannel=XIAOMI", headers, MediaType.APPLICATION_JSON, '{"pushPackage":"com.proper.icmp.dev","appSecret":"RGW+NA+T2ucpEX0a6bxyhA=="}');
+        println "response:" + StringUtil.toEncodedString(response.getBody())
+    }
+
+    @Test
+    void sendEmailAndSmsAndPush() {
         Map<String, Object> custom = new HashMap<>()
         custom.put("url", "1")
         Map<String, Object> templateParams = new HashMap<>()
@@ -134,12 +160,23 @@ class NoticeClientToServerTest extends AbstractTest {
         details.add(detail3)
         templateDocument.details = details
         templateRepository.save(templateDocument)
+
+        PushDeviceEntity pushDeviceEntity = new PushDeviceEntity()
+        pushDeviceEntity.appKey = "MobileOADev"
+        pushDeviceEntity.deviceId = "4665a261c995eeab5bac45545aac0b92"
+        pushDeviceEntity.userId = "test1"
+        pushDeviceEntity.deviceType = PushDeviceType.android
+        pushDeviceEntity.deviceOtherInfo = "{\"model\":\"MI 5\",\"manufacturer\":\"Xiaomi\",\"brand\":\"Xiaomi\",\"sdk_int\":24}"
+        pushDeviceEntity.pushMode = PushMode.xiaomi
+        pushDeviceEntity.pushToken = "w69uYXiVgywg4VE/GJmGnfnomKwfGYs743z09wGK8rjexgJ1hgmmg32O4WpahuFd"
+        deviceRepository.save(pushDeviceEntity)
     }
 
     @After
     void destroy() {
         noticeSetRepository.deleteAll()
         templateRepository.deleteAll()
+        deviceRepository.deleteAll()
     }
 
 }
