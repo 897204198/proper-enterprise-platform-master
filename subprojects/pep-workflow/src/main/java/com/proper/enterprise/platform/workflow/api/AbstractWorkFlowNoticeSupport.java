@@ -90,7 +90,7 @@ public abstract class AbstractWorkFlowNoticeSupport {
         if (StringUtil.isEmpty(groupId)) {
             return userIds;
         }
-        UserGroup userGroup = userGroupDao.findOne(groupId);
+        UserGroup userGroup = userGroupDao.findById(groupId);
         if (null == userGroup) {
             return userIds;
         }
@@ -108,7 +108,7 @@ public abstract class AbstractWorkFlowNoticeSupport {
         if (StringUtil.isEmpty(roleId)) {
             return userIds;
         }
-        Role role = roleDao.findOne(roleId);
+        Role role = roleDao.findById(roleId);
         if (null == role) {
             return userIds;
         }
