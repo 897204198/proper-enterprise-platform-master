@@ -51,12 +51,12 @@ public interface App extends IBase {
      *
      * @return 应用描述
      */
-    String getDescribe();
+    String getAppDesc();
 
     /**
      * 设置应用描述
      *
-     * @param describe 应用描述
+     * @param appDesc 应用描述
      */
-    void setDescribe(String describe);
+    void setAppDesc(String appDesc);
 }

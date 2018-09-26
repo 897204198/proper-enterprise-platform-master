@@ -137,11 +137,11 @@
             <column name="CREATE_USER_ID" value="PEP"/>
             <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
             <column name="LAST_MODIFY_USER_ID" value="PEP"/>
-            <column name="COLUMN_ALIAS" value="describe"/>
+            <column name="COLUMN_ALIAS" value="appDesc"/>
             <column name="COLUMN_DESC" value="描述"/>
             <column name="COLUMN_TYPE" value="string"/>
             <column name="MODULE_NAME" value="noticeserverapp"/>
-            <column name="SEARCH_COLUMN" value="describe"/>
+            <column name="SEARCH_COLUMN" value="app_desc"/>
             <column name="TABLE_NAME" value="pep_notice_app"/>
             <column name="URL" value="/notice/server/app"/>
         </insert>

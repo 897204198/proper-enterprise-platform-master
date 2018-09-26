@@ -29,7 +29,7 @@ public interface AppRepository extends BaseJpaRepository<AppEntity, String> {
      */
     @Query("SELECT a FROM AppEntity a WHERE (a.appKey=:appKey or :appKey is null)"
         + " and (a.appName=:appName or :appName is null)"
-        + " and (a.describe=:describe or :describe is null)"
+        + " and (a.appDesc=:describe or :describe is null)"
         + " and (a.enable=:enable or :enable is null)")
     Page<AppEntity> findAll(@Param("appKey") String appKey, @Param("appName") String appName,
                             @Param("describe") String describe, @Param("enable") Boolean enable, Pageable pageable);

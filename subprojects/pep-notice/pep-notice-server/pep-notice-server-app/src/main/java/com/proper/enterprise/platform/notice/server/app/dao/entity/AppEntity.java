@@ -34,7 +34,7 @@ public class AppEntity extends BaseEntity implements App {
     /**
      * 描述
      */
-    private String describe;
+    private String appDesc;
 
     /**
      * app颜色
@@ -76,14 +76,12 @@ public class AppEntity extends BaseEntity implements App {
         this.appToken = appToken;
     }
 
-    @Override
-    public String getDescribe() {
-        return describe;
+    public String getAppDesc() {
+        return appDesc;
     }
 
-    @Override
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public void setAppDesc(String appDesc) {
+        this.appDesc = appDesc;
     }
 
     public String getColor() {

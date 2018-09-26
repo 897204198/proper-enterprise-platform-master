@@ -19,13 +19,13 @@ class AppControllerTest extends AbstractTest {
         appVO.setAppKey(appKey)
         appVO.setAppToken(token)
         appVO.setColor("color")
-        appVO.setDescribe("describe")
+        appVO.setAppDesc("describe")
         AppVO saveAPP = post(appVO)
-        assert saveAPP.getDescribe() == "describe"
+        assert saveAPP.getAppDesc() == "describe"
 
-        saveAPP.setDescribe("qqq")
+        saveAPP.setAppDesc("qqq")
         AppVO putApp = put(saveAPP)
-        assert putApp.getDescribe() == "qqq"
+        assert putApp.getAppDesc() == "qqq"
 
         //验证token
         Map config = new HashMap()

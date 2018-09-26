@@ -13,7 +13,7 @@ abstract class AbstractServerAppTest extends AbstractTest {
         appVO.setAppKey(appKey)
         appVO.setAppToken(token)
         appVO.setColor("color")
-        appVO.setDescribe("describe")
+        appVO.setAppDesc("describe")
         postAndReturn('/notice/server/app', appVO)
         return token
     }
@@ -25,7 +25,7 @@ abstract class AbstractServerAppTest extends AbstractTest {
         appVO.setAppKey(appKey)
         appVO.setAppToken(token)
         appVO.setColor("color")
-        appVO.setDescribe("describe")
+        appVO.setAppDesc("describe")
         return postAndReturn('/notice/server/app', appVO)
     }
 
