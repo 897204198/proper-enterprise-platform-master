@@ -33,7 +33,7 @@ angular.module('flowableModeler').controller('FlowableFormPropertiesCtrl',
                         id: item.name,
                         readable: true,
                         writable: true,
-                        type: 'string',
+                        type: null,
                         isCustomForm: true
                     }));
                     // 没有值的情况 添加
