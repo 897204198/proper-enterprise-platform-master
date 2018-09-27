@@ -1,5 +1,6 @@
 dependencies {
-    compile project(':pep-auth-common')
+    compile project(':pep-auth-common'),
+            project(':pep-notice-client')
 
     testCompile project(':pep-test'),
                 project(':pep-auth-common-jpa')

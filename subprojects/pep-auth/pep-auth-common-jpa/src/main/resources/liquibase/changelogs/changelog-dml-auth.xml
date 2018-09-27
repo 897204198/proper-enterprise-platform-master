@@ -1373,4 +1373,24 @@
             <column name="PARENT_ID" value="pep-form"/>
         </insert>
     </changeSet>
+    <changeSet author="zjl (generated)" id="20180926-auth-datadic-insert">
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="PEP_AUTH_CONFIG"/>
+            <column name="DD_CATALOG_CODE" value="AUTH_CONFIG"/>
+            <column name="DD_CATALOG_NAME" value="权限配置"/>
+            <column name="DD_CATALOG_ORDER" value="4"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="PUSH_AUTH_PASSWORD_RETRIEVE"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="AUTH_CONFIG"/>
+            <column name="DD_CODE" value="PUSH_AUTH_PASSWORD_RETRIEVE_URL"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="密码找回URL"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
