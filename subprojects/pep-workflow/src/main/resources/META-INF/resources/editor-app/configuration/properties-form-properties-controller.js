@@ -337,6 +337,24 @@ angular.module('flowableModeler').controller('FlowableFormPropertiesPopupCtrl',
             }
         };
 
+        // Click handler for writable checkbox
+        // selectedProperty.readable
+        // selectedProperty.writable
+        // selectedProperty.required
+        $scope.onWritableChange = function () {
+          if (!$scope.selectedProperty.writable) {
+            $scope.selectedProperty.required = false;
+          }
+        }
+
+        // Click handler for readable checkbox
+        $scope.onReadableChange = function () {
+          if (!$scope.selectedProperty.readable) {
+            $scope.selectedProperty.writable = false;
+            $scope.selectedProperty.required = false;
+          }
+        }
+
         // Click handler for save button
         $scope.save = function () {
 
