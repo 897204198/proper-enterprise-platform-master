@@ -1,13 +1,17 @@
 package com.proper.enterprise.platform.auth.jwt.controller
 
+import com.proper.enterprise.platform.api.auth.service.UserService
+import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.core.model.CurrentModel
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.ConfCenter
+import com.proper.enterprise.platform.sys.i18n.I18NUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import groovy.json.JsonSlurper
 import org.apache.commons.codec.binary.Base64
 import org.junit.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
@@ -16,6 +20,9 @@ import org.springframework.test.context.jdbc.Sql
 class LoginControllerTest extends AbstractTest {
 
     def static final DEFAULT_USER = ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS")
+
+    @Autowired
+    private UserService userService
 
     @Test
     void loginAndLogout() {
@@ -62,4 +69,19 @@ class LoginControllerTest extends AbstractTest {
         assert token1 != token2
     }
 
+
+    @Test
+    @Sql("/com/proper/enterprise/platform/auth/jwt/sql/datadic.sql")
+    void retrievePasswordTest() {
+        UserEntity userEntity=new UserEntity()
+        userEntity.setName("name")
+        userEntity.setEnable(true)
+        userEntity.setUsername("isTest")
+        userEntity.setPassword("qqqq")
+        
+        userEntity.setSuperuser(false)
+        userService.save(userEntity)
+        assert I18NUtil.getMessage("pep.auth.common.username.not.exist") == post("/auth/password/userName", "", HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        post("/auth/password/isTest", "", HttpStatus.CREATED)
+    }
 }
