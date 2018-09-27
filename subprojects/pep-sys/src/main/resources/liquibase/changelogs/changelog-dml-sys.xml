@@ -29,7 +29,7 @@
             <column name="DD_ORDER" valueNumeric="2"/>
         </insert>
     </changeSet>
-    <changeSet id="20180803-datadicCatalog-oopsearch" author="DELL">
+    <changeSet id="20180803-datadicCatalog-oopsearch" author="DELL" failOnError="false">
         <insert tableName="PEP_OOPSEARCH_CONFIG">
             <column name="ID" value="catalog-name"/>
             <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>

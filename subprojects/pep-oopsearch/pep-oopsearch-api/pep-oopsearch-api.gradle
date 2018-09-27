@@ -1,4 +1,3 @@
 dependencies {
-    compile project(':pep-core-mongo'),
-            project(':pep-sys')
+    compile project(':pep-core-mongo')
 }
