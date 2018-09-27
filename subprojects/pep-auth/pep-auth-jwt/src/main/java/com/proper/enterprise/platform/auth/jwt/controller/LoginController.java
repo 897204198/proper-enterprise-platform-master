@@ -15,7 +15,7 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.model.CurrentModel;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
-import com.proper.enterprise.platform.notice.client.NoticeSender;
+import com.proper.enterprise.platform.notice.service.NoticeSender;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
@@ -111,7 +111,7 @@ public class LoginController extends BaseController {
         custom.put("gdpr_mpage", "examList");
         custom.put("url", DataDicUtil.get("AUTH_CONFIG", "PUSH_AUTH_PASSWORD_RETRIEVE_URL").getName() + "?token=" + token);
         custom.put("title", I18NUtil.getMessage("pep.auth.common.password.retrieve"));
-        noticeSender.sendNotice("passwordRetrieve", custom, user.getId(), templateParams);
+        noticeSender.sendNotice(user.getId(), "passwordRetrieve", templateParams, custom);
         return new ResponseEntity<>("", HttpStatus.CREATED);
     }
 }
