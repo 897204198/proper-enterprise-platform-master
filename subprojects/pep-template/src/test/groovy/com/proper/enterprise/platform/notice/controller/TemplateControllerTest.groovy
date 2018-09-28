@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.notice.controller
 
 import com.proper.enterprise.platform.core.entity.DataTrunk
-import com.proper.enterprise.platform.template.document.TemplateDocument
+import com.proper.enterprise.platform.template.entity.TemplateEntity
 import com.proper.enterprise.platform.template.repository.TemplateRepository
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO
 import com.proper.enterprise.platform.template.vo.TemplateVO
@@ -20,7 +20,7 @@ class TemplateControllerTest extends AbstractTest {
 
     @Test
     void getTips() {
-        TemplateDocument templateDocument = new TemplateDocument()
+        TemplateEntity templateDocument = new TemplateEntity()
         templateDocument.code = "tips"
         templateDocument.name = "name1"
         TemplateDetailVO templateDetailVO = new TemplateDetailVO()

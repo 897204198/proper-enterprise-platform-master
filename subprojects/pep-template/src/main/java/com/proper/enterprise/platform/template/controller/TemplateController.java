@@ -7,7 +7,6 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.template.service.TemplateService;
 import com.proper.enterprise.platform.template.vo.TemplateVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,8 +59,7 @@ public class TemplateController extends BaseController {
     @GetMapping
     public ResponseEntity find(@RequestParam(defaultValue = "") String query) {
         return isPageSearch()
-            ? responseOfGet(templateService.findPagination(query,
-            getPageRequest(Sort.Direction.DESC, "createTime"))) :
+            ? responseOfGet(templateService.findPagination(query, getPageRequest())) :
             responseOfGet(templateService.findAll());
     }
 

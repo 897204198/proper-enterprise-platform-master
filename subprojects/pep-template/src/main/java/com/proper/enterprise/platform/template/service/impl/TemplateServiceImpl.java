@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
-import com.proper.enterprise.platform.template.document.TemplateDocument;
+import com.proper.enterprise.platform.template.entity.TemplateEntity;
 import com.proper.enterprise.platform.template.repository.TemplateRepository;
 import com.proper.enterprise.platform.template.service.TemplateService;
 import com.proper.enterprise.platform.template.util.TemplateUtil;
@@ -30,9 +30,11 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public TemplateVO getTemplate(String code, Map<String, Object> templateParams) {
-        TemplateDocument templateDocument = templateRepository.findByCodeAndEnableTrue(code);
-        if (templateDocument == null || templateDocument.getDetails() == null || templateDocument.getDetails().size()
-            == 0) {
+        TemplateEntity templateDocument = templateRepository.findByCode(code);
+        if (templateDocument == null
+            || !templateDocument.getEnable()
+            || templateDocument.getDetails() == null
+            || templateDocument.getDetails().size() == 0) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.template.no.templates"));
         }
         List<TemplateDetailVO> details = templateDocument.getDetails();
@@ -54,7 +56,10 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public String getTips(String code) {
-        TemplateDocument templateDocument = templateRepository.findByCodeAndEnableTrue(code);
+        TemplateEntity templateDocument = templateRepository.findByCode(code);
+        if (templateDocument == null || !templateDocument.getEnable()) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.template.no.templates"));
+        }
         List<TemplateDetailVO> details = templateDocument.getDetails();
         if (details != null && details.size() > 0) {
             return details.get(0).getTemplate();
@@ -67,7 +72,7 @@ public class TemplateServiceImpl implements TemplateService {
         if (StringUtil.isNull(template.getCode())) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.template.vo.code.not.null"));
         }
-        TemplateDocument valid = templateRepository.findByCode(template.getCode());
+        TemplateEntity valid = templateRepository.findByCode(template.getCode());
         if (valid != null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.template.repeat"));
         }
@@ -79,7 +84,7 @@ public class TemplateServiceImpl implements TemplateService {
         if (StringUtil.isNull(template.getCode())) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.template.vo.code.not.null"));
         }
-        TemplateDocument valid = templateRepository.findByCode(template.getCode());
+        TemplateEntity valid = templateRepository.findByCode(template.getCode());
         if (valid != null && !valid.getId().equals(template.getId())) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.template.repeat"));
         }
@@ -87,7 +92,7 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     private TemplateVO saveOrUpdate(TemplateVO template) {
-        TemplateDocument templateDocument = BeanUtil.convert(template, TemplateDocument.class);
+        TemplateEntity templateDocument = BeanUtil.convert(template, TemplateEntity.class);
         if (!template.getMuti()) {
             templateDocument.setDetails(template.getDetail());
         }
@@ -101,9 +106,9 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public TemplateVO get(String id) {
-        TemplateDocument templateDocument = templateRepository.findByIdAndEnableTrue(id);
-        if (templateDocument == null) {
-            throw new ErrMsgException(I18NUtil.getMessage("Please add one template"));
+        TemplateEntity templateDocument = templateRepository.findOne(id);
+        if (templateDocument == null || !templateDocument.getEnable()) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.template.no.templates"));
         }
         TemplateVO templateVO = BeanUtil.convert(templateDocument, TemplateVO.class);
         if (!templateVO.getMuti()
@@ -120,7 +125,7 @@ public class TemplateServiceImpl implements TemplateService {
             String[] idArr = ids.split(",");
             List<String> list = new ArrayList<>();
             Collections.addAll(list, idArr);
-            Iterable<TemplateDocument> collection = templateRepository.findAll(list);
+            Iterable<TemplateEntity> collection = templateRepository.findAll(list);
             templateRepository.delete(collection);
         }
         return true;
@@ -128,8 +133,8 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public DataTrunk<TemplateVO> findPagination(String query, PageRequest pageRequest) {
-        Page<TemplateDocument> page = templateRepository.findPagination(query, pageRequest);
-        List<TemplateDocument> list = page.getContent();
+        Page<TemplateEntity> page = templateRepository.findPagination(query, pageRequest);
+        List<TemplateEntity> list = page.getContent();
         List<TemplateVO> voList = (List<TemplateVO>) BeanUtil.convert(list, TemplateVO.class);
         DataTrunk<TemplateVO> result = new DataTrunk<>();
         result.setCount(voList.size());
@@ -139,7 +144,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public List<TemplateVO> findAll() {
-        List<TemplateDocument> list = templateRepository.findByEnableTrue();
+        List<TemplateEntity> list = templateRepository.findByEnableTrue();
         Collection<TemplateVO> result = BeanUtil.convert(list, TemplateVO.class);
         return (List<TemplateVO>) result;
     }

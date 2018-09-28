@@ -28,6 +28,7 @@ class TemplatesControllerTest extends AbstractTest {
         detail.type = type
         details.add(detail)
         templateVO.details = details
+        templateVO.enable = true
         TemplateVO result = JSONUtil.parse(post("/templates", JSONUtil.toJSON(templateVO), HttpStatus.CREATED).getResponse().getContentAsString(), TemplateVO.class)
         assert result.id != null
         assert result.code == code
@@ -67,6 +68,7 @@ class TemplatesControllerTest extends AbstractTest {
         detail.type = type
         details.add(detail)
         templateVO.details = details
+        templateVO.enable = true
         TemplateVO result = JSONUtil.parse(put("/templates/" + id, JSONUtil.toJSON(templateVO), HttpStatus.OK).getResponse().getContentAsString(), TemplateVO.class)
         assert result.id != null
         assert result.code == code

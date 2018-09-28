@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="wanghp" id="pep-template-2018-0926-01">
+        <createTable tableName="PEP_TEMPLATE">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="CODE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(500)"/>
+            <column name="CATALOG" type="VARCHAR(255)"/>
+            <column name="DESCRIPTION" type="VARCHAR(1000)"/>
+            <column defaultValue="Y" name="MUTI" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DETAILS" type="VARCHAR(2000)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="wanghp" id="pep-template-2018-0926-02">
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_TEMPLATE" tableName="PEP_TEMPLATE"/>
+    </changeSet>
+    <changeSet author="wanghp" id="pep-template-2018-0926-03">
+        <addUniqueConstraint columnNames="CODE" constraintName="UK_PEP_TEMPLATE_CODE" tableName="PEP_TEMPLATE"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.notice.service
 
-import com.proper.enterprise.platform.template.document.TemplateDocument
+import com.proper.enterprise.platform.template.entity.TemplateEntity
 import com.proper.enterprise.platform.template.repository.TemplateRepository
 import com.proper.enterprise.platform.template.service.TemplateService
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO
@@ -19,7 +19,7 @@ class TemplateServiceTest extends AbstractTest {
 
     @Test
     void getTemplate() {
-        TemplateDocument templateDocument = new TemplateDocument()
+        TemplateEntity templateDocument = new TemplateEntity()
         templateDocument.code = "code"
         templateDocument.name = "name"
         templateDocument.description = "orderNum : 订单号, clinicNum : 病历号"
@@ -43,7 +43,7 @@ class TemplateServiceTest extends AbstractTest {
 
     @Test
     void getTemplates() {
-        TemplateDocument templateDocument = new TemplateDocument()
+        TemplateEntity templateDocument = new TemplateEntity()
         templateDocument.code = "code2"
         templateDocument.name = "name2"
         templateDocument.description = "name : 体检人, idcard : 身份证号, package : 体检套餐, date : 体检日期, address : 体检地点"

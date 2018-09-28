@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.notice.entity.NoticeSetDocument
 import com.proper.enterprise.platform.notice.repository.NoticeMsgRepository
 import com.proper.enterprise.platform.notice.repository.NoticeSetRepository
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
-import com.proper.enterprise.platform.template.document.TemplateDocument
+import com.proper.enterprise.platform.template.entity.TemplateEntity
 import com.proper.enterprise.platform.template.repository.TemplateRepository
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO
 import com.proper.enterprise.platform.test.AbstractTest
@@ -121,7 +121,7 @@ class NoticeSenderImplTest extends AbstractTest {
         noticeSetDocument2.setEmail(true)
         noticeSetRepository.save(noticeSetDocument2)
 
-        TemplateDocument templateDocument = new TemplateDocument()
+        TemplateEntity templateDocument = new TemplateEntity()
         templateDocument.code = "EndBpmCode"
         templateDocument.name = "EndBpmName"
         templateDocument.catalog = "BPM"

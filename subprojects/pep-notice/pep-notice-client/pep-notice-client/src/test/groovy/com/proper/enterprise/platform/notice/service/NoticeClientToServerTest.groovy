@@ -13,7 +13,7 @@ import com.proper.enterprise.platform.notice.repository.PushDeviceRepository
 import com.proper.enterprise.platform.sys.datadic.DataDic
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil
-import com.proper.enterprise.platform.template.document.TemplateDocument
+import com.proper.enterprise.platform.template.entity.TemplateEntity
 import com.proper.enterprise.platform.template.repository.TemplateRepository
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO
 import com.proper.enterprise.platform.test.AbstractTest
@@ -137,7 +137,7 @@ class NoticeClientToServerTest extends AbstractTest {
         noticeSetDocument2.setEmail(true)
         noticeSetRepository.save(noticeSetDocument2)
 
-        TemplateDocument templateDocument = new TemplateDocument()
+        TemplateEntity templateDocument = new TemplateEntity()
         templateDocument.code = "EndBpmCode"
         templateDocument.name = "EndBpmName"
         templateDocument.catalog = "BPM"
