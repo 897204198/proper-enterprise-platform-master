@@ -40,10 +40,12 @@ public class ComposeListFactoryBean extends AbstractFactoryBean<List> {
             return instance;
         }
 
+        LOGGER.debug("Composing list with '{}' pattern...", listBeanNamePattern);
         try {
             String[] beanNames = PEPApplicationContext.getApplicationContext().getBeanNamesForType(List.class);
             for (String beanName : beanNames) {
                 if (beanName.matches(listBeanNamePattern)) {
+                    LOGGER.debug("Add '{}' with '{}' pattern.", beanNames, listBeanNamePattern);
                     instance.addAll(PEPApplicationContext.getBean(beanName, List.class));
                 }
             }

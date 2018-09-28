@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.api.auth.service.AuthzService;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
 import com.proper.enterprise.platform.api.auth.service.ResourceService;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ import java.util.Optional;
 @Service
 public class AuthzServiceImpl implements AuthzService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthzService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthzServiceImpl.class);
 
     private static PathMatcher matcher = new AntPathMatcher();
 
@@ -60,16 +61,17 @@ public class AuthzServiceImpl implements AuthzService {
     public boolean shouldIgnore(String url, String method) {
         String path = method + ":" + getMappingUrl(url, hasContext);
         LOGGER.debug("Request is {}", path);
-        boolean notExistList = null == ignoreList || ignoreList.size() == 0;
-        if (notExistList) {
+        if (CollectionUtil.isEmpty(ignoreList)) {
+            LOGGER.debug("Not define ignorePatternsList bean, {} should be authorized.", path);
             return false;
         }
         for (String pattern : ignoreList) {
             if (matcher.match(pattern, path)) {
-                LOGGER.debug("{} {} is match {}", method, url, pattern);
+                LOGGER.debug("{} is match {} in ignore patterns list, no need to be authorized.", path, pattern);
                 return true;
             }
         }
+        LOGGER.debug("{} needs to be authorized.", path);
         return false;
     }
 
