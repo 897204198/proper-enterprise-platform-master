@@ -37,7 +37,10 @@ class SchedulerTest extends AbstractTest {
     void useAnnotation() {
         // method with @Scheduled will auto run
         // but CI may need to sleep some time
-        sleep(500)
+        while (annoCount == 0) {
+            println "sleep 5 milliseconds to wait @Scheduled task run"
+            sleep(5)
+        }
         assert annoCount > 0
     }
 
