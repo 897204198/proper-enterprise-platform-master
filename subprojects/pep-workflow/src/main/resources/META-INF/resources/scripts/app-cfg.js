@@ -27,6 +27,27 @@ FLOWABLE.CONFIG = {
 FLOWABLE.TOOLBAR = FLOWABLE.TOOLBAR || {};
 FLOWABLE.TOOLBAR.ACTIONS = FLOWABLE.TOOLBAR.ACTIONS || {};
 
-FLOWABLE.TOOLBAR.ACTIONS.customClose = function() {
-    window.location.href = '/#/workflow/designer'
+FLOWABLE.TOOLBAR.ACTIONS.customClose = function(services) {
+	if (services) {
+		var savePlugin;
+		var plugins = services.editorManager.editor.loadedPlugins;
+    		for (var i=0; i<plugins.length; i++) {
+    			if (plugins[i].type == 'ORYX.Plugins.Save') {
+    				savePlugin = plugins[i];
+    				break;
+    			}
+    		}
+		if (savePlugin) {
+			if (savePlugin.hasChanged()) {
+				// 点击X的时候自行判断是否发生变化 解决electron下onbeforeunload不好用的情况 页面跳转之前清除onbeforeunload事件防止弹2次
+				if (confirm('系统可能不会保存您所做的更改，确定离开吗？')) {
+					window.onbeforeunload = null;
+					window.location.href = '/#/workflow/designer';
+				}
+			} else {
+				window.location.href = '/#/workflow/designer';
+			}
+		}
+	}
+
 };
