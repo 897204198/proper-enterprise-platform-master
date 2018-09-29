@@ -5,6 +5,8 @@ import com.proper.enterprise.platform.app.document.AppVersionDocument;
 import com.proper.enterprise.platform.app.service.AppVersionService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,19 +25,9 @@ public class AppVersionController extends BaseController {
         this.service = service;
     }
 
-    /**
-     * 根据当前版本号，获得是否有最新的发布版本
-     *
-     * 若有比当前版本更新的版本，返回更新的版本信息
-     * 若当前已是最新版，返回空
-     *
-     * 若当前版本号为空，直接返回最新发布版
-     *
-     * @param  current 当前版本号
-     * @return 最新发布版
-     */
     @AuthcIgnore
     @GetMapping("/latest")
+    @ApiOperation("‍根据当前版本号，获得是否有最新的发布版本,返回最新发布版；若有比当前版本更新的版本，返回更新的版本信息；若当前已是最新版，返回空；若当前版本号为空，直接返回最新发布版")
     public ResponseEntity<AppVersionDocument> getLatestRelease(String current) {
         AppVersionDocument latestVersion = service.getLatestRelease();
         if (StringUtil.isNotBlank(current)) {
@@ -47,12 +39,10 @@ public class AppVersionController extends BaseController {
         return responseOfGet(latestVersion);
     }
 
-    /**
-     * APP端，用来获取指定版本的版本信息
-     */
     @AuthcIgnore
     @GetMapping("/{version}")
-    public ResponseEntity<AppVersionDocument> getCertainVersion(@PathVariable String version) {
+    @ApiOperation("‍APP端，用来获取指定版本的版本信息")
+    public ResponseEntity<AppVersionDocument> getCertainVersion(@ApiParam(value = "‍版本号", required = true) @PathVariable String version) {
         return responseOfGet(service.get(version));
     }
 
