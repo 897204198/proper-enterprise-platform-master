@@ -65,7 +65,7 @@ public class PushMsgServiceImpl extends AbstractJpaServiceSupport<PushMsg, PushM
         Page<PushMsgEntity> page = pushMsgRepository.findAll(example, pageable);
         List<PushMsgEntity> msgEntities = page.getContent();
         for (PushMsgEntity pushMsgEntity : msgEntities) {
-            pushMsgEntity.setMcontent(StringUtil.substring(pushMsgEntity.getMcontent(), 0, 10));
+            pushMsgEntity.setMcontent(StringUtil.abbreviate(pushMsgEntity.getMcontent(), 10));
             pushMsgEntity.setUserid(pushMsgEntity.getUserid().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
         }
         DataTrunk<? extends PushMsg> trunk = new DataTrunk<>(convertVo(page), page.getTotalElements());

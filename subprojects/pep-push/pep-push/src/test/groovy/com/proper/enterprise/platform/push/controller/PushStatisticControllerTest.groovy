@@ -42,7 +42,7 @@ class PushStatisticControllerTest extends PushAbstractTest {
     PushMsgStatisticService pushMsgStatisticService
     PusherApp pusherApp
     @Autowired
-    private PushMsgStatisticRepository pushMsgStatisticRepository;
+    private PushMsgStatisticRepository pushMsgStatisticRepository
 
     @Before
     void init() {
@@ -112,26 +112,23 @@ class PushStatisticControllerTest extends PushAbstractTest {
         entity.setAppkey("test")
         entity.setPushMode(PushMode.valueOf("xiaomi"))
 
+        PushMsgEntity pushMsgEntity = new PushMsgEntity()
+        pushMsgEntity.setMcontent("content123")
+        pushMsgEntity.setAppkey("test")
+        pushMsgEntity.setPushMode(PushMode.valueOf("huawei"))
+
         Example<PushMsgEntity> example = Example.of(entity)
         Page<PushMsgEntity> page1 = msgRepository.findAll(example, pageable)
-
         assert page1.getTotalElements() == 1
-
         DataTrunk<? extends PushMsg> dataTrunk = pushMsgService.findByDateTypeAndAppkey(example, pageable)
         assert dataTrunk.count == 1
-        assert dataTrunk.getData().findAll().get(0).mcontent == "content1ab"
+        assert dataTrunk.getData().findAll().get(0).mcontent == "content..."
         assert dataTrunk.getData().findAll().get(0).userid == "123****8901"
 
-        try {
-            HashMap<String, Object> params = new LinkedHashMap<String, Object>()
-            params.put("pageNo", 1)
-            params.put("pageSize", 3)
-            params.put("mcontent", "content1abcdef")
-            params.put("appkey", "test")
-            params.put("pushMode", "xiaomi")
-//            pusherApp.doRequestApis(params)
-        } catch (Exception e) {
-        }
+        Example<PushMsgEntity> exam = Example.of(pushMsgEntity)
+        DataTrunk<? extends PushMsg> data = pushMsgService.findByDateTypeAndAppkey(exam, pageable)
+        assert data.count == 1
+        assert data.getData().findAll().get(0).mcontent == "content123"
 
     }
 
