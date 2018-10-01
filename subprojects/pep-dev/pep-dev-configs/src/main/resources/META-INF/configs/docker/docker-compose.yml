@@ -34,9 +34,10 @@ pep-server:
   environment:
     - JAVA_OPTS=-server -Xms512m -Xmx4096m
 pep-nginx:
-  image: nginx
+  image: nginx:1.13.7
   volumes:
     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    - ./nginx/dhparams.pem:/etc/nginx/dhparams.pem    
   links:
     - pep-server:pep
   ports:
