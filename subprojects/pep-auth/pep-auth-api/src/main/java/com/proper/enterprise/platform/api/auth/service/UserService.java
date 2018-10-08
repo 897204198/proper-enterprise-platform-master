@@ -71,7 +71,7 @@ public interface UserService {
      * @param password 新密码
      * @return 用户
      */
-    User resetPassword(String userId, String password);
+    User updateResetPassword(String userId, String password);
 
     /**
      * 获取当前用户
@@ -227,5 +227,14 @@ public interface UserService {
      * @return 返回合法的用户集合
      */
     Collection<? extends User> getFilterUsers(Collection<? extends User> users, EnableEnum userEnable);
+
+
+    /**
+     * 检查邮箱
+     *
+     * @param username 用户名
+     * @param email    邮箱
+     */
+    void checkEmail(String username, String email);
 
 }

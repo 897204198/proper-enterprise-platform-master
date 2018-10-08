@@ -87,8 +87,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User resetPassword(String userId, String password) {
-        return userDao.resetPassword(userId, password);
+    public User updateResetPassword(String userId, String password) {
+        return userDao.updateResetPassword(userId, password);
     }
 
     @Override
@@ -208,6 +208,20 @@ public class UserServiceImpl implements UserService {
             }
         }
         return result;
+    }
+
+    @Override
+    public void checkEmail(String username, String email) {
+        User user = userDao.getByUsername(username, EnableEnum.ENABLE);
+        if (null == user) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.username.not.exist"));
+        }
+        if (StringUtil.isEmpty(user.getEmail())) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.username.email.isEmpty"));
+        }
+        if (StringUtil.isEmpty(email) || !email.equals(user.getEmail())) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.username.not.match.email"));
+        }
     }
 
     @Override

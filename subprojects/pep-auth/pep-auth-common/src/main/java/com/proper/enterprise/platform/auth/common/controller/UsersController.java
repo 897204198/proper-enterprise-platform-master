@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.vo.ChangePasswordParam;
@@ -79,7 +80,7 @@ public class UsersController extends BaseController {
     @PutMapping(path = "/password/{password}")
     @JsonView(UserVO.Single.class)
     public ResponseEntity<UserVO> resetPassword(@PathVariable String password) {
-        return responseOfPut(userService.resetPassword(Authentication.getCurrentUserId(),
+        return responseOfPut(userService.updateResetPassword(Authentication.getCurrentUserId(),
             password), UserVO.class, UserVO.Single.class);
     }
 
@@ -143,6 +144,13 @@ public class UsersController extends BaseController {
     public ResponseEntity<Collection<RoleVO>> getUserRoles(@PathVariable String userId,
                                                            @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
         return responseOfGet(userService.getUserRoles(userId, roleEnable), RoleVO.class, RoleVO.Single.class);
+    }
+
+    @AuthcIgnore
+    @GetMapping(path = "/username/{username}/email/{email}")
+    public ResponseEntity<String> checkEmail(@PathVariable String username, @PathVariable String email) {
+        userService.checkEmail(username, email);
+        return responseOfGet("");
     }
 
 
