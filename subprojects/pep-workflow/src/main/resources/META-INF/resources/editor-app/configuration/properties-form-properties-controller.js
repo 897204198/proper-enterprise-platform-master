@@ -19,7 +19,8 @@ angular.module('flowableModeler').controller('FlowableFormPropertiesCtrl',
     ['$scope', '$modal', '$timeout', '$translate', '$http', function ($scope, $modal, $timeout, $translate, $http) {
         // Start 覆盖原来的代码
         // 获取表单关键字
-        const formkeydefinition = jQuery('#oryx-formkeydefinition').text().trim();
+        //const formkeydefinition = jQuery('#oryx-formkeydefinition').text().trim();
+        const formkeydefinition = $scope.selectedItem.properties.find(it=>it.key === 'oryx-formkeydefinition').value;
         const prefix_request = window.localStorage.getItem('pea_workflow_dynamic_request_prefix');
         // 通过获取表单关键字查询自定义表单里的属性
         var url = `${prefix_request}/msc/PEP_FORM_TEMPLATE?query=${encodeURIComponent(JSON.stringify({formkeydefinition: formkeydefinition}))}`;
