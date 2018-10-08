@@ -27,6 +27,7 @@ public class SMSNoticeConfigurator implements SMSConfigurator {
         }
         SMSDocument smsDocument = BeanUtil.convert(config, SMSDocument.class);
         smsDocument.setAppKey(appKey);
+        smsDocument.setSmsTemplate(buildTemplate(smsDocument));
         return JSONUtil.parseIgnoreException(smsRepository.insert(smsDocument).toString(), Map.class);
     }
 
@@ -45,6 +46,7 @@ public class SMSNoticeConfigurator implements SMSConfigurator {
         SMSDocument smsDocument = BeanUtil.convert(config, SMSDocument.class);
         smsDocument.setAppKey(appKey);
         smsDocument.setId(smsDocumentId);
+        smsDocument.setSmsTemplate(buildTemplate(smsDocument));
         return JSONUtil.parseIgnoreException(smsRepository.save(smsDocument).toString(), Map.class);
     }
 
@@ -60,5 +62,10 @@ public class SMSNoticeConfigurator implements SMSConfigurator {
             return JSONUtil.parseIgnoreException(smsDocument.toString(), Map.class);
         }
         return null;
+    }
+
+    private String buildTemplate(SMSDocument smsDocument) {
+        String template = "UserId={userId}&Password={password}&Mobiles={0}&Content={1}";
+        return template.replaceAll("\\{userId\\}", smsDocument.getUserId()).replaceAll("\\{password\\}", smsDocument.getPassword());
     }
 }

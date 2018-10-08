@@ -25,13 +25,17 @@ class SMSNoticeConfiguratorTest extends AbstractTest {
         deleteData('icmp')
         def config = [:]
         config.put('smsUrl', 'test')
+        config.put('userId', 'userId')
+        config.put('password', 'password')
         config.put('smsTemplate', 'test')
         config.put('smsCharset', 'UTF-8')
 
         Map res = smsNoticeConfigurator.post('appkey', config, null)
         assert res.get('appKey') == 'appkey'
         assert res.get('smsUrl') == 'test'
-        assert res.get('smsTemplate') == 'test'
+        assert res.get('userId') == 'userId'
+        assert res.get('password') == 'password'
+        assert res.get('smsTemplate') == 'UserId=userId&Password=password&Mobiles={0}&Content={1}'
         assert res.get('smsCharset') == 'UTF-8'
 
         config.put('smsUrl', 'test')
@@ -48,10 +52,14 @@ class SMSNoticeConfiguratorTest extends AbstractTest {
     void updateData() {
         def config = [:]
         config.put('smsUrl', 'test22')
-        config.put('smsTemplate', 'test')
+        config.put('userId', 'userId1')
+        config.put('password', 'password1')
         config.put('smsCharset', 'UTF-8')
 
         Map res = smsNoticeConfigurator.put('appkey', config, null)
         assert res.get('smsUrl') == 'test22'
+        assert res.get('userId') == 'userId1'
+        assert res.get('password') == 'password1'
+        assert res.get('smsTemplate') == 'UserId=userId1&Password=password1&Mobiles={0}&Content={1}'
     }
 }
