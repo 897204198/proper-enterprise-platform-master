@@ -75,6 +75,13 @@ public class UsersController extends BaseController {
             UserVO.class, UserVO.Single.class);
     }
 
+    @SuppressWarnings("unchecked")
+    @PutMapping(path = "/password/{password}")
+    @JsonView(UserVO.Single.class)
+    public ResponseEntity<UserVO> resetPassword(@PathVariable String password) {
+        return responseOfPut(userService.resetPassword(Authentication.getCurrentUserId(),
+            password), UserVO.class, UserVO.Single.class);
+    }
 
     /**
      * 删除用户的权限
