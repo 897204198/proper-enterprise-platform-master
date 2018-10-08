@@ -150,7 +150,7 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
 
     @Override
     public User updateResetPassword(String userId, String password) {
-        User user = this.findOne(userId);
+        User user = this.findById(userId);
         user.setPassword(pwdService.encrypt(password));
         return this.updateForSelective(user);
     }
