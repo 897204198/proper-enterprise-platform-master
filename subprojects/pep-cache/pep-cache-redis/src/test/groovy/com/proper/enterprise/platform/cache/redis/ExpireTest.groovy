@@ -38,9 +38,11 @@ class ExpireTest extends AbstractTest {
             3.times {
                 assert 1 == ttlService.access()
                 sleep(300)
+                println "[redis.ExpireTest.testTTL] in sync thread ${Thread.currentThread().getId()}"
             }
         }
         sleep(300)
+        println "[redis.ExpireTest.testTTL] out sync thread ${Thread.currentThread().getId()}"
         assert 2 == ttlService.access()
     }
 

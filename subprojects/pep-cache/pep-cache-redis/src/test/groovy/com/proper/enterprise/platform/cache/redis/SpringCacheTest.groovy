@@ -22,15 +22,17 @@ class SpringCacheTest extends AbstractTest  {
 
     @Test
     void checkRedisCacheWorks() {
-        4.times {
-            assert service.addCount() == 6
+        synchronized (SpringCacheTest) {
+            4.times {
+                assert service.addCount() == 6
+            }
         }
-
         service.clear()
-        4.times {
-            assert service.addCount() == 7
+        synchronized (SpringCacheTest) {
+            4.times {
+                assert service.addCount() == 7
+            }
         }
-
         assert service.newKey() == 10
     }
 
