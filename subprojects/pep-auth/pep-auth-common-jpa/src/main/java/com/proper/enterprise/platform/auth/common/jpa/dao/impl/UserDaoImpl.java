@@ -149,6 +149,13 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
     }
 
     @Override
+    public User resetPassword(String userId, String password) {
+        User user = this.findOne(userId);
+        user.setPassword(pwdService.encrypt(password));
+        return this.updateForSelective(user);
+    }
+
+    @Override
     public User addUserRole(String userId, String roleId) {
         User user = this.findOne(userId);
         if (null == hasRole(user, roleId)) {
