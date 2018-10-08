@@ -140,5 +140,5 @@ public interface UserDao extends BaseService<User, String> {
      * @param password 新密码
      * @return 用户
      */
-    User resetPassword(String userId, String password);
+    User updateResetPassword(String userId, String password);
 }

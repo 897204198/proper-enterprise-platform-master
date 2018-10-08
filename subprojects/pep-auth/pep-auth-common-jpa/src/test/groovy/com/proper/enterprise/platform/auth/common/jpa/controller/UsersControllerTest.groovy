@@ -458,6 +458,21 @@ class UsersControllerTest extends AbstractTest {
         assert changeVO.getPassword() == pwdService.encrypt('456')
     }
 
+    @Test
+    public void checkEmail() {
+        def userReq = [:]
+        userReq['username'] = 'user_dup'
+        userReq['name'] = 'name'
+        userReq['password'] = 'password'
+        userReq['email'] = 'email'
+        userReq['phone'] = '123'
+        userReq['enable'] = true
+        UserVO userVO = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString, UserVO.class)
+        assert I18NUtil.getMessage("pep.auth.common.username.not.exist") == get(URI + "/username/A/email/email", HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        assert I18NUtil.getMessage("pep.auth.common.username.not.match.email") == get(URI + "/username/user_dup/email/email1", HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        get(URI + "/username/user_dup/email/email", HttpStatus.OK)
+    }
+
     @After
     void tearDown() {
         userRepository.deleteAll()
