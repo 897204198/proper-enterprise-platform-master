@@ -441,6 +441,23 @@ class UsersControllerTest extends AbstractTest {
         assert changeVO.getPassword() == pwdService.encrypt('456')
     }
 
+    @Test
+    public void resetPassword() {
+        def userReq = [:]
+        userReq['username'] = 'user_dup'
+        userReq['name'] = 'name'
+        userReq['password'] = 'password'
+        userReq['email'] = 'email'
+        userReq['phone'] = '123'
+        userReq['enable'] = true
+        UserVO userVO = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString, UserVO.class)
+        assert userVO.getPassword() == pwdService.encrypt('password')
+        mockUser(userVO.getId(), userVO.getUsername())
+        Authentication.setCurrentUserId(userVO.getId())
+        UserVO changeVO = JSONUtil.parse(put(URI + "/password/456", JSONUtil.toJSON(""), HttpStatus.OK).getResponse().getContentAsString(), UserVO.class)
+        assert changeVO.getPassword() == pwdService.encrypt('456')
+    }
+
     @After
     void tearDown() {
         userRepository.deleteAll()
