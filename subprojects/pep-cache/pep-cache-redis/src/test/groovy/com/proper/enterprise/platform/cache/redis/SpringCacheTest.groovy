@@ -22,15 +22,17 @@ class SpringCacheTest extends AbstractTest  {
 
     @Test
     void checkRedisCacheWorks() {
-        4.times {
-            assert service.addCount() == 6
+        synchronized (SpringCacheTest) {
+            4.times {
+                assert service.addCount() == 6
+            }
         }
-
         service.clear()
-        4.times {
-            assert service.addCount() == 7
+        synchronized (SpringCacheTest) {
+            4.times {
+                assert service.addCount() == 7
+            }
         }
-
         assert service.newKey() == 10
     }
 
@@ -47,13 +49,17 @@ class SpringCacheTest extends AbstractTest  {
 
     @Test
     void checkTTL() {
-        service.addCount()
-
         def ro = cacheManager.getCache('test').getNativeCache()
-        assert ro.get('count') != null
-        assert ro.remainTimeToLive() == -1
+        synchronized (SpringCacheTest) {
+            service.addCount()
+
+            assert ro.get('count') != null
+            // -1 means the key exists but has no associated expire.
+            assert ro.remainTimeToLive() == -1
+        }
         sleep(1000)
         assert ro.get('count') == null
+        assert ro.remainTimeToLive() == -1
     }
 
     @Test
