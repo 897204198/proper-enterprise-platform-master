@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.*
 import com.proper.enterprise.platform.auth.common.vo.UserVO
+import com.proper.enterprise.platform.auth.common.vo.ValidEmailParam
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.security.Authentication
@@ -468,9 +469,15 @@ class UsersControllerTest extends AbstractTest {
         userReq['phone'] = '123'
         userReq['enable'] = true
         UserVO userVO = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString, UserVO.class)
-        assert I18NUtil.getMessage("pep.auth.common.username.not.exist") == get(URI + "/username/A/email/email", HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
-        assert I18NUtil.getMessage("pep.auth.common.username.not.match.email") == get(URI + "/username/user_dup/email/email1", HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
-        get(URI + "/username/user_dup/email/email", HttpStatus.OK)
+        ValidEmailParam validEmailParam = new ValidEmailParam()
+        validEmailParam.setUsername("A")
+        validEmailParam.setEmail("email")
+        assert I18NUtil.getMessage("pep.auth.common.username.not.exist") == post(URI + "/valid/email", JSONUtil.toJSON(validEmailParam), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        validEmailParam.setUsername("user_dup")
+        validEmailParam.setEmail("email1")
+        assert I18NUtil.getMessage("pep.auth.common.username.not.match.email") == post(URI + "/valid/email", JSONUtil.toJSON(validEmailParam), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        validEmailParam.setEmail("email")
+        post(URI + "/valid/email", JSONUtil.toJSON(validEmailParam), HttpStatus.CREATED)
     }
 
     @After
