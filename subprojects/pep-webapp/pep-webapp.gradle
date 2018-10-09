@@ -71,6 +71,7 @@ dependencies {
             project(':pep-image-handler'),
             project(':pep-oopsearch'),
             project(":pep-oopsearch-sync-mongo"),
+            project(':pep-sequence')
             project(':pep-workflow')
 
 }
