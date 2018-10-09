@@ -30,7 +30,7 @@ abstract class AbstractServerAppTest extends AbstractTest {
     }
 
     public void deleteApp(String appId) {
-        delete('/notice/server/app/' + appId, HttpStatus.NO_CONTENT)
+        delete('/notice/server/app/?appIds=' + appId, HttpStatus.NO_CONTENT)
     }
 
     public void enableApp(String appId, boolean enable) {

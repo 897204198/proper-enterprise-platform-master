@@ -83,13 +83,20 @@ public class AppDaoServiceImpl implements AppDaoService {
     }
 
     @Override
-    public boolean delete(String appId) {
-        App app = appRepository.findOne(appId);
-        if (null == app) {
+    public boolean delete(String appIds) {
+        if (StringUtil.isEmpty(appIds)) {
             return false;
         }
-        accessTokenService.deleteByToken(app.getAppToken());
-        return appRepository.deleteById(appId);
+        String[] ids = appIds.split(",");
+        for (String id : ids) {
+            App app = appRepository.findOne(id);
+            if (null == app) {
+                continue;
+            }
+            accessTokenService.deleteByToken(app.getAppToken());
+            appRepository.deleteById(id);
+        }
+        return true;
     }
 
     @Override

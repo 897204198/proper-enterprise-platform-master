@@ -45,10 +45,10 @@ public interface AppDaoService {
     /**
      * 删除App
      *
-     * @param appId 应用
+     * @param appIds 应用Id集合用，分隔
      * @return true删除 false不存在
      */
-    boolean delete(String appId);
+    boolean delete(String appIds);
 
     /**
      * 批量启用停用

@@ -65,9 +65,9 @@ public class AppController extends BaseController {
         return responseOfPost(appDaoService.save(app));
     }
 
-    @DeleteMapping(value = "{appId}")
-    public ResponseEntity delete(@PathVariable String appId) {
-        return responseOfDelete(appDaoService.delete(appId));
+    @DeleteMapping
+    public ResponseEntity delete(@RequestParam String appIds) {
+        return responseOfDelete(appDaoService.delete(appIds));
     }
 
     @PutMapping(value = "/{appId}")

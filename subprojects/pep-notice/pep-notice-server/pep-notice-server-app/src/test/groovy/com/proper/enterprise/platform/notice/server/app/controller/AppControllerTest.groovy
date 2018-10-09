@@ -61,6 +61,6 @@ class AppControllerTest extends AbstractTest {
     }
 
     private void delete(String appId) {
-        delete('/notice/server/app/' + appId, HttpStatus.NO_CONTENT)
+        delete('/notice/server/app?appIds=' + appId, HttpStatus.NO_CONTENT)
     }
 }
