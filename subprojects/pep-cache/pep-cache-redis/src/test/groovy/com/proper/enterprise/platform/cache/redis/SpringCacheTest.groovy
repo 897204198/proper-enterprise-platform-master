@@ -49,13 +49,17 @@ class SpringCacheTest extends AbstractTest  {
 
     @Test
     void checkTTL() {
-        service.addCount()
-
         def ro = cacheManager.getCache('test').getNativeCache()
-        assert ro.get('count') != null
-        assert ro.remainTimeToLive() == -1
+        synchronized (SpringCacheTest) {
+            service.addCount()
+
+            assert ro.get('count') != null
+            // -1 means the key exists but has no associated expire.
+            assert ro.remainTimeToLive() == -1
+        }
         sleep(1000)
         assert ro.get('count') == null
+        assert ro.remainTimeToLive() == -1
     }
 
     @Test
