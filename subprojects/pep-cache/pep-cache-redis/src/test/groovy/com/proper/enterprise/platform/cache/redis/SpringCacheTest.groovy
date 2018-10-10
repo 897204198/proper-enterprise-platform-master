@@ -69,14 +69,14 @@ class SpringCacheTest extends AbstractTest  {
             t1 = service.testWithCacheName()
             assert t1 == service.testWithCacheName()
         }
-        sleep(300)
+        sleep(600)
         assert t1 != service.testWithCacheName()
 
         synchronized (SpringCacheTest) {
             t2 = service.testWithoutCacheName()
             assert t2 == service.testWithoutCacheName()
         }
-        sleep(300)
+        sleep(600)
         assert t2 != service.testWithoutCacheName()
 
         service.evit()

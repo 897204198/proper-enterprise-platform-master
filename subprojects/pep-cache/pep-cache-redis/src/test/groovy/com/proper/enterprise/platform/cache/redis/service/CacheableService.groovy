@@ -48,18 +48,17 @@ class CacheableService {
     }
 
     @Cacheable(cacheNames = 'testCacheDuration')
-    @CacheDuration(ttl = 100L, maxIdleTime = 200L, cacheName = 'testCacheDuration')
+    @CacheDuration(ttl = 300L, maxIdleTime = 500L, cacheName = 'testCacheDuration')
     def testWithCacheName() {
         System.nanoTime()
     }
 
     @CacheEvict(cacheNames = 'testCacheDuration')
-    @CacheDuration(ttl = 100L, maxIdleTime = 200L, cacheName = 'testCacheDuration')
     def evit() {
 
     }
 
-    @CacheDuration(ttl = 100L, maxIdleTime = 200L)
+    @CacheDuration(ttl = 300L, maxIdleTime = 500L)
     @Cacheable(cacheNames = 'com.proper.enterprise.platform.cache.redis.service.CacheableService#testWithoutCacheName')
     def testWithoutCacheName() {
         System.nanoTime()
