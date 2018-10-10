@@ -51,6 +51,35 @@ public class HuaweiNoticeClient {
         this.packageName = pushDocument.getPushPackage();
     }
 
+    public void sendCmdMessage(ReadOnlyNotice notice) throws NoticeException {
+        send(1, notice, JSONUtil.toJSONIgnoreException(notice.getNoticeExtMsgMap()));
+    }
+
+    public void sendMessage(ReadOnlyNotice notice) throws NoticeException {
+        JSONObject body = new JSONObject();
+        //消息标题
+        body.put("title", notice.getTitle());
+        //消息内容体
+        body.put("content", notice.getContent());
+        send(3, notice, body.toString());
+        Integer badgeNumber = null;
+        if (null != notice.getNoticeExtMsgMap()) {
+            Map<String, Object> noticeExtMsg = notice.getNoticeExtMsgMap();
+            if (null != noticeExtMsg) {
+                badgeNumber = (Integer) noticeExtMsg.get("_proper_badge");
+            }
+        }
+        //角标不为空，且当前消息为通知栏消息，则发送一条透传消息，设置应用角标
+        if (badgeNumber != null) {
+            Map<String, Object> data = new HashMap<>(2);
+            //系统消息类型：设置角标
+            data.put("_proper_mpage", "badge");
+            //应用角标数
+            data.put("_proper_badge", badgeNumber);
+            send(1, notice, JSONUtil.toJSONIgnoreException(data));
+        }
+    }
+
     /**
      * 发送推送
      *
@@ -59,7 +88,7 @@ public class HuaweiNoticeClient {
      * @param body   消息内容
      * @throws NoticeException 自定义异常
      */
-    public void send(int type, ReadOnlyNotice notice, String body) throws NoticeException {
+    private void send(int type, ReadOnlyNotice notice, String body) throws NoticeException {
         // accessToken 如果过期则重新获取 accessToken
         if (tokenExpiredTime <= System.currentTimeMillis()) {
             refreshAccessTokenAndExpiredTime();
@@ -128,7 +157,7 @@ public class HuaweiNoticeClient {
             LOGGER.debug("postBody: {}", postBody);
             resBody = post(API_URL, postBody);
         } catch (IOException e) {
-            throw new NoticeException("Huawei push post with error");
+            throw new NoticeException("Huawei push post with error " + e.getMessage());
         }
         isSuccess(resBody, notice);
     }
@@ -177,7 +206,7 @@ public class HuaweiNoticeClient {
             accessToken = obj.getString("access_token");
         } catch (Exception e) {
             LOGGER.error("get accessToken failed with Exception {}", e);
-            throw new NoticeException("Please check Huawei push config");
+            throw new NoticeException("Please check Huawei push config, get token with error " + e.getMessage());
         }
     }
 
@@ -197,7 +226,7 @@ public class HuaweiNoticeClient {
             }
         } catch (Exception ex) {
             LOGGER.debug("Error occurs when parsing response of " + notice.getId(), ex);
-            throw new NoticeException("Error occurs when parsing response of " + notice.getId(), ex);
+            throw new NoticeException("Error occurs when parsing response of " + notice.getId() + " errmsg:" + ex.getMessage(), ex);
         }
     }
 

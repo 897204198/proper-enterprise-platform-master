@@ -1,8 +1,6 @@
 package com.proper.enterprise.platform.notice.server.push.sender.huawei;
 
-import com.alibaba.fastjson.JSONObject;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
-import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
@@ -16,9 +14,6 @@ import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service("huaweiNoticeSender")
 public class HuaweiNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
@@ -31,27 +26,12 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
     public void send(ReadOnlyNotice notice) throws NoticeException {
         HuaweiNoticeClient huaweiNoticeClient = huaweiNoticeClientManagerApi.get(notice.getAppKey());
         if (isCmdMessage(notice)) {
-            huaweiNoticeClient.send(1, notice, JSONUtil.toJSONIgnoreException(notice.getNoticeExtMsgMap()));
+            huaweiNoticeClient.sendCmdMessage(notice);
             super.savePushMsg(null, notice, PushChannelEnum.HUAWEI);
             return;
         }
-        JSONObject body = new JSONObject();
-        //消息标题
-        body.put("title", notice.getTitle());
-        //消息内容体
-        body.put("content", notice.getContent());
-        huaweiNoticeClient.send(3, notice, body.toString());
-        Integer badgeNumber = getBadgeNumber(notice);
-        //角标不为空，且当前消息为通知栏消息，则发送一条透传消息，设置应用角标
-        if (badgeNumber != null) {
-            Map<String, Object> data = new HashMap<>(2);
-            //系统消息类型：设置角标
-            data.put("_proper_mpage", "badge");
-            //应用角标数
-            data.put("_proper_badge", badgeNumber);
-            huaweiNoticeClient.send(1, notice, JSONUtil.toJSONIgnoreException(data));
-            super.savePushMsg(null, notice, PushChannelEnum.HUAWEI);
-        }
+        huaweiNoticeClient.sendMessage(notice);
+        super.savePushMsg(null, notice, PushChannelEnum.HUAWEI);
     }
 
     @Override
