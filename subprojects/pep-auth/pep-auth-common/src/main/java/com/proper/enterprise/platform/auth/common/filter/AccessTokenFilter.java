@@ -102,7 +102,7 @@ public class AccessTokenFilter implements Filter {
             HandlerMethod handler = handlerHolder.getHandler(req);
             ignore = hasIgnoreOnMethod(handler) || hasIgnoreOnType(handler);
         } catch (Exception e) {
-            LOGGER.debug("Could NOT find controller for {}!", req.getRequestURI());
+            LOGGER.debug("Could NOT find controller for {}!", req.getRequestURI(), e);
         }
         return ignore;
     }
