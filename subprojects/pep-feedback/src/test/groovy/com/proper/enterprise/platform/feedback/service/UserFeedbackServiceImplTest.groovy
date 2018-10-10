@@ -2,7 +2,9 @@ package com.proper.enterprise.platform.feedback.service
 
 import com.proper.enterprise.platform.feedback.document.FeedBackDocument
 import com.proper.enterprise.platform.feedback.document.UserFeedBackDocument
+import com.proper.enterprise.platform.feedback.repository.UserFeedBackRepository
 import com.proper.enterprise.platform.test.AbstractTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +16,9 @@ class UserFeedbackServiceImplTest extends AbstractTest {
 
     @Autowired
     private UserFeedbackService userFeedbackService
+
+    @Autowired
+    private UserFeedBackRepository repository
 
     @Before
     void saveTest() {
@@ -34,8 +39,15 @@ class UserFeedbackServiceImplTest extends AbstractTest {
         userFeedbackService.save(document)
     }
 
+    @After
+    void tearDown() {
+        repository.deleteAll()
+    }
+
     @Test
     void findByConditionAndPageTest() {
+        saveTest()
+
         PageRequest pageRequest = new PageRequest(0, 10)
         def dataTrunk = userFeedbackService.findByConditionAndPage("-1", "13312341234", pageRequest)
         assert dataTrunk.count == 2
@@ -78,7 +90,7 @@ class UserFeedbackServiceImplTest extends AbstractTest {
     void getFeedbackListTest() {
         mockUser("admin", "ZL", "123456")
         def feedbackList = userFeedbackService.getFeedbackList()
-        assert feedbackList.size() == 2
+        assert feedbackList.size() == 1
     }
 
     @Test
@@ -88,11 +100,7 @@ class UserFeedbackServiceImplTest extends AbstractTest {
         map.put("title", "test")
         List list = new ArrayList()
         list.add(map)
-        try {
-            userFeedbackService.pushInfo("推送消息内容", "examList", "admin", list)
-        } catch (Exception e) {
-        }
+        userFeedbackService.pushInfo("推送消息内容", "examList", "admin", list)
     }
-
 
 }
