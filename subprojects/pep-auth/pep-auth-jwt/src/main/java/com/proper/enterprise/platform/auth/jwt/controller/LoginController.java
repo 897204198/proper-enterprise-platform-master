@@ -11,23 +11,21 @@ import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
 import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.auth.service.JWTAuthcService;
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.model.CurrentModel;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
-import com.proper.enterprise.platform.notice.service.NoticeSender;
-import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
-import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -47,9 +45,6 @@ public class LoginController extends BaseController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private NoticeSender noticeSender;
 
     @AuthcIgnore
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
@@ -95,23 +90,4 @@ public class LoginController extends BaseController {
         return new ResponseEntity<>("", HttpStatus.CREATED);
     }
 
-
-    @RequestMapping(value = "/auth/password/{userName}", method = RequestMethod.POST)
-    public ResponseEntity retrievePassword(@PathVariable String userName) throws IOException {
-        User user = userService.getByUsername(userName, EnableEnum.ENABLE);
-        if (null == user) {
-            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.username.not.exist"));
-        }
-        String token = jwtAuthcService.getUserToken(userName);
-        Map<String, Object> templateParams = new HashMap<>(16);
-        templateParams.put("username", user.getUsername());
-        templateParams.put("pageurl", DataDicUtil.get("AUTH_CONFIG", "PUSH_AUTH_PASSWORD_RETRIEVE_URL").getName() + "?token=" + token);
-        templateParams.put("urlAddress", DataDicUtil.get("AUTH_CONFIG", "PUSH_AUTH_PASSWORD_RETRIEVE_URL").getName() + "?token=" + token);
-        Map<String, Object> custom = new HashMap<>(0);
-        custom.put("gdpr_mpage", "examList");
-        custom.put("url", DataDicUtil.get("AUTH_CONFIG", "PUSH_AUTH_PASSWORD_RETRIEVE_URL").getName() + "?token=" + token);
-        custom.put("title", I18NUtil.getMessage("pep.auth.common.password.retrieve"));
-        noticeSender.sendNotice(user.getId(), "passwordRetrieve", templateParams, custom);
-        return new ResponseEntity<>("", HttpStatus.CREATED);
-    }
 }

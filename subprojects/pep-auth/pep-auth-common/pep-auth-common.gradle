@@ -1,7 +1,9 @@
 dependencies {
     compile libraries.servlet_api,
             libraries.spring_context_support,
-            project(':pep-auth-api')
+            project(':pep-auth-api'),
+            project(':pep-cache-api'),
+            project(':pep-notice-client')
 
     testCompile project(':pep-test'),
                 project(':pep-auth-common-jpa')

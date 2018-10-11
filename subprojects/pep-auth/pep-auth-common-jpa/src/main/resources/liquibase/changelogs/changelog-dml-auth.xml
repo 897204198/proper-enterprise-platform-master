@@ -1393,4 +1393,21 @@
             <column name="DD_ORDER" valueNumeric="1"/>
         </insert>
     </changeSet>
+    <changeSet author="zjl (generated)" id="20181010-auth-datadic-insert-passwordRetrieve">
+        <insert tableName="PEP_NOTICE_TEMPLATE">
+            <column name="ID" value="passwordRetrieveId"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="CODE" value="passwordRetrieve"/>
+            <column name="NAME" value="passwordRetrieve"/>
+            <column name="TITLE" value="密码重置"/>
+            <column name="TEMPLATE" value="您好，您正在对【{appName}】的账户【{userName}】进行密码找回操作，验证码：【{validCode}】，如您未做密码找回操作，请直接忽略本邮件。感谢使用!"/>
+            <column name="DESCRIPTION" value="2"/>
+            <column name="TYPE" value="NOTICE_CHANNEL;EMAIL"/>
+            <column name="CATELOG" value="NOTICE_BUSINESS;passwordRetrieve"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

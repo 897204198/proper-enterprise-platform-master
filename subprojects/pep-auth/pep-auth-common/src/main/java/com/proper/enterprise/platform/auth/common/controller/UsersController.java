@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
+import com.proper.enterprise.platform.api.auth.model.RetrievePasswordParam;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.vo.*;
 import com.proper.enterprise.platform.core.controller.BaseController;
@@ -73,12 +74,19 @@ public class UsersController extends BaseController {
             UserVO.class, UserVO.Single.class);
     }
 
-    @SuppressWarnings("unchecked")
-    @PutMapping(path = "/password/{password}")
-    @JsonView(UserVO.Single.class)
-    public ResponseEntity<UserVO> resetPassword(@PathVariable String password) {
-        return responseOfPut(userService.updateResetPassword(Authentication.getCurrentUserId(),
-            password), UserVO.class, UserVO.Single.class);
+    @AuthcIgnore
+    @PutMapping(path = "/password/reset")
+    public ResponseEntity resetPassword(@RequestBody RetrievePasswordParam retrievePasswordParam) {
+        userService.updateResetPassword(retrievePasswordParam.getUsername(),
+            retrievePasswordParam.getValidCode(),
+            retrievePasswordParam.getPassword());
+        return responseOfPut("");
+    }
+
+    @AuthcIgnore
+    @GetMapping(path = "/{username}/validCode")
+    public ResponseEntity<String> sendValidCode(@PathVariable String username) {
+        return responseOfGet(userService.sendValidCode(username));
     }
 
     /**
@@ -142,13 +150,5 @@ public class UsersController extends BaseController {
                                                            @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
         return responseOfGet(userService.getUserRoles(userId, roleEnable), RoleVO.class, RoleVO.Single.class);
     }
-
-    @AuthcIgnore
-    @PostMapping(path = "/valid/email")
-    public ResponseEntity<String> checkEmail(@RequestBody ValidEmailParam validEmailParam) {
-        userService.checkEmail(validEmailParam.getUsername(), validEmailParam.getEmail());
-        return responseOfPost("");
-    }
-
 
 }

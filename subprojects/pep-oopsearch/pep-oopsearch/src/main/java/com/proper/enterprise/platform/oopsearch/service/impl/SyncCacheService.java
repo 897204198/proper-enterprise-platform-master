@@ -85,9 +85,9 @@ public class SyncCacheService {
         Map<String, SearchConfigEntity> configMap = new HashMap<>(16);
         List<SearchConfigEntity> searchConfigEntities = searchConfigRepository.findByDataBaseType(syncDocumentModel.getDataBaseType());
         for (SearchConfigEntity searchConfig : searchConfigEntities) {
-            configMap.put(searchConfig.getTableName() + "|" + searchConfig.getSearchColumn(), searchConfig);
+            configMap.put(searchConfig.getTableName().toLowerCase() + "|" + searchConfig.getSearchColumn().toLowerCase(), searchConfig);
         }
-        return configMap.get(syncDocumentModel.getTab() + "|" + syncDocumentModel.getCol());
+        return configMap.get(syncDocumentModel.getTab().toLowerCase() + "|" + syncDocumentModel.getCol().toLowerCase());
     }
 
     private SyncDocumentModel fillDocument(SyncDocumentModel syncDocumentModel, SearchConfigEntity syncConf) {
