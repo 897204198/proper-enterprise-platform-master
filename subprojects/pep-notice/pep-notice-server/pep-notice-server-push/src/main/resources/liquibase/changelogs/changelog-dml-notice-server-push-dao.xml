@@ -23,7 +23,7 @@
             <column name="DD_ORDER" valueNumeric="1"/>
         </insert>
         <insert tableName="PEP_SYS_DATA_DIC">
-            <column name="ID" value="notice_type_sms"/>
+            <column name="ID" value="PUSH_CHANNEL_XIAOMI"/>
             <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
             <column name="CREATE_USER_ID" value="PEP"/>
             <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
@@ -35,7 +35,7 @@
             <column name="DD_ORDER" valueNumeric="2"/>
         </insert>
         <insert tableName="PEP_SYS_DATA_DIC">
-            <column name="ID" value="notice_type_push"/>
+            <column name="ID" value="PUSH_CHANNEL_IOS"/>
             <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
             <column name="CREATE_USER_ID" value="PEP"/>
             <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>

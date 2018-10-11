@@ -10,7 +10,7 @@ import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.encrypt.EncryptUtil;
-import com.proper.enterprise.platform.notice.client.NoticeSender;
+import com.proper.enterprise.platform.notice.service.NoticeSender;
 import com.proper.enterprise.platform.sys.datadic.enums.AppConfigEnum;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> custom = new HashMap<>(0);
         //设置标题
         custom.put("title", DataDicUtil.get(AppConfigEnum.NAME).getName() + I18NUtil.getMessage("pep.auth.common.password.retrieve"));
-        noticeSender.sendNotice("passwordRetrieve", custom, user.getId(), templateParams);
+        noticeSender.sendNotice(user.getId(), "passwordRetrieve", templateParams, custom);
         return I18NUtil.getMessage("pep.auth.common.password.retrieve.email.sent") + ":" + EncryptUtil.encryptEmail(user.getEmail());
     }
 
