@@ -284,4 +284,76 @@
             <column name="URL" value="/workflow/task/assignee"/>
         </insert>
     </changeSet>
+    <changeSet author="zjl (generated)" id="20181011-workflow-templete">
+        <insert tableName="PEP_TEMPLATE">
+            <column name="ID" value="5b9a17019699a93374538790"/>
+            <column name="CREATE_TIME" value="2018-09-26 16:39:28.383"/>
+            <column name="CREATE_USER_ID" value="PEP_SYS"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2018-09-26 16:39:28.383"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP_SYS"/>
+            <column name="CODE" value="EndCode"/>
+            <column name="NAME" value="EndCode"/>
+            <column name="CATALOG" value="BPM"/>
+            <column name="DESCRIPTION" value="1"/>
+            <column name="MUTI" value="Y"/>
+            <column name="DETAILS" value="[{\\&quot;title\\&quot;:\\&quot;流程完结\\&quot;,\\&quot;template\\&quot;:\\&quot;您的【{processDefinitionName}】已完成，详情请在【发起历史】中查看。\\&quot;,\\&quot;type\\&quot;:\\&quot;EMAIL\\&quot;},{\\&quot;title\\&quot;:\\&quot;您有一条已办消息\\&quot;,\\&quot;template\\&quot;:\\&quot;您的{processDefinitionName}已完成\\&quot;,\\&quot;type\\&quot;:\\&quot;PUSH\\&quot;}]"/>
+        </insert>
+        <insert tableName="PEP_TEMPLATE">
+            <column name="ID" value="5b9a17019699a93374538791"/>
+            <column name="CREATE_TIME" value="2018-09-26 16:39:28.383"/>
+            <column name="CREATE_USER_ID" value="PEP_SYS"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2018-09-26 16:39:28.383"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP_SYS"/>
+            <column name="CODE" value="EntryTaskAssignee"/>
+            <column name="NAME" value="EntryTaskAssignee"/>
+            <column name="CATALOG" value="BPM"/>
+            <column name="DESCRIPTION" value="1"/>
+            <column name="MUTI" value="Y"/>
+            <column name="DETAILS" value="[{\\&quot;title\\&quot;:\\&quot;流程待办\\&quot;,\\&quot;template\\&quot;:\\&quot;【{initiatorName}】发起的【{name}】的【{processDefinitionName}】已经到达您的代办，请您处理【&lt;a href={pageurl}&gt;{taskName}&lt;/a&gt;】。\\&quot;,\\&quot;type\\&quot;:\\&quot;EMAIL\\&quot;},{\\&quot;title\\&quot;:\\&quot;您有一条新的待办消息\\&quot;,\\&quot;template\\&quot;:\\&quot;{name}的{processDefinitionName}\\&quot;,\\&quot;type\\&quot;:\\&quot;PUSH\\&quot;}]"/>
+        </insert>
+        <insert tableName="PEP_TEMPLATE">
+            <column name="ID" value="5b9a17019699a93374538792"/>
+            <column name="CREATE_TIME" value="2018-09-26 16:39:28.383"/>
+            <column name="CREATE_USER_ID" value="PEP_SYS"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2018-09-26 16:39:28.383"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP_SYS"/>
+            <column name="CODE" value="TaskAssignee"/>
+            <column name="NAME" value="TaskAssignee"/>
+            <column name="CATALOG" value="BPM"/>
+            <column name="DESCRIPTION" value="1"/>
+            <column name="MUTI" value="Y"/>
+            <column name="DETAILS" value="[{\\&quot;title\\&quot;:\\&quot;流程待办\\&quot;,\\&quot;template\\&quot;:\\&quot;【{initiatorName}】发起的【{processDefinitionName}】已经到达您的代办，请您处理【&lt;a href={pageurl}&gt;{taskName}&lt;/a&gt;】。\\&quot;,\\&quot;type\\&quot;:\\&quot;EMAIL\\&quot;},{\\&quot;title\\&quot;:\\&quot;您有一条新的待办消息\\&quot;,\\&quot;template\\&quot;:\\&quot;{initiatorName}的{processDefinitionName}\\&quot;,\\&quot;type\\&quot;:\\&quot;PUSH\\&quot;}]"/>
+        </insert>
+        <insert tableName="PEP_TEMPLATE">
+            <column name="ID" value="5b9a17019699a93374538793"/>
+            <column name="CREATE_TIME" value="2018-09-26 16:39:28.383"/>
+            <column name="CREATE_USER_ID" value="PEP_SYS"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2018-09-26 16:39:28.383"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP_SYS"/>
+            <column name="CODE" value="TaskAssigneeEntry"/>
+            <column name="NAME" value="TaskAssigneeEntry"/>
+            <column name="CATALOG" value="BPM"/>
+            <column name="DESCRIPTION" value="1"/>
+            <column name="MUTI" value="Y"/>
+            <column name="DETAILS" value="[{\\&quot;title\\&quot;:\\&quot;流程待办\\&quot;,\\&quot;template\\&quot;:\\&quot;【{initiatorName}】发起的【{processDefinitionName}】已经到达您的代办，请您处理【&lt;a href={pageurl}&gt;{taskName}&lt;/a&gt;】。\\&quot;,\\&quot;type\\&quot;:\\&quot;EMAIL\\&quot;},{\\&quot;title\\&quot;:\\&quot;您有一条新的待办消息\\&quot;,\\&quot;template\\&quot;:\\&quot;{initiatorName}的{processDefinitionName}\\&quot;,\\&quot;type\\&quot;:\\&quot;PUSH\\&quot;}]"/>
+        </insert>
+        <insert tableName="PEP_TEMPLATE">
+            <column name="ID" value="taskCompletedNoticeId"/>
+            <column name="CREATE_TIME" value="2018-09-26 16:39:28.383"/>
+            <column name="CREATE_USER_ID" value="PEP_SYS"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2018-09-26 16:39:28.383"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP_SYS"/>
+            <column name="CODE" value="taskCompletedNotice"/>
+            <column name="NAME" value="taskCompletedNotice"/>
+            <column name="CATALOG" value="BPM"/>
+            <column name="DESCRIPTION" value="1"/>
+            <column name="MUTI" value="Y"/>
+            <column name="DETAILS" value="[{\\&quot;title\\&quot;:\\&quot;您有一条多人可办的待办已被他人处理\\&quot;,\\&quot;template\\&quot;:\\&quot;{initiatorName}发起的{processDefinitionName}的{taskName}节点已被办理\\&quot;,\\&quot;type\\&quot;:\\&quot;EMAIL\\&quot;},{\\&quot;title\\&quot;:\\&quot;您有一条多人可办的待办已被他人处理\\&quot;,\\&quot;template\\&quot;:\\&quot;{initiatorName}发起的{processDefinitionName}的{taskName}节点已被办理\\&quot;,\\&quot;type\\&quot;:\\&quot;PUSH\\&quot;}]"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
