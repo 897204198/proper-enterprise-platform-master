@@ -10,14 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/notice/token")
+@RequestMapping("/notice")
 public class NoticeTokenController extends BaseController {
 
     @Autowired
     DataDicService dataDicService;
 
-    @PutMapping
-    public ResponseEntity<String> update(@RequestParam(required = true, name = "accessToken") String accessToken) {
+    @PutMapping("/token")
+    public ResponseEntity<String> updateToken(@RequestParam(required = true, name = "accessToken") String accessToken) {
         DataDic dataDic = dataDicService.get("NOTICE_SERVER", "TOKEN");
         if (dataDic == null) {
             dataDic = new DataDicEntity();
@@ -32,9 +32,18 @@ public class NoticeTokenController extends BaseController {
         return responseOfPut(accessToken);
     }
 
-    @GetMapping
-    public ResponseEntity<String> get() {
+    @GetMapping("/token")
+    public ResponseEntity<String> getToken() {
         DataDic dataDic = dataDicService.get("NOTICE_SERVER", "TOKEN");
+        if (dataDic == null) {
+            throw new ErrMsgException("Not Configured");
+        }
+        return responseOfGet(dataDic.getName());
+    }
+
+    @GetMapping("/serverUrl")
+    public ResponseEntity<String> getUrl() {
+        DataDic dataDic = dataDicService.get("NOTICE_SERVER", "URL");
         if (dataDic == null) {
             throw new ErrMsgException("Not Configured");
         }

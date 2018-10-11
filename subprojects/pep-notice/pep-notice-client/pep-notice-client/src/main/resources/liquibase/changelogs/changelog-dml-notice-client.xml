@@ -46,17 +46,18 @@
 
     <changeSet author="wanghp" id="data-dic-20180911-01">
         <insert tableName="PEP_SYS_DATA_DIC">
-            <column name="ID" value="notice_server_token"/>
+            <column name="ID" value="notice_server_url"/>
             <column name="CREATE_TIME" value="2019-09-05 00:00:00"/>
             <column name="CREATE_USER_ID" value="PEP"/>
             <column name="LAST_MODIFY_TIME" value="2019-09-05 00:00:00"/>
             <column name="LAST_MODIFY_USER_ID" value="PEP"/>
             <column name="DD_CATALOG" value="NOTICE_SERVER"/>
-            <column name="DD_CODE" value="TOKEN"/>
+            <column name="DD_CODE" value="URL"/>
             <column name="IS_DEFAULT" value="Y"/>
             <column name="DD_NAME" value="initNoticeServerUrl"/>
             <column name="DD_ORDER" valueNumeric="0"/>
             <column name="ENABLE" value="Y"/>
+            <column name="DD_TYPE" value="BUSINESS"/>
         </insert>
     </changeSet>
 </databaseChangeLog>
