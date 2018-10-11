@@ -1,15 +1,17 @@
 package com.proper.enterprise.platform.auth.common.jpa.controller
 
+import com.proper.enterprise.platform.api.auth.enums.EnableEnum
+import com.proper.enterprise.platform.api.auth.model.RetrievePasswordParam
 import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService
 import com.proper.enterprise.platform.api.auth.service.RoleService
 import com.proper.enterprise.platform.api.auth.service.UserGroupService
 import com.proper.enterprise.platform.api.auth.service.UserService
+import com.proper.enterprise.platform.api.auth.service.ValidCodeService
 import com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
 import com.proper.enterprise.platform.auth.common.jpa.repository.*
 import com.proper.enterprise.platform.auth.common.vo.UserVO
-import com.proper.enterprise.platform.auth.common.vo.ValidEmailParam
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.security.Authentication
@@ -56,6 +58,8 @@ class UsersControllerTest extends AbstractTest {
     PasswordEncryptService pwdService
     @Autowired
     UserService userService
+    @Autowired
+    ValidCodeService validCodeService
 
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/users.sql")
     @Test
@@ -442,6 +446,8 @@ class UsersControllerTest extends AbstractTest {
         assert changeVO.getPassword() == pwdService.encrypt('456')
     }
 
+
+
     @Test
     public void resetPassword() {
         def userReq = [:]
@@ -453,31 +459,15 @@ class UsersControllerTest extends AbstractTest {
         userReq['enable'] = true
         UserVO userVO = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString, UserVO.class)
         assert userVO.getPassword() == pwdService.encrypt('password')
-        mockUser(userVO.getId(), userVO.getUsername())
-        Authentication.setCurrentUserId(userVO.getId())
-        UserVO changeVO = JSONUtil.parse(put(URI + "/password/456", JSONUtil.toJSON(""), HttpStatus.OK).getResponse().getContentAsString(), UserVO.class)
-        assert changeVO.getPassword() == pwdService.encrypt('456')
-    }
-
-    @Test
-    public void checkEmail() {
-        def userReq = [:]
-        userReq['username'] = 'user_dup'
-        userReq['name'] = 'name'
-        userReq['password'] = 'password'
-        userReq['email'] = 'email'
-        userReq['phone'] = '123'
-        userReq['enable'] = true
-        UserVO userVO = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString, UserVO.class)
-        ValidEmailParam validEmailParam = new ValidEmailParam()
-        validEmailParam.setUsername("A")
-        validEmailParam.setEmail("email")
-        assert I18NUtil.getMessage("pep.auth.common.username.not.exist") == post(URI + "/valid/email", JSONUtil.toJSON(validEmailParam), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
-        validEmailParam.setUsername("user_dup")
-        validEmailParam.setEmail("email1")
-        assert I18NUtil.getMessage("pep.auth.common.username.not.match.email") == post(URI + "/valid/email", JSONUtil.toJSON(validEmailParam), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
-        validEmailParam.setEmail("email")
-        post(URI + "/valid/email", JSONUtil.toJSON(validEmailParam), HttpStatus.CREATED)
+        String validCode = validCodeService.getPasswordValidCode('user_dup')
+        RetrievePasswordParam retrievePasswordParam = new RetrievePasswordParam()
+        retrievePasswordParam.setUsername('user_dup')
+        retrievePasswordParam.setPassword("456")
+        retrievePasswordParam.setValidCode("weqe")
+        assert I18NUtil.getMessage("pep.auth.common.password.retrieve.validCode.not.match") == put(URI + "/password/reset", JSONUtil.toJSON(retrievePasswordParam), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        retrievePasswordParam.setValidCode(validCode)
+        put(URI + "/password/reset", JSONUtil.toJSON(retrievePasswordParam), HttpStatus.OK)
+        assert userService.getByUsername('user_dup', EnableEnum.ALL).getPassword() == pwdService.encrypt('456')
     }
 
     @After

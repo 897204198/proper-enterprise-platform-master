@@ -67,11 +67,20 @@ public interface UserService {
     /**
      * 用户重置密码
      *
-     * @param userId   用户id
-     * @param password 新密码
+     * @param userName  用户id
+     * @param validCode 验证码
+     * @param password  新密码
      * @return 用户
      */
-    User updateResetPassword(String userId, String password);
+    User updateResetPassword(String userName, String validCode, String password);
+
+    /**
+     * 发送验证码
+     *
+     * @param userName 用户名
+     * @return 发送提示
+     */
+    String sendValidCode(String userName);
 
     /**
      * 获取当前用户
@@ -170,7 +179,8 @@ public interface UserService {
 
     /**
      * 获得当前登录用户权限范围内菜单集合
-     * @param userId 用户id
+     *
+     * @param userId     用户id
      * @param menuEnable 是否可用
      * @return 菜单集合
      */
@@ -222,19 +232,11 @@ public interface UserService {
     /**
      * 根据传入的用户集合，获取合法的用户集合(过滤掉valid、enable为false的)
      *
-     * @param users 待检测的用户集合
+     * @param users      待检测的用户集合
      * @param userEnable 是否可用
      * @return 返回合法的用户集合
      */
     Collection<? extends User> getFilterUsers(Collection<? extends User> users, EnableEnum userEnable);
 
-
-    /**
-     * 检查邮箱
-     *
-     * @param username 用户名
-     * @param email    邮箱
-     */
-    void checkEmail(String username, String email);
 
 }

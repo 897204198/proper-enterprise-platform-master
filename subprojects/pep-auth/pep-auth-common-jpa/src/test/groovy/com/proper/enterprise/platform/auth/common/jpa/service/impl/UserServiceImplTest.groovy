@@ -333,6 +333,8 @@ class UserServiceImplTest extends AbstractTest {
         assert userService.getUserMenus(userEntity.getId(), EnableEnum.ALL).size() == 0
     }
 
+
+
     @After
     void clearAll() {
         userRepository.deleteAll()
