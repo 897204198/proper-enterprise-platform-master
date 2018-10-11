@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.notice.repository;
 
-import com.proper.enterprise.platform.notice.entity.NoticeSetDocument;
+import com.proper.enterprise.platform.notice.document.NoticeSetDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

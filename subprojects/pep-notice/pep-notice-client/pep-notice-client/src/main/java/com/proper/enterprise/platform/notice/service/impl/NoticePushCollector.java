@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.notice.service.impl;
 
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.notice.document.NoticeDocument;
-import com.proper.enterprise.platform.notice.entity.NoticeSetDocument;
+import com.proper.enterprise.platform.notice.document.NoticeSetDocument;
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity;
 import com.proper.enterprise.platform.notice.model.TargetModel;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
@@ -27,10 +27,12 @@ public class NoticePushCollector implements NoticeCollector {
     public void addNoticeDocument(NoticeDocument noticeDocument) {
     }
 
+    private static final String PUSH = "push";
+
     @Override
     public void addNoticeTarget(NoticeDocument noticeDocument, TargetModel targetModel, NoticeType noticeType, User user, NoticeSetDocument
         noticeSetDocument) {
-        if (noticeSetDocument.isPush() && noticeType.equals(NoticeType.PUSH)) {
+        if (noticeSetDocument.getNoticeChannel().contains(PUSH) && noticeType.equals(NoticeType.PUSH)) {
             targetModel.setTo(user.getUsername());
             PushDeviceEntity pushDeviceEntity = pushDeviceService.findDeviceByUserId(user.getId());
             boolean isOk = NoticeAnalysisUtil.isDeviceInfoOk(noticeDocument, user, pushDeviceEntity);

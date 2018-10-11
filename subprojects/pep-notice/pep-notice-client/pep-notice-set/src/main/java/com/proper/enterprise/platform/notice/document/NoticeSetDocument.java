@@ -1,7 +1,11 @@
-package com.proper.enterprise.platform.notice.entity;
+package com.proper.enterprise.platform.notice.document;
 
 import com.proper.enterprise.platform.core.mongo.document.BaseDocument;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Document(collection = "PEP_NOTICE_SET")
 public class NoticeSetDocument extends BaseDocument {
@@ -9,10 +13,8 @@ public class NoticeSetDocument extends BaseDocument {
     public NoticeSetDocument() {
     }
 
-    public NoticeSetDocument(boolean isPush, boolean isEmail, boolean isSms) {
-        this.isPush = isPush;
-        this.isEmail = isEmail;
-        this.isSms = isSms;
+    public NoticeSetDocument(String... noticeChannel) {
+        this.noticeChannel = new ArrayList<String>(Arrays.asList(noticeChannel));
     }
 
     /**
@@ -25,11 +27,9 @@ public class NoticeSetDocument extends BaseDocument {
      */
     private String catalog;
 
-    private boolean isPush;
+    private String name;
 
-    private boolean isSms;
-
-    private boolean isEmail;
+    private List<String> noticeChannel;
 
     public String getUserId() {
         return userId;
@@ -47,27 +47,19 @@ public class NoticeSetDocument extends BaseDocument {
         this.catalog = catalog;
     }
 
-    public boolean isPush() {
-        return isPush;
+    public String getName() {
+        return name;
     }
 
-    public void setPush(boolean push) {
-        isPush = push;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public boolean isSms() {
-        return isSms;
+    public List<String> getNoticeChannel() {
+        return noticeChannel;
     }
 
-    public void setSms(boolean sms) {
-        isSms = sms;
-    }
-
-    public boolean isEmail() {
-        return isEmail;
-    }
-
-    public void setEmail(boolean email) {
-        isEmail = email;
+    public void setNoticeChannel(List<String> noticeChannel) {
+        this.noticeChannel = noticeChannel;
     }
 }

@@ -57,10 +57,13 @@ public class TemplateController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity find(@RequestParam(defaultValue = "") String query) {
-        return isPageSearch()
-            ? responseOfGet(templateService.findPagination(query, getPageRequest())) :
-            responseOfGet(templateService.findAll());
+    @JsonView(TemplateVO.Detail.class)
+    public ResponseEntity find(@RequestParam(defaultValue = "") String code,
+                               @RequestParam(defaultValue = "") String name,
+                               @RequestParam(defaultValue = "") String description,
+                               @RequestParam(defaultValue = "") String catalog,
+                               @RequestParam(defaultValue = "") String enable) {
+        return responseOfGet(templateService.findPagination(code, name, description, catalog, enable, false));
     }
 
 }

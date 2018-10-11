@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.notice.service
 
 import com.proper.enterprise.platform.api.auth.service.UserService
-import com.proper.enterprise.platform.notice.entity.NoticeSetDocument
+import com.proper.enterprise.platform.notice.document.NoticeSetDocument
 import com.proper.enterprise.platform.notice.repository.NoticeMsgRepository
 import com.proper.enterprise.platform.notice.repository.NoticeSetRepository
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
@@ -108,17 +108,13 @@ class NoticeSenderImplTest extends AbstractTest {
         NoticeSetDocument noticeSetDocument1 = new NoticeSetDocument()
         noticeSetDocument1.setUserId("test1")
         noticeSetDocument1.setCatalog("BPM")
-        noticeSetDocument1.setPush(true)
-        noticeSetDocument1.setSms(true)
-        noticeSetDocument1.setEmail(true)
+        noticeSetDocument1.noticeChannel = ["sms","push","email"]
         noticeSetRepository.save(noticeSetDocument1)
 
         NoticeSetDocument noticeSetDocument2 = new NoticeSetDocument()
         noticeSetDocument2.setUserId("test2")
         noticeSetDocument2.setCatalog("BPM")
-        noticeSetDocument2.setPush(true)
-        noticeSetDocument2.setSms(true)
-        noticeSetDocument2.setEmail(true)
+        noticeSetDocument2.noticeChannel = ["sms","push","email"]
         noticeSetRepository.save(noticeSetDocument2)
 
         TemplateEntity templateDocument = new TemplateEntity()

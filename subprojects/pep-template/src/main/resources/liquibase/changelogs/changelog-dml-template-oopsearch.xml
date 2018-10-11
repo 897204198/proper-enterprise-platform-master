@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="wanghp (generated)" id="TEMPLATE_PEP_OOPSEARCH_CONFIG20181009-1">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="TEMPLATE_PEP_OOPSEARCH_CONFIG-001"/>
+            <column name="CREATE_TIME" value="2010-10-09 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2010-10-09 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="templates"/>
+            <column name="COLUMN_ALIAS" value="code"/>
+            <column name="COLUMN_DESC" value="关键字"/>
+            <column name="SEARCH_COLUMN" value="code"/>
+            <column name="TABLE_NAME" value="PEP_TEMPLATE"/>
+            <column name="URL" value="/templates"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="TEMPLATE_PEP_OOPSEARCH_CONFIG-002"/>
+            <column name="CREATE_TIME" value="2010-10-09 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2010-10-09 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="templates"/>
+            <column name="COLUMN_ALIAS" value="name"/>
+            <column name="COLUMN_DESC" value="名称"/>
+            <column name="SEARCH_COLUMN" value="name"/>
+            <column name="TABLE_NAME" value="PEP_TEMPLATE"/>
+            <column name="URL" value="/templates"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="TEMPLATE_PEP_OOPSEARCH_CONFIG-003"/>
+            <column name="CREATE_TIME" value="2010-10-09 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2010-10-09 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="templates"/>
+            <column name="COLUMN_ALIAS" value="description"/>
+            <column name="COLUMN_DESC" value="描述"/>
+            <column name="SEARCH_COLUMN" value="description"/>
+            <column name="TABLE_NAME" value="PEP_TEMPLATE"/>
+            <column name="URL" value="/templates"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

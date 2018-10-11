@@ -1,10 +1,15 @@
 package com.proper.enterprise.platform.template.vo;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.view.BaseView;
 
-public class TemplateDetailVO extends BaseVO {
+import java.io.Serializable;
+
+public class TemplateDetailVO implements Serializable {
+
+    public interface VOCommonView extends BaseView {
+
+    }
 
     public TemplateDetailVO() {
 
@@ -53,7 +58,7 @@ public class TemplateDetailVO extends BaseVO {
     }
 
     public String toString() {
-        return "id:" + id;
+        return this.title + this.template + type;
     }
 
 }

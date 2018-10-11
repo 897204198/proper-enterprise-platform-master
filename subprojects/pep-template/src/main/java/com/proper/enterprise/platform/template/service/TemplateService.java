@@ -2,9 +2,7 @@ package com.proper.enterprise.platform.template.service;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.template.vo.TemplateVO;
-import org.springframework.data.domain.PageRequest;
 
-import java.util.List;
 import java.util.Map;
 
 public interface TemplateService {
@@ -61,18 +59,18 @@ public interface TemplateService {
     /**
      * 获得模板分页信息
      *
-     * @param query       检索内容
-     * @param pageRequest 分页请求
+     * @param code         关键字
+     * @param name         名称
+     * @param description  解释
+     * @param catalog      类别
+     * @param enable       启用停用
+     * @param muti         是否多模板
      * @return 模板分页信息
      */
-    DataTrunk<TemplateVO> findPagination(String query,
-                                         PageRequest pageRequest);
-
-    /**
-     * 查询全部模板列表
-     *
-     * @return 模板列表
-     */
-    List<TemplateVO> findAll();
-
+    DataTrunk<TemplateVO> findPagination(String code,
+                                         String name,
+                                         String description,
+                                         String catalog,
+                                         String enable,
+                                         Boolean muti);
 }

@@ -42,4 +42,15 @@ public class TemplatesController extends TemplateController {
         return responseOfGet(templateService.get(id));
     }
 
+    @Override
+    @GetMapping
+    @JsonView(TemplateVO.Details.class)
+    public ResponseEntity find(@RequestParam(defaultValue = "") String code,
+                               @RequestParam(defaultValue = "") String name,
+                               @RequestParam(defaultValue = "") String description,
+                               @RequestParam(defaultValue = "") String catalog,
+                               @RequestParam(defaultValue = "") String enable) {
+        return responseOfGet(templateService.findPagination(code, name, description, catalog, enable, true));
+    }
+
 }

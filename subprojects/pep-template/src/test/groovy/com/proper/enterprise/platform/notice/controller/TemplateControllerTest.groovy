@@ -136,7 +136,7 @@ class TemplateControllerTest extends AbstractTest {
     @Test
     void crud() {
 
-        def catalogs = JSONUtil.parse(get("/sys/datadic/catalog/TEMPLATE_CATALOG", HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        def catalogs = JSONUtil.parse(get("/sys/datadic/catalog/NOTICE_CATALOG", HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert catalogs.size() == 4
 
         String id = saveAndCheck("CODE1","NAME1","CATALOG1","DESCRIPTION1","TITLE1","TEMPLATE1","TYPE1")
@@ -144,7 +144,7 @@ class TemplateControllerTest extends AbstractTest {
         saveAndError(null,"NEW NAME1","NEW CATALOG1","NEW DESCRIPTION1","NEW TITLE1","NEW TEMPLATE1","NEW TYPE1")
         saveAndCheck("CODE2","NAME2","CATALOG2","DESCRIPTION2","TITLE2","TEMPLATE2","TYPE2")
         updateAndCheck(id, "CODE3","NAME3","CATALOG3","DESCRIPTION3","TITLE3","TEMPLATE3","TYPE3", true)
-        disableAndCheck(id, "CODE3","NAME3","CATALOG3","DESCRIPTION3","TITLE3","TEMPLATE3","TYPE3", false)
+        //disableAndCheck(id, "CODE3","NAME3","CATALOG3","DESCRIPTION3","TITLE3","TEMPLATE3","TYPE3", false)
         updateAndCheck(id, "CODE3","NAME3","CATALOG3","DESCRIPTION3","TITLE3","TEMPLATE3","TYPE3", true)
         updateAndError(id, "CODE2","NAME3","CATALOG3","DESCRIPTION3","TITLE3","TEMPLATE3","TYPE3")
         getOneAndCheck(id, "CODE3","NAME3","CATALOG3","DESCRIPTION3","TITLE3","TEMPLATE3","TYPE3")

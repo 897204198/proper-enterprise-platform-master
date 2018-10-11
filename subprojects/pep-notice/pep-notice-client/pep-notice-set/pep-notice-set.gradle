@@ -1,5 +1,7 @@
 dependencies {
-    compile project(':pep-core-mongo')
+    compile project(':pep-sys'),
+            project(':pep-core-mongo'),
+            project(':pep-auth-api')
     testCompile project(':pep-test')
 }
 

@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.notice.service;
 
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.notice.document.NoticeDocument;
-import com.proper.enterprise.platform.notice.entity.NoticeSetDocument;
+import com.proper.enterprise.platform.notice.document.NoticeSetDocument;
 import com.proper.enterprise.platform.notice.model.TargetModel;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Converter
-public class TemplateConverter implements AttributeConverter<List, String> {
+public class ListJsonStringConverter implements AttributeConverter<List, String> {
 
     @Override
     public String convertToDatabaseColumn(List attribute) {

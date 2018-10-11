@@ -9,7 +9,9 @@ import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.jdbc.Sql
 
+@Sql
 class TemplatesControllerTest extends AbstractTest {
 
     @Autowired
@@ -125,12 +127,15 @@ class TemplatesControllerTest extends AbstractTest {
         //page
         DataTrunk<TemplateVO> page = JSONUtil.parse(get("/templates/" + "?pageNo=1&pageSize=2", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert page.count == 2
-        page = JSONUtil.parse(get("/templates/" + "?pageNo=1&pageSize=10&query=NAME", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        page = JSONUtil.parse(get("/templates/" + "?pageNo=1&pageSize=10&name=NAME", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert page.count == 2
 
         deleteAndCheck(id)
 
         templateRepository.deleteAll()
+
+        def result = JSONUtil.parse(get("/sys/datadic/catalog/NOTICE_CATALOG", HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert result.size() == 4
     }
 
 }

@@ -7,7 +7,7 @@ import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
 import com.proper.enterprise.platform.notice.document.NoticeDocument;
-import com.proper.enterprise.platform.notice.entity.NoticeSetDocument;
+import com.proper.enterprise.platform.notice.document.NoticeSetDocument;
 import com.proper.enterprise.platform.notice.factory.NoticeCollectorFactory;
 import com.proper.enterprise.platform.notice.model.TargetModel;
 import com.proper.enterprise.platform.notice.repository.NoticeMsgRepository;

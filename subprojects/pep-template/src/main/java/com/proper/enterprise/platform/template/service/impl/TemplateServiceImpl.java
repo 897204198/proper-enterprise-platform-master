@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.template.service.impl;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
@@ -12,14 +13,14 @@ import com.proper.enterprise.platform.template.util.TemplateUtil;
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO;
 import com.proper.enterprise.platform.template.vo.TemplateVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.Predicate;
 import java.util.*;
 
 @Service
-public class TemplateServiceImpl implements TemplateService {
+public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateEntity, TemplateRepository, String> implements TemplateService {
 
     private TemplateRepository templateRepository;
 
@@ -107,7 +108,7 @@ public class TemplateServiceImpl implements TemplateService {
     @Override
     public TemplateVO get(String id) {
         TemplateEntity templateDocument = templateRepository.findOne(id);
-        if (templateDocument == null || !templateDocument.getEnable()) {
+        if (templateDocument == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.template.no.templates"));
         }
         TemplateVO templateVO = BeanUtil.convert(templateDocument, TemplateVO.class);
@@ -132,21 +133,47 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public DataTrunk<TemplateVO> findPagination(String query, PageRequest pageRequest) {
-        Page<TemplateEntity> page = templateRepository.findPagination(query, pageRequest);
-        List<TemplateEntity> list = page.getContent();
+    public DataTrunk<TemplateVO> findPagination(String code,
+                                                String name,
+                                                String description,
+                                                String catalog,
+                                                String enable,
+                                                Boolean muti) {
+        DataTrunk<TemplateEntity> data = findPage(buildQuerySpec(code, name, description, catalog, enable, muti));
+        Collection<TemplateEntity> list = data.getData();
         List<TemplateVO> voList = (List<TemplateVO>) BeanUtil.convert(list, TemplateVO.class);
         DataTrunk<TemplateVO> result = new DataTrunk<>();
-        result.setCount(voList.size());
+        result.setCount(data.getCount());
         result.setData(voList);
         return result;
     }
 
-    @Override
-    public List<TemplateVO> findAll() {
-        List<TemplateEntity> list = templateRepository.findByEnableTrue();
-        Collection<TemplateVO> result = BeanUtil.convert(list, TemplateVO.class);
-        return (List<TemplateVO>) result;
+    private Specification<TemplateEntity> buildQuerySpec(String code,
+                                                         String name,
+                                                         String description,
+                                                         String catalog,
+                                                         String enable,
+                                                         Boolean muti) {
+        Specification<TemplateEntity> specification = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            Predicate predicateOr = cb.or(cb.like(root.get("code"), "%".concat(code).concat("%")),
+                cb.like(root.get("name"), "%".concat(name).concat("%")),
+                cb.like(root.get("description"), "%".concat(description).concat("%")));
+            predicates.add(predicateOr);
+            if (StringUtil.isNotEmpty(catalog)) {
+                predicates.add(cb.and(cb.equal(root.get("catalog"), catalog)));
+            }
+            if (StringUtil.isNotEmpty(enable)) {
+                predicates.add(cb.and(cb.equal(root.get("enable"), "true".equals(enable))));
+            }
+            predicates.add(cb.and(cb.equal(root.get("muti"), muti)));
+            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+        };
+        return specification;
     }
 
+    @Override
+    public TemplateRepository getRepository() {
+        return templateRepository;
+    }
 }

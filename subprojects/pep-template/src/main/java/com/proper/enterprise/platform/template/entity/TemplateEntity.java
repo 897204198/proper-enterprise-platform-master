@@ -1,8 +1,9 @@
 package com.proper.enterprise.platform.template.entity;
 
-import com.proper.enterprise.platform.core.jpa.converter.TemplateConverter;
+import com.proper.enterprise.platform.core.jpa.converter.ListJsonStringConverter;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -43,13 +44,14 @@ public class TemplateEntity extends BaseEntity {
      * 是否多文案
      */
     @Column
+    @Type(type = "yes_no")
     private Boolean muti;
 
     /**
      * 模板
      */
     @Column(length = 2000)
-    @Convert(converter = TemplateConverter.class)
+    @Convert(converter = ListJsonStringConverter.class)
     private List<TemplateDetailVO> details;
 
     public String getCode() {
