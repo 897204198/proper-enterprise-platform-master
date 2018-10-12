@@ -67,7 +67,7 @@ public class SearchConfigServiceImpl extends AbstractJpaServiceSupport<SearchCon
         Set<String> columnsSet = new HashSet<>();
         for (SearchConfigEntity entity : configs) {
             tablesSet.add(entity.getTableName());
-            columnsSet.add(entity.getTableName() + ":" + entity.getSearchColumn() + ":" + entity.getColumnType()
+            columnsSet.add(entity.getTableName() + ":" + entity.getSearchColumn().toLowerCase() + ":" + entity.getColumnType()
                 + ":" + entity.getColumnDesc() + ":" + entity.getColumnAlias() + ":" + entity.getUrl());
         }
 
@@ -119,14 +119,14 @@ public class SearchConfigServiceImpl extends AbstractJpaServiceSupport<SearchCon
                 // table set
                 tempList.get(0).add(entity.getTableName());
                 // search column set
-                tempList.get(1).add(entity.getTableName() + ":" + entity.getSearchColumn() + ":" + entity.getColumnType()
+                tempList.get(1).add(entity.getTableName() + ":" + entity.getSearchColumn().toLowerCase() + ":" + entity.getColumnType()
                     + ":" + entity.getColumnDesc() + ":" + entity.getColumnAlias() + ":" + entity.getUrl());
             } else {
                 // 创建新的searchconfig
                 Set<String> tablesSet = new HashSet<>();
                 Set<String> columnsSet = new HashSet<>();
                 tablesSet.add(entity.getTableName());
-                columnsSet.add(entity.getTableName() + ":" + entity.getSearchColumn() + ":" + entity.getColumnType()
+                columnsSet.add(entity.getTableName() + ":" + entity.getSearchColumn().toLowerCase() + ":" + entity.getColumnType()
                     + ":" + entity.getColumnDesc() + ":" + entity.getColumnAlias() + ":" + entity.getUrl());
                 List<Set<String>> tempList = new ArrayList<>();
                 tempList.add(tablesSet);

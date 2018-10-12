@@ -59,7 +59,6 @@ class SpringCacheTest extends AbstractTest  {
         }
         sleep(1000)
         assert ro.get('count') == null
-        assert ro.remainTimeToLive() == -1
     }
 
     @Test

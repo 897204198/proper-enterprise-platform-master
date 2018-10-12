@@ -133,15 +133,7 @@ public class HuaweiPushApp extends BasePushApp {
             if (StringUtil.isNull(packageName)) {
                 packageName = "c";
             }
-            String extPushType = ext.getString("push_type");
-            try {
-                if (StringUtil.isNotBlank(extPushType)) {
-                    pushType = PushType.valueOf(extPushType);
-                }
-            } catch (Exception e) {
-                LOGGER.debug("Fallback to default push type of " + extPushType, e);
-                pushType = PushType.other;
-            }
+            pushType = adjustPushType(ext, pushType);
         }
         JSONObject msg = new JSONObject();
         //3: 通知栏消息，异步透传消息请根据接口文档设置
@@ -197,8 +189,25 @@ public class HuaweiPushApp extends BasePushApp {
         LOGGER.debug("postBody: {}", postBody);
         String postUrl = API_URL + "?nsp_ctx="
             + URLEncoder.encode("{\"ver\":\"1\", \"appId\":\"" + theAppid + "\"}", "UTF-8");
-        String resBody = post(postUrl, postBody);
-        return resBody;
+        return post(postUrl, postBody);
+    }
+
+    private PushType adjustPushType(JSONObject ext, PushType pushType) {
+        String extPushType = ext.getString("push_type");
+        try {
+            if (StringUtil.isNotBlank(extPushType)) {
+                pushType = PushType.valueOf(extPushType);
+            }
+            // chat类型推送不包含 uri 会导致推送失败
+            String uriKey = "uri";
+            if ((PushType.chat).equals(pushType) && StringUtil.isBlank(ext.getString(uriKey))) {
+                throw new ErrMsgException("Chat type push MUST has 'uri' in ext, but has not: " + JSONUtil.toJSONIgnoreException(ext));
+            }
+        } catch (Exception e) {
+            LOGGER.debug("Fallback to default push type (PushType.other) from {} caused by exception!", extPushType, e);
+            pushType = PushType.other;
+        }
+        return pushType;
     }
 
     /**

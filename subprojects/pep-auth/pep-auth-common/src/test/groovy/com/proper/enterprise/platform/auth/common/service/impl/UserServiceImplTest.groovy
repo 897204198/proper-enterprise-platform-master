@@ -270,5 +270,4 @@ class UserServiceImplTest extends AbstractTest {
 
     }
 
-
 }

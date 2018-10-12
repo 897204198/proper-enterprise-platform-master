@@ -28,6 +28,9 @@ class HuaweiPushAppSpec extends Specification {
         def device = new PushDeviceEntity()
         device.setPushToken(token)
         msg.setDevice(device)
+        def map = [:]
+        map['push_type'] = 'chat'
+        msg.setMcustomDatasMap(map)
 
         System.setProperty('push_env', 'Fire in test')
         ConfCenter.reload()

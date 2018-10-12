@@ -9,6 +9,10 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.core.utils.encrypt.EncryptUtil;
+import com.proper.enterprise.platform.notice.client.NoticeSender;
+import com.proper.enterprise.platform.sys.datadic.enums.AppConfigEnum;
+import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +44,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncryptService pwdService;
+
+    @Autowired
+    private NoticeSender noticeSender;
+
+    @Autowired
+    private ValidCodeService validCodeService;
 
     @Override
     public User getCurrentUser() {
@@ -87,8 +97,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateResetPassword(String userId, String password) {
-        return userDao.updateResetPassword(userId, password);
+    public User updateResetPassword(String userName, String validCode, String password) {
+        if (!validCodeService.getPasswordValidCode(userName).equals(validCode)) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.password.retrieve.validCode.not.match"));
+        }
+        User user = userDao.getByUsername(userName, EnableEnum.ALL);
+        if (null == user) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.user.get.failed"));
+        }
+        return userDao.updateResetPassword(user.getId(), password);
+    }
+
+    @Override
+    public String sendValidCode(String userName) {
+        User user = this.getByUsername(userName, EnableEnum.ALL);
+        if (null == user) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.username.not.exist"));
+        }
+        if (StringUtil.isEmpty(user.getEmail())) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.password.retrieve.email.not.exit"));
+        }
+        Map<String, Object> templateParams = new HashMap<>(16);
+        templateParams.put("appName", DataDicUtil.get(AppConfigEnum.NAME).getName());
+        templateParams.put("userName", user.getUsername());
+        templateParams.put("validCode", validCodeService.getPasswordValidCode(userName));
+        Map<String, Object> custom = new HashMap<>(0);
+        //设置标题
+        custom.put("title", DataDicUtil.get(AppConfigEnum.NAME).getName() + I18NUtil.getMessage("pep.auth.common.password.retrieve"));
+        noticeSender.sendNotice("passwordRetrieve", custom, user.getId(), templateParams);
+        return I18NUtil.getMessage("pep.auth.common.password.retrieve.email.sent") + ":" + EncryptUtil.encryptEmail(user.getEmail());
     }
 
     @Override
@@ -210,19 +247,6 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-    @Override
-    public void checkEmail(String username, String email) {
-        User user = userDao.getByUsername(username, EnableEnum.ENABLE);
-        if (null == user) {
-            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.username.not.exist"));
-        }
-        if (StringUtil.isEmpty(user.getEmail())) {
-            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.username.email.isEmpty"));
-        }
-        if (StringUtil.isEmpty(email) || !email.equals(user.getEmail())) {
-            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.username.not.match.email"));
-        }
-    }
 
     @Override
     public Collection<? extends UserGroup> getUserGroups(String userId) {
