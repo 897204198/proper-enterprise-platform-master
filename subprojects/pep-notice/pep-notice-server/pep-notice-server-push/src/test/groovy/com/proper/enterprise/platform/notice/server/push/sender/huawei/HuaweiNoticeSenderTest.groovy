@@ -46,11 +46,13 @@ class HuaweiNoticeSenderTest extends AbstractTest {
         pushNoticeSender.send(notice)
 
         notice.setNoticeExtMsg('push_type', 'chat')
-        notice.setNoticeExtMsg('uri', 'www.baidu.com')
 
         customs['_proper_pushtype'] = 'cmd'
         notice.setNoticeExtMsg('customs', customs)
 
+        pushNoticeSender.send(notice)
+
+        notice.setNoticeExtMsg('uri', 'www.baidu.com')
         pushNoticeSender.send(notice)
 
         notice.setAppKey("testFail")

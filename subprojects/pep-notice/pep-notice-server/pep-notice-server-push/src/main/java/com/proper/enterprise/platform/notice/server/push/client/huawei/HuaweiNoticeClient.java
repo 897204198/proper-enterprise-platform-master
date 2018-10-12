@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.client.huawei;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
@@ -105,8 +106,13 @@ public class HuaweiNoticeClient {
                 if (StringUtil.isNotBlank(extPushType)) {
                     pushType = PushType.valueOf(extPushType);
                 }
+                // chat类型推送不包含 uri 会导致推送失败
+                String uriKey = "uri";
+                if ((PushType.chat).equals(pushType) && StringUtil.isBlank((String) customs.get(uriKey))) {
+                    throw new ErrMsgException("Chat type push MUST has 'uri' in customs, but has not: " + JSONUtil.toJSONIgnoreException(customs));
+                }
             } catch (Exception e) {
-                LOGGER.debug("Fallback to default push type of " + extPushType, e);
+                LOGGER.debug("Fallback to default push type (PushType.other) from {} caused by exception!", extPushType, e);
                 pushType = PushType.other;
             }
         }
