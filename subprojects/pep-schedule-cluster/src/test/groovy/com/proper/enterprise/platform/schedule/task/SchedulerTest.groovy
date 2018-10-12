@@ -19,9 +19,8 @@ class SchedulerTest extends AbstractTest {
     void useRunnable() {
         taskCount = 0
         def task = new Task()
-        def sf = scheduler.scheduleAtFixedRate(task, 50)
-        sleep(500)
-        sf.cancel(true)
+        scheduler.scheduleAtFixedRate(task, 50)
+        sleep(800)
         assert taskCount >= 2
     }
 
