@@ -2,5 +2,57 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-
+    <changeSet author="Administrator (generated)" id="1539250580564-6" failOnError="false">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="644bedf5-5173-4eaf-959d-93261c7c2944"/>
+            <column name="CREATE_TIME" value="2018-10-09 15:48:41.261"/>
+            <column name="CREATE_USER_ID" value="pep-sysadmin"/>
+            <column name="LAST_MODIFY_TIME" value="2018-10-09 15:48:41.261"/>
+            <column name="LAST_MODIFY_USER_ID" value="pep-sysadmin"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="appstore"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE" value="1"/>
+            <column name="MENU_TYPE"/>
+            <column name="NAME" value="消息配置管理"/>
+            <column name="ROUTE" value="message/client"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="1"/>
+            <column name="PARENT_ID"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="c56d8be9-2e80-40d0-aafe-cbd7f4496ef5"/>
+            <column name="CREATE_TIME" value="2018-10-09 15:49:00.436"/>
+            <column name="CREATE_USER_ID" value="pep-sysadmin"/>
+            <column name="LAST_MODIFY_TIME" value="2018-10-09 15:49:00.436"/>
+            <column name="LAST_MODIFY_USER_ID" value="pep-sysadmin"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="setting"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE" value="1"/>
+            <column name="MENU_TYPE"/>
+            <column name="NAME" value="应用配置"/>
+            <column name="ROUTE" value="/message/client/app"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="1"/>
+            <column name="PARENT_ID" value="644bedf5-5173-4eaf-959d-93261c7c2944"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="8f1f5832-ec8f-4f2b-85fe-9701c99920c8"/>
+            <column name="CREATE_TIME" value="2018-10-09 15:49:17.525"/>
+            <column name="CREATE_USER_ID" value="pep-sysadmin"/>
+            <column name="LAST_MODIFY_TIME" value="2018-10-09 15:49:17.525"/>
+            <column name="LAST_MODIFY_USER_ID" value="pep-sysadmin"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="book"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE" value="1"/>
+            <column name="MENU_TYPE"/>
+            <column name="NAME" value="文案配置"/>
+            <column name="ROUTE" value="/message/client/official"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="1"/>
+            <column name="PARENT_ID" value="644bedf5-5173-4eaf-959d-93261c7c2944"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

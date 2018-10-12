@@ -21,6 +21,9 @@ public class ListJsonStringConverter implements AttributeConverter<List, String>
         List list = new ArrayList<>();
         if (StringUtil.isNotBlank(dbData)) {
             list = JSONUtil.parseIgnoreException(dbData, List.class);
+            if (list == null) {
+                list = new ArrayList<>();
+            }
         }
         return list;
     }

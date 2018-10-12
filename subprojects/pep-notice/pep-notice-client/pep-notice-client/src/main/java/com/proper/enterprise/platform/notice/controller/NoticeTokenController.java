@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity;
+import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class NoticeTokenController extends BaseController {
             dataDic.setCode("TOKEN");
             dataDic.setName(accessToken);
             dataDic.setOrder(1);
+            dataDic.setDataDicType(DataDicTypeEnum.BUSINESS);
             dataDic.setEnable(true);
         }
         dataDic.setName(accessToken);

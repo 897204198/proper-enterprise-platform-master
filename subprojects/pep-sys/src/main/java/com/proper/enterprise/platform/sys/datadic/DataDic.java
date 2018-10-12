@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.sys.datadic;
 
 import com.proper.enterprise.platform.core.api.IBase;
+import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
 
 /**
  * 数据字典
@@ -51,5 +52,19 @@ public interface DataDic extends DataDicLite, IBase {
      * @param deft 是或否
      */
     void setDeft(Boolean deft);
+
+    /**
+     * 是系统类型还是业务类型
+     *
+     * @return SYSTEM或BUSINESS
+     */
+    DataDicTypeEnum getDataDicType();
+
+    /**
+     * 设置系统类型还是业务类型，系统类型将无法修改
+     *
+     * @param dataDicType SYSTEM或BUSINESS
+     */
+    void setDataDicType(DataDicTypeEnum dataDicType);
 
 }
