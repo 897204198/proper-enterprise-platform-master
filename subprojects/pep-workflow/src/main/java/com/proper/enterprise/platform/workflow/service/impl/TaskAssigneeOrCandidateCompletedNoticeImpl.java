@@ -35,6 +35,9 @@ public class TaskAssigneeOrCandidateCompletedNoticeImpl extends AbstractWorkFlow
     public void notice(TaskEntity task) {
         try {
             Set<String> userIds = queryUserIds(task);
+            if (StringUtil.isNotEmpty(task.getAssignee())) {
+                userIds.remove(task.getAssignee());
+            }
             if (CollectionUtil.isEmpty(userIds)) {
                 return;
             }
