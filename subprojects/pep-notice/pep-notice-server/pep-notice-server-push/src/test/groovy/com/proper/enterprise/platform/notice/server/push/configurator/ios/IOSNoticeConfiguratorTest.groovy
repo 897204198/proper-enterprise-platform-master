@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfi
 import com.proper.enterprise.platform.notice.server.push.constant.IOSConstant
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository
+import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeConfigService
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
@@ -29,6 +30,9 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
 
     @Autowired
     private PushConfigMongoRepository pushConfigMongoRepository
+
+    @Autowired
+    private PushNoticeConfigService pushNoticeConfigService
 
     @Test
     public void iosConfPostTest() {
@@ -86,6 +90,7 @@ class IOSNoticeConfiguratorTest extends AbstractTest {
         pushNoticeConfigurator.post(appKey, conf, request)
         PushConfDocument pushConf = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.IOS)
         assert pushConf.appKey == appKey
+        assert pushNoticeConfigService.get(appKey).getIosConf().get("certificateName")=="icmp_dev_pro.p12"
         return fileP12VO
     }
 

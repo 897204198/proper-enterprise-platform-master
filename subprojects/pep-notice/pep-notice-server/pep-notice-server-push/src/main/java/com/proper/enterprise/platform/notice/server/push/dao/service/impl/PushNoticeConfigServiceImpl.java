@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.notice.server.push.dao.service.impl;
 
+import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeConfigService;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
@@ -14,11 +15,17 @@ import java.util.Map;
 @Service
 public class PushNoticeConfigServiceImpl implements PushNoticeConfigService {
 
+    private static final String CERT_ID = "certificateId";
+
     private NoticeConfigurator pushConfigurator;
 
+    private FileService fileService;
+
     @Autowired
-    public PushNoticeConfigServiceImpl(@Qualifier("pushNoticeConfigurator") NoticeConfigurator pushConfigurator) {
+    public PushNoticeConfigServiceImpl(@Qualifier("pushNoticeConfigurator") NoticeConfigurator pushConfigurator,
+                                       FileService fileService) {
         this.pushConfigurator = pushConfigurator;
+        this.fileService = fileService;
     }
 
     @Override
@@ -116,7 +123,11 @@ public class PushNoticeConfigServiceImpl implements PushNoticeConfigService {
         pushConfigVO.setXiaomiConf(pushConfigurator.get(appKey, xiaomiParam));
         Map<String, Object> iosParam = new HashMap<>(16);
         iosParam.put("pushChannel", PushChannelEnum.IOS.name());
-        pushConfigVO.setIosConf(pushConfigurator.get(appKey, iosParam));
+        Map<String, Object> iosConf = pushConfigurator.get(appKey, iosParam);
+        if (null != iosConf && null != iosConf.get(CERT_ID)) {
+            iosConf.put("certificateName", fileService.findOne(iosConf.get(CERT_ID).toString()).getFileName());
+        }
+        pushConfigVO.setIosConf(iosConf);
         return pushConfigVO;
     }
 }

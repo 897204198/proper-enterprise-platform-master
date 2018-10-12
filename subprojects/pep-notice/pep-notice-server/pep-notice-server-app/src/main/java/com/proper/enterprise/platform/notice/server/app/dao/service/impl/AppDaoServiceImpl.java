@@ -76,8 +76,14 @@ public class AppDaoServiceImpl implements AppDaoService {
             throw new ErrMsgException("appKey can't change");
         }
         if (!oldApp.getAppToken().equals(app.getAppToken())) {
-            accessTokenService.deleteByToken(oldApp.getAppToken());
-            accessTokenService.saveOrUpdate(buildToken(app.getAppKey(), app.getAppToken()));
+            Optional<AccessToken> accessTokenOpt = accessTokenService.getByUserId(app.getAppKey());
+            if (accessTokenOpt.isPresent()) {
+                AccessToken accessToken = accessTokenOpt.get();
+                accessToken.setToken(app.getAppToken());
+                accessTokenService.saveOrUpdate(accessToken);
+            } else {
+                accessTokenService.saveOrUpdate(buildToken(app.getAppKey(), app.getAppToken()));
+            }
         }
         return BeanUtil.convert(appRepository.updateForSelective(BeanUtil.convert(app, AppEntity.class)), AppVO.class);
     }

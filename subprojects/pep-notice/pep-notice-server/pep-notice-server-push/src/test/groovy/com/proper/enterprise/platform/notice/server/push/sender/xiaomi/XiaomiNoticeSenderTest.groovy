@@ -25,6 +25,7 @@ class XiaomiNoticeSenderTest extends AbstractTest {
     @Autowired
     private NoticeSendHandler xiaomiNoticeSender
 
+    private static final String APPKEY = "xiaomiTest"
 
     @Before
     void initData() {
