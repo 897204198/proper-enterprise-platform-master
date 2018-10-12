@@ -72,6 +72,7 @@ dependencies {
             project(':pep-oopsearch'),
             project(":pep-oopsearch-sync-mongo"),
             project(':pep-sequence'),
+            project(":pep-websocket"),
             project(':pep-workflow')
 
 }

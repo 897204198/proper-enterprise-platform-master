@@ -221,7 +221,7 @@ libraries.spock = [
 //libraries.spring_beans = "org.springframework:spring-beans:${versions.spring}"
 //libraries.spring_context = "org.springframework:spring-context:${versions.spring}"
 libraries.spring_context_support = "org.springframework:spring-context-support:${versions.spring}"
-//libraries.spring_core = "org.springframework:spring-core:${versions.spring}"
+libraries.spring_messaging = "org.springframework:spring-messaging:${versions.spring}"
 libraries.spring_orm = [
     "org.springframework:spring-orm:${versions.spring}",
     libraries.aspectjweaver
@@ -230,6 +230,7 @@ libraries.spring_oxm = "org.springframework:spring-oxm:${versions.spring}"
 libraries.spring_test = "org.springframework:spring-test:${versions.spring}"
 libraries.spring_tx = "org.springframework:spring-tx:${versions.spring}"
 //libraries.spring_web = "org.springframework:spring-web:${versions.spring}"
+libraries.spring_websocket = "org.springframework:spring-websocket:${versions.spring}"
 libraries.spring_webmvc = "org.springframework:spring-webmvc:${versions.spring}"
 libraries.spring_jms = "org.springframework:spring-jms:${versions.spring}"
 
