@@ -38,7 +38,7 @@ FLOWABLE.TOOLBAR.ACTIONS.customClose = function(services) {
     			}
     		}
 		if (savePlugin) {
-			if (savePlugin.hasChanged()) {
+			if (savePlugin.hasChanges()) {
 				// 点击X的时候自行判断是否发生变化 解决electron下onbeforeunload不好用的情况 页面跳转之前清除onbeforeunload事件防止弹2次
 				if (confirm('系统可能不会保存您所做的更改，确定离开吗？')) {
 					window.onbeforeunload = null;
