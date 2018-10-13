@@ -35,6 +35,11 @@ public class TaskController extends BaseController {
         return responseOfGet(pepTaskService.findTodoPagination(processDefinitionName, getPageRequest()));
     }
 
+    @RequestMapping(value = "/todo/count", method = RequestMethod.GET)
+    public ResponseEntity<Long> get() {
+        return responseOfGet(pepTaskService.getTodoCount());
+    }
+
     @RequestMapping(value = "/assignee", method = RequestMethod.GET)
     @JsonView(value = {PEPTaskVO.ToDoView.class})
     public ResponseEntity<DataTrunk<PEPTaskVO>> findTaskAssigneeIsMePagination(String processDefinitionName) {
