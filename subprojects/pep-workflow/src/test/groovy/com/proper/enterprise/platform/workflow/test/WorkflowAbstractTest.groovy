@@ -76,7 +76,13 @@ abstract class WorkflowAbstractTest extends AbstractTest {
         return processDefinitionVO
     }
 
+    protected Long getTodoCount() {
+        return Long.valueOf(get('/workflow/task/todo/count', HttpStatus.OK).getResponse().getContentAsString())
+    }
+
     boolean isEnded(String procInstId) {
         return null != historyService.createHistoricProcessInstanceQuery().processInstanceId(procInstId).finished().singleResult()
     }
+
+
 }
