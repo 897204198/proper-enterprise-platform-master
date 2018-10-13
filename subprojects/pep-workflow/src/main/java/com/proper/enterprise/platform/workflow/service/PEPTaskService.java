@@ -26,6 +26,13 @@ public interface PEPTaskService {
     void complete(String taskId, Map<String, Object> variables);
 
     /**
+     * 查询当前人待办数量
+     *
+     * @return 待办数量
+     */
+    long getTodoCount();
+
+    /**
      * 查找当前人待办
      *
      * @param processDefinitionName 流程定义名称
@@ -69,4 +76,5 @@ public interface PEPTaskService {
      * @return 页面VO
      */
     PEPWorkflowPageVO buildPage(String taskId);
+
 }
