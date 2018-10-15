@@ -2,9 +2,9 @@ package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.notice.service.NoticeSender;
 import com.proper.enterprise.platform.workflow.api.AbstractWorkFlowNoticeSupport;
 import com.proper.enterprise.platform.workflow.api.TaskAssigneeOrCandidateCompletedNotice;
+import com.proper.enterprise.platform.workflow.service.WorkflowAsyncNotice;
 import com.proper.enterprise.platform.workflow.util.VariableUtil;
 import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 import org.slf4j.Logger;
@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-
 @Service("taskCompletedNotice")
 public class TaskAssigneeOrCandidateCompletedNoticeImpl extends AbstractWorkFlowNoticeSupport implements TaskAssigneeOrCandidateCompletedNotice {
 
@@ -24,10 +23,10 @@ public class TaskAssigneeOrCandidateCompletedNoticeImpl extends AbstractWorkFlow
 
     public static final String TASK_COMPLETED_NOTICE_CODE_KEY = "taskCompletedNoticeCode";
 
-    private NoticeSender noticeSender;
+    private WorkflowAsyncNotice noticeSender;
 
     @Autowired
-    TaskAssigneeOrCandidateCompletedNoticeImpl(NoticeSender noticeSender) {
+    TaskAssigneeOrCandidateCompletedNoticeImpl(WorkflowAsyncNotice noticeSender) {
         this.noticeSender = noticeSender;
     }
 
@@ -48,8 +47,8 @@ public class TaskAssigneeOrCandidateCompletedNoticeImpl extends AbstractWorkFlow
             custom.put("gdpr_mpage", "examList");
             custom.put("title", task.getName());
             String noticeCode = (String) task.getVariable(TASK_COMPLETED_NOTICE_CODE_KEY);
-            noticeSender.sendNotice(userIds, StringUtil.isEmpty(noticeCode) ? "taskCompletedNotice" : noticeCode,
-                templateParams, custom);
+            noticeSender.sendAsyncNotice(StringUtil.isEmpty(noticeCode) ? "taskCompletedNotice" : noticeCode,
+                custom, userIds, templateParams);
         } catch (Exception e) {
             LOGGER.error("taskCompletedNoticeError", e);
         }

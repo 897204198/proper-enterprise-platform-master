@@ -2,9 +2,9 @@ package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.notice.service.NoticeSender;
 import com.proper.enterprise.platform.workflow.api.AbstractWorkFlowNoticeSupport;
 import com.proper.enterprise.platform.workflow.api.TaskAssigneeOrCandidateNotice;
+import com.proper.enterprise.platform.workflow.service.WorkflowAsyncNotice;
 import com.proper.enterprise.platform.workflow.util.VariableUtil;
 import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 import org.slf4j.Logger;
@@ -12,9 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 @Service("taskAssigneeNotice")
@@ -27,10 +25,10 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
 
     public static final String TASK_ASSIGNEE_NOTICE_CODE_KEY = "taskAssigneeNoticeCode";
 
-    private NoticeSender noticeSender;
+    private WorkflowAsyncNotice noticeSender;
 
     @Autowired
-    TaskAssigneeNoticeImpl(NoticeSender noticeSender) {
+    TaskAssigneeNoticeImpl(WorkflowAsyncNotice noticeSender) {
         this.noticeSender = noticeSender;
     }
 
@@ -50,8 +48,8 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
             custom.put("url", buildTaskUrl(task) + "&from=app");
             custom.put("title", task.getName());
             String noticeCode = (String) task.getVariable(TASK_ASSIGNEE_NOTICE_CODE_KEY);
-            noticeSender.sendNotice(userIds, StringUtil.isEmpty(noticeCode) ? "TaskAssignee" :
-                noticeCode, templateParams, custom);
+            noticeSender.sendAsyncNotice(StringUtil.isEmpty(noticeCode) ? "TaskAssignee" : noticeCode,
+                custom, userIds, templateParams);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);
         }
