@@ -3,9 +3,9 @@ package com.proper.enterprise.platform.workflow.service.impl;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.notice.client.NoticeSender;
 import com.proper.enterprise.platform.workflow.api.EndNotice;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
+import com.proper.enterprise.platform.workflow.service.WorkflowAsyncNotice;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.impl.persistence.entity.ExecutionEntity;
 import org.flowable.engine.repository.ProcessDefinition;
@@ -31,7 +31,7 @@ public class EndNoticeImpl implements EndNotice {
     private UserDao userDao;
 
     @Autowired
-    private NoticeSender noticeSender;
+    private WorkflowAsyncNotice noticeSender;
 
     @Autowired
     EndNoticeImpl(UserDao userDao, RepositoryService repositoryService) {
@@ -57,7 +57,7 @@ public class EndNoticeImpl implements EndNotice {
                 ? (String) execution.getVariable(endNoticeUserKey)
                 : "";
             String endNoticeCode = (String) execution.getVariable(END_NOTICE_CODE_KEY);
-            noticeSender.sendNotice(StringUtil.isEmpty(endNoticeCode) ? "EndCode" : endNoticeCode, custom,
+            noticeSender.sendAsyncNotice(StringUtil.isEmpty(endNoticeCode) ? "EndCode" : endNoticeCode, custom,
                 StringUtil.isEmpty(endNoticeUserId) ? initiator : endNoticeUserId, templateParams);
         } catch (Exception e) {
             LOGGER.error("endNoticeError", e);
