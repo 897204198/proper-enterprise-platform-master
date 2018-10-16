@@ -21,4 +21,17 @@ class TaskControllerTest extends WorkflowAbstractTest {
         start(VARIABLES_WORKFLOW_KEY, mainForm)
         assert 2 == getTodoCount()
     }
+
+
+    @Test
+    @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
+        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+    public void get() {
+        setCurrentUserId("admin")
+        Map mainForm = new HashMap()
+        mainForm.put("a", "b")
+        PEPProcInstVO pepProcInst = start("autoArchive", mainForm)
+        Map task = getTask("form1")
+        assert task.form.formData.a == "b"
+    }
 }

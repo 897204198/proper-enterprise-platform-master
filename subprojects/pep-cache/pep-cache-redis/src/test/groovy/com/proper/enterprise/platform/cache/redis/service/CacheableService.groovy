@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 @CacheConfig(cacheNames = "test")
-@CacheDuration(ttl = 10L, maxIdleTime = 10L, cacheName = 'com.proper.enterprise.platform.cache.redis.service.CacheableService#testWithoutCacheName')
+@CacheDuration(ttl = 100L, maxIdleTime = 100L, cacheName = 'com.proper.enterprise.platform.cache.redis.service.CacheableService#testWithoutCacheName')
 class CacheableService {
 
     private int count = 5
