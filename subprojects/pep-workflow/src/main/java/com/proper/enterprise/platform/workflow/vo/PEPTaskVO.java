@@ -58,7 +58,10 @@ public class PEPTaskVO {
     /**
      * 任务表单
      */
+    @JsonView(value = {ToDoView.class})
     private PEPForm form;
+
+
     /**
      * 任务开始时间
      */
