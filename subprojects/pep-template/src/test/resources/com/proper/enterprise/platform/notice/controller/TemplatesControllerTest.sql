@@ -2,3 +2,4 @@ INSERT INTO pep_sys_data_dic (id, dd_catalog, dd_code, dd_name, dd_order, is_def
 INSERT INTO pep_sys_data_dic (id, dd_catalog, dd_code, dd_name, dd_order) VALUES ('template_catalog_bpm', 'NOTICE_CATALOG', 'BPM', '工作流消息', 1);
 INSERT INTO pep_sys_data_dic (id, dd_catalog, dd_code, dd_name, dd_order) VALUES ('template_catalog_im', 'NOTICE_CATALOG', 'IM', '即时通讯消息', 2);
 INSERT INTO pep_sys_data_dic (id, dd_catalog, dd_code, dd_name, dd_order) VALUES ('template_catalog_else', 'NOTICE_CATALOG', 'ELSE', '其他消息', 3);
+INSERT INTO pep_sys_data_dic (id, dd_catalog, dd_code, dd_name, dd_order) VALUES ('template_catalog_1', 'NOTICE_CATALOG', 'CATALOG1', '测试', 4);

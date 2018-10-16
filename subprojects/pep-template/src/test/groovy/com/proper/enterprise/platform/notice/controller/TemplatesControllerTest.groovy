@@ -135,7 +135,7 @@ class TemplatesControllerTest extends AbstractTest {
         templateRepository.deleteAll()
 
         def result = JSONUtil.parse(get("/sys/datadic/catalog/NOTICE_CATALOG", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert result.size() == 4
+        assert result.size() == 5
     }
 
 }

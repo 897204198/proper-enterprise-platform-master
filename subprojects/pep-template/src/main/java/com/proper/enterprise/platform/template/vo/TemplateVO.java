@@ -3,12 +3,14 @@ package com.proper.enterprise.platform.template.vo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.view.BaseView;
+import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 
 import java.util.List;
 
 public class TemplateVO extends BaseVO {
 
-    public TemplateVO(){
+    public TemplateVO() {
 
     }
 
@@ -37,6 +39,9 @@ public class TemplateVO extends BaseVO {
      */
     @JsonView(value = {Detail.class, Details.class})
     private String catalog;
+
+    @JsonView(value = {Detail.class, Details.class})
+    private String catalogName;
 
     /**
      * 解释
@@ -120,4 +125,13 @@ public class TemplateVO extends BaseVO {
     public void setMuti(Boolean muti) {
         this.muti = muti;
     }
+
+    public String getCatalogName() {
+        DataDic dataDic = DataDicUtil.get("NOTICE_CATALOG", catalog);
+        if (dataDic == null) {
+            return "";
+        }
+        return dataDic.getName();
+    }
+
 }

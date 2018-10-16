@@ -156,10 +156,10 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateEntit
                                                          Boolean muti) {
         Specification<TemplateEntity> specification = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-            Predicate predicateOr = cb.or(cb.like(root.get("code"), "%".concat(code).concat("%")),
+            Predicate predicateAnd = cb.and(cb.like(root.get("code"), "%".concat(code).concat("%")),
                 cb.like(root.get("name"), "%".concat(name).concat("%")),
                 cb.like(root.get("description"), "%".concat(description).concat("%")));
-            predicates.add(predicateOr);
+            predicates.add(predicateAnd);
             if (StringUtil.isNotEmpty(catalog)) {
                 predicates.add(cb.and(cb.equal(root.get("catalog"), catalog)));
             }
