@@ -27,8 +27,9 @@ public interface UserService {
      * 保存用户
      *
      * @param users 保存用户集合
+     * @return 保存用户集合
      */
-    void save(User... users);
+    User[] save(User... users);
 
     /**
      * 删除用户
