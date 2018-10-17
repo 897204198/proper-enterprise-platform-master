@@ -58,10 +58,11 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
     }
 
     @Override
-    public void save(User... users) {
+    public User[] save(User... users) {
         for (User user : users) {
             this.save(user);
         }
+        return users;
     }
 
 
@@ -139,7 +140,7 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
     }
 
     @Override
-    public User changePassword(String userId, String oldPassword, String password) {
+    public User updateChangePassword(String userId, String oldPassword, String password) {
         User user = this.findOne(userId);
         if (!pwdService.encrypt(oldPassword).equals(user.getPassword())) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.user.change.password.oldpassword.error"));
