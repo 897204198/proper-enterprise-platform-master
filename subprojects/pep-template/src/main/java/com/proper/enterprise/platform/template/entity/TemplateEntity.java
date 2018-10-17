@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.template.entity;
 
-import com.proper.enterprise.platform.core.jpa.converter.ListJsonStringConverter;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
+import com.proper.enterprise.platform.template.converter.TemplateJsonStringConverter;
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO;
 import org.hibernate.annotations.Type;
 
@@ -51,7 +51,7 @@ public class TemplateEntity extends BaseEntity {
      * 模板
      */
     @Column(length = 2000)
-    @Convert(converter = ListJsonStringConverter.class)
+    @Convert(converter = TemplateJsonStringConverter.class)
     private List<TemplateDetailVO> details;
 
     public String getCode() {

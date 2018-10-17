@@ -17,6 +17,9 @@ public class TemplateUtil {
     public static String template2Content(String tmpl, Map<String, Object> variables) {
         String re = "(?<=\\{).*?(?=\\})";
         Pattern p = Pattern.compile(re);
+        if (StringUtil.isNull(tmpl)) {
+            return "";
+        }
         Matcher m = p.matcher(tmpl);
         String message = tmpl;
         while (m.find()) {

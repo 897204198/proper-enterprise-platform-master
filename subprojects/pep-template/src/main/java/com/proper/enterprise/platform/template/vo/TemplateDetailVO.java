@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.template.vo;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 
 import java.io.Serializable;
@@ -50,6 +51,9 @@ public class TemplateDetailVO implements Serializable {
     }
 
     public String getType() {
+        if (StringUtil.isNotNull(type)) {
+            return type.toUpperCase();
+        }
         return type;
     }
 
