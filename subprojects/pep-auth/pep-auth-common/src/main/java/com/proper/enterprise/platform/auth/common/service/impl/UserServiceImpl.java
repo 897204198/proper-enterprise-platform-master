@@ -71,11 +71,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User... users) {
+    public User[] save(User... users) {
         for (User user : users) {
             validateUserName(user);
         }
-        userDao.save(users);
+        return userDao.save(users);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateChangePassword(String userId, String oldPassword, String password) {
-        return userDao.changePassword(userId, oldPassword, password);
+        return userDao.updateChangePassword(userId, oldPassword, password);
     }
 
     @Override

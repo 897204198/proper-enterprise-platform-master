@@ -21,8 +21,9 @@ public interface UserDao extends BaseService<User, String> {
      * 添加多个用户
      *
      * @param users 多个用户
+     * @return 保存用户集合
      */
-    void save(User... users);
+    User[] save(User... users);
 
     /**
      * 添加用户权限
@@ -131,7 +132,7 @@ public interface UserDao extends BaseService<User, String> {
      * @param password    新密码
      * @return 用户
      */
-    User changePassword(String userId, String oldPassword, String password);
+    User updateChangePassword(String userId, String oldPassword, String password);
 
     /**
      * 用户重置密码

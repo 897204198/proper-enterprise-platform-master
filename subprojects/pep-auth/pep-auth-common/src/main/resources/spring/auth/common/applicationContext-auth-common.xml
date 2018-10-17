@@ -2,8 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                                 http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <import resource="classpath*:spring/auth/common/auth-common-*.xml"/>
@@ -11,6 +14,26 @@
     <beans>
         <context:property-placeholder ignore-unresolvable="true"
                                       location="classpath:conf/auth/common/auth-common.properties"/>
+        <!--监听用户变化aop pointcut-->
+        <!--save-->
+        <aop:config>
+            <aop:pointcut id="userSavePointcut"
+                          expression="execution(* com.proper..service.UserService.save(..))"/>
+        </aop:config>
+        <!--update-->
+        <aop:config>
+            <aop:pointcut id="userUpdatePointcut"
+                          expression="execution(* com.proper..service.UserService.update*(..))"/>
+        </aop:config>
+        <!--delete-->
+        <aop:config>
+            <aop:pointcut id="userDeletePointcut"
+                          expression="execution(* com.proper..service.UserService.delete(..))"/>
+        </aop:config>
+        <aop:config>
+            <aop:pointcut id="userDeleteBatchPointcut"
+                          expression="execution(* com.proper..service.UserService.deleteByIds(..))"/>
+        </aop:config>
     </beans>
 
 </beans>
