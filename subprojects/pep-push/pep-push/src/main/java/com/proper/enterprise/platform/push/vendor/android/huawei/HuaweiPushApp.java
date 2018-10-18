@@ -84,7 +84,7 @@ public class HuaweiPushApp extends BasePushApp {
         msg.setPushToken(pushToken);
 
         if (isCmdMessage(msg)) {
-            String resp = doPushCmd(pushToken, msg.getMcustomDatasMap());
+            String resp = doPushCmd(pushToken, msg.getMcustomDatasMap(), msg.getId());
             return handlePushCmdResp(resp, msg);
         }
 
@@ -101,13 +101,13 @@ public class HuaweiPushApp extends BasePushApp {
             }
         }
         // 接口调用
-        String rsp = sendPushMessage(3, pushToken, body.toString(), ext);
+        String rsp = sendPushMessage(3, pushToken, body.toString(), ext, msg.getId());
         return handleNotificationRes(rsp, msg);
     }
 
-    private String doPushCmd(String pushToken, Map<String, Object> custom) throws IOException {
+    private String doPushCmd(String pushToken, Map<String, Object> custom, String msgId) throws IOException {
         String s = Json.toJson(custom, JsonFormat.compact());
-        return sendPushMessage(1, pushToken, s, null);
+        return sendPushMessage(1, pushToken, s, null, msgId);
     }
 
     /**
@@ -120,7 +120,7 @@ public class HuaweiPushApp extends BasePushApp {
      * @return result
      * @throws IOException io
      */
-    private String sendPushMessage(int type, String token, String body, JSONObject ext) throws IOException {
+    private String sendPushMessage(int type, String token, String body, JSONObject ext, String msgId) throws IOException {
         if (tokenExpiredTime <= System.currentTimeMillis()) {
             refreshAccessTokenAndExpiredTime();
         }
@@ -186,7 +186,7 @@ public class HuaweiPushApp extends BasePushApp {
             URLEncoder.encode(deviceTokens.toString(), "UTF-8"),
             URLEncoder.encode(payload.toString(), "UTF-8"),
             URLEncoder.encode(format, "UTF-8"));
-        LOGGER.debug("postBody: {}", postBody);
+        LOGGER.debug("MsgId: {}, postBody: {}", msgId, postBody);
         String postUrl = API_URL + "?nsp_ctx="
             + URLEncoder.encode("{\"ver\":\"1\", \"appId\":\"" + theAppid + "\"}", "UTF-8");
         return post(postUrl, postBody);
@@ -216,6 +216,7 @@ public class HuaweiPushApp extends BasePushApp {
      * @throws IOException 异常
      */
     private void refreshAccessTokenAndExpiredTime() throws IOException {
+        LOGGER.debug("Huawei access token is expired. Start acquiring a new one. ");
         String tokenUrl = "https://login.cloud.huawei.com/oauth2/v2/token";
         String msgBody = MessageFormat.format(
             "grant_type=client_credentials&client_secret={0}&client_id={1}",
@@ -268,12 +269,13 @@ public class HuaweiPushApp extends BasePushApp {
         Integer badgeNumber = getBadgeNumber(msg);
         //角标不为空，且当前消息为通知栏消息，则发送一条透传消息，设置应用角标
         if (badgeNumber != null) {
+            LOGGER.debug("MsgId: {}, badgeNumber is null, send a cmd request.", msg.getId());
             Map<String, Object> data = new HashMap<>(2);
             //系统消息类型：设置角标
             data.put("_proper_mpage", "badge");
             //应用角标数
             data.put("_proper_badge", badgeNumber);
-            String badgeResponse = doPushCmd(msg.getPushToken(), data);
+            String badgeResponse = doPushCmd(msg.getPushToken(), data, msg.getId());
             Map<String, Object> mapResponse = new HashMap<>(2);
             mapResponse.put("_proper_badge", badgeResponse);
             mapResponse.put("_proper_response", res);
