@@ -3,7 +3,6 @@ package com.proper.enterprise.platform.notice.entity;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.notice.enums.PushDeviceType;
-import com.proper.enterprise.platform.notice.enums.PushMode;
 
 import javax.persistence.*;
 
@@ -42,8 +41,7 @@ public class PushDeviceEntity extends BaseEntity {
     /**
      * 推送方式
      */
-    @Enumerated(EnumType.STRING)
-    private PushMode pushMode;
+    private String pushMode;
 
     /**
      * 推送的token
@@ -66,11 +64,11 @@ public class PushDeviceEntity extends BaseEntity {
         this.deviceOtherInfo = deviceOtherInfo;
     }
 
-    public PushMode getPushMode() {
+    public String getPushMode() {
         return pushMode;
     }
 
-    public void setPushMode(PushMode pushMode) {
+    public void setPushMode(String pushMode) {
         this.pushMode = pushMode;
     }
 

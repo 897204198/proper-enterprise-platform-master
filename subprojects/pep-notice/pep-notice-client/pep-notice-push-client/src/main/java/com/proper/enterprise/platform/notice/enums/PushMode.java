@@ -4,13 +4,13 @@ public enum PushMode {
     /**
      * 华为推送
      */
-    huawei,
+    HUAWEI,
     /**
      * 小米推送
      */
-    xiaomi,
+    XIAOMI,
     /**
      * ios apns 推送
      */
-    apns
+    APNS
 }

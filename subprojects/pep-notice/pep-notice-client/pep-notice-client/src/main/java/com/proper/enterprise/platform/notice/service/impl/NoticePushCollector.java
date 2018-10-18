@@ -33,13 +33,12 @@ public class NoticePushCollector implements NoticeCollector {
     public void addNoticeTarget(NoticeDocument noticeDocument, TargetModel targetModel, NoticeType noticeType, User user, NoticeSetDocument
         noticeSetDocument) {
         if (noticeSetDocument.getNoticeChannel().contains(PUSH) && noticeType.equals(NoticeType.PUSH)) {
-            targetModel.setTo(user.getUsername());
             PushDeviceEntity pushDeviceEntity = pushDeviceService.findDeviceByUserId(user.getId());
             boolean isOk = NoticeAnalysisUtil.isDeviceInfoOk(noticeDocument, user, pushDeviceEntity);
             if (isOk) {
-                targetModel.setTargetExtMsg("pushToken", pushDeviceEntity.getPushToken());
+                targetModel.setTo(pushDeviceEntity.getPushToken());
                 targetModel.setTargetExtMsg("deviceType", pushDeviceEntity.getDeviceType());
-                targetModel.setTargetExtMsg("pushMode", pushDeviceEntity.getPushMode());
+                targetModel.setTargetExtMsg("pushChannel", pushDeviceEntity.getPushMode());
             }
             noticeDocument.setTarget(targetModel);
         }

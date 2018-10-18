@@ -4,7 +4,6 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity;
 import com.proper.enterprise.platform.notice.enums.PushDeviceType;
-import com.proper.enterprise.platform.notice.enums.PushMode;
 import com.proper.enterprise.platform.notice.repository.PushDeviceRepository;
 import com.proper.enterprise.platform.notice.service.PushDeviceService;
 import org.slf4j.Logger;
@@ -32,9 +31,8 @@ public class PushDeviceServiceImpl implements PushDeviceService {
         if (StringUtil.isNotEmpty(deviceType)) {
             enumDeviceType = Enum.valueOf(PushDeviceType.class, deviceType.trim());
         }
-        PushMode enumPushMode = null;
         if (StringUtil.isNotEmpty(pushMode)) {
-            enumPushMode = Enum.valueOf(PushMode.class, pushMode.trim());
+            pushMode = pushMode.trim().toUpperCase();
         }
         if (StringUtil.isEmpty(userId)) {
             throw new ErrMsgException("no user_id");
@@ -45,7 +43,7 @@ public class PushDeviceServiceImpl implements PushDeviceService {
             throw new ErrMsgException("no device_id");
         }
         if (isBind) {
-            bindDevice(appKey, userId, enumPushMode, pushToken, deviceId, deviceOtherInfo, enumDeviceType);
+            bindDevice(appKey, userId, pushMode, pushToken, deviceId, deviceOtherInfo, enumDeviceType);
         }
     }
 
@@ -62,7 +60,7 @@ public class PushDeviceServiceImpl implements PushDeviceService {
 
     private void bindDevice(String appKey,
                             String userId,
-                            PushMode pushMode,
+                            String pushMode,
                             String pushToken,
                             String deviceId,
                             String deviceOtherInfo,

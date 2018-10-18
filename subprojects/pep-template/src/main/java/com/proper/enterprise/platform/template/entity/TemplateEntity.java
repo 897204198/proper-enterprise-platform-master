@@ -37,7 +37,7 @@ public class TemplateEntity extends BaseEntity {
     /**
      * 解释
      */
-    @Column
+    @Column(columnDefinition = "VARCHAR(1000) DEFAULT ''")
     private String description;
 
     /**
