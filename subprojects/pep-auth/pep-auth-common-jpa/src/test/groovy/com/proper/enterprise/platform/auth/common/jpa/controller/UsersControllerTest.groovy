@@ -88,8 +88,8 @@ class UsersControllerTest extends AbstractTest {
         assert resAllPage.count == 4
         assert resAllPage.data.size() == 2
         def resAllCollect = JSONUtil.parse(get('/auth/users?userName=&name=&phone=&email=&enable=&',
-            HttpStatus.OK).getResponse().getContentAsString(), ArrayList.class)
-        assert resAllCollect.size() == 4
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert resAllCollect.count == 4
         user.setName('new value')
 
         user.setPassword('w1')

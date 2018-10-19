@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.sys.datadic.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.enums.EnableEnum;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity;
@@ -9,6 +10,8 @@ import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 
 @RestController
@@ -39,9 +42,16 @@ public class DataDicController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<?> get(String catalog, String code, String name, DataDicTypeEnum dataDicType, EnableEnum enable) {
-        return isPageSearch() ? responseOfGet(dataDicService.findPage(catalog, code, name, dataDicType, enable))
-            : responseOfGet(dataDicService.find(catalog, code, name, dataDicType, enable));
+    public ResponseEntity<DataTrunk> get(String catalog, String code, String name, DataDicTypeEnum dataDicType, EnableEnum enable) {
+        if (isPageSearch()) {
+            return responseOfGet(dataDicService.findPage(catalog, code, name, dataDicType, enable));
+        } else {
+            Collection collection = dataDicService.find(catalog, code, name, dataDicType, enable);
+            DataTrunk dataTrunk = new DataTrunk();
+            dataTrunk.setData(collection);
+            dataTrunk.setCount(collection.size());
+            return responseOfGet(dataTrunk);
+        }
     }
 
     @GetMapping(path = "/{id}")

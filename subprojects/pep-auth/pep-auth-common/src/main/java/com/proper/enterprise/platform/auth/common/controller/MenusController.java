@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.auth.common.vo.MenuVO;
 import com.proper.enterprise.platform.auth.common.vo.ResourceVO;
 import com.proper.enterprise.platform.auth.common.vo.RoleVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +25,17 @@ public class MenusController extends BaseController {
 
     @GetMapping
     @JsonView(MenuVO.Single.class)
-    public ResponseEntity get(String name, String description, String route,
-                              @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable, String parentId) {
-        return isPageSearch() ? responseOfGet(service.findMenusPagination(name, description, route, menuEnable, parentId),
-            MenuVO.class, MenuVO.Single.class)
-            : responseOfGet(service.getMenus(name, description, route, menuEnable, parentId), MenuVO.class, MenuVO.Single.class);
+    public ResponseEntity<DataTrunk<MenuVO>> get(String name, String description, String route,
+                                                 @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable, String parentId) {
+        if (isPageSearch()) {
+            return responseOfGet(service.findMenusPagination(name, description, route, menuEnable, parentId), MenuVO.class, MenuVO.Single.class);
+        } else {
+            Collection collection = service.getMenus(name, description, route, menuEnable, parentId);
+            DataTrunk<Menu> dataTrunk = new DataTrunk();
+            dataTrunk.setCount(collection.size());
+            dataTrunk.setData(collection);
+            return responseOfGet(dataTrunk, MenuVO.class, MenuVO.Single.class);
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -2,9 +2,11 @@ package com.proper.enterprise.platform.auth.common.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
+import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.auth.common.vo.*;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +24,18 @@ public class RolesController extends BaseController {
 
     @GetMapping
     @JsonView(RoleVO.Single.class)
-    public ResponseEntity<?> get(String name, String description, String parentId,
-                                 @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return isPageSearch() ? responseOfGet(roleService.findRolesPagination(name, description, parentId, roleEnable),
-            RoleVO.class, RoleVO.Single.class) :
-            responseOfGet(roleService.findRolesLike(name, description, parentId, roleEnable), RoleVO.class, RoleVO.Single.class);
+    public ResponseEntity<DataTrunk<RoleVO>> get(String name, String description, String parentId,
+                                                 @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
+        if (isPageSearch()) {
+            return responseOfGet(roleService.findRolesPagination(name, description, parentId, roleEnable),
+                    RoleVO.class, RoleVO.Single.class);
+        } else {
+            Collection collection = roleService.findRolesLike(name, description, parentId, roleEnable);
+            DataTrunk<Role> dataTrunk = new DataTrunk();
+            dataTrunk.setCount(collection.size());
+            dataTrunk.setData(collection);
+            return responseOfGet(dataTrunk, RoleVO.class, RoleVO.Single.class);
+        }
     }
 
     @PostMapping

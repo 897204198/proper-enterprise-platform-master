@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.sys.datadic.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.enums.EnableEnum;
 import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicCatalogService;
@@ -8,6 +9,8 @@ import com.proper.enterprise.platform.sys.datadic.vo.DataDicCatalogVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 
 @RestController
@@ -38,10 +41,16 @@ public class DataDicCatalogController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<?> get(String catalogCode, String catalogName, DataDicTypeEnum catalogType, EnableEnum enable) {
-        return isPageSearch() ? responseOfGet(dataDicCatalogService.findPage(catalogCode, catalogName,
-            catalogType, enable, getPageRequest()))
-            : responseOfGet(dataDicCatalogService.findAll(catalogCode, catalogName, catalogType, enable));
+    public ResponseEntity<DataTrunk> get(String catalogCode, String catalogName, DataDicTypeEnum catalogType, EnableEnum enable) {
+        if (isPageSearch()) {
+            return responseOfGet(dataDicCatalogService.findPage(catalogCode, catalogName, catalogType, enable, getPageRequest()));
+        } else {
+            Collection<DataDicCatalogVO> collection = dataDicCatalogService.findAll(catalogCode, catalogName, catalogType, enable);
+            DataTrunk<DataDicCatalogVO> dataTrunk = new DataTrunk<>();
+            dataTrunk.setCount(collection.size());
+            dataTrunk.setData(collection);
+            return responseOfGet(dataTrunk);
+        }
     }
 
     @GetMapping(path = "/id/{id}")

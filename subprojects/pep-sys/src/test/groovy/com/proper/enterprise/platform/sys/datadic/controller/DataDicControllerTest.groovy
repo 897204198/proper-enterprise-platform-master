@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.sys.datadic.controller
 
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity
 import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService
@@ -93,10 +94,10 @@ class DataDicControllerTest extends AbstractTest {
         dataDic2.setOrder(2)
         DataDicEntity sava1 = dataDicService.save(dataDic1)
         DataDicEntity sava2 = dataDicService.save(dataDic2)
-        List<DataDicEntity> dataDicEntities = JSONUtil.parse(get(datadicUrl + "?dataDicType=SYSTEM", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert dataDicEntities.size() == 2
-        List<DataDicEntity> dataDicEntities2 = JSONUtil.parse(get(datadicUrl + "?dataDicType=BUSINESS", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert dataDicEntities2.size() == 0
+        DataTrunk<DataDicEntity> dataDicEntities = JSONUtil.parse(get(datadicUrl + "?dataDicType=SYSTEM", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert dataDicEntities.count == 2
+        DataTrunk<DataDicEntity> dataDicEntities2 = JSONUtil.parse(get(datadicUrl + "?dataDicType=BUSINESS", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert dataDicEntities2.count == 0
         sava2.setEnable(false)
         dataDicService.updateForSelective(sava2)
         List<DataDicEntity> dataDicCatalogs = JSONUtil.parse(get(datadicUrl + "/catalog/catalog", HttpStatus.OK).getResponse().getContentAsString(), List.class)

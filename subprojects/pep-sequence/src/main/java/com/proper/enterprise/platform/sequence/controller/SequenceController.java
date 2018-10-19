@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.sequence.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.sequence.service.SequenceService;
 import com.proper.enterprise.platform.sequence.vo.SequenceVO;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @RestController
 @Api(tags = "/sequence")
@@ -51,9 +54,16 @@ public class SequenceController extends BaseController {
             @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
             @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
     })
-    public ResponseEntity<?> get(String sequenceCode) {
-        return isPageSearch() ? responseOfGet(sequenceService.findAll(sequenceCode, getPageRequest()))
-            : responseOfGet(sequenceService.findAll(sequenceCode));
+    public ResponseEntity<DataTrunk> get(String sequenceCode) {
+        if (isPageSearch()) {
+            return responseOfGet(sequenceService.findAll(sequenceCode, getPageRequest()));
+        } else {
+            Collection<SequenceVO> collection = sequenceService.findAll(sequenceCode);
+            DataTrunk<SequenceVO> dataTrunk = new DataTrunk<>();
+            dataTrunk.setCount(collection.size());
+            dataTrunk.setData(collection);
+            return responseOfGet(dataTrunk);
+        }
     }
 
     public static class SequenceModelVO {

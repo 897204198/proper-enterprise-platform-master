@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.RetrievePasswordParam;
+import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.common.vo.*;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.security.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -70,16 +72,16 @@ public class UsersController extends BaseController {
     @JsonView(UserVO.Single.class)
     public ResponseEntity<UserVO> changePassword(@RequestBody ChangePasswordParam changePasswordParam) {
         return responseOfPut(userService.updateChangePassword(Authentication.getCurrentUserId(),
-            changePasswordParam.getOldPassword(), changePasswordParam.getPassword()),
-            UserVO.class, UserVO.Single.class);
+                changePasswordParam.getOldPassword(), changePasswordParam.getPassword()),
+                UserVO.class, UserVO.Single.class);
     }
 
     @AuthcIgnore
     @PutMapping(path = "/password/reset")
     public ResponseEntity resetPassword(@RequestBody RetrievePasswordParam retrievePasswordParam) {
         userService.updateResetPassword(retrievePasswordParam.getUsername(),
-            retrievePasswordParam.getValidCode(),
-            retrievePasswordParam.getPassword());
+                retrievePasswordParam.getValidCode(),
+                retrievePasswordParam.getPassword());
         return responseOfPut("");
     }
 
@@ -123,11 +125,17 @@ public class UsersController extends BaseController {
 
     @GetMapping
     @JsonView(UserVO.Single.class)
-    public ResponseEntity<?> getUsers(String username, String name, String email, String phone,
-                                      @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
-        return isPageSearch() ? responseOfGet(userService.findUsersPagination(username, name, email, phone, userEnable),
-            UserVO.class, UserVO.Single.class) :
-            responseOfGet(userService.getUsersByAndCondition(username, name, email, phone, userEnable), UserVO.class, UserVO.Single.class);
+    public ResponseEntity<DataTrunk<UserVO>> getUsers(String username, String name, String email, String phone,
+                                                      @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
+        if (isPageSearch()) {
+            return responseOfGet(userService.findUsersPagination(username, name, email, phone, userEnable), UserVO.class, UserVO.Single.class);
+        } else {
+            Collection collection = userService.getUsersByAndCondition(username, name, email, phone, userEnable);
+            DataTrunk<User> dataTrunk = new DataTrunk();
+            dataTrunk.setCount(collection.size());
+            dataTrunk.setData(collection);
+            return responseOfGet(dataTrunk, UserVO.class, UserVO.Single.class);
+        }
     }
 
     @GetMapping(path = "/query")

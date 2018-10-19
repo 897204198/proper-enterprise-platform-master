@@ -58,24 +58,24 @@ class RolesControllerTest extends AbstractTest {
     @NoTx
     void rolesUnionTest() {
         mockUser('test1', 't1', 'pwd')
-        def roles = JSONUtil.parse(get('/auth/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert roles.size() == 2
-        assert roles.get(0).enable
-        assert roles.get(1).enable
+        def roles = JSONUtil.parse(get('/auth/roles', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert roles.count == 2
+        assert roles.data.get(0).enable
+        assert roles.data.get(1).enable
 
         def updateEnable = [:]
         updateEnable['ids'] = ['role1', 'role2']
         updateEnable['enable'] = true
         put('/auth/roles', JSONUtil.toJSON(updateEnable), HttpStatus.OK)
-        roles = JSONUtil.parse(get('/auth/roles', HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert roles.size() == 2
-        assert roles.get(0).enable
-        assert roles.get(1).enable
+        roles = JSONUtil.parse(get('/auth/roles', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert roles.count == 2
+        assert roles.data.get(0).enable
+        assert roles.data.get(1).enable
 
         roles = JSONUtil.parse(get('/auth/roles?name=testrole&description=des&roleEnable=ENABLE', HttpStatus.OK)
-            .getResponse().getContentAsString(), List.class)
-        assert roles.size() == 1
-        assert roles.get(0).id == 'role1'
+            .getResponse().getContentAsString(), DataTrunk.class)
+        assert roles.count == 1
+        assert roles.data.get(0).id == 'role1'
 
         def req = [:]
         req['name'] = 'req_test_name'
@@ -311,8 +311,8 @@ class RolesControllerTest extends AbstractTest {
         assert resAllPage.count == 1
         assert resAllPage.data.size() == 1
         def resAllCollect = JSONUtil.parse(get('/auth/roles?name=testrole&description=des&roleEnable=&',
-            HttpStatus.OK).getResponse().getContentAsString(), ArrayList.class)
-        assert resAllCollect.size() == 1
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert resAllCollect.count == 1
     }
 
     @After

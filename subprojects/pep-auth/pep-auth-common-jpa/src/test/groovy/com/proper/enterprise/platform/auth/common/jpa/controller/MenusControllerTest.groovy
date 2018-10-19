@@ -71,21 +71,21 @@ class MenusControllerTest extends AbstractTest {
     void diffUsersGetDiffMenus() {
         // super user
         mockUser('test1', 't1', 'pwd', true)
-        assert resOfGet('/auth/menus', HttpStatus.OK).size() == 14
+        assert resOfGet('/auth/menus', HttpStatus.OK).count == 14
 
         // super user with condition
         mockUser('test1', 't1', 'pwd', true)
-        assert resOfGet('/auth/menus?name=1&description=des&route=a1&enable=Y', HttpStatus.OK).size() == 1
+        assert resOfGet('/auth/menus?name=1&description=des&route=a1&enable=Y', HttpStatus.OK).count == 1
 
         // has role
         mockUser('test2', 't2', 'pwd', false)
         def res = resOfGet('/auth/menus', HttpStatus.OK)
-        assert res.size() == 8
+        assert res.count == 8
 
         // without role
         mockUser('test3', 't3', 'pwd', false)
         def res1 = resOfGet('/auth/menus', HttpStatus.OK)
-        assert res1.size() == 0
+        assert res1.count == 0
     }
 
     @Test
@@ -208,13 +208,13 @@ class MenusControllerTest extends AbstractTest {
         menuEntity3.setRoute("/bbc/b")
         menuEntity3.setParent(menuEntity2)
         menuEntity3 = menuRepository.save(menuEntity3)
-        List menus = JSONUtil.parse(get("/auth/menus", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        Integer menuSize = menus.size()
+        DataTrunk menus = JSONUtil.parse(get("/auth/menus", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        Integer menuSize = menus.data.size()
         Collection<String> disableCollection = new HashSet<>()
         disableCollection.add(menuEntity2.getId())
         menusService.updateEnable(disableCollection, false)
-        List menus2 = JSONUtil.parse(get("/auth/menus", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert menus2.size() + 1 == menuSize
+        DataTrunk menus2 = JSONUtil.parse(get("/auth/menus", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert menus2.count + 1 == menuSize
     }
 
     @Test
@@ -491,6 +491,6 @@ class MenusControllerTest extends AbstractTest {
 
         mockUser(userVO.getId(), userVO.getUsername(), userVO.getPassword())
         def res = resOfGet('/auth/menus', HttpStatus.OK)
-        assert res.size() == 3
+        assert res.count == 3
     }
 }

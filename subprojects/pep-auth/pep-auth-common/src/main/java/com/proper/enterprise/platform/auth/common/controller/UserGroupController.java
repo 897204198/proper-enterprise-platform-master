@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.auth.common.vo.RoleVO;
 import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
 import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +25,18 @@ public class UserGroupController extends BaseController {
 
     @GetMapping
     @JsonView(value = {UserGroupVO.Single.class})
-    public ResponseEntity<?> getGroups(String name, String description, @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
-        return isPageSearch() ? responseOfGet(service.getGroupsPagination(name, description, userGroupEnable),
-            UserGroupVO.class, UserGroupVO.Single.class)
-            : responseOfGet(service.getGroups(name, description, userGroupEnable), UserGroupVO.class, UserGroupVO.Single.class);
+    public ResponseEntity<DataTrunk<UserGroupVO>> getGroups(String name, String description, @RequestParam(defaultValue = "ENABLE") EnableEnum
+            userGroupEnable) {
+
+        if (isPageSearch()) {
+            return responseOfGet(service.getGroupsPagination(name, description, userGroupEnable), UserGroupVO.class, UserGroupVO.Single.class);
+        } else {
+            Collection collection = service.getGroups(name, description, userGroupEnable);
+            DataTrunk<UserGroup> dataTrunk = new DataTrunk();
+            dataTrunk.setCount(collection.size());
+            dataTrunk.setData(collection);
+            return responseOfGet(dataTrunk, UserGroupVO.class, UserGroupVO.Single.class);
+        }
     }
 
     @SuppressWarnings("unchecked")

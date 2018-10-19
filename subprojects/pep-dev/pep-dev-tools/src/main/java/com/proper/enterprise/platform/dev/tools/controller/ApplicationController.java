@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.app.service.ApplicationService;
 import com.proper.enterprise.platform.app.vo.AppCatalogVO;
 import com.proper.enterprise.platform.app.vo.ApplicationVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.BeanUtils;
@@ -55,12 +56,18 @@ public class ApplicationController extends BaseController {
 
     @GetMapping
     @ApiOperation("‍获取应用（传参数根据参数取应用，不传获取所有）‍")
-    public ResponseEntity find(@ApiParam("‍‍类别id") @RequestParam(defaultValue = "") String code,
-                               @ApiParam("‍‍应用名称") @RequestParam(defaultValue = "") String applicationName,
-                               @ApiParam("‍应用页") @RequestParam(defaultValue = "") String applicationPage) {
-        return isPageSearch()
-                ? responseOfGet(applicationService.findPagination(code, applicationName, applicationPage)) :
-                responseOfGet(applicationService.getAllOrApplication(code));
+    public ResponseEntity<DataTrunk> find(@ApiParam("‍‍类别id") @RequestParam(defaultValue = "") String code,
+                                          @ApiParam("‍‍应用名称") @RequestParam(defaultValue = "") String applicationName,
+                                          @ApiParam("‍应用页") @RequestParam(defaultValue = "") String applicationPage) {
+        if (isPageSearch()) {
+            return responseOfGet(applicationService.findPagination(code, applicationName, applicationPage));
+        } else {
+            List<ApplicationVO> list = applicationService.getAllOrApplication(code);
+            DataTrunk<ApplicationVO> dataTrunk = new DataTrunk();
+            dataTrunk.setData(list);
+            dataTrunk.setCount(list.size());
+            return responseOfGet(dataTrunk);
+        }
     }
 
     @GetMapping("/{appId}")

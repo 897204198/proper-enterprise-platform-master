@@ -94,19 +94,19 @@ class UserGroupControllerTest extends AbstractTest {
         def id2 = g2.get('id')
 
         def query = JSONUtil.parse(get(URI + '?name=group-1&description=group-1-des&enable=Y', HttpStatus.OK)
-            .getResponse().getContentAsString(), List.class)
+            .getResponse().getContentAsString(), DataTrunk.class)
 
-        assert query.size() == 1
-        assert query.get(0).id == id1
-        assert query.get(0).name == 'group-1'
-        assert query.get(0).enable
+        assert query.count == 1
+        assert query.data.get(0).id == id1
+        assert query.data.get(0).name == 'group-1'
+        assert query.data.get(0).enable
 
-        query = JSONUtil.parse(get(URI, HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        query = JSONUtil.parse(get(URI, HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
 
-        assert query.size() == 2
-        assert query.get(1).id == id2
-        assert query.get(1).name == 'group-2'
-        assert query.get(1).enable
+        assert query.count == 2
+        assert query.data.get(1).id == id2
+        assert query.data.get(1).name == 'group-2'
+        assert query.data.get(1).enable
         def queryPage = JSONUtil.parse(get(URI + "?pageNo=1&pageSize=1", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert queryPage.getData().size() == 1
         assert queryPage.count == 2
@@ -114,10 +114,10 @@ class UserGroupControllerTest extends AbstractTest {
         updateReq['ids'] = [id1, id2]
         updateReq['enable'] = false
         put(URI, JSONUtil.toJSON(updateReq), HttpStatus.OK)
-        query = JSONUtil.parse(get(URI + "?userGroupEnable=DISABLE", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert query.size() == 2
-        assert !query.get(0).enable
-        assert !query.get(1).enable
+        query = JSONUtil.parse(get(URI + "?userGroupEnable=DISABLE", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert query.count == 2
+        assert !query.data.get(0).enable
+        assert !query.data.get(1).enable
 
         updateReq['enable'] = true
         put(URI, JSONUtil.toJSON(updateReq), HttpStatus.OK)

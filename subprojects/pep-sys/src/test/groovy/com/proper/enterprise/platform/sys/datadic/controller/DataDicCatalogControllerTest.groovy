@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.sys.datadic.controller
 
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity
 import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum
 import com.proper.enterprise.platform.sys.datadic.service.DataDicCatalogService
@@ -119,22 +120,23 @@ class DataDicCatalogControllerTest extends AbstractTest {
         DataDicCatalogVO sava1 = dataDicCatalogService.save(dataDicCatalogVO)
         DataDicCatalogVO sava2 = dataDicCatalogService.save(dataDicCatalogVO2)
 
-        List<DataDicCatalogVO> dataDicEntities = JSONUtil.parse(get(datadicUrl + "?catalogType=SYSTEM", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert dataDicEntities.size() == 2
-        List<DataDicCatalogVO> dataDicEntities2 = JSONUtil.parse(get(datadicUrl + "?catalogType=BUSINESS", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert dataDicEntities2.size() == 0
+        DataTrunk<DataDicCatalogVO> dataDicEntities = JSONUtil.parse(get(datadicUrl + "?catalogType=SYSTEM", HttpStatus.OK).getResponse()
+                .getContentAsString(), DataTrunk.class)
+        assert dataDicEntities.data.size() == 2
+        DataTrunk<DataDicCatalogVO> dataDicEntities2 = JSONUtil.parse(get(datadicUrl + "?catalogType=BUSINESS", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert dataDicEntities2.data.size() == 0
         sava2.setEnable(false)
         dataDicCatalogService.update(sava2)
 
-        List<DataDicCatalogVO> dataDicCatalogsDis = JSONUtil.parse(get(datadicUrl + "?enable=DISABLE", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert dataDicCatalogsDis.size() == 1
+        DataTrunk<DataDicCatalogVO> dataDicCatalogsDis = JSONUtil.parse(get(datadicUrl + "?enable=DISABLE", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert dataDicCatalogsDis.data.size() == 1
 
-        List<DataDicCatalogVO> dataDicCatalogsALL = JSONUtil.parse(get(datadicUrl + "?catalogCode=catalog&enable=ALL", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert dataDicCatalogsALL.size() == 1
+        DataTrunk<DataDicCatalogVO> dataDicCatalogsALL = JSONUtil.parse(get(datadicUrl + "?catalogCode=catalog&enable=ALL", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert dataDicCatalogsALL.data.size() == 1
 
-        List<DataDicCatalogVO> dataDicCatalogsSort= JSONUtil.parse(get(datadicUrl, HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert dataDicCatalogsSort.size() == 2
-        assert dataDicCatalogsSort.get(0).catalogName == 'name2'
-        assert dataDicCatalogsSort.get(1).catalogName == 'name'
+        DataTrunk<DataDicCatalogVO> dataDicCatalogsSort= JSONUtil.parse(get(datadicUrl, HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert dataDicCatalogsSort.data.size() == 2
+        assert dataDicCatalogsSort.data.get(0).catalogName == 'name2'
+        assert dataDicCatalogsSort.data.get(1).catalogName == 'name'
     }
 }

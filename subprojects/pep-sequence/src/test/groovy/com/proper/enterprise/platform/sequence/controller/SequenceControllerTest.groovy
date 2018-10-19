@@ -76,15 +76,15 @@ class SequenceControllerTest extends AbstractTest {
     @Test
     void "get"() {
         mockUser('test1', 't1', 'pwd')
-        List<SequenceVO> list = JSONUtil.parse(get(URL, HttpStatus.OK).getResponse().getContentAsString(), List)
+        DataTrunk<SequenceVO> list = JSONUtil.parse(get(URL, HttpStatus.OK).getResponse().getContentAsString(), DataTrunk)
         DataTrunk<SequenceVO> page = JSONUtil.parse(get(URL + "?pageNo=1&pageSize=1", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk)
-        List<SequenceVO> queryTest3 = JSONUtil.parse(get(URL + "?sequenceCode=generatetest2", HttpStatus.OK).getResponse().getContentAsString(), List)
+        DataTrunk<SequenceVO> queryTest3 = JSONUtil.parse(get(URL + "?sequenceCode=generatetest2", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk)
 
-        assert 2 == list.size()
+        assert 2 == list.count
         assert 2 == page.count
         assert 1 == page.getData().size()
-        assert 1 == queryTest3.size()
-        assert 'generatetest2' == queryTest3.get(0).sequenceCode
+        assert 1 == queryTest3.count
+        assert 'generatetest2' == queryTest3.getData().sequenceCode.get(0)
     }
 
     void testSerial() {

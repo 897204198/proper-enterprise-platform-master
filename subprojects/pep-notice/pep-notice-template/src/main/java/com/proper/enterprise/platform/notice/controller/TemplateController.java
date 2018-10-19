@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.notice.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.service.TemplateService;
 import com.proper.enterprise.platform.notice.vo.TemplateVO;
@@ -51,14 +52,14 @@ public class TemplateController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity find(@RequestParam(defaultValue = "") String code,
-                               @RequestParam(defaultValue = "") String name,
-                               @RequestParam(defaultValue = "") String title,
-                               @RequestParam(defaultValue = "") String template,
-                               @RequestParam(defaultValue = "") String description) {
+    public ResponseEntity<DataTrunk> find(@RequestParam(defaultValue = "") String code,
+                                          @RequestParam(defaultValue = "") String name,
+                                          @RequestParam(defaultValue = "") String title,
+                                          @RequestParam(defaultValue = "") String template,
+                                          @RequestParam(defaultValue = "") String description) {
         return isPageSearch()
             ? responseOfGet(templateService.findPagination(code, name, title, template, description)) :
-            responseOfGet(templateService.findAll());
+            responseOfGet(templateService.findPage());
     }
 
 }
