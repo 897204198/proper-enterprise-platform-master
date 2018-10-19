@@ -29,7 +29,7 @@ public class VariableUtil {
             if (!(entry.getValue() instanceof String)) {
                 continue;
             }
-            if (DateUtil.isDate((String) entry.getValue())) {
+            if (isDate((String) entry.getValue())) {
                 variables.put(entry.getKey(), DateUtil.parseGMTSpecial((String) entry.getValue()));
                 continue;
             }
@@ -54,6 +54,19 @@ public class VariableUtil {
             }
         }
         return msgParam;
+    }
+
+    /**
+     * 根据时间戳判断是否为时间类型
+     *
+     * @param dateTimestamp 时间戳
+     * @return true是 false否
+     */
+    private static boolean isDate(String dateTimestamp) {
+        String re = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{0,3}Z";
+        Pattern p = Pattern.compile(re);
+        Matcher m = p.matcher(dateTimestamp);
+        return m.find();
     }
 
     private static boolean isDataDic(String dataDic) {
