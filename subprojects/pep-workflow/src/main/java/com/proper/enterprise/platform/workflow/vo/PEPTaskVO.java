@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 
+import java.util.Map;
 import java.util.Set;
 
 public class PEPTaskVO {
@@ -61,6 +62,11 @@ public class PEPTaskVO {
     @JsonView(value = {ToDoView.class})
     private PEPForm form;
 
+    /**
+     * 全局变量
+     */
+    @JsonView(value = {ToDoView.class})
+    private Map<String, Object> globalData;
 
     /**
      * 任务开始时间
@@ -210,6 +216,14 @@ public class PEPTaskVO {
 
     public void setSameAssigneeSkip(Boolean sameAssigneeSkip) {
         this.sameAssigneeSkip = sameAssigneeSkip;
+    }
+
+    public Map<String, Object> getGlobalData() {
+        return globalData;
+    }
+
+    public void setGlobalData(Map<String, Object> globalData) {
+        this.globalData = globalData;
     }
 
     @Override
