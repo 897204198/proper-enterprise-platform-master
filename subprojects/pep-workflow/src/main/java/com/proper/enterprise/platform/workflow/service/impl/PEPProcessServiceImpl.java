@@ -67,6 +67,8 @@ public class PEPProcessServiceImpl implements PEPProcessService {
 
     private GlobalVariableInitDecorator globalVariableInitDecorator;
 
+    public static final String FORM_TODO_DISPLAY_FIELDS_KEY = "formTodoDisplayFields";
+
     @Autowired(required = false)
     PEPProcessServiceImpl(RuntimeService runtimeService,
                           FormService formService,
@@ -95,6 +97,11 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         String startFormKey = formService.getStartFormKey(processDefinition.getId());
         Map<String, Object> globalVariables = new HashMap<>(16);
         if (MapUtils.isNotEmpty(variables)) {
+            //自定义表单显示列支持
+            if (null != variables.get(FORM_TODO_DISPLAY_FIELDS_KEY)) {
+                globalVariables.put(FORM_TODO_DISPLAY_FIELDS_KEY, variables.get(FORM_TODO_DISPLAY_FIELDS_KEY));
+                variables.remove(FORM_TODO_DISPLAY_FIELDS_KEY);
+            }
             globalVariables.putAll(variables);
         }
         if (StringUtil.isNotEmpty(startFormKey)) {

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.workflow.controller
 
+import com.proper.enterprise.platform.workflow.service.impl.PEPProcessServiceImpl
 import com.proper.enterprise.platform.workflow.test.WorkflowAbstractTest
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
 import org.junit.Test
@@ -30,8 +31,11 @@ class TaskControllerTest extends WorkflowAbstractTest {
         setCurrentUserId("admin")
         Map mainForm = new HashMap()
         mainForm.put("a", "b")
+        mainForm.put(PEPProcessServiceImpl.FORM_TODO_DISPLAY_FIELDS_KEY, "c")
         PEPProcInstVO pepProcInst = start("autoArchive", mainForm)
         Map task = getTask("form1")
         assert task.form.formData.a == "b"
+        assert task.form.formData.(PEPProcessServiceImpl.FORM_TODO_DISPLAY_FIELDS_KEY) == null
+        assert task.globalData.(PEPProcessServiceImpl.FORM_TODO_DISPLAY_FIELDS_KEY) == "c"
     }
 }

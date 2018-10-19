@@ -17,10 +17,7 @@ import org.flowable.identitylink.api.IdentityLinkInfo;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.proper.enterprise.platform.core.PEPConstants.DEFAULT_DATETIME_FORMAT;
 
@@ -93,6 +90,12 @@ public class PEPTask {
      * 任务表单
      */
     private PEPForm form;
+
+    /**
+     * 全局变量
+     */
+    private Map<String, Object> globalData;
+
     /**
      * 任务开始时间
      */
@@ -113,6 +116,7 @@ public class PEPTask {
      * 是否为相同经办人自动跳过
      */
     private Boolean sameAssigneeSkip;
+
 
     public String getTaskId() {
         return taskId;
@@ -341,6 +345,17 @@ public class PEPTask {
             this.candidateGroups = new HashSet<>();
         }
         candidateGroups.add(candidateGroupId);
+    }
+
+    public Map<String, Object> getGlobalData() {
+        if (null != this.form) {
+            return this.form.getGlobalData();
+        }
+        return globalData;
+    }
+
+    public void setGlobalData(Map<String, Object> globalData) {
+        this.globalData = globalData;
     }
 
     private static void buildIdentityMsg(PEPTask pepTask, List<? extends IdentityLinkInfo> identityLinkInfos) {
