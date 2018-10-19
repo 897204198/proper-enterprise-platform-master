@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="import" href="./banner">
+</head>
+<body>
+    <script>
+        var template = document.querySelector('link[rel="import"]');
+        var banner = document.createElement('pre');
+        var space = '                                                       ';
+        banner.innerText = space + template.import.body.innerText;
+        document.body.appendChild(banner);
+    </script>
+</body>
+</html>
