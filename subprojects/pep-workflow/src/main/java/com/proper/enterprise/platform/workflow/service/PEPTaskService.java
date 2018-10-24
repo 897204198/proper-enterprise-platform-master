@@ -33,6 +33,14 @@ public interface PEPTaskService {
     long getTodoCount();
 
     /**
+     * 根据用户Id获取待办数量
+     *
+     * @param  userId 用户Id
+     * @return 待办数量
+     */
+    long getTodoCount(String userId);
+
+    /**
      * 查找当前人待办
      *
      * @param processDefinitionName 流程定义名称

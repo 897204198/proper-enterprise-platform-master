@@ -101,6 +101,11 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         return taskService.createTaskQuery().taskCandidateOrAssigned(Authentication.getCurrentUserId()).count();
     }
 
+    @Override
+    public long getTodoCount(String userId) {
+        return taskService.createTaskQuery().taskCandidateOrAssigned(userId).count();
+    }
+
     private Task getTask(String taskId) {
         Task task = taskService.createTaskQuery()
             .includeIdentityLinks()
