@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO
+import com.proper.enterprise.platform.workflow.vo.PEPTaskVO
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO
 import org.flowable.engine.HistoryService
 import org.flowable.engine.IdentityService
@@ -84,5 +85,8 @@ abstract class WorkflowAbstractTest extends AbstractTest {
         return null != historyService.createHistoricProcessInstanceQuery().processInstanceId(procInstId).finished().singleResult()
     }
 
-
+    protected List<PEPTaskVO> findTaskAssigneeIsMePagination(String processDefinitionKey, Integer pageNo, Integer pageSize) {
+        DataTrunk<PEPTaskVO> dataTrunk = JSONUtil.parse(get('/workflow/task/assignee?processDefinitionName=' + processDefinitionKey + '&pageNo=' + pageNo + '&pageSize=' + pageSize, HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        return dataTrunk.getData()
+    }
 }
