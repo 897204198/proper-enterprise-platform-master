@@ -184,6 +184,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     public DataTrunk<PEPTaskVO> findTaskAssigneeIsMePagination(String processDefinitionName, PageRequest pageRequest) {
         HistoricTaskInstanceQuery historicTaskInstanceQuery = historyService.createHistoricTaskInstanceQuery()
             .includeProcessVariables()
+            .includeTaskLocalVariables()
             .taskAssignee(Authentication.getCurrentUserId())
             .finished()
             .orderByHistoricTaskInstanceEndTime()
