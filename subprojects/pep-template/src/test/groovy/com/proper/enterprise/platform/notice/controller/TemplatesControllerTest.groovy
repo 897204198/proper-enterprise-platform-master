@@ -119,7 +119,7 @@ class TemplatesControllerTest extends AbstractTest {
         String id = saveAndCheck("CODE1","NAME1","CATALOG1","DESCRIPTION1","TITLE1","TEMPLATE1","TYPE1")
         saveAndError("CODE1","NEW NAME1","NEW CATALOG1","NEW DESCRIPTION1","NEW TYPE1")
         saveAndError(null,"NEW NAME1","NEW CATALOG1","NEW DESCRIPTION1","NEW TYPE1")
-        saveAndCheck("CODE2","NAME2","CATALOG2","DESCRIPTION2","TITLE2","TEMPLATE2","TYPE2")
+        saveAndCheck("CODE2","NAME2","CATALOG2",null,"TITLE2","TEMPLATE2","TYPE2")
         updateAndCheck(id, "CODE3","NAME3","CATALOG3","DESCRIPTION3","TITLE3","TEMPLATE3","TYPE3")
         updateAndError(id, "CODE2","NAME3","CATALOG3","DESCRIPTION3","TYPE3")
         getOneAndCheck(id, "CODE3","NAME3","CATALOG3","DESCRIPTION3","TITLE3","TEMPLATE3","TYPE3")
@@ -136,6 +136,7 @@ class TemplatesControllerTest extends AbstractTest {
 
         def result = JSONUtil.parse(get("/sys/datadic/catalog/NOTICE_CATALOG", HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert result.size() == 5
+
     }
 
 }
