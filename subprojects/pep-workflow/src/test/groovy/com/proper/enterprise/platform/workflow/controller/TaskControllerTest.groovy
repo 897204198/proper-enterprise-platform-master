@@ -57,6 +57,5 @@ class TaskControllerTest extends WorkflowAbstractTest {
         complete(task.taskId, mainForm)
         List<PEPTaskVO> assigneeIsMe = findTaskAssigneeIsMePagination("autoArchive", 1, 10)
         assert assigneeIsMe.size() == 1
-        assert assigneeIsMe.get(0).form.formData.a == "b"
     }
 }
