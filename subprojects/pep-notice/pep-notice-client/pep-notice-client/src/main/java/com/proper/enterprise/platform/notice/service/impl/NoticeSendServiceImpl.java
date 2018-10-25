@@ -1,8 +1,9 @@
 package com.proper.enterprise.platform.notice.service.impl;
 
+import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
@@ -34,22 +35,17 @@ public class NoticeSendServiceImpl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeSenderImpl.class);
 
-    private final NoticeSetService noticeSetService;
-
-    private final UserService userService;
-
-    private final NoticeMsgRepository noticeMsgRepository;
-
-    private final TemplateService templateService;
+    @Autowired
+    private NoticeSetService noticeSetService;
 
     @Autowired
-    public NoticeSendServiceImpl(NoticeSetService noticeSetService, UserService userService, NoticeMsgRepository
-        noticeMsgRepository, TemplateService templateService) {
-        this.noticeSetService = noticeSetService;
-        this.userService = userService;
-        this.noticeMsgRepository = noticeMsgRepository;
-        this.templateService = templateService;
-    }
+    private NoticeMsgRepository noticeMsgRepository;
+
+    @Autowired
+    private TemplateService templateService;
+
+    @Autowired
+    private UserDao userDao;
 
     public void sendNoticeChannel(String fromUserId, Set<String> toUserIds, String code, Map<String, Object>
         templateParams, Map<String, Object> custom) {
@@ -87,7 +83,7 @@ public class NoticeSendServiceImpl {
                                    String content,
                                    Map<String, Object> custom,
                                    NoticeType noticeType) {
-        Collection<? extends User> users = userService.getUsersByIds(new ArrayList<>(toUserIds));
+        Collection<? extends User> users = this.getUsersByIds(new ArrayList<>(toUserIds));
         NoticeCollector noticeCollector = NoticeCollectorFactory.create(noticeType);
         NoticeDocument noticeDocument = this.packageNoticeDocument(fromUserId, toUserIds, custom, noticeType, title, content);
         noticeCollector.addNoticeDocument(noticeDocument);
@@ -101,6 +97,13 @@ public class NoticeSendServiceImpl {
         if (!NoticeAnalysisUtil.isNecessaryResult(noticeDocument)) {
             accessNoticeServer(noticeVO);
         }
+    }
+
+    public Collection<? extends User> getUsersByIds(List<String> ids) {
+        if (CollectionUtil.isEmpty(ids)) {
+            return new ArrayList<>();
+        }
+        return userDao.findAll(ids);
     }
 
     private void analysis(NoticeDocument noticeDocument, Collection<? extends User> users) {

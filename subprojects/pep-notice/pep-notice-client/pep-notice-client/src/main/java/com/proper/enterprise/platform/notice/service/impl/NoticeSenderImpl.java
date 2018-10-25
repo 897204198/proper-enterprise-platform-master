@@ -13,12 +13,8 @@ import java.util.Set;
 @Service
 public class NoticeSenderImpl implements NoticeSender {
 
-    private NoticeSendServiceImpl noticeSendService;
-
     @Autowired
-    public NoticeSenderImpl(NoticeSendServiceImpl noticeSendService) {
-        this.noticeSendService = noticeSendService;
-    }
+    private NoticeSendServiceImpl noticeSendService;
 
     @Override
     public void sendNotice(String toUserId, String code, Map<String, Object> custom) {
