@@ -12,8 +12,9 @@ import com.proper.enterprise.platform.push.service.PushMsgService;
 import com.proper.enterprise.platform.push.service.PushMsgStatisticService;
 import com.proper.enterprise.platform.push.vo.PushMsgStatisticVO;
 import com.proper.enterprise.platform.push.vo.PushMsgVO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
@@ -24,20 +25,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
 import java.util.Date;
-
 import java.util.Map;
 
-/**
- * 推送消息统计
- *
- * @author guozhimin
- */
 @RestController
 @AuthcIgnore
 @RequestMapping("/push")
+@Api(tags = "/push")
 public class PushStatisticController extends BaseController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PushStatisticController.class);
     @Autowired
     PushMsgStatisticService pushMsgStatisticService;
     @Autowired
@@ -45,8 +41,10 @@ public class PushStatisticController extends BaseController {
 
     @GetMapping
     @JsonView(PushMsgStatisticVO.Single.class)
+    @ApiOperation("‍推送消息统计")
     @RequestMapping("/statistic")
-    public ResponseEntity<?> get(String dateType, String appkey) {
+    public ResponseEntity<Collection> get(@ApiParam("‍‍统计时间 ['date', 'week', 'month']") String dateType,
+                                          @ApiParam("‍渠道名称") String appkey) {
         return new ResponseEntity<>(pushMsgStatisticService.findByDateTypeAndAppkey(dateType, appkey), null, HttpStatus.OK);
     }
 

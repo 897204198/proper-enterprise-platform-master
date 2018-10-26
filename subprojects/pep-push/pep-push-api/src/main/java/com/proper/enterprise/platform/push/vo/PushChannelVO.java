@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.push.entity.PushChannelEntity;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
@@ -14,30 +15,39 @@ import java.io.Serializable;
 public class PushChannelVO extends BaseVO {
 
     @JsonProperty("name")
+    @ApiModelProperty(name = "‍渠道名称", required = true)
     private String channelName;
 
     @JsonProperty("desc")
+    @ApiModelProperty(name = "‍渠道描述", required = true)
     private String channelDesc;
 
     @JsonProperty("msgSaveDays")
+    @ApiModelProperty(name = "‍消息保存时间", required = true)
     private Integer msgSaveDays;
 
     @JsonProperty("maxSendCount")
+    @ApiModelProperty(name = "‍最大发送数", required = true)
     private Integer maxSendCount;
 
     @JsonProperty("secretKey")
+    @ApiModelProperty(name = "secretKey", required = true)
     private String secretKey;
 
     @JsonProperty("android")
+    @ApiModelProperty(name = "‍android配置信息", required = true)
     private Android android;
 
     @JsonProperty("ios")
+    @ApiModelProperty(name = "‍ios配置信息", required = true)
     private IOS ios;
 
     @JsonProperty("diplomaId")
+    @ApiModelProperty(name = "‍证书(ios)上传后的id", required = true)
     private String diplomaId;
 
     @JsonProperty("color")
+    @ApiModelProperty(name = "‍颜色", required = true)
     private String color;
 
     @JsonProperty("channelCount")
