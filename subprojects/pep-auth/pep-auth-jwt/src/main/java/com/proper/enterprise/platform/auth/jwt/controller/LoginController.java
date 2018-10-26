@@ -14,6 +14,10 @@ import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.model.CurrentModel;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +27,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Map;
 
 @RestController
+@Api(tags = "/auth")
 public class LoginController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
@@ -44,10 +48,12 @@ public class LoginController extends BaseController {
     private UserService userService;
 
     @AuthcIgnore
+    @ApiOperation("‍用户登录")
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> login(@RequestBody Map<String, String> loginMap) throws IOException {
-        String username = authcService.getUsername(loginMap);
-        String pwd = authcService.getPassword(loginMap);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<String> login(@RequestBody LoginVO loginMap) throws IOException {
+        String username = loginMap.getUsername();
+        String pwd = loginMap.getPwd();
 
         LOGGER.debug("User {} want to login", username);
 
@@ -60,6 +66,7 @@ public class LoginController extends BaseController {
 
     @RequestMapping(value = "/auth/current/user", method = RequestMethod.GET)
     @JsonView(UserVO.CurrentUser.class)
+    @ApiOperation("‍取得当前登录用户信息")
     public ResponseEntity<CurrentModel> getCurrentUser() {
         User user = userService.getCurrentUser();
         UserVO currentUserVO = BeanUtil.convert(user, UserVO.class);
@@ -78,6 +85,8 @@ public class LoginController extends BaseController {
     }
 
     @RequestMapping(value = "/auth/logout", method = RequestMethod.POST)
+    @ApiOperation("‍退出登录，清理token")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity logout() {
         User user = userService.getCurrentUser();
         String username = user.getUsername();
@@ -85,6 +94,37 @@ public class LoginController extends BaseController {
             jwtAuthcService.clearUserToken(username);
         }
         return new ResponseEntity<>("", HttpStatus.CREATED);
+    }
+
+    public static class LoginVO {
+
+        @ApiModelProperty(name = "‍用户名", required = true)
+        private String username;
+
+        @ApiModelProperty(name = "‍密码", required = true)
+        private String pwd;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPwd() {
+            return pwd;
+        }
+
+        public void setPwd(String pwd) {
+            this.pwd = pwd;
+        }
+
+        @Override
+        public String toString() {
+            return JSONUtil.toJSONIgnoreException(this);
+        }
+
     }
 
 }

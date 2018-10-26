@@ -101,17 +101,16 @@ class RoleServiceImplTest extends AbstractTest {
         roleEntity2.setParent(roleEntity)
         roleService.save(roleEntity2)
 
-        Map<String, Object> map = new HashMap<>()
-        map.put("id", roleEntity.getId())
-        map.put("name", "roleService")
-        map.put("enable", false)
+        RoleVO map = new RoleVO()
+        map.setParentId(roleEntity.getId())
+        map.setName("roleService")
+        map.setEnable(false)
 
         UserEntity userEntity = new UserEntity('u', 'p')
         userEntity.setSuperuser(true)
         userEntity = userService.save(userEntity)
 
         mockUser(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword())
-
         RoleVO roleVO = JSONUtil.parse(post('/auth/roles', JSONUtil.toJSON(map), HttpStatus.CREATED).getResponse()
             .getContentAsString(), RoleVO.class)
         assert !roleVO.enable
