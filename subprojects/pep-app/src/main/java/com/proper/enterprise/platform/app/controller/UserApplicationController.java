@@ -49,7 +49,7 @@ public class UserApplicationController extends BaseController {
 
     public static class ApplicationParamVO {
 
-        @ApiModelProperty("‍列表ids")
+        @ApiModelProperty(name = "‍列表ids", required = true)
         private String ids;
 
         public String getIds() {

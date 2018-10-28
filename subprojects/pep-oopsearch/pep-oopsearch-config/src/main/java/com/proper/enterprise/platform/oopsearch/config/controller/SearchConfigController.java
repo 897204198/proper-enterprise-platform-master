@@ -66,22 +66,22 @@ public class SearchConfigController extends BaseController {
 
     public static class SearchConfigModelVO {
 
-        @ApiModelProperty("‍模块名称")
+        @ApiModelProperty(name = "‍模块名称", required = true)
         private String moduleName;
 
-        @ApiModelProperty("‍表名称")
+        @ApiModelProperty(name = "‍表名称", required = true)
         private String tableName;
 
-        @ApiModelProperty("‍字段名称")
+        @ApiModelProperty(name = "‍字段名称", required = true)
         private String searchColumn;
 
-        @ApiModelProperty("‍别名")
+        @ApiModelProperty(name = "‍别名", required = true)
         private String columnAlias;
 
-        @ApiModelProperty("‍描述")
+        @ApiModelProperty(name = "‍描述", required = true)
         private String columnDesc;
 
-        @ApiModelProperty("‍url")
+        @ApiModelProperty(name = "‍url", required = true)
         private String url;
 
         public String getModuleName() {

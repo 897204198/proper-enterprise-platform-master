@@ -68,7 +68,7 @@ public class AdminFeedbackController extends BaseController {
 
     public static class AdminFeedbackVO {
 
-        @ApiModelProperty("‍反馈内容")
+        @ApiModelProperty(name = "‍反馈内容", required = true)
         private String feedback;
 
         public String getFeedback() {

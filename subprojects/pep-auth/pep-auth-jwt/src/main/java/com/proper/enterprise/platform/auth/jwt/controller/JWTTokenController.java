@@ -8,22 +8,27 @@ import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Api(tags = "/admin/dev/jwt")
 @RequestMapping("/admin/dev/jwt")
+
 class JWTTokenController extends BaseController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping("/encode/header")
+    @PostMapping(value = "/encode/header", produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("‍JWT header 信息转换成 token")
     public ResponseEntity<String> encodeHeader(@RequestBody JWTHeader header) throws Exception {
         User user;
         if (StringUtil.isBlank(header.getId()) && StringUtil.isNotBlank(header.getName())) {
@@ -42,7 +47,9 @@ class JWTTokenController extends BaseController {
         return responseOfPost(Base64.encodeBase64URLSafeString(res.getBytes(PEPConstants.DEFAULT_CHARSET)));
     }
 
-    @PostMapping("/decode")
+    @PostMapping(value = "/decode", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("JWT token decode")
     public ResponseEntity<String> decodeToken(@RequestBody String token) {
         StringBuilder sb = new StringBuilder();
         String escapeSymbol = "\\.";

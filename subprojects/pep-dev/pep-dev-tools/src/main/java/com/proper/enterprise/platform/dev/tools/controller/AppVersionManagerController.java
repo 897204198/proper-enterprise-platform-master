@@ -74,16 +74,16 @@ public class AppVersionManagerController extends BaseController {
 
     public static class AppVersionVO {
 
-        @ApiModelProperty("‍版本号")
+        @ApiModelProperty(name = "‍版本号", required = true)
         private String version;
 
-        @ApiModelProperty("‍android下载地址")
+        @ApiModelProperty(name = "‍android下载地址", required = true)
         private String androidURL;
 
-        @ApiModelProperty("‍ios下载地址")
+        @ApiModelProperty(name = "‍ios下载地址", required = true)
         private String iosURL;
 
-        @ApiModelProperty("‍版本说明")
+        @ApiModelProperty(name = "‍版本说明", required = true)
         private String note;
 
         private AppVersionVO() { }

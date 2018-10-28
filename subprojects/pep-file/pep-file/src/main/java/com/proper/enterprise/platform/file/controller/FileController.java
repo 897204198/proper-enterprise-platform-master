@@ -31,15 +31,15 @@ public class FileController extends BaseController {
     @PostMapping
     @ApiOperation(value = "‍上传文件", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> uploadFile(MultipartFile file) throws IOException {
+    public ResponseEntity<String> uploadFile(@ApiParam(value = "‍文件", required = true) MultipartFile file) throws IOException {
         return responseOfPost(fileService.save(file).getId());
     }
 
     @PostMapping(path = "/{id}")
     @ApiOperation(value = "‍更新文件", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> updateFile(@ApiParam(value = "‍文件id", required = true) @PathVariable String id, MultipartFile
-            file) throws IOException {
+    public ResponseEntity<String> updateFile(@ApiParam(value = "‍文件id", required = true) @PathVariable String id,
+                                             @ApiParam(value = "‍文件", required = true) MultipartFile file) throws IOException {
         return responseOfPost(fileService.update(id, file).getId());
     }
 

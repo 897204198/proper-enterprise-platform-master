@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.jwt.model;
 
 import com.proper.enterprise.platform.core.PEPConstants;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
@@ -11,14 +12,10 @@ public class JWTHeader implements Serializable {
 
     private static final long serialVersionUID = PEPConstants.VERSION;
 
-    /**
-     * User ID
-     */
+    @ApiModelProperty(name = "‍用户id", required = true)
     private String id;
 
-    /**
-     * User name
-     */
+    @ApiModelProperty(name = "‍用户名", required = true)
     private String name;
 
     public JWTHeader() { }

@@ -68,19 +68,19 @@ public class SequenceController extends BaseController {
 
     public static class SequenceModelVO {
 
-        @ApiModelProperty("‍流水号编码")
+        @ApiModelProperty(name = "‍流水号编码", required = true)
         private String sequenceCode;
 
-        @ApiModelProperty("‍流水名称")
+        @ApiModelProperty(name = "‍流水名称", required = true)
         private String sequenceName;
 
-        @ApiModelProperty("‍规则")
+        @ApiModelProperty(name = "‍规则", required = true)
         private String formula;
 
-        @ApiModelProperty("‍清零方式(不清零, 日清零, 月清零, 年清零)")
+        @ApiModelProperty(name = "‍清零方式(不清零, 日清零, 月清零, 年清零)", required = true)
         private DataDicLiteBean clearType;
 
-        @ApiModelProperty("‍初始值")
+        @ApiModelProperty(name = "‍初始值")
         private String initialValue;
 
         public String getSequenceCode() {

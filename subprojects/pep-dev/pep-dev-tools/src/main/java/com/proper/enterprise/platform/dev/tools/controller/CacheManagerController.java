@@ -4,11 +4,12 @@ import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.dev.tools.service.CacheManagerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/dev/cache")
+@Api(tags = "/admin/dev/cache")
 public class CacheManagerController extends BaseController {
-
-    private Logger logger = LoggerFactory.getLogger(CacheManagerController.class);
 
     @Value("${pep.dev.tools.homemenus.separator}")
     private String separator;
@@ -30,12 +30,8 @@ public class CacheManagerController extends BaseController {
     @Autowired
     private CacheManagerService cacheManagerService;
 
-    /**
-     * 获得缓存区域集合,按照字典序排列返回
-     *
-     * @return 缓存区名称组成的集合
-     */
     @GetMapping
+    @ApiOperation("‍获得缓存区域集合,按照字典序排列返回-缓存区名称组成的集合")
     public ResponseEntity<Collection<String>> listCaches() {
         Collection<String> cacheNames = cacheManagerService.getAllCacheNames();
         if (cacheNames == null) {
@@ -44,14 +40,10 @@ public class CacheManagerController extends BaseController {
         return responseOfGet(cacheNames);
     }
 
-    /**
-     * 批量删除缓存区域
-     *
-     * @param names 缓存名称
-     * @return 要删除的缓存区域名称，逗号间隔
-     */
     @DeleteMapping
-    public ResponseEntity deleteInBatches(@RequestParam String names) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("‍批量删除缓存区域")
+    public ResponseEntity deleteInBatches(@ApiParam(value = "‍缓存区域名称，逗号间隔", required = true) @RequestParam String names) {
         if (StringUtil.isNotBlank(names)) {
             String[] nameArry = names.split(separator);
             cacheManagerService.deleteByNames(Arrays.asList(nameArry));
@@ -59,26 +51,23 @@ public class CacheManagerController extends BaseController {
         return responseOfDelete(true);
     }
 
-    /**
-     * 获得缓存区域中的 key 集合,集合按照字典序排列返回
-     *
-     * @param name 缓存区域名称
-     * @return key 集合
-     */
     @GetMapping("/{name:.*}")
-    public ResponseEntity<Collection> listCacheKeys(@PathVariable String name, Integer pageNo, Integer pageSize) throws IOException {
+    @ApiOperation("‍获得缓存区域中的 key 集合,集合按照字典序排列返回")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
+    })
+    public ResponseEntity<Collection> listCacheKeys(@ApiParam(value = "‍缓存区域名称", required = true) @PathVariable String name,
+                                                    Integer pageNo, Integer pageSize) throws IOException {
         return responseOfGet(cacheManagerService.getCacheKeysByCacheNamePageable(name, pageNo, pageSize));
     }
 
-    /**
-     * 清理缓存区域，或缓存区域下的 key
-     *
-     * @param name 缓存区域名称
-     * @param keys  要删除的缓存区域下的 key，逗号间隔。此参数存在时，该接口清理缓存区域下的 key；否则清理缓存区域
-     * @return 值
-     */
     @DeleteMapping("/{name:.*}")
-    public ResponseEntity deleteCacheOrKeyByName(@PathVariable String name, @RequestParam(required = false) String keys) {
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("‍清理缓存区域，或缓存区域下的 key")
+    public ResponseEntity deleteCacheOrKeyByName(@ApiParam(value = "‍缓存区域名称", required = true) @PathVariable String name,
+                                                 @ApiParam(value = "‍要删除的缓存区域下的 key,逗号间隔.此参数存在时,该接口清理缓存区域下的 key;否则清理缓存区域", required = true)
+                                                 @RequestParam(required = false) String keys) {
         if (StringUtil.isNotBlank(keys)) {
             String[] keyArry = keys.split(separator);
             cacheManagerService.deleteByKeys(name, Arrays.asList(keyArry));
@@ -88,16 +77,11 @@ public class CacheManagerController extends BaseController {
         return responseOfDelete(true);
     }
 
-    /**
-     * 获取缓存区域中某 key 存储的内容
-     *
-     * @param cacheName 缓存区域名称
-     * @param key       key 字符形式表示
-     * @param className 存储的内容的类型名称
-     * @return 存储内容的字符形式表示
-     */
-    @GetMapping(value = "/{cacheName}/{key}", produces = "text/plain;charset=UTF-8")
-    public ResponseEntity<String> getCacheWithKey(@PathVariable String cacheName, @PathVariable String key, String className) throws Exception {
+    @ApiOperation("‍获得缓存区域中的 key 集合,返回存储内容的字符形式表示")
+    @GetMapping(value = "/{cacheName}/{key}", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getCacheWithKey(@ApiParam(value = "‍缓存区域名称", required = true) @PathVariable String cacheName,
+                                                  @ApiParam(value = "‍key 字符形式表示", required = true) @PathVariable String key,
+                                                  @ApiParam(value = "‍存储的内容的类型名称", required = true) String className) throws Exception {
         Cache cache = cacheManagerService.getCacheByName(cacheName);
         if (cache == null) {
             return responseOfGet(null);
@@ -113,15 +97,11 @@ public class CacheManagerController extends BaseController {
         return responseOfGet(value);
     }
 
-    /**
-     * 清理某缓存区域下的 key
-     *
-     * @param cacheName 缓存区域名称
-     * @param key       key 字符形式表示
-     * @return response of delete
-     */
     @DeleteMapping("/{cacheName}/{key}")
-    public ResponseEntity cleanCacheWithKey(@PathVariable String cacheName, @PathVariable String key) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("‍清理缓存区域下的 key")
+    public ResponseEntity cleanCacheWithKey(@ApiParam(value = "‍缓存区域名称", required = true) @PathVariable String cacheName,
+                                            @ApiParam(value = "‍key 字符形式表示", required = true) @PathVariable String key) {
         List<String> keys = new ArrayList<>(1);
         keys.add(key);
         cacheManagerService.deleteByKeys(cacheName, keys);

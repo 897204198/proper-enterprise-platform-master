@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * 意见反馈.
- */
 @RestController
 @Api(tags = "/user/feedback")
 @RequestMapping(value = "/user/feedback")
@@ -51,22 +48,22 @@ public class UserFeedbackController extends BaseController {
 
     public static class FeedbackVO {
 
-        @ApiModelProperty("‍意见内容")
+        @ApiModelProperty(name = "‍意见内容", required = true)
         private String opinion;
 
-        @ApiModelProperty("‍上传图片的id")
+        @ApiModelProperty(name = "‍上传图片的id", required = true)
         private String pictureId;
 
-        @ApiModelProperty("‍手机型号")
+        @ApiModelProperty(name = "‍手机型号", required = true)
         private String mobileModel;
 
-        @ApiModelProperty("‍网络环境")
+        @ApiModelProperty(name = "‍网络环境", required = true)
         private String netType;
 
-        @ApiModelProperty("‍app的版本号")
+        @ApiModelProperty(name = "‍app的版本号", required = true)
         private String appVersion;
 
-        @ApiModelProperty("‍手机系统")
+        @ApiModelProperty(name = "‍手机系统", required = true)
         private String platform;
 
         public String getOpinion() {

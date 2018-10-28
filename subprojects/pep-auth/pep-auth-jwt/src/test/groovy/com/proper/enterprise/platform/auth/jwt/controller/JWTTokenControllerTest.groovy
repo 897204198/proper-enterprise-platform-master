@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 
 @Sql
@@ -31,7 +32,8 @@ class JWTTokenControllerTest extends AbstractTest {
     }
 
     def decode(String input, String output) {
-        def res = post("/admin/dev/jwt/decode", input, HttpStatus.CREATED).getResponse().getContentAsString()
+        def res = post("/admin/dev/jwt/decode", MediaType.TEXT_PLAIN, MediaType.TEXT_PLAIN, input, HttpStatus.CREATED).getResponse()
+                .getContentAsString()
         assert res == output
     }
 

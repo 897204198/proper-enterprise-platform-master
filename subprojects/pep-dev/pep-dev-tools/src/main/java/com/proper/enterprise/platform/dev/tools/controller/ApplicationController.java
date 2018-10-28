@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Api(tags = "/admin/app/applications")
 @RequestMapping(value = "/admin/app/applications")
 public class ApplicationController extends BaseController {
 
@@ -122,25 +123,25 @@ public class ApplicationController extends BaseController {
 
     public static class AdminApplicationVO {
 
-        @ApiModelProperty("‍应用名称")
+        @ApiModelProperty(name = "‍应用名称", required = true)
         private String name;
 
-        @ApiModelProperty("‍应用跳转页面")
+        @ApiModelProperty(name = "‍应用跳转页面", required = true)
         private String page;
 
-        @ApiModelProperty("‍应用图标")
+        @ApiModelProperty(name = "‍应用图标", required = true)
         private String icon;
 
-        @ApiModelProperty("‍跳转页面类型")
+        @ApiModelProperty(name = "‍跳转页面类型")
         private String style;
 
-        @ApiModelProperty("‍应用页面初始化参数，满足json格式")
+        @ApiModelProperty(name = "‍应用页面初始化参数，满足json格式")
         private Map data;
 
-        @ApiModelProperty("‍应用类别编码")
+        @ApiModelProperty(name = "‍应用类别编码", required = true)
         private String code;
 
-        @ApiModelProperty("‍是否为默认值")
+        @ApiModelProperty(name = "‍是否为默认值")
         private Boolean defaultValue;
 
         public String getName() {
@@ -208,13 +209,13 @@ public class ApplicationController extends BaseController {
 
     public static class AdminAppCatalogVO {
 
-        @ApiModelProperty("‍应用类别编码")
+        @ApiModelProperty(name = "‍应用类别编码", required = true)
         private String code;
 
-        @ApiModelProperty("‍应用类别名称")
+        @ApiModelProperty(name = "‍应用类别名称", required = true)
         private String typeName;
 
-        @ApiModelProperty("‍应用顺序")
+        @ApiModelProperty(name = "‍应用顺序", required = true)
         private String sort;
 
         public String getCode() {
