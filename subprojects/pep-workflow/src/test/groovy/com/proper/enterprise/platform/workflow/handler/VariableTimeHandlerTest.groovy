@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.workflow.handler
 
 import com.proper.enterprise.platform.core.security.Authentication
+import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.workflow.test.WorkflowAbstractTest
 import org.flowable.engine.TaskService
 import org.flowable.task.api.Task
@@ -19,7 +20,8 @@ class VariableTimeHandlerTest extends WorkflowAbstractTest {
     @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/adminUsers.sql"])
     public void test() {
         Map map2 = new HashMap()
-        map2.put("date", "2018-07-23T10:44:05.469Z")
+        Date date = new Date()
+        map2.put("date", date.getTime())
         map2.put("date2", "2018-07-23")
         map2.put("date3", "2018-07-23 22:33:44")
         String procInstId2 = start(TEST_TIME_HANDLER_KEY, map2).getProcInstId()
@@ -27,7 +29,7 @@ class VariableTimeHandlerTest extends WorkflowAbstractTest {
         assert "2018-07-23" == task.getProcessVariables().get("a").date2
         assert "2018-07-23 22:33:44" == task.getProcessVariables().get("a").date3
         taskService.complete(task.getId())
-        assert "2018-07-23" == Authentication.getCurrentUserId()
+        assert DateUtil.toString(date, "yyyy-MM-dd") == Authentication.getCurrentUserId()
 
 
     }
