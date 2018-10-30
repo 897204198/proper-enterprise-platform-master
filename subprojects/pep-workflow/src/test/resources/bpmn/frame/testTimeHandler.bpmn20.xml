@@ -4,7 +4,7 @@
     <startEvent id="startEvent1" flowable:formKey="a"></startEvent>
     <userTask id="sid-4BF2388F-F3C9-4670-B458-05F36922F011" flowable:assignee="$INITIATOR" name="dateTest">
       <extensionElements>
-        <flowable:taskListener event="create" expression="#{variableTimeHandlerTestListener.test(variableTimeHandler.toString(a.date,'yyyy-MM-dd'))}"></flowable:taskListener>
+        <flowable:taskListener event="create" expression="#{variableTimeHandlerTestListener.test(variableTimeHandler.longToString(a.date,'yyyy-MM-dd'))}"></flowable:taskListener>
         <modeler:activiti-idm-initiator xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>
       </extensionElements>
     </userTask>
