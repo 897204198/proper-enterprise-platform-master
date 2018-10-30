@@ -3,7 +3,7 @@ ext {
     libraries = [:]
 }
 
-versions.pep                = '0.4.4.8-SNAPSHOT'
+versions.pep                = '0.4.4.8'
 
 versions.flowable           = '6.2.1-SNAPSHOT'
 versions.groovy             = '2.4.15'
