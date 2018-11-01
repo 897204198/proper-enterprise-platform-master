@@ -1,0 +1,7 @@
+dependencies {
+    compile project(':pep-core-jpa'),
+            project(':pep-auth-api')
+    testCompile project(':pep-auth-common'),
+                project(':pep-test')
+    testRuntime project(':pep-cache-ehcache')
+}

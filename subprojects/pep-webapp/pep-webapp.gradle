@@ -54,7 +54,8 @@ dependencies {
     runtime project(':pep-configs')
 
     // Select on demand
-    runtime project(':pep-auth-common-jpa'),
+    runtime project(':pep-announcement'),
+            project(':pep-auth-common-jpa'),
             project(':pep-auth-jwt'),
             project(':pep-av-backend'),
             // Needs one cache implementation if use cache API

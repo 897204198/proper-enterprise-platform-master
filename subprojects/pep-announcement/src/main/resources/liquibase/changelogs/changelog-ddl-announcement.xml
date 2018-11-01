@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="generator (generated)" id="announcement_generator_ddl_init">
+        <createTable tableName="PEP_ANNOUNCEMENT">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BEGIN_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="END_TIME" type="VARCHAR(255)"/>
+            <column name="INFO" type="VARCHAR(4000)"/>
+            <column defaultValue="N" name="INFO_STATUS" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="INFO_TYPE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(4000)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="wyiyi (generated)" id="201810301038-111">
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_ANNOUNCEMENT" tableName="PEP_ANNOUNCEMENT"/>
+    </changeSet>
+</databaseChangeLog>
