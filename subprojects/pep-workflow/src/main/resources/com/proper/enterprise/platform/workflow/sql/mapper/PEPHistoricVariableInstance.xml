@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.flowable.variable.service.impl.persistence.entity.HistoricVariableInstanceEntityImpl">
+
+    <!-- HISTORIC VARIABLE SELECT -->
+
+    <select id="selectHistoricVariableByQueryPredicate" parameterType="org.flowable.engine.common.impl.db.ListQueryParameterObject" resultMap="historicProcessVariableResultMap">
+        SELECT
+        DISTINCT RES.ID_,
+        RES.PROC_INST_ID_,
+        RES.EXECUTION_ID_,
+        RES.TASK_ID_,
+        RES.NAME_,
+        RES.VAR_TYPE_,
+        RES.DOUBLE_,
+        RES.LONG_,
+        RES.TEXT_,
+        RES.TEXT2_,
+        RES2.BYTES_ AS cachedValue
+        FROM ${prefix}ACT_HI_VARINST RES
+        LEFT OUTER JOIN ${prefix}ACT_GE_BYTEARRAY RES2 ON RES2.ID_ = RES.BYTEARRAY_ID_
+        WHERE 1 = 1
+        <if test="parameter.taskIds != null and parameter.taskIds.size > 0">
+            AND RES.TASK_ID_ IN
+            <foreach item="taskId" index="index" collection="parameter.taskIds" open="(" separator="," close=")">
+                #{taskId}
+            </foreach>
+        </if>
+        <if test="parameter.procInstIds != null and parameter.procInstIds.size > 0">
+            AND RES.TASK_ID_ IN
+            <foreach item="procInstId" index="index" collection="parameter.procInstIds" open="(" separator="," close=")">
+                #{procInstId}
+            </foreach>
+        </if>
+        ORDER BY RES.TASK_ID_, RES.PROC_INST_ID_
+    </select>
+</mapper>

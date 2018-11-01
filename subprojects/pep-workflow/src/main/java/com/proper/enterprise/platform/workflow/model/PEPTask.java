@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.core.utils.*;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
+import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.identitylink.api.IdentityLinkInfo;
@@ -38,6 +39,32 @@ public class PEPTask {
         this.setProcInstId(historicTaskInstance.getProcessInstanceId());
         this.setTaskId(historicTaskInstance.getId());
         this.setForm(new PEPExtForm(historicTaskInstance).convert());
+        this.setAssignee(historicTaskInstance.getAssignee());
+        this.setName(historicTaskInstance.getName());
+        this.setEndTime(null != historicTaskInstance.getEndTime()
+            ? DateUtil.toString(historicTaskInstance.getEndTime(), DEFAULT_DATETIME_FORMAT)
+            : null);
+        this.setCreateTime(DateUtil.toString(historicTaskInstance.getCreateTime(), DEFAULT_DATETIME_FORMAT));
+    }
+
+    public PEPTask(HistoricTaskInstance historicTaskInstance,
+                   Map<String, Object> formData,
+                   Map<String, Object> globalData) {
+        if (formData == null) {
+            formData = new HashMap<>(1);
+        }
+        if (globalData == null) {
+            globalData = new HashMap<>(1);
+        }
+        this.setProcInstId(historicTaskInstance.getProcessInstanceId());
+        this.setTaskId(historicTaskInstance.getId());
+        String formKey = StringUtil.isEmpty(historicTaskInstance.getFormKey())
+            ? (String) globalData.get(WorkFlowConstants.START_FORM_KEY)
+            : historicTaskInstance.getFormKey();
+        PEPExtForm pepExtForm = new PEPExtForm(formKey, formData);
+        pepExtForm.setGlobalData(globalData);
+        pepExtForm.setShowType(ShowType.SHOW);
+        this.setForm(pepExtForm.convert());
         this.setAssignee(historicTaskInstance.getAssignee());
         this.setName(historicTaskInstance.getName());
         this.setEndTime(null != historicTaskInstance.getEndTime()

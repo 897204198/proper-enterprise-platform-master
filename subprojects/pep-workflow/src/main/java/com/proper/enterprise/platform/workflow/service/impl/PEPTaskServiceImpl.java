@@ -14,8 +14,11 @@ import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.TaskConvert;
+import com.proper.enterprise.platform.workflow.convert.VariableConvert;
 import com.proper.enterprise.platform.workflow.model.PEPExtForm;
 import com.proper.enterprise.platform.workflow.model.PEPWorkflowPage;
+import com.proper.enterprise.platform.workflow.predicate.VariableQueryPredicate;
+import com.proper.enterprise.platform.workflow.repository.PEPHistoricVariableInstanceRepository;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.service.PEPTaskService;
 import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
@@ -30,13 +33,13 @@ import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
+import org.flowable.variable.api.history.HistoricVariableInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
 
 @Service
 public class PEPTaskServiceImpl implements PEPTaskService {
@@ -52,6 +55,9 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     private PEPProcessService pepProcessService;
 
     private UserDao userDao;
+
+    @Autowired
+    private PEPHistoricVariableInstanceRepository pepHistoricVariableInstanceRepository;
 
     @Autowired
     PEPTaskServiceImpl(TaskService taskService,
@@ -188,7 +194,6 @@ public class PEPTaskServiceImpl implements PEPTaskService {
     @Override
     public DataTrunk<PEPTaskVO> findTaskAssigneeIsMePagination(String processDefinitionName, PageRequest pageRequest) {
         HistoricTaskInstanceQuery historicTaskInstanceQuery = historyService.createHistoricTaskInstanceQuery()
-            .includeProcessVariables()
             .taskAssignee(Authentication.getCurrentUserId())
             .finished()
             .orderByHistoricTaskInstanceEndTime()
@@ -199,7 +204,41 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         List<HistoricTaskInstance> historicTasks = historicTaskInstanceQuery
             .listPage(pageRequest.getPageNumber() * pageRequest.getPageSize(),
                 pageRequest.getPageSize());
-        List<PEPTaskVO> taskVOs = new ArrayList<>(BeanUtil.convert(TaskConvert.convertHisTasks(historicTasks), PEPTaskVO.class));
+
+        if (!CollectionUtil.isNotEmpty(historicTasks)) {
+            return new DataTrunk<>(new ArrayList<>(), historicTaskInstanceQuery.count());
+        }
+
+        Set<String> taskIds = new HashSet<>();
+        Set<String> processInstIds = new HashSet<>();
+        // 使用 lambda 提供的 forEach 方法进行遍历出任务Id集合和流程实例Id集合
+        historicTasks.forEach(
+            historicTask -> {
+                taskIds.add(historicTask.getId());
+                processInstIds.add(historicTask.getProcessInstanceId());
+            }
+        );
+
+        VariableQueryPredicate queryByTaskId = new VariableQueryPredicate();
+        queryByTaskId.setTaskIds(taskIds);
+        List<HistoricVariableInstance> historicTasksVariables =
+            pepHistoricVariableInstanceRepository.findHistoricVariableByQueryPredicate(queryByTaskId);
+        VariableQueryPredicate queryByProcInstId = new VariableQueryPredicate();
+        queryByProcInstId.setProcInstIds(processInstIds);
+        List<HistoricVariableInstance> historicProcessInstsVariables =
+            pepHistoricVariableInstanceRepository.findHistoricVariableByQueryPredicate(queryByProcInstId);
+
+        // 将任务节点变量通过任务Id进行分组
+        Map<String, Map<String, Object>> formDataByTaskId =
+            VariableConvert.groupVariables(historicTasksVariables, HistoricVariableInstance::getTaskId);
+
+        // 将流程实例变量通过流程实例Id进行分组
+        Map<String, Map<String, Object>> globalDataByProcessInstId =
+            VariableConvert.groupVariables(historicProcessInstsVariables, HistoricVariableInstance::getProcessInstanceId);
+
+        List<PEPTaskVO> taskVOs = new ArrayList<>(
+            BeanUtil.convert(TaskConvert.convertHisTasks(historicTasks, formDataByTaskId, globalDataByProcessInstId), PEPTaskVO.class));
+
         DataTrunk<PEPTaskVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setData(taskVOs);
         dataTrunk.setCount(historicTaskInstanceQuery.count());

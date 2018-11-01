@@ -57,5 +57,17 @@ class TaskControllerTest extends WorkflowAbstractTest {
         complete(task.taskId, mainForm)
         List<PEPTaskVO> assigneeIsMe = findTaskAssigneeIsMePagination("autoArchive", 1, 10)
         assert assigneeIsMe.size() == 1
+        assert assigneeIsMe.get(0).form.formData.a == "b"
+
+        Map task12 = getTask("form12")
+        mainForm.put("a", ["id":"2eb8087a-e0f8-4a5a-85a8-5bf0b2657e35","text":"研发组","code":"currentDept"])
+        mainForm.put("a1", "a12")
+        mainForm.put("a12", "a12")
+        complete(task12.taskId, mainForm)
+
+        assigneeIsMe = findTaskAssigneeIsMePagination("autoArchive", 1, 10)
+        assert assigneeIsMe.size() == 2
+        assert assigneeIsMe.get(0).form.formData.a.text == "研发组"
+        assert assigneeIsMe.get(1).form.formData.a == "b"
     }
 }
