@@ -60,7 +60,8 @@ dependencies {
             project(':pep-oopsearch-config')
 
     // Select on demand
-    runtime project(':pep-auth-jwt'),
+    runtime project(':pep-announcement'),
+            project(':pep-auth-jwt'),
             project(':pep-av-backend'),
             project(':pep-dev-tools'),
             // Needs one dfs implementation if use DFS API
