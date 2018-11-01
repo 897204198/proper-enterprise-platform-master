@@ -35,6 +35,11 @@
         <property name="httpClientConfig" ref="httpClientConfig"/>
         <!--&lt;!&ndash;自定义扩展属性 默认为false  如果extIdm设置为true 则flowable IdmIdentityService的实现由IdmIdentityServiceImpl变为自定义PEPIdmIdentityServiceImpl&ndash;&gt;-->
         <!--<property name="extIdm" value="true"/>-->
+        <property name="customMybatisXMLMappers">
+            <set>
+                <value>com/proper/enterprise/platform/workflow/sql/mapper/PEPHistoricVariableInstance.xml</value>
+            </set>
+        </property>
     </bean>
     <bean id="httpClientConfig" class="org.flowable.engine.cfg.HttpClientConfig">
         <property name="connectTimeout" value="${workflow.http.connectTimeout}"/>
