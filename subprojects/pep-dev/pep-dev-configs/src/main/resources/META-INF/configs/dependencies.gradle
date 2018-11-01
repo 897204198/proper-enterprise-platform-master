@@ -285,7 +285,7 @@ libraries.push_vendor_xiaomi=[
     'com.googlecode.json-simple:json-simple:1.1.1'
 ]
 
-
+libraries.pep_announcement= "com.proper.enterprise.platform:pep-announcement:${versions.pep}"
 libraries.pep_app = "com.proper.enterprise.platform:pep-app:${versions.pep}"
 libraries.pep_auth_api = "com.proper.enterprise.platform:pep-auth-api:${versions.pep}"
 libraries.pep_auth_common = "com.proper.enterprise.platform:pep-auth-common:${versions.pep}"
