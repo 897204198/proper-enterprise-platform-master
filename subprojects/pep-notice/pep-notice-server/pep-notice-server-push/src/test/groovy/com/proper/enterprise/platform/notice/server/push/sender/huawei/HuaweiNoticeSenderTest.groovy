@@ -44,6 +44,7 @@ class HuaweiNoticeSenderTest extends AbstractTest {
         notice.setNoticeExtMsg('customs', customs)
 
         pushNoticeSender.send(notice)
+        assert NoticeStatus.SUCCESS == pushNoticeSender.getStatus(notice).getNoticeStatus()
 
         notice.setNoticeExtMsg('push_type', 'chat')
 
@@ -59,6 +60,8 @@ class HuaweiNoticeSenderTest extends AbstractTest {
         try {
             pushNoticeSender.send(notice)
         } catch (Exception e) {
+            assert NoticeStatus.FAIL == pushNoticeSender.getStatus(notice).getNoticeStatus()
+            assert "Please check Huawei push config" == pushNoticeSender.getStatus(notice).getMessage()
             e.getMessage().contains("Please check Huawei push config")
         }
     }
@@ -90,16 +93,4 @@ class HuaweiNoticeSenderTest extends AbstractTest {
         pushNoticeSender.afterSend(notice)
     }
 
-    @Test
-    void testGetStatus() {
-        def notice = new MockPushNotice()
-        notice.setTargetTo(HuaweiConstant.TARGET_TO)
-        notice.setAppKey('MobileOADev')
-        notice.setTitle(System.getProperty('os.name'))
-        notice.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${new Date().format('yyyy-MM-dd HH:mm:ss')} in test case")
-
-        notice.setTargetExtMsg('pushChannel', 'HUAWEI')
-
-        assert NoticeStatus.SUCCESS == pushNoticeSender.getStatus(notice).getNoticeStatus()
-    }
 }

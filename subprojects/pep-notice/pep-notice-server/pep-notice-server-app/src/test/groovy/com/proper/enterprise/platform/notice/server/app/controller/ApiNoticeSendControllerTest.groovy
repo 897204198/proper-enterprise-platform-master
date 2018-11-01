@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.app.controller
 
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
+import com.proper.enterprise.platform.notice.server.app.handler.MockNoticeSender
 import com.proper.enterprise.platform.notice.server.app.vo.AppVO
 import com.proper.enterprise.platform.notice.server.app.AbstractServerAppTest
 import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository
@@ -99,10 +100,11 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
     @NoTx
     public void sendNoticeSuccessTest() {
         noticeRepository.deleteAll()
-        AppVO appVO = initAppReturnVO('sendNoticeTest')
+        String appKey = MockNoticeSender.MOCK_PINDING_SEND + "0"
+        AppVO appVO = initAppReturnVO(appKey)
         def accessToken = appVO.getAppToken()
         NoticeRequest noticeRequest = new NoticeRequest()
-        noticeRequest.setBatchId("sendNoticeTest")
+        noticeRequest.setBatchId(appKey)
         noticeRequest.setNoticeType(NoticeType.MOCK)
         noticeRequest.setContent("text")
         List<NoticeTarget> targets = new ArrayList<>()
@@ -114,13 +116,15 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
         noticeRequest.setNoticeExtMsg("noticeExt", "noticeExt")
         post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
         Thread.sleep(3000)
-        List searchPendingList = JSONUtil.parse(get("/notice/server/msg?appKey=sendNoticeTest&batchId=sendNoticeTest",
+        List searchPendingList = JSONUtil.parse(get("/notice/server/msg?appKey="
+            + appKey + "&batchId=" + appKey,
             HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert searchPendingList.size() == 1
         assert searchPendingList.get(0).status == NoticeStatus.PENDING.name()
         noticeStatusSyncScheduler.syncPending()
         Thread.sleep(3000)
-        List searchSuccessList = JSONUtil.parse(get("/notice/server/msg?appKey=sendNoticeTest&batchId=sendNoticeTest",
+        List searchSuccessList = JSONUtil.parse(get("/notice/server/msg?appKey="
+            + appKey + "&batchId=" + appKey,
             HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert searchSuccessList.size() == 1
         assert searchSuccessList.get(0).status == NoticeStatus.SUCCESS.name()
@@ -132,9 +136,9 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
     @NoTx
     public void sendNoticeErrTest() {
         noticeRepository.deleteAll()
-        def accessToken = initApp('mockErrSend')
+        def accessToken = initApp(MockNoticeSender.MOCK_ERR_SEND)
         NoticeRequest noticeRequest = new NoticeRequest()
-        noticeRequest.setBatchId("mockErrSend")
+        noticeRequest.setBatchId(MockNoticeSender.MOCK_ERR_SEND)
         noticeRequest.setNoticeType(NoticeType.MOCK)
         noticeRequest.setContent("text")
         List<NoticeTarget> targets = new ArrayList<>()
@@ -158,9 +162,9 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
     @NoTx
     public void sendNoticeRetryTest() {
         noticeRepository.deleteAll()
-        def accessToken = initApp('mockRetryStatus')
+        def accessToken = initApp(MockNoticeSender.MOCK_RETRY_STATUS)
         NoticeRequest noticeRequest = new NoticeRequest()
-        noticeRequest.setBatchId("mockRetryStatus")
+        noticeRequest.setBatchId(MockNoticeSender.MOCK_RETRY_STATUS)
         noticeRequest.setNoticeType(NoticeType.MOCK)
         noticeRequest.setContent("text")
         List<NoticeTarget> targets = new ArrayList<>()
@@ -172,14 +176,16 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
         noticeRequest.setNoticeExtMsg("noticeExt", "noticeExt")
         post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
         Thread.sleep(3000)
-        List searchPendingList = JSONUtil.parse(get("/notice/server/msg?appKey=mockRetryStatus&batchId=mockRetryStatus",
+        List searchPendingList = JSONUtil.parse(get("/notice/server/msg?appKey="
+            + MockNoticeSender.MOCK_RETRY_STATUS + "&batchId=" + MockNoticeSender.MOCK_RETRY_STATUS,
             HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert searchPendingList.size() == 1
-        assert searchPendingList.get(0).status == NoticeStatus.PENDING.name()
+        assert searchPendingList.get(0).status == NoticeStatus.RETRY.name()
         assert searchPendingList.get(0).retryCount == 0
-        noticeStatusSyncScheduler.syncPending()
+        noticeStatusSyncScheduler.syncRetry()
         Thread.sleep(3000)
-        List searchRetry1List = JSONUtil.parse(get("/notice/server/msg?appKey=mockRetryStatus&batchId=mockRetryStatus",
+        List searchRetry1List = JSONUtil.parse(get("/notice/server/msg?appKey=" + MockNoticeSender.MOCK_RETRY_STATUS
+            + "&batchId=" + MockNoticeSender.MOCK_RETRY_STATUS,
             HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert searchRetry1List.size() == 1
         assert searchRetry1List.get(0).status == NoticeStatus.RETRY.name()

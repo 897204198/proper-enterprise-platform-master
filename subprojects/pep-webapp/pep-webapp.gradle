@@ -69,7 +69,8 @@ dependencies {
             project(':pep-image-handler'),
             project(':pep-oopsearch-config'),
             project(':pep-oopsearch'),
-            project(':pep-workflow')
+            project(':pep-workflow'),
+            project(':pep-notice-server-app')
 
 }
 task cleanDist(type: Delete) {

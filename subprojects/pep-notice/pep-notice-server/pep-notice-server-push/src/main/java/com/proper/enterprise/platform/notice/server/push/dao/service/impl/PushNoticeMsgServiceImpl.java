@@ -7,7 +7,6 @@ import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMs
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgJpaRepository;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgService;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
-import com.proper.enterprise.platform.notice.server.push.enums.PushDeviceTypeEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,26 +63,48 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
         pushNoticeMsg.setBatchId(readOnlyNotice.getBatchId());
         pushNoticeMsg.setErrorMsg(readOnlyNotice.getErrorMsg());
         pushNoticeMsg.setMessageId(messageId);
-        switch (pushChannel) {
-            case IOS:
-                pushNoticeMsg.setDeviceType(PushDeviceTypeEnum.IOS);
-                break;
-            case HUAWEI:
-            case XIAOMI:
-                pushNoticeMsg.setDeviceType(PushDeviceTypeEnum.ANDROID);
-                break;
-            default:
-                break;
-        }
+
         pushNoticeMsg.setStatus(NoticeStatus.PENDING);
         pushMsgJpaRepository.save(pushNoticeMsg);
     }
+
+    @Override
+    public PushNoticeMsgEntity saveOrUpdatePushMsg(PushNoticeMsgEntity pushNoticeMsg) {
+        PushNoticeMsgEntity oldMsg = pushMsgJpaRepository
+            .findPushNoticeMsgEntitiesByNoticeId(pushNoticeMsg.getNoticeId());
+        if (null != oldMsg) {
+            pushNoticeMsg.setId(oldMsg.getId());
+        }
+        if (null == pushNoticeMsg.getEnable()) {
+            pushNoticeMsg.setEnable(true);
+        }
+        return pushMsgJpaRepository.save(pushNoticeMsg);
+    }
+
+    @Override
+    public void updateStatus(String pushId, NoticeStatus status) {
+        updateStatus(pushId, status, null);
+    }
+
+    @Override
+    public void updateStatus(String pushId, NoticeStatus status, String errMsg) {
+        PushNoticeMsgEntity pushNoticeMsg = pushMsgJpaRepository.findOne(pushId);
+        pushNoticeMsg.setStatus(status);
+        pushNoticeMsg.setErrorMsg(errMsg);
+        pushMsgJpaRepository.updateForSelective(pushNoticeMsg);
+    }
+
 
     @Override
     public DataTrunk<PushNoticeMsgVO> findPagination(String content, NoticeStatus status,
                                                      String appKey, PushChannelEnum pushChannel, PageRequest pageRequest) {
         Page<PushNoticeMsgEntity> page = pushMsgJpaRepository.findPagination(content, status, appKey, pushChannel, pageRequest);
         return convert(page);
+    }
+
+    @Override
+    public PushNoticeMsgEntity findPushNoticeMsgEntitiesByNoticeId(String noticeId) {
+        return pushMsgJpaRepository.findPushNoticeMsgEntitiesByNoticeId(noticeId);
     }
 
     private DataTrunk<PushNoticeMsgVO> convert(Page<PushNoticeMsgEntity> page) {

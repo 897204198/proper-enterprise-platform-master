@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.core.utils.AntResourceUtil
 import com.proper.enterprise.platform.file.vo.FileVO
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult
 import com.proper.enterprise.platform.notice.server.push.constant.IOSConstant
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity
@@ -84,6 +85,14 @@ class IOSNoticeSenderTest extends AbstractTest {
         iosNoticeSender.send(mockPushNotice)
         waitExecutorDone()
         assert pushNoticeMsgJpaRepository.findPushNoticeMsgEntitiesByNoticeId("testtest").getContent() == "66666qwe"
+        BusinessNoticeResult businessNoticeResult = iosNoticeSender.getStatus(mockPushNotice)
+        if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
+            if (!"Unregistered".equals(businessNoticeResult.getMessage())) {
+                throw new ErrMsgException(businessNoticeResult.getMessage())
+            }
+            return
+        }
+        assert NoticeStatus.SUCCESS == iosNoticeSender.getStatus(mockPushNotice).getNoticeStatus()
     }
 
     @Test
@@ -149,14 +158,5 @@ class IOSNoticeSenderTest extends AbstractTest {
         }
         assert flag
         pushNoticeMsgJpaRepository.deleteAll()
-    }
-
-    @Test
-    public void getStatus() {
-        MockPushNotice mockPushNotice = new MockPushNotice()
-        mockPushNotice.setTargetTo(IOSConstant.TARGET_TO)
-        mockPushNotice.setTitle("555")
-        mockPushNotice.setContent("66666qwe")
-        NoticeStatus.SUCCESS == iosNoticeSender.getStatus()
     }
 }

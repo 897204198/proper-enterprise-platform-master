@@ -1,10 +1,12 @@
 package com.proper.enterprise.platform.notice.server.push.sender.xiaomi
 
+import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult
 import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
-
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.After
 import org.junit.Before
@@ -56,7 +58,11 @@ class XiaomiNoticeSenderTest extends AbstractTest {
         xiaomiNoticeSender.beforeSend(notice)
         xiaomiNoticeSender.send(notice)
         xiaomiNoticeSender.afterSend(notice)
-        xiaomiNoticeSender.getStatus(notice)
+        BusinessNoticeResult businessNoticeResult = xiaomiNoticeSender.getStatus(notice)
+        if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
+            throw new ErrMsgException(businessNoticeResult.getMessage())
+        }
+        assert NoticeStatus.SUCCESS == businessNoticeResult.getNoticeStatus()
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.notice.server.app.scheduler
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender
 import com.proper.enterprise.platform.notice.server.app.dao.entity.NoticeEntity
 import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository
+import com.proper.enterprise.platform.notice.server.app.handler.MockNoticeSender
 import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
@@ -32,14 +33,14 @@ class NoticeStatusSyncSchedulerTest extends AbstractTest {
         noticeVO.setTargetTo("aa")
         noticeSender.sendAsync(noticeVO)
         NoticeVO noticeErrVO = new NoticeVO()
-        noticeErrVO.setAppKey("mockErrException")
+        noticeErrVO.setAppKey(MockNoticeSender.MOCK_ERR_SEND)
         noticeErrVO.setBatchId("batchId")
         noticeErrVO.setNoticeType(NoticeType.MOCK)
         noticeErrVO.setContent("content")
         noticeErrVO.setTargetTo("aa")
         noticeSender.sendAsync(noticeErrVO)
         NoticeVO noticeRetryVO = new NoticeVO()
-        noticeRetryVO.setAppKey("mockRetryStatus")
+        noticeRetryVO.setAppKey(MockNoticeSender.MOCK_RETRY_STATUS)
         noticeRetryVO.setBatchId("batchId")
         noticeRetryVO.setNoticeType(NoticeType.MOCK)
         noticeRetryVO.setContent("content")
@@ -54,14 +55,15 @@ class NoticeStatusSyncSchedulerTest extends AbstractTest {
             if (appKey.equals(notice.getAppKey())) {
                 assert notice.getTargetTo() == "aa"
                 assert notice.getStatus() == NoticeStatus.SUCCESS
+                assert notice.getRetryCount() == 0
                 continue
             }
-            if ("mockErrException".equals(notice.getAppKey())) {
+            if (MockNoticeSender.MOCK_ERR_SEND.equals(notice.getAppKey())) {
                 assert notice.getStatus() == NoticeStatus.FAIL
-                assert notice.getErrorMsg() == "error"
+                assert notice.getErrorMsg() == "mock send Err"
                 continue
             }
-            assert notice.getAppKey() == "mockRetryStatus"
+            assert notice.getAppKey() == MockNoticeSender.MOCK_RETRY_STATUS
             assert notice.getStatus() == NoticeStatus.RETRY
         }
     }
@@ -79,7 +81,7 @@ class NoticeStatusSyncSchedulerTest extends AbstractTest {
         noticePending.setRetryCount(1)
         noticeRepository.save(noticePending)
         NoticeEntity noticeFail = new NoticeEntity()
-        noticeFail.setAppKey("mockErrSend")
+        noticeFail.setAppKey(MockNoticeSender.MOCK_ERR_SEND)
         noticeFail.setBatchId("batchId")
         noticeFail.setNoticeType(NoticeType.MOCK)
         noticeFail.setContent("content")
@@ -95,7 +97,8 @@ class NoticeStatusSyncSchedulerTest extends AbstractTest {
         for (NoticeEntity notice : notices) {
             if (appKey.equals(notice.getAppKey())) {
                 assert notice.getTargetTo() == "aa"
-                assert notice.getStatus() == NoticeStatus.PENDING
+                assert notice.getStatus() == NoticeStatus.SUCCESS
+                assert notice.getRetryCount() == 2
                 continue
             }
             assert notice.getStatus() == NoticeStatus.FAIL

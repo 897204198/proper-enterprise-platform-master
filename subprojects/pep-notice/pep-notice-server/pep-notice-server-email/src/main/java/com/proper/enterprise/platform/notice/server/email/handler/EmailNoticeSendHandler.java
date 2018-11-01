@@ -3,14 +3,14 @@ package com.proper.enterprise.platform.notice.server.email.handler;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
+import com.proper.enterprise.platform.notice.server.api.util.ThrowableMessageUtil;
 import com.proper.enterprise.platform.notice.server.email.configurator.EmailNoticeExtConfigurator;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
-import com.proper.enterprise.platform.sys.i18n.I18NService;
+import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +29,13 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
 
     private EmailNoticeExtConfigurator noticeConfigurator;
 
-    private I18NService i18NService;
-
     @Autowired
-    public EmailNoticeSendHandler(EmailNoticeExtConfigurator noticeConfigurator, I18NService i18NService) {
+    public EmailNoticeSendHandler(EmailNoticeExtConfigurator noticeConfigurator) {
         this.noticeConfigurator = noticeConfigurator;
-        this.i18NService = i18NService;
     }
 
     @Override
-    public void send(ReadOnlyNotice notice) throws NoticeException {
+    public BusinessNoticeResult send(ReadOnlyNotice notice)  {
         LOGGER.info("start email: " + JSONUtil.toJSONIgnoreException(notice));
         JavaMailSenderImpl javaMailSender = (JavaMailSenderImpl) noticeConfigurator.getJavaMailSender(notice.getAppKey());
         MimeMessage mailMessage = javaMailSender.createMimeMessage();
@@ -82,18 +79,23 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
             helper.setSubject(notice.getTitle());
             helper.setText(notice.getContent(), true);
             javaMailSender.send(mailMessage);
+            return new BusinessNoticeResult(NoticeStatus.SUCCESS);
         } catch (MessagingException me) {
             LOGGER.error("NoticeServiceImpl.emailNotice[MessagingException]:{}", me);
-            throw new NoticeException(i18NService.getMessage("pep.email.notice.send.error"), me);
+            return new BusinessNoticeResult(NoticeStatus.FAIL,
+                I18NUtil.getMessage("pep.email.notice.send.error")
+                    + ":" + ThrowableMessageUtil.getStackTrace(me));
         } catch (Exception e) {
             LOGGER.error("NoticeServiceImpl.emailNotice[Exception]:{}", e);
-            throw new NoticeException(i18NService.getMessage("pep.email.notice.send.error"), e);
+            return new BusinessNoticeResult(NoticeStatus.FAIL,
+                I18NUtil.getMessage("pep.email.notice.send.error")
+                    + ":" + ThrowableMessageUtil.getStackTrace(e));
         }
     }
 
     @Override
-    public void beforeSend(BusinessNotice notice) {
-
+    public BusinessNoticeResult beforeSend(BusinessNotice notice) {
+        return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }
 
     @Override

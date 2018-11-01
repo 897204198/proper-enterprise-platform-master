@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.notice.server.push.sender;
 
-import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
@@ -12,13 +11,13 @@ import org.springframework.stereotype.Service;
 public class PushNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
     @Override
-    public void send(ReadOnlyNotice notice) throws NoticeException {
-        PushSenderFactory.product(getPushChannel(notice)).send(notice);
+    public BusinessNoticeResult send(ReadOnlyNotice notice) {
+        return PushSenderFactory.product(getPushChannel(notice)).send(notice);
     }
 
     @Override
-    public void beforeSend(BusinessNotice notice) throws NoticeException {
-        PushSenderFactory.product(getPushChannel(notice)).beforeSend(notice);
+    public BusinessNoticeResult beforeSend(BusinessNotice notice) {
+        return PushSenderFactory.product(getPushChannel(notice)).beforeSend(notice);
     }
 
     @Override
@@ -27,7 +26,7 @@ public class PushNoticeSender extends AbstractPushSendSupport implements NoticeS
     }
 
     @Override
-    public BusinessNoticeResult getStatus(ReadOnlyNotice notice) throws NoticeException {
+    public BusinessNoticeResult getStatus(ReadOnlyNotice notice) {
         return PushSenderFactory.product(getPushChannel(notice)).getStatus(notice);
     }
 }

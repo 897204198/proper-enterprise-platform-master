@@ -87,7 +87,7 @@ public class NoticeEntity extends BaseEntity implements Notice {
     /**
      * 异常信息
      */
-    @Column(length = 2048)
+    @Column(length = 16777216)
     private String errorMsg;
 
     @Override

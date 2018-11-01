@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.notice.server.api.exception.NoticeExceptio
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender;
 import com.proper.enterprise.platform.notice.server.api.util.AppUtil;
+import com.proper.enterprise.platform.notice.server.api.util.ThrowableMessageUtil;
 import com.proper.enterprise.platform.notice.server.app.convert.RequestConvert;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
@@ -25,8 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -64,7 +63,10 @@ public class NoticeSenderImpl implements NoticeSender {
             }
             notice.setAppKey(appKey);
             notice.setNoticeType(noticeRequest.getNoticeType());
-            noticeSendHandler.beforeSend(notice);
+            BusinessNoticeResult businessNoticeResult = noticeSendHandler.beforeSend(notice);
+            if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
+                throw new ErrMsgException(businessNoticeResult.getMessage());
+            }
         }
         return notices;
     }
@@ -78,10 +80,9 @@ public class NoticeSenderImpl implements NoticeSender {
 
     @Override
     public void sendAsync(Notice notice) {
-        String persistenceNoticeId;
+        Notice saveNotice;
         try {
-            Notice saveNotice = noticeDaoService.save(BeanUtil.convert(notice, NoticeVO.class));
-            persistenceNoticeId = saveNotice.getId();
+            saveNotice = noticeDaoService.save(BeanUtil.convert(notice, NoticeVO.class));
         } catch (Exception e) {
             LOGGER.error("notice persistence exception,batchId{},appKey:{}", notice.getBatchId(),
                 notice.getAppKey(), e);
@@ -89,14 +90,14 @@ public class NoticeSenderImpl implements NoticeSender {
         }
         try {
             NoticeSendHandler noticeSendHandler = NoticeSenderFactory.product(notice.getNoticeType());
-            noticeSendHandler.send(notice);
+            BusinessNoticeResult businessNoticeResult = noticeSendHandler.send(saveNotice);
+            if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
+                noticeDaoService.updateToFail(saveNotice.getId(), businessNoticeResult.getMessage());
+            }
+            noticeDaoService.updateStatus(saveNotice.getId(), businessNoticeResult.getNoticeStatus());
         } catch (Exception e) {
-            String stackTrace = getStackTrace(e);
-            Notice updateNoticeVO = noticeDaoService.updateToFail(persistenceNoticeId,
-                e.getMessage() + ":" + (stackTrace.length() > 2000
-                    ? stackTrace.substring(0, 2000)
-                    : stackTrace));
-            this.afterSend(updateNoticeVO);
+            noticeDaoService.updateToFail(saveNotice.getId(),
+                e.getMessage() + ":" + ThrowableMessageUtil.getStackTrace(e));
         }
     }
 
@@ -152,11 +153,8 @@ public class NoticeSenderImpl implements NoticeSender {
                     noticeDaoService.updateToFail(notice.getId(), "business status is not support");
             }
         } catch (Exception e) {
-            String stackTrace = getStackTrace(e);
             Notice updateNoticeVO = noticeDaoService.updateToFail(notice.getId(),
-                e.getMessage() + ":" + (stackTrace.length() > 2000
-                    ? stackTrace.substring(0, 2000)
-                    : stackTrace));
+                e.getMessage() + ":" + ThrowableMessageUtil.getStackTrace(e));
             this.afterSend(updateNoticeVO);
         }
     }
@@ -180,26 +178,17 @@ public class NoticeSenderImpl implements NoticeSender {
             }
             NoticeSendHandler noticeSendHandler = NoticeSenderFactory.product(notice.getNoticeType());
             noticeDaoService.addRetryCount(notice.getId());
-            noticeDaoService.updateStatus(notice.getId(), NoticeStatus.PENDING);
-            noticeSendHandler.send(notice);
+            BusinessNoticeResult businessNoticeResult = noticeSendHandler.send(notice);
+            if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
+                noticeDaoService.updateToFail(notice.getId(), businessNoticeResult.getMessage());
+                return;
+            }
+            noticeDaoService.updateStatus(notice.getId(), businessNoticeResult.getNoticeStatus());
         } catch (Exception e) {
-            String stackTrace = getStackTrace(e);
             Notice updateNoticeVO = noticeDaoService.updateToFail(notice.getId(),
-                e.getMessage() + ":" + (stackTrace.length() > 2000
-                    ? stackTrace.substring(0, 2000)
-                    : stackTrace));
+                e.getMessage() + ":" + ThrowableMessageUtil.getStackTrace(e));
             this.afterSend(updateNoticeVO);
         }
     }
 
-    private static String getStackTrace(Throwable throwable) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        try {
-            throwable.printStackTrace(pw);
-            return sw.toString();
-        } finally {
-            pw.close();
-        }
-    }
 }

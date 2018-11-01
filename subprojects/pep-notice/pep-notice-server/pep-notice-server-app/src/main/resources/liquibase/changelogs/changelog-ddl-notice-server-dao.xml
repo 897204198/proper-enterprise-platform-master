@@ -49,7 +49,7 @@
             <column name="RETRY_COUNT" type="INT(1)" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
-            <column name="ERROR_MSG" type="VARCHAR(2048)">
+            <column name="ERROR_MSG" type="LONGTEXT">
             </column>
         </createTable>
         <addPrimaryKey columnNames="ID" constraintName="UK_PEP_NOTICE_MSG" tableName="PEP_NOTICE_MSG"/>

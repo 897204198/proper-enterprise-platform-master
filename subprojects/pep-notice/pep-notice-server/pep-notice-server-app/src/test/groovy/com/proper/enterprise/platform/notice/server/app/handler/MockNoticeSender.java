@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.notice.server.app.handler;
 
-import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
@@ -12,22 +12,35 @@ import org.springframework.stereotype.Service;
 
 @Service("mockNoticeSender")
 public class MockNoticeSender implements NoticeSendHandler {
-    private static final String MOCK_ERR_SEND = "mockErrSend";
+    public static final String MOCK_ERR_SEND = "mockErrSend";
+    public static final String MOCK_PINDING_SEND = "mockPindingSend";
     private static final String MOCK_ERR_AFTER = "mockErrAfter";
-    private static final String MOCK_RETRY_STATUS = "mockRetryStatus";
+    public static final String MOCK_RETRY_STATUS = "mockRetryStatus";
     private static final String MOCK_ERR_EXCEPTION = "mockErrException";
 
     @Override
-    public void send(ReadOnlyNotice notice) {
+    public BusinessNoticeResult send(ReadOnlyNotice notice) {
         if (MOCK_ERR_SEND.equals(notice.getAppKey())) {
-            throw new ErrMsgException("mock send Err");
+            SingletonMap.getSingletMap().put(notice.getId(), NoticeStatus.FAIL);
+            SingletonMap.getSingletMap().put(notice.getId() + "ErrMsg", "mock send Err");
+            return new BusinessNoticeResult(NoticeStatus.FAIL, "mock send Err");
         }
-        SingletonMap.getSingletMap().put(notice.getAppKey(), notice.getAppKey());
+        if (notice.getAppKey().startsWith(MOCK_PINDING_SEND)) {
+            SingletonMap.getSingletMap().put(notice.getId(), NoticeStatus.PENDING);
+            return new BusinessNoticeResult(NoticeStatus.PENDING);
+        }
+        if (MOCK_RETRY_STATUS.equals(notice.getAppKey())) {
+            SingletonMap.getSingletMap().put(notice.getId(), NoticeStatus.RETRY);
+            return new BusinessNoticeResult(NoticeStatus.RETRY);
+        }
+        SingletonMap.getSingletMap().put(notice.getId(), NoticeStatus.SUCCESS);
+        return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }
 
     @Override
-    public void beforeSend(BusinessNotice notice) {
+    public BusinessNoticeResult beforeSend(BusinessNotice notice) {
         notice.setTitle("bbb");
+        return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }
 
     @Override
@@ -44,12 +57,32 @@ public class MockNoticeSender implements NoticeSendHandler {
 
     @Override
     public BusinessNoticeResult getStatus(ReadOnlyNotice notice) {
-        if (MOCK_RETRY_STATUS.equals(notice.getAppKey())) {
-            return new BusinessNoticeResult(NoticeStatus.RETRY);
+        NoticeStatus status = (NoticeStatus) SingletonMap.getSingletMap().get(notice.getId());
+        if (null == status) {
+            if (MOCK_ERR_SEND.equals(notice.getAppKey())) {
+                return new BusinessNoticeResult(NoticeStatus.FAIL, "mock send Err");
+            }
+            if (notice.getAppKey().startsWith(MOCK_PINDING_SEND)) {
+                return new BusinessNoticeResult(NoticeStatus.PENDING);
+            }
+            if (MOCK_RETRY_STATUS.equals(notice.getAppKey())) {
+                return new BusinessNoticeResult(NoticeStatus.RETRY);
+            }
+            return new BusinessNoticeResult(NoticeStatus.SUCCESS);
         }
-        if (MOCK_ERR_EXCEPTION.equals(notice.getAppKey())) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL, "error");
+        if (NoticeStatus.PENDING == status) {
+            int count = null == SingletonMap.getSingletMap()
+                .get(notice.getId() + "count") ? 0 : (Integer) SingletonMap.getSingletMap()
+                .get(notice.getId() + "count");
+            String suffix = notice.getAppKey().replaceAll(MOCK_PINDING_SEND, "");
+            if (StringUtil.isNotEmpty(suffix) && Integer.parseInt(suffix) <= count) {
+                SingletonMap.getSingletMap().put(notice.getId(), NoticeStatus.SUCCESS);
+                return new BusinessNoticeResult(NoticeStatus.SUCCESS);
+            }
         }
-        return new BusinessNoticeResult(NoticeStatus.SUCCESS);
+        if (NoticeStatus.FAIL == status) {
+            return new BusinessNoticeResult(NoticeStatus.FAIL, (String) SingletonMap.getSingletMap().get(notice.getId() + "ErrMsg"));
+        }
+        return new BusinessNoticeResult(status);
     }
 }

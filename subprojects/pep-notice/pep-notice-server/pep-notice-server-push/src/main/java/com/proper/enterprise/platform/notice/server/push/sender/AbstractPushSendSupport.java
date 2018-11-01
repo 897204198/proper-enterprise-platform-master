@@ -2,9 +2,12 @@ package com.proper.enterprise.platform.notice.server.push.sender;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
+import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgService;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,5 +120,56 @@ public abstract class AbstractPushSendSupport {
      */
     public void savePushMsg(String messageId, ReadOnlyNotice readOnlyNotice, PushChannelEnum pushChannel) {
         pushNoticeMsgService.savePushMsg(messageId, readOnlyNotice, pushChannel);
+    }
+
+    /**
+     * 将消息同步至推送
+     *
+     * @param pushNoticeMsg 推送消息
+     * @return 推送实体
+     */
+    public PushNoticeMsgEntity saveOrUpdatePushMsg(PushNoticeMsgEntity pushNoticeMsg) {
+        return pushNoticeMsgService.saveOrUpdatePushMsg(pushNoticeMsg);
+    }
+
+    /**
+     * 更新推送状态
+     *
+     * @param pushId 消息Id
+     * @param status 消息状态
+     */
+    public void updateStatus(String pushId, NoticeStatus status) {
+        pushNoticeMsgService.updateStatus(pushId, status);
+    }
+
+    /**
+     * 更新推送状态
+     *
+     * @param pushId 消息Id
+     * @param errMsg 消息异常
+     */
+    public void updateStatus(String pushId, NoticeStatus status, String errMsg) {
+        pushNoticeMsgService.updateStatus(pushId, status, errMsg);
+    }
+
+    /**
+     * 根据消息id查询推送记录
+     *
+     * @param noticeId 消息id
+     * @return 推送记录
+     */
+    public PushNoticeMsgEntity findPushNoticeMsgEntitiesByNoticeId(String noticeId) {
+        return pushNoticeMsgService.findPushNoticeMsgEntitiesByNoticeId(noticeId);
+    }
+
+    /**
+     * 获得Push状态
+     *
+     * @param notice notice
+     * @return 状态
+     */
+    public BusinessNoticeResult getStatus(ReadOnlyNotice notice) {
+        PushNoticeMsgEntity pushNoticeMsgEntity = this.findPushNoticeMsgEntitiesByNoticeId(notice.getId());
+        return new BusinessNoticeResult(pushNoticeMsgEntity.getStatus(), pushNoticeMsgEntity.getErrorMsg());
     }
 }

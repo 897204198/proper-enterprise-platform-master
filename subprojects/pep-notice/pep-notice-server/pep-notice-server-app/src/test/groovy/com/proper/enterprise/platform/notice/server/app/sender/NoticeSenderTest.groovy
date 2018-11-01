@@ -71,7 +71,7 @@ class NoticeSenderTest extends AbstractServerAppTest {
         noticeVO.setTargetTo("aa")
         noticeSender.sendAsync(noticeVO)
         waitExecutorDone()
-        assert appKey == SingletonMap.getSingletMap().get(appKey)
+        assert NoticeStatus.SUCCESS == SingletonMap.getSingletMap().get(noticeRepository.findAll().get(0).getId())
         assert noticeRepository.findAll().size() == 1
         assert noticeRepository.findAll().get(0).getBatchId() == "batchId"
     }
@@ -100,8 +100,8 @@ class NoticeSenderTest extends AbstractServerAppTest {
         noticeSender.retryNoticesAsync(LocalDateTime.parse("2018-09-03 17:30:21", dfm),
             LocalDateTime.parse("2018-09-03 17:32:22", dfm))
         waitExecutorDone()
-        assert noticeRepository.findOne('1-RETRY').getStatus() == NoticeStatus.PENDING
-        assert noticeRepository.findOne('2-RETRY').getStatus() == NoticeStatus.PENDING
+        assert noticeRepository.findOne('1-RETRY').getStatus() == NoticeStatus.SUCCESS
+        assert noticeRepository.findOne('2-RETRY').getStatus() == NoticeStatus.SUCCESS
         assert noticeRepository.findOne('4-RETRY').getStatus() == NoticeStatus.FAIL
         noticeRepository.deleteAll()
     }

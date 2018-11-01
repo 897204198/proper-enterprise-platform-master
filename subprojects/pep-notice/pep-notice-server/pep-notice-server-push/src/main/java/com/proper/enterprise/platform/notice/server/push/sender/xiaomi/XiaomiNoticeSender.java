@@ -1,15 +1,16 @@
 package com.proper.enterprise.platform.notice.server.push.sender.xiaomi;
 
-import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
+import com.proper.enterprise.platform.notice.server.api.util.ThrowableMessageUtil;
 import com.proper.enterprise.platform.notice.server.push.client.xiaomi.XiaomiNoticeClientManagerApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi;
+import com.proper.enterprise.platform.notice.server.push.convert.PushMsgConvert;
+import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
@@ -57,25 +58,35 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
     }
 
     @Override
-    public void send(ReadOnlyNotice notice) throws NoticeException {
-        Message message = buildMessage(notice);
-        Sender sender = xiaomiNoticeClient.getClient(notice.getAppKey());
-        LOGGER.debug("xiaomi push check Message :{}", JSONUtil.toJSONIgnoreException(message));
-        Result result = null;
+    public BusinessNoticeResult send(ReadOnlyNotice notice) {
+        PushNoticeMsgEntity pushNoticeMsgEntity = PushMsgConvert.convert(notice);
+        pushNoticeMsgEntity.setPushChannel(PushChannelEnum.XIAOMI);
+        pushNoticeMsgEntity.setDeviceType(PushMsgConvert.convert(PushChannelEnum.XIAOMI));
+        pushNoticeMsgEntity.setStatus(NoticeStatus.PENDING);
+        PushNoticeMsgEntity savePushNoticeMsgEntity = super.saveOrUpdatePushMsg(pushNoticeMsgEntity);
         try {
-            result = sender.send(message, notice.getTargetTo(), 1);
-            super.savePushMsg(result.getMessageId(), notice, PushChannelEnum.XIAOMI);
+            Message message = buildMessage(notice);
+            Sender sender = xiaomiNoticeClient.getClient(notice.getAppKey());
+            LOGGER.debug("xiaomi push check Message :{}", JSONUtil.toJSONIgnoreException(message));
+            Result result = sender.send(message, notice.getTargetTo(), 1);
+            if (result == null) {
+                super.updateStatus(savePushNoticeMsgEntity.getId(),
+                    NoticeStatus.FAIL, "xiaomi push return result is null");
+                return new BusinessNoticeResult(NoticeStatus.FAIL, "xiaomi push return result is null");
+            }
+            if (result.getErrorCode() != ErrorCode.Success) {
+                super.updateStatus(savePushNoticeMsgEntity.getId(),
+                    NoticeStatus.FAIL, "xiaomi push return result is null");
+                return new BusinessNoticeResult(NoticeStatus.FAIL, JSONUtil.toJSONIgnoreException(result));
+            }
+            savePushNoticeMsgEntity.setStatus(NoticeStatus.SUCCESS);
+            savePushNoticeMsgEntity.setMessageId(result.getMessageId());
+            super.saveOrUpdatePushMsg(savePushNoticeMsgEntity);
+            return new BusinessNoticeResult(NoticeStatus.SUCCESS);
         } catch (Exception e) {
-            LOGGER.error("error xiaomi push message exception:{}", e);
+            super.updateStatus(savePushNoticeMsgEntity.getId(), NoticeStatus.FAIL, ThrowableMessageUtil.getStackTrace(e));
+            return new BusinessNoticeResult(NoticeStatus.FAIL, ThrowableMessageUtil.getStackTrace(e));
         }
-        if (result == null) {
-            throw new NoticeException("xiaomi push return result is null");
-        }
-        if (result.getErrorCode() != ErrorCode.Success) {
-            LOGGER.error("xiaomi push send message fail  pushId:{}, rsp:{}", notice.getId(), JSONUtil.toJSONIgnoreException(result));
-            throw new NoticeException("xiaomi push send message fail");
-        }
-
     }
 
     private Message buildMessage(ReadOnlyNotice notice) {
@@ -116,20 +127,21 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
     }
 
     @Override
-    public void beforeSend(BusinessNotice notice) throws NoticeException {
+    public BusinessNoticeResult beforeSend(BusinessNotice notice) {
         if (StringUtil.isNull(xiaomiNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.XIAOMI))) {
-            throw new ErrMsgException("xiaomi push need pushPackage");
+            return new BusinessNoticeResult(NoticeStatus.FAIL, "xiaomi push need pushPackage");
         }
+        return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }
 
     @Override
     public void afterSend(ReadOnlyNotice notice) {
-        super.updatePushMsg(notice, PushChannelEnum.XIAOMI);
+
     }
 
     @Override
-    public BusinessNoticeResult getStatus(ReadOnlyNotice notice) throws NoticeException {
-        return new BusinessNoticeResult(NoticeStatus.SUCCESS);
+    public BusinessNoticeResult getStatus(ReadOnlyNotice notice) {
+        return super.getStatus(notice);
     }
 
     /**
