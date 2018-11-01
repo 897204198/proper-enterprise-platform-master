@@ -27,7 +27,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
      */
     @Override
     public AnnouncementEntity getById(String id) {
-        return announcementRepository.findOne(id);
+        return announcementRepository.findById(id).orElse(null);
     }
 
     /**
@@ -61,7 +61,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
      */
     @Override
     public List<AnnouncementEntity> findAllByIdList(List<String> idList) {
-        return (List<AnnouncementEntity>) announcementRepository.findAll(idList);
+        return (List<AnnouncementEntity>) announcementRepository.findAllById(idList);
     }
 
     /**
@@ -71,7 +71,7 @@ public class AnnouncementServiceImpl implements AnnouncementService {
      */
     @Override
     public void delete(List<AnnouncementEntity> noticeInfoList) {
-        announcementRepository.delete(noticeInfoList);
+        announcementRepository.deleteAll(noticeInfoList);
     }
 
     @Override
