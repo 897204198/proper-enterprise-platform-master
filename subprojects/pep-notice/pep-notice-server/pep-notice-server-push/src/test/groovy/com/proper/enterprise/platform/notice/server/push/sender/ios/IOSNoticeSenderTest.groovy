@@ -86,12 +86,6 @@ class IOSNoticeSenderTest extends AbstractTest {
         waitExecutorDone()
         assert pushNoticeMsgJpaRepository.findPushNoticeMsgEntitiesByNoticeId("testtest").getContent() == "66666qwe"
         BusinessNoticeResult businessNoticeResult = iosNoticeSender.getStatus(mockPushNotice)
-        if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
-            if (!"Unregistered".equals(businessNoticeResult.getMessage())) {
-                throw new ErrMsgException(businessNoticeResult.getMessage())
-            }
-            return
-        }
         assert NoticeStatus.SUCCESS == iosNoticeSender.getStatus(mockPushNotice).getNoticeStatus()
     }
 
