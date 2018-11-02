@@ -1,6 +1,20 @@
 OOPSEARCH
 ==========================
 
+```
+// 接口
+├── pep-oopsearch-api
+// 配置
+├── pep-oopsearch-config
+// 基本功能
+├── pep-oopsearch
+// 关系型数据源数据同步到 oopsearch 中，h2/mysql 实现二选一
+├── pep-oopsearch-sync-h2
+├── pep-oopsearch-sync-mysql
+// mongo 数据源数据同步到 oopsearch 中
+└── pep-oopsearch-sync-mongo
+```
+
 主要设计目标
 ----------
 
