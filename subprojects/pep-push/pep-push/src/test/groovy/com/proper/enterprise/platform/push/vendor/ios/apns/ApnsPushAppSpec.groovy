@@ -11,7 +11,7 @@ class ApnsPushAppSpec extends Specification {
     def "testApnsPushApp"() {
         def appKey = 'MobileOADev'
         // Token of test iPhone 5 device
-        def token = '7fbdc8b7c74f678e088c267cd57cf7abb2e2d14cd6aeec4231e1ef3d656ed3bc'
+        def token = 'b61485a194f6492d3319966f4ff633d4bbb12a6b712c7a69b4d83a63b58a7f5e'
         def msgTitle = System.getProperty('os.name')
         def msgContent = "$msgTitle ${System.getProperty('os.arch')} push this notification to test APNs push app at ${new Date().format('yyyy-MM-dd HH:mm:ss')} in test case"
 
