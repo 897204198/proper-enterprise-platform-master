@@ -89,7 +89,7 @@ public class AdminAnnouncementController extends BaseController {
         private String endTime;
 
         @ApiModelProperty(name = "‍开启关闭状态,默认关闭状态", required = true)
-        private Boolean infoStatus = false;
+        private Boolean infoStatus;
 
         public String getInfoType() {
             return infoType;
