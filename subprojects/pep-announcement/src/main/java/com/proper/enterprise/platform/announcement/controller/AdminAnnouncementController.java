@@ -70,6 +70,7 @@ public class AdminAnnouncementController extends BaseController {
             return responseOfGet(dataTrunk);
         }
     }
+    
     public static class AnnouncementVO {
 
         @ApiModelProperty(name = "‍公告信息类型编码", required = true)
