@@ -130,6 +130,29 @@ public class AppDaoServiceImpl implements AppDaoService {
         return appEntity.getEnable();
     }
 
+    @Override
+    public List<App> findAppByAppKey(List<String> appKeys) {
+        if (appKeys != null && appKeys.size() == 0) {
+            throw new ErrMsgException("appKey is empty");
+        }
+        List<AppEntity> entities = appRepository.findAppsByAppKey(appKeys);
+        ArrayList<App> result = new ArrayList<>();
+        for (AppEntity entity : entities) {
+            result.add(BeanUtil.convert(entity, AppVO.class));
+        }
+        return result;
+    }
+
+    @Override
+    public List<App> findByApp() {
+        List<AppEntity> entities = appRepository.findAll();
+        ArrayList<App> result = new ArrayList<>();
+        for (AppEntity entity : entities) {
+            result.add(BeanUtil.convert(entity, AppVO.class));
+        }
+        return result;
+    }
+
     private AppVO buildHaveConf(AppVO appVO) {
         appVO.setHaveEmailConf(false);
         appVO.setHaveSMSConf(false);

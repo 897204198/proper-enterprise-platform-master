@@ -56,6 +56,20 @@ public class PushNoticeMsgVO extends BaseVO {
     @JsonView(Single.class)
     private String errorMsg;
 
+    /**
+     * appName
+     */
+    @JsonView(Single.class)
+    private String appName;
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
     public String getAppKey() {
         return appKey;
     }

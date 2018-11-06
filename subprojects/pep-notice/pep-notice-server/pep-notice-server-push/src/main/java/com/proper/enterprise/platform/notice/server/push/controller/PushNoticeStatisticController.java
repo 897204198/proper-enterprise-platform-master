@@ -5,15 +5,15 @@ import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgStatisticService;
 import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum;
+import com.proper.enterprise.platform.notice.server.push.vo.PushMsgPieDataVO;
+import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgPieVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 推送消息统计
@@ -45,4 +45,16 @@ public class PushNoticeStatisticController extends BaseController {
         return new ResponseEntity<>(null, null, HttpStatus.OK);
     }
 
+    @GetMapping
+    @RequestMapping("/pieDataAnalysis")
+    public ResponseEntity<PushNoticeMsgPieVO> getPieDataAnalysis(String startDate, String endDate, String appKey) {
+        return new ResponseEntity<>(pushMsgStatisticService.findPieDataByDateAndAppKey(startDate, endDate, appKey), HttpStatus.OK);
+    }
+
+    @GetMapping
+    @RequestMapping("/pieDataItems")
+    public ResponseEntity<List<PushMsgPieDataVO>> getPieDataItems(@RequestParam("startDate") String startDate,
+                                                                  @RequestParam("endDate") String endDate) {
+        return new ResponseEntity<>(pushMsgStatisticService.findPieItems(startDate, endDate), HttpStatus.OK);
+    }
 }

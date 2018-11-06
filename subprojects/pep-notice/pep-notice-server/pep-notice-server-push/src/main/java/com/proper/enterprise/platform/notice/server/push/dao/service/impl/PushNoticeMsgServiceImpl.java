@@ -2,7 +2,9 @@ package com.proper.enterprise.platform.notice.server.push.dao.service.impl;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.notice.server.api.model.App;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
+import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgJpaRepository;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgService;
@@ -22,9 +24,12 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
 
     private PushNoticeMsgJpaRepository pushMsgJpaRepository;
 
+    private final AppDaoService appDaoService;
+
     @Autowired
-    public PushNoticeMsgServiceImpl(PushNoticeMsgJpaRepository pushMsgJpaRepository) {
+    public PushNoticeMsgServiceImpl(PushNoticeMsgJpaRepository pushMsgJpaRepository, AppDaoService appDaoService) {
         this.pushMsgJpaRepository = pushMsgJpaRepository;
+        this.appDaoService = appDaoService;
     }
 
     @Override
@@ -108,13 +113,23 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
     }
 
     private DataTrunk<PushNoticeMsgVO> convert(Page<PushNoticeMsgEntity> page) {
+
+        List<App> apps = appDaoService.findByApp();
+
         DataTrunk<PushNoticeMsgVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setCount(page.getTotalElements());
         List<PushNoticeMsgVO> list = new ArrayList<>();
         for (PushNoticeMsgEntity pushNoticeMsgEntity : page.getContent()) {
             PushNoticeMsgVO pushNoticeMsgVO = BeanUtil.convert(pushNoticeMsgEntity, PushNoticeMsgVO.class);
             pushNoticeMsgVO.setSendDate(pushNoticeMsgEntity.getCreateTime());
-            list.add(pushNoticeMsgVO);
+            for (App app : apps) {
+                if (pushNoticeMsgVO.getAppKey().equals(app.getAppKey())) {
+                    pushNoticeMsgVO.setAppName(app.getAppName());
+                    list.add(pushNoticeMsgVO);
+                    break;
+                }
+            }
+
         }
         dataTrunk.setData(list);
         return dataTrunk;

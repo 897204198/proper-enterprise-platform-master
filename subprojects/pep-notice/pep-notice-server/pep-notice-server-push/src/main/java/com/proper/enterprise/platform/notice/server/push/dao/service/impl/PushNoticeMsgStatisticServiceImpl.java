@@ -1,14 +1,19 @@
 package com.proper.enterprise.platform.notice.server.push.dao.service.impl;
 
 import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.notice.server.api.model.App;
+import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgStatisticEntity;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgStatisticRepository;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgStatisticService;
 import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum;
+import com.proper.enterprise.platform.notice.server.push.vo.PushMsgPieDataVO;
+import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgPieVO;
 import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnalysisVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +26,12 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
 
     private PushNoticeMsgStatisticRepository pushNoticeMsgStatisticRepository;
 
+    private AppDaoService appDaoService;
+
     @Autowired
-    public PushNoticeMsgStatisticServiceImpl(PushNoticeMsgStatisticRepository pushNoticeMsgStatisticRepository) {
+    public PushNoticeMsgStatisticServiceImpl(PushNoticeMsgStatisticRepository pushNoticeMsgStatisticRepository, AppDaoService appDaoService) {
         this.pushNoticeMsgStatisticRepository = pushNoticeMsgStatisticRepository;
+        this.appDaoService = appDaoService;
     }
 
     @Override
@@ -81,6 +89,84 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
         Date dateEnd = DateUtil.addDay(dateStart, 1);
         List<PushNoticeMsgStatisticEntity> pushNoticeMsgStatistics = this.getPushStatistic(dateStart, dateEnd);
         this.saveAll(pushNoticeMsgStatistics);
+    }
+
+    @Override
+    public PushNoticeMsgPieVO findPieDataByDateAndAppKey(String startDate, String endDate, String appKey) {
+        if (StringUtil.isNull(appKey)) {
+            throw new ErrMsgException("appkey is not null");
+        }
+        List<String> appKeys = Arrays.asList(appKey.split(","));
+        List<Object[]> pieItems = pushNoticeMsgStatisticRepository.findPieItems(startDate, endDate, appKeys);
+        List<PushMsgPieDataVO> pushMsgPieDataVOS = new ArrayList<>();
+        List<String> appkeys = new ArrayList<>();
+        //获取推送总数
+        for (Object[] pieItem : pieItems) {
+            PushMsgPieDataVO pushMsgPieDataVO = new PushMsgPieDataVO();
+            pushMsgPieDataVO.setAppKey(pieItem[1].toString());
+            pushMsgPieDataVO.setTotalNum(Integer.valueOf(pieItem[0].toString()));
+            appkeys.add(pieItem[1].toString());
+            pushMsgPieDataVOS.add(pushMsgPieDataVO);
+        }
+        //获取推送成功和失败数量
+        List<Object[]> pieData = pushNoticeMsgStatisticRepository.getPieData(startDate, endDate, appKeys);
+        for (Object[] pieDatum : pieData) {
+            for (PushMsgPieDataVO pieDataVO : pushMsgPieDataVOS) {
+                if (pieDatum[1].toString().equals(pieDataVO.getAppKey())) {
+                    if (NoticeStatus.SUCCESS.name().equals(pieDatum[1].toString())) {
+                        pieDataVO.setSuccessNum(Integer.valueOf(pieDatum[0].toString()));
+                    } else {
+                        pieDataVO.setFailNum(Integer.valueOf(pieDatum[0].toString()));
+                    }
+                }
+
+            }
+
+        }
+        List<App> apps = appDaoService.findByApp();
+        for (App app : apps) {
+            for (PushMsgPieDataVO pushMsgPieDataVO : pushMsgPieDataVOS) {
+                if (pushMsgPieDataVO.getAppKey().equals(app.getAppKey())) {
+                    pushMsgPieDataVO.setAppName(app.getAppName());
+                }
+            }
+        }
+
+        //排序
+        pushMsgPieDataVOS.sort((o1, o2) -> {
+            if (o1.getTotalNum() < o2.getTotalNum()) {
+                return 1;
+            } else if (o1.getTotalNum() > o2.getTotalNum()) {
+                return -1;
+            } else {
+                return o1.getAppKey().compareTo(o2.getAppKey());
+            }
+        });
+        PushNoticeMsgPieVO msgPieVO = new PushNoticeMsgPieVO();
+        msgPieVO.setPieData(pushMsgPieDataVOS);
+        msgPieVO.setAppKeyOrder(appkeys);
+        return msgPieVO;
+    }
+
+    @Override
+    public List<PushMsgPieDataVO> findPieItems(String startDate, String endDate) {
+        List<PushMsgPieDataVO> pieDataVOS = new ArrayList<>();
+        List<App> apps = appDaoService.findByApp();
+        for (App app : apps) {
+            PushMsgPieDataVO pieDataVO = new PushMsgPieDataVO();
+            pieDataVO.setAppKey(app.getAppKey());
+            pieDataVO.setAppName(app.getAppName());
+            pieDataVOS.add(pieDataVO);
+        }
+        List<Object[]> findPieItems = pushNoticeMsgStatisticRepository.findPieItems(startDate, endDate);
+        for (Object[] findPieItem : findPieItems) {
+            for (PushMsgPieDataVO pieDataVO : pieDataVOS) {
+                if (findPieItem[1].toString().equals(pieDataVO.getAppKey())) {
+                    pieDataVO.setTotalNum(Integer.valueOf(findPieItem[0].toString()));
+                }
+            }
+        }
+        return pieDataVOS;
     }
 
 
@@ -143,13 +229,13 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
         buildDataAnalysisView(result, pushServiceDataAnalysisMap);
 
         List<PushServiceDataAnalysisVO> list = new ArrayList<>();
-        list.add(one);
-        list.add(two);
-        list.add(three);
-        list.add(four);
-        list.add(five);
-        list.add(six);
         list.add(seven);
+        list.add(six);
+        list.add(five);
+        list.add(four);
+        list.add(three);
+        list.add(two);
+        list.add(one);
         return list;
     }
 

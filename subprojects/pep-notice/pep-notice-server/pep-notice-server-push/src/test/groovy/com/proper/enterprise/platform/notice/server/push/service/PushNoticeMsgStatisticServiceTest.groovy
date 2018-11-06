@@ -6,6 +6,8 @@ import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoti
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgStatisticRepository
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgStatisticService
 import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum
+import com.proper.enterprise.platform.notice.server.push.vo.PushMsgPieDataVO
+import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgPieVO
 import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnalysisVO
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Test
@@ -59,18 +61,18 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
 
         assert day.size() == 7
         //25号
-        assert day.get(0).getIosDataAnalysis().getSuccessCount() == 1
-        assert day.get(0).getHuaweiDataAnalysis().getFailCount() == 1
-        assert day.get(0).getXiaomiDataAnalysis().getFailCount() == 1
+        assert day.get(6).getIosDataAnalysis().getSuccessCount() == 1
+        assert day.get(6).getHuaweiDataAnalysis().getFailCount() == 1
+        assert day.get(6).getXiaomiDataAnalysis().getFailCount() == 1
 
         //24号
-        assert day.get(1).getXiaomiDataAnalysis().getFailCount() == 1
+        assert day.get(5).getXiaomiDataAnalysis().getFailCount() == 1
 
         //23号
-        assert day.get(2).getIosDataAnalysis().getFailCount() == 1
+        assert day.get(4).getIosDataAnalysis().getFailCount() == 1
 
         //21号
-        assert day.get(4).getHuaweiDataAnalysis().getFailCount() == 1
+        assert day.get(2).getHuaweiDataAnalysis().getFailCount() == 1
 
         //验证APP_KEY
         pushNoticeMsgStatisticRepository.deleteAll()
@@ -80,9 +82,9 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
         List<PushServiceDataAnalysisVO> dayAppKeyTest = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
             PushDataAnalysisDateRangeEnum.DAY, "test")
         //25号
-        assert dayAppKeyTest.get(0).getIosDataAnalysis().getSuccessCount() == 1
-        assert dayAppKeyTest.get(0).getHuaweiDataAnalysis().getFailCount() == 1
-        assert dayAppKeyTest.get(0).getXiaomiDataAnalysis().getFailCount() == 1
+        assert dayAppKeyTest.get(6).getIosDataAnalysis().getSuccessCount() == 1
+        assert dayAppKeyTest.get(6).getHuaweiDataAnalysis().getFailCount() == 1
+        assert dayAppKeyTest.get(6).getXiaomiDataAnalysis().getFailCount() == 1
 
         List<PushServiceDataAnalysisVO> dayAppKeyTest2 = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
             PushDataAnalysisDateRangeEnum.DAY, "test2")
@@ -188,6 +190,24 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
         assert pushNoticeMsgStatisticRepository.count() == 0
         pushNoticeMsgStatisticService.saveStatisticSomeday("2018-07-25")
         assert pushNoticeMsgStatisticRepository.count() == 3
+    }
+
+    @Test
+    @Sql([
+        "/com/proper/enterprise/platform/notice/server/push/statistic/push-app.sql"
+    ])
+    public void getPieDataItem() {
+        List<PushNoticeMsgStatisticEntity> pushNoticeMsgStatistics = pushNoticeMsgStatisticService.getPushStatistic(DateUtil.toDate("2018-07-06"), DateUtil.toDate("2018-07-26"))
+        pushNoticeMsgStatisticService.saveAll(pushNoticeMsgStatistics)
+
+        List<PushMsgPieDataVO> items = pushNoticeMsgStatisticService.findPieItems("2018-01-01", '2018-12-12')
+        assert 3 == items.size()
+        PushNoticeMsgPieVO pushNoticeMsgPieVO = pushNoticeMsgStatisticService.findPieDataByDateAndAppKey("2018-01-01", '2018-12-12', 'test,test2')
+        List<PushMsgPieDataVO> pushMsgPieDataVOs = pushNoticeMsgPieVO.getPieData()
+        assert 2 == pushMsgPieDataVOs.size()
+        PushMsgPieDataVO pushMsgPieDataVO1 = pushMsgPieDataVOs.get(0)
+        PushMsgPieDataVO pushMsgPieDataVO2 = pushMsgPieDataVOs.get(1)
+        assert pushMsgPieDataVO1.getTotalNum() >= pushMsgPieDataVO2.getTotalNum()
     }
 
 }

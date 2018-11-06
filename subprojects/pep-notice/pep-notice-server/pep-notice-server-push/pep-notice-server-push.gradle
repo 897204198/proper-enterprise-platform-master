@@ -9,6 +9,8 @@ dependencies {
     testCompile project(':pep-auth-common'),
                 project(':pep-auth-common-jpa'),
                 project(':pep-dfs-mongo'),
-                project(':pep-test')
+                project(':pep-test'),
+                project(':pep-notice-server-app')
     testRuntime project(':pep-cache-ehcache')
+
 }

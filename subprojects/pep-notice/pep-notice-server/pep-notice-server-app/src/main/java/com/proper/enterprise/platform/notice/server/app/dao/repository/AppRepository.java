@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface AppRepository extends BaseJpaRepository<AppEntity, String> {
 
     /**
@@ -33,4 +35,13 @@ public interface AppRepository extends BaseJpaRepository<AppEntity, String> {
         + " and (a.enable=:enable or :enable is null)")
     Page<AppEntity> findAll(@Param("appKey") String appKey, @Param("appName") String appName,
                             @Param("describe") String describe, @Param("enable") Boolean enable, Pageable pageable);
+
+    /**
+     * 获取appKey对应的App
+     * @param appKeys appkeys
+     * @return list
+     */
+    @Query(" SELECT a FROM AppEntity a WHERE a.appKey in :appKeys ")
+    List<AppEntity> findAppsByAppKey(@Param("appKeys") List<String> appKeys);
+
 }

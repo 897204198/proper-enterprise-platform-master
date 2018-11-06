@@ -2,6 +2,8 @@ package com.proper.enterprise.platform.notice.server.push.dao.service;
 
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgStatisticEntity;
 import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum;
+import com.proper.enterprise.platform.notice.server.push.vo.PushMsgPieDataVO;
+import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgPieVO;
 import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnalysisVO;
 
 import java.util.Date;
@@ -51,4 +53,21 @@ public interface PushNoticeMsgStatisticService {
      * @param date 日期
      */
     void saveStatisticSomeday(String date);
+
+    /**
+     * 根据日期 获取饼图数据
+     * @param startDate 开始日期
+     * @param endDate 结束日期
+     * @param appKey 需要查询的具体app
+     * @return Vo
+     */
+    PushNoticeMsgPieVO  findPieDataByDateAndAppKey(String startDate, String endDate, String appKey);
+
+    /**
+     * 获取饼图左侧项目相关数据
+     * @param startDate 开始日期
+     * @param endDate 结束日期
+     * @return list
+     */
+    List<PushMsgPieDataVO> findPieItems(String startDate, String endDate);
 }

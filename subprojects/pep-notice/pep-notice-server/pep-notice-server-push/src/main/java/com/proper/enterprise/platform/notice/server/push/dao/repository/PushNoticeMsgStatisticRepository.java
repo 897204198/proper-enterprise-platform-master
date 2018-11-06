@@ -111,4 +111,43 @@ public interface PushNoticeMsgStatisticRepository extends BaseJpaRepository<Push
         + "GROUP BY S.month, S.status, S.pushChannel ORDER BY S.month")
     List<Object[]> findAllGroupMonth(@Param("appKey") String appKey, @Param("sendDate") String sendDate);
 
+    /**
+     * 通过时间区间查询饼图数据
+     *
+     * @param startDate 开始时间
+     * @param endDate   结束时间
+     * @param appkeys   应用
+     * @return list 统计实体集合
+     */
+    @Query(" SELECT sum(msg.msgCount) as num,msg.appKey from PushNoticeMsgStatisticEntity as msg "
+        + " where msg.status in ('FAIL' ,'SUCCESS') and msg.sendDate between ?1 and ?2 and msg.appKey in ?3 "
+        + " group by msg.appKey,msg.status  order by num desc ")
+    List<Object[]> getPieData(String startDate, String endDate, List<String> appkeys);
+
+
+    /**
+     * 获取饼图项目相关数据
+     *
+     * @param startDate 开始时间
+     * @param endDate   结束时间
+     * @return 数据集合
+     */
+    @Query(" SELECT sum(msg.msgCount) as num,msg.appKey from PushNoticeMsgStatisticEntity as msg "
+        + " where msg.sendDate between ?1 and ?2 group by msg.appKey  order by num desc")
+    List<Object[]> findPieItems(String startDate, String endDate);
+
+
+    /**
+     * 获取饼图项目相关数据
+     *
+     * @param startDate 开始时间
+     * @param endDate   结束时间
+     * @param appkeys   应用
+     * @return 数据集合
+     */
+    @Query(" SELECT sum(msg.msgCount) as num,msg.appKey from PushNoticeMsgStatisticEntity as msg "
+        + " where msg.sendDate between ?1 and ?2 and msg.appKey in ?3 "
+        + " group by msg.appKey  order by num desc ")
+    List<Object[]> findPieItems(String startDate, String endDate, List<String> appkeys);
+
 }

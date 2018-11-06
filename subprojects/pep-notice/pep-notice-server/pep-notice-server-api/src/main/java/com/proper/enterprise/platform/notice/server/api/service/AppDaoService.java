@@ -4,6 +4,8 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.notice.server.api.model.App;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 public interface AppDaoService {
 
     /**
@@ -65,4 +67,17 @@ public interface AppDaoService {
      * @return true false
      */
     boolean isEnable(String appKey);
+
+    /**
+     * 获取指定appKey的app配置
+     * @param appKeys appKeys
+     * @return Apps
+     */
+    List<App> findAppByAppKey(List<String> appKeys);
+
+    /**
+     * 获取所有配置的app
+     * @return app
+     */
+    List<App> findByApp();
 }
