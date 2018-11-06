@@ -1424,7 +1424,7 @@
             <column name="CATALOG" value="BPM"/>
             <column name="DESCRIPTION"/>
             <column name="MUTI" value="Y"/>
-            <column name="DETAILS" value="[{&quot;title&quot;:&quot;普日协同办公密码重置&quot;,&quot;template&quot;:&quot;你好，重置帐户【{username}】的密码， 请点击下面的链接： 【{urlAddress}】。要是你没有请求重置密码，请直接忽略本邮件。 感谢使用&quot;,&quot;type&quot;:&quot;mail&quot;}]"/>
+            <column name="DETAILS" value="[{&quot;title&quot;:&quot;普日协同办公密码重置&quot;,&quot;template&quot;:&quot;你好，重置帐户【{username}】的密码， 请点击下面的链接： 【{urlAddress}】。要是你没有请求重置密码，请直接忽略本邮件。 感谢使用&quot;,&quot;type&quot;:&quot;email&quot;}]"/>
         </insert>
     </changeSet>
 
