@@ -23,6 +23,7 @@ public interface NoticeRepository extends BaseJpaRepository<NoticeEntity, String
      * @param targetTo   发送目标
      * @param content    消息内容
      * @param noticeType 消息类型
+     * @param errorCode  消息编码
      * @param status     消息状态
      * @return 实体集合
      */
@@ -33,6 +34,7 @@ public interface NoticeRepository extends BaseJpaRepository<NoticeEntity, String
         + " and (t.targetTo=:targetTo or :targetTo is null)"
         + " and (t.content=:content or :content is null)"
         + " and (t.noticeType=:noticeType or :noticeType is null)"
+        + " and (t.errorCode=:errorCode or :errorCode is null)"
         + " and (t.status=:status or :status is null)"
         + " order by t.createTime desc")
     List<NoticeEntity> findAll(@Param("id") String id,
@@ -41,6 +43,7 @@ public interface NoticeRepository extends BaseJpaRepository<NoticeEntity, String
                                @Param("targetTo") String targetTo,
                                @Param("content") String content,
                                @Param("noticeType") NoticeType noticeType,
+                               @Param("errorCode") String errorCode,
                                @Param("status") NoticeStatus status);
 
     /**
@@ -52,6 +55,7 @@ public interface NoticeRepository extends BaseJpaRepository<NoticeEntity, String
      * @param targetTo   发送目标
      * @param content    消息内容
      * @param noticeType 消息类型
+     * @param errorCode  消息编码
      * @param status     消息状态
      * @param pageable   分页参数
      * @return 分页实体集合
@@ -63,6 +67,7 @@ public interface NoticeRepository extends BaseJpaRepository<NoticeEntity, String
         + " and (t.targetTo=:targetTo or :targetTo is null)"
         + " and (t.content=:content or :content is null)"
         + " and (t.noticeType=:noticeType or :noticeType is null)"
+        + " and (t.errorCode=:errorCode or :errorCode is null)"
         + " and (t.status=:status or :status is null)"
         + " order by t.createTime desc")
     Page<NoticeEntity> findAll(@Param("id") String id,
@@ -71,6 +76,7 @@ public interface NoticeRepository extends BaseJpaRepository<NoticeEntity, String
                                @Param("targetTo") String targetTo,
                                @Param("content") String content,
                                @Param("noticeType") NoticeType noticeType,
+                               @Param("errorCode") String errorCode,
                                @Param("status") NoticeStatus status,
                                Pageable pageable);
 

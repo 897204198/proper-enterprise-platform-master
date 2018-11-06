@@ -51,5 +51,10 @@ public interface BusinessNotice extends ReadOnlyNotice {
      */
     void setNoticeExtMsg(String key, Object msg);
 
-
+    /**
+     * 设置异常编码
+     *
+     * @param errorCode 异常编码
+     */
+    void setErrorCode(String errorCode);
 }

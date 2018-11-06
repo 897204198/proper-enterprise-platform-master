@@ -10,7 +10,7 @@ import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgStatisticEntity;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgStatisticRepository;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgStatisticService;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushMsgPieDataVO;
 import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgPieVO;
@@ -409,7 +409,7 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
                         pushServiceDataAnalysisVO.getHuaweiDataAnalysis().setFailCount(pushNoticeMsgStatisticEntity.getMsgCount());
                     }
                     break;
-                case IOS:
+                case APNS:
                     if (NoticeStatus.SUCCESS == pushNoticeMsgStatisticEntity.getStatus()) {
                         pushServiceDataAnalysisVO.getIosDataAnalysis().setSuccessCount(pushNoticeMsgStatisticEntity.getMsgCount());
                     }

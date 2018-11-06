@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.api.util.ThrowableMessageUtil;
+import com.proper.enterprise.platform.notice.server.sdk.constants.NoticeErrorCodeConstants;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.proper.enterprise.platform.notice.server.sms.configurator.SMSConfigurator;
 import com.proper.enterprise.platform.notice.server.sms.service.SMSLimitCheckService;
@@ -62,7 +63,7 @@ public class SMSNoticeSendHandler implements NoticeSendHandler {
                 URLEncoder.encode(message, charset));
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("Exception occurs when composing POST data: phone({}), message({})", phone, message, e);
-            return new BusinessNoticeResult(NoticeStatus.FAIL, I18NUtil.getMessage("pep.notice.sms.send.error"));
+            return new BusinessNoticeResult(NoticeStatus.FAIL, e.getMessage(), I18NUtil.getMessage("pep.notice.sms.send.error"));
         }
         String url = (String) smsNoticeConfigurator.get("smsUrl");
         String finalData = data;
@@ -85,7 +86,7 @@ public class SMSNoticeSendHandler implements NoticeSendHandler {
                 }
             });
         } catch (Exception e) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL, ThrowableMessageUtil.getStackTrace(e));
+            return new BusinessNoticeResult(NoticeStatus.FAIL, e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
         }
         return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }
@@ -94,7 +95,7 @@ public class SMSNoticeSendHandler implements NoticeSendHandler {
     public BusinessNoticeResult beforeSend(BusinessNotice notice) {
         boolean result = smsLimitCheckService.couldSendSMS(notice.getTargetTo());
         if (!result) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL,
+            return new BusinessNoticeResult(NoticeStatus.FAIL, NoticeErrorCodeConstants.CHECK_ERROR,
                 I18NUtil.getMessage("pep.notice.sms.get.frequently.try.again"));
         }
         return new BusinessNoticeResult(NoticeStatus.SUCCESS);

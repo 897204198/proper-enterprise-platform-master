@@ -8,7 +8,7 @@ import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgJpaRepository;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgService;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,14 +88,15 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
 
     @Override
     public void updateStatus(String pushId, NoticeStatus status) {
-        updateStatus(pushId, status, null);
+        updateStatus(pushId, status, null, null);
     }
 
     @Override
-    public void updateStatus(String pushId, NoticeStatus status, String errMsg) {
+    public void updateStatus(String pushId, NoticeStatus status, String errCode, String errMsg) {
         PushNoticeMsgEntity pushNoticeMsg = pushMsgJpaRepository.findOne(pushId);
         pushNoticeMsg.setStatus(status);
         pushNoticeMsg.setErrorMsg(errMsg);
+        pushNoticeMsg.setErrorCode(errCode);
         pushMsgJpaRepository.updateForSelective(pushNoticeMsg);
     }
 

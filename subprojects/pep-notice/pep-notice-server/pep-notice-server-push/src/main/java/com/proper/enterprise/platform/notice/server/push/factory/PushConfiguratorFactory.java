@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.factory;
 import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 
 public class PushConfiguratorFactory {
 
@@ -16,7 +16,7 @@ public class PushConfiguratorFactory {
             throw new ErrMsgException("pushChannel can't be null");
         }
         switch (pushChannel) {
-            case IOS:
+            case APNS:
                 return (NoticeConfigurator) PEPApplicationContext.getBean("iosNoticeConfigurator");
             case HUAWEI:
                 return (NoticeConfigurator) PEPApplicationContext.getBean("huaweiNoticeConfigurator");

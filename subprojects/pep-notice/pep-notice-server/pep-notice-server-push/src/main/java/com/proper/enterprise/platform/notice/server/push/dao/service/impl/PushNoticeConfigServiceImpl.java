@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.dao.service.impl;
 import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeConfigService;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushConfigVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -42,7 +42,7 @@ public class PushNoticeConfigServiceImpl implements PushNoticeConfigService {
         }
         if (null != pushConfigVO.getIosConf()) {
             Map<String, Object> iosParam = new HashMap<>(16);
-            iosParam.put("pushChannel", PushChannelEnum.IOS.name());
+            iosParam.put("pushChannel", PushChannelEnum.APNS.name());
             pushConfigurator.post(appKey, pushConfigVO.getIosConf(), iosParam);
         }
     }
@@ -56,7 +56,7 @@ public class PushNoticeConfigServiceImpl implements PushNoticeConfigService {
         xiaomiParam.put("pushChannel", PushChannelEnum.XIAOMI.name());
         pushConfigurator.delete(appKey, xiaomiParam);
         Map<String, Object> iosParam = new HashMap<>(16);
-        iosParam.put("pushChannel", PushChannelEnum.IOS.name());
+        iosParam.put("pushChannel", PushChannelEnum.APNS.name());
         pushConfigurator.delete(appKey, iosParam);
     }
 
@@ -96,7 +96,7 @@ public class PushNoticeConfigServiceImpl implements PushNoticeConfigService {
         }
         //处理IOS配置
         Map<String, Object> iosParam = new HashMap<>(16);
-        iosParam.put("pushChannel", PushChannelEnum.IOS.name());
+        iosParam.put("pushChannel", PushChannelEnum.APNS.name());
         Map oldIosConf = pushConfigurator.get(appKey, iosParam);
         if (null == pushConfigVO.getIosConf() && null != oldIosConf) {
             pushConfigurator.delete(appKey, iosParam);
@@ -106,7 +106,7 @@ public class PushNoticeConfigServiceImpl implements PushNoticeConfigService {
                 pushConfigurator.post(appKey, pushConfigVO.getIosConf(), iosParam);
             }
             if (null != oldIosConf) {
-                pushConfigVO.getIosConf().put("pushChannel", PushChannelEnum.IOS);
+                pushConfigVO.getIosConf().put("pushChannel", PushChannelEnum.APNS);
                 pushConfigurator.put(appKey, pushConfigVO.getIosConf(), iosParam);
             }
         }
@@ -122,7 +122,7 @@ public class PushNoticeConfigServiceImpl implements PushNoticeConfigService {
         xiaomiParam.put("pushChannel", PushChannelEnum.XIAOMI.name());
         pushConfigVO.setXiaomiConf(pushConfigurator.get(appKey, xiaomiParam));
         Map<String, Object> iosParam = new HashMap<>(16);
-        iosParam.put("pushChannel", PushChannelEnum.IOS.name());
+        iosParam.put("pushChannel", PushChannelEnum.APNS.name());
         Map<String, Object> iosConf = pushConfigurator.get(appKey, iosParam);
         if (null != iosConf && null != iosConf.get(CERT_ID)) {
             iosConf.put("certificateName", fileService.findOne(iosConf.get(CERT_ID).toString()).getFileName());

@@ -35,7 +35,7 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
     }
 
     @Override
-    public BusinessNoticeResult send(ReadOnlyNotice notice)  {
+    public BusinessNoticeResult send(ReadOnlyNotice notice) {
         LOGGER.info("start email: " + JSONUtil.toJSONIgnoreException(notice));
         JavaMailSenderImpl javaMailSender = (JavaMailSenderImpl) noticeConfigurator.getJavaMailSender(notice.getAppKey());
         MimeMessage mailMessage = javaMailSender.createMimeMessage();
@@ -82,12 +82,12 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
             return new BusinessNoticeResult(NoticeStatus.SUCCESS);
         } catch (MessagingException me) {
             LOGGER.error("NoticeServiceImpl.emailNotice[MessagingException]:{}", me);
-            return new BusinessNoticeResult(NoticeStatus.FAIL,
+            return new BusinessNoticeResult(NoticeStatus.FAIL, me.getMessage(),
                 I18NUtil.getMessage("pep.email.notice.send.error")
                     + ":" + ThrowableMessageUtil.getStackTrace(me));
         } catch (Exception e) {
             LOGGER.error("NoticeServiceImpl.emailNotice[Exception]:{}", e);
-            return new BusinessNoticeResult(NoticeStatus.FAIL,
+            return new BusinessNoticeResult(NoticeStatus.FAIL, e.getMessage(),
                 I18NUtil.getMessage("pep.email.notice.send.error")
                     + ":" + ThrowableMessageUtil.getStackTrace(e));
         }

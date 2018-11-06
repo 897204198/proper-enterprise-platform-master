@@ -9,8 +9,9 @@ import com.proper.enterprise.platform.notice.server.push.client.huawei.HuaweiNot
 import com.proper.enterprise.platform.notice.server.push.client.huawei.HuaweiNoticeClientManagerApi;
 import com.proper.enterprise.platform.notice.server.push.convert.PushMsgConvert;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport;
+import com.proper.enterprise.platform.notice.server.sdk.constants.NoticeErrorCodeConstants;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,32 +34,46 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
         try {
             HuaweiNoticeClient huaweiNoticeClient = huaweiNoticeClientManagerApi.get(notice.getAppKey());
             if (isCmdMessage(notice)) {
-                huaweiNoticeClient.sendCmdMessage(notice);
+                BusinessNoticeResult businessNoticeCmdResult = huaweiNoticeClient.sendCmdMessage(notice);
+                if (NoticeStatus.FAIL == businessNoticeCmdResult.getNoticeStatus()) {
+                    super.updateStatus(pushId, NoticeStatus.FAIL,
+                        businessNoticeCmdResult.getCode(), businessNoticeCmdResult.getMessage());
+                    return businessNoticeCmdResult;
+                }
                 super.updateStatus(pushId, NoticeStatus.SUCCESS);
-                return new BusinessNoticeResult(NoticeStatus.SUCCESS);
+                return businessNoticeCmdResult;
             }
-            huaweiNoticeClient.sendMessage(notice);
+            BusinessNoticeResult businessNoticeResult = huaweiNoticeClient.sendMessage(notice);
+            if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
+                super.updateStatus(pushId, NoticeStatus.FAIL,
+                    businessNoticeResult.getCode(), businessNoticeResult.getMessage());
+                return businessNoticeResult;
+            }
             super.updateStatus(pushId, NoticeStatus.SUCCESS);
-            return new BusinessNoticeResult(NoticeStatus.SUCCESS);
+            return businessNoticeResult;
         } catch (Exception e) {
-            super.updateStatus(pushId, NoticeStatus.FAIL, ThrowableMessageUtil.getStackTrace(e));
-            return new BusinessNoticeResult(NoticeStatus.FAIL, ThrowableMessageUtil.getStackTrace(e));
+            super.updateStatus(pushId, NoticeStatus.FAIL,
+                e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
+            return new BusinessNoticeResult(NoticeStatus.FAIL, e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
         }
     }
 
     @Override
     public BusinessNoticeResult beforeSend(BusinessNotice notice) {
         if (null == notice.getNoticeExtMsgMap()) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL, "huawei config can't missing push_type in noticeExtMap");
+            return new BusinessNoticeResult(NoticeStatus.FAIL, NoticeErrorCodeConstants.CHECK_ERROR,
+                "huawei config can't missing push_type in noticeExtMap");
         }
         if (null == notice.getNoticeExtMsgMap().get(PUSH_TYPE)) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL, "huawei config can't missing push_type in noticeExtMap");
+            return new BusinessNoticeResult(NoticeStatus.FAIL,
+                NoticeErrorCodeConstants.CHECK_ERROR, "huawei config can't missing push_type in noticeExtMap");
         }
         try {
             huaweiNoticeClientManagerApi.get(notice.getAppKey());
             return new BusinessNoticeResult(NoticeStatus.SUCCESS);
         } catch (Exception e) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL, e.getMessage());
+            return new BusinessNoticeResult(NoticeStatus.FAIL,
+                NoticeErrorCodeConstants.CHECK_ERROR, e.getMessage());
         }
     }
 

@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.controller;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgService;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.beans.factory.annotation.Autowired;

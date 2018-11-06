@@ -93,4 +93,10 @@
         <addUniqueConstraint columnNames="APP_TOKEN" constraintName="UK_PEP_NOTICE_APP_APP_TOKEN"
                              tableName="PEP_NOTICE_APP"/>
     </changeSet>
+
+    <changeSet author="generator (generated)" id="201811064-addErrorCode">
+        <addColumn tableName="PEP_NOTICE_MSG">
+            <column name="ERROR_CODE" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

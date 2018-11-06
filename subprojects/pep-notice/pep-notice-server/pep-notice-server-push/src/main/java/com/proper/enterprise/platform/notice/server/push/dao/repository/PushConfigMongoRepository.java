@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.dao.repository;
 
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface PushConfigMongoRepository extends MongoRepository<PushConfDocument, String> {

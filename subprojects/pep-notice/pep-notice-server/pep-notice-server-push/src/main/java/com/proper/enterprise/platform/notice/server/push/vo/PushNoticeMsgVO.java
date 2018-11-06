@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.vo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 
 public class PushNoticeMsgVO extends BaseVO {

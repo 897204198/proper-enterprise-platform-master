@@ -16,7 +16,7 @@ import org.springframework.core.io.Resource
 import spock.lang.Specification
 
 @Ignore
-class IOSPushTest extends Specification {
+class ApnsPushTest extends Specification {
 
     @Test
     public void apnsSendTest() throws IOException {

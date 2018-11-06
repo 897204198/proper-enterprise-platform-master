@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.notice.server.push.configurator;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

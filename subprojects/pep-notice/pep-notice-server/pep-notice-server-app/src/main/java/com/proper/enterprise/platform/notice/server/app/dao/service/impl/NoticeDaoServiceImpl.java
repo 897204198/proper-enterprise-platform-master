@@ -58,10 +58,11 @@ public class NoticeDaoServiceImpl implements NoticeDaoService {
     }
 
     @Override
-    public Notice updateToFail(String noticeId, String errMsg) {
+    public Notice updateToFail(String noticeId, String errCode, String errMsg) {
         NoticeEntity updateNotice = noticeRepository.findOne(noticeId);
         updateNotice.setStatus(NoticeStatus.FAIL);
         updateNotice.setErrorMsg(errMsg);
+        updateNotice.setErrorCode(errCode);
         return BeanUtil.convert(noticeRepository.updateForSelective(updateNotice), NoticeVO.class);
     }
 
@@ -80,9 +81,10 @@ public class NoticeDaoServiceImpl implements NoticeDaoService {
                                 String targetTo,
                                 String content,
                                 NoticeType noticeType,
+                                String errorCode,
                                 NoticeStatus status) {
         return new ArrayList<>(BeanUtil.convert(noticeRepository.findAll(id, appKey, batchId,
-            targetTo, content, noticeType, status), NoticeVO.class));
+            targetTo, content, noticeType, errorCode, status), NoticeVO.class));
     }
 
     @Override
@@ -92,11 +94,12 @@ public class NoticeDaoServiceImpl implements NoticeDaoService {
                                      String targetTo,
                                      String content,
                                      NoticeType noticeType,
+                                     String errorCode,
                                      NoticeStatus status,
                                      Pageable pageable) {
         DataTrunk<Notice> data = new DataTrunk<>();
         Page<NoticeEntity> page = noticeRepository.findAll(id, appKey, batchId,
-            targetTo, content, noticeType, status, pageable);
+            targetTo, content, noticeType, errorCode, status, pageable);
         data.setData(new ArrayList<>(BeanUtil.convert(page.getContent(), NoticeVO.class)));
         data.setCount(page.getTotalElements());
         return data;

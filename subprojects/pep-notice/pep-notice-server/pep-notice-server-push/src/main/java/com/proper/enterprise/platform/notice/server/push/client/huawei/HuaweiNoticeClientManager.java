@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

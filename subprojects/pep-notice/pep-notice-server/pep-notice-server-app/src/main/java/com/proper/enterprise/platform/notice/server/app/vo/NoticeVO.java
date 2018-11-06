@@ -84,6 +84,11 @@ public class NoticeVO extends BaseVO implements Notice {
     private Integer retryCount;
 
     /**
+     * 异常编码
+     */
+    private String errorCode;
+
+    /**
      * 异常信息
      */
     @Length(message = "{notice.server.param.errMsg.isTooLong}", max = 2048)
@@ -249,5 +254,15 @@ public class NoticeVO extends BaseVO implements Notice {
     @Override
     public void setNoticeType(NoticeType noticeType) {
         this.noticeType = noticeType;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    @Override
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 }

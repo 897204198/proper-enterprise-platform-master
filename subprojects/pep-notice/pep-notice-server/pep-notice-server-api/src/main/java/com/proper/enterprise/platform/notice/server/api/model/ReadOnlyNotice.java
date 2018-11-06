@@ -68,6 +68,13 @@ public interface ReadOnlyNotice extends IBase {
     Map<String, Object> getNoticeExtMsgMap();
 
     /**
+     * 批量设置消息扩展信息
+     *
+     * @param noticeExtMsgMap 消息目标扩展信息
+     */
+    void setAllNoticeExtMsg(Map<String, Object> noticeExtMsgMap);
+
+    /**
      * 获取消息异常
      *
      * @return 消息异常
@@ -94,4 +101,11 @@ public interface ReadOnlyNotice extends IBase {
      * @return 消息状态
      */
     NoticeStatus getStatus();
+
+    /**
+     * 获得异常编码
+     *
+     * @return 异常编码
+     */
+    String getErrorCode();
 }

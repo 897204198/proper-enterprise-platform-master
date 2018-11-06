@@ -2,8 +2,8 @@ package com.proper.enterprise.platform.notice.server.push.convert;
 
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
-import com.proper.enterprise.platform.notice.server.push.enums.PushDeviceTypeEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushDeviceTypeEnum;
 
 public class PushMsgConvert {
     /**
@@ -34,7 +34,7 @@ public class PushMsgConvert {
      */
     public static PushDeviceTypeEnum convert(PushChannelEnum pushChannel) {
         switch (pushChannel) {
-            case IOS:
+            case APNS:
                 return PushDeviceTypeEnum.IOS;
             case HUAWEI:
             case XIAOMI:

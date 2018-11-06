@@ -93,4 +93,10 @@
             <column name="MONTH" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
+
+    <changeSet author="generator (generated)" id="201811064-addPushErrorCode">
+        <addColumn tableName="PEP_PUSH_NOTICE_MSG">
+            <column name="ERROR_CODE" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

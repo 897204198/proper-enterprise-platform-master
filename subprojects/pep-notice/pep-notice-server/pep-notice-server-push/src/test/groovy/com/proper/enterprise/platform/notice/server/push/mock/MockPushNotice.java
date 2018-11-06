@@ -64,6 +64,11 @@ public class MockPushNotice implements Notice {
     private Integer retryCount;
 
     /**
+     * 异常编码
+     */
+    private String errorCode;
+
+    /**
      * 异常信息
      */
     private String errorMsg;
@@ -292,5 +297,15 @@ public class MockPushNotice implements Notice {
     @Override
     public void setNoticeType(NoticeType noticeType) {
         this.noticeType = noticeType;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    @Override
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 }

@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.dao.service;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.data.domain.PageRequest;
@@ -46,11 +46,12 @@ public interface PushNoticeMsgService {
     /**
      * 更新推送状态
      *
-     * @param pushId 消息Id
-     * @param status 消息状态
-     * @param errMsg 消息异常
+     * @param pushId  消息Id
+     * @param status  消息状态
+     * @param errCode 异常编码
+     * @param errMsg  消息异常
      */
-    void updateStatus(String pushId, NoticeStatus status, String errMsg);
+    void updateStatus(String pushId, NoticeStatus status, String errCode, String errMsg);
 
     /**
      * 分页查询推送消息

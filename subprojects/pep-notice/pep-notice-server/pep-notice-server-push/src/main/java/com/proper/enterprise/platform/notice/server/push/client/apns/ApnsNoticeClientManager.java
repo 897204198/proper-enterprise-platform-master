@@ -1,10 +1,10 @@
-package com.proper.enterprise.platform.notice.server.push.client.ios;
+package com.proper.enterprise.platform.notice.server.push.client.apns;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository;
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class IOSNoticeClientManager implements IOSNoticeClientManagerApi {
+public class ApnsNoticeClientManager implements ApnsNoticeClientManagerApi {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IOSNoticeClientManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApnsNoticeClientManager.class);
 
     private FileService fileService;
 
@@ -32,7 +32,7 @@ public class IOSNoticeClientManager implements IOSNoticeClientManagerApi {
     private static final String P12_PASSWORD_INCORRECT_MSG = "keystore password was incorrect";
 
     @Autowired
-    public IOSNoticeClientManager(FileService fileService, PushConfigMongoRepository pushConfigMongoRepository) {
+    public ApnsNoticeClientManager(FileService fileService, PushConfigMongoRepository pushConfigMongoRepository) {
         this.fileService = fileService;
         this.pushConfigMongoRepository = pushConfigMongoRepository;
     }
@@ -49,15 +49,15 @@ public class IOSNoticeClientManager implements IOSNoticeClientManagerApi {
         }
         ApnsClient client = apnsClientPool.get(appKey);
         if (null == client) {
-            PushConfDocument pushConf = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.IOS);
+            PushConfDocument pushConf = pushConfigMongoRepository.findByAppKeyAndPushChannel(appKey, PushChannelEnum.APNS);
             if (null == pushConf) {
                 throw new ErrMsgException("can't find conf by appKey:" + appKey);
             }
             try {
                 apnsClientPool.put(appKey, initClient(pushConf));
             } catch (IOException e) {
-                LOGGER.error("init ios client error,config:{}", pushConf.toString(), e);
-                throw new ErrMsgException("init ios client error");
+                LOGGER.error("init apns client error,config:{}", pushConf.toString(), e);
+                throw new ErrMsgException("init apns client error");
             }
         }
         return apnsClientPool.get(appKey);
@@ -89,8 +89,8 @@ public class IOSNoticeClientManager implements IOSNoticeClientManagerApi {
         } catch (ErrMsgException e) {
             throw e;
         } catch (Exception e) {
-            LOGGER.error("init ios client error,config:{}", pushConf.toString(), e);
-            throw new ErrMsgException("init ios client error");
+            LOGGER.error("init apns client error,config:{}", pushConf.toString(), e);
+            throw new ErrMsgException("init apns client error");
         }
     }
 
@@ -114,8 +114,8 @@ public class IOSNoticeClientManager implements IOSNoticeClientManagerApi {
         } catch (ErrMsgException e) {
             throw e;
         } catch (Exception e) {
-            LOGGER.error("init ios client error,config:{}", pushConf.toString(), e);
-            throw new ErrMsgException("init ios client error");
+            LOGGER.error("init apns client error,config:{}", pushConf.toString(), e);
+            throw new ErrMsgException("init apns client error");
         }
     }
 

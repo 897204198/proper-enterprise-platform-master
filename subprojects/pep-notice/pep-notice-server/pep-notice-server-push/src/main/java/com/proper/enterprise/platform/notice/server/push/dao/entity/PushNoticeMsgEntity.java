@@ -2,8 +2,8 @@ package com.proper.enterprise.platform.notice.server.push.dao.entity;
 
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
-import com.proper.enterprise.platform.notice.server.push.enums.PushDeviceTypeEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushDeviceTypeEnum;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 
 import javax.persistence.*;
@@ -73,6 +73,11 @@ public class PushNoticeMsgEntity extends BaseEntity {
      */
     @Column(nullable = false)
     private String targetTo;
+
+    /**
+     * 异常编码
+     */
+    private String errorCode;
 
     /**
      * 异常信息
@@ -180,6 +185,14 @@ public class PushNoticeMsgEntity extends BaseEntity {
 
     public void setMessageId(String messageId) {
         this.messageId = messageId;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 
     @Override

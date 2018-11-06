@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.push.sender.ios;
+package com.proper.enterprise.platform.notice.server.push.sender.apns;
 
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
@@ -6,12 +6,14 @@ import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.api.util.ThrowableMessageUtil;
-import com.proper.enterprise.platform.notice.server.push.client.ios.IOSNoticeClientManagerApi;
+import com.proper.enterprise.platform.notice.server.push.client.apns.ApnsNoticeClientManagerApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi;
 import com.proper.enterprise.platform.notice.server.push.convert.PushMsgConvert;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.push.enums.apns.IOSErrCodeEnum;
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport;
+import com.proper.enterprise.platform.notice.server.sdk.constants.NoticeErrorCodeConstants;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.turo.pushy.apns.PushNotificationResponse;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;
@@ -25,12 +27,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("iosNoticeSender")
-public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
+public class ApnsNoticeSender extends AbstractPushSendSupport implements NoticeSendHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IOSNoticeSender.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApnsNoticeSender.class);
 
 
-    private IOSNoticeClientManagerApi iosNoticeClientManager;
+    private ApnsNoticeClientManagerApi iosNoticeClientManager;
 
     @Autowired
     @Qualifier("iosNoticeConfigurator")
@@ -38,15 +40,15 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
 
 
     @Autowired
-    public IOSNoticeSender(IOSNoticeClientManagerApi iosNoticeClientManager) {
+    public ApnsNoticeSender(ApnsNoticeClientManagerApi iosNoticeClientManager) {
         this.iosNoticeClientManager = iosNoticeClientManager;
     }
 
     @Override
     public BusinessNoticeResult send(ReadOnlyNotice notice) {
         PushNoticeMsgEntity pushNoticeMsgEntity = PushMsgConvert.convert(notice);
-        pushNoticeMsgEntity.setPushChannel(PushChannelEnum.IOS);
-        pushNoticeMsgEntity.setDeviceType(PushMsgConvert.convert(PushChannelEnum.IOS));
+        pushNoticeMsgEntity.setPushChannel(PushChannelEnum.APNS);
+        pushNoticeMsgEntity.setDeviceType(PushMsgConvert.convert(PushChannelEnum.APNS));
         pushNoticeMsgEntity.setStatus(NoticeStatus.PENDING);
         PushNoticeMsgEntity savePushNoticeMsgEntity = super.saveOrUpdatePushMsg(pushNoticeMsgEntity);
         try {
@@ -65,7 +67,7 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
                 payloadBuilder.setBadgeNumber(badgeNumber);
             }
             String payload = payloadBuilder.buildWithDefaultMaximumLength();
-            String topic = iosNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.IOS);
+            String topic = iosNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.APNS);
             SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(TokenUtil
                 .sanitizeTokenString(notice.getTargetTo()), topic, payload);
             final Future<PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = iosNoticeClientManager
@@ -78,12 +80,17 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
                 super.saveOrUpdatePushMsg(savePushNoticeMsgEntity);
                 return new BusinessNoticeResult(NoticeStatus.SUCCESS);
             }
-            super.updateStatus(savePushNoticeMsgEntity.getId(), NoticeStatus.FAIL, pushNotificationResponse.getRejectionReason());
-            return new BusinessNoticeResult(NoticeStatus.FAIL, pushNotificationResponse.getRejectionReason());
+            super.updateStatus(savePushNoticeMsgEntity.getId(), NoticeStatus.FAIL,
+                IOSErrCodeEnum.convertErrorCode(pushNotificationResponse.getRejectionReason()),
+                pushNotificationResponse.getRejectionReason());
+            return new BusinessNoticeResult(NoticeStatus.FAIL,
+                IOSErrCodeEnum.convertErrorCode(pushNotificationResponse.getRejectionReason()),
+                pushNotificationResponse.getRejectionReason());
         } catch (Exception e) {
-            LOGGER.error("ios get response error", e);
-            super.updateStatus(savePushNoticeMsgEntity.getId(), NoticeStatus.FAIL, ThrowableMessageUtil.getStackTrace(e));
-            return new BusinessNoticeResult(NoticeStatus.FAIL, ThrowableMessageUtil.getStackTrace(e));
+            LOGGER.error("apns get response error", e);
+            super.updateStatus(savePushNoticeMsgEntity.getId(), NoticeStatus.FAIL,
+                e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
+            return new BusinessNoticeResult(NoticeStatus.FAIL, e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
         }
     }
 
@@ -92,10 +99,12 @@ public class IOSNoticeSender extends AbstractPushSendSupport implements NoticeSe
         try {
             iosNoticeClientManager.get(notice.getAppKey());
         } catch (Exception e) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL, ThrowableMessageUtil.getStackTrace(e));
+            return new BusinessNoticeResult(NoticeStatus.FAIL, NoticeErrorCodeConstants.CHECK_ERROR,
+                ThrowableMessageUtil.getStackTrace(e));
         }
-        if (StringUtil.isEmpty(iosNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.IOS))) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL, "ios push can't send without pushPackage");
+        if (StringUtil.isEmpty(iosNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.APNS))) {
+            return new BusinessNoticeResult(NoticeStatus.FAIL, NoticeErrorCodeConstants.CHECK_ERROR,
+                "apns push can't send without pushPackage");
         }
         return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }

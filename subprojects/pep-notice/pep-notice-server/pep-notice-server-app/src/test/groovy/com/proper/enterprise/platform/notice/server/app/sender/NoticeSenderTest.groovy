@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender
 import com.proper.enterprise.platform.notice.server.app.AbstractServerAppTest
 import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository
 import com.proper.enterprise.platform.notice.server.app.global.SingletonMap
+import com.proper.enterprise.platform.notice.server.app.handler.MockNoticeSender
 import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
@@ -105,4 +106,19 @@ class NoticeSenderTest extends AbstractServerAppTest {
         assert noticeRepository.findOne('4-RETRY').getStatus() == NoticeStatus.FAIL
         noticeRepository.deleteAll()
     }
+
+    @Test
+    void invalidTargetTest() {
+        noticeRepository.deleteAll()
+        NoticeVO noticeVO = new NoticeVO()
+        noticeVO.setAppKey(MockNoticeSender.MOCK_INVALID_TARGET)
+        noticeVO.setBatchId("batchId")
+        noticeVO.setNoticeType(NoticeType.MOCK)
+        noticeVO.setContent("content")
+        noticeVO.setTargetTo("aa")
+        noticeSender.sendAsync(noticeVO)
+        waitExecutorDone()
+        assert MockNoticeSender.MOCK_INVALID_TARGET == noticeRepository.findAll().get(0).getErrorCode()
+    }
+
 }

@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.dao.entity;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 
 import javax.persistence.*;

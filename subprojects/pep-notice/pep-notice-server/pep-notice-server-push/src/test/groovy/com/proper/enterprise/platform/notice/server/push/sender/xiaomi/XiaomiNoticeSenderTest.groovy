@@ -4,7 +4,8 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult
 import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
+import com.proper.enterprise.platform.notice.server.push.enums.xiaomi.XiaomiErrCodeEnum
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.test.AbstractTest
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.PUSHTOKEN
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.APPSECRET
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.PACKAGENAME
-import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.APPKEY
 
 class XiaomiNoticeSenderTest extends AbstractTest {
 
@@ -77,6 +77,20 @@ class XiaomiNoticeSenderTest extends AbstractTest {
         customs.put("_proper_pushtype", "cmd")
         notice.setAllNoticeExtMsg(customs)
         xiaomiNoticeSender.send(notice)
+    }
+
+    @Test
+    void invalidTargetTest() {
+        def notice = new MockPushNotice()
+        notice.setAppKey(APPKEY)
+        notice.setTitle("test")
+        notice.setContent("test")
+        notice.setTargetTo("1231231")
+        Map<String, Object> customs = new HashMap()
+        customs.put("_proper_badge", 5)
+        customs.put("_proper_pushtype", "cmd")
+        notice.setAllNoticeExtMsg(customs)
+        assert XiaomiErrCodeEnum.INVALID_TARGET.getNoticeCode() == xiaomiNoticeSender.send(notice).getCode()
     }
 
 }

@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.push.sender.ios
+package com.proper.enterprise.platform.notice.server.push.sender.apns
 
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
 import com.proper.enterprise.platform.auth.common.vo.AccessTokenVO
@@ -13,8 +13,9 @@ import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDo
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgJpaRepository
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
-import com.proper.enterprise.platform.notice.server.push.enums.PushDeviceTypeEnum
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushDeviceTypeEnum
+import com.proper.enterprise.platform.notice.server.push.enums.apns.IOSErrCodeEnum
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
@@ -30,7 +31,7 @@ import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-class IOSNoticeSenderTest extends AbstractTest {
+class ApnsNoticeSenderTest extends AbstractTest {
 
     @Autowired
     @Qualifier("iosNoticeSender")
@@ -73,7 +74,7 @@ class IOSNoticeSenderTest extends AbstractTest {
         conf.put("certificateId", fileP12VO.getId())
 
         Map request = new HashMap()
-        request.put("pushChannel", PushChannelEnum.IOS.toString())
+        request.put("pushChannel", PushChannelEnum.APNS.toString())
         pushNoticeConfigurator.post(appKey, conf, request)
 
         MockPushNotice mockPushNotice = new MockPushNotice()
@@ -108,7 +109,7 @@ class IOSNoticeSenderTest extends AbstractTest {
         FileVO fileP12VO = JSONUtil.parse(get("/file/" + resultP12 + "/meta", HttpStatus.OK).getResponse().getContentAsString(), FileVO.class)
 
         PushConfDocument pushConfDocument = new PushConfDocument()
-        pushConfDocument.setPushChannel(PushChannelEnum.IOS)
+        pushConfDocument.setPushChannel(PushChannelEnum.APNS)
         pushConfDocument.setAppKey(appKey)
         pushConfDocument.setCertificateId(fileP12VO.getId())
         pushConfDocument.setCertPassword(IOSConstant.PASSWORD)
@@ -123,7 +124,7 @@ class IOSNoticeSenderTest extends AbstractTest {
         try {
             iosNoticeSender.beforeSend(mockPushNotice)
         } catch (ErrMsgException e) {
-            assert "ios push can't send without pushPackage".equals(e.getMessage())
+            assert "apns push can't send without pushPackage".equals(e.getMessage())
         }
         save.setPushPackage(IOSConstant.TOPIC)
         PushConfDocument update = pushConfigMongoRepository.save(save)
@@ -152,5 +153,53 @@ class IOSNoticeSenderTest extends AbstractTest {
         }
         assert flag
         pushNoticeMsgJpaRepository.deleteAll()
+    }
+
+
+    @Test
+    void invalidTargetTest() {
+        String appKey = 'iosConfSendToken1'
+        def accessToken = new AccessTokenVO(appKey, 'for test using', appKey, 'GET:/test')
+        accessTokenService.saveOrUpdate(accessToken)
+
+        //上传P12证书
+        Resource[] resourcesP12 = AntResourceUtil.getResources(IOSConstant.CENT_PATH)
+        String resultP12 = mockMvc.perform(
+            MockMvcRequestBuilders
+                .fileUpload("/file")
+                .file(
+                new MockMultipartFile("file", "icmp_dev_pro.p12", ",multipart/form-data", resourcesP12[0].inputStream)
+            )
+        ).andExpect(MockMvcResultMatchers.status().isCreated())
+            .andReturn().getResponse().getContentAsString()
+        FileVO fileP12VO = JSONUtil.parse(get("/file/" + resultP12 + "/meta", HttpStatus.OK).getResponse().getContentAsString(), FileVO.class)
+
+        Map conf = new HashMap()
+        conf.put("certPassword", IOSConstant.PASSWORD)
+        conf.put("pushPackage", IOSConstant.TOPIC)
+        conf.put("certificateId", fileP12VO.getId())
+
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.APNS.toString())
+        pushNoticeConfigurator.post(appKey, conf, request)
+
+        MockPushNotice mockPushNotice = new MockPushNotice()
+        mockPushNotice.setAppKey(appKey)
+        mockPushNotice.setTargetTo("553df1db87ab77af2ddc3410e7a68950bfb7165a65e73048a4376fed11a8c824")
+        mockPushNotice.setTitle("555")
+        mockPushNotice.setContent("66666qwe")
+        mockPushNotice.setId("testtest")
+        //token未在包下
+        BusinessNoticeResult notForTopic = iosNoticeSender.send(mockPushNotice)
+        assert IOSErrCodeEnum.DEVICE_TOKEN_NOT_FOR_TOPIC.getNoticeCode() == notForTopic.getCode()
+        assert IOSErrCodeEnum.DEVICE_TOKEN_NOT_FOR_TOPIC.getCode() == notForTopic.getMessage()
+        //token无效
+        mockPushNotice.setTargetTo("1231")
+        BusinessNoticeResult badToken = iosNoticeSender.send(mockPushNotice)
+        assert IOSErrCodeEnum.BAD_DEVICE_TOKEN.getNoticeCode() == badToken.getCode()
+        assert IOSErrCodeEnum.BAD_DEVICE_TOKEN.getCode() == badToken.getMessage()
+
+        //todo Unregistered异常无法重现
+
     }
 }

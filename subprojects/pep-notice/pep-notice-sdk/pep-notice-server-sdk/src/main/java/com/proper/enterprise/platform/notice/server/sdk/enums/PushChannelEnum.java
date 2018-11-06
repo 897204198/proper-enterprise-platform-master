@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.push.enums;
+package com.proper.enterprise.platform.notice.server.sdk.enums;
 
 /**
  * 推送渠道
@@ -13,7 +13,7 @@ public enum PushChannelEnum {
      */
     XIAOMI,
     /**
-     * IOS
+     * APNS
      */
-    IOS
+    APNS
 }

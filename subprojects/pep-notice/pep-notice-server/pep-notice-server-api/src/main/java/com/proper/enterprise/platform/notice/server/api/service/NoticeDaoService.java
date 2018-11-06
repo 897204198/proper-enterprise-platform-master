@@ -42,10 +42,11 @@ public interface NoticeDaoService {
      * 消息发送失败
      *
      * @param noticeId 消息Id
+     * @param errCode  异常编码
      * @param errMsg   消息异常
      * @return 更新后的消息VO
      */
-    Notice updateToFail(String noticeId, String errMsg);
+    Notice updateToFail(String noticeId, String errCode, String errMsg);
 
     /**
      * 增加重试次数
@@ -63,6 +64,7 @@ public interface NoticeDaoService {
      * @param targetTo   发送目标
      * @param content    消息内容
      * @param noticeType 消息类型
+     * @param errorCode  异常编码
      * @param status     消息状态
      * @return 消息VO集合
      */
@@ -72,6 +74,7 @@ public interface NoticeDaoService {
                          String targetTo,
                          String content,
                          NoticeType noticeType,
+                         String errorCode,
                          NoticeStatus status);
 
 
@@ -84,6 +87,7 @@ public interface NoticeDaoService {
      * @param targetTo   发送目标
      * @param content    消息内容
      * @param noticeType 消息类型
+     * @param errorCode  异常编码
      * @param status     消息状态
      * @param pageable   分页参数
      * @return 分页VO对象
@@ -94,6 +98,7 @@ public interface NoticeDaoService {
                               String targetTo,
                               String content,
                               NoticeType noticeType,
+                              String errorCode,
                               NoticeStatus status,
                               Pageable pageable);
 

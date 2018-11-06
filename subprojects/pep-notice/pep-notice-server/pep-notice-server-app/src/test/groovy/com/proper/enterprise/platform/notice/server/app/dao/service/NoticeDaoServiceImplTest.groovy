@@ -51,7 +51,7 @@ class NoticeDaoServiceImplTest extends AbstractTest {
         assert save.getRetryCount() == 0
         assert noticeDaoService.updateStatus(save.getId(),
             NoticeStatus.SUCCESS).getStatus() == NoticeStatus.SUCCESS
-        assert noticeDaoService.updateToFail(save.getId(),
+        assert noticeDaoService.updateToFail(save.getId(),"errMsg",
             "errMsg").getErrorMsg() == "errMsg"
     }
 

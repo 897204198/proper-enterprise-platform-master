@@ -12,6 +12,7 @@ public class PushNoticeSender extends AbstractPushSendSupport implements NoticeS
 
     @Override
     public BusinessNoticeResult send(ReadOnlyNotice notice) {
+        buildCommonCustomProperty(notice);
         return PushSenderFactory.product(getPushChannel(notice)).send(notice);
     }
 

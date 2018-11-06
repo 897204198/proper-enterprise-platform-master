@@ -4,7 +4,6 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender;
 import com.proper.enterprise.platform.notice.server.api.util.AppUtil;
@@ -45,7 +44,7 @@ public class NoticeSenderImpl implements NoticeSender {
     }
 
     @Override
-    public List<Notice> beforeSend(String appKey, NoticeRequest noticeRequest) throws NoticeException {
+    public List<Notice> beforeSend(String appKey, NoticeRequest noticeRequest) {
         //已禁用或已删除的app不发送
         if (!AppUtil.isEnable(appKey)) {
             throw new ErrMsgException(appKey + " is disabled");
@@ -92,12 +91,12 @@ public class NoticeSenderImpl implements NoticeSender {
             NoticeSendHandler noticeSendHandler = NoticeSenderFactory.product(notice.getNoticeType());
             BusinessNoticeResult businessNoticeResult = noticeSendHandler.send(saveNotice);
             if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
-                noticeDaoService.updateToFail(saveNotice.getId(), businessNoticeResult.getMessage());
+                noticeDaoService.updateToFail(saveNotice.getId(), businessNoticeResult.getCode(), businessNoticeResult.getMessage());
             }
             noticeDaoService.updateStatus(saveNotice.getId(), businessNoticeResult.getNoticeStatus());
         } catch (Exception e) {
             noticeDaoService.updateToFail(saveNotice.getId(),
-                e.getMessage() + ":" + ThrowableMessageUtil.getStackTrace(e));
+                e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
         }
     }
 
@@ -137,12 +136,12 @@ public class NoticeSenderImpl implements NoticeSender {
                 case PENDING:
                     return;
                 case FAIL:
-                    noticeDaoService.updateToFail(notice.getId(), businessNoticeResult.getMessage());
+                    noticeDaoService.updateToFail(notice.getId(), businessNoticeResult.getCode(), businessNoticeResult.getMessage());
                     return;
                 case RETRY:
                     //超过最大重试次数 记异常不再重试
                     if (notice.getRetryCount() >= maxRetryCount) {
-                        noticeDaoService.updateToFail(notice.getId(), "Max retry");
+                        noticeDaoService.updateToFail(notice.getId(), "Max retry", "Max retry");
                         return;
                     }
                     //未超过最大重试次数 重试
@@ -150,11 +149,12 @@ public class NoticeSenderImpl implements NoticeSender {
                     noticeDaoService.updateStatus(notice.getId(), NoticeStatus.RETRY);
                     return;
                 default:
-                    noticeDaoService.updateToFail(notice.getId(), "business status is not support");
+                    noticeDaoService.updateToFail(notice.getId(), "business status is not support",
+                        "business status is not support");
             }
         } catch (Exception e) {
             Notice updateNoticeVO = noticeDaoService.updateToFail(notice.getId(),
-                e.getMessage() + ":" + ThrowableMessageUtil.getStackTrace(e));
+                e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
             this.afterSend(updateNoticeVO);
         }
     }
@@ -180,13 +180,14 @@ public class NoticeSenderImpl implements NoticeSender {
             noticeDaoService.addRetryCount(notice.getId());
             BusinessNoticeResult businessNoticeResult = noticeSendHandler.send(notice);
             if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
-                noticeDaoService.updateToFail(notice.getId(), businessNoticeResult.getMessage());
+                noticeDaoService.updateToFail(notice.getId(), businessNoticeResult.getCode(),
+                    businessNoticeResult.getMessage());
                 return;
             }
             noticeDaoService.updateStatus(notice.getId(), businessNoticeResult.getNoticeStatus());
         } catch (Exception e) {
             Notice updateNoticeVO = noticeDaoService.updateToFail(notice.getId(),
-                e.getMessage() + ":" + ThrowableMessageUtil.getStackTrace(e));
+                e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
             this.afterSend(updateNoticeVO);
         }
     }

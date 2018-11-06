@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.configurator.ios;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.file.api.File;
 import com.proper.enterprise.platform.file.service.FileService;
-import com.proper.enterprise.platform.notice.server.push.client.ios.IOSNoticeClientManagerApi;
+import com.proper.enterprise.platform.notice.server.push.client.apns.ApnsNoticeClientManagerApi;
 import com.proper.enterprise.platform.notice.server.push.configurator.AbstractPushConfigSupport;
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +16,10 @@ public class IOSNoticeConfigurator extends AbstractPushConfigSupport {
 
     private FileService fileService;
 
-    private IOSNoticeClientManagerApi iosNoticeClientApi;
+    private ApnsNoticeClientManagerApi iosNoticeClientApi;
 
     @Autowired
-    public IOSNoticeConfigurator(FileService fileService, IOSNoticeClientManagerApi iosNoticeClientApi) {
+    public IOSNoticeConfigurator(FileService fileService, ApnsNoticeClientManagerApi iosNoticeClientApi) {
         this.fileService = fileService;
         this.iosNoticeClientApi = iosNoticeClientApi;
     }
@@ -40,10 +40,10 @@ public class IOSNoticeConfigurator extends AbstractPushConfigSupport {
         }
         File file = fileService.findOne((String) config.get(CERT_ID));
         if (null == file) {
-            throw new ErrMsgException("ios cert is not find");
+            throw new ErrMsgException("apns cert is not find");
         }
         if (!CERT_TYPE.equals(file.getFileType())) {
-            throw new ErrMsgException("ios cert type must be p12");
+            throw new ErrMsgException("apns cert type must be p12");
         }
         PushConfDocument pushDocument = buildPushDocument(appKey, config, params);
         iosNoticeClientApi.post(appKey, pushDocument);
@@ -60,7 +60,7 @@ public class IOSNoticeConfigurator extends AbstractPushConfigSupport {
     public Map put(String appKey, Map<String, Object> config,  Map<String, Object> params) {
         File file = fileService.findOne((String) config.get(CERT_ID));
         if (!CERT_TYPE.equals(file.getFileType())) {
-            throw new ErrMsgException("ios cert type must be p12");
+            throw new ErrMsgException("apns cert type must be p12");
         }
         PushConfDocument pushDocument = buildPushDocument(appKey, config, params);
         iosNoticeClientApi.put(appKey, pushDocument);

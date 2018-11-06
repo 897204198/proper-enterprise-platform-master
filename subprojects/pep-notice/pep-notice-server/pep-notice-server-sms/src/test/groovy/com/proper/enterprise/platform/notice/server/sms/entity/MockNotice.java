@@ -27,6 +27,11 @@ public class MockNotice extends BaseVO implements Notice {
     private NoticeType noticeType;
     private NoticeStatus status;
     private Integer retryCount;
+    /**
+     * 异常编码
+     */
+    private String errorCode;
+
     private String errorMsg;
 
     @Override
@@ -198,5 +203,15 @@ public class MockNotice extends BaseVO implements Notice {
     @Override
     public void setNoticeType(NoticeType noticeType) {
         this.noticeType = noticeType;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    @Override
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 }

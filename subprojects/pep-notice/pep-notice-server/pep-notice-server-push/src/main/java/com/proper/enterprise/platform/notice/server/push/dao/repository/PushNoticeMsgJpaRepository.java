@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.notice.server.push.dao.repository;
 
 import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

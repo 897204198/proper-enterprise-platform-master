@@ -85,6 +85,10 @@ public class NoticeEntity extends BaseEntity implements Notice {
     private Integer retryCount;
 
     /**
+     * 异常编码
+     */
+    private String errorCode;
+    /**
      * 异常信息
      */
     @Column(length = 16777216)
@@ -256,5 +260,13 @@ public class NoticeEntity extends BaseEntity implements Notice {
     @Override
     public void setNoticeType(NoticeType noticeType) {
         this.noticeType = noticeType;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 }

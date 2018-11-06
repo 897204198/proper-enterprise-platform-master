@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.notice.server.push.configurator.xiaomi
 
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
 import com.proper.enterprise.platform.test.AbstractTest
 import org.junit.Before
 import org.junit.Test

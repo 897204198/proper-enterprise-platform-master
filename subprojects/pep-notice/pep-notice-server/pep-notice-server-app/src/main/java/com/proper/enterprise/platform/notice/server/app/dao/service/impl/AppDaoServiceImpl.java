@@ -13,7 +13,7 @@ import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
 import com.proper.enterprise.platform.notice.server.app.dao.entity.AppEntity;
 import com.proper.enterprise.platform.notice.server.app.dao.repository.AppRepository;
 import com.proper.enterprise.platform.notice.server.app.vo.AppVO;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -176,7 +176,7 @@ public class AppDaoServiceImpl implements AppDaoService {
             return appVO;
         }
         Map<String, Object> iosConf = new HashMap<>(16);
-        iosConf.put("pushChannel", PushChannelEnum.IOS.name());
+        iosConf.put("pushChannel", PushChannelEnum.APNS.name());
         if (null != NoticeConfiguratorFactory.product(NoticeType.PUSH).get(appVO.getAppKey(), iosConf)) {
             appVO.setHavePushConf(true);
         }

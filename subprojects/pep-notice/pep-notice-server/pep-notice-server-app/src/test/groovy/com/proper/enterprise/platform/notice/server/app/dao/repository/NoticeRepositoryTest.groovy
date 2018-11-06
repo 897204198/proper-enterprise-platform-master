@@ -63,19 +63,19 @@ class NoticeRepositoryTest extends AbstractTest {
     @Sql("/com/proper/enterprise/platform/notice/server/app/dao/sql/queryNotices.sql")
     public void queryNoticesTest() {
         List<NoticeEntity> noticesNoParam = noticeRepository
-            .findAll(null, null, null, null, null, null, null)
+            .findAll(null, null, null, null, null, null, null, null)
         assert noticesNoParam.size() == 5
         assert noticesNoParam.get(0).getId() == '1'
         List<NoticeEntity> noticesById = noticeRepository
-            .findAll("1", null, null, null, null, null, null)
+            .findAll("1", null, null, null, null, null, null, null)
         assert noticesById.size() == 1
         assert noticesById.get(0).getStatus() == NoticeStatus.RETRY
         List<NoticeEntity> noticesByAppKey = noticeRepository
-            .findAll(null, "1", null, null, null, null, null)
+            .findAll(null, "1", null, null, null, null, null, null)
         assert noticesByAppKey.size() == 2
         List<NoticeEntity> notices = noticeRepository
             .findAll("1", "1", "1", "1", "1",
-            NoticeType.EMAIL, NoticeStatus.RETRY)
+            NoticeType.EMAIL, null, NoticeStatus.RETRY)
         assert notices.size() == 1
     }
 
@@ -91,6 +91,7 @@ class NoticeRepositoryTest extends AbstractTest {
             null,
             null,
             null,
+            null,
             null, pageRequest)
         assert noticesPage.getTotalElements() == 5
         assert noticesPage.getContent().size() == 2
@@ -98,6 +99,7 @@ class NoticeRepositoryTest extends AbstractTest {
         PageRequest pageRequest2 = new PageRequest(0, 2, new Sort(new Sort.Order(Sort.Direction.DESC,"id")))
         Page<NoticeEntity> noticesPage2 = noticeRepository
             .findAll(null,
+            null,
             null,
             null,
             null,

@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.notice.server.push.dao.document;
 
 import com.proper.enterprise.platform.core.mongo.document.BaseDocument;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 

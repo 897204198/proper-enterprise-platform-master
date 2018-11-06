@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.notice.server.push.client.ios
+package com.proper.enterprise.platform.notice.server.push.client.apns
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.core.utils.AntResourceUtil
@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.file.vo.FileVO
 import com.proper.enterprise.platform.notice.server.push.constant.IOSConstant
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 class IOSClientManagerTest extends AbstractTest {
 
     @Autowired
-    IOSNoticeClientManagerApi iosNoticeClientApi
+    ApnsNoticeClientManagerApi iosNoticeClientApi
 
     @Autowired
     PushConfigMongoRepository pushConfigMongoRepository
@@ -54,7 +54,7 @@ class IOSClientManagerTest extends AbstractTest {
         pushConfDocument.setAppKey(appKey)
         pushConfDocument.setCertificateId(fileP12VO.getId())
         pushConfDocument.setCertPassword(IOSConstant.PASSWORD)
-        pushConfDocument.setPushChannel(PushChannelEnum.IOS)
+        pushConfDocument.setPushChannel(PushChannelEnum.APNS)
         pushConfigMongoRepository.save(pushConfDocument)
 
         assert null != iosNoticeClientApi.get(appKey)

@@ -3,13 +3,15 @@ package com.proper.enterprise.platform.notice.server.push.client.huawei;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
-import com.proper.enterprise.platform.notice.server.api.exception.NoticeException;
+import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
+import com.proper.enterprise.platform.notice.server.api.util.ThrowableMessageUtil;
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
+import com.proper.enterprise.platform.notice.server.push.enums.huawei.HuaweiErrCodeEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -52,17 +54,11 @@ public class HuaweiNoticeClient {
         this.packageName = pushDocument.getPushPackage();
     }
 
-    public void sendCmdMessage(ReadOnlyNotice notice) throws NoticeException {
-        send(1, notice, JSONUtil.toJSONIgnoreException(notice.getNoticeExtMsgMap()));
+    public BusinessNoticeResult sendCmdMessage(ReadOnlyNotice notice) {
+        return send(1, notice, JSONUtil.toJSONIgnoreException(notice.getNoticeExtMsgMap()));
     }
 
-    public void sendMessage(ReadOnlyNotice notice) throws NoticeException {
-        JSONObject body = new JSONObject();
-        //消息标题
-        body.put("title", notice.getTitle());
-        //消息内容体
-        body.put("content", notice.getContent());
-        send(3, notice, body.toString());
+    public BusinessNoticeResult sendMessage(ReadOnlyNotice notice) {
         Integer badgeNumber = null;
         if (null != notice.getNoticeExtMsgMap()) {
             Map<String, Object> noticeExtMsg = notice.getNoticeExtMsgMap();
@@ -77,8 +73,17 @@ public class HuaweiNoticeClient {
             data.put("_proper_mpage", "badge");
             //应用角标数
             data.put("_proper_badge", badgeNumber);
-            send(1, notice, JSONUtil.toJSONIgnoreException(data));
+            BusinessNoticeResult sendResult = send(1, notice, JSONUtil.toJSONIgnoreException(data));
+            if (NoticeStatus.FAIL == sendResult.getNoticeStatus()) {
+                return sendResult;
+            }
         }
+        JSONObject body = new JSONObject();
+        //消息标题
+        body.put("title", notice.getTitle());
+        //消息内容体
+        body.put("content", notice.getContent());
+        return send(3, notice, body.toString());
     }
 
     /**
@@ -87,12 +92,14 @@ public class HuaweiNoticeClient {
      * @param type   1透传 3消息
      * @param notice 消息主体
      * @param body   消息内容
-     * @throws NoticeException 自定义异常
      */
-    private void send(int type, ReadOnlyNotice notice, String body) throws NoticeException {
+    private BusinessNoticeResult send(int type, ReadOnlyNotice notice, String body) {
         // accessToken 如果过期则重新获取 accessToken
         if (tokenExpiredTime <= System.currentTimeMillis()) {
-            refreshAccessTokenAndExpiredTime();
+            BusinessNoticeResult refreshResult = refreshAccessTokenAndExpiredTime();
+            if (NoticeStatus.FAIL.equals(refreshResult.getNoticeStatus())) {
+                return refreshResult;
+            }
         }
         // 目标设备Token
         JSONArray deviceTokens = new JSONArray();
@@ -102,18 +109,16 @@ public class HuaweiNoticeClient {
         Map customs = notice.getNoticeExtMsgMap();
         if (customs != null) {
             String extPushType = (String) customs.get("push_type");
-            try {
-                if (StringUtil.isNotBlank(extPushType)) {
-                    pushType = PushType.valueOf(extPushType);
-                }
-                // chat类型推送不包含 uri 会导致推送失败
-                String uriKey = "uri";
-                if ((PushType.chat).equals(pushType) && StringUtil.isBlank((String) customs.get(uriKey))) {
-                    throw new ErrMsgException("Chat type push MUST has 'uri' in customs, but has not: " + JSONUtil.toJSONIgnoreException(customs));
-                }
-            } catch (Exception e) {
-                LOGGER.debug("Fallback to default push type (PushType.other) from {} caused by exception!", extPushType, e);
+            if (StringUtil.isEmpty(extPushType)) {
                 pushType = PushType.other;
+            }
+            if (StringUtil.isNotBlank(extPushType)) {
+                pushType = PushType.valueOf(extPushType);
+            }
+            // chat类型推送不包含 uri 会导致推送失败
+            String uriKey = "uri";
+            if ((PushType.chat).equals(pushType) && StringUtil.isBlank((String) customs.get(uriKey))) {
+                return new BusinessNoticeResult(NoticeStatus.FAIL, "Chat type push MUST has 'uri' in customs", "");
             }
         }
         // msg 结构体, 包含 type/body/action
@@ -162,10 +167,11 @@ public class HuaweiNoticeClient {
                 URLEncoder.encode(format, "UTF-8"));
             LOGGER.debug("postBody: {}", postBody);
             resBody = post(API_URL, postBody);
+            return isSuccess(resBody, notice);
         } catch (IOException e) {
-            throw new NoticeException("Huawei push post with error " + e.getMessage());
+            return new BusinessNoticeResult(NoticeStatus.FAIL,
+                e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
         }
-        isSuccess(resBody, notice);
     }
 
     /**
@@ -194,10 +200,8 @@ public class HuaweiNoticeClient {
 
     /**
      * 获取AccessToken
-     *
-     * @throws NoticeException 自定义异常
      */
-    private void refreshAccessTokenAndExpiredTime() throws NoticeException {
+    private BusinessNoticeResult refreshAccessTokenAndExpiredTime() {
         String tokenUrl = "https://login.cloud.huawei.com/oauth2/v2/token";
         try {
             String msgBody = MessageFormat.format(
@@ -210,9 +214,10 @@ public class HuaweiNoticeClient {
             // 设置 access token 过期时间
             tokenExpiredTime = System.currentTimeMillis() + obj.getLong("expires_in") * 1000 - 5 * 60 * 1000;
             accessToken = obj.getString("access_token");
+            return new BusinessNoticeResult(NoticeStatus.SUCCESS);
         } catch (Exception e) {
             LOGGER.error("get accessToken failed with Exception {}", e);
-            throw new NoticeException("Please check Huawei push config, get token with error " + e.getMessage());
+            return new BusinessNoticeResult(NoticeStatus.FAIL, "get token  error", ThrowableMessageUtil.getStackTrace(e));
         }
     }
 
@@ -221,18 +226,21 @@ public class HuaweiNoticeClient {
         return new String(post.getBody(), "UTF-8");
     }
 
-    private void isSuccess(String res, ReadOnlyNotice notice) throws NoticeException {
+    private BusinessNoticeResult isSuccess(String res, ReadOnlyNotice notice) {
         LOGGER.debug("Push to huawei with noticeId:{} has response:{}", notice.getId(), res);
         String key = "msg";
         try {
             JsonNode result = JSONUtil.parse(res, JsonNode.class);
             String successValue = "Success";
             if (result.get(key) != null && !successValue.equals(result.get(key).textValue())) {
-                throw new NoticeException("Push to huawei failed, msg:" + result.get(key).textValue());
+                return new BusinessNoticeResult(NoticeStatus.FAIL,
+                    HuaweiErrCodeEnum.convertErrorCode(result.get(key).textValue()), result.get(key).textValue());
             }
+            return new BusinessNoticeResult(NoticeStatus.SUCCESS);
         } catch (Exception ex) {
             LOGGER.debug("Error occurs when parsing response of " + notice.getId(), ex);
-            throw new NoticeException("Error occurs when parsing response of " + notice.getId() + " errmsg:" + ex.getMessage(), ex);
+            return new BusinessNoticeResult(NoticeStatus.FAIL,
+                "Error occurs when parsing response", ThrowableMessageUtil.getStackTrace(ex));
         }
     }
 

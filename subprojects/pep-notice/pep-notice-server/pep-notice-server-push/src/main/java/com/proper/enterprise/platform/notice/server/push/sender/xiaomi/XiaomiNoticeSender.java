@@ -11,8 +11,10 @@ import com.proper.enterprise.platform.notice.server.push.client.xiaomi.XiaomiNot
 import com.proper.enterprise.platform.notice.server.push.configurator.BasePushConfigApi;
 import com.proper.enterprise.platform.notice.server.push.convert.PushMsgConvert;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.push.enums.xiaomi.XiaomiErrCodeEnum;
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport;
+import com.proper.enterprise.platform.notice.server.sdk.constants.NoticeErrorCodeConstants;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.xiaomi.push.sdk.ErrorCode;
 import com.xiaomi.xmpush.server.Message;
@@ -71,21 +73,26 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
             Result result = sender.send(message, notice.getTargetTo(), 1);
             if (result == null) {
                 super.updateStatus(savePushNoticeMsgEntity.getId(),
-                    NoticeStatus.FAIL, "xiaomi push return result is null");
-                return new BusinessNoticeResult(NoticeStatus.FAIL, "xiaomi push return result is null");
+                    NoticeStatus.FAIL, "xiaomi push return result is null",
+                    "xiaomi push return result is null");
+                return new BusinessNoticeResult(NoticeStatus.FAIL,
+                    "xiaomi push return result is null", "xiaomi push return result is null");
             }
             if (result.getErrorCode() != ErrorCode.Success) {
                 super.updateStatus(savePushNoticeMsgEntity.getId(),
-                    NoticeStatus.FAIL, "xiaomi push return result is null");
-                return new BusinessNoticeResult(NoticeStatus.FAIL, JSONUtil.toJSONIgnoreException(result));
+                    NoticeStatus.FAIL, XiaomiErrCodeEnum.convertErrorCode(result.getErrorCode().getDescription()),
+                    "xiaomi push return result is null");
+                return new BusinessNoticeResult(NoticeStatus.FAIL, XiaomiErrCodeEnum.convertErrorCode(result.getErrorCode().getDescription()),
+                    JSONUtil.toJSONIgnoreException(result));
             }
             savePushNoticeMsgEntity.setStatus(NoticeStatus.SUCCESS);
             savePushNoticeMsgEntity.setMessageId(result.getMessageId());
             super.saveOrUpdatePushMsg(savePushNoticeMsgEntity);
             return new BusinessNoticeResult(NoticeStatus.SUCCESS);
         } catch (Exception e) {
-            super.updateStatus(savePushNoticeMsgEntity.getId(), NoticeStatus.FAIL, ThrowableMessageUtil.getStackTrace(e));
-            return new BusinessNoticeResult(NoticeStatus.FAIL, ThrowableMessageUtil.getStackTrace(e));
+            super.updateStatus(savePushNoticeMsgEntity.getId(), NoticeStatus.FAIL,
+                e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
+            return new BusinessNoticeResult(NoticeStatus.FAIL, e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
         }
     }
 
@@ -129,7 +136,8 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
     @Override
     public BusinessNoticeResult beforeSend(BusinessNotice notice) {
         if (StringUtil.isNull(xiaomiNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.XIAOMI))) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL, "xiaomi push need pushPackage");
+            return new BusinessNoticeResult(NoticeStatus.FAIL,
+                NoticeErrorCodeConstants.CHECK_ERROR, "xiaomi push need pushPackage");
         }
         return new BusinessNoticeResult(NoticeStatus.SUCCESS);
     }

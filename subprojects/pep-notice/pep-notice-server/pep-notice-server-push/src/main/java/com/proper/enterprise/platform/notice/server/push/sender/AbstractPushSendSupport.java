@@ -6,12 +6,13 @@ import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResu
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgEntity;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgService;
-import com.proper.enterprise.platform.notice.server.push.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractPushSendSupport {
@@ -102,6 +103,24 @@ public abstract class AbstractPushSendSupport {
     }
 
     /**
+     * 构建通用的自定义字段数据
+     *
+     * @param readOnlyNotice 只读消息
+     */
+    protected void buildCommonCustomProperty(ReadOnlyNotice readOnlyNotice) {
+        if (null == readOnlyNotice) {
+            return;
+        }
+        if (null == readOnlyNotice.getNoticeExtMsgMap()) {
+            readOnlyNotice.setAllNoticeExtMsg(new HashMap<>(16));
+        }
+        Map customMap = readOnlyNotice.getNoticeExtMsgMap();
+        customMap.put("_proper_title", readOnlyNotice.getTitle());
+        customMap.put("_proper_content", readOnlyNotice.getContent());
+        readOnlyNotice.setAllNoticeExtMsg(customMap);
+    }
+
+    /**
      * 将消息同步至推送
      *
      * @param readOnlyNotice 只读消息
@@ -145,11 +164,12 @@ public abstract class AbstractPushSendSupport {
     /**
      * 更新推送状态
      *
-     * @param pushId 消息Id
-     * @param errMsg 消息异常
+     * @param pushId  消息Id
+     * @param errCode 异常编码
+     * @param errMsg  消息异常
      */
-    public void updateStatus(String pushId, NoticeStatus status, String errMsg) {
-        pushNoticeMsgService.updateStatus(pushId, status, errMsg);
+    public void updateStatus(String pushId, NoticeStatus status, String errCode, String errMsg) {
+        pushNoticeMsgService.updateStatus(pushId, status, errCode, errMsg);
     }
 
     /**
@@ -170,6 +190,7 @@ public abstract class AbstractPushSendSupport {
      */
     public BusinessNoticeResult getStatus(ReadOnlyNotice notice) {
         PushNoticeMsgEntity pushNoticeMsgEntity = this.findPushNoticeMsgEntitiesByNoticeId(notice.getId());
-        return new BusinessNoticeResult(pushNoticeMsgEntity.getStatus(), pushNoticeMsgEntity.getErrorMsg());
+        return new BusinessNoticeResult(pushNoticeMsgEntity.getStatus(), pushNoticeMsgEntity.getErrorCode(),
+            pushNoticeMsgEntity.getErrorMsg());
     }
 }
