@@ -53,10 +53,10 @@ class AdminAnnouncementControllerTest extends AbstractTest{
         assert result4.data[0].beginTime == "2016-12-01 00:00:00"
 
         def result5 = resOfGet("${url}ACTIVITY_INFORMATION&title=公告", HttpStatus.OK)
-        assert result5.size() == 1
-        assert result5.get(0).title == "医改公告"
-        assert result5.get(0).info.contains("按照国家和省深化医药卫生体制改革总体部署和要求")
-        assert result5.get(0).beginTime == "2016-12-01 00:00:00"
+        assert result5.count == 1
+        assert result5.data.get(0).title == "医改公告"
+        assert result5.data.get(0).info.contains("按照国家和省深化医药卫生体制改革总体部署和要求")
+        assert result5.data.get(0).beginTime == "2016-12-01 00:00:00"
     }
 
     @Test
