@@ -28,7 +28,7 @@
             </foreach>
         </if>
         <if test="parameter.procInstIds != null and parameter.procInstIds.size > 0">
-            AND RES.TASK_ID_ IN
+            AND RES.PROC_INST_ID_ IN
             <foreach item="procInstId" index="index" collection="parameter.procInstIds" open="(" separator="," close=")">
                 #{procInstId}
             </foreach>

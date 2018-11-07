@@ -69,5 +69,6 @@ class TaskControllerTest extends WorkflowAbstractTest {
         assert assigneeIsMe.size() == 2
         assert assigneeIsMe.get(0).form.formData.a.text == "研发组"
         assert assigneeIsMe.get(1).form.formData.a == "b"
+        assert null != assigneeIsMe.get(1).globalData
     }
 }
