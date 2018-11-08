@@ -29,3 +29,6 @@ MANIFEST.MF
 
 # ignore liquibase db changelog default folder
 db/
+
+# ignore spring boot configuration meta info
+**/META-INF/spring-configuration-metadata.json

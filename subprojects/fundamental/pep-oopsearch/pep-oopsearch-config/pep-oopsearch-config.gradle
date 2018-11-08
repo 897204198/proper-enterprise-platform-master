@@ -1,0 +1,11 @@
+apply plugin: 'java-library'
+
+dependencies {
+
+                   api project(':pep-oopsearch-api')
+
+        implementation project(':pep-core-jpa')
+
+    testImplementation project(':pep-test')
+
+}

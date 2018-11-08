@@ -1,0 +1,10 @@
+apply plugin: 'java-library'
+dependencies {
+               api project(':pep-notice-api')
+    implementation project(':pep-auth-api'),
+                   project(':pep-notice-set'),
+                   project(':pep-notice-template')
+       testCompile project(':pep-test'),
+                   project(':pep-auth-common-jpa')
+}
+

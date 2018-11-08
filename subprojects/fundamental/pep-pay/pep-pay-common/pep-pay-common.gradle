@@ -1,0 +1,8 @@
+dependencies {
+
+        implementation project(':pep-core'),
+                       project(':pep-pay-api')
+
+    testImplementation project(':pep-test')
+
+}

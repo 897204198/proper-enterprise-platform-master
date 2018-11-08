@@ -1,5 +1,0 @@
-dependencies {
-    compile project(':pep-core-jpa')
-
-    testCompile project(':pep-test')
-}

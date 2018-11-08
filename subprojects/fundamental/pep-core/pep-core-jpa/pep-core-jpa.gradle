@@ -1,0 +1,14 @@
+apply plugin: 'java-library'
+
+dependencies {
+                   api libraries.spring_boot_starter_data_jpa
+
+                   api project(':pep-core')
+
+        implementation libraries.druid_spring_boot_starter,
+                       libraries.hibernate_entitymanager,
+                       libraries.liquibase,
+                       libraries.spring_orm
+        
+    testImplementation project(':pep-test')
+}

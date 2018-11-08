@@ -1,0 +1,12 @@
+apply plugin: 'java-library'
+
+dependencies {
+    api project(':pep-notice-api')
+    implementation  libraries.spring_boot_starter_mail,
+                    project(':pep-core-mongo'),
+                    project(':pep-push'),
+                    project(':pep-sys')
+     testCompile project(':pep-test'),
+                    project(':pep-dfs-mongo')
+}
+

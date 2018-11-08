@@ -1,4 +1,0 @@
-dependencies {
-    compile project(':pep-file'),
-            libraries.thumbnailator
-}

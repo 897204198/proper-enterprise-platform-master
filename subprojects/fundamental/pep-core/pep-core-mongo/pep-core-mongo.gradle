@@ -1,0 +1,11 @@
+apply plugin: 'java-library'
+
+dependencies {
+                   api libraries.spring_boot_starter_data_mongodb
+    
+                   api project(':pep-core')
+    
+        implementation libraries.aspectjweaver
+
+    testImplementation project(':pep-test')
+}

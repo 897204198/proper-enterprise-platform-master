@@ -1,8 +1,0 @@
-dependencies {
-    compile project(':pep-core'),
-            project(':pep-sys')
-
-    testCompile project(':pep-auth-common'),
-                project(':pep-test')
-    testRuntime project(':pep-cache-ehcache')
-}

@@ -1,0 +1,13 @@
+apply plugin: 'java-library'
+
+dependencies {
+
+                   api project(':pep-auth-common')
+
+    testImplementation libraries.groovy_json
+
+    testImplementation project(':pep-test')
+
+       testRuntimeOnly project(':pep-cache-ehcache')
+
+}

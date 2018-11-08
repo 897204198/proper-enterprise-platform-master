@@ -1,0 +1,15 @@
+apply plugin: 'java-library'
+
+dependencies {
+
+                   api libraries.quartz,
+                       libraries.spring_context_support
+
+        implementation libraries.spring_orm,
+                       libraries.spring_oxm
+
+        implementation project(':pep-core')
+
+    testImplementation project(':pep-test')
+
+}

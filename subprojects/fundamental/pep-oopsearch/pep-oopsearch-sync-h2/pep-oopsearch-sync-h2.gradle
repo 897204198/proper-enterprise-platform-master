@@ -1,0 +1,13 @@
+dependencies {
+
+        implementation project(':pep-auth-api'),
+                       project(':pep-cache-api'),
+                       project(':pep-oopsearch'),
+                       project(':pep-schedule-cluster')
+
+    testImplementation project(':pep-test')
+
+       testRuntimeOnly project(':pep-auth-common-jpa'),
+                       project(':pep-cache-ehcache')
+
+}

@@ -1,0 +1,17 @@
+apply plugin: 'java-library'
+
+dependencies {
+
+                   api project(':pep-core-mongo'),
+                       project(':pep-oopsearch-config')
+
+        implementation project(':pep-auth-common'),
+                       project(':pep-cache-api'),
+                       project(':pep-schedule-cluster')
+
+    testImplementation project(':pep-test')
+
+       testRuntimeOnly project(':pep-auth-common-jpa'),
+                       project(':pep-cache-ehcache')
+
+}

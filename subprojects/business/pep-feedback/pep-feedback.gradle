@@ -1,0 +1,11 @@
+dependencies {
+    
+        implementation project(':pep-auth-common-jpa'),
+                       project(':pep-core-mongo'),
+                       project(':pep-notice-client')
+
+    testImplementation project(':pep-test')
+    
+       testRuntimeOnly project(':pep-cache-ehcache')
+    
+}

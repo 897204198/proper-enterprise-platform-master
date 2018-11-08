@@ -1,0 +1,29 @@
+apply plugin: 'java-library'
+
+dependencies {
+
+                   api libraries.flowable_engine
+
+       implementation  libraries.flowable_json_converter,
+                       libraries.flowable_rest,
+                       libraries.flowable_spring,
+                       libraries.flowable_ui_modeler_rest,
+                       libraries.flowable_http,
+                       libraries.groovy_all,
+                       libraries.javax_inject,
+                       libraries.liquibase
+
+        implementation project(':pep-auth-common-jpa'),
+                       project(':pep-cache-api'),
+                       project(':pep-core-mongo'),
+                       project(':pep-notice-client')
+
+           runtimeOnly libraries.commons_fileupload,
+                       libraries.flowable_web_designer
+
+    testImplementation project(':pep-test')
+
+       testRuntimeOnly project(':pep-auth-jwt'),
+                       project(':pep-cache-ehcache')
+
+}

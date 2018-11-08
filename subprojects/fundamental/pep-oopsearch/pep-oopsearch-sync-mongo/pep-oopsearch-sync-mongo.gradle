@@ -1,0 +1,10 @@
+dependencies {
+
+        implementation project(':pep-core-jpa'),
+                       project(':pep-oopsearch')
+
+    testImplementation project(':pep-test')
+
+       testRuntimeOnly project(':pep-cache-ehcache')
+
+}

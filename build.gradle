@@ -5,9 +5,10 @@ buildscript {
 }
 
 plugins {
-    id "io.spring.dependency-management" version "1.0.4.RELEASE"
     id 'com.gradle.build-scan' version '1.13'
+    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
     id 'org.liquibase.gradle' version '1.2.4'
+    id 'org.springframework.boot' version '2.0.6.RELEASE'
 }
 
 buildScan {
@@ -40,7 +41,7 @@ allprojects {
 }
 
 ext {
-    pepDevConfRoot = "$rootDir/subprojects/pep-dev/pep-dev-configs/src/main/resources/META-INF"
+    pepDevConfRoot = "$rootDir/subprojects/dev-kit/pep-dev-configs/src/main/resources/META-INF"
     projectGenerator = [:]
     projectGenerator.name = 'pep'
     projectGenerator.path = 'platform'
@@ -96,6 +97,7 @@ subprojects {
 
     dependencyManagement {
         imports {
+            mavenBom "org.springframework.boot:spring-boot:${versions.spring_boot}"
             mavenBom "org.springframework.data:spring-data-releasetrain:${versions.spring_data}"
         }
     }
@@ -105,7 +107,7 @@ subprojects {
 
     group = 'com.proper.enterprise.platform'
     // Needs to change version in dependencies.gradle:6:32 TOGETHER!!
-    // Needs to change version code in core.properties:18:14 TOGETHER!!
+    // Needs to change version in PEPVersion.java:10:17 TOGETHER!!
     version = '0.5.0-SNAPSHOT'
 
     test {
@@ -127,25 +129,42 @@ subprojects {
     }
 
     dependencies {
-        compile libraries.slf4j_api,
-                libraries.spring_webmvc,
-                libraries.springfox
+//        compile libraries.slf4j_api,
+//                libraries.spring_webmvc,
+//                libraries.springfox
+//
+//        runtime libraries.druid,
+//                libraries.logback_classic
 
-        runtime libraries.druid,
-                libraries.logback_classic
+//        testCompile libraries.spring_test
+//
+//        testRuntime libraries.aspectjweaver,
+//                    libraries.servlet_api,
+//                    libraries.spring_context_support
 
-        testCompile libraries.groovy,
-                    libraries.junit,
-                    libraries.spock,
-                    libraries.spring_test
+        annotationProcessor libraries.spring_boot_configuration_processor
 
-        testRuntime libraries.aspectjweaver,
-                    libraries.servlet_api,
-                    libraries.spring_context_support
+                compileOnly libraries.p3c_pmd,
+                            libraries.spring_boot_starter_web,
+                            libraries.springfox
 
-        compileOnly libraries.p3c_pmd
-        testCompileOnly libraries.p3c_pmd
+            testCompileOnly libraries.groovy,
+                            libraries.p3c_pmd,
+                            libraries.spock,
+                            libraries.spring_boot_starter_web
+
+            testRuntimeOnly libraries.spring_boot_starter_web
+
+         testImplementation libraries.spring_boot_starter_test
     }
+
+    // spring boot configuration processor only build meta json into build folder
+    // but auto complete needs it in src, so do copy after compile java task
+    task cpCfgMeta(type: Copy) {
+        from 'build/classes/java/main/META-INF'
+        into 'src/main/resources/META-INF'
+    }
+    compileJava.finalizedBy cpCfgMeta
 
     uploadArchives {
         repositories {

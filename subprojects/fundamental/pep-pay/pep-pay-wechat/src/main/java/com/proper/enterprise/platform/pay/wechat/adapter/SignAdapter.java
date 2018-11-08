@@ -1,0 +1,61 @@
+package com.proper.enterprise.platform.pay.wechat.adapter;
+
+import com.proper.enterprise.platform.core.PEPPropertiesLoader;
+import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.core.utils.digest.MD5;
+import com.proper.enterprise.platform.pay.wechat.PayWechatProperties;
+import com.proper.enterprise.platform.pay.wechat.model.WechatOrderReq;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.lang.reflect.Field;
+import java.util.Set;
+import java.util.TreeSet;
+
+public class SignAdapter extends XmlAdapter<String, WechatOrderReq> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SignAdapter.class);
+
+    @Override
+    public WechatOrderReq unmarshal(String v) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String marshal(WechatOrderReq v) throws Exception {
+        return marshalObject(v, WechatOrderReq.class);
+    }
+
+    public <T> String marshalObject(T t, Class<T> clz) throws Exception {
+        Field[] fields = clz.getDeclaredFields();
+        Set<String> set = new TreeSet<>();
+        for (Field field : fields) {
+            if (!"sign".equals(field.getName()) && !field.getName().startsWith("$")) {
+                set.add(field.getName());
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        Object value;
+        for (String fieldName : set) {
+            value = clz.getMethod("get" + StringUtil.capitalize(fieldName)).invoke(t);
+            if (value != null) {
+                if ("papackage".equals(fieldName)) {
+                    sb.append("package").append("=").append(value).append("&");
+                } else {
+                    sb.append(StringUtil.camelToSnake(fieldName)).append("=").append(value).append("&");
+                }
+            }
+        }
+        sb.append("key=" +  PEPPropertiesLoader.load(PayWechatProperties.class).getApiKey());
+
+        String sign = sb.toString();
+        LOGGER.debug("Sign before MD5: {}",
+                StringUtil.abbreviate(sign,
+                    PEPPropertiesLoader.load(PayWechatProperties.class).getAbbreviateMaxWidth()));
+
+        return MD5.md5Hex(sign).toUpperCase();
+    }
+
+}

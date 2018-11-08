@@ -1,9 +1,0 @@
-dependencies {
-    compile libraries.quartz,
-            libraries.spring_context_support,
-            project(':pep-core')
-
-    testCompile project(':pep-test'),
-                libraries.spring_data_jpa,
-                libraries.hibernate_entitymanager
-}

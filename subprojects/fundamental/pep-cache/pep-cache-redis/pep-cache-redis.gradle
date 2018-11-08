@@ -1,0 +1,10 @@
+dependencies {
+        implementation libraries.redisson,
+                       libraries.reflections,
+                       libraries.hibernate_redis
+
+        implementation project(':pep-cache-api')
+
+    testImplementation project(':pep-core-jpa'),
+                       project(':pep-test')
+}

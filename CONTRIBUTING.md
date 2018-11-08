@@ -33,13 +33,13 @@ Proper Enterprise Platform Developer Guidelines
 
 平台使用 [gretty](https://github.com/akhikhl/gretty) gradle 插件以支持在内嵌的容器中运行及调试。
 
-默认使用 tomcat7.x，端口 `8080`（在 [server.xml](subprojects/pep-dev/pep-dev-configs/src/main/resources/META-INF/configs/docker/tomcat/conf/server.xml) 中配置），上下文根 `pep`（在 [pep-webapp.gradle](subprojects/pep-webapp/pep-webapp.gradle) 中配置）。
+默认使用 tomcat7.x，端口 `8080`（在 [server.xml](subprojects/dev-kit/pep-dev-configs/src/main/resources/META-INF/configs/docker/tomcat/conf/server.xml) 中配置），上下文根 `pep`（在 [pep-application.gradle](subprojects/pep-application/pep-application.gradle) 中配置）。
 
 ### 直接运行
 
     $ ./gradlew assemble appRun
 
-> `assemble` 任务的作用是将各个模块均进行编译。当前 web 应用模块 `pep-webapp` 只是将其他模块作为运行时依赖，gradle tomcat 插件在运行时没自动编译这些运行时依赖，故需要手动执行编译，否则会报依赖的包不存在
+> `assemble` 任务的作用是将各个模块均进行编译。当前 web 应用模块 `pep-application` 只是将其他模块作为运行时依赖，gradle tomcat 插件在运行时没自动编译这些运行时依赖，故需要手动执行编译，否则会报依赖的包不存在
 
 ### 远程调试
 
@@ -170,7 +170,7 @@ Change Log 文件放在对应模块的 `src/main/resources/liquibase/changelogs`
 当在开发环境需要调整数据源时，需调整如下两处内容：
 
 1. config.properties 中选择需要使用的数据源
-1. pep-webapp.gradle 中添加所需数据源的驱动作为运行时依赖，并选择相应数据源的 oopsearch 同步组件
+1. pep-application.gradle 中添加所需数据源的驱动作为运行时依赖，并选择相应数据源的 oopsearch 同步组件
 
     例如将默认的 h2 数据源修改为 mysql 时，需将
     

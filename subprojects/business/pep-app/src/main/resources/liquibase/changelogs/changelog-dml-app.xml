@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="wyiyi" id="pep-oopsearch-config-201808151420001">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="081514072018"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="applicationName"/>
+            <column name="COLUMN_DESC" value="应用名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="systemappconfig"/>
+            <column name="SEARCH_COLUMN" value="name"/>
+            <column name="TABLE_NAME" value="PEP_APP_APPLICATIONS"/>
+            <column name="URL" value="/admin/app/applications"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="081514182018"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="applicationPage"/>
+            <column name="COLUMN_DESC" value="应用页"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="systemappconfig"/>
+            <column name="SEARCH_COLUMN" value="page"/>
+            <column name="TABLE_NAME" value="PEP_APP_APPLICATIONS"/>
+            <column name="URL" value="/admin/app/applications"/>
+        </insert>
+    </changeSet>
+    <changeSet author="wyiyi" id="pep-oopsearch-config-update201808231103001">
+        <update tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="TABLE_NAME" value="pep_app_applications"/>
+            <where>
+                ID='081514072018'
+            </where>
+        </update>
+        <update tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="TABLE_NAME" value="pep_app_applications"/>
+            <where>
+                ID='081514182018'
+            </where>
+        </update>
+    </changeSet>
+
+    <changeSet author="alphahinex" id="20181106-dev-tools-duplicated" failOnError="false">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-devtools"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="tool"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;0"/>
+            <column name="NAME" value="开发者工具"/>
+            <column name="ROUTE" value="devtools"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="2"/>
+            <column name="PARENT_ID"/>
+        </insert>
+    </changeSet>
+    <changeSet author="alphahinex" id="20181106-dev-tools-app-ver">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-devtools-appver"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="tag-o"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;1"/>
+            <column name="NAME" value="APP版本管理"/>
+            <column name="ROUTE" value="devtools/appver"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="0"/>
+            <column name="PARENT_ID" value="pep-devtools"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

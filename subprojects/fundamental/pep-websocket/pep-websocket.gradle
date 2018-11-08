@@ -1,0 +1,10 @@
+dependencies {
+
+     implementation libraries.spring_messaging,
+                    libraries.spring_websocket
+
+    testRuntimeOnly libraries.jackson_databind
+
+    testRuntimeOnly 'org.apache.tomcat.embed:tomcat-embed-websocket:8.5.34'
+
+}

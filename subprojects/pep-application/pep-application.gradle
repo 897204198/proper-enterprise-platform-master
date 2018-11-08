@@ -1,0 +1,58 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+
+       compileOnly libraries.groovy
+
+    implementation libraries.spring_boot_starter_web
+
+       // Choose by datasource
+       // available choices: libraries.h2, libraries.mysql_driver
+       runtimeOnly libraries.h2,
+                   // available choices: project(':pep-oopsearch-sync-h2'), project(':pep-oopsearch-sync-mysql')
+                   project(':pep-oopsearch-sync-h2')
+
+       // Necessary when using Web Service
+//       runtimeOnly libraries.jaxws_rt
+
+       // Select when need pep monitor
+//       runtimeOnly project(':pep-monitor')
+
+       // Select when need swagger
+//       runtimeOnly project(':pep-swagger')
+
+       // Mandatory for PEP
+       runtimeOnly project(':pep-auth-common-jpa'),
+                   // Needs one cache implementation if use cache API
+                   project(':pep-cache-ehcache'),
+                   project(':pep-configs')
+
+       // Select on demand
+       runtimeOnly project(':pep-auth-jwt'),
+                   project(':pep-oopsearch'),
+                   // Needs one dfs implementation if use DFS API
+                   // MUST change 'pep.dfs.root-path' together
+                   project(':pep-dfs-mongo'),
+                   project(':pep-file'),
+                   project(':pep-oopsearch'),
+                   project(":pep-oopsearch-sync-mongo"),
+                   project(':pep-workflow')
+
+//    runtime libraries.jackson_databind,
+//            libraries.spring_orm,
+//            libraries.spring_webmvc
+//
+//    // Mandatory for PEP
+//    runtime project(':pep-oopsearch-config')
+//
+//    // Select on demand
+//    runtime project(':pep-announcement'),
+//            project(':pep-av-backend'),
+//            project(':pep-dev-tools'),
+//            project(':pep-feedback'),
+//            project(':pep-image-handler'),
+//            project(':pep-sequence'),
+//            project(":pep-websocket")
+}
+
+uploadArchives.enabled = false

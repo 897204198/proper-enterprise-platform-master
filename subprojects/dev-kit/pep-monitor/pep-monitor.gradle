@@ -1,0 +1,6 @@
+dependencies {
+        implementation libraries.druid_spring_boot_starter,
+                       libraries.spring_boot_starter_actuator
+
+    testImplementation project(':pep-test')
+}

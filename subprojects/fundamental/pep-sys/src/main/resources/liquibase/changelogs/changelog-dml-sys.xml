@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="data-dic-add-ifornot" author="fm">
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_if_or_not_true"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="IF_OR_NOT"/>
+            <column name="DD_CODE" value="1"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="是"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_if_or_not_false"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="IF_OR_NOT"/>
+            <column name="DD_CODE" value="0"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="否"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+        </insert>
+    </changeSet>
+    <changeSet id="20180803-datadicCatalog-oopsearch" author="DELL" failOnError="false">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="catalog-name"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="catalogName"/>
+            <column name="COLUMN_DESC" value="字典项名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="catalog"/>
+            <column name="SEARCH_COLUMN" value="DD_CATALOG_NAME"/>
+            <column name="TABLE_NAME" value="pep_sys_data_dic_catalog"/>
+            <column name="URL" value="/sys/catalog"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="catalog-code"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="catalogCode"/>
+            <column name="COLUMN_DESC" value="字典项编码"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="catalog"/>
+            <column name="SEARCH_COLUMN" value="DD_CATALOG_CODE"/>
+            <column name="TABLE_NAME" value="pep_sys_data_dic_catalog"/>
+            <column name="URL" value="/sys/catalog"/>
+        </insert>
+    </changeSet>
+    <changeSet id="init-20180803-catalog-datadic" author="DELL">
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="IF_OR_NOT"/>
+            <column name="DD_CATALOG_CODE" value="IF_OR_NOT"/>
+            <column name="DD_CATALOG_NAME" value="判断类型"/>
+            <column name="DD_CATALOG_ORDER" value="8"/>
+        </insert>
+    </changeSet>
+    <changeSet id="init-20181010-catalog-datadic-appConf" author="DELL">
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="AppConfigEnum"/>
+            <column name="DD_CATALOG_CODE" value="AppConfigEnum"/>
+            <column name="DD_CATALOG_NAME" value="应用配置"/>
+            <column name="DD_CATALOG_ORDER" value="9"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="AppConfigEnum-appName"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="AppConfigEnum"/>
+            <column name="DD_CODE" value="NAME"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_TYPE" value="BUSINESS"/>
+            <column name="DD_NAME" value="PEP"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+    <changeSet id="20181104-app-webAddress" author="DELL" failOnError="false">
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="AppConfigEnum-webAddress"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="AppConfigEnum"/>
+            <column name="DD_CODE" value="WEB_ADDRESS"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_TYPE" value="BUSINESS"/>
+            <column name="DD_NAME" value="http://test"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

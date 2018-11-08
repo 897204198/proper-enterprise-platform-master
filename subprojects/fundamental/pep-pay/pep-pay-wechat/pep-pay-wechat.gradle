@@ -1,0 +1,14 @@
+dependencies {
+    
+        implementation libraries.spring_oxm
+
+        implementation project(':pep-auth-api'),
+                       project(':pep-core-jpa'),
+                       project(':pep-pay-api'),
+                       project(':pep-pay-common')
+
+    testImplementation project(':pep-test')
+
+       testRuntimeOnly project(':pep-auth-common-jpa')
+
+}

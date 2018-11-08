@@ -1,0 +1,7 @@
+apply plugin: 'java-library'
+dependencies {
+    implementation project(':pep-auth-api')
+
+    testCompile project(':pep-test')
+}
+

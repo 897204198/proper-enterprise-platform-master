@@ -1,0 +1,15 @@
+apply plugin: 'java-library'
+
+dependencies {
+
+                   api project(':pep-auth-api'),
+                       project(':pep-notice-client')
+
+        implementation project(':pep-cache-api')
+
+    testImplementation project(':pep-test'),
+                       project(':pep-auth-common-jpa')
+
+       testRuntimeOnly project(':pep-cache-ehcache')
+
+}

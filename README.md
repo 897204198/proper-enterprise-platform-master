@@ -82,11 +82,11 @@ nexusPassword=你的密码
 
 ### 打包
 
-平台只包含一个 web 应用，即 `pep-webapp`，其余模块以 `jar` 包形式被其依赖
+平台只包含一个 web 应用，即 `pep-application`，其余模块以 `jar` 包形式被其依赖
 
     $ ./gradlew clean war
 
-构建好的 `war` 包会输出到 `pep-webapp` 项目根路径下的 `build/libs` 路径内。
+构建好的 `war` 包会输出到 `pep-application` 项目根路径下的 `build/libs` 路径内。
 
 
 产品部署
@@ -121,7 +121,7 @@ tomcat 的 docker 镜像需使用 [docker-tomcat](https://github.com/propersoft-
 
 * **同步** 修改前端、后端、API 等版本号
 
-> 后端修改 build.gradle 中的 `version` 值，并同步修改 core.properties 中的 `core.version` 及 dependencies.gradle 中的 `versions.pep`
+> 后端修改 build.gradle 中的 `version` 值，并同步修改 PEPVersion.java 中的 版本号 及 dependencies.gradle 中的 `versions.pep`
 
 > 接口文档调整 API 仓库的 `api.raml` 和 `package.json` 中的版本号
 

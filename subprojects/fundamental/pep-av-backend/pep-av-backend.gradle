@@ -1,0 +1,7 @@
+dependencies {
+    
+        implementation project(':pep-core-mongo')
+
+    testImplementation project(':pep-test')
+    
+}

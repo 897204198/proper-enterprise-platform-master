@@ -1,0 +1,6 @@
+dependencies {
+        implementation libraries.jackson_databind,
+                       libraries.servlet_api
+    
+    testImplementation project(':pep-test')
+}
