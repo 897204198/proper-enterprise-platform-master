@@ -45,7 +45,7 @@ class HuaweiNoticeSenderTest extends AbstractTest {
         customs['_proper_badge'] = 2
         notice.setNoticeExtMsg('customs', customs)
 
-        pushNoticeSender.send(notice)
+        assert NoticeStatus.SUCCESS == pushNoticeSender.send(notice).getNoticeStatus()
         assert NoticeStatus.SUCCESS == pushNoticeSender.getStatus(notice).getNoticeStatus()
 
         notice.setNoticeExtMsg('push_type', 'chat')
@@ -53,10 +53,10 @@ class HuaweiNoticeSenderTest extends AbstractTest {
         customs['_proper_pushtype'] = 'cmd'
         notice.setNoticeExtMsg('customs', customs)
 
-        pushNoticeSender.send(notice)
+        assert NoticeStatus.SUCCESS == pushNoticeSender.send(notice).getNoticeStatus()
 
-        notice.setNoticeExtMsg('uri', 'www.baidu.com')
-        pushNoticeSender.send(notice)
+          notice.setNoticeExtMsg('uri', 'www.baidu.com')
+        assert NoticeStatus.SUCCESS == pushNoticeSender.send(notice).getNoticeStatus()
 
         notice.setAppKey("testFail")
         try {
