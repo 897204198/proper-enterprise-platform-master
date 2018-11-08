@@ -7,13 +7,13 @@ import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.push.api.openapi.service.PushChannelService
 import com.proper.enterprise.platform.push.entity.PushChannelEntity
 import com.proper.enterprise.platform.push.vo.PushChannelVO
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
-class PushChannelTest extends AbstractTest {
+class PushChannelTest extends AbstractJPATest {
 
     @Autowired
     private PushChannelService pushChannelService;

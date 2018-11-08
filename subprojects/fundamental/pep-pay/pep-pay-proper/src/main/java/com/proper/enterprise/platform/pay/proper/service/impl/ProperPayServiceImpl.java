@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.pay.proper.service.impl;
 
-import com.proper.enterprise.platform.api.pay.PayApiErrorProperties;
+import com.proper.enterprise.platform.api.pay.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
 import com.proper.enterprise.platform.api.pay.model.*;
@@ -38,9 +38,6 @@ public class ProperPayServiceImpl extends AbstractPayImpl implements PayService,
 
     @Autowired
     ProperRefundRepository properRefundRepo;
-
-    @Autowired
-    private PayApiErrorProperties payApiErrorProperties;
 
     //-------------------------重写抽象类中的共通处理函数-------------------START----------------
     /**
@@ -80,7 +77,7 @@ public class ProperPayServiceImpl extends AbstractPayImpl implements PayService,
         } catch (Exception e) {
             LOGGER.debug("ProperPayServiceImpl.savePrepayImpl[Exception]:{}", e);
             resObj.setResultCode(PayResType.SYSERROR);
-            resObj.setResultMsg(payApiErrorProperties.getSystem());
+            resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
         }
         return (T)resObj;
     }

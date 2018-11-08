@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.core.utils.http.HttpClient
 import com.proper.enterprise.platform.push.vo.PushChannelVO
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
@@ -12,7 +12,7 @@ import org.springframework.http.MediaType
  * 推送相关的推送支持类
  * Created by shen on 2017/5/11.
  */
-abstract class PushAbstractTest extends AbstractTest {
+abstract class PushAbstractTest extends AbstractJPATest {
 
     protected static final String VALID_APPKEY = "test"
     protected static final String TEST_USERID1 = "testuser1"

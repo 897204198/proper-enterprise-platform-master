@@ -8,7 +8,7 @@ import org.junit.Test
 class BeanTest extends AbstractJPATest {
 
     @Test
-    public void testBean() {
+    void testBean() {
         coverBean(new AliwebEntity())
         coverBean(new AliwebRefundEntity())
         coverBean(new AliwebOrderReq())

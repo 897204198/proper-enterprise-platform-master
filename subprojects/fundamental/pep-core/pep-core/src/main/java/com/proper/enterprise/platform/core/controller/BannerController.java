@@ -1,10 +1,11 @@
 package com.proper.enterprise.platform.core.controller;
 
-import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.CoreProperties;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,9 @@ public class BannerController extends BaseController {
     @Value(value = "classpath:banner.txt")
     private Resource resource;
 
+    @Autowired
+    private CoreProperties coreProperties;
+
     @GetMapping
     @ApiOperation("‍欢迎页展示 banner 图案")
     public String readTxt() {
@@ -34,7 +38,7 @@ public class BannerController extends BaseController {
 
         try (
             InputStream is = resource.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is, PEPConstants.DEFAULT_CHARSET);
+            InputStreamReader isr = new InputStreamReader(is, coreProperties.getCharset());
             BufferedReader br = new BufferedReader(isr)
         ) {
             while ((line = br.readLine()) != null) {

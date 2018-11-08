@@ -6,9 +6,8 @@ import org.junit.Test
 
 class SignAdapterTest extends AbstractJPATest {
 
-
     @Test
-    public void testUnmarshal() {
+    void testUnmarshal() {
         SignAdapter signAdapter = new SignAdapter();
         WechatOrderReq res = signAdapter.unmarshal("")
         assert res == null

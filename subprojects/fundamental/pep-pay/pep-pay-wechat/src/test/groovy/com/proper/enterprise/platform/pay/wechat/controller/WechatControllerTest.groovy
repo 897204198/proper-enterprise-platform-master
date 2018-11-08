@@ -23,7 +23,7 @@ class WechatControllerTest extends AbstractJPATest{
     WechatPayResService wechatPayResService;
 
     @Test
-    public void testNoticeInfo() {
+    void testNoticeInfo() {
         def xml = """
 <xml><appid><![CDATA[wxc7825f86d99f3d90]]></appid>
 <bank_type><![CDATA[CFT]]></bank_type>

@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.controller;
 
 import com.proper.enterprise.platform.core.CoreProperties;
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.support.AbstractQuerySupport;
@@ -210,9 +211,9 @@ public abstract class BaseController extends AbstractQuerySupport {
     protected HttpHeaders handleHeaders(Exception ex) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
-        headers.set(coreProperties.getResponseHeaderErrorType(), coreProperties.getResponseSystemError());
+        headers.set(PEPConstants.RESPONSE_HEADER_ERROR_TYPE, PEPConstants.RESPONSE_SYSTEM_ERROR);
         if (ex instanceof ErrMsgException || ex instanceof ConstraintViolationException) {
-            headers.set(coreProperties.getResponseHeaderErrorType(), coreProperties.getResponseBusinessError());
+            headers.set(PEPConstants.RESPONSE_HEADER_ERROR_TYPE, PEPConstants.RESPONSE_BUSINESS_ERROR);
         }
         return headers;
     }
@@ -236,7 +237,7 @@ public abstract class BaseController extends AbstractQuerySupport {
         if (ex instanceof ConstraintViolationException) {
             return handleValidMessage(ex.getMessage());
         }
-        return null == ex.getMessage() ? coreProperties.getResponseSystemErrorMsg() : ex.getMessage();
+        return null == ex.getMessage() ? PEPConstants.RESPONSE_SYSTEM_ERROR_MSG : ex.getMessage();
     }
 
     private String handleValidMessage(String message) {

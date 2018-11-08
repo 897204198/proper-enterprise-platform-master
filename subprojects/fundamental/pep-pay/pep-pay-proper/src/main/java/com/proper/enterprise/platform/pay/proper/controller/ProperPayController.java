@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.pay.proper.controller;
 
-import com.proper.enterprise.platform.api.pay.PayApiErrorProperties;
-import com.proper.enterprise.platform.api.pay.PayApiWayProperties;
+import com.proper.enterprise.platform.api.pay.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
+import com.proper.enterprise.platform.api.pay.enums.PayWay;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
 import com.proper.enterprise.platform.api.pay.model.PayResultRes;
 import com.proper.enterprise.platform.api.pay.model.PrepayReq;
@@ -46,12 +46,6 @@ public class ProperPayController extends BaseController {
     private ProperRepository properRepo;
 
     @Autowired
-    private PayApiErrorProperties payApiErrorProperties;
-
-    @Autowired
-    private PayApiWayProperties payApiWayProperties;
-
-    @Autowired
     PayFactory payFactory;
 
     /**
@@ -70,7 +64,7 @@ public class ProperPayController extends BaseController {
             PrepayReq prepayReq = new PrepayReq();
             PayService payService = (PayService) properPayService;
             // 预支付业务处理
-            PayResultRes checkRes = payService.savePrepayBusiness(payApiWayProperties.getProper(), prepayReq, properReq);
+            PayResultRes checkRes = payService.savePrepayBusiness(PayWay.PROPER.toString(), prepayReq, properReq);
             if (checkRes.getResultCode() != null && checkRes.getResultCode().equals(PayResType.SYSERROR)) {
                 BeanUtils.copyProperties(checkRes, resObj);
                 return responseOfPost(resObj);
@@ -82,7 +76,7 @@ public class ProperPayController extends BaseController {
             // 支付用途
             prepayReq.setPayIntent(properReq.getBody());
             // 支付方式
-            prepayReq.setPayWay(payApiWayProperties.getProper());
+            prepayReq.setPayWay(PayWay.PROPER.toString());
             // 获取预支付信息
             PayResultRes res = payService.savePrepay(prepayReq);
             // 判断预支付结果
@@ -95,7 +89,7 @@ public class ProperPayController extends BaseController {
         } catch (Exception e) {
             LOGGER.error("ProperPayController.prepayProper[Exception]:{}", e);
             resObj.setResultCode(PayResType.SYSERROR);
-            resObj.setResultMsg(payApiErrorProperties.getSystem());
+            resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
         }
         // 返回结果
         LOGGER.debug("------------- proper prepay business--------end------------");

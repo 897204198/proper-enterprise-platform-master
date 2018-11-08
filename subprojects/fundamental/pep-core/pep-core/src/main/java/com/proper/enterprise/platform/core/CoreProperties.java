@@ -58,26 +58,6 @@ public class CoreProperties {
     private String defaultOperatorId = "PEP_SYS";
 
     /**
-     * 响应头中封装的异常编码key
-     */
-    private String responseHeaderErrorType = "X-PEP-ERR-TYPE";
-
-    /**
-     * 业务异常编码
-     */
-    private String responseBusinessError = "PEP_BIZ_ERR";
-
-    /**
-     * 系统异常编码
-     */
-    private String responseSystemError = "PEP_SYS_ERR";
-
-    /**
-     * 系统异常信息
-     */
-    private String responseSystemErrorMsg = "SYSTEM_ERROR";
-
-    /**
      * ASE配置Mode
      */
     private String secretAesMode = "ECB";
@@ -170,38 +150,6 @@ public class CoreProperties {
 
     public void setDefaultOperatorId(String defaultOperatorId) {
         this.defaultOperatorId = defaultOperatorId;
-    }
-
-    public String getResponseHeaderErrorType() {
-        return responseHeaderErrorType;
-    }
-
-    public void setResponseHeaderErrorType(String responseHeaderErrorType) {
-        this.responseHeaderErrorType = responseHeaderErrorType;
-    }
-
-    public String getResponseBusinessError() {
-        return responseBusinessError;
-    }
-
-    public void setResponseBusinessError(String responseBusinessError) {
-        this.responseBusinessError = responseBusinessError;
-    }
-
-    public String getResponseSystemError() {
-        return responseSystemError;
-    }
-
-    public void setResponseSystemError(String responseSystemError) {
-        this.responseSystemError = responseSystemError;
-    }
-
-    public String getResponseSystemErrorMsg() {
-        return responseSystemErrorMsg;
-    }
-
-    public void setResponseSystemErrorMsg(String responseSystemErrorMsg) {
-        this.responseSystemErrorMsg = responseSystemErrorMsg;
     }
 
     public String getSecretAesMode() {

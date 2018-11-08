@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.push.test
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.push.client.PusherApp
 import com.proper.enterprise.platform.push.client.model.PushMessage
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.test.context.jdbc.Sql
@@ -12,7 +12,7 @@ import org.springframework.test.context.jdbc.Sql
     "/com/proper/enterprise/platform/push/push-users.sql",
     "/com/proper/enterprise/platform/push/push-devices.sql"
 ])
-class PushToDeviceTest extends AbstractTest {
+class PushToDeviceTest extends AbstractJPATest {
 
     @Ignore
     @Test

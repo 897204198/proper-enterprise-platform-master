@@ -7,20 +7,20 @@ import org.junit.Test
 class PayUtilsTest extends AbstractJPATest {
 
     @Test
-    public void testConvertMoneyFen2Yuan() {
-        String yuanValue = PayUtils.convertMoneyFen2Yuan("101");
+    void testConvertMoneyFen2Yuan() {
+        String yuanValue = PayUtils.convertMoneyFen2Yuan("101")
         assert "1.01".equals(yuanValue)
     }
 
     @Test
-    public void testConvertMoneyYuan2Fen() {
-        String yuanValue = PayUtils.convertMoneyYuan2Fen("1.23");
+    void testConvertMoneyYuan2Fen() {
+        String yuanValue = PayUtils.convertMoneyYuan2Fen("1.23")
         assert "123".equals(yuanValue)
     }
 
     @Test
-    public void testLogEntity() {
-        PrepayReq prepayReq = new PrepayReq();
+    void testLogEntity() {
+        PrepayReq prepayReq = new PrepayReq()
         prepayReq.setTotalFee("100")
         prepayReq.setOutTradeNo("123456")
         prepayReq.setPayIntent("预约挂号")

@@ -1,17 +1,21 @@
 package com.proper.enterprise.platform.sequence.util;
 
-import com.proper.enterprise.platform.sequence.handler.SerialNumberHandler;
+import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.PEPApplicationContext;
-import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.PEPPropertiesLoader;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.TmplUtil;
 import com.proper.enterprise.platform.sequence.dictionary.ClearType;
+import com.proper.enterprise.platform.sequence.handler.SerialNumberHandler;
 import com.proper.enterprise.platform.sequence.service.SequenceService;
 import com.proper.enterprise.platform.sequence.vo.SequenceVO;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -127,11 +131,11 @@ public class SerialNumberUtil {
         // 根据清零方式生成cache key, 实现清零操作
         ClearType clearType = PEPApplicationContext.getBean(ClearType.class);
         if (clearType.yearClear().getCode().equals(clearTypeCode)) {
-            atomicName += DateUtil.toString(new Date(), PEPConstants.DEFAULT_YEAR_FORMAT);
+            atomicName += DateUtil.toString(LocalDateTime.now(), PEPPropertiesLoader.load(CoreProperties.class).getDefaultYearFormat());
         } else if (clearType.monthClear().getCode().equals(clearTypeCode)) {
-            atomicName += DateUtil.toString(new Date(), PEPConstants.DEFAULT_MONTH_FORMAT);
+            atomicName += DateUtil.toString(LocalDateTime.now(), PEPPropertiesLoader.load(CoreProperties.class).getDefaultMonthFormat());
         } else if (clearType.dayClear().getCode().equals(clearTypeCode)) {
-            atomicName += DateUtil.toString(new Date(), PEPConstants.DEFAULT_DATE_FORMAT);
+            atomicName += DateUtil.toString(LocalDateTime.now(), PEPPropertiesLoader.load(CoreProperties.class).getDefaultDateFormat());
         } else if (clearType.noClear().getCode().equals(clearTypeCode)) {
             atomicName += "";
         }

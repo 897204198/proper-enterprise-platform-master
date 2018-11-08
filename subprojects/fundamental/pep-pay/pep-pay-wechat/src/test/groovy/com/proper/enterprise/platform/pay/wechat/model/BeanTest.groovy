@@ -8,7 +8,7 @@ import org.junit.Test
 class BeanTest extends AbstractJPATest {
 
     @Test
-    public void testBean() {
+    void testBean() {
         coverBean(new WechatNoticeRes())
         coverBean(new WechatOrderReq())
         coverBean(new WechatOrderRes())

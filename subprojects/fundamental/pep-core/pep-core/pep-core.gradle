@@ -1,6 +1,7 @@
 apply plugin: 'java-library'
 
 dependencies {
+
                    api libraries.commons_codec
 
         implementation libraries.aspectjweaver,
@@ -15,15 +16,4 @@ dependencies {
 
        testCompileOnly project(':pep-configs')
 
-//    compile libraries.hibernate_validator,
-//            libraries.jackson_databind,
-//            libraries.javax_el,
-//            libraries.mail,
-//            libraries.servlet_api,
-//            libraries.spring_boot,
-//            libraries.spring_context_support,
-//            libraries.validation_api
-//
-//    testCompile libraries.hibernate_entitymanager,
-//                libraries.spring_data_jpa
 }

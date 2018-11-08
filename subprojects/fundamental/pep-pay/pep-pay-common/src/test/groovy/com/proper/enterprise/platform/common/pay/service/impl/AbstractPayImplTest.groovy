@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.common.pay.service.impl
 
-import com.proper.enterprise.platform.api.pay.PayApiErrorProperties
+import com.proper.enterprise.platform.api.pay.PayConstants
 import com.proper.enterprise.platform.api.pay.enums.PayResType
 import com.proper.enterprise.platform.api.pay.factory.PayFactory
 import com.proper.enterprise.platform.api.pay.model.PayResultRes
@@ -18,68 +18,65 @@ class AbstractPayImplTest extends AbstractJPATest {
     @Autowired
     PayFactory payFactory
 
-    @Autowired
-    PayApiErrorProperties payApiErrorProperties
-
     private String payWay = "ali"
 
     @Test
-    public void testPrepay() {
+    void testPrepay() {
         PayService payService = payFactory.newPayService(payWay)
 
         // 请求对象为空
         PayResultRes res = payService.savePrepay(null)
         assert res.getResultCode() == PayResType.REQERROR
-        assert res.getResultMsg().equals(payApiErrorProperties.getPayReq())
+        assert res.getResultMsg().equals(PayConstants.APP_PAY_REQ_ERR)
 
         // 请求对象订单号为空
         PrepayReq prepayReq = getReq()
         prepayReq.setOutTradeNo("")
         res = payService.savePrepay(prepayReq)
         assert res.getResultCode() == PayResType.ORDERNUMERROR
-        assert res.getResultMsg().equals(payApiErrorProperties.getOrder())
+        assert res.getResultMsg().equals(PayConstants.APP_PAY_ORDERNO_ERR)
 
         // 支付方式为空
         prepayReq = getReq()
         prepayReq.setPayWay("")
         res = payService.savePrepay(prepayReq)
         assert res.getResultCode() == PayResType.PAYWAYERROR
-        assert res.getResultMsg().equals(payApiErrorProperties.getPayWay())
+        assert res.getResultMsg().equals(PayConstants.APP_PAY_PAYWAY_ERR)
 
         // 支付金额为空
         prepayReq = getReq()
         prepayReq.setTotalFee("")
         res = payService.savePrepay(prepayReq)
         assert res.getResultCode() == PayResType.MONEYERROR
-        assert res.getResultMsg().equals(payApiErrorProperties.getMoney())
+        assert res.getResultMsg().equals(PayConstants.APP_PAY_MONEY_ERR)
 
         // 支付用途为空
         prepayReq = getReq()
         prepayReq.setPayIntent("")
         res = payService.savePrepay(prepayReq)
         assert res.getResultCode() == PayResType.PAYINTENTERROR
-        assert res.getResultMsg().equals(payApiErrorProperties.getPayIntent())
+        assert res.getResultMsg().equals(PayConstants.APP_PAY_PAYINTENT_ERR)
 
         // 支付金额不正确:0
         prepayReq = getReq()
         prepayReq.setTotalFee("0")
         res = payService.savePrepay(prepayReq)
         assert res.getResultCode() == PayResType.MONEYERROR
-        assert res.getResultMsg().equals(payApiErrorProperties.getMoney())
+        assert res.getResultMsg().equals(PayConstants.APP_PAY_MONEY_ERR)
 
         // 支付金额不正确:负数
         prepayReq = getReq()
         prepayReq.setTotalFee("-1")
         res = payService.savePrepay(prepayReq)
         assert res.getResultCode() == PayResType.MONEYERROR
-        assert res.getResultMsg().equals(payApiErrorProperties.getMoney())
+        assert res.getResultMsg().equals(PayConstants.APP_PAY_MONEY_ERR)
 
         // 支付金额不正确:小数
         prepayReq = getReq()
         prepayReq.setTotalFee("0.01")
         res = payService.savePrepay(prepayReq)
         assert res.getResultCode() == PayResType.MONEYERROR
-        assert res.getResultMsg().equals(payApiErrorProperties.getMoney())
+        assert res.getResultMsg().equals(PayConstants.APP_PAY_MONEY_ERR)
 
         // 正常支付方式
         prepayReq = getReq()
@@ -92,18 +89,18 @@ class AbstractPayImplTest extends AbstractJPATest {
         prepayReq.setOutTradeNo("exception")
         res = payService.savePrepay(prepayReq)
         assert res.getResultCode() == PayResType.SYSERROR
-        assert res.getResultMsg().equals(payApiErrorProperties.getSystem())
+        assert res.getResultMsg().equals(PayConstants.APP_SYSTEM_ERR)
     }
 
     @Test
-    public void testQueryPay() {
+    void testQueryPay() {
         PayService payService = payFactory.newPayService(payWay)
         String res = payService.queryPay("123456")
         assert res.equals("queryPaySuccess")
     }
 
     @Test
-    public void testRefundPay() {
+    void testRefundPay() {
         PayService payService = payFactory.newPayService(payWay)
         RefundReq refundReq = new RefundReq()
         refundReq.setOutRequestNo("123456")
@@ -115,7 +112,7 @@ class AbstractPayImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testQueryRefund() {
+    void testQueryRefund() {
         PayService payService = payFactory.newPayService(payWay)
         String outTradeNo = "123456"
         String refundNo = "654321"
@@ -124,7 +121,7 @@ class AbstractPayImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testNotice() {
+    void testNotice() {
         NoticeService payService = payFactory.newNoticeService(payWay)
         PayResultRes res = new PayResultRes()
         res.setResultCode(PayResType.SUCCESS)
@@ -132,7 +129,7 @@ class AbstractPayImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testNoticeException() {
+    void testNoticeException() {
         NoticeService payService = payFactory.newNoticeService(payWay)
         PayResultRes res = new PayResultRes()
         payService.saveNoticeProcessAsync(res)

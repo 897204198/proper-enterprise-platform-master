@@ -8,7 +8,7 @@ import org.junit.Test
 class BeanTest extends AbstractJPATest {
 
     @Test
-    public void testBean() {
+    void testBean() {
         coverBean(new ProperBillRes())
         coverBean(new ProperOrderReq())
         coverBean(new ProperPayResultRes())

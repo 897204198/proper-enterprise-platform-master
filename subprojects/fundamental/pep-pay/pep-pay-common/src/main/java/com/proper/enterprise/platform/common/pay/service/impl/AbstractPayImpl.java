@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.common.pay.service.impl;
 
-import com.proper.enterprise.platform.api.pay.PayApiErrorProperties;
+import com.proper.enterprise.platform.api.pay.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.model.*;
 import com.proper.enterprise.platform.api.pay.service.PayService;
@@ -28,9 +28,6 @@ public abstract class AbstractPayImpl implements PayService {
 
     @Autowired
     private PayBusinessService payBusinessService;
-
-    @Autowired
-    private PayApiErrorProperties payApiErrorProperties;
 
     /**
      * 预支付业务处理
@@ -65,7 +62,7 @@ public abstract class AbstractPayImpl implements PayService {
         } catch (Exception e) {
             LOGGER.info("AbstractPayImpl.savePrepay[Exception]:{}", e);
             resObj.setResultCode(PayResType.SYSERROR);
-            resObj.setResultMsg(payApiErrorProperties.getSystem());
+            resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
         }
         return (T)resObj;
     }
@@ -179,23 +176,23 @@ public abstract class AbstractPayImpl implements PayService {
         // 请求对象为空
         if (req == null) {
             resObj.setResultCode(PayResType.REQERROR);
-            resObj.setResultMsg(payApiErrorProperties.getPayReq());
+            resObj.setResultMsg(PayConstants.APP_PAY_REQ_ERR);
             // 请求对象订单号为空
         } else if (StringUtil.isEmpty(req.getOutTradeNo())) {
             resObj.setResultCode(PayResType.ORDERNUMERROR);
-            resObj.setResultMsg(payApiErrorProperties.getOrder());
+            resObj.setResultMsg(PayConstants.APP_PAY_ORDERNO_ERR);
             // 支付方式不正确
         } else if (StringUtil.isEmpty(req.getPayWay())) {
             resObj.setResultCode(PayResType.PAYWAYERROR);
-            resObj.setResultMsg(payApiErrorProperties.getPayWay());
+            resObj.setResultMsg(PayConstants.APP_PAY_PAYWAY_ERR);
             // 支付金额为空
         } else if (StringUtil.isEmpty(req.getTotalFee())) {
             resObj.setResultCode(PayResType.MONEYERROR);
-            resObj.setResultMsg(payApiErrorProperties.getMoney());
+            resObj.setResultMsg(PayConstants.APP_PAY_MONEY_ERR);
             // 支付用途为空
         } else if (StringUtil.isEmpty(req.getPayIntent())) {
             resObj.setResultCode(PayResType.PAYINTENTERROR);
-            resObj.setResultMsg(payApiErrorProperties.getPayIntent());
+            resObj.setResultMsg(PayConstants.APP_PAY_PAYINTENT_ERR);
             // 校验金额
         } else {
             BigDecimal bigDecimal = new BigDecimal(req.getTotalFee());
@@ -204,7 +201,7 @@ public abstract class AbstractPayImpl implements PayService {
             // 校验金额小于0 或 不满足小数点后最多两位并且大于零
             if (bigDecimal.compareTo(BigDecimal.ZERO) <= 0 || !matcher.matches()) {
                 resObj.setResultCode(PayResType.MONEYERROR);
-                resObj.setResultMsg(payApiErrorProperties.getMoney());
+                resObj.setResultMsg(PayConstants.APP_PAY_MONEY_ERR);
             } else {
                 resObj.setResultCode(PayResType.SUCCESS);
                 resObj.setResultMsg("success");

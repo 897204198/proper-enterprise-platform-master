@@ -31,7 +31,7 @@ class ProperPayServiceImplTest extends AbstractJPATest {
     ProperPayService properPayService
 
     @Test
-    public void testPrepay() {
+    void testPrepay() {
         PrepayReq prepayReq = new PrepayReq()
         prepayReq.setOutTradeNo("12345678901234567890")
         prepayReq.setTotalFee("123")
@@ -47,7 +47,7 @@ class ProperPayServiceImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testQueryPay() {
+    void testQueryPay() {
         String outTradeNo = "201512191483583349219"
         PayService payService = payFactory.newPayService(payWay)
         ProperQueryRes queryRes = (ProperQueryRes)payService.queryPay(outTradeNo)
@@ -56,7 +56,7 @@ class ProperPayServiceImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testRefundPay() {
+    void testRefundPay() {
         RefundReq refundReq = new RefundReq()
         refundReq.setOutTradeNo("201512191483583349219")
         refundReq.setOutRequestNo("20151219148358334921901")
@@ -76,7 +76,7 @@ class ProperPayServiceImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testQueryRefund() {
+    void testQueryRefund() {
         String orderNo = "201512191483583349219"
         String refundNo = "20151219148358334921901"
         PayService payService = payFactory.newPayService(payWay)

@@ -1,11 +1,8 @@
 package com.proper.enterprise.platform.pay.wechat.service.impl
 
 import com.proper.enterprise.platform.pay.wechat.PayWechatProperties
-import com.proper.enterprise.platform.pay.wechat.adapter.SignAdapter
 import com.proper.enterprise.platform.pay.wechat.model.WechatOrderReq
 import com.proper.enterprise.platform.pay.wechat.model.WechatOrderRes
-import com.proper.enterprise.platform.pay.wechat.model.WechatRefundReq
-import com.proper.enterprise.platform.pay.wechat.model.WechatRefundRes
 import com.proper.enterprise.platform.test.AbstractJPATest
 import org.apache.commons.lang3.RandomStringUtils
 import org.junit.Test
@@ -27,7 +24,7 @@ class WechatPayResServiceImplTest extends AbstractJPATest {
     PayWechatProperties payWechatProperties
 
     @Test
-    public void testHttpRequest() {
+    void testHttpRequest() {
         WechatPayResServiceImpl wechatPayResServiceImpl = new WechatPayResServiceImpl()
         wechatPayResServiceImpl.unmarshallerMap = unmarshallerMap
 
@@ -49,31 +46,4 @@ class WechatPayResServiceImplTest extends AbstractJPATest {
         assert res.getReturnCode().equals("FAIL")
     }
 
-//    @Test
-    public void testHttpsRequest() {
-        WechatPayResServiceImpl wechatPayResServiceImpl = new WechatPayResServiceImpl()
-        wechatPayResServiceImpl.unmarshallerMap = unmarshallerMap
-
-        WechatRefundReq wechatRefundReq = new WechatRefundReq()
-        wechatRefundReq.setOutRefundNo("20151219148409931553201")
-        wechatRefundReq.setRefundFee(1)
-        wechatRefundReq.setTotalFee(5)
-        wechatRefundReq.setOutTradeNo("201112191484099315532")
-        wechatRefundReq.setNonceStr(RandomStringUtils.randomAlphabetic(payWechatProperties.getRandomLen()))
-
-        // 签名
-        SignAdapter signAdapter = new SignAdapter()
-        String sign = signAdapter.marshalObject(wechatRefundReq, WechatRefundReq.class)
-        wechatRefundReq.setSign(sign)
-
-        StringWriter writer = new StringWriter();
-        marshaller.marshal(wechatRefundReq, new StreamResult(writer));
-        String requestXML = writer.toString();
-
-        WechatRefundRes res = wechatPayResServiceImpl.getWechatApiRes(payWechatProperties.getUrlRefund(), "unmarshallWechatRefundRes", requestXML, true)
-
-        assert res.getReturnCode().equals("SUCCESS")
-        assert res.getResultCode().equals("FAIL")
-
-    }
 }

@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.core.utils
 
+import com.proper.enterprise.platform.core.CoreProperties
 import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -19,14 +21,14 @@ class DateUtilSpec extends Specification {
 
         expect:
         DateUtil.getCurrentYear() == new Date().format('YYYY').toInteger()
-        DateUtil.getTimestamp().substring(0, 13) == new Date().format(PEPConstants.DEFAULT_DATETIME_FORMAT).substring(0, 13)
+        DateUtil.getTimestamp().substring(0, 13) == new Date().format(PEPPropertiesLoader.load(CoreProperties).getDefaultDatetimeFormat()).substring(0, 13)
         DateUtil.toTimestamp(LocalDateTime.of(2016, 6, 15, 15, 31, 24), false) == '2016-06-15 15:31:24'
         DateUtil.toDate(ds).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()==LocalDate.of(2016, 6, 15)
         LocalDateTime.ofInstant(DateUtil.toDateTime("$ds $ts").toInstant(), ZoneId.systemDefault()) == LocalDateTime.of(2016, 6, 15, 15, 31, 24)
         DateUtil.toDateString(d) == ds
         DateUtil.toLocalDateString(LocalDateTime.of(2016, 6, 15, 15, 31, 24)) == ds
         DateUtil.toLocalDate(ds) == LocalDate.of(2016,6,15)
-        DateUtil.toLocalDate('2016-06-15 15:31:24', PEPConstants.DEFAULT_DATETIME_FORMAT) == LocalDate.of(2016, 06,15)
+        DateUtil.toLocalDate('2016-06-15 15:31:24', PEPPropertiesLoader.load(CoreProperties).getDefaultDatetimeFormat()) == LocalDate.of(2016, 06,15)
         DateUtil.toTimestamp(d) == "$ds $ts".toString()
         DateUtil.toLocalDateTime(d) == LocalDateTime.of(2016, 6, 15, 15, 31, 24)
         DateUtil.toLocalDateTime('2016-06-15 15:31:24') == LocalDateTime.of(2016, 6, 15, 15, 31, 24)
@@ -118,11 +120,11 @@ class DateUtilSpec extends Specification {
     def "Check parseSpecial"() {
         expect:
         assert TimeZone.getDefault() == "GMT" || "2018-07-25 01:42:17" != DateUtil.toString(DateUtil.parseGMTSpecial("2018-07-25T01:42:17.582Z"),
-                PEPConstants.DEFAULT_DATETIME_FORMAT)
-        assert "2018-07-25 01:42:17" == LocalDateTime.ofInstant(DateUtil.parseGMTSpecial("2018-07-25T01:42:17.582Z").toInstant(), ZoneId.of("GMT")).format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)).toString()
+                PEPPropertiesLoader.load(CoreProperties).getDefaultDatetimeFormat())
+        assert "2018-07-25 01:42:17" == LocalDateTime.ofInstant(DateUtil.parseGMTSpecial("2018-07-25T01:42:17.582Z").toInstant(), ZoneId.of("GMT")).format(DateTimeFormatter.ofPattern(PEPPropertiesLoader.load(CoreProperties).getDefaultDatetimeFormat())).toString()
 
         assert "2018-07-25 01:42:17" == DateUtil.parseGMTSpecialToLocalDateTime("2018-07-25T01:42:17.582Z").format(DateTimeFormatter.ofPattern
-                (PEPConstants.DEFAULT_DATETIME_FORMAT))
+                (PEPPropertiesLoader.load(CoreProperties).getDefaultDatetimeFormat()))
     }
 
     def "Check addWeek in DateUtil"() {

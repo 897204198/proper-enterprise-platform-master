@@ -15,8 +15,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.proper.enterprise.platform.core.PEPConstants.*;
-
 /**
  * 日期工具类
  */
@@ -86,7 +84,8 @@ public class DateUtil {
      */
     @Deprecated
     public static String toTimestamp(Date date, boolean millisecond) {
-        return toString(date, millisecond ? DEFAULT_TIMESTAMP_FORMAT : DEFAULT_DATETIME_FORMAT);
+        return toString(date, millisecond ? PEPPropertiesLoader.load(CoreProperties.class).getDefaultTimestampFormat() : 
+            PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat());
     }
 
     /**
@@ -97,7 +96,8 @@ public class DateUtil {
      * @return 时间戳
      */
     public static String toTimestamp(LocalDateTime date, boolean millisecond) {
-        return toString(date, millisecond ? DEFAULT_TIMESTAMP_FORMAT : DEFAULT_DATETIME_FORMAT);
+        return toString(date, millisecond ? PEPPropertiesLoader.load(CoreProperties.class).getDefaultTimestampFormat() : 
+            PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat());
     }
 
     /**
@@ -125,7 +125,7 @@ public class DateUtil {
      */
     @Deprecated
     public static Date toDate(String dateStr) {
-        return toDate(dateStr, DEFAULT_DATE_FORMAT);
+        return toDate(dateStr, PEPPropertiesLoader.load(CoreProperties.class).getDefaultDateFormat());
     }
 
     /**
@@ -157,7 +157,7 @@ public class DateUtil {
      * @return 日期对象
      */
     public static LocalDate toLocalDate(String dateStr) {
-        return toLocalDate(dateStr, DEFAULT_DATE_FORMAT);
+        return toLocalDate(dateStr, PEPPropertiesLoader.load(CoreProperties.class).getDefaultDateFormat());
     }
 
     /**
@@ -188,7 +188,7 @@ public class DateUtil {
      * @return 日期对象
      */
     public static LocalDateTime toLocalDateTime(String dateTimeStr) {
-        return toLocalDateTime(dateTimeStr, DEFAULT_DATETIME_FORMAT);
+        return toLocalDateTime(dateTimeStr, PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat());
     }
 
     /**
@@ -223,7 +223,7 @@ public class DateUtil {
      */
     @Deprecated
     public static String toDateString(Date date) {
-        return toString(date, DEFAULT_DATE_FORMAT);
+        return toString(date, PEPPropertiesLoader.load(CoreProperties.class).getDefaultDateFormat());
     }
 
     /**
@@ -233,7 +233,7 @@ public class DateUtil {
      * @return 日期字符串
      */
     public static String toLocalDateString(LocalDateTime date) {
-        return toString(date, DEFAULT_DATE_FORMAT);
+        return toString(date, PEPPropertiesLoader.load(CoreProperties.class).getDefaultDateFormat());
     }
 
     /**

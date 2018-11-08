@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.pay.wechat.controller;
 
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
-import com.proper.enterprise.platform.api.pay.PayApiErrorProperties;
-import com.proper.enterprise.platform.api.pay.PayApiWayProperties;
+import com.proper.enterprise.platform.api.pay.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
+import com.proper.enterprise.platform.api.pay.enums.PayWay;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
 import com.proper.enterprise.platform.api.pay.model.PayResultRes;
 import com.proper.enterprise.platform.api.pay.model.PrepayReq;
@@ -55,12 +55,6 @@ public class WechatController extends BaseController {
     @Autowired
     PayFactory payFactory;
 
-    @Autowired
-    private PayApiErrorProperties payApiErrorProperties;
-
-    @Autowired
-    private PayApiWayProperties payApiWayProperties;
-
     /**
      * 微信预支付处理.
      *
@@ -77,7 +71,7 @@ public class WechatController extends BaseController {
             PrepayReq prepayReq = new PrepayReq();
             PayService payService = (PayService) wechatPayService;
             // 预支付业务处理
-            PayResultRes checkRes = payService.savePrepayBusiness(payApiWayProperties.getWechat(), prepayReq, wechatReq);
+            PayResultRes checkRes = payService.savePrepayBusiness(PayWay.WECHAT.toString(), prepayReq, wechatReq);
             if (checkRes.getResultCode() != null && checkRes.getResultCode().equals(PayResType.SYSERROR)) {
                 BeanUtils.copyProperties(checkRes, resObj);
                 return responseOfPost(resObj);
@@ -89,7 +83,7 @@ public class WechatController extends BaseController {
             // 支付用途
             prepayReq.setPayIntent(wechatReq.getBody());
             // 支付方式
-            prepayReq.setPayWay(payApiWayProperties.getWechat());
+            prepayReq.setPayWay(PayWay.WECHAT.toString());
             // 获取预支付信息
             PayResultRes res = payService.savePrepay(prepayReq);
             // 判断预支付结果
@@ -102,7 +96,7 @@ public class WechatController extends BaseController {
         } catch (Exception e) {
             LOGGER.error("WechatController.prepayWechat[Exception]:{}", e);
             resObj.setResultCode(PayResType.SYSERROR);
-            resObj.setResultMsg(payApiErrorProperties.getSystem());
+            resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
         }
         // 返回结果
         LOGGER.debug(DateUtil.getTimestamp(true) + "------------- Wechat prepay business--------end------------");

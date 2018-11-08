@@ -11,7 +11,7 @@ import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
-import com.proper.enterprise.platform.api.pay.PayApiErrorProperties;
+import com.proper.enterprise.platform.api.pay.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
 import com.proper.enterprise.platform.api.pay.model.*;
@@ -22,14 +22,14 @@ import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.pay.web.ali.PayWebAliProperties;
 import com.proper.enterprise.platform.pay.web.ali.entity.AliwebEntity;
+import com.proper.enterprise.platform.pay.web.ali.entity.AliwebRefundEntity;
 import com.proper.enterprise.platform.pay.web.ali.model.AliwebOrderReq;
+import com.proper.enterprise.platform.pay.web.ali.model.AliwebPayResultRes;
 import com.proper.enterprise.platform.pay.web.ali.model.AliwebRefundReq;
+import com.proper.enterprise.platform.pay.web.ali.repository.AliwebRefundRepository;
 import com.proper.enterprise.platform.pay.web.ali.repository.AliwebRepository;
 import com.proper.enterprise.platform.pay.web.ali.service.AliwebPayResService;
 import com.proper.enterprise.platform.pay.web.ali.service.AliwebPayService;
-import com.proper.enterprise.platform.pay.web.ali.entity.AliwebRefundEntity;
-import com.proper.enterprise.platform.pay.web.ali.model.AliwebPayResultRes;
-import com.proper.enterprise.platform.pay.web.ali.repository.AliwebRefundRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -67,10 +67,6 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
 
     @Autowired
     PayWebAliProperties payWebAliProperties;
-
-    @Autowired
-    private PayApiErrorProperties payApiErrorProperties;
-
 
     //-------------------------重写抽象类中的共通处理函数-------------------START----------------
     /**
@@ -137,7 +133,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
         } catch (Exception e) {
             LOGGER.debug("AliwebPayServiceImpl.savePrepayImpl[Exception]:{}", e);
             resObj.setResultCode(PayResType.SYSERROR);
-            resObj.setResultMsg(payApiErrorProperties.getSystem());
+            resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
         }
         return (T)resObj;
     }

@@ -30,7 +30,7 @@ class AliwebPayServiceImplTest extends AbstractJPATest {
     AliwebPayResService aliwebPayResService
 
     @Test
-    public void testPrepay() {
+    void testPrepay() {
         PrepayReq prepayReq = new PrepayReq()
         prepayReq.setOutTradeNo("12345678901234567890")
         prepayReq.setTotalFee("123")
@@ -48,7 +48,7 @@ class AliwebPayServiceImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testQueryPay() {
+    void testQueryPay() {
         String outTradeNo = "20170525211121474"
         PayService payService = payFactory.newPayService(payWay)
         AlipayTradeQueryResponse queryRes = (AlipayTradeQueryResponse)payService.queryPay(outTradeNo)
@@ -60,7 +60,7 @@ class AliwebPayServiceImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testRefundPay() {
+    void testRefundPay() {
         RefundReq refundReq = new RefundReq()
         refundReq.setOutTradeNo("20170525211121474")
         refundReq.setOutRequestNo("2017052521112147401")
@@ -82,7 +82,7 @@ class AliwebPayServiceImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testQueryRefund() {
+    void testQueryRefund() {
         String orderNo = "20170525211121474"
         String refundNo = "2017052521112147401"
         PayService payService = payFactory.newPayService(payWay)

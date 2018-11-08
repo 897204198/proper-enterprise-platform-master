@@ -28,7 +28,7 @@ class WechatPayServiceImplTest extends AbstractJPATest {
     private String payWay = "wechat"
 
     @Test
-    public void testPrepay() {
+    void testPrepay() {
         PayService payService = payFactory.newPayService(payWay)
         PrepayReq prepayReq = new PrepayReq()
         prepayReq.setOutTradeNo("12345678901234567890")
@@ -51,7 +51,7 @@ class WechatPayServiceImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testQueryPay() {
+    void testQueryPay() {
         PayService payService = payFactory.newPayService(payWay)
         String outTradeNo = "201512191484099315532"
         WechatPayQueryRes res = payService.queryPay(outTradeNo)
@@ -63,7 +63,7 @@ class WechatPayServiceImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testRefundPay() {
+    void testRefundPay() {
         PayService payService = payFactory.newPayService(payWay)
         RefundReq refundReq = new RefundReq()
         refundReq.setOutTradeNo("201512191484099315532")
@@ -88,7 +88,7 @@ class WechatPayServiceImplTest extends AbstractJPATest {
     }
 
     @Test
-    public void testRefundQuery() {
+    void testRefundQuery() {
         PayService payService = payFactory.newPayService(payWay)
         String orderNo = "201512191484099315532"
         String refundNo = "20151219148409931553201"

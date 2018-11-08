@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.pay.ali.service.impl;
 
-import com.proper.enterprise.platform.api.pay.PayApiErrorProperties;
+import com.proper.enterprise.platform.api.pay.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
 import com.proper.enterprise.platform.api.pay.model.*;
@@ -60,9 +60,6 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
 
     @Autowired
     PayAliProperties payAliProperties;
-
-    @Autowired
-    PayApiErrorProperties payApiErrorProperties;
 
     @Autowired
     CoreProperties coreProperties;
@@ -136,7 +133,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
         } catch (Exception e) {
             LOGGER.debug("AliPayServiceImpl.savePrepayImpl[Exception]:{}", e);
             resObj.setResultCode(PayResType.SYSERROR);
-            resObj.setResultMsg(payApiErrorProperties.getSystem());
+            resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
         }
         return (T) resObj;
     }

@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.push.service.impl
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.push.service.PushMsgStatisticService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
@@ -11,7 +11,7 @@ import org.springframework.test.context.jdbc.Sql
     "/com/proper/enterprise/platform/push/push-statistic.sql",
     "/com/proper/enterprise/platform/push/push-channel.sql"
 ])
-class PushMsgStatisticServiceImplTest extends AbstractTest {
+class PushMsgStatisticServiceImplTest extends AbstractJPATest {
 
 
     @Autowired

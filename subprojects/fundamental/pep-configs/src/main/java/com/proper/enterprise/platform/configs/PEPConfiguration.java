@@ -26,16 +26,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
-@ComponentScan(basePackages = "com.proper.enterprise.platform", lazyInit = true)
+@ComponentScan(basePackages = "com.proper.enterprise.platform")
 @Configuration
 @EnableAsync
 @EnableAspectJAutoProxy
 @EnableConfigurationProperties
 @EnableScheduling
-/**
- * TODO to be clean
- */
-@ImportResource("classpath*:spring/**/applicationContext-*.xml")
 public class PEPConfiguration implements WebMvcConfigurer {
 
     private AccessControlProperties accessControlProperties;

@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.pay.wechat.service.impl;
 
-import com.proper.enterprise.platform.api.pay.PayApiErrorProperties;
+import com.proper.enterprise.platform.api.pay.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.model.*;
 import com.proper.enterprise.platform.api.pay.service.PayService;
@@ -52,9 +52,6 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
 
     @Autowired
     WechatPayResService wechatPayResService;
-
-    @Autowired
-    private PayApiErrorProperties payApiErrorProperties;
 
     @Autowired
     private PayWechatProperties payWechatProperties;
@@ -155,7 +152,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
         } catch (Exception e) {
             LOGGER.debug("WechatPayServiceImpl.savePrepayImpl[Exception]:{}", e);
             resObj.setResultCode(PayResType.SYSERROR);
-            resObj.setResultMsg(payApiErrorProperties.getSystem());
+            resObj.setResultMsg(PayConstants.APP_SYSTEM_ERR);
         }
         PayUtils.logEntity(resObj);
         return (T) resObj;

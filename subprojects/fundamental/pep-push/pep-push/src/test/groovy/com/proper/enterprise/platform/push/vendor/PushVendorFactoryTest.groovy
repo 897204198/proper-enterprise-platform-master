@@ -2,11 +2,11 @@ package com.proper.enterprise.platform.push.vendor
 
 import com.proper.enterprise.platform.push.common.model.enums.PushDeviceType
 import com.proper.enterprise.platform.push.common.model.enums.PushMode
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class PushVendorFactoryTest extends AbstractTest {
+class PushVendorFactoryTest extends AbstractJPATest {
 
     @Autowired
     private PushVendorFactory factory
