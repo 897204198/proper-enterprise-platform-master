@@ -45,6 +45,8 @@ class PushNoticeMsgStatisticServiceTest extends AbstractTest {
 
         List<PushNoticeMsgStatisticEntity> pushNoticeMsgStatistics25 = pushNoticeMsgStatisticService.getPushStatistic(DateUtil.toDate("2018-07-25"), DateUtil.toDate("2018-07-26"))
         pushNoticeMsgStatisticService.saveAll(pushNoticeMsgStatistics25)
+        pushNoticeMsgStatisticRepository.deleteBySendDate("2018-07-25")
+        pushNoticeMsgStatisticService.saveAll(pushNoticeMsgStatisticService.getPushStatistic(DateUtil.toDate("2018-07-25"), DateUtil.toDate("2018-07-26")))
 
         List<PushNoticeMsgStatisticEntity> pushNoticeMsgStatistics24 = pushNoticeMsgStatisticService.getPushStatistic(DateUtil.toDate("2018-07-24"), DateUtil.toDate("2018-07-25"))
         pushNoticeMsgStatisticService.saveAll(pushNoticeMsgStatistics24)

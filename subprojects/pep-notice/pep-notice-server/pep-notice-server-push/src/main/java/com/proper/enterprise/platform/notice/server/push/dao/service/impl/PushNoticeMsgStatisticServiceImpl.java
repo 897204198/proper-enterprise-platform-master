@@ -88,6 +88,7 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
         Date dateStart = DateUtil.toDate(date, PEPConstants.DEFAULT_DATE_FORMAT);
         Date dateEnd = DateUtil.addDay(dateStart, 1);
         List<PushNoticeMsgStatisticEntity> pushNoticeMsgStatistics = this.getPushStatistic(dateStart, dateEnd);
+        this.deleteBySendDate(dateStart);
         this.saveAll(pushNoticeMsgStatistics);
     }
 
