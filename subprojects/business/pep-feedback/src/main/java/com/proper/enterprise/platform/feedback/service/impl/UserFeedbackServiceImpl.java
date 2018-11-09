@@ -9,10 +9,9 @@ import com.proper.enterprise.platform.feedback.document.FeedBackDocument;
 import com.proper.enterprise.platform.feedback.document.UserFeedBackDocument;
 import com.proper.enterprise.platform.feedback.repository.UserFeedBackRepository;
 import com.proper.enterprise.platform.feedback.service.UserFeedbackService;
-import com.proper.enterprise.platform.notice.client.NoticeSender;
+import com.proper.enterprise.platform.notice.service.NoticeSender;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
-import com.proper.enterprise.platform.core.i18n.I18NService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +31,22 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
 
     private static final String FEEDBACK_REPLIED = "pep_feedback_replied";
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    private final DataDicService dataDicService;
+
+    private final UserFeedBackRepository userFeedBackRepo;
+
+    private final NoticeSender noticeSender;
 
     @Autowired
-    private DataDicService dataDicService;
-
-    @Autowired
-    private UserFeedBackRepository userFeedBackRepo;
-
-    @Autowired
-    private NoticeSender noticeSender;
-
-    @Autowired
-    private I18NService i18NService;
+    public UserFeedbackServiceImpl(UserService userService, DataDicService dataDicService, UserFeedBackRepository
+        userFeedBackRepo, NoticeSender noticeSender) {
+        this.userService = userService;
+        this.dataDicService = dataDicService;
+        this.userFeedBackRepo = userFeedBackRepo;
+        this.noticeSender = noticeSender;
+    }
 
     @Override
     public void save(UserFeedBackDocument feedbackInfo) {
@@ -53,14 +54,16 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
     }
 
     @Override
-    public DataTrunk<UserFeedBackDocument> findByConditionAndPage(String feedbackStatus, String query, PageRequest pageRequest) {
+    public DataTrunk<UserFeedBackDocument> findByConditionAndPage(String feedbackStatus, String query, PageRequest
+        pageRequest) {
         Page<UserFeedBackDocument> userFeedBackDocumentPage =
-                userFeedBackRepo.findByUserAndStatus(feedbackStatus, feedbackStatus + "==-1", query, pageRequest);
+            userFeedBackRepo.findByUserAndStatus(feedbackStatus, feedbackStatus + "==-1", query, pageRequest);
         List<UserFeedBackDocument> userFeedBackDocumentList = userFeedBackDocumentPage.getContent();
         for (UserFeedBackDocument userFeedBackDocument : userFeedBackDocumentList) {
             List<FeedBackDocument> documentList = userFeedBackDocument.getFeedBackDocuments();
             if (documentList.size() > 0) {
-                userFeedBackDocument.setFeedBackDocuments(Collections.singletonList(documentList.get(documentList.size() - 1)));
+                userFeedBackDocument.setFeedBackDocuments(Collections.singletonList(documentList.get(documentList
+                    .size() - 1)));
             }
         }
 
@@ -101,11 +104,10 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
      *
      * @param opinion   反馈意见.
      * @param pictureId 上传图片id.
-     * @throws Exception 异常.
      */
     @Override
     public String saveFeedback(String opinion, String pictureId, String mobileModel, String netType, String platform,
-                               String appVersion) throws Exception {
+                               String appVersion) {
         User userInfo = userService.getCurrentUser();
         UserFeedBackDocument feedBackDoc = getUserOpinions(userInfo.getId());
         if (feedBackDoc == null) {
@@ -135,7 +137,8 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
     }
 
     @Override
-    public UserFeedBackDocument addAdminReplyFeedbackOpinion(String feedback, UserFeedBackDocument userFeedBackDocument) throws Exception {
+    public UserFeedBackDocument addAdminReplyFeedbackOpinion(String feedback, UserFeedBackDocument
+        userFeedBackDocument) {
         DataDic replyDic = dataDicService.get("pep_feedback_replied");
         userFeedBackDocument.setStatus(replyDic.getName());
         userFeedBackDocument.setStatusCode(replyDic.getCode());
@@ -163,13 +166,11 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
         userFeedBackDocument = userFeedBackRepo.save(userFeedBackDocument);
 
         if (dataDicService.get(FEEDBACK_REPLIED).getCode().equals(userFeedBackDocument.getStatusCode())) {
-            String pushContent = i18NService.getMessage("pep.feedback.message.content");
-            String pushType = "feedback";
             List<Map<String, String>> paramMapList = new ArrayList<>();
             Map<String, String> paramMap = new HashMap<>(1);
             paramMap.put("opinionId", userFeedBackDocument.getId());
             paramMapList.add(paramMap);
-            pushInfo(pushContent, pushType, userFeedBackDocument.getUserId(), paramMapList);
+            pushInfo(userFeedBackDocument.getUserId(), paramMapList);
             LOGGER.debug("Push feedback information !");
             LOGGER.debug("feedback Id :" + userFeedBackDocument.getId());
         }
@@ -180,10 +181,9 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
      * 获取APP用户意见反馈信息
      *
      * @return 反馈信息列表.
-     * @throws Exception 异常.
      */
     @Override
-    public List<FeedBackDocument> getFeedbackList() throws Exception {
+    public List<FeedBackDocument> getFeedbackList() {
         User userInfo = userService.getCurrentUser();
         UserFeedBackDocument userFeedBackDocument = getUserOpinions(userInfo.getId());
         List<FeedBackDocument> collection = new ArrayList<>();
@@ -196,17 +196,13 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
     /**
      * 掌上医院推送反馈意见消息
      *
-     * @param pushContent 推送消息内容
-     * @param pushType    推送消息类别
-     * @param userId      接收人
-     * @param paramList   推送参数列表
-     * @throws Exception 异常信息
+     * @param userId    接收人
+     * @param paramList 推送参数列表
      */
     @Override
-    public void pushInfo(String pushContent, String pushType, String userId, List<Map<String, String>> paramList) throws Exception {
-        String title = i18NService.getMessage("pep.feedback.message.title");
+    public void pushInfo(String userId, List<Map<String, String>> paramList) {
         Map<String, Object> custom = new HashMap<>(1);
-        custom.put("gdpr_mpage", pushType);
+        custom.put("gdpr_mpage", "feedback");
         for (Map<String, String> pushMap : paramList) {
             Iterator<Map.Entry<String, String>> paraIter = pushMap.entrySet().iterator();
             while (paraIter.hasNext()) {
@@ -214,6 +210,6 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
                 custom.put(entry.getKey(), entry.getValue());
             }
         }
-        noticeSender.sendNotice("feedBack", "MESSAGE", custom, userId, title, pushContent);
+        noticeSender.sendNotice(userId, "feedback", custom);
     }
 }

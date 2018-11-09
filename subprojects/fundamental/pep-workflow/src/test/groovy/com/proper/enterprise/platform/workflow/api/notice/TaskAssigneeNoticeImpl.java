@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.workflow.api.notice;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.notice.client.NoticeSender;
+import com.proper.enterprise.platform.notice.service.NoticeSender;
 import com.proper.enterprise.platform.workflow.api.AbstractWorkFlowNoticeSupport;
 import com.proper.enterprise.platform.workflow.api.TaskAssigneeOrCandidateNotice;
 import com.proper.enterprise.platform.workflow.service.impl.TaskAssigneeOrCandidateNoticeImpl;
@@ -55,8 +55,7 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
             custom.put("title", task.getName());
             String noticeCode = (String) task.getVariable(TASK_ASSIGNEE_NOTICE_CODE_KEY);
             Authentication.setCurrentUserId(buildTaskUrl(task));
-            noticeSender.sendNotice(StringUtil.isEmpty(noticeCode) ? "TaskAssignee" : noticeCode,
-                custom, userIds, templateParams);
+            noticeSender.sendNotice(userIds, StringUtil.isEmpty(noticeCode) ? "TaskAssignee" : noticeCode, custom, templateParams);
         } catch (Exception e) {
             LOGGER.error("taskAssigneeNoticeError", e);
         }

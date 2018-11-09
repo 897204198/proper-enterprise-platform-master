@@ -44,13 +44,19 @@ class JSONUtilSpec extends Specification {
 
     def "Parse JSON string to container object"() {
         given:
-        def result = JSONUtil.parse(json, Map.class)
+        def result1 = JSONUtil.parse(json, Map.class)
+        def result2 = JSONUtil.parseIgnoreException(json, Map.class)
 
         expect:
         keys.split('\\.').each { key ->
-            result = result.get(key)
+            result1 = result1.get(key)
         }
-        result.toString() == value
+        result1.toString() == value
+
+        keys.split('\\.').each { key ->
+            result2 = result2.get(key)
+        }
+        result2.toString() == value
 
         where:
         keys       | value    | json
@@ -86,13 +92,19 @@ class JSONUtilSpec extends Specification {
         given:
         def result1 = JSONUtil.getMapper().readValue(str, new TypeReference<BaseEntity[]>() {})
         def result2 = JSONUtil.getMapper().readValue(str, new TypeReference<List<BaseEntity>>() {})
+        def result3 = JSONUtil.getMapper().readValue(str, new TypeReference<BaseEntity[]>() {})
+        def result4 = JSONUtil.getMapper().readValue(str, new TypeReference<List<BaseEntity>>() {})
 
         expect:
         result1[idx] instanceof BaseEntity
         result2[idx] instanceof BaseEntity
+        result3[idx] instanceof BaseEntity
+        result4[idx] instanceof BaseEntity
 
         result1[idx][key] == value
         result2[idx][key] == value
+        result3[idx][key] == value
+        result4[idx][key] == value
 
         where:
         idx | key  | value | str
@@ -107,6 +119,7 @@ class JSONUtilSpec extends Specification {
         bs.add(baseEntity)
         expect:
         assert JSONUtil.parse(JSONUtil.toJSON(bs), new TypeReference<List<BaseEntity>>() {}).get(0).id == "123"
+        assert JSONUtil.parseIgnoreException(JSONUtil.toJSON(bs), new TypeReference<List<BaseEntity>>() {}).get(0).id == "123"
     }
 
     static class BaseEntity {

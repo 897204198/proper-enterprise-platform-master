@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="2018-09-05-notice-data-dic-add" author="zjl">
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="PEP_NOTICE_SERVER_TYPE"/>
+            <column name="DD_CATALOG_CODE" value="SERVER_NOTICE_TYPE"/>
+            <column name="DD_CATALOG_NAME" value="消息类型"/>
+            <column name="DD_CATALOG_ORDER" value="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_server_type_email"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="SERVER_NOTICE_TYPE"/>
+            <column name="DD_CODE" value="EMAIL"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="邮件类型"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_server_type_sms"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="SERVER_NOTICE_TYPE"/>
+            <column name="DD_CODE" value="SMS"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="短信类型"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_server_type_push"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="SERVER_NOTICE_TYPE"/>
+            <column name="DD_CODE" value="PUSH"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="推送类型"/>
+            <column name="DD_ORDER" valueNumeric="3"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="PEP_NOTICE_STATUS"/>
+            <column name="DD_CATALOG_CODE" value="SERVER_NOTICE_STATUS"/>
+            <column name="DD_CATALOG_NAME" value="消息状态"/>
+            <column name="DD_CATALOG_ORDER" value="2"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_status_success"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="SERVER_NOTICE_STATUS"/>
+            <column name="DD_CODE" value="SUCCESS"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="发送成功"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_status_pending"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="SERVER_NOTICE_STATUS"/>
+            <column name="DD_CODE" value="PENDING"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="发送中"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_status_retry"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="SERVER_NOTICE_STATUS"/>
+            <column name="DD_CODE" value="RETRY"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="待重试"/>
+            <column name="DD_ORDER" valueNumeric="3"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="notice_status_fail"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="SERVER_NOTICE_STATUS"/>
+            <column name="DD_CODE" value="FAIL"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="发送失败"/>
+            <column name="DD_ORDER" valueNumeric="4"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2018-09-14-notice-server-app-oopsearch" author="zjl">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="NOTICE-SERVER-APP-001"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="appKey"/>
+            <column name="COLUMN_DESC" value="appKey"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="noticeserverapp"/>
+            <column name="SEARCH_COLUMN" value="app_key"/>
+            <column name="TABLE_NAME" value="pep_notice_app"/>
+            <column name="URL" value="/notice/server/app"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="NOTICE-SERVER-APP-002"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="appName"/>
+            <column name="COLUMN_DESC" value="应用名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="noticeserverapp"/>
+            <column name="SEARCH_COLUMN" value="app_name"/>
+            <column name="TABLE_NAME" value="pep_notice_app"/>
+            <column name="URL" value="/notice/server/app"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="NOTICE-SERVER-APP-003"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="appDesc"/>
+            <column name="COLUMN_DESC" value="描述"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="noticeserverapp"/>
+            <column name="SEARCH_COLUMN" value="app_desc"/>
+            <column name="TABLE_NAME" value="pep_notice_app"/>
+            <column name="URL" value="/notice/server/app"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2018-09-14-notice-server-oopsearch" author="zjl">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="NOTICE-SERVER-NOTICE-001"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="appKey"/>
+            <column name="COLUMN_DESC" value="appKey"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="noticeservermsg"/>
+            <column name="SEARCH_COLUMN" value="app_key"/>
+            <column name="TABLE_NAME" value="pep_notice_msg"/>
+            <column name="URL" value="/notice/server/msg"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="NOTICE-SERVER-NOTICE-002"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="batchId"/>
+            <column name="COLUMN_DESC" value="批次号"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="noticeservermsg"/>
+            <column name="SEARCH_COLUMN" value="batch_id"/>
+            <column name="TABLE_NAME" value="pep_notice_msg"/>
+            <column name="URL" value="/notice/server/msg"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="NOTICE-SERVER-NOTICE-003"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="targetTo"/>
+            <column name="COLUMN_DESC" value="发送目标"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="noticeservermsg"/>
+            <column name="SEARCH_COLUMN" value="target_to"/>
+            <column name="TABLE_NAME" value="pep_notice_msg"/>
+            <column name="URL" value="/notice/server/msg"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="NOTICE-SERVER-NOTICE-004"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="COLUMN_ALIAS" value="content"/>
+            <column name="COLUMN_DESC" value="发送内容"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <column name="MODULE_NAME" value="noticeservermsg"/>
+            <column name="SEARCH_COLUMN" value="content"/>
+            <column name="TABLE_NAME" value="pep_notice_msg"/>
+            <column name="URL" value="/notice/server/msg"/>
+        </insert>
+    </changeSet>
+    <changeSet id="20181011addMenu" author="zjl">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-notice-server-appConf"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="appstore"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;0"/>
+            <column name="NAME" value="应用配置管理"/>
+            <column name="ROUTE" value="app"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="1"/>
+            <column name="PARENT_ID"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-notice-server-app"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="appstore"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;0"/>
+            <column name="NAME" value="应用管理"/>
+            <column name="ROUTE" value="message/server/manage"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="1"/>
+            <column name="PARENT_ID" value="pep-notice-server-appConf"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

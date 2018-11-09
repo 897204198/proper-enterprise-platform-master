@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
+    <!--dev,production启动同步周期任务-->
+    <beans profile="dev,production">
+        <util:list id="pepJobListNotice">
+            <bean id="noticeStatusSyncPending" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+                <property name="jobDetail">
+                    <bean class="com.proper.enterprise.platform.schedule.cluster.PEPMethodInvokingJobDetailFactoryBean">
+                        <property name="targetBeanName" value="noticeStatusSyncScheduler"/>
+                        <property name="targetMethod" value="syncPending" />
+                        <property name="concurrent" value="false"/>
+                    </bean>
+                </property>
+                <!--每两分钟执行一次-->
+                <property name="cronExpression" value="0 */2 * * * ?"/>
+            </bean>
+            <bean id="noticeRetry" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+                <property name="jobDetail">
+                    <bean class="com.proper.enterprise.platform.schedule.cluster.PEPMethodInvokingJobDetailFactoryBean">
+                        <property name="targetBeanName" value="noticeStatusSyncScheduler"/>
+                        <property name="targetMethod" value="syncRetry" />
+                        <property name="concurrent" value="false"/>
+                    </bean>
+                </property>
+                <!--每两分钟执行一次-->
+                <property name="cronExpression" value="0 */2 * * * ?"/>
+            </bean>
+        </util:list>
+    </beans>
+
+</beans>

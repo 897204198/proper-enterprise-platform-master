@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.workflow.service.impl;
 
-import com.proper.enterprise.platform.notice.client.NoticeSender;
+import com.proper.enterprise.platform.notice.service.NoticeSender;
 import com.proper.enterprise.platform.workflow.service.WorkflowAsyncNotice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -31,6 +31,6 @@ public class WorkflowAsyncNoticeImpl implements WorkflowAsyncNotice {
     @Override
     @Async
     public void sendAsyncNotice(String code, Map<String, Object> custom, Set<String> userIds, Map<String, Object> templateParams) {
-        noticeSender.sendNotice(code, custom, userIds, templateParams);
+        noticeSender.sendNotice(userIds, code, templateParams, custom);
     }
 }

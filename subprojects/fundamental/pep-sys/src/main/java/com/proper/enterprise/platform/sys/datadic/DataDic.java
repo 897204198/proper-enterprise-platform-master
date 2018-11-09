@@ -11,18 +11,18 @@ import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
 public interface DataDic extends DataDicLite, IBase {
 
     /**
+     * 获得名称
+     *
+     * @return 名称
+     */
+    String getName();
+
+    /**
      * 设置名称
      *
      * @param name 名称
      */
     void setName(String name);
-
-    /**
-     * 获得name
-     *
-     * @return name
-     */
-    String getName();
 
     /**
      * 获得顺序
