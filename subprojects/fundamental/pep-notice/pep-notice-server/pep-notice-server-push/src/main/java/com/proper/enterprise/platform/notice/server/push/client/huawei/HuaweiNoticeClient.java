@@ -115,10 +115,10 @@ public class HuaweiNoticeClient {
             if (StringUtil.isNotBlank(extPushType)) {
                 pushType = PushType.valueOf(extPushType);
             }
-            // chat类型推送不包含 uri 会导致推送失败
+            // chat类型推送不包含 uri 会导致推送失败 暂时改为非chat而变成other 等前端提供传递uri方案后改回异常
             String uriKey = "uri";
             if ((PushType.chat).equals(pushType) && StringUtil.isBlank((String) customs.get(uriKey))) {
-                return new BusinessNoticeResult(NoticeStatus.FAIL, "Chat type push MUST has 'uri' in customs", "");
+                pushType = PushType.other;
             }
         }
         // msg 结构体, 包含 type/body/action
@@ -169,8 +169,7 @@ public class HuaweiNoticeClient {
             resBody = post(API_URL, postBody);
             return isSuccess(resBody, notice);
         } catch (IOException e) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL,
-                e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
+            return new BusinessNoticeResult(NoticeStatus.FAIL, e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
         }
     }
 

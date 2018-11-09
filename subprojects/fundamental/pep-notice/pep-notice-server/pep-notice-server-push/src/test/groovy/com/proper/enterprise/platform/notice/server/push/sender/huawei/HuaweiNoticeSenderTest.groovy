@@ -39,13 +39,12 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
         notice.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${new Date().format('yyyy-MM-dd HH:mm:ss')} in test case")
 
         notice.setTargetExtMsg('pushChannel', 'HUAWEI')
-        notice.setNoticeExtMsg('push_type', '')
 
         def customs = [:]
         customs['_proper_badge'] = 2
         notice.setNoticeExtMsg('customs', customs)
 
-        pushNoticeSender.send(notice)
+        assert NoticeStatus.SUCCESS == pushNoticeSender.send(notice).getNoticeStatus()
         assert NoticeStatus.SUCCESS == pushNoticeSender.getStatus(notice).getNoticeStatus()
 
         notice.setNoticeExtMsg('push_type', 'chat')
@@ -53,10 +52,10 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
         customs['_proper_pushtype'] = 'cmd'
         notice.setNoticeExtMsg('customs', customs)
 
-        pushNoticeSender.send(notice)
+        assert NoticeStatus.SUCCESS == pushNoticeSender.send(notice).getNoticeStatus()
 
-        notice.setNoticeExtMsg('uri', 'www.baidu.com')
-        pushNoticeSender.send(notice)
+          notice.setNoticeExtMsg('uri', 'www.baidu.com')
+        assert NoticeStatus.SUCCESS == pushNoticeSender.send(notice).getNoticeStatus()
 
         notice.setAppKey("testFail")
         try {

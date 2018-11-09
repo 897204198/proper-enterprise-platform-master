@@ -60,14 +60,6 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
 
     @Override
     public BusinessNoticeResult beforeSend(BusinessNotice notice) {
-        if (null == notice.getNoticeExtMsgMap()) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL, NoticeErrorCodeConstants.CHECK_ERROR,
-                "huawei config can't missing push_type in noticeExtMap");
-        }
-        if (null == notice.getNoticeExtMsgMap().get(PUSH_TYPE)) {
-            return new BusinessNoticeResult(NoticeStatus.FAIL,
-                NoticeErrorCodeConstants.CHECK_ERROR, "huawei config can't missing push_type in noticeExtMap");
-        }
         try {
             huaweiNoticeClientManagerApi.get(notice.getAppKey());
             return new BusinessNoticeResult(NoticeStatus.SUCCESS);
