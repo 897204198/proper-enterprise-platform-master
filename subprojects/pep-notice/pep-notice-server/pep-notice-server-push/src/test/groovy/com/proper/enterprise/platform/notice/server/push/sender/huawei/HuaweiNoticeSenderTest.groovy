@@ -39,7 +39,6 @@ class HuaweiNoticeSenderTest extends AbstractTest {
         notice.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${new Date().format('yyyy-MM-dd HH:mm:ss')} in test case")
 
         notice.setTargetExtMsg('pushChannel', 'HUAWEI')
-        notice.setNoticeExtMsg('push_type', '')
 
         def customs = [:]
         customs['_proper_badge'] = 2
