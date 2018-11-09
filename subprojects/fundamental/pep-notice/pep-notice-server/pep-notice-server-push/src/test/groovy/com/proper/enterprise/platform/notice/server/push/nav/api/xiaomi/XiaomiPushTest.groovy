@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.nav.api.xiaomi
 
 import com.proper.enterprise.platform.core.utils.DateUtil
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.xiaomi.xmpush.server.Message
 import com.xiaomi.xmpush.server.Result
@@ -18,7 +18,7 @@ import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiC
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.PACKAGENAME
 
 @Ignore
-class XiaomiPushTest extends AbstractTest {
+class XiaomiPushTest extends AbstractJPATest {
 
 
     @Test

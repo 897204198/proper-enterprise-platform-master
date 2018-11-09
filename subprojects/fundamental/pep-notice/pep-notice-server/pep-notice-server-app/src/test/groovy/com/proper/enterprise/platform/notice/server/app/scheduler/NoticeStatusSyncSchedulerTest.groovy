@@ -7,11 +7,11 @@ import com.proper.enterprise.platform.notice.server.app.handler.MockNoticeSender
 import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class NoticeStatusSyncSchedulerTest extends AbstractTest {
+class NoticeStatusSyncSchedulerTest extends AbstractJPATest {
 
     @Autowired
     private NoticeStatusSyncScheduler noticeStatusSyncScheduler

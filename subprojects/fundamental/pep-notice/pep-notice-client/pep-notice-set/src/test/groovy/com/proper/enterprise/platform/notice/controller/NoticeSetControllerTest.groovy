@@ -7,13 +7,13 @@ import com.proper.enterprise.platform.notice.service.NoticeSetService
 import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity
 import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum
 import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
-class NoticeSetControllerTest extends AbstractTest {
+class NoticeSetControllerTest extends AbstractJPATest {
 
     @Autowired
     NoticeSetService noticeSetService

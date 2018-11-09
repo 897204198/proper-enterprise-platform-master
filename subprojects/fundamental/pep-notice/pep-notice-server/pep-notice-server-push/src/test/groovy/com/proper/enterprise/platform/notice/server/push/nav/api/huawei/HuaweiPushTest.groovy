@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.proper.enterprise.platform.core.utils.AntResourceUtil
 import com.proper.enterprise.platform.notice.server.push.constant.HuaweiConstant
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import nsp.NSPClient
 import nsp.OAuth2Client
 import org.junit.Ignore
@@ -13,7 +13,7 @@ import org.springframework.core.io.Resource
 
 import java.text.SimpleDateFormat
 
-class HuaweiPushTest extends AbstractTest {
+class HuaweiPushTest extends AbstractJPATest {
 
     @Ignore
     @Test

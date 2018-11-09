@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.auth.dao.AccessTokenDAO;
 import com.proper.enterprise.platform.api.auth.model.AccessToken;
 import com.proper.enterprise.platform.auth.common.jpa.entity.AccessTokenEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.AccessTokenRepository;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

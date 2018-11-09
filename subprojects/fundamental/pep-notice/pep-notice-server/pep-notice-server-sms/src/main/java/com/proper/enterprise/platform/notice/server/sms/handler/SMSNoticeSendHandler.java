@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.notice.server.sms.handler;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NService;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.utils.http.Callback;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
@@ -12,8 +14,6 @@ import com.proper.enterprise.platform.notice.server.sdk.constants.NoticeErrorCod
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.proper.enterprise.platform.notice.server.sms.configurator.SMSConfigurator;
 import com.proper.enterprise.platform.notice.server.sms.service.SMSLimitCheckService;
-import com.proper.enterprise.platform.sys.i18n.I18NService;
-import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -9,12 +9,12 @@ import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisD
 import com.proper.enterprise.platform.notice.server.push.vo.PushMsgPieDataVO
 import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgPieVO
 import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnalysisVO
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
 
-class PushNoticeMsgStatisticServiceTest extends AbstractTest {
+class PushNoticeMsgStatisticServiceTest extends AbstractJPATest {
 
     @Autowired
     private PushNoticeMsgStatisticService pushNoticeMsgStatisticService

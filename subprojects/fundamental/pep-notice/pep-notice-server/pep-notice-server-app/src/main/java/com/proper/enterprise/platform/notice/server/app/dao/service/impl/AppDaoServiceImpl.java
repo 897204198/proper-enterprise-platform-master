@@ -71,7 +71,7 @@ public class AppDaoServiceImpl implements AppDaoService {
 
     @Override
     public App updateApp(App app) {
-        App oldApp = appRepository.findOne(app.getId());
+        App oldApp = appRepository.findById(app.getId()).get();
         if (!oldApp.getAppKey().equals(app.getAppKey())) {
             throw new ErrMsgException("appKey can't change");
         }
@@ -95,7 +95,7 @@ public class AppDaoServiceImpl implements AppDaoService {
         }
         String[] ids = appIds.split(",");
         for (String id : ids) {
-            App app = appRepository.findOne(id);
+            App app = appRepository.findById(id).get();
             if (null == app) {
                 continue;
             }
@@ -111,7 +111,7 @@ public class AppDaoServiceImpl implements AppDaoService {
             return;
         }
         String[] ids = appIds.split(",");
-        List<AppEntity> apps = appRepository.findAll(Arrays.asList(ids));
+        List<AppEntity> apps = appRepository.findAllById(Arrays.asList(ids));
         for (AppEntity appEntity : apps) {
             appEntity.setEnable(enable);
             appRepository.updateForSelective(appEntity);

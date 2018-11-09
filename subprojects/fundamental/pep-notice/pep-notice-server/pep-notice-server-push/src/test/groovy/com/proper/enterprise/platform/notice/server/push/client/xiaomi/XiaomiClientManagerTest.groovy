@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +13,7 @@ import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiC
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.APPSECRET
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.PACKAGENAME
 
-class XiaomiClientManagerTest extends AbstractTest{
+class XiaomiClientManagerTest extends AbstractJPATest{
 
     @Autowired
     private XiaomiNoticeClientManagerApi xiaomiNoticeClientManager

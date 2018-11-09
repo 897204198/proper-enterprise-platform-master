@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.app.sender;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
@@ -18,7 +19,6 @@ import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
 import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService;
 import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO;
 import com.proper.enterprise.platform.notice.server.api.factory.NoticeSenderFactory;
-import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

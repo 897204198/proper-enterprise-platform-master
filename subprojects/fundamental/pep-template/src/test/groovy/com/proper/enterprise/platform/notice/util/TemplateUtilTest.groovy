@@ -1,10 +1,10 @@
 package com.proper.enterprise.platform.notice.util
 
 import com.proper.enterprise.platform.template.util.TemplateUtil
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 
-class TemplateUtilTest extends AbstractTest {
+class TemplateUtilTest extends AbstractJPATest {
 
     @Test
     void paramCheck() {

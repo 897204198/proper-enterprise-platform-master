@@ -1,10 +1,10 @@
 package com.proper.enterprise.platform.notice.server.app
 
 import com.proper.enterprise.platform.notice.server.app.vo.AppVO
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.springframework.http.HttpStatus
 
-abstract class AbstractServerAppTest extends AbstractTest {
+abstract class AbstractServerAppTest extends AbstractJPATest {
 
     public String initApp(String appKey) {
         String token = get('/notice/server/app/token/init', HttpStatus.OK).getResponse().getContentAsString()

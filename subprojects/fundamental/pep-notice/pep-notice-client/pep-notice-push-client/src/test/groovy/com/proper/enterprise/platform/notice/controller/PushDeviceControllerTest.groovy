@@ -5,14 +5,14 @@ import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.core.utils.http.HttpClient
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity
 import com.proper.enterprise.platform.notice.repository.PushDeviceRepository
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
-class PushDeviceControllerTest extends AbstractTest{
+class PushDeviceControllerTest extends AbstractJPATest{
 
     private static final String URL_STARTPUSH = "/push/device"
 

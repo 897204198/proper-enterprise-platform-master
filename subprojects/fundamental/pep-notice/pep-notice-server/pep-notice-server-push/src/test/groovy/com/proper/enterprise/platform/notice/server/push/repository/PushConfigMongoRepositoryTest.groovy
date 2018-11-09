@@ -3,12 +3,12 @@ package com.proper.enterprise.platform.notice.server.push.repository
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DuplicateKeyException
 
-class PushConfigMongoRepositoryTest extends AbstractTest {
+class PushConfigMongoRepositoryTest extends AbstractJPATest {
 
     @Autowired
     PushConfigMongoRepository pushConfigMongoRepository

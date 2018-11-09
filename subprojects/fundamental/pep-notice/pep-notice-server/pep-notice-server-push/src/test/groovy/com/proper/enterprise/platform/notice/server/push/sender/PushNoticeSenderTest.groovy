@@ -6,11 +6,11 @@ import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResu
 import com.proper.enterprise.platform.notice.server.push.constant.HuaweiConstant
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class PushNoticeSenderTest extends AbstractTest{
+class PushNoticeSenderTest extends AbstractJPATest{
 
     @Autowired
     private NoticeConfigurator pushNoticeConfigurator

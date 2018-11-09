@@ -2,12 +2,12 @@ package com.proper.enterprise.platform.notice.service
 
 import com.proper.enterprise.platform.notice.document.NoticeSetDocument
 import com.proper.enterprise.platform.notice.repository.NoticeSetRepository
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class NoticeServiceClientTest extends AbstractTest {
+class NoticeServiceClientTest extends AbstractJPATest {
 
     @Autowired
     NoticeSetService noticeSetService

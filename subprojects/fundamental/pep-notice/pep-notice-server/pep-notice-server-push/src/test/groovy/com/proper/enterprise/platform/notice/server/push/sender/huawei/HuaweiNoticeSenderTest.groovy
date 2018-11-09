@@ -8,12 +8,12 @@ import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
 import com.proper.enterprise.platform.notice.server.push.enums.huawei.HuaweiErrCodeEnum
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class HuaweiNoticeSenderTest extends AbstractTest {
+class HuaweiNoticeSenderTest extends AbstractJPATest {
 
     @Autowired
     private NoticeConfigurator pushNoticeConfigurator

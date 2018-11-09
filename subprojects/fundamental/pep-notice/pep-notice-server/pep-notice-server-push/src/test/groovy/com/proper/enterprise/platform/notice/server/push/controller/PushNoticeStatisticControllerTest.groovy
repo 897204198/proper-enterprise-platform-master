@@ -2,12 +2,12 @@ package com.proper.enterprise.platform.notice.server.push.controller
 
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgJpaRepository
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgStatisticRepository
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
-class PushNoticeStatisticControllerTest extends AbstractTest {
+class PushNoticeStatisticControllerTest extends AbstractJPATest {
 
     @Autowired
     private PushNoticeMsgStatisticRepository pushNoticeMsgStatisticRepository

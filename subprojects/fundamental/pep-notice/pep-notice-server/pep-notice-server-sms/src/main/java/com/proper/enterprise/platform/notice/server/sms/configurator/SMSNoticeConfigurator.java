@@ -1,11 +1,11 @@
 package com.proper.enterprise.platform.notice.server.sms.configurator;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NService;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.sms.document.SMSDocument;
 import com.proper.enterprise.platform.notice.server.sms.repository.SMSRepository;
-import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

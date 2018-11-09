@@ -61,7 +61,7 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
 
     @Override
     public void saveAll(List<PushNoticeMsgStatisticEntity> pushMsgStatistics) {
-        pushNoticeMsgStatisticRepository.save(pushMsgStatistics);
+        pushNoticeMsgStatisticRepository.saveAll(pushMsgStatistics);
     }
 
     @Override

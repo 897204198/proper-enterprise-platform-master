@@ -8,7 +8,7 @@ import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
 import com.proper.enterprise.platform.notice.server.push.enums.xiaomi.XiaomiErrCodeEnum
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -18,7 +18,7 @@ import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiC
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.APPSECRET
 import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiConstant.PACKAGENAME
 
-class XiaomiNoticeSenderTest extends AbstractTest {
+class XiaomiNoticeSenderTest extends AbstractJPATest {
 
 
     @Autowired

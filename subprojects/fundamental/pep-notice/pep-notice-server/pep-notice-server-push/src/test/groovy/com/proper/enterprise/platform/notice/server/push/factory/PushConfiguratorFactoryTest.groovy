@@ -1,10 +1,10 @@
 package com.proper.enterprise.platform.notice.server.push.factory
 
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 
-class PushConfiguratorFactoryTest extends AbstractTest{
+class PushConfiguratorFactoryTest extends AbstractJPATest{
 
     @Test
     public void test() {

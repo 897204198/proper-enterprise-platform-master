@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.notice.server.app.dao.repository
 import com.proper.enterprise.platform.notice.server.app.dao.entity.NoticeEntity
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.annotation.NoTx
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.test.context.jdbc.Sql
 
-class NoticeRepositoryTest extends AbstractTest {
+class NoticeRepositoryTest extends AbstractJPATest {
 
     @Autowired
     private NoticeRepository noticeRepository

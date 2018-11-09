@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.notice.server.push.dao.entity;
 
-import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
@@ -11,7 +10,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "PEP_PUSH_NOTICE_STATISTIC")
 public class PushNoticeMsgStatisticEntity extends BaseEntity {
-    private static final long serialVersionUID = PEPConstants.VERSION;
 
     @Column(nullable = false)
     private String appKey;

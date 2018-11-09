@@ -3,13 +3,13 @@ package com.proper.enterprise.platform.notice.server.push.controller
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
 import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgVO
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 
-class PushNoticeMsgControllerTest extends AbstractTest {
+class PushNoticeMsgControllerTest extends AbstractJPATest {
 
     @Test
     @Sql([

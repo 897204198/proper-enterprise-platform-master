@@ -1,15 +1,15 @@
 package com.proper.enterprise.platform.notice.server.email.handler
 
+import com.proper.enterprise.platform.core.i18n.I18NUtil
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler
 import com.proper.enterprise.platform.notice.server.api.model.Notice
 import com.proper.enterprise.platform.notice.server.email.entity.MockNotice
-import com.proper.enterprise.platform.sys.i18n.I18NUtil
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class EmailNoticeSendHandlerTest extends AbstractTest {
+class EmailNoticeSendHandlerTest extends AbstractJPATest {
 
     @Autowired
     private NoticeSendHandler emailNoticeSender

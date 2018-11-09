@@ -10,7 +10,6 @@ import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeTarget
-import com.proper.enterprise.platform.sys.i18n.I18NUtil
 import com.proper.enterprise.platform.test.annotation.NoTx
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test

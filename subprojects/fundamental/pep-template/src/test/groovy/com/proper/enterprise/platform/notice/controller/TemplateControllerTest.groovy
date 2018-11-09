@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.template.entity.TemplateEntity
 import com.proper.enterprise.platform.template.repository.TemplateRepository
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO
 import com.proper.enterprise.platform.template.vo.TemplateVO
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 
 @Sql
-class TemplateControllerTest extends AbstractTest {
+class TemplateControllerTest extends AbstractJPATest {
 
     @Autowired
     TemplateRepository templateRepository

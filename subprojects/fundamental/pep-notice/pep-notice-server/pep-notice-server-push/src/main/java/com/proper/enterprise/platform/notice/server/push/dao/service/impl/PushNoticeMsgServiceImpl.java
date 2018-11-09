@@ -93,7 +93,7 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
 
     @Override
     public void updateStatus(String pushId, NoticeStatus status, String errCode, String errMsg) {
-        PushNoticeMsgEntity pushNoticeMsg = pushMsgJpaRepository.findOne(pushId);
+        PushNoticeMsgEntity pushNoticeMsg = pushMsgJpaRepository.findById(pushId).get();
         pushNoticeMsg.setStatus(status);
         pushNoticeMsg.setErrorMsg(errMsg);
         pushNoticeMsg.setErrorCode(errCode);

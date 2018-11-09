@@ -125,7 +125,7 @@ public class PushNoticeConfigServiceImpl implements PushNoticeConfigService {
         iosParam.put("pushChannel", PushChannelEnum.APNS.name());
         Map<String, Object> iosConf = pushConfigurator.get(appKey, iosParam);
         if (null != iosConf && null != iosConf.get(CERT_ID)) {
-            iosConf.put("certificateName", fileService.findOne(iosConf.get(CERT_ID).toString()).getFileName());
+            iosConf.put("certificateName", fileService.findById(iosConf.get(CERT_ID).toString()).getFileName());
         }
         pushConfigVO.setIosConf(iosConf);
         return pushConfigVO;

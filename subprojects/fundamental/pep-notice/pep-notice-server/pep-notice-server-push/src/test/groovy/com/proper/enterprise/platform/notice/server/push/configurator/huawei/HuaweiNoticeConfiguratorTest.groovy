@@ -3,11 +3,11 @@ package com.proper.enterprise.platform.notice.server.push.configurator.huawei
 import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class HuaweiNoticeConfiguratorTest extends AbstractTest {
+class HuaweiNoticeConfiguratorTest extends AbstractJPATest {
 
     @Autowired
     private NoticeConfigurator pushNoticeConfigurator

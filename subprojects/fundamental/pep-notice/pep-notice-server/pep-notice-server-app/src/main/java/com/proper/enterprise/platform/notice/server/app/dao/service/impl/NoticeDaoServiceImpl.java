@@ -52,14 +52,14 @@ public class NoticeDaoServiceImpl implements NoticeDaoService {
 
     @Override
     public Notice updateStatus(String noticeId, NoticeStatus status) {
-        NoticeEntity updateNotice = noticeRepository.findOne(noticeId);
+        NoticeEntity updateNotice = noticeRepository.findById(noticeId).get();
         updateNotice.setStatus(status);
         return BeanUtil.convert(noticeRepository.updateForSelective(updateNotice), NoticeVO.class);
     }
 
     @Override
     public Notice updateToFail(String noticeId, String errCode, String errMsg) {
-        NoticeEntity updateNotice = noticeRepository.findOne(noticeId);
+        NoticeEntity updateNotice = noticeRepository.findById(noticeId).get();
         updateNotice.setStatus(NoticeStatus.FAIL);
         updateNotice.setErrorMsg(errMsg);
         updateNotice.setErrorCode(errCode);
@@ -68,7 +68,7 @@ public class NoticeDaoServiceImpl implements NoticeDaoService {
 
     @Override
     public void addRetryCount(String noticeId) {
-        NoticeEntity updateNotice = noticeRepository.findOne(noticeId);
+        NoticeEntity updateNotice = noticeRepository.findById(noticeId).get();
         updateNotice.setRetryCount(updateNotice.getRetryCount() + 1);
         noticeRepository.updateForSelective(updateNotice);
     }
@@ -124,6 +124,6 @@ public class NoticeDaoServiceImpl implements NoticeDaoService {
 
     @Override
     public Notice get(String noticeId) {
-        return BeanUtil.convert(noticeRepository.findOne(noticeId), NoticeVO.class);
+        return BeanUtil.convert(noticeRepository.findById(noticeId).get(), NoticeVO.class);
     }
 }

@@ -5,11 +5,11 @@ import com.proper.enterprise.platform.template.repository.TemplateRepository
 import com.proper.enterprise.platform.template.service.TemplateService
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO
 import com.proper.enterprise.platform.template.vo.TemplateVO
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class TemplateServiceTest extends AbstractTest {
+class TemplateServiceTest extends AbstractJPATest {
 
     @Autowired
     TemplateService templateService

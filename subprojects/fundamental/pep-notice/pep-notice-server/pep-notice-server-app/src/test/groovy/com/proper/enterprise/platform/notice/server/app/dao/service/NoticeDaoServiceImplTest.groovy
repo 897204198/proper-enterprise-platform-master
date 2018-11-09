@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService
 import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
@@ -14,7 +14,7 @@ import org.springframework.test.context.jdbc.Sql
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class NoticeDaoServiceImplTest extends AbstractTest {
+class NoticeDaoServiceImplTest extends AbstractJPATest {
 
     @Autowired
     private NoticeDaoService noticeDaoService

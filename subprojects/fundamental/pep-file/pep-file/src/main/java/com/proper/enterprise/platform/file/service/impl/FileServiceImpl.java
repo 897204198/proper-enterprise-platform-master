@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.file.service.impl;
 
 import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
@@ -102,7 +103,7 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
 
     @Override
     public InputStream download(String id) throws IOException {
-        File file = this.findOne(id);
+        File file = this.findById(id);
         if (null == file) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
         }

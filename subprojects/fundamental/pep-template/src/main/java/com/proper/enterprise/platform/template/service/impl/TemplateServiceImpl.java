@@ -2,10 +2,10 @@ package com.proper.enterprise.platform.template.service.impl;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import com.proper.enterprise.platform.template.entity.TemplateEntity;
 import com.proper.enterprise.platform.template.repository.TemplateRepository;
 import com.proper.enterprise.platform.template.service.TemplateService;
@@ -107,7 +107,7 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateEntit
 
     @Override
     public TemplateVO get(String id) {
-        TemplateEntity templateDocument = templateRepository.findOne(id);
+        TemplateEntity templateDocument = templateRepository.findById(id).get();
         if (templateDocument == null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.template.no.templates"));
         }
@@ -126,8 +126,8 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateEntit
             String[] idArr = ids.split(",");
             List<String> list = new ArrayList<>();
             Collections.addAll(list, idArr);
-            Iterable<TemplateEntity> collection = templateRepository.findAll(list);
-            templateRepository.delete(collection);
+            Iterable<TemplateEntity> collection = templateRepository.findAllById(list);
+            templateRepository.deleteInBatch(collection);
         }
         return true;
     }

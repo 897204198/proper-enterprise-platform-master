@@ -2,12 +2,12 @@ package com.proper.enterprise.platform.notice.server.app.controller
 
 import com.proper.enterprise.platform.notice.server.app.vo.AppVO
 import com.proper.enterprise.platform.notice.server.push.vo.PushConfigVO
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
 import org.springframework.http.HttpStatus
 
-class PushNoticeConfigControllerTest extends AbstractTest {
+class PushNoticeConfigControllerTest extends AbstractJPATest {
 
     @Test
     public void postTest() {

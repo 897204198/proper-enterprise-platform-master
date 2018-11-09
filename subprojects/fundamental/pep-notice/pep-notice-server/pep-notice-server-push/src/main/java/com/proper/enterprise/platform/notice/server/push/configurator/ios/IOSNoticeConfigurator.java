@@ -38,7 +38,7 @@ public class IOSNoticeConfigurator extends AbstractPushConfigSupport {
         if (null == config.get(CERT_ID)) {
             throw new ErrMsgException("certificateId can't be null");
         }
-        File file = fileService.findOne((String) config.get(CERT_ID));
+        File file = fileService.findById((String) config.get(CERT_ID));
         if (null == file) {
             throw new ErrMsgException("apns cert is not find");
         }
@@ -58,7 +58,7 @@ public class IOSNoticeConfigurator extends AbstractPushConfigSupport {
 
     @Override
     public Map put(String appKey, Map<String, Object> config,  Map<String, Object> params) {
-        File file = fileService.findOne((String) config.get(CERT_ID));
+        File file = fileService.findById((String) config.get(CERT_ID));
         if (!CERT_TYPE.equals(file.getFileType())) {
             throw new ErrMsgException("apns cert type must be p12");
         }

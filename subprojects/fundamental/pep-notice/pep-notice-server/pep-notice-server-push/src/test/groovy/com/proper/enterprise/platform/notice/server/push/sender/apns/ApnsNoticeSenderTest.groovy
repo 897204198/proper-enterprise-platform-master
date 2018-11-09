@@ -19,7 +19,7 @@ import com.proper.enterprise.platform.notice.server.push.enums.apns.IOSErrCodeEn
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Ignore
 import org.junit.Test
@@ -31,7 +31,7 @@ import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-class ApnsNoticeSenderTest extends AbstractTest {
+class ApnsNoticeSenderTest extends AbstractJPATest {
 
     @Autowired
     @Qualifier("iosNoticeSender")

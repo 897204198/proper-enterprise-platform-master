@@ -1,11 +1,11 @@
 package com.proper.enterprise.platform.notice.server.email.configurator
 
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class EmailNoticeConfiguratorTest extends AbstractTest {
+class EmailNoticeConfiguratorTest extends AbstractJPATest {
 
     @Autowired
     private NoticeConfigurator emailNoticeConfigurator

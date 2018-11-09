@@ -1,17 +1,17 @@
 package com.proper.enterprise.platform.notice.server.sms.handler
 
+import com.proper.enterprise.platform.core.i18n.I18NUtil
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler
 import com.proper.enterprise.platform.notice.server.api.model.Notice
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sms.entity.MockNotice
-import com.proper.enterprise.platform.sys.i18n.I18NUtil
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class SMSNoticeSendHandlerTest extends AbstractTest {
+class SMSNoticeSendHandlerTest extends AbstractJPATest {
 
     @Autowired
     private NoticeSendHandler smsNoticeSender

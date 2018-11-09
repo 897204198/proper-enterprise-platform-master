@@ -1,11 +1,11 @@
 package com.proper.enterprise.platform.notice.server.sms.configurator
 
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class SMSNoticeConfiguratorTest extends AbstractTest {
+class SMSNoticeConfiguratorTest extends AbstractJPATest {
 
     @Autowired
     private NoticeConfigurator smsNoticeConfigurator

@@ -8,7 +8,7 @@ import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.template.entity.TemplateEntity
 import com.proper.enterprise.platform.template.repository.TemplateRepository
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
 
 @Sql
-class NoticeSenderImplTest extends AbstractTest {
+class NoticeSenderImplTest extends AbstractJPATest {
 
     @Autowired
     UserService userService

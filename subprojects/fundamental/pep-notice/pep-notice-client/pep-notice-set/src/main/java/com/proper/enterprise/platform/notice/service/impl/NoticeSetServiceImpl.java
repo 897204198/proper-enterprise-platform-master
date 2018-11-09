@@ -42,7 +42,7 @@ public class NoticeSetServiceImpl implements NoticeSetService {
         String id = noticeSetDocument.getId();
         NoticeSetDocument document;
         if (StringUtil.isNotNull(id)) {
-            document = noticeSetRepository.findOne(id);
+            document = noticeSetRepository.findById(id).get();
             document.setNoticeChannel(noticeSetDocument.getNoticeChannel());
         } else {
             document = noticeSetDocument;

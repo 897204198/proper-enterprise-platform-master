@@ -3,13 +3,13 @@ package com.proper.enterprise.platform.notice.server.app.controller
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
 import com.proper.enterprise.platform.auth.common.vo.AccessTokenVO
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
-class ApiNoticeConfigControllerTest extends AbstractTest {
+class ApiNoticeConfigControllerTest extends AbstractJPATest {
 
     @Autowired
     private AccessTokenService accessTokenService
