@@ -149,6 +149,39 @@ public class BeanUtil {
     }
 
     /**
+     * copy source的属性值至具有相同属性的target
+     * 支持同属性不同类型的copy
+     *
+     * @param source           map类型source
+     * @param target           target
+     * @param ignoreNull       是否忽略空属性 默认false
+     * @param ignoreProperties 需要忽略的属性
+     */
+    public static void copyProperties(Map<String, Object> source, Object target, boolean ignoreNull, String... ignoreProperties) {
+        Assert.notNull(source, "Source must not be null");
+        Assert.notNull(target, "Target must not be null");
+        Class<?> actualEditable = target.getClass();
+        PropertyDescriptor[] targetPds = BeanUtils.getPropertyDescriptors(actualEditable);
+        List<String> ignoreList = ignoreProperties != null ? Arrays.asList(ignoreProperties) : null;
+        for (PropertyDescriptor targetPd : targetPds) {
+            Method writeMethod = targetPd.getWriteMethod();
+            boolean ignoreRes = ignoreList == null || !ignoreList.contains(targetPd.getName());
+            if (writeMethod != null && ignoreRes) {
+                try {
+                    Object value = source.get(targetPd.getName());
+                    if (null == value && ignoreNull) {
+                        continue;
+                    }
+                    writeMethod.invoke(target, value);
+                } catch (Throwable ex) {
+                    throw new FatalBeanException(
+                        "Could not copy property '" + targetPd.getName() + "' from source to target", ex);
+                }
+            }
+        }
+    }
+
+    /**
      * 处理bean类型不一致的copy
      *
      * @param value            source值
@@ -354,6 +387,24 @@ public class BeanUtil {
         dataTrunkT.setCount(dataTrunk.getCount());
         dataTrunkT.setData(convert(dataTrunk.getData(), classType, convertType, ignoreCycle, ignoreWithView, showType));
         return dataTrunkT;
+    }
+
+    /**
+     * 类型转换
+     *
+     * @param source           map源对象
+     * @param targetCls        目标对象类型
+     * @param ignoreProperties 忽略属性
+     * @param <T>              目标对象泛型
+     * @return 目标对象实例
+     */
+    public static <T> T convert(Map<String, Object> source, Class<T> targetCls, String... ignoreProperties) {
+        if (null == source) {
+            return null;
+        }
+        T t = newInstance(targetCls);
+        copyProperties(source, t, false, ignoreProperties);
+        return t;
     }
 
     /**

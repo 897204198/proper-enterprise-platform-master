@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="generator (generated)" id="notice-server-push-dao-pep_push_notice_msg">
+        <createTable tableName="PEP_PUSH_NOTICE_MSG">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APP_KEY" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BATCH_ID" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NOTICE_ID" type="VARCHAR(255)"/>
+            <column name="CONTENT" type="VARCHAR(2048)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(36)"/>
+            <column name="STATUS" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SEND_COUNT" type="INT(3)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PUSH_CHANNEL" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DEVICE_TYPE" type="VARCHAR(2048)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TARGET_TO" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ERROR_MSG" type="LONGTEXT">
+            </column>
+            <column name="MESSAGE_ID" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="generator (generated)" id="notice-server-push-dao-pep_push_notice_statistic">
+        <createTable tableName="PEP_PUSH_NOTICE_STATISTIC">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="SEND_DATE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APP_KEY" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PUSH_CHANNEL" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MSG_COUNT" type="INT(3)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="WEEK" type="VARCHAR(255)"/>
+            <column name="MONTH" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="generator (generated)" id="201811064-addPushErrorCode">
+        <addColumn tableName="PEP_PUSH_NOTICE_MSG">
+            <column name="ERROR_CODE" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

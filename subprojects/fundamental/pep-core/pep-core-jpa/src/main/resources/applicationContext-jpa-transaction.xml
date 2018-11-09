@@ -27,7 +27,8 @@
         </tx:attributes>
     </tx:advice>
     <aop:config>
-        <aop:pointcut id="txEntryPoint" expression="execution(* com.proper..service.impl.*ServiceImpl.*(..)) or execution(* com.proper..service.impl.*ServiceSupport.*(..))"/>
+        <aop:pointcut id="txEntryPoint"
+                      expression="execution(* com.proper..service.impl.*ServiceImpl.*(..)) or execution(* com.proper..service.impl.*ServiceSupport.*(..)) or execution(* com.proper..repository.*Repository.*(..))"/>
         <aop:advisor pointcut-ref="txEntryPoint" advice-ref="txAdvice"/>
     </aop:config>
     <bean id="beforeService" class="com.proper.enterprise.platform.core.interceptor.ServiceConvertInterceptor"/>

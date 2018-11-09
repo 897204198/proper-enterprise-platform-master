@@ -74,13 +74,11 @@ public interface UserFeedbackService {
     /**
      * 掌上就医推送反馈意见消息
      *
-     * @param pushContent pushContent
-     * @param pushType    pushType
      * @param userId      userId
      * @param paramList   paramList
      * @throws Exception 抛异常
      */
-    void pushInfo(String pushContent, String pushType, String userId, List<Map<String, String>> paramList) throws Exception;
+    void pushInfo(String userId, List<Map<String, String>> paramList) throws Exception;
 
     /**
      * 关闭状态更新管理端的意见反馈

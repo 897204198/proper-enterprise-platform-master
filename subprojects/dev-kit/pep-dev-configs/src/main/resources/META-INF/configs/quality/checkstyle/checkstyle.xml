@@ -253,7 +253,7 @@
     </module>
 
     <module name="RegexpSingleline">
-        <property name="format" value=".printStackTrace"/>
+        <property name="format" value=".printStackTrace\(\)"/>
     </module>
 
     <module name="RegexpMultiline">

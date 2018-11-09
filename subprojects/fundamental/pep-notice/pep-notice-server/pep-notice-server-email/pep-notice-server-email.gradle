@@ -1,0 +1,11 @@
+dependencies {
+    compile project(':pep-core-mongo'),
+            project(':pep-sys'),
+            project(':pep-notice-server-api'),
+        libraries.spring_boot_starter_mail
+
+    testCompile project(':pep-auth-common'),
+                project(':pep-test')
+
+    testRuntime project(':pep-cache-ehcache')
+}

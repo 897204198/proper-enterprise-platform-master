@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.file.service.impl;
 
 import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
@@ -88,7 +89,7 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         if (null == file) {
             throw new ErrMsgException("The downloaded resource was not found. id: " + id);
         }
-        InputStream inputStream = dsfService.getFile(file.getFilePath());
+        InputStream inputStream = download(id);
         if (inputStream == null) {
             throw new ErrMsgException("The downloaded resource was not found. path: " + file.getFilePath());
         }
@@ -98,6 +99,19 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         commonDownLoad(inputStream, outputStream);
         inputStream.close();
         outputStream.close();
+    }
+
+    @Override
+    public InputStream download(String id) throws IOException {
+        File file = this.findById(id);
+        if (null == file) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
+        }
+        InputStream inputStream = dsfService.getFile(file.getFilePath());
+        if (inputStream == null) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.file.download.not.find"));
+        }
+        return inputStream;
     }
 
     private void commonDownLoad(InputStream inputStream, OutputStream outputStream) throws IOException {

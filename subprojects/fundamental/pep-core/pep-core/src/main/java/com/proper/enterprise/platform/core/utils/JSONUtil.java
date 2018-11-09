@@ -106,6 +106,60 @@ public class JSONUtil {
         return mapper.readValue(str, type);
     }
 
+
+    /**
+     * 将 JSON 字符串转换为相应容器类型的对象
+     *
+     * @param str JSON 字符串
+     * @param clz 容器对象类型
+     * @return 容器对象
+     */
+    public static <T> T parseIgnoreException(String str, Class<T> clz) {
+        T object = null;
+        try {
+            object = parse(str, clz);
+        } catch (IOException e) {
+            LOGGER.debug("Error occurs when parsing JSON to object!", e);
+        }
+        return object;
+    }
+
+    /**
+     * 将 JSON 字节数组转换为相应容器类型的对象
+     *
+     * @param bytes JSON 字节数组
+     * @param clz   容器对象类型
+     * @return 容器对象
+     */
+    public static <T> T parseIgnoreException(byte[] bytes, Class<T> clz) {
+        T object = null;
+        try {
+            object = parse(bytes, clz);
+        } catch (IOException e) {
+            LOGGER.debug("Error occurs when parsing JSON to object!", e);
+        }
+        return object;
+    }
+
+    /**
+     * 将 JSONATTR 字符串转换为相应容器类型的对象集合
+     *
+     * @param str  JSON 字符串
+     * @param type valueType
+     * @return 容器对象集合
+     * @throws IOException 异常
+     */
+    public static <T> T parseIgnoreException(String str, TypeReference type) {
+        T object = null;
+        try {
+            object = parse(str, type);
+        } catch (IOException e) {
+            LOGGER.debug("Error occurs when parsing JSON to object!", e);
+        }
+        return object;
+    }
+
+
     public static ObjectMapper getMapper() {
         return mapper;
     }
