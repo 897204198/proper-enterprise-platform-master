@@ -37,5 +37,11 @@ public interface PushDeviceService {
      * @param userId 用户唯一标识
      */
     void deleteByUserId(String userId);
+
+    /**
+     * 清除token
+     * @param token token
+     */
+    void deleteByToken(String token);
 }
 

@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.jdbc.Sql
-
 @Ignore
 @Sql
 class NoticeClientToServerTest extends AbstractJPATest {
@@ -163,9 +162,29 @@ class NoticeClientToServerTest extends AbstractJPATest {
         pushDeviceEntity.userId = "test1"
         pushDeviceEntity.deviceType = PushDeviceType.android
         pushDeviceEntity.deviceOtherInfo = "{\"model\":\"MI 5\",\"manufacturer\":\"Xiaomi\",\"brand\":\"Xiaomi\",\"sdk_int\":24}"
-        pushDeviceEntity.pushMode = PushMode.xiaomi
+        pushDeviceEntity.pushMode = PushMode.XIAOMI
         pushDeviceEntity.pushToken = "w69uYXiVgywg4VE/GJmGnfnomKwfGYs743z09wGK8rjexgJ1hgmmg32O4WpahuFd"
         deviceRepository.save(pushDeviceEntity)
+
+    }
+
+    @Test
+    void testDelTokenTask() {
+        String noticeServerUrl = null
+        DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "URL")
+        if (dataDic != null) {
+            noticeServerUrl = dataDic.getName()
+        }
+
+        String noticeServerToken = null
+        dataDic = DataDicUtil.get("NOTICE_SERVER", "TOKEN")
+        if (dataDic != null) {
+            noticeServerToken = dataDic.getName()
+        }
+
+        ResponseEntity<byte[]> response = HttpClient.get(noticeServerUrl
+            + "/notice/server/msg/app?access_token=" + noticeServerToken)
+        println "response:" + StringUtil.toEncodedString(response.getBody())
     }
 
     @After
