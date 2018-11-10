@@ -90,9 +90,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
             throw new ErrMsgException("The downloaded resource was not found. id: " + id);
         }
         InputStream inputStream = download(id);
-        if (inputStream == null) {
-            throw new ErrMsgException("The downloaded resource was not found. path: " + file.getFilePath());
-        }
         response.setHeader("Content-disposition", "attachment;filename="
             + java.net.URLEncoder.encode(file.getFileName(), coreProperties.getCharset()));
         OutputStream outputStream = response.getOutputStream();

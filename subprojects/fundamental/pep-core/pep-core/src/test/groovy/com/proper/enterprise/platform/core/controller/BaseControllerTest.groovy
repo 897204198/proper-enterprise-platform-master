@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.controller
 
 import com.proper.enterprise.platform.core.CoreProperties
+import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.controller.mock.MockEntityR
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.JSONUtil
@@ -89,12 +90,12 @@ class BaseControllerTest extends AbstractSpringTest {
         def r3 = get('/core/test/trouble/2', HttpStatus.INTERNAL_SERVER_ERROR)
         assert '异常啦' == r3.getResponse().getContentAsString()
         assert r3.getResponse().getContentType() == textPlainUtf8
-        assert r3.getResponse().getHeader(coreProperties.getResponseHeaderErrorType()) == coreProperties.getResponseSystemError()
+        assert r3.getResponse().getHeader(PEPConstants.RESPONSE_HEADER_ERROR_TYPE) == PEPConstants.RESPONSE_SYSTEM_ERROR
         get('/core/test/trouble/3', HttpStatus.NOT_FOUND)
 
         MvcResult bussinessErrResult = get('/core/test/trouble/4', HttpStatus.INTERNAL_SERVER_ERROR)
         assert bussinessErrResult.getResponse().getContentAsString() == 'empty stack'
-        assert bussinessErrResult.getResponse().getHeader(coreProperties.getResponseHeaderErrorType()) == coreProperties.getResponseBusinessError()
+        assert bussinessErrResult.getResponse().getHeader(PEPConstants.RESPONSE_HEADER_ERROR_TYPE) == PEPConstants.RESPONSE_BUSINESS_ERROR
     }
 
     @Test
