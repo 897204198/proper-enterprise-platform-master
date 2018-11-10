@@ -93,14 +93,4 @@ class UserFeedbackServiceImplTest extends AbstractJPATest {
         assert feedbackList.size() == 1
     }
 
-    @Test
-    void pushInfoTest() {
-        Map map = new HashMap()
-        map.put("url", "https://www.baidu.com")
-        map.put("title", "test")
-        List list = new ArrayList()
-        list.add(map)
-        userFeedbackService.pushInfo("推送消息内容", "examList", "admin", list)
-    }
-
 }
