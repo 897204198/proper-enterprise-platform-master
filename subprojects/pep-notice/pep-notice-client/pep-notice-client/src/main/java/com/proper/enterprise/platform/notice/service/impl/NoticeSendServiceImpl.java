@@ -178,10 +178,13 @@ public class NoticeSendServiceImpl {
             HttpClient.post(noticeServerUrl
                 + "/notice/server/send?access_token="
                 + noticeServerToken, MediaType.APPLICATION_JSON, data);
+
         } catch (Exception e) {
             LOGGER.error("NoticeSender.accessNoticeServer[Exception]:", e);
             updateNotice(noticeModel.getBatchId(), noticeServerUrl, e.getMessage());
         }
+
     }
+
 
 }

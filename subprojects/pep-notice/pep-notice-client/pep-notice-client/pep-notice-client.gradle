@@ -4,7 +4,9 @@ dependencies {
             project(':pep-notice-server-sdk'),
             project(':pep-notice-set'),
             project(':pep-template'),
-            project(':pep-notice-push-client')
+            project(':pep-notice-push-client'),
+            project(':pep-schedule-cluster')
+
     testCompile project(':pep-test'),
             project(':pep-auth-common-jpa')
 }

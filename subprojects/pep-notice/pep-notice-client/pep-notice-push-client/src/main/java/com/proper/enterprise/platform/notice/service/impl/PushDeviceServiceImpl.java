@@ -58,6 +58,11 @@ public class PushDeviceServiceImpl implements PushDeviceService {
         LOGGER.info("unbindDevice of user:" + userId);
     }
 
+    @Override
+    public void deleteByToken(String token) {
+        deviceRepo.deleteByPushToken(token);
+    }
+
     private void bindDevice(String appKey,
                             String userId,
                             String pushMode,

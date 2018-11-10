@@ -17,4 +17,10 @@ public interface PushDeviceRepository extends BaseRepository<PushDeviceEntity, S
      * @param userId 用户id
      */
     void deleteByUserId(String userId);
+
+    /**
+     * 删除token
+     * @param token token
+     */
+    void deleteByPushToken(String token);
 }
