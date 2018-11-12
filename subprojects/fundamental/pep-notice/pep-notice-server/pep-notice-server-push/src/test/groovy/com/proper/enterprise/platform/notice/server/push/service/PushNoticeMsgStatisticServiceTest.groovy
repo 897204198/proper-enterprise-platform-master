@@ -110,15 +110,15 @@ class PushNoticeMsgStatisticServiceTest extends AbstractJPATest {
 
         assert week.size() == 7
         //第一周 23-29
-        assert week.get(0).getIosDataAnalysis().getSuccessCount() == 1
-        assert week.get(0).getHuaweiDataAnalysis().getFailCount() == 1
-        assert week.get(0).getXiaomiDataAnalysis().getFailCount() == 1
+        assert week.get(6).getIosDataAnalysis().getSuccessCount() == 1
+        assert week.get(6).getHuaweiDataAnalysis().getFailCount() == 1
+        assert week.get(6).getXiaomiDataAnalysis().getFailCount() == 1
 
         //第二周 16-22
-        assert week.get(1).getXiaomiDataAnalysis().getFailCount() == 1
+        assert week.get(5).getXiaomiDataAnalysis().getFailCount() == 1
 
         //第三周 9-15
-        assert week.get(2).getIosDataAnalysis().getFailCount() == 1
+        assert week.get(4).getIosDataAnalysis().getFailCount() == 1
 
         //第四周 2-8
         assert week.get(3).getHuaweiDataAnalysis().getFailCount() == 1
@@ -126,17 +126,17 @@ class PushNoticeMsgStatisticServiceTest extends AbstractJPATest {
         List<PushServiceDataAnalysisVO> weekAppKeyTest = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
             PushDataAnalysisDateRangeEnum.WEEK, "test")
         //第一周 appKey TEST
-        assert weekAppKeyTest.get(0).getIosDataAnalysis().getSuccessCount() == 1
-        assert weekAppKeyTest.get(0).getHuaweiDataAnalysis().getFailCount() == 1
-        assert weekAppKeyTest.get(0).getXiaomiDataAnalysis().getFailCount() == 1
+        assert weekAppKeyTest.get(6).getIosDataAnalysis().getSuccessCount() == 1
+        assert weekAppKeyTest.get(6).getHuaweiDataAnalysis().getFailCount() == 1
+        assert weekAppKeyTest.get(6).getXiaomiDataAnalysis().getFailCount() == 1
 
         //第一周 appKey TEST2
         List<PushServiceDataAnalysisVO> weekAppKeyTest2 = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
             PushDataAnalysisDateRangeEnum.WEEK, "test2")
 
-        assert weekAppKeyTest2.get(0).getIosDataAnalysis().getSuccessCount() == 0
-        assert weekAppKeyTest2.get(0).getHuaweiDataAnalysis().getFailCount() == 0
-        assert weekAppKeyTest2.get(0).getXiaomiDataAnalysis().getFailCount() == 0
+        assert weekAppKeyTest2.get(6).getIosDataAnalysis().getSuccessCount() == 0
+        assert weekAppKeyTest2.get(6).getHuaweiDataAnalysis().getFailCount() == 0
+        assert weekAppKeyTest2.get(6).getXiaomiDataAnalysis().getFailCount() == 0
     }
 
 
@@ -154,15 +154,15 @@ class PushNoticeMsgStatisticServiceTest extends AbstractJPATest {
 
         assert month.size() == 7
         //第一月
-        assert month.get(0).getIosDataAnalysis().getSuccessCount() == 1
-        assert month.get(0).getHuaweiDataAnalysis().getFailCount() == 1
-        assert month.get(0).getXiaomiDataAnalysis().getFailCount() == 1
+        assert month.get(6).getIosDataAnalysis().getSuccessCount() == 1
+        assert month.get(6).getHuaweiDataAnalysis().getFailCount() == 1
+        assert month.get(6).getXiaomiDataAnalysis().getFailCount() == 1
 
         //第二月
-        assert month.get(1).getXiaomiDataAnalysis().getFailCount() == 1
+        assert month.get(5).getXiaomiDataAnalysis().getFailCount() == 1
 
         //第三月
-        assert month.get(2).getIosDataAnalysis().getFailCount() == 1
+        assert month.get(4).getIosDataAnalysis().getFailCount() == 1
 
         //第四月
         assert month.get(3).getHuaweiDataAnalysis().getFailCount() == 1
@@ -170,17 +170,17 @@ class PushNoticeMsgStatisticServiceTest extends AbstractJPATest {
         List<PushServiceDataAnalysisVO> monthAppKeyTest = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
             PushDataAnalysisDateRangeEnum.MONTH, "test")
         //第一月
-        assert monthAppKeyTest.get(0).getIosDataAnalysis().getSuccessCount() == 1
-        assert monthAppKeyTest.get(0).getHuaweiDataAnalysis().getFailCount() == 1
-        assert monthAppKeyTest.get(0).getXiaomiDataAnalysis().getFailCount() == 1
+        assert monthAppKeyTest.get(6).getIosDataAnalysis().getSuccessCount() == 1
+        assert monthAppKeyTest.get(6).getHuaweiDataAnalysis().getFailCount() == 1
+        assert monthAppKeyTest.get(6).getXiaomiDataAnalysis().getFailCount() == 1
 
         //第一月
         List<PushServiceDataAnalysisVO> monthAppKeyTest2 = pushNoticeMsgStatisticService.findByDateTypeAndAppKey(DateUtil.toDate("2018-07-25"),
             PushDataAnalysisDateRangeEnum.MONTH, "test2")
 
-        assert monthAppKeyTest2.get(0).getIosDataAnalysis().getSuccessCount() == 0
-        assert monthAppKeyTest2.get(0).getHuaweiDataAnalysis().getFailCount() == 0
-        assert monthAppKeyTest2.get(0).getXiaomiDataAnalysis().getFailCount() == 0
+        assert monthAppKeyTest2.get(6).getIosDataAnalysis().getSuccessCount() == 0
+        assert monthAppKeyTest2.get(6).getHuaweiDataAnalysis().getFailCount() == 0
+        assert monthAppKeyTest2.get(6).getXiaomiDataAnalysis().getFailCount() == 0
     }
 
     @Test
