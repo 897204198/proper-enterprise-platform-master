@@ -303,13 +303,13 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
         buildDataAnalysisView(result, pushServiceDataAnalysisMap);
 
         List<PushServiceDataAnalysisVO> list = new ArrayList<>();
-        list.add(one);
-        list.add(two);
-        list.add(three);
-        list.add(four);
-        list.add(five);
-        list.add(six);
         list.add(seven);
+        list.add(six);
+        list.add(five);
+        list.add(four);
+        list.add(three);
+        list.add(two);
+        list.add(one);
         return list;
     }
 
@@ -372,13 +372,13 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
         buildDataAnalysisView(result, pushServiceDataAnalysisMap);
 
         List<PushServiceDataAnalysisVO> list = new ArrayList<>();
-        list.add(one);
-        list.add(two);
-        list.add(three);
-        list.add(four);
-        list.add(five);
-        list.add(six);
         list.add(seven);
+        list.add(six);
+        list.add(five);
+        list.add(four);
+        list.add(three);
+        list.add(two);
+        list.add(one);
         return list;
     }
 
