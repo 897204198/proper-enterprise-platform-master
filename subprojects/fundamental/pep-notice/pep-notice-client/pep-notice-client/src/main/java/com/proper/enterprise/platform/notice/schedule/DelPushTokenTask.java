@@ -17,6 +17,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service("delPushTokenTask")
 public class DelPushTokenTask {
@@ -39,18 +40,22 @@ public class DelPushTokenTask {
             noticeServerToken = dataDic.getName();
         }
         try {
-            ResponseEntity<byte[]> response = HttpClient.get(noticeServerUrl
-                + "/notice/server/msg/app?access_token=" + noticeServerToken);
+            String url = noticeServerUrl + "/notice/server/msg/app?access_token=" + noticeServerToken;
+            ResponseEntity<byte[]> response = HttpClient.get(url);
+            byte[] body = response.getBody();
+            if (body == null) {
+                LOGGER.debug("Get empty body from {}", url);
+                return;
+            }
             Charset charset = Charset.defaultCharset();
-            ByteBuffer buf = ByteBuffer.wrap(response.getBody());
+            ByteBuffer buf = ByteBuffer.wrap(body);
             CharBuffer content = charset.decode(buf);
             List<Map<String, Object>> list = JSONUtil.parse(content.toString(), List.class);
             if (CollectionUtil.isNotEmpty(list)) {
                 for (Map map : list) {
-                    if (map.get("status").equals("FAIL") && map.get("errorCode").equals("Invalid target")) {
+                    if ("FAIL".equals(map.get("status")) && "Invalid target".equals(map.get("errorCode"))) {
                         pushDeviceService.deleteByToken(map.get("targetTo").toString());
                     }
-
                 }
             }
 
