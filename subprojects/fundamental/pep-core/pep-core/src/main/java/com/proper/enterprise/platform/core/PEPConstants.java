@@ -1,7 +1,5 @@
 package com.proper.enterprise.platform.core;
 
-import java.nio.charset.Charset;
-
 /**
  * 常量表
  */
