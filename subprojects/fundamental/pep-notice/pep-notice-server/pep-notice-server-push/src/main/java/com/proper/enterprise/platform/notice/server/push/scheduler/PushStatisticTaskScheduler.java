@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.notice.server.push.scheduler;
 
-import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgStatisticEntity;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgStatisticService;
@@ -26,6 +26,9 @@ public class PushStatisticTaskScheduler {
     private PushNoticeMsgStatisticService pushNoticeMsgStatisticService;
 
     @Autowired
+    private CoreProperties coreProperties;
+
+    @Autowired
     public PushStatisticTaskScheduler(PushNoticeMsgStatisticService pushNoticeMsgStatisticService) {
         this.pushNoticeMsgStatisticService = pushNoticeMsgStatisticService;
     }
@@ -37,8 +40,8 @@ public class PushStatisticTaskScheduler {
         //昨天时间
         Date dateStart = DateUtil.addDay(dateEnd, -1);
         List<PushNoticeMsgStatisticEntity> pushMsgStatistics = pushNoticeMsgStatisticService.getPushStatistic(dateStart, dateEnd);
-        LOGGER.info("startDate:{} endDate:{} entityList:{}", DateUtil.toString(dateStart, PEPConstants.DEFAULT_DATETIME_FORMAT),
-            DateUtil.toString(dateEnd, PEPConstants.DEFAULT_DATETIME_FORMAT), entityList);
+        LOGGER.info("startDate:{} endDate:{} entityList:{}", DateUtil.toString(dateStart, coreProperties.getDefaultDatetimeFormat()),
+            DateUtil.toString(dateEnd, coreProperties.getDefaultDatetimeFormat()), entityList);
         pushNoticeMsgStatisticService.deleteBySendDate(dateStart);
         pushNoticeMsgStatisticService.saveAll(pushMsgStatistics);
     }

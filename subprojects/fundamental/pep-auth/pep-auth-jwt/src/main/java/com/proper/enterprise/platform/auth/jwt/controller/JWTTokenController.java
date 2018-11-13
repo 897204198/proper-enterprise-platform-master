@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
-import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -17,14 +17,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.Charset;
+
 @RestController
 @Api(tags = "/admin/dev/jwt")
 @RequestMapping("/admin/dev/jwt")
-
 class JWTTokenController extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CoreProperties coreProperties;
 
     @PostMapping(value = "/encode/header", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -44,7 +48,7 @@ class JWTTokenController extends BaseController {
         }
         String res = StringUtil.isNotBlank(header.getId())
             && StringUtil.isNotBlank(header.getName()) ? JSONUtil.toJSON(header) : ("{\"id\":\"" + header.getId());
-        return responseOfPost(Base64.encodeBase64URLSafeString(res.getBytes(PEPConstants.DEFAULT_CHARSET)));
+        return responseOfPost(Base64.encodeBase64URLSafeString(res.getBytes(coreProperties.getCharset())));
     }
 
     @PostMapping(value = "/decode", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
@@ -65,7 +69,7 @@ class JWTTokenController extends BaseController {
     }
 
     private String decode(String str) {
-        return new String(Base64.decodeBase64(str), PEPConstants.DEFAULT_CHARSET);
+        return new String(Base64.decodeBase64(str), Charset.forName(coreProperties.getCharset()));
     }
 
 }

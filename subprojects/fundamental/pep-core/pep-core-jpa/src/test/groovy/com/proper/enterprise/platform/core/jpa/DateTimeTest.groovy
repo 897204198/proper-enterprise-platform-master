@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.jpa
 
-import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.CoreProperties
+import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import com.proper.enterprise.platform.core.jpa.entity.DateTimeEntity
 import com.proper.enterprise.platform.core.utils.DateUtil
 import com.proper.enterprise.platform.test.AbstractSpringTest
@@ -20,7 +21,7 @@ class DateTimeTest extends AbstractSpringTest {
         DateTimeEntity result = JSONUtil.parse(post(URL, JSONUtil.toJSON(configReq),
             HttpStatus.CREATED).getResponse().getContentAsString(), DateTimeEntity.class)
         expect:
-        assert "2018-07-25 09:42:17" == DateUtil.toString(result.getDate(), PEPConstants.DEFAULT_DATETIME_FORMAT)
+        assert "2018-07-25 09:42:17" == DateUtil.toString(result.getDate(), PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
     }
 
 }

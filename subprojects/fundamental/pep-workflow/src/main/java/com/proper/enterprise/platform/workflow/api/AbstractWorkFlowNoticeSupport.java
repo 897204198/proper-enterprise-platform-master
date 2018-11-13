@@ -5,7 +5,7 @@ import com.proper.enterprise.platform.api.auth.dao.UserGroupDao;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
-import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -41,6 +41,9 @@ public abstract class AbstractWorkFlowNoticeSupport {
     @Autowired
     private RoleDao roleDao;
 
+    @Autowired
+    private CoreProperties coreProperties;
+
     public String buildTaskUrl(Task task) {
         Map<String, Object> vars = ((TaskEntityImpl) task).getVariables();
         PEPWorkflowNoticeUrlBusinessParam noticeUrlBusinessParam = new PEPWorkflowNoticeUrlBusinessParam();
@@ -54,8 +57,8 @@ public abstract class AbstractWorkFlowNoticeSupport {
         try {
             Base64 encoder = new Base64();
             return DataDicUtil.get(AppConfigEnum.WEB_ADDRESS).getName() + TASK_PAGE_URL + new String(encoder.encode(
-                URLEncoder.encode(JSONUtil.toJSONIgnoreException(noticeUrlParam), PEPConstants.DEFAULT_CHARSET.name())
-                    .getBytes(PEPConstants.DEFAULT_CHARSET.name())), PEPConstants.DEFAULT_CHARSET.name());
+                URLEncoder.encode(JSONUtil.toJSONIgnoreException(noticeUrlParam), coreProperties.getCharset())
+                    .getBytes(coreProperties.getCharset())), coreProperties.getCharset());
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("taskUrl encode error", e);
         }

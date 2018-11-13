@@ -34,6 +34,9 @@ configurations.all {
             details.useVersion versions.spring
         } else if (req.name == 'mongo-java-driver') {
             details.useTarget "org.mongodb:mongodb-driver:${versions.mongo}"
+        } else if (req.group == 'io.netty' && req.version =="4.1.29.Final") {
+            //暂且未知4.1.29这个版本的netty是谁引入的  使用pushy引用的netty版本4.1.25
+            details.useVersion "4.1.25.Final"
         }
 
         def nameVers = [
@@ -323,6 +326,15 @@ libraries.pep_file                 = "com.proper.enterprise.platform:pep-file:${
 libraries.pep_feedback             = "com.proper.enterprise.platform:pep-feedback:${versions.pep}"
 libraries.pep_image_handler        = "com.proper.enterprise.platform:pep-image-handler:${versions.pep}"
 libraries.pep_monitor              = "com.proper.enterprise.platform:pep-monitor:${versions.pep}"
+libraries.pep_notice_client        = "com.proper.enterprise.platform:pep-notice-client:${versions.pep}"
+libraries.pep_notice_push_client   = "com.proper.enterprise.platform:pep-notice-push-client:${versions.pep}"
+libraries.pep_notice_server_api    = "com.proper.enterprise.platform:pep-notice-server-api:${versions.pep}"
+libraries.pep_notice_server_app    = "com.proper.enterprise.platform:pep-notice-server-app:${versions.pep}"
+libraries.pep_notice_server_email  = "com.proper.enterprise.platform:pep-notice-server-email:${versions.pep}"
+libraries.pep_notice_server_push   = "com.proper.enterprise.platform:pep-notice-server-push:${versions.pep}"
+libraries.pep_notice_server_sdk    = "com.proper.enterprise.platform:pep-notice-server-sdk:${versions.pep}"
+libraries.pep_notice_server_sms    = "com.proper.enterprise.platform:pep-notice-server-sms:${versions.pep}"
+libraries.pep_notice_set           = "com.proper.enterprise.platform:pep-notice-set:${versions.pep}"
 libraries.pep_oopsearch            = "com.proper.enterprise.platform:pep-oopsearch:${versions.pep}"
 libraries.pep_oopsearch_api        = "com.proper.enterprise.platform:pep-oopsearch-api:${versions.pep}"
 libraries.pep_oopsearch_config     = "com.proper.enterprise.platform:pep-oopsearch-config:${versions.pep}"
@@ -342,8 +354,5 @@ libraries.pep_schedule_cluster     = "com.proper.enterprise.platform:pep-schedul
 libraries.pep_swagger              = "com.proper.enterprise.platform:pep-swagger:${versions.pep}"
 libraries.pep_sys                  = "com.proper.enterprise.platform:pep-sys:${versions.pep}"
 libraries.pep_test                 = "com.proper.enterprise.platform:pep-test:${versions.pep}"
+libraries.pep_template             = "com.proper.enterprise.platform:pep-template:${versions.pep}"
 libraries.pep_workflow             = "com.proper.enterprise.platform:pep-workflow:${versions.pep}"
-libraries.pep_notice               = "com.proper.enterprise.platform:pep-notice:${versions.pep}"
-libraries.pep_notice_set           = "com.proper.enterprise.platform:pep-notice-set:${versions.pep}"
-libraries.pep_notice_client        = "com.proper.enterprise.platform:pep-notice-client:${versions.pep}"
-libraries.pep_notice_template      = "com.proper.enterprise.platform:pep-notice-template:${versions.pep}"

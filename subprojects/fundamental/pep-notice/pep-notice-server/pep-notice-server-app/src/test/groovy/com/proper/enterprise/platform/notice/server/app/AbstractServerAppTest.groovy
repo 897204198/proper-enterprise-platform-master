@@ -14,7 +14,7 @@ abstract class AbstractServerAppTest extends AbstractJPATest {
         appVO.setAppToken(token)
         appVO.setColor("color")
         appVO.setAppDesc("describe")
-        postAndReturn('/notice/server/app', appVO)
+        resOfPost('/notice/server/app', appVO)
         return token
     }
 
@@ -26,7 +26,7 @@ abstract class AbstractServerAppTest extends AbstractJPATest {
         appVO.setAppToken(token)
         appVO.setColor("color")
         appVO.setAppDesc("describe")
-        return postAndReturn('/notice/server/app', appVO)
+        return resOfPost('/notice/server/app', appVO)
     }
 
     public void deleteApp(String appId) {

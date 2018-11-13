@@ -1,13 +1,17 @@
+apply plugin: 'java-library'
+
 dependencies {
-    compile project(':pep-sys'),
-            project(':pep-auth-api'),
-            project(':pep-notice-server-sdk'),
-            project(':pep-notice-set'),
-            project(':pep-template'),
-            project(':pep-notice-push-client'),
-            project(':pep-schedule-cluster')
 
-    testCompile project(':pep-test'),
-            project(':pep-auth-common-jpa')
+                   api project(':pep-notice-server-sdk')
+
+        implementation project(':pep-auth-api'),
+                       project(':pep-core-mongo'),
+                       project(':pep-notice-set'),
+                       project(':pep-notice-push-client'),
+                       project(':pep-schedule-cluster'),
+                       project(':pep-template')
+
+    testImplementation project(':pep-test'),
+                       project(':pep-auth-common-jpa')
+
 }
-

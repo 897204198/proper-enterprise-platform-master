@@ -2,6 +2,8 @@ package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.core.CoreProperties;
+import com.proper.enterprise.platform.core.PEPPropertiesLoader;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
@@ -41,8 +43,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.proper.enterprise.platform.core.PEPConstants.DEFAULT_DATETIME_FORMAT;
 
 @Service
 public class PEPProcessServiceImpl implements PEPProcessService {
@@ -229,7 +229,8 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery()
             .includeProcessVariables().processInstanceId(procInstId).singleResult();
         PEPStartVO pepStartVO = new PEPStartVO();
-        pepStartVO.setCreateTime(DateUtil.toString(processInstance.getStartTime(), DEFAULT_DATETIME_FORMAT));
+        pepStartVO.setCreateTime(DateUtil.toString(processInstance.getStartTime(),
+            PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
         pepStartVO.setStartUserId(processInstance.getStartUserId());
         pepStartVO.setProcessDefinitionName(processInstance.getProcessDefinitionName());
         Object startFormData = processInstance.getProcessVariables().get(WorkFlowConstants.START_FORM_DATA);

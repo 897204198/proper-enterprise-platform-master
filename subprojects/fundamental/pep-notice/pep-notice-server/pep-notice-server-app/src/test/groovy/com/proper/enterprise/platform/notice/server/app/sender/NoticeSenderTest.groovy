@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.app.sender
 
-import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.CoreProperties
+import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import com.proper.enterprise.platform.notice.server.api.model.Notice
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender
 import com.proper.enterprise.platform.notice.server.app.AbstractServerAppTest
@@ -56,7 +57,8 @@ class NoticeSenderTest extends AbstractServerAppTest {
         noticeVO.setNoticeType(NoticeType.MOCK)
         noticeSender.afterSend(noticeVO)
         assert "a" == SingletonMap.getSingletMap().get("mockErrAfter")
-        waitExecutorDone()
+//        waitExecutorDone() TODO
+        sleep(2000)
         assert "b" == SingletonMap.getSingletMap().get("mockErrAfter")
     }
 
@@ -71,7 +73,8 @@ class NoticeSenderTest extends AbstractServerAppTest {
         noticeVO.setContent("content")
         noticeVO.setTargetTo("aa")
         noticeSender.sendAsync(noticeVO)
-        waitExecutorDone()
+//        waitExecutorDone() TODO
+        sleep(3000)
         assert NoticeStatus.SUCCESS == SingletonMap.getSingletMap().get(noticeRepository.findAll().get(0).getId())
         assert noticeRepository.findAll().size() == 1
         assert noticeRepository.findAll().get(0).getBatchId() == "batchId"
@@ -81,15 +84,16 @@ class NoticeSenderTest extends AbstractServerAppTest {
     @NoTx
     @Sql("/com/proper/enterprise/platform/notice/server/app/service/sql/syncPendingNoticesStatusAsync.sql")
     public void syncPendingNoticesStatusAsync() {
-        DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)
+        DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
         noticeSender.syncPendingNoticesStatusAsync(LocalDateTime.parse("2018-09-03 17:30:21", dfm),
             LocalDateTime.parse("2018-09-03 17:32:22", dfm))
-        waitExecutorDone()
-        assert noticeRepository.findOne('1-PENDING').getStatus() == NoticeStatus.SUCCESS
-        assert noticeRepository.findOne('4-PENDING').getStatus() == NoticeStatus.RETRY
-        assert noticeRepository.findOne('4-PENDING').getRetryCount() == 2
-        assert noticeRepository.findOne('2-PENDING').getStatus() == NoticeStatus.FAIL
-        assert noticeRepository.findOne('2-PENDING').getErrorMsg() == "Max retry"
+//        waitExecutorDone() TODO
+        sleep(3000)
+        assert noticeRepository.findById('1-PENDING').get().getStatus() == NoticeStatus.SUCCESS
+        assert noticeRepository.findById('4-PENDING').get().getStatus() == NoticeStatus.RETRY
+        assert noticeRepository.findById('4-PENDING').get().getRetryCount() == 2
+        assert noticeRepository.findById('2-PENDING').get().getStatus() == NoticeStatus.FAIL
+        assert noticeRepository.findById('2-PENDING').get().getErrorMsg() == "Max retry"
         noticeRepository.deleteAll()
     }
 
@@ -97,13 +101,13 @@ class NoticeSenderTest extends AbstractServerAppTest {
     @NoTx
     @Sql("/com/proper/enterprise/platform/notice/server/app/service/sql/retryNoticesAsync.sql")
     public void retryNoticesAsync() {
-        DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)
+        DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
         noticeSender.retryNoticesAsync(LocalDateTime.parse("2018-09-03 17:30:21", dfm),
             LocalDateTime.parse("2018-09-03 17:32:22", dfm))
         waitExecutorDone()
-        assert noticeRepository.findOne('1-RETRY').getStatus() == NoticeStatus.SUCCESS
-        assert noticeRepository.findOne('2-RETRY').getStatus() == NoticeStatus.SUCCESS
-        assert noticeRepository.findOne('4-RETRY').getStatus() == NoticeStatus.FAIL
+        assert noticeRepository.findById('1-RETRY').get().getStatus() == NoticeStatus.SUCCESS
+        assert noticeRepository.findById('2-RETRY').get().getStatus() == NoticeStatus.SUCCESS
+        assert noticeRepository.findById('4-RETRY').get().getStatus() == NoticeStatus.FAIL
         noticeRepository.deleteAll()
     }
 
@@ -117,7 +121,8 @@ class NoticeSenderTest extends AbstractServerAppTest {
         noticeVO.setContent("content")
         noticeVO.setTargetTo("aa")
         noticeSender.sendAsync(noticeVO)
-        waitExecutorDone()
+//        waitExecutorDone()  TODO
+        sleep(500)
         assert MockNoticeSender.MOCK_INVALID_TARGET == noticeRepository.findAll().get(0).getErrorCode()
     }
 

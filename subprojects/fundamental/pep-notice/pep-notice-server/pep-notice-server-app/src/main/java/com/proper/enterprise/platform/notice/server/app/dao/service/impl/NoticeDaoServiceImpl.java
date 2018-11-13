@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.notice.server.app.dao.service.impl;
 
-import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
@@ -26,9 +26,12 @@ public class NoticeDaoServiceImpl implements NoticeDaoService {
 
     private NoticeRepository noticeRepository;
 
+    private CoreProperties coreProperties;
+
     @Autowired
-    public NoticeDaoServiceImpl(NoticeRepository noticeRepository) {
+    public NoticeDaoServiceImpl(NoticeRepository noticeRepository, CoreProperties coreProperties) {
         this.noticeRepository = noticeRepository;
+        this.coreProperties = coreProperties;
     }
 
     @Override
@@ -108,18 +111,18 @@ public class NoticeDaoServiceImpl implements NoticeDaoService {
     @Override
     public List<Notice> findPendingNotices(LocalDateTime startModifyTime, LocalDateTime endModifyTime) {
         return noticeRepository.findPendingNotices(startModifyTime
-                .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)),
+                .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultDatetimeFormat())),
             endModifyTime
-                .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)));
+                .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultDatetimeFormat())));
     }
 
     @Override
     public List<Notice> findRetryNotices(LocalDateTime startModifyTime, LocalDateTime endModifyTime, Integer maxRetryCount) {
         return noticeRepository
             .findRetryNotices(startModifyTime
-                    .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)),
+                    .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultDatetimeFormat())),
                 endModifyTime
-                    .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)), maxRetryCount);
+                    .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultDatetimeFormat())), maxRetryCount);
     }
 
     @Override

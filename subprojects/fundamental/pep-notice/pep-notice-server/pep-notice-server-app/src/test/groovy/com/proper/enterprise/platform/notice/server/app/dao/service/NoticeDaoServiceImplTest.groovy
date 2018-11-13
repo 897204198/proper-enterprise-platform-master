@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.app.dao.service
 
-import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.CoreProperties
+import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import com.proper.enterprise.platform.notice.server.api.model.Notice
 import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService
 import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO
@@ -51,7 +52,7 @@ class NoticeDaoServiceImplTest extends AbstractJPATest {
         assert save.getRetryCount() == 0
         assert noticeDaoService.updateStatus(save.getId(),
             NoticeStatus.SUCCESS).getStatus() == NoticeStatus.SUCCESS
-        assert noticeDaoService.updateToFail(save.getId(),"errMsg",
+        assert noticeDaoService.updateToFail(save.getId(), "errMsg",
             "errMsg").getErrorMsg() == "errMsg"
     }
 
@@ -73,7 +74,7 @@ class NoticeDaoServiceImplTest extends AbstractJPATest {
     @Test
     @Sql("/com/proper/enterprise/platform/notice/server/app/dao/sql/pendingNotices.sql")
     public void findPendingNoticesTest() {
-        DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)
+        DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
         List<Notice> notices = noticeDaoService.findPendingNotices(LocalDateTime.parse("2018-09-03 17:30:21", dfm),
             LocalDateTime.parse("2018-09-03 17:32:22", dfm))
         assert notices.size() == 2
@@ -82,7 +83,7 @@ class NoticeDaoServiceImplTest extends AbstractJPATest {
     @Test
     @Sql("/com/proper/enterprise/platform/notice/server/app/dao/sql/retryNotices.sql")
     public void findRetryNoticesTest() {
-        DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)
+        DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
         List<Notice> notices = noticeDaoService
             .findRetryNotices(LocalDateTime.parse("2018-09-03 17:30:21", dfm),
             LocalDateTime.parse("2018-09-03 17:32:22", dfm)

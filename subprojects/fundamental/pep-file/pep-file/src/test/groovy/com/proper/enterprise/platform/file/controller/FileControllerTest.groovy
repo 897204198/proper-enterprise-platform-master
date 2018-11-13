@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.file.controller
 
-import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.CoreProperties
+import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import com.proper.enterprise.platform.core.utils.AntResourceUtil
 import com.proper.enterprise.platform.file.vo.FileVO
 import com.proper.enterprise.platform.test.AbstractJPATest
@@ -58,7 +59,8 @@ class FileControllerTest extends AbstractJPATest {
         //修改文件验证
         FileVO filePutVO = JSONUtil.parse(get("/file/" + resultPut + "/meta", HttpStatus.OK).getResponse().getContentAsString(), FileVO.class)
         assert filePutVO.getFileName() == "测试修改文件.png"
-        assert "测试修改文件.png" == URLDecoder.decode(get("/file/" + resultPut, HttpStatus.OK).getResponse().getHeader("Content-disposition").replace("attachment;filename=", ""), PEPConstants.DEFAULT_CHARSET.name())
+        assert "测试修改文件.png" == URLDecoder.decode(get("/file/" + resultPut, HttpStatus.OK).getResponse().getHeader("Content-disposition").replace("attachment;filename=", ""),
+            PEPPropertiesLoader.load(CoreProperties.class).getCharset())
 
     }
 
@@ -73,6 +75,7 @@ class FileControllerTest extends AbstractJPATest {
             )
         ).andExpect(MockMvcResultMatchers.status().isCreated())
             .andReturn().getResponse().getContentAsString()
-        assert "测试下载文件.png" == URLDecoder.decode(get("/file/" + result, HttpStatus.OK).getResponse().getHeader("Content-disposition").replace("attachment;filename=", ""), PEPConstants.DEFAULT_CHARSET.name())
+        assert "测试下载文件.png" == URLDecoder.decode(get("/file/" + result, HttpStatus.OK).getResponse().getHeader("Content-disposition").replace("attachment;filename=", ""),
+            PEPPropertiesLoader.load(CoreProperties.class).getCharset())
     }
 }

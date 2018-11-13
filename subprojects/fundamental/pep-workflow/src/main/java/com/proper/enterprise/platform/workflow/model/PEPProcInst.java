@@ -2,7 +2,9 @@ package com.proper.enterprise.platform.workflow.model;
 
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.PEPApplicationContext;
+import com.proper.enterprise.platform.core.PEPPropertiesLoader;
 import com.proper.enterprise.platform.core.utils.*;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import com.proper.enterprise.platform.core.i18n.I18NUtil;
@@ -17,13 +19,12 @@ import org.flowable.engine.runtime.ProcessInstance;
 import java.util.List;
 import java.util.Map;
 
-import static com.proper.enterprise.platform.core.PEPConstants.DEFAULT_DATETIME_FORMAT;
-
 public class PEPProcInst {
 
     public PEPProcInst(ProcessInstance processInstance) {
         this.setProcInstId(processInstance.getId());
-        this.setCreateTime(DateUtil.toString(processInstance.getStartTime(), DEFAULT_DATETIME_FORMAT));
+        this.setCreateTime(DateUtil.toString(processInstance.getStartTime(),
+            PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
         this.setEnded(processInstance.isEnded());
         this.setProcessDefinitionId(processInstance.getProcessDefinitionId());
         this.setProcessDefinitionKey(processInstance.getProcessDefinitionKey());
@@ -33,7 +34,8 @@ public class PEPProcInst {
     }
 
     public PEPProcInst(HistoricProcessInstance historicProcessInstance) {
-        this.setCreateTime(DateUtil.toString(historicProcessInstance.getStartTime(), DEFAULT_DATETIME_FORMAT));
+        this.setCreateTime(DateUtil.toString(historicProcessInstance.getStartTime(),
+            PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
         this.setEnded(null != historicProcessInstance.getEndTime());
         this.setProcInstId(historicProcessInstance.getId());
         this.setProcessDefinitionId(historicProcessInstance.getProcessDefinitionId());
@@ -41,7 +43,8 @@ public class PEPProcInst {
         this.setProcessDefinitionName(historicProcessInstance.getProcessDefinitionName());
         this.setStartUserId(historicProcessInstance.getStartUserId());
         this.setEndTime(this.getEnded()
-            ? DateUtil.toString(historicProcessInstance.getEndTime(), DEFAULT_DATETIME_FORMAT)
+            ? DateUtil.toString(historicProcessInstance.getEndTime(),
+            PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
             : null);
         this.setProcessTitle(buildProcessTitle(historicProcessInstance.getProcessVariables()));
     }

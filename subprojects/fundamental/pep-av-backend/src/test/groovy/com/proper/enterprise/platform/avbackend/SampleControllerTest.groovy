@@ -3,7 +3,8 @@ package com.proper.enterprise.platform.avbackend
 import com.proper.enterprise.platform.avbackend.model.CountReturnModel
 import com.proper.enterprise.platform.avbackend.model.CreateReturnModel
 import com.proper.enterprise.platform.avbackend.model.QueryReturnModel
-import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.CoreProperties
+import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import com.proper.enterprise.platform.core.mongo.constants.MongoConstants
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.DateUtil
@@ -62,8 +63,8 @@ class SampleControllerTest extends AbstractJPATest {
         List<Map> list = queryReturnModel.getResults()
         assert list.get(0).get("name") == 'test1'
         assert list.get(0).get("enable") == false
-        assert DateUtil.toDate(oldModifyTime, PEPConstants.DEFAULT_DATETIME_FORMAT).getTime() <
-            DateUtil.toDate(list.get(0).get(MongoConstants.LAST_MODIFY_TIME).toString(), PEPConstants.DEFAULT_DATETIME_FORMAT).getTime()
+        assert DateUtil.toDate(oldModifyTime, PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()).getTime() <
+            DateUtil.toDate(list.get(0).get(MongoConstants.LAST_MODIFY_TIME).toString(), PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()).getTime()
         assert "test2" == list.get(0).get(MongoConstants.LAST_MODIFY_USER_ID)
         deleteDocument(collectionName, returnModel.getObjectId())
     }

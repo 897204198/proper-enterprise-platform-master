@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.workflow.service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.AntResourceUtil;
 import com.proper.enterprise.platform.core.utils.ConfCenter;
@@ -38,6 +38,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -52,6 +53,9 @@ public class DeployService {
     private RepositoryService repositoryService;
     @Autowired
     private ModelService modelService;
+
+    @Autowired
+    private CoreProperties coreProperties;
 
     /**
      * 流程部署 部署classPath下的流程模板
@@ -206,7 +210,7 @@ public class DeployService {
     private BpmnModel getBpmnModel(InputStream inputStream) {
         BpmnModel bpmnModel = null;
         try {
-            InputStreamReader in = new InputStreamReader(inputStream, PEPConstants.DEFAULT_CHARSET);
+            InputStreamReader in = new InputStreamReader(inputStream, Charset.forName(coreProperties.getCharset()));
             XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
             XMLStreamReader xtr = xif.createXMLStreamReader(in);
             bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);

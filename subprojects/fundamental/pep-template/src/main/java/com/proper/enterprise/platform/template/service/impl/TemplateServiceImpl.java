@@ -127,7 +127,7 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateEntit
             List<String> list = new ArrayList<>();
             Collections.addAll(list, idArr);
             Iterable<TemplateEntity> collection = templateRepository.findAllById(list);
-            templateRepository.deleteInBatch(collection);
+            templateRepository.deleteAll(collection);
         }
         return true;
     }

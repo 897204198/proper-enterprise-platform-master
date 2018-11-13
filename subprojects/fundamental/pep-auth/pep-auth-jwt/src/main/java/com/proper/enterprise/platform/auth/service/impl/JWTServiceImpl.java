@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.auth.jwt.model.JWTHeader;
 import com.proper.enterprise.platform.auth.jwt.model.JWTPayload;
 import com.proper.enterprise.platform.auth.service.APISecret;
 import com.proper.enterprise.platform.auth.service.JWTService;
-import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Optional;
 
 @Service
@@ -32,9 +33,12 @@ public class JWTServiceImpl extends AccessTokenServiceImpl implements JWTService
 
     private APISecret secret;
 
+    private CoreProperties coreProperties;
+
     @Autowired
-    public JWTServiceImpl(APISecret secret) {
+    public JWTServiceImpl(APISecret secret, CoreProperties coreProperties) {
         this.secret = secret;
+        this.coreProperties = coreProperties;
     }
 
     @Override
@@ -56,7 +60,7 @@ public class JWTServiceImpl extends AccessTokenServiceImpl implements JWTService
     }
 
     private String base64(String str) {
-        return Base64.encodeBase64URLSafeString(str.getBytes(PEPConstants.DEFAULT_CHARSET));
+        return Base64.encodeBase64URLSafeString(str.getBytes(Charset.forName(coreProperties.getCharset())));
     }
 
     @Override

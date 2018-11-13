@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.notice.server.push.controller;
 
-import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgStatisticService;
@@ -26,9 +26,13 @@ public class PushNoticeStatisticController extends BaseController {
 
     private PushNoticeMsgStatisticService pushMsgStatisticService;
 
+    private CoreProperties coreProperties;
+
     @Autowired
-    public PushNoticeStatisticController(PushNoticeMsgStatisticService pushMsgStatisticService) {
+    public PushNoticeStatisticController(PushNoticeMsgStatisticService pushMsgStatisticService,
+                                         CoreProperties coreProperties) {
         this.pushMsgStatisticService = pushMsgStatisticService;
+        this.coreProperties = coreProperties;
     }
 
     @GetMapping
@@ -41,7 +45,7 @@ public class PushNoticeStatisticController extends BaseController {
     @RequestMapping("/init")
     public ResponseEntity<?> init() {
         Date date = new Date();
-        pushMsgStatisticService.saveStatisticSomeday(DateUtil.toString(date, PEPConstants.DEFAULT_DATE_FORMAT));
+        pushMsgStatisticService.saveStatisticSomeday(DateUtil.toString(date, coreProperties.getDefaultDateFormat()));
         return new ResponseEntity<>(null, null, HttpStatus.OK);
     }
 

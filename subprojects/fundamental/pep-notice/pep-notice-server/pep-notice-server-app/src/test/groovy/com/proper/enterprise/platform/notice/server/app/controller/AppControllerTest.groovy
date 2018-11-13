@@ -45,7 +45,7 @@ class AppControllerTest extends AbstractJPATest {
     }
 
     private AppVO post(AppVO appVO) {
-        return postAndReturn('/notice/server/app', appVO)
+        return resOfPost('/notice/server/app', appVO)
     }
 
     private AppVO put(AppVO appVO) {

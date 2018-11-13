@@ -10,14 +10,14 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.factory.NoticeConfiguratorFactory;
 import com.proper.enterprise.platform.notice.server.api.model.App;
 import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
+import com.proper.enterprise.platform.notice.server.app.NoticeServerAppProperties;
 import com.proper.enterprise.platform.notice.server.app.dao.entity.AppEntity;
 import com.proper.enterprise.platform.notice.server.app.dao.repository.AppRepository;
 import com.proper.enterprise.platform.notice.server.app.vo.AppVO;
-import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,13 +31,15 @@ public class AppDaoServiceImpl implements AppDaoService {
 
     private AccessTokenService accessTokenService;
 
-    @Value("${notice.server.app.resource}")
-    private String resourceDesc;
+    private NoticeServerAppProperties noticeServerAppProperties;
 
     @Autowired
-    public AppDaoServiceImpl(AppRepository appRepository, @Qualifier("accessTokenService") AccessTokenService accessTokenService) {
+    public AppDaoServiceImpl(AppRepository appRepository,
+                             @Qualifier("accessTokenService") AccessTokenService accessTokenService,
+                             NoticeServerAppProperties noticeServerAppProperties) {
         this.appRepository = appRepository;
         this.accessTokenService = accessTokenService;
+        this.noticeServerAppProperties = noticeServerAppProperties;
     }
 
     @Override
@@ -194,7 +196,7 @@ public class AppDaoServiceImpl implements AppDaoService {
         AppToken appToken = new AppToken();
         appToken.setUserId(appKey);
         appToken.setName(appKey);
-        appToken.setResourcesDescription(resourceDesc);
+        appToken.setResourcesDescription(noticeServerAppProperties.getResource());
         appToken.setToken(token);
         return appToken;
     }

@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.ios
 import com.proper.enterprise.platform.core.utils.AntResourceUtil
 import com.proper.enterprise.platform.notice.server.push.constant.IOSConstant
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport
+import com.proper.enterprise.platform.test.AbstractSpringTest
 import com.turo.pushy.apns.ApnsClient
 import com.turo.pushy.apns.ApnsClientBuilder
 import com.turo.pushy.apns.PushNotificationResponse
@@ -13,10 +14,9 @@ import io.netty.util.concurrent.Future
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.core.io.Resource
-import spock.lang.Specification
 
 @Ignore
-class ApnsPushTest extends Specification {
+class ApnsPushTest extends AbstractSpringTest {
 
     @Test
     public void apnsSendTest() throws IOException {

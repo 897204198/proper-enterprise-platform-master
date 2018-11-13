@@ -5,24 +5,23 @@ import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.notice.server.api.factory.NoticeSenderFactory;
+import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
+import com.proper.enterprise.platform.notice.server.api.model.Notice;
+import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender;
+import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService;
 import com.proper.enterprise.platform.notice.server.api.util.AppUtil;
 import com.proper.enterprise.platform.notice.server.api.util.ThrowableMessageUtil;
+import com.proper.enterprise.platform.notice.server.app.NoticeServerAppProperties;
 import com.proper.enterprise.platform.notice.server.app.convert.RequestConvert;
-import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
-import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
-
-import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
-import com.proper.enterprise.platform.notice.server.api.model.Notice;
-import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
-import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService;
 import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO;
-import com.proper.enterprise.platform.notice.server.api.factory.NoticeSenderFactory;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
+import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,12 +34,12 @@ public class NoticeSenderImpl implements NoticeSender {
 
     private NoticeDaoService noticeDaoService;
 
-    @Value("${notice.server.app.maxRetryCount}")
-    private Integer maxRetryCount;
+    private NoticeServerAppProperties noticeServerAppProperties;
 
     @Autowired
-    public NoticeSenderImpl(NoticeDaoService noticeDaoService) {
+    public NoticeSenderImpl(NoticeDaoService noticeDaoService, NoticeServerAppProperties noticeServerAppProperties) {
         this.noticeDaoService = noticeDaoService;
+        this.noticeServerAppProperties = noticeServerAppProperties;
     }
 
     @Override
@@ -140,7 +139,7 @@ public class NoticeSenderImpl implements NoticeSender {
                     return;
                 case RETRY:
                     //超过最大重试次数 记异常不再重试
-                    if (notice.getRetryCount() >= maxRetryCount) {
+                    if (notice.getRetryCount() >= noticeServerAppProperties.getMaxRetryCount()) {
                         noticeDaoService.updateToFail(notice.getId(), "Max retry", "Max retry");
                         return;
                     }
@@ -161,7 +160,8 @@ public class NoticeSenderImpl implements NoticeSender {
 
     @Override
     public void retryNoticesAsync(LocalDateTime startModifyTime, LocalDateTime endModifyTime) {
-        List<Notice> notices = noticeDaoService.findRetryNotices(startModifyTime, endModifyTime, maxRetryCount);
+        List<Notice> notices =
+            noticeDaoService.findRetryNotices(startModifyTime, endModifyTime, noticeServerAppProperties.getMaxRetryCount());
         if (CollectionUtil.isEmpty(notices)) {
             return;
         }

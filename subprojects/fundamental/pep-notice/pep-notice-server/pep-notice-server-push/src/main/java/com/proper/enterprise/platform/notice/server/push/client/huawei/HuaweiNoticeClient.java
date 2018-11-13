@@ -222,7 +222,11 @@ public class HuaweiNoticeClient {
 
     private String post(String postUrl, String postBody) throws IOException {
         ResponseEntity<byte[]> post = HttpClient.post(postUrl, MediaType.APPLICATION_FORM_URLENCODED, postBody);
-        return new String(post.getBody(), "UTF-8");
+        byte[] body = post.getBody();
+        if (null == body) {
+            return null;
+        }
+        return new String(body, "UTF-8");
     }
 
     private BusinessNoticeResult isSuccess(String res, ReadOnlyNotice notice) {

@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.mongo.controller
 
-import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.CoreProperties
+import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.mongo.service.MongoShellService
 import com.proper.enterprise.platform.core.utils.DateUtil
@@ -113,7 +114,7 @@ class MongoShellControllerTest extends AbstractSpringTest {
     }
 
     private static def encode(String url) {
-        URLEncoder.encode(url, PEPConstants.DEFAULT_CHARSET.toString())
+        URLEncoder.encode(url, PEPPropertiesLoader.load(CoreProperties.class).getCharset())
     }
 
     private def getDataTrunk(String url) {

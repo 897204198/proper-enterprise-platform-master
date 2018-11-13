@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.app.controller
 
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
+import com.proper.enterprise.platform.core.i18n.I18NUtil
 import com.proper.enterprise.platform.notice.server.app.handler.MockNoticeSender
 import com.proper.enterprise.platform.notice.server.app.vo.AppVO
 import com.proper.enterprise.platform.notice.server.app.AbstractServerAppTest

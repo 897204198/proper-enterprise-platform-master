@@ -2,8 +2,8 @@ package com.proper.enterprise.platform.notice.server.sdk.request;
 
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;

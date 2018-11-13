@@ -6,7 +6,9 @@ import com.proper.enterprise.platform.api.auth.dao.UserGroupDao;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
+import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.PEPApplicationContext;
+import com.proper.enterprise.platform.core.PEPPropertiesLoader;
 import com.proper.enterprise.platform.core.utils.*;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
@@ -20,8 +22,6 @@ import org.flowable.task.api.history.HistoricTaskInstance;
 
 import java.util.*;
 
-import static com.proper.enterprise.platform.core.PEPConstants.DEFAULT_DATETIME_FORMAT;
-
 public class PEPTask {
 
     public PEPTask(Task task) {
@@ -30,7 +30,8 @@ public class PEPTask {
         this.setAssignee(task.getAssignee());
         this.setForm(new PEPExtForm(task).convert());
         this.setName(task.getName());
-        this.setCreateTime(DateUtil.toString(task.getCreateTime(), DEFAULT_DATETIME_FORMAT));
+        this.setCreateTime(DateUtil.toString(task.getCreateTime(),
+            PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
         buildIdentityMsg(this, task.getIdentityLinks());
     }
 
@@ -42,9 +43,11 @@ public class PEPTask {
         this.setAssignee(historicTaskInstance.getAssignee());
         this.setName(historicTaskInstance.getName());
         this.setEndTime(null != historicTaskInstance.getEndTime()
-            ? DateUtil.toString(historicTaskInstance.getEndTime(), DEFAULT_DATETIME_FORMAT)
+            ? DateUtil.toString(historicTaskInstance.getEndTime(),
+            PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
             : null);
-        this.setCreateTime(DateUtil.toString(historicTaskInstance.getCreateTime(), DEFAULT_DATETIME_FORMAT));
+        this.setCreateTime(DateUtil.toString(historicTaskInstance.getCreateTime(),
+            PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
     }
 
     public PEPTask(HistoricTaskInstance historicTaskInstance,
@@ -68,9 +71,11 @@ public class PEPTask {
         this.setAssignee(historicTaskInstance.getAssignee());
         this.setName(historicTaskInstance.getName());
         this.setEndTime(null != historicTaskInstance.getEndTime()
-            ? DateUtil.toString(historicTaskInstance.getEndTime(), DEFAULT_DATETIME_FORMAT)
+            ? DateUtil.toString(historicTaskInstance.getEndTime(),
+            PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
             : null);
-        this.setCreateTime(DateUtil.toString(historicTaskInstance.getCreateTime(), DEFAULT_DATETIME_FORMAT));
+        this.setCreateTime(DateUtil.toString(historicTaskInstance.getCreateTime(),
+            PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
     }
 
     /**

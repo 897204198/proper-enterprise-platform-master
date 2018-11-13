@@ -1,8 +1,9 @@
 dependencies {
-    compile project(':pep-sys'),
-            project(':pep-notice-server-api'),
-            project(':pep-auth-api')
-    testCompile project(':pep-test'),
-            project(':pep-auth-common-jpa')
-}
 
+        implementation project(':pep-auth-api'),
+                       project(':pep-core-jpa'),
+                       project(':pep-notice-server-sdk')
+
+    testImplementation project(':pep-test')
+
+}

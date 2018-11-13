@@ -17,7 +17,6 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service("delPushTokenTask")
 public class DelPushTokenTask {

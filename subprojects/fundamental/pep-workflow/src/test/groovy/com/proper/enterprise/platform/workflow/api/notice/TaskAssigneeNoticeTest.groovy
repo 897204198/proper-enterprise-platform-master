@@ -1,7 +1,8 @@
 package com.proper.enterprise.platform.workflow.api.notice
 
 import com.proper.enterprise.platform.api.auth.service.UserService
-import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.CoreProperties
+import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.StringUtil
 import com.proper.enterprise.platform.sys.datadic.enums.AppConfigEnum
@@ -36,10 +37,10 @@ class TaskAssigneeNoticeTest extends AbstractJPATest {
         start(TASK_ASSIGNEE_NOTICE_KEY, new HashMap<String, Object>())
         String param = Authentication.getCurrentUserId().replace(DataDicUtil.get(AppConfigEnum.WEB_ADDRESS).getName(), "")
             .replace(AbstractWorkFlowNoticeSupport.TASK_PAGE_URL, "")
-        Base64 base64Decoder=new Base64()
+        Base64 base64Decoder = new Base64()
         PEPWorkflowNoticeUrlParam noticeUrlParam = JSONUtil.parse(URLDecoder.decode(new String(base64Decoder.decode(param),
-            PEPConstants.DEFAULT_CHARSET.name()),
-            PEPConstants.DEFAULT_CHARSET.name()),
+            PEPPropertiesLoader.load(CoreProperties.class).getCharset()),
+            PEPPropertiesLoader.load(CoreProperties.class).getCharset()),
             PEPWorkflowNoticeUrlParam.class);
         assert StringUtil.isNotEmpty(noticeUrlParam.getBusinessObj().getFormTitle())
     }

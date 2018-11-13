@@ -71,7 +71,11 @@ public class SMSNoticeSendHandler implements NoticeSendHandler {
             HttpClient.post(url, MediaType.APPLICATION_FORM_URLENCODED, data, new Callback() {
                 @Override
                 public void onSuccess(ResponseEntity<byte[]> responseEntity) {
-                    String resBody = new String(responseEntity.getBody(), Charset.forName(charset));
+                    String resBody = "";
+                    byte[] body = responseEntity.getBody();
+                    if (body != null) {
+                        resBody = new String(body, Charset.forName(charset));
+                    }
                     if (!resBody.contains(SUCCESS)) {
                         LOGGER.error("Send sms (POST: {}, data: {}) FAILED! Status code: {}, Response body: {}",
                             url, finalData, responseEntity.getStatusCode(), resBody);

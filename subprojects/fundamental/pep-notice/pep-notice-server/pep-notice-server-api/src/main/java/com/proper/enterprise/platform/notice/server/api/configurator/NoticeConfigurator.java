@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.notice.server.api.configurator;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
 @Validated

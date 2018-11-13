@@ -1,14 +1,16 @@
 dependencies {
-    compile project(':pep-auth-api'),
-            project(':pep-notice-server-api'),
-            project(':pep-notice-server-email'),
-            project(':pep-notice-server-push'),
-            project(':pep-notice-server-sms'),
-            project(':pep-sys'),
-            project(':pep-schedule-cluster')
 
-    testCompile project(':pep-auth-common-jpa'),
-                project(':pep-dfs-mongo'),
-                project(':pep-test')
-    testRuntime project(':pep-cache-ehcache')
+        implementation project(':pep-auth-api'),
+                       project(':pep-file'),
+                       project(':pep-notice-server-api'),
+                       project(':pep-schedule-cluster')
+
+    testImplementation project(':pep-auth-common-jpa'),
+                       project(':pep-dfs-mongo'),
+                       project(':pep-notice-server-push'),
+                       project(':pep-test')
+
+       testRuntimeOnly project(':pep-notice-server-email'),
+                       project(':pep-notice-server-sms')
+
 }

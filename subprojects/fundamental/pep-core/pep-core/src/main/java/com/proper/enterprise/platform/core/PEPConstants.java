@@ -8,29 +8,9 @@ import java.nio.charset.Charset;
 public final class PEPConstants {
 
     /**
-     * 默认字符集
-     */
-    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
-    /**
-     * 默认年份日期表示格式
-     */
-    public static final String DEFAULT_YEAR_FORMAT = "yyyy";
-    /**
-     * 默认月份日期表示格式
-     */
-    public static final String DEFAULT_MONTH_FORMAT = "yyyy-MM";
-    /**
-     * 默认日期表示格式
-     */
-    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-    /**
      * 默认日期时间表示格式
      */
     public static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    /**
-     * 默认日期时间表示格式，含毫秒
-     */
-    public static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
      * 响应头中封装的异常编码key
