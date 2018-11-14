@@ -1,0 +1,7 @@
+dependencies {
+    compile project(':pep-streamline-sdk'),
+            project(':pep-sys')
+
+    testCompile project(':pep-streamline'),
+                project(':pep-test')
+}
