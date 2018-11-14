@@ -95,12 +95,8 @@ public class EmailNoticeConfigurator implements EmailNoticeExtConfigurator {
         javaMailSender.setPort(emailDocument.getMailServerPort());
         Properties javaMailProperties = new Properties();
         javaMailProperties.setProperty(PEPMailConstant.MAIL_SMTP_AUTH, "true");
-        if (emailDocument.getMailServerUseSSL()) {
-            javaMailProperties.setProperty(PEPMailConstant.MAIL_SMTP_SOCKET_FACTORY_CLASS, "javax.net.ssl.SSLSocketFactory");
-        }
-        if (emailDocument.getMailServerUseTLS()) {
-            javaMailProperties.setProperty(PEPMailConstant.MAIL_TRANSPORT_STARTTLS_ENABLE, "true");
-        }
+        javaMailProperties.setProperty(PEPMailConstant.MAIL_SMTP_SOCKET_FACTORY_CLASS, "javax.net.ssl.SSLSocketFactory");
+        javaMailProperties.setProperty(PEPMailConstant.MAIL_TRANSPORT_STARTTLS_ENABLE, "true");
         javaMailProperties.setProperty(PEPMailConstant.MAIL_FROM, emailDocument.getMailServerDefaultFrom());
         javaMailSender.setJavaMailProperties(javaMailProperties);
         return javaMailSender;
