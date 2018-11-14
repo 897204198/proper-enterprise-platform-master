@@ -1,8 +1,8 @@
-package com.proper.enterprise.platform.sys.methodvalidate.controller;
+package com.proper.enterprise.platform.core.i18n.methodvalidate.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.sys.methodvalidate.TestBean;
-import com.proper.enterprise.platform.sys.methodvalidate.service.ValidTestService;
+import com.proper.enterprise.platform.core.i18n.methodvalidate.TestBean;
+import com.proper.enterprise.platform.core.i18n.methodvalidate.service.ValidTestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

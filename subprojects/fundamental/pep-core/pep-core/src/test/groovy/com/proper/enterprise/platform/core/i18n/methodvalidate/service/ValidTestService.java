@@ -1,6 +1,6 @@
-package com.proper.enterprise.platform.sys.methodvalidate.service;
+package com.proper.enterprise.platform.core.i18n.methodvalidate.service;
 
-import com.proper.enterprise.platform.sys.methodvalidate.TestBean;
+import com.proper.enterprise.platform.core.i18n.methodvalidate.TestBean;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.validation.annotation.Validated;
 
@@ -17,7 +17,7 @@ public interface ValidTestService {
      * @param a        a
      * @param testBean testBean
      */
-    void test(@NotNull(message = "{sys.test.key}") String a, @Valid TestBean testBean);
+    void test(@NotNull(message = "{core.test.key}") String a, @Valid TestBean testBean);
 
     /**
      * 测试
@@ -26,7 +26,7 @@ public interface ValidTestService {
      * @param testBean testBean
      */
     @Validated(TestBean.MinValidGroup.class)
-    void testGroup(@NotNull(message = "{sys.test.key}") String a, @Valid TestBean testBean);
+    void testGroup(@NotNull(message = "{core.test.key}") String a, @Valid TestBean testBean);
 
     /**
      * 测试
@@ -40,5 +40,5 @@ public interface ValidTestService {
      *
      * @param b b
      */
-    void testMapSuccess(@NotEmpty(message = "{sys.test.key}") Map<String, Object> b);
+    void testMapSuccess(@NotEmpty(message = "{core.test.key}") Map<String, Object> b);
 }

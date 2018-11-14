@@ -1,7 +1,7 @@
-package com.proper.enterprise.platform.sys.methodvalidate
+package com.proper.enterprise.platform.core.i18n.methodvalidate
 
 import com.proper.enterprise.platform.core.i18n.I18NUtil
-import com.proper.enterprise.platform.sys.methodvalidate.service.ValidTestService
+import com.proper.enterprise.platform.core.i18n.methodvalidate.service.ValidTestService
 import com.proper.enterprise.platform.test.AbstractSpringTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Rule
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 
 import javax.validation.ConstraintViolationException
-import javax.validation.UnexpectedTypeException
 
 class MethodValidateTest extends AbstractSpringTest {
 
@@ -27,12 +26,12 @@ class MethodValidateTest extends AbstractSpringTest {
         try {
             validTestService.test(null, testBean)
         } catch (ConstraintViolationException e) {
-            assert e.getMessage().contains(I18NUtil.getMessage("sys.test.key"))
+            assert e.getMessage().contains(I18NUtil.getMessage("core.test.key"))
         }
         try {
             validTestService.test("abc", testBean)
         } catch (ConstraintViolationException e) {
-            assert e.getMessage().contains("sys.test.k3")
+            assert e.getMessage().contains("core.test.k3")
         }
         testBean.setAt("abc")
         testBean.setBt(99)
@@ -59,24 +58,24 @@ class MethodValidateTest extends AbstractSpringTest {
         try {
             validTestService.testMapSuccess(map)
         } catch (ConstraintViolationException e) {
-            assert e.getMessage().contains(I18NUtil.getMessage("sys.test.key"))
+            assert e.getMessage().contains(I18NUtil.getMessage("core.test.key"))
         }
         map['test'] = 'test'
         validTestService.testMapSuccess(map)
     }
 
-    @Test
-    void testTypeException() throws UnexpectedTypeException {
-        expectedException.expect(UnexpectedTypeException.class)
-        expectedException.expectMessage("No validator could be found for type")
-        def map = [:]
-        validTestService.testMapFail(map)
-    }
+//    @Test
+//    void testTypeException() throws UnexpectedTypeException {
+//        expectedException.expect(UnexpectedTypeException.class)
+//        expectedException.expectMessage("No validator could be found for type")
+//        def map = [:]
+//        validTestService.testMapFail(map)
+//    }
 
     @Test
     void testController() {
         TestBean testBean = new TestBean()
-        assert I18NUtil.getMessage("sys.test.key") == post("/validtest", JSONUtil.toJSON(testBean), HttpStatus.INTERNAL_SERVER_ERROR)
+        assert I18NUtil.getMessage("core.test.key") == post("/validtest", JSONUtil.toJSON(testBean), HttpStatus.INTERNAL_SERVER_ERROR)
             .getResponse()
             .getContentAsString()
     }
