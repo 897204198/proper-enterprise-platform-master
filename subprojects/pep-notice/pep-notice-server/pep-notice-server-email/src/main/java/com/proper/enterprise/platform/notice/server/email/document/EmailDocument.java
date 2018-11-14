@@ -93,6 +93,9 @@ public class EmailDocument extends BaseDocument {
     }
 
     public Boolean getMailServerUseSSL() {
+        if (this.mailServerUseSSL == null) {
+            return false;
+        }
         return mailServerUseSSL;
     }
 
@@ -101,6 +104,9 @@ public class EmailDocument extends BaseDocument {
     }
 
     public Boolean getMailServerUseTLS() {
+        if (this.mailServerUseTLS == null) {
+            return false;
+        }
         return mailServerUseTLS;
     }
 
