@@ -5,7 +5,7 @@ dependencies {
                    api project(':pep-core-jpa'),
                        project(':pep-dfs-api')
 
-           runtimeOnly libraries.commons_fileupload
+       runtimeElements libraries.commons_fileupload
 
     testImplementation project(':pep-test')
 

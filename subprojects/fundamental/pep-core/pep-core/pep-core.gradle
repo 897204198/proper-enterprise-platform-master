@@ -10,7 +10,7 @@ dependencies {
                        libraries.spring_data_commons,
                        libraries.spring_oxm
 
-           runtimeOnly libraries.commons_lang3
+       runtimeElements libraries.commons_lang3
 
     testImplementation project(':pep-test')
 
