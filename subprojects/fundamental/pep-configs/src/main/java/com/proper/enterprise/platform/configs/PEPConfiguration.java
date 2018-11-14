@@ -7,19 +7,18 @@ import com.proper.enterprise.platform.configs.properties.ExecutorProperties;
 import com.proper.enterprise.platform.configs.properties.SchedulerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.filter.CharacterEncodingFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.Filter;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +31,7 @@ import java.util.List;
 @EnableAspectJAutoProxy
 @EnableConfigurationProperties
 @EnableScheduling
-public class PEPConfiguration implements WebMvcConfigurer {
+public class PEPConfiguration {
 
     private AccessControlProperties accessControlProperties;
     private SchedulerProperties schedulerProperties;
@@ -45,9 +44,6 @@ public class PEPConfiguration implements WebMvcConfigurer {
         this.schedulerProperties = schedulerProperties;
         this.executorProperties = executorProperties;
     }
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Bean
     public Filter encodingFilter() {
@@ -63,14 +59,14 @@ public class PEPConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public TaskScheduler pepScheduler() {
+    public TaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(schedulerProperties.getPoolSize());
         return scheduler;
     }
 
     @Bean
-    public TaskExecutor pepExecutor() {
+    public TaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(executorProperties.getCorePoolSize());
         executor.setMaxPoolSize(executorProperties.getMaxPoolSize());
@@ -82,17 +78,6 @@ public class PEPConfiguration implements WebMvcConfigurer {
     public ObjectMapper objectMapper() {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
         return builder.build();
-    }
-
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
-        // https://github.com/propersoft-cn/proper-enterprise-platform/pull/68
-        stringConverter.setWriteAcceptCharset(false);
-        converters.add(stringConverter);
-
-        // https://github.com/propersoft-cn/proper-enterprise-platform/pull/348
-        converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
     }
 
     @Bean

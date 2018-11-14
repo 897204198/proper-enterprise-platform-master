@@ -30,8 +30,8 @@ class NoticeSenderTest extends AbstractServerAppTest {
     private NoticeRepository noticeRepository
 
     @Test
-    public void beforeSendTest() {
-        def token = initApp("qqq")
+    void beforeSendTest() {
+        initApp("qqq")
         NoticeRequest noticeRequest = new NoticeRequest()
         noticeRequest.setBatchId("batchId")
         noticeRequest.setNoticeType(NoticeType.MOCK)
@@ -50,20 +50,19 @@ class NoticeSenderTest extends AbstractServerAppTest {
     }
 
     @Test
-    public void afterSendTest() {
+    void afterSendTest() {
         SingletonMap.getSingletMap().put("mockErrAfter", "a")
         NoticeVO noticeVO = new NoticeVO()
         noticeVO.setAppKey("mockErrAfter")
         noticeVO.setNoticeType(NoticeType.MOCK)
         noticeSender.afterSend(noticeVO)
         assert "a" == SingletonMap.getSingletMap().get("mockErrAfter")
-//        waitExecutorDone() TODO
-        sleep(2000)
+        waitExecutorDone()
         assert "b" == SingletonMap.getSingletMap().get("mockErrAfter")
     }
 
     @Test
-    public void sendAsyncTest() {
+    void sendAsyncTest() {
         noticeRepository.deleteAll()
         NoticeVO noticeVO = new NoticeVO()
         String appKey = UUID.randomUUID()
@@ -73,8 +72,7 @@ class NoticeSenderTest extends AbstractServerAppTest {
         noticeVO.setContent("content")
         noticeVO.setTargetTo("aa")
         noticeSender.sendAsync(noticeVO)
-//        waitExecutorDone() TODO
-        sleep(3000)
+        waitExecutorDone()
         assert NoticeStatus.SUCCESS == SingletonMap.getSingletMap().get(noticeRepository.findAll().get(0).getId())
         assert noticeRepository.findAll().size() == 1
         assert noticeRepository.findAll().get(0).getBatchId() == "batchId"
@@ -83,12 +81,11 @@ class NoticeSenderTest extends AbstractServerAppTest {
     @Test
     @NoTx
     @Sql("/com/proper/enterprise/platform/notice/server/app/service/sql/syncPendingNoticesStatusAsync.sql")
-    public void syncPendingNoticesStatusAsync() {
+    void syncPendingNoticesStatusAsync() {
         DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
         noticeSender.syncPendingNoticesStatusAsync(LocalDateTime.parse("2018-09-03 17:30:21", dfm),
             LocalDateTime.parse("2018-09-03 17:32:22", dfm))
-//        waitExecutorDone() TODO
-        sleep(3000)
+        waitExecutorDone()
         assert noticeRepository.findById('1-PENDING').get().getStatus() == NoticeStatus.SUCCESS
         assert noticeRepository.findById('4-PENDING').get().getStatus() == NoticeStatus.RETRY
         assert noticeRepository.findById('4-PENDING').get().getRetryCount() == 2
@@ -100,7 +97,7 @@ class NoticeSenderTest extends AbstractServerAppTest {
     @Test
     @NoTx
     @Sql("/com/proper/enterprise/platform/notice/server/app/service/sql/retryNoticesAsync.sql")
-    public void retryNoticesAsync() {
+    void retryNoticesAsync() {
         DateTimeFormatter dfm = DateTimeFormatter.ofPattern(PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
         noticeSender.retryNoticesAsync(LocalDateTime.parse("2018-09-03 17:30:21", dfm),
             LocalDateTime.parse("2018-09-03 17:32:22", dfm))
@@ -121,8 +118,7 @@ class NoticeSenderTest extends AbstractServerAppTest {
         noticeVO.setContent("content")
         noticeVO.setTargetTo("aa")
         noticeSender.sendAsync(noticeVO)
-//        waitExecutorDone()  TODO
-        sleep(500)
+        waitExecutorDone()
         assert MockNoticeSender.MOCK_INVALID_TARGET == noticeRepository.findAll().get(0).getErrorCode()
     }
 

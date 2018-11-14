@@ -35,7 +35,6 @@ class SMSNoticeSendHandlerTest extends AbstractJPATest {
             noticeOperation.setContent("测试短信 - ${DateUtil.timestamp}")
             smsNoticeSender.beforeSend(noticeOperation)
             smsNoticeSender.send(noticeOperation)
-            sleep(3000)
         } catch (Exception e) {
             assert e.getMessage().contains(I18NUtil.getMessage("pep.notice.sms.send.error"))
         }

@@ -6,11 +6,6 @@ package com.proper.enterprise.platform.core;
 public final class PEPConstants {
 
     /**
-     * 默认日期时间表示格式
-     */
-    public static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    /**
      * 响应头中封装的异常编码key
      */
     public static final String RESPONSE_HEADER_ERROR_TYPE = "X-PEP-ERR-TYPE";

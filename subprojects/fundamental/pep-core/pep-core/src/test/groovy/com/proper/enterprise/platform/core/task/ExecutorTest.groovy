@@ -1,8 +1,8 @@
 package com.proper.enterprise.platform.core.task
+
 import com.proper.enterprise.platform.test.AbstractSpringTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.task.TaskExecutor
 
 class ExecutorTest extends AbstractSpringTest {
@@ -10,7 +10,6 @@ class ExecutorTest extends AbstractSpringTest {
     def count = 0
 
     @Autowired
-    @Qualifier("pepExecutor")
     TaskExecutor taskExecutor
 
     @Autowired

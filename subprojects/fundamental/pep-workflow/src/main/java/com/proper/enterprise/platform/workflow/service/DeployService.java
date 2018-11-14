@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.AntResourceUtil;
-import com.proper.enterprise.platform.core.utils.ConfCenter;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.app.domain.editor.AbstractModel;
 import org.flowable.app.domain.editor.Model;
@@ -37,7 +36,10 @@ import org.springframework.stereotype.Service;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -286,7 +288,7 @@ public class DeployService {
 
     private User simulationCurrentUser() {
         User user = new UserEntityImpl();
-        user.setId(ConfCenter.get("auth.historical.defaultUserId", "PEP_SYS"));
+        user.setId(coreProperties.getDefaultOperatorId());
         return user;
     }
 }

@@ -21,7 +21,7 @@ public class TestAsync extends AbstractSpringTest {
     @Test
     public void testAsync() throws InterruptedException {
         testAsyncBean.testAsync(threadValid);
-        Thread.sleep(5 * 1000);
+        waitExecutorDone();
         if (1 == threadValid.value) {
             throw new RuntimeException();
         }
@@ -30,7 +30,7 @@ public class TestAsync extends AbstractSpringTest {
     @Test
     public void testServiceAsync() throws InterruptedException {
         testAsyncService.testAsync(threadValid);
-        Thread.sleep(5 * 1000);
+        waitExecutorDone();
         if (1 == threadValid.value) {
             throw new RuntimeException();
         }
