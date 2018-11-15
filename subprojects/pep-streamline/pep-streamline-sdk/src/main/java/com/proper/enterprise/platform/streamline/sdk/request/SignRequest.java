@@ -13,14 +13,9 @@ public class SignRequest {
     private String userName;
 
     /**
-     * 旧用户名
+     * 业务Id
      */
-    private String oldUserName;
-
-    /**
-     * 旧密码
-     */
-    private String oldPassword;
+    private String businessId;
 
     /**
      * 密码
@@ -31,6 +26,14 @@ public class SignRequest {
      * 服务端唯一标识
      */
     private String serviceKey;
+
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
 
     public String getUserName() {
         return userName;
@@ -54,22 +57,6 @@ public class SignRequest {
 
     public void setServiceKey(String serviceKey) {
         this.serviceKey = serviceKey;
-    }
-
-    public String getOldUserName() {
-        return oldUserName;
-    }
-
-    public void setOldUserName(String oldUserName) {
-        this.oldUserName = oldUserName;
-    }
-
-    public String getOldPassword() {
-        return oldPassword;
-    }
-
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
     }
 
     @Override

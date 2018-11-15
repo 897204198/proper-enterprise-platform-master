@@ -1,27 +1,34 @@
 package com.proper.enterprise.platform.streamline.api.service;
 
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.validation.annotation.Validated;
+
 /**
  * StreamlineService通用接口
  * 根据用户名和密码采用md5方式生成客户端token
  */
+@Validated
 public interface StreamlineService {
 
     /**
      * 根据用户名和密码注册标记
      *
-     * @param userName   用户名
-     * @param password   密码
-     * @param serviceKey 服务端唯一标识
+     * @param businessId   用户Id
+     * @param userName     用户名
+     * @param password     密码
+     * @param serviceKey   服务端唯一标识
      */
-    void addSign(String userName, String password, String serviceKey);
+    void addSign(@NotEmpty(message = "{streamline.addSign.businessId.notEmpty}") String businessId,
+                 @NotEmpty(message = "{streamline.addSign.userName.notEmpty}") String userName,
+                 @NotEmpty(message = "{streamline.addSign.password.notEmpty}") String password,
+                 @NotEmpty(message = "{streamline.addSign.serviceKey.notEmpty}") String serviceKey);
 
     /**
      * 根据用户名和密码
      *
-     * @param userName 用户名
-     * @param password 密码
+     * @param businessId 用户名
      */
-    void deleteSign(String userName, String password);
+    void deleteSign(String businessId);
 
 
     /**
@@ -29,10 +36,9 @@ public interface StreamlineService {
      *
      * @param userName    用户名
      * @param password    密码
-     * @param oldUserName 旧用户名
-     * @param oldPassword 就密码
+     * @param businessId  用户Id
      */
-    void updateSign(String userName, String password, String oldUserName, String oldPassword);
+    void updateSign(String userName, String password, String businessId);
 
     /**
      * 根据用户名和密码获得服务端标识

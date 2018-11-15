@@ -8,18 +8,32 @@ import com.proper.enterprise.platform.core.api.IBase;
 public interface Sign extends IBase {
 
     /**
-     * 获取客户端token
+     * 获取业务Id(即用户Id)
      *
-     * @return 客户端token
+     * @return 业务Id
      */
-    String getClientToken();
+    String getBusinessId();
 
     /**
-     * 设置客户端token
+     * 设置业务Id
      *
-     * @param clientToken 客户端token
+     * @param businessId 业务Id
      */
-    void setClientToken(String clientToken);
+    void setBusinessId(String businessId);
+
+    /**
+     * 获取签名
+     *
+     * @return 签名
+     */
+    String getSignature();
+
+    /**
+     * 设置签名
+     *
+     * @param signature 签名
+     */
+    void setSignature(String signature);
 
     /**
      * 获取服务端标识
@@ -30,7 +44,9 @@ public interface Sign extends IBase {
 
     /**
      * 设置服务端标识
+     *
+     * @param serviceKey 服务端标识
      */
-    void setServiceKey();
+    void setServiceKey(String serviceKey);
 
 }

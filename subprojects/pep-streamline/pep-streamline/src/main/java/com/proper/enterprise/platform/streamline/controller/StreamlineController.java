@@ -18,21 +18,21 @@ public class StreamlineController extends BaseController {
 
     @PostMapping
     public ResponseEntity addSign(@RequestBody SignRequest signRequest) {
-        streamlineService.addSign(signRequest.getUserName(),
+        streamlineService.addSign(signRequest.getBusinessId(), signRequest.getUserName(),
             signRequest.getPassword(), signRequest.getServiceKey());
         return responseOfPost(null);
     }
 
-    @DeleteMapping(value = "/{userName}/{password}")
-    public ResponseEntity delete(@PathVariable String userName, @PathVariable String password) {
-        streamlineService.deleteSign(userName, password);
+    @DeleteMapping(value = "/{businessId}")
+    public ResponseEntity delete(@PathVariable String businessId) {
+        streamlineService.deleteSign(businessId);
         return responseOfDelete(true);
     }
 
     @PutMapping
     public ResponseEntity put(@RequestBody SignRequest signRequest) {
         streamlineService.updateSign(signRequest.getUserName(), signRequest.getPassword(),
-            signRequest.getOldUserName(), signRequest.getOldPassword());
+            signRequest.getBusinessId());
         return responseOfPut(null);
     }
 
