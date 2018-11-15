@@ -189,6 +189,7 @@ class ApnsNoticeSenderTest extends AbstractJPATest {
         mockPushNotice.setTitle("555")
         mockPushNotice.setContent("66666qwe")
         mockPushNotice.setId("testtest")
+
         //token未在包下
         BusinessNoticeResult notForTopic = iosNoticeSender.send(mockPushNotice)
         assert IOSErrCodeEnum.DEVICE_TOKEN_NOT_FOR_TOPIC.getNoticeCode() == notForTopic.getCode()

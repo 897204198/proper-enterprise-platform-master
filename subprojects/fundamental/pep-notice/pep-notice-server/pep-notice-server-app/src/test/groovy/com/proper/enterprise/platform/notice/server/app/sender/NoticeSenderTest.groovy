@@ -73,9 +73,24 @@ class NoticeSenderTest extends AbstractServerAppTest {
         noticeVO.setTargetTo("aa")
         noticeSender.sendAsync(noticeVO)
         waitExecutorDone()
-        assert NoticeStatus.SUCCESS == SingletonMap.getSingletMap().get(noticeRepository.findAll().get(0).getId())
-        assert noticeRepository.findAll().size() == 1
-        assert noticeRepository.findAll().get(0).getBatchId() == "batchId"
+        Notice successNotice = noticeRepository
+            .findAll(null, appKey, null, null, null, null, null, null)
+            .get(0)
+        assert NoticeStatus.SUCCESS == SingletonMap.getSingletMap().get(successNotice.getId())
+        assert successNotice.getBatchId() == "batchId"
+
+        NoticeVO noticeVO2 = new NoticeVO()
+        noticeVO2.setAppKey(MockNoticeSender.MOCK_INVALID_TARGET)
+        noticeVO2.setBatchId("batchId")
+        noticeVO2.setNoticeType(NoticeType.MOCK)
+        noticeVO2.setContent("content")
+        noticeVO2.setTargetTo("aa")
+        noticeSender.sendAsync(noticeVO2)
+        waitExecutorDone()
+        Notice invalidTarget = noticeRepository
+            .findAll(null, MockNoticeSender.MOCK_INVALID_TARGET, null, null, null, null, null, null)
+            .get(0)
+        assert MockNoticeSender.MOCK_INVALID_TARGET == invalidTarget.getErrorCode()
     }
 
     @Test
@@ -106,20 +121,6 @@ class NoticeSenderTest extends AbstractServerAppTest {
         assert noticeRepository.findById('2-RETRY').get().getStatus() == NoticeStatus.SUCCESS
         assert noticeRepository.findById('4-RETRY').get().getStatus() == NoticeStatus.FAIL
         noticeRepository.deleteAll()
-    }
-
-    @Test
-    void invalidTargetTest() {
-        noticeRepository.deleteAll()
-        NoticeVO noticeVO = new NoticeVO()
-        noticeVO.setAppKey(MockNoticeSender.MOCK_INVALID_TARGET)
-        noticeVO.setBatchId("batchId")
-        noticeVO.setNoticeType(NoticeType.MOCK)
-        noticeVO.setContent("content")
-        noticeVO.setTargetTo("aa")
-        noticeSender.sendAsync(noticeVO)
-        waitExecutorDone()
-        assert MockNoticeSender.MOCK_INVALID_TARGET == noticeRepository.findAll().get(0).getErrorCode()
     }
 
 }
