@@ -3,11 +3,15 @@ package com.proper.enterprise.platform.streamline.controller;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.streamline.api.service.StreamlineService;
+import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant;
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/streamline")
@@ -23,9 +27,21 @@ public class StreamlineController extends BaseController {
         return responseOfPost(null);
     }
 
+    @PostMapping("/signs")
+    public ResponseEntity addSigns(@RequestBody Collection<SignRequest> signRequests) {
+        streamlineService.addSigns(signRequests);
+        return responseOfPost(null);
+    }
+
     @DeleteMapping(value = "/{businessId}")
     public ResponseEntity delete(@PathVariable String businessId) {
-        streamlineService.deleteSign(businessId);
+        streamlineService.deleteSigns(businessId);
+        return responseOfDelete(true);
+    }
+
+    @DeleteMapping
+    public ResponseEntity deleteByBusinessIds(@RequestParam String businessIds) {
+        streamlineService.deleteSigns(businessIds);
         return responseOfDelete(true);
     }
 
@@ -36,9 +52,17 @@ public class StreamlineController extends BaseController {
         return responseOfPut(null);
     }
 
+    @PutMapping("/signs")
+    public ResponseEntity putSigns(@RequestBody Collection<SignRequest> signRequests) {
+        streamlineService.updateSigns(signRequests);
+        return responseOfPut(null);
+    }
+
     @GetMapping(value = "/{userName}/{password}")
     public ResponseEntity<String> get(@PathVariable String userName, @PathVariable String password) {
         String serviceKey = streamlineService.getSign(userName, password);
-        return StringUtil.isEmpty(serviceKey) ? new ResponseEntity(HttpStatus.NOT_FOUND) : responseOfGet(serviceKey);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(StreamlineConstant.SERVICE_KEY, serviceKey);
+        return StringUtil.isEmpty(serviceKey) ? new ResponseEntity(HttpStatus.NOT_FOUND) : responseOfGet(serviceKey, headers);
     }
 }

@@ -14,9 +14,12 @@ import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.model.CurrentModel;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
@@ -48,14 +52,20 @@ public class LoginController extends BaseController {
 
     @AuthcIgnore
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> login(@RequestBody Map<String, String> loginMap) throws IOException {
+    public ResponseEntity<String> login(@RequestBody Map<String, String> loginMap, HttpServletRequest request) throws IOException {
         String username = authcService.getUsername(loginMap);
         String pwd = authcService.getPassword(loginMap);
+
+        HttpHeaders headers = new HttpHeaders();
+        if (StringUtil.isNotEmpty(request.getHeader(StreamlineConstant.SERVICE_KEY))) {
+            headers.add(StreamlineConstant.SERVICE_KEY, request.getHeader(StreamlineConstant.SERVICE_KEY));
+            LOGGER.debug("request header service key is {}", request.getHeader(StreamlineConstant.SERVICE_KEY));
+        }
 
         LOGGER.debug("User {} want to login", username);
 
         if (authcService.authenticate(username, pwd)) {
-            return new ResponseEntity<>(jwtAuthcService.getUserToken(username), HttpStatus.OK);
+            return new ResponseEntity<>(jwtAuthcService.getUserToken(username), headers, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Failed to authenticate", HttpStatus.UNAUTHORIZED);
         }

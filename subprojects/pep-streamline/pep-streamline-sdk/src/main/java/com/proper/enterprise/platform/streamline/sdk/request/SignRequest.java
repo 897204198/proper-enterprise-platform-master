@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.streamline.sdk.request;
 
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * 签名参数
@@ -8,23 +9,27 @@ import com.proper.enterprise.platform.core.utils.JSONUtil;
 public class SignRequest {
 
     /**
-     * 用户名
-     */
-    private String userName;
-
-    /**
      * 业务Id
      */
+    @NotEmpty(message = "{streamline.addSign.businessId.notEmpty}")
     private String businessId;
+
+    /**
+     * 用户名
+     */
+    @NotEmpty(message = "{streamline.addSign.userName.notEmpty}")
+    private String userName;
 
     /**
      * 密码
      */
+    @NotEmpty(message = "{streamline.addSign.password.notEmpty}")
     private String password;
 
     /**
      * 服务端唯一标识
      */
+    @NotEmpty(message = "{streamline.addSign.serviceKey.notEmpty}")
     private String serviceKey;
 
     public String getBusinessId() {

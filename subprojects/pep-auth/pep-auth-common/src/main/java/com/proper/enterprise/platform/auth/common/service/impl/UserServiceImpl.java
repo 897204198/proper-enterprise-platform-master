@@ -74,8 +74,9 @@ public class UserServiceImpl implements UserService {
     public User[] save(User... users) {
         for (User user : users) {
             validateUserName(user);
+            user = save(user);
         }
-        return userDao.save(users);
+        return users;
     }
 
     @Override

@@ -1,24 +1,31 @@
 package com.proper.enterprise.platform.streamline.service.impl;
 
+import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.digest.MD5;
 import com.proper.enterprise.platform.streamline.api.service.StreamlineService;
 import com.proper.enterprise.platform.streamline.entity.SignEntity;
 import com.proper.enterprise.platform.streamline.repository.SignRepository;
+import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;
 import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
 
 @Service
 public class StreamlineServiceImpl implements StreamlineService {
 
     private SignRepository signRepository;
 
+    private PasswordEncryptService pwdService;
+
     private I18NService i18NService;
 
     @Autowired
-    public StreamlineServiceImpl(SignRepository signRepository, I18NService i18NService) {
+    public StreamlineServiceImpl(SignRepository signRepository, PasswordEncryptService pwdService, I18NService i18NService) {
         this.signRepository = signRepository;
+        this.pwdService = pwdService;
         this.i18NService = i18NService;
     }
 
@@ -37,8 +44,19 @@ public class StreamlineServiceImpl implements StreamlineService {
     }
 
     @Override
-    public void deleteSign(String businessId) {
-        signRepository.deleteByBusinessId(businessId);
+    public void addSigns(Collection<SignRequest> signRequests) {
+        for (SignRequest signRequest : signRequests) {
+            addSign(signRequest.getBusinessId(), signRequest.getUserName(), signRequest.getPassword(),
+                signRequest.getServiceKey());
+        }
+    }
+
+    @Override
+    public void deleteSigns(String businessIds) {
+        String[] businessIdArr = businessIds.split(",");
+        for (String businessId : businessIdArr) {
+            signRepository.deleteByBusinessId(businessId);
+        }
     }
 
     @Override
@@ -52,8 +70,15 @@ public class StreamlineServiceImpl implements StreamlineService {
     }
 
     @Override
+    public void updateSigns(Collection<SignRequest> signRequests) {
+        for (SignRequest signRequest : signRequests) {
+            updateSign(signRequest.getUserName(), signRequest.getPassword(), signRequest.getBusinessId());
+        }
+    }
+
+    @Override
     public String getSign(String userName, String password) {
-        String signature = MD5.md5Hex(userName + password);
+        String signature = MD5.md5Hex(userName + pwdService.encrypt(password));
         SignEntity signEntity = signRepository.findBySignature(signature);
         if (null == signEntity) {
             return null;
