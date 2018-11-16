@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 
+import java.time.LocalDateTime
+
 @Sql("/com/proper/enterprise/platform/announcement/controller/announcement.sql")
 class AdminAnnouncementControllerTest extends AbstractJPATest{
     @Autowired
@@ -65,8 +67,8 @@ class AdminAnnouncementControllerTest extends AbstractJPATest{
         announcementEntity.setInfoType("ACTIVITY_INFORMATION")
         announcementEntity.setInfo("测试添加一条信息")
         announcementEntity.setTitle("测试标题")
-        announcementEntity.setBeginTime(DateUtil.addDay(new Date(), -1).format('yyyy-MM-dd HH:mm:ss'))
-        announcementEntity.setEndTime(DateUtil.addDay(new Date(), 1).format('yyyy-MM-dd HH:mm:ss'))
+        announcementEntity.setBeginTime(DateUtil.addDay(LocalDateTime.now(), -1).toString())
+        announcementEntity.setEndTime(DateUtil.addDay(LocalDateTime.now(),1).toString())
         post('/admin/announcement', JSONUtil.toJSON(announcementEntity), HttpStatus.CREATED)
         def result4 = resOfGet('/admin/announcement?infoType=ACTIVITY_INFORMATION&title=测试标&pageNo=1&pageSize=10', HttpStatus.OK)
         assert result4.count == 1

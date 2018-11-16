@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.notice.server.push.enums.huawei.HuaweiErrC
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.test.AbstractJPATest
+import org.apache.groovy.dateutil.extensions.DateUtilExtensions
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,7 +37,7 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
         notice.setTargetTo(HuaweiConstant.TARGET_TO)
         notice.setAppKey('MobileOADev')
         notice.setTitle(System.getProperty('os.name'))
-        notice.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${new Date().format('yyyy-MM-dd HH:mm:ss')} in test case")
+        notice.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${DateUtilExtensions.format(new Date(),'yyyy年MM月dd日')} in test case")
 
         notice.setTargetExtMsg('pushChannel', 'HUAWEI')
 
@@ -110,7 +111,7 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
         notice.setTargetTo("0867110029070702300001436000CN32")
         notice.setAppKey('MobileOADev1')
         notice.setTitle(System.getProperty('os.name'))
-        notice.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${new Date().format('yyyy-MM-dd HH:mm:ss')} in test case")
+        notice.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${DateUtilExtensions.format(new Date(), 'yyyy-MM-dd HH:mm:ss')} in test case")
 
         notice.setTargetExtMsg('pushChannel', 'HUAWEI')
         notice.setNoticeExtMsg('push_type', '')

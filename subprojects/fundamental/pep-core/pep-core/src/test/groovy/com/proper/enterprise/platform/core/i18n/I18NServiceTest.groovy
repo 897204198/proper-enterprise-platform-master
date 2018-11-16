@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.i18n
 
 import com.proper.enterprise.platform.test.AbstractSpringTest
+import org.apache.groovy.dateutil.extensions.DateUtilExtensions
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -22,7 +23,7 @@ class I18NServiceTest extends AbstractSpringTest {
     @Test
     void test() {
         def msg = service.getMessage('core.test.tpl',
-                                     new Date().format('yyyy年MM月dd日'), new Date().format('u'))
+                DateUtilExtensions.format(new Date(),'yyyy年MM月dd日'), DateUtilExtensions.format(new Date(),'u'))
         assert msg.length() > 4 + 2 + 2 + 1
     }
 

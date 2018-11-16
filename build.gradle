@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.gradle.build-scan' version '1.13'
+    id 'com.gradle.build-scan' version '1.16'
     id 'io.spring.dependency-management' version '1.0.6.RELEASE'
     id 'org.liquibase.gradle' version '1.2.4'
     id 'org.springframework.boot' version '2.0.6.RELEASE'
@@ -14,7 +14,7 @@ plugins {
 buildScan {
     termsOfServiceUrl = 'https://gradle.com/terms-of-service'
     termsOfServiceAgree = 'yes'
-    publishAlways()
+    publishOnFailure()
 }
 
 allprojects {
@@ -149,11 +149,13 @@ subprojects {
                             libraries.springfox
 
             testCompileOnly libraries.groovy,
+                            libraries.groovy_dateutil,
                             libraries.p3c_pmd,
                             libraries.spock,
                             libraries.spring_boot_starter_web
 
-            testRuntimeOnly libraries.spring_boot_starter_web
+            testRuntimeOnly libraries.groovy_all,
+                            libraries.spring_boot_starter_web
 
          testImplementation libraries.spring_boot_starter_test
     }

@@ -6,19 +6,19 @@ ext {
 versions.pep                = '0.5.0-SNAPSHOT'
 
 versions.flowable           = '6.2.1-SNAPSHOT'
-versions.groovy             = '2.4.15'
+versions.groovy             = '2.5.0'
 versions.hibernate          = '5.2.17.Final'
 versions.jackson            = '2.9.6'
 //versions.jcaptcha         = '1.0'
 versions.logback            = '1.2.3'
 versions.mongo              = '3.4.0'
 versions.quartz             = '2.3.0'
-versions.slf4j              = '1.7.21'
-versions.spring             = '5.1.1.RELEASE'
+versions.slf4j              = '1.7.25'
+versions.spring             = '5.1.2.RELEASE'
 versions.spring_boot        = '2.0.6.RELEASE'
 versions.spring_data        = 'Kay-SR11'
-versions.spring_integration = '5.0.6.RELEASE'
-versions.spring_security    = '5.0.6.RELEASE'
+//versions.spring_integration = '5.1.0.RELEASE'
+//versions.spring_security    = '5.1.1.RELEASE'
 versions.springfox          = '3.0.0-SNAPSHOT'
 
 configurations.all {
@@ -120,6 +120,7 @@ libraries.flowable_spring = "com.proper.enterprise.platform:flowable-spring:${ve
 libraries.flowable_ui_modeler_logic = "com.proper.enterprise.platform:flowable-ui-modeler-logic:${versions.flowable}"
 libraries.flowable_ui_modeler_rest = "com.proper.enterprise.platform:flowable-ui-modeler-rest:${versions.flowable}"
 libraries.flowable_web_designer="com.proper.enterprise.platform:flowable-web-designer:${versions.flowable}"
+
 // groovy-all include all below modules, used by code quality and workflow module
 libraries.groovy_all = "org.codehaus.groovy:groovy-all:${versions.groovy}"
 // sub modules
@@ -127,6 +128,7 @@ libraries.groovy = "org.codehaus.groovy:groovy:${versions.groovy}"
 // libraries.groovy_ant = "org.codehaus.groovy:groovy-ant:${versions.groovy}"
 // libraries.groovy_bsf = "org.codehaus.groovy:groovy-bsf:${versions.groovy}"
 // libraries.groovy_console = "org.codehaus.groovy:groovy-console:${versions.groovy}"
+ libraries.groovy_dateutil = "org.codehaus.groovy:groovy-dateutil:${versions.groovy}"
 // libraries.groovy_docgenerator = "org.codehaus.groovy:groovy-docgenerator:${versions.groovy}"
 // libraries.groovy_groovydoc = "org.codehaus.groovy:groovy-groovydoc:${versions.groovy}"
 // libraries.groovy_groovysh = "org.codehaus.groovy:groovy-groovysh:${versions.groovy}"
@@ -142,7 +144,7 @@ libraries.groovy_sql = "org.codehaus.groovy:groovy-sql:${versions.groovy}"
 
 //libraries.guava = 'com.google.guava:guava:18.0'
 
-libraries.h2 = 'com.h2database:h2:1.3.176'
+libraries.h2 = 'com.h2database:h2:1.4.197'
 
 //libraries.hibernate_c3p0 = "org.hibernate:hibernate-c3p0:${versions.hibernate}"
 //libraries.hibernate_core = "org.hibernate:hibernate-core:${versions.hibernate}"
@@ -194,7 +196,7 @@ libraries.neo4j_driver = 'org.neo4j.driver:neo4j-java-driver:1.5.0'
 libraries.okhttp = 'com.squareup.okhttp3:okhttp:3.4.1'
 libraries.oracle_driver = 'com.oracle:ojdbc6:1.0'
 
-libraries.p3c_pmd = 'com.alibaba.p3c:p3c-pmd:1.3.5'
+libraries.p3c_pmd = 'com.alibaba.p3c:p3c-pmd:1.3.6'
 
 libraries.pinyin4j = 'com.belerweb:pinyin4j:2.5.0'
 
@@ -257,11 +259,11 @@ libraries.spring_data_neo4j= 'org.springframework.data:spring-data-neo4j'
 //    'redis.clients:jedis:2.9.0'
 //]
 
-libraries.spring_integration = "org.springframework.integration:spring-integration-core:${versions.spring_integration}"
-libraries.spring_integration_stream = "org.springframework.integration:spring-integration-stream:${versions.spring_integration}"
-libraries.spring_integration_ws = "org.springframework.integration:spring-integration-ws:${versions.spring_integration}"
-libraries.spring_integration_xml = "org.springframework.integration:spring-integration-xml:${versions.spring_integration}"
-libraries.spring_integration_jdbc = "org.springframework.integration:spring-integration-jdbc:${versions.spring_integration}"
+//libraries.spring_integration = "org.springframework.integration:spring-integration-core:${versions.spring_integration}"
+//libraries.spring_integration_stream = "org.springframework.integration:spring-integration-stream:${versions.spring_integration}"
+//libraries.spring_integration_ws = "org.springframework.integration:spring-integration-ws:${versions.spring_integration}"
+//libraries.spring_integration_xml = "org.springframework.integration:spring-integration-xml:${versions.spring_integration}"
+//libraries.spring_integration_jdbc = "org.springframework.integration:spring-integration-jdbc:${versions.spring_integration}"
 
 //libraries.spring_security_acl = "org.springframework.security:spring-security-acl:${versions.spring_security}"
 //libraries.spring_security_cas = "org.springframework.security:spring-security-cas:${versions.spring_security}"

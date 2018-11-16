@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.notice.server.push.constant.HuaweiConstant
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
 import com.proper.enterprise.platform.test.AbstractJPATest
+import org.apache.groovy.dateutil.extensions.DateUtilExtensions
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -33,7 +34,8 @@ class PushNoticeSenderTest extends AbstractJPATest{
         notice.setTargetTo("0867110029070702300001436000CN32")
         notice.setAppKey('MobileOADev2')
         notice.setTitle(System.getProperty('os.name'))
-        notice.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${new Date().format('yyyy-MM-dd HH:mm:ss')} in test case")
+        notice.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at " +
+                "${DateUtilExtensions.format(new Date(), 'yyyy-MM-dd HH:mm:ss')} in test case")
 
         notice.setTargetExtMsg('pushChannel', 'HUAWEI')
         notice.setNoticeExtMsg('push_type', '')

@@ -11,12 +11,12 @@ ext.checkstyleConfigDir = "$configDir/checkstyle"
 checkstyle {
     configFile = new File(checkstyleConfigDir, "checkstyle.xml")
     configProperties.checkstyleConfigDir = checkstyleConfigDir
-    toolVersion = '8.12'
+    toolVersion = '8.14'
 }
 
 codenarc {
     configFile = new File(configDir, "codenarc.xml")
-    toolVersion = '0.25.2'
+    toolVersion = '1.2.1'
 }
 
 findbugs {
@@ -25,7 +25,7 @@ findbugs {
 }
 
 jacoco {
-    toolVersion = "0.7.7.201606060606"
+    toolVersion = "0.8.2"
 }
 
 pmd {
