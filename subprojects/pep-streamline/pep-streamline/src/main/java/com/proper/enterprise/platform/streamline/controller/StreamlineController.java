@@ -7,7 +7,6 @@ import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstan
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,6 +62,6 @@ public class StreamlineController extends BaseController {
         String serviceKey = streamlineService.getSign(userName, password);
         HttpHeaders headers = new HttpHeaders();
         headers.add(StreamlineConstant.SERVICE_KEY, serviceKey);
-        return StringUtil.isEmpty(serviceKey) ? new ResponseEntity(HttpStatus.NOT_FOUND) : responseOfGet(serviceKey, headers);
+        return StringUtil.isEmpty(serviceKey) ? responseOfGet(null) : responseOfGet(serviceKey, headers);
     }
 }

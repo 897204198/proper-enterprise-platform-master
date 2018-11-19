@@ -1,18 +1,22 @@
 package com.proper.enterprise.platform.streamline.client;
 
 import com.proper.enterprise.platform.core.PEPConstants;
-import com.proper.enterprise.platform.core.utils.ConfCenter;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
 import com.proper.enterprise.platform.streamline.client.result.Result;
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;
 import com.proper.enterprise.platform.streamline.sdk.status.SignStatus;
+import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StreamlineClient {
 
@@ -45,9 +49,8 @@ public class StreamlineClient {
         signRequestParam.setServiceKey(this.serviceKey);
         Result result = new Result();
         try {
-            String serverUrl = ConfCenter.get("streamline.server.url");
             ResponseEntity<byte[]> responseEntity =
-                HttpClient.post(serverUrl + "/streamline", MediaType.APPLICATION_JSON, JSONUtil.toJSON(signRequestParam));
+                post("/streamline", JSONUtil.toJSON(signRequestParam));
             if (HttpStatus.CREATED.equals(responseEntity.getStatusCode())) {
                 result.setStatus(SignStatus.SUCCESS);
             } else {
@@ -70,9 +73,8 @@ public class StreamlineClient {
         signRequests.forEach(signRequest -> signRequest.setServiceKey(this.serviceKey));
         Result result = new Result();
         try {
-            String serverUrl = ConfCenter.get("streamline.server.url");
             ResponseEntity<byte[]> responseEntity =
-                HttpClient.post(serverUrl + "/streamline/signs", MediaType.APPLICATION_JSON, JSONUtil.toJSON(signRequests));
+                post("/streamline/signs", JSONUtil.toJSON(signRequests));
             if (HttpStatus.CREATED.equals(responseEntity.getStatusCode())) {
                 result.setStatus(SignStatus.SUCCESS);
             } else {
@@ -101,9 +103,8 @@ public class StreamlineClient {
         signRequestParam.setServiceKey(this.serviceKey);
         Result result = new Result();
         try {
-            String serverUrl = ConfCenter.get("streamline.server.url");
             ResponseEntity<byte[]> responseEntity =
-                HttpClient.put(serverUrl + "/streamline", MediaType.APPLICATION_JSON, JSONUtil.toJSON(signRequestParam));
+                put("/streamline", JSONUtil.toJSON(signRequestParam));
             if (HttpStatus.OK.equals(responseEntity.getStatusCode())) {
                 result.setStatus(SignStatus.SUCCESS);
             } else {
@@ -126,9 +127,8 @@ public class StreamlineClient {
         signRequests.forEach(signRequest -> signRequest.setServiceKey(this.serviceKey));
         Result result = new Result();
         try {
-            String serverUrl = ConfCenter.get("streamline.server.url");
             ResponseEntity<byte[]> responseEntity =
-                HttpClient.put(serverUrl + "/streamline/signs", MediaType.APPLICATION_JSON, JSONUtil.toJSON(signRequests));
+                put("/streamline/signs", JSONUtil.toJSON(signRequests));
             if (HttpStatus.OK.equals(responseEntity.getStatusCode())) {
                 result.setStatus(SignStatus.SUCCESS);
             } else {
@@ -150,9 +150,8 @@ public class StreamlineClient {
     public Result deleteSign(String businessId) {
         Result result = new Result();
         try {
-            String serverUrl = ConfCenter.get("streamline.server.url");
             ResponseEntity<byte[]> responseEntity =
-                HttpClient.delete(serverUrl + "/streamline/" + businessId);
+                delete("/streamline/" + businessId);
             if (HttpStatus.NO_CONTENT.equals(responseEntity.getStatusCode())) {
                 result.setStatus(SignStatus.SUCCESS);
             } else {
@@ -174,9 +173,8 @@ public class StreamlineClient {
     public Result deleteSigns(String businessIds) {
         Result result = new Result();
         try {
-            String serverUrl = ConfCenter.get("streamline.server.url");
             ResponseEntity<byte[]> responseEntity =
-                HttpClient.delete(serverUrl + "/streamline?businessIds=" + businessIds);
+                delete("/streamline?businessIds=" + businessIds);
             if (HttpStatus.NO_CONTENT.equals(responseEntity.getStatusCode())) {
                 result.setStatus(SignStatus.SUCCESS);
             } else {
@@ -210,5 +208,82 @@ public class StreamlineClient {
             msg.append(new String(body, PEPConstants.DEFAULT_CHARSET.name()));
         }
         return msg.toString();
+    }
+
+    /**
+     * post 请求, 获取数据字典中分流服务端地址以及Token发送请求
+     *
+     * @param url  请求url
+     * @param data 请求数据
+     * @return 响应内容
+     * @throws IOException 异常
+     */
+    private ResponseEntity<byte[]> post(String url, String data) throws IOException {
+        String streamlineServerUrl = null;
+        DataDic dataDic = DataDicUtil.get("STREAMLINE_SERVER", "URL");
+        if (dataDic != null) {
+            streamlineServerUrl = dataDic.getName();
+        }
+        String streamlineServerToken = null;
+        dataDic = DataDicUtil.get("STREAMLINE_SERVER", "TOKEN");
+        if (dataDic != null) {
+            streamlineServerToken = dataDic.getName();
+        }
+        Map<String, String> headers = new HashMap<>(1);
+        headers.put("X-PEP-TOKEN", streamlineServerToken);
+        ResponseEntity<byte[]> responseEntity =
+            HttpClient.post(streamlineServerUrl + url, headers, MediaType.APPLICATION_JSON, data);
+        return responseEntity;
+    }
+
+    /**
+     * put 请求, 获取数据字典中分流服务端地址以及Token发送请求
+     *
+     * @param url  请求url
+     * @param data 请求数据
+     * @return 响应内容
+     * @throws IOException 异常
+     */
+    private ResponseEntity<byte[]> put(String url, String data) throws IOException {
+        String streamlineServerUrl = null;
+        DataDic dataDic = DataDicUtil.get("STREAMLINE_SERVER", "URL");
+        if (dataDic != null) {
+            streamlineServerUrl = dataDic.getName();
+        }
+        String streamlineServerToken = null;
+        dataDic = DataDicUtil.get("STREAMLINE_SERVER", "TOKEN");
+        if (dataDic != null) {
+            streamlineServerToken = dataDic.getName();
+        }
+        Map<String, String> headers = new HashMap<>(1);
+        headers.put("X-PEP-TOKEN", streamlineServerToken);
+        ResponseEntity<byte[]> responseEntity =
+            HttpClient.put(streamlineServerUrl + url, headers, MediaType.APPLICATION_JSON, data);
+        return responseEntity;
+    }
+
+    /**
+     * delete 请求, 获取数据字典中分流服务端地址以及Token发送请求
+     *
+     * @param url 请求url
+     * @return 响应内容
+     * @throws IOException 异常
+     */
+    private ResponseEntity<byte[]> delete(String url) throws IOException {
+        String streamlineServerUrl = null;
+        DataDic dataDic = DataDicUtil.get("STREAMLINE_SERVER", "URL");
+        if (dataDic != null) {
+            streamlineServerUrl = dataDic.getName();
+        }
+        String streamlineServerToken = null;
+        dataDic = DataDicUtil.get("STREAMLINE_SERVER", "TOKEN");
+        if (dataDic != null) {
+            streamlineServerToken = dataDic.getName();
+        }
+        Map<String, String> headers = new HashMap<>(1);
+        headers.put("X-PEP-TOKEN", streamlineServerToken);
+        ResponseEntity<byte[]> responseEntity =
+            HttpClient.delete(streamlineServerUrl + url, headers);
+        return responseEntity;
     }
 }

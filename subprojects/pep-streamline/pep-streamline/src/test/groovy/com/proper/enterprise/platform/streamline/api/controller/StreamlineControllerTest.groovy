@@ -96,8 +96,8 @@ class StreamlineControllerTest extends AbstractTest {
         assert "test2" == result.getResponse().getHeader(StreamlineConstant.SERVICE_KEY)
         //根据用户名和密码删除签名
         delete(URL + "/" + signRequestParam.getBusinessId(), HttpStatus.NO_CONTENT)
-        //查询签名404
-        get(URL + "/" + signRequestParam.getUserName() + "/" + "test2", HttpStatus.NOT_FOUND)
+        //查询签名为空
+        assert "" == get(URL + "/" + signRequestParam.getUserName() + "/" + "test2", HttpStatus.OK).getResponse().getContentAsString()
     }
 
     @Test
@@ -124,9 +124,9 @@ class StreamlineControllerTest extends AbstractTest {
         assert "test2" == get(URL + "/" + "test3" + "/" + "test3", HttpStatus.OK).getResponse().getContentAsString()
         //根据用户名和密码删除签名
         delete(URL + "?businessIds=" + signRequestParam.getBusinessId() + "," + signRequestParam2.getBusinessId(), HttpStatus.NO_CONTENT)
-        //查询签名404
-        get(URL + "/" + signRequestParam.getUserName() + "/" + "test2", HttpStatus.NOT_FOUND)
-        get(URL + "/" + "test3" + "/" + "test3", HttpStatus.NOT_FOUND)
+        //查询签名为空
+        assert "" == get(URL + "/" + signRequestParam.getUserName() + "/" + "test2", HttpStatus.OK).getResponse().getContentAsString()
+        assert "" == get(URL + "/" + "test3" + "/" + "test3", HttpStatus.OK).getResponse().getContentAsString()
     }
 
     @Test
@@ -152,8 +152,8 @@ class StreamlineControllerTest extends AbstractTest {
         signRequestParam.setPassword(pwdService.encrypt("test4"))
         signRequestParam.setBusinessId("testUser")
         put(URL, JSONUtil.toJSON(signRequestParam), HttpStatus.OK)
-        //查询旧签名404
-        get(URL + "/test3/test3", HttpStatus.NOT_FOUND)
+        //查询旧签名为空
+        assert "" == get(URL + "/test3/test3", HttpStatus.OK).getResponse().getContentAsString()
         //查询新签名找到
         MvcResult result = get(URL + "/" + signRequestParam.getUserName() + "/" + "test4", HttpStatus.OK)
         assert "test3" == result.getResponse().getContentAsString()
@@ -193,8 +193,8 @@ class StreamlineControllerTest extends AbstractTest {
         signRequestParam.setBusinessId("testUser")
         signRequests = [signRequestParam, signRequestParam2]
         put(URL + "/signs", JSONUtil.toJSON(signRequests), HttpStatus.OK)
-        //查询旧签名404
-        get(URL + "/test2/test2", HttpStatus.NOT_FOUND)
+        //查询旧签名为空
+        assert "" == get(URL + "/test2/test2", HttpStatus.OK).getResponse().getContentAsString()
         //查询新签名找到
         MvcResult result = get(URL + "/" + signRequestParam.getUserName() + "/" + "test4", HttpStatus.OK)
         assert "test2" == result.getResponse().getContentAsString()

@@ -31,14 +31,14 @@ public class StreamlineServiceImpl implements StreamlineService {
 
     @Override
     public void addSign(String businessId, String userName, String password, String serviceKey) {
-        String signature = MD5.md5Hex(userName + password);
+        String signature = MD5.md5Hex(userName + "$#" + password);
         SignEntity existSignEntity = signRepository.findBySignature(signature);
         if (existSignEntity != null && signature.equals(existSignEntity.getSignature())) {
             throw new ErrMsgException(i18NService.getMessage("streamline.userNameAndPassword.unique"));
         }
         SignEntity signEntity = new SignEntity();
         signEntity.setBusinessId(businessId);
-        signEntity.setSignature(MD5.md5Hex(userName + password));
+        signEntity.setSignature(MD5.md5Hex(userName + "$#" + password));
         signEntity.setServiceKey(serviceKey);
         signRepository.save(signEntity);
     }
@@ -65,7 +65,7 @@ public class StreamlineServiceImpl implements StreamlineService {
         if (existSignEntity == null) {
             throw new ErrMsgException(i18NService.getMessage("streamline.businessId.unregistered"));
         }
-        existSignEntity.setSignature(MD5.md5Hex(userName + password));
+        existSignEntity.setSignature(MD5.md5Hex(userName + "$#" + password));
         signRepository.updateForSelective(existSignEntity);
     }
 
@@ -78,7 +78,7 @@ public class StreamlineServiceImpl implements StreamlineService {
 
     @Override
     public String getSign(String userName, String password) {
-        String signature = MD5.md5Hex(userName + pwdService.encrypt(password));
+        String signature = MD5.md5Hex(userName + "$#" + pwdService.encrypt(password));
         SignEntity signEntity = signRepository.findBySignature(signature);
         if (null == signEntity) {
             return null;

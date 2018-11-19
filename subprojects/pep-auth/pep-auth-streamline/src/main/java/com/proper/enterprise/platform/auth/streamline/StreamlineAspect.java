@@ -6,8 +6,9 @@ import com.proper.enterprise.platform.streamline.client.StreamlineClient;
 import com.proper.enterprise.platform.streamline.client.result.Result;
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;
 import com.proper.enterprise.platform.streamline.sdk.status.SignStatus;
+import com.proper.enterprise.platform.sys.datadic.DataDic;
+import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import org.aspectj.lang.JoinPoint;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +20,12 @@ import java.util.List;
 @Lazy(false)
 public class StreamlineAspect {
 
-    @Value("${streamline.server.serviceKey}")
-    private String serviceKey;
-
     public void insert(User user) {
+        String serviceKey = null;
+        DataDic dataDic = DataDicUtil.get("STREAMLINE_SERVER", "SERVICE_KEY");
+        if (dataDic != null) {
+            serviceKey = dataDic.getName();
+        }
         Result result = new StreamlineClient(serviceKey).addSign(user.getId(), user.getUsername(), user.getPassword());
         if (SignStatus.FAIL.equals(result.getStatus())) {
             throw new ErrMsgException(result.getMessage());
@@ -30,6 +33,11 @@ public class StreamlineAspect {
     }
 
     public void insertBatch(User... users) {
+        String serviceKey = null;
+        DataDic dataDic = DataDicUtil.get("STREAMLINE_SERVER", "SERVICE_KEY");
+        if (dataDic != null) {
+            serviceKey = dataDic.getName();
+        }
         List<SignRequest> signRequests = new ArrayList<>();
         for (User user : users) {
             SignRequest signRequest = new SignRequest();
@@ -46,6 +54,11 @@ public class StreamlineAspect {
     }
 
     public void update(User user) {
+        String serviceKey = null;
+        DataDic dataDic = DataDicUtil.get("STREAMLINE_SERVER", "SERVICE_KEY");
+        if (dataDic != null) {
+            serviceKey = dataDic.getName();
+        }
         Result result = new StreamlineClient(serviceKey).updateSign(user.getUsername(), user.getPassword(), user.getId());
         if (SignStatus.FAIL.equals(result.getStatus())) {
             throw new ErrMsgException(result.getMessage());
@@ -53,6 +66,11 @@ public class StreamlineAspect {
     }
 
     public void updateBatch(Collection<? extends User> users) {
+        String serviceKey = null;
+        DataDic dataDic = DataDicUtil.get("STREAMLINE_SERVER", "SERVICE_KEY");
+        if (dataDic != null) {
+            serviceKey = dataDic.getName();
+        }
         List<SignRequest> signRequests = new ArrayList<>();
         for (User user : users) {
             SignRequest signRequest = new SignRequest();
@@ -69,6 +87,11 @@ public class StreamlineAspect {
     }
 
     public void delete(JoinPoint joinPoint) {
+        String serviceKey = null;
+        DataDic dataDic = DataDicUtil.get("STREAMLINE_SERVER", "SERVICE_KEY");
+        if (dataDic != null) {
+            serviceKey = dataDic.getName();
+        }
         Object[] args = joinPoint.getArgs();
         String ids = (String) args[0];
         Result result = new StreamlineClient(serviceKey).deleteSigns(ids);
