@@ -8,8 +8,6 @@ import com.proper.enterprise.platform.api.auth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 @Service
 public class AuthcServiceImpl implements AuthcService {
 
@@ -24,16 +22,6 @@ public class AuthcServiceImpl implements AuthcService {
         User user = userService.getByUsername(username, EnableEnum.ENABLE);
         return user != null
             && pwdService.encrypt(pwd).equals(user.getPassword());
-    }
-
-    @Override
-    public String getUsername(Map<String, String> map) {
-        return map.get("username");
-    }
-
-    @Override
-    public String getPassword(Map<String, String> map) {
-        return map.get("pwd");
     }
 
 }

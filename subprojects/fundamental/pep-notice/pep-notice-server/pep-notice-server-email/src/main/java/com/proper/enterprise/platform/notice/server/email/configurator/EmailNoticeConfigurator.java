@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.i18n.I18NService;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.notice.server.email.constant.PEPMailConstant;
 import com.proper.enterprise.platform.notice.server.email.document.EmailDocument;
 import com.proper.enterprise.platform.notice.server.email.repository.EmailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,10 +94,10 @@ public class EmailNoticeConfigurator implements EmailNoticeExtConfigurator {
         javaMailSender.setPassword(emailDocument.getMailServerPassword());
         javaMailSender.setPort(emailDocument.getMailServerPort());
         Properties javaMailProperties = new Properties();
-        javaMailProperties.setProperty("mail.smtp.auth", "true");
-        javaMailProperties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        javaMailProperties.setProperty("mail.smtp.starttls.enable", "true");
-        javaMailProperties.setProperty("mail.from", emailDocument.getMailServerDefaultFrom());
+        javaMailProperties.setProperty(PEPMailConstant.MAIL_SMTP_AUTH, "true");
+        javaMailProperties.setProperty(PEPMailConstant.MAIL_SMTP_SOCKET_FACTORY_CLASS, "javax.net.ssl.SSLSocketFactory");
+        javaMailProperties.setProperty(PEPMailConstant.MAIL_TRANSPORT_STARTTLS_ENABLE, "true");
+        javaMailProperties.setProperty(PEPMailConstant.MAIL_FROM, emailDocument.getMailServerDefaultFrom());
         javaMailSender.setJavaMailProperties(javaMailProperties);
         return javaMailSender;
     }

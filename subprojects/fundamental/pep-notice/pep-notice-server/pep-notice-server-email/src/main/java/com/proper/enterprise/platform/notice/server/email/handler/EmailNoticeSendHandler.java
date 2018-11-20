@@ -1,9 +1,10 @@
 package com.proper.enterprise.platform.notice.server.email.handler;
 
-import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.file.api.File;
+import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNotice;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
@@ -11,15 +12,19 @@ import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.api.util.ThrowableMessageUtil;
 import com.proper.enterprise.platform.notice.server.email.configurator.EmailNoticeExtConfigurator;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.InputStream;
 import java.util.Map;
 
 @Service("emailNoticeSender")
@@ -28,6 +33,9 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailNoticeSendHandler.class);
 
     private EmailNoticeExtConfigurator noticeConfigurator;
+
+    @Autowired
+    private FileService fileService;
 
     @Autowired
     public EmailNoticeSendHandler(EmailNoticeExtConfigurator noticeConfigurator) {
@@ -67,6 +75,15 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
                 String bcc = (String) notice.getTargetExtMsgMap().get("bcc");
                 if (StringUtil.isNotBlank(bcc)) {
                     helper.setBcc(bcc.split(","));
+                }
+                // 获取附件
+                String attachmentId = (String) notice.getTargetExtMsgMap().get("attachmentId");
+                if (StringUtil.isNotBlank(attachmentId)) {
+                    File file = fileService.findById(attachmentId);
+                    if (null != file) {
+                        InputStream attachmentInputStream = fileService.download(attachmentId);
+                        helper.addAttachment(file.getFileName(),  new ByteArrayResource(IOUtils.toByteArray(attachmentInputStream)));
+                    }
                 }
             }
             // 设置发送时间

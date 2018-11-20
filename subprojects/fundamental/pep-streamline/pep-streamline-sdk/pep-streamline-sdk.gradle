@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':pep-core'),
+            project(':pep-sys')
+}

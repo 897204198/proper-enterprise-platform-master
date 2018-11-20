@@ -88,6 +88,25 @@ class ApnsNoticeSenderTest extends AbstractJPATest {
         assert pushNoticeMsgJpaRepository.findPushNoticeMsgEntitiesByNoticeId("testtest").getContent() == "66666qwe"
         BusinessNoticeResult businessNoticeResult = iosNoticeSender.getStatus(mockPushNotice)
         assert NoticeStatus.SUCCESS == iosNoticeSender.getStatus(mockPushNotice).getNoticeStatus()
+
+        //token无效严验证
+        MockPushNotice mockPushNotice2 = new MockPushNotice()
+        mockPushNotice2.setAppKey(appKey)
+        mockPushNotice2.setTargetTo("553df1db87ab77af2ddc3410e7a68950bfb7165a65e73048a4376fed11a8c824")
+        mockPushNotice2.setTitle("555")
+        mockPushNotice2.setContent("66666qwe")
+        mockPushNotice2.setId("testtest")
+        //token未在包下
+        BusinessNoticeResult notForTopic = iosNoticeSender.send(mockPushNotice2)
+        assert IOSErrCodeEnum.DEVICE_TOKEN_NOT_FOR_TOPIC.getNoticeCode() == notForTopic.getCode()
+        assert IOSErrCodeEnum.DEVICE_TOKEN_NOT_FOR_TOPIC.getCode() == notForTopic.getMessage()
+        //token无效
+        mockPushNotice2.setTargetTo("1231")
+        BusinessNoticeResult badToken = iosNoticeSender.send(mockPushNotice2)
+        assert IOSErrCodeEnum.BAD_DEVICE_TOKEN.getNoticeCode() == badToken.getCode()
+        assert IOSErrCodeEnum.BAD_DEVICE_TOKEN.getCode() == badToken.getMessage()
+
+        //todo Unregistered异常无法重现
     }
 
     @Test
@@ -153,54 +172,5 @@ class ApnsNoticeSenderTest extends AbstractJPATest {
         }
         assert flag
         pushNoticeMsgJpaRepository.deleteAll()
-    }
-
-
-    @Test
-    void invalidTargetTest() {
-        String appKey = 'iosConfSendToken1'
-        def accessToken = new AccessTokenVO(appKey, 'for test using', appKey, 'GET:/test')
-        accessTokenService.saveOrUpdate(accessToken)
-
-        //上传P12证书
-        Resource[] resourcesP12 = AntResourceUtil.getResources(IOSConstant.CENT_PATH)
-        String resultP12 = mockMvc.perform(
-            MockMvcRequestBuilders
-                .fileUpload("/file")
-                .file(
-                new MockMultipartFile("file", "icmp_dev_pro.p12", ",multipart/form-data", resourcesP12[0].inputStream)
-            )
-        ).andExpect(MockMvcResultMatchers.status().isCreated())
-            .andReturn().getResponse().getContentAsString()
-        FileVO fileP12VO = JSONUtil.parse(get("/file/" + resultP12 + "/meta", HttpStatus.OK).getResponse().getContentAsString(), FileVO.class)
-
-        Map conf = new HashMap()
-        conf.put("certPassword", IOSConstant.PASSWORD)
-        conf.put("pushPackage", IOSConstant.TOPIC)
-        conf.put("certificateId", fileP12VO.getId())
-
-        Map request = new HashMap()
-        request.put("pushChannel", PushChannelEnum.APNS.toString())
-        pushNoticeConfigurator.post(appKey, conf, request)
-
-        MockPushNotice mockPushNotice = new MockPushNotice()
-        mockPushNotice.setAppKey(appKey)
-        mockPushNotice.setTargetTo("553df1db87ab77af2ddc3410e7a68950bfb7165a65e73048a4376fed11a8c824")
-        mockPushNotice.setTitle("555")
-        mockPushNotice.setContent("66666qwe")
-        mockPushNotice.setId("testtest")
-
-        //token未在包下
-        BusinessNoticeResult notForTopic = iosNoticeSender.send(mockPushNotice)
-        assert IOSErrCodeEnum.DEVICE_TOKEN_NOT_FOR_TOPIC.getNoticeCode() == notForTopic.getCode()
-        assert IOSErrCodeEnum.DEVICE_TOKEN_NOT_FOR_TOPIC.getCode() == notForTopic.getMessage()
-        //token无效
-        mockPushNotice.setTargetTo("1231")
-        BusinessNoticeResult badToken = iosNoticeSender.send(mockPushNotice)
-        assert IOSErrCodeEnum.BAD_DEVICE_TOKEN.getNoticeCode() == badToken.getCode()
-        assert IOSErrCodeEnum.BAD_DEVICE_TOKEN.getCode() == badToken.getMessage()
-
-        //todo Unregistered异常无法重现
-
     }
 }

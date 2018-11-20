@@ -41,11 +41,16 @@ public class NoticeSendController extends BaseController {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
         LOGGER.info("Receive client messages batchId:{}", noticeRequest.getBatchId());
-        List<Notice> notices = noticeSendService
-            .beforeSend(accessTokenService.getUserId(token).get(), noticeRequest);
-        LOGGER.info("client messages check batchId:{}", noticeRequest.getBatchId());
-        noticeSendService.sendAsync(notices);
-        return responseOfPost(null);
+        try {
+            List<Notice> notices = noticeSendService
+                .beforeSend(accessTokenService.getUserId(token).get(), noticeRequest);
+            LOGGER.info("client messages check batchId:{}", noticeRequest.getBatchId());
+            noticeSendService.sendAsync(notices);
+            return responseOfPost(null);
+        } catch (Exception e) {
+            LOGGER.error("client send error batchId:{}", noticeRequest.getBatchId(), e);
+            throw e;
+        }
     }
 
 }

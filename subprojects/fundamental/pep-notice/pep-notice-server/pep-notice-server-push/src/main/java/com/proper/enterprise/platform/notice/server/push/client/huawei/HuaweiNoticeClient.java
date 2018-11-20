@@ -115,8 +115,12 @@ public class HuaweiNoticeClient {
             if (StringUtil.isNotBlank(extPushType)) {
                 pushType = PushType.valueOf(extPushType);
             }
-            // chat类型推送不包含 uri 会导致推送失败 暂时改为非chat而变成other 等前端提供传递uri方案后改回异常
             String uriKey = "uri";
+            String urlKey = "url";
+            if (null != customs.get(urlKey)) {
+                customs.put(uriKey, customs.get(urlKey));
+            }
+            // chat类型推送不包含 uri 会导致推送失败 暂时改为非chat而变成other 等前端提供传递uri方案后改回异常
             if ((PushType.chat).equals(pushType) && StringUtil.isBlank((String) customs.get(uriKey))) {
                 pushType = PushType.other;
             }
@@ -145,18 +149,14 @@ public class HuaweiNoticeClient {
         extJson.put("biTag", "Trump");
         // TODO 自定义推送消息在通知栏的图标可在 extJson 中加入 icon 属性，value 为一个公网可以访问的URL
         hps.put("ext", extJson);
-
         JSONObject payload = new JSONObject();
         payload.put("hps", hps);
-
         String format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(new Date(System.currentTimeMillis() + 3600 * 1000));
-        String postBody = "";
-        String resBody = "";
         try {
             Map<String, String> ctx = new HashMap<>(2);
             ctx.put("ver", "1");
             ctx.put("appId", appId);
-            postBody = MessageFormat.format(
+            String postBody = MessageFormat.format(
                 "access_token={0}&nsp_ctx={1}&nsp_svc={2}&nsp_ts={3}&device_token_list={4}&payload={5}&expire_time={6}",
                 URLEncoder.encode(accessToken, "UTF-8"),
                 URLEncoder.encode(JSONUtil.toJSON(ctx), "UTF-8"),
@@ -166,8 +166,7 @@ public class HuaweiNoticeClient {
                 URLEncoder.encode(payload.toString(), "UTF-8"),
                 URLEncoder.encode(format, "UTF-8"));
             LOGGER.debug("postBody: {}", postBody);
-            resBody = post(API_URL, postBody);
-            return isSuccess(resBody, notice);
+            return isSuccess(post(API_URL, postBody), notice);
         } catch (IOException e) {
             return new BusinessNoticeResult(NoticeStatus.FAIL, e.getMessage(), ThrowableMessageUtil.getStackTrace(e));
         }

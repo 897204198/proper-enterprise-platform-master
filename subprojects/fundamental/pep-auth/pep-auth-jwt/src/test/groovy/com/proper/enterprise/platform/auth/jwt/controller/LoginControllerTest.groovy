@@ -5,15 +5,16 @@ import com.proper.enterprise.platform.core.CoreProperties
 import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import com.proper.enterprise.platform.core.model.CurrentModel
 import com.proper.enterprise.platform.core.security.Authentication
+import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import groovy.json.JsonSlurper
-import org.apache.commons.codec.binary.Base64
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
+import org.springframework.test.web.servlet.MvcResult
 
 @Sql("/com/proper/enterprise/platform/auth/jwt/filter/adminUsers.sql")
 class LoginControllerTest extends AbstractJPATest {
@@ -61,11 +62,22 @@ class LoginControllerTest extends AbstractJPATest {
         return post('/auth/login', produce, """{"username":"$user","pwd":"$pwd"}""", statusCode).getResponse().getContentAsString()
     }
 
+    private MvcResult mockLoginWithServiceKey(String user, String pwd, MediaType produce, HttpStatus statusCode, String serviceKey) {
+        mockRequest.addHeader(StreamlineConstant.SERVICE_KEY, serviceKey)
+        return post('/auth/login', produce, """{"username":"$user","pwd":"$pwd"}""", statusCode)
+    }
+
     @Test
     void normalUserLogin() {
         def token1 = mockLogin('sam', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
         def token2 = mockLogin('sam', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK)
         assert token1 != token2
+    }
+
+    @Test
+    void normalUserLoginWithServiceKey() {
+        def result = mockLoginWithServiceKey('sam', '123456', MediaType.TEXT_PLAIN, HttpStatus.OK, 'icmp')
+        assert "icmp" == result.getResponse().getHeader(StreamlineConstant.SERVICE_KEY)
     }
 
 }

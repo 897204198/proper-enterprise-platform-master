@@ -7,7 +7,8 @@ dependencies {
         implementation project(':pep-auth-common-jpa'),
                        project(':pep-core-mongo'),
                        project(':pep-file'),
-                       project(':pep-notice-server-api')
+                       project(':pep-notice-server-api'),
+                       project(':pep-schedule-cluster')
 
     testImplementation project(':pep-notice-server-app'),
                        project(':pep-dfs-mongo'),

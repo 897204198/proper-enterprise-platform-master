@@ -3,8 +3,10 @@ dependencies {
         implementation libraries.spring_boot_starter_mail
 
         implementation project(':pep-core-mongo'),
+                       project(':pep-file'),
                        project(':pep-notice-server-api')
 
-    testImplementation project(':pep-test')
+    testImplementation project(':pep-dfs-mongo'),
+                       project(':pep-test')
 
 }

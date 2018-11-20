@@ -39,7 +39,7 @@ class EmailNoticeConfiguratorTest extends AbstractJPATest {
         assert res.get('mailServerUsername') == 'username'
         assert res.get('mailServerPassword') == 'password'
         assert res.get('mailServerUseSSL') == true
-        assert res.get('mailServerUseTLS') == null
+        assert res.get('mailServerUseTLS') == false
         assert res.get('mailServerDefaultFrom') == 'localhost@localhost'
 
         config.put('mailServerHost', 'icmp')

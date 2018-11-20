@@ -55,7 +55,10 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
 
         assert NoticeStatus.SUCCESS == pushNoticeSender.send(notice).getNoticeStatus()
 
-          notice.setNoticeExtMsg('uri', 'www.baidu.com')
+        notice.setNoticeExtMsg('url',
+            'https://icmp2.propersoft.cn/icmp/web/#/webapp/workflow/workflowMainPop?param=JTdCJTIydGFza09yUHJvY0RlZktleSUyMiUzQSUyMmU3OThhODdhLWU3MGUtMTFlOC1hYTA3LTAyNDJhYzExMDAwNCUyMiUyQyUyMnByb2NJbnN0SWQlMjIlM0ElMjJlNzk0NjM4Yi1lNzBlLTExZTgtYWEwNy0wMjQyYWMxMTAwMDQlMjIlMkMlMjJuYW1lJTIyJTNBJTIyJUU5JTgzJUE4JUU5JTk3JUE4JUU4JUI0JTlGJUU4JUI0JUEzJUU0JUJBJUJBJUU1JUFFJUExJUU2JTg5JUI5JTIyJTJDJTIyc3RhdGVDb2RlJTIyJTNBbnVsbCUyQyUyMmJ1c2luZXNzT2JqJTIyJTNBJTdCJTIyZm9ybVRpdGxlJTIyJTNBJTIyJUU1JUJDJUEwJUU1JTg5JTkxJUU2JTlFJTk3JUU3JTlBJTg0JUU1JTg3JUJBJUU1JUI3JUFFJUU3JTk0JUIzJUU4JUFGJUI3JUU2JUI1JTgxJUU3JUE4JThCJTIyJTdEJTJDJTIybGF1bmNoJTIyJTNBZmFsc2UlN0Q=&from=app')
+        notice.setContent("url跳转测试")
+        notice.setTitle("url跳转测试")
         assert NoticeStatus.SUCCESS == pushNoticeSender.send(notice).getNoticeStatus()
 
         notice.setAppKey("testFail")

@@ -14,24 +14,9 @@ class AuthcServiceImplTest extends AbstractJPATest{
      * 测试验证用户名和密码
      */
     @Test
-    void testlogin() {
-
-        def result = authcService.authenticate('test', 'pwd');
-        assert false == result
-    }
-
-    /**
-     * 获取账号密码
-     */
-    @Test
-    void getUserNameAndPwd() {
-        def usermap = new HashMap();
-        usermap.put('username', 'test')
-        usermap.put('pwd', 'test')
-        def username = authcService.getUsername(usermap)
-        assert 'test' == username
-        def password = authcService.getPassword(usermap)
-        assert 'test' == password
+    void testLogin() {
+        def result = authcService.authenticate('test', 'pwd')
+        assert !result
     }
 
 }

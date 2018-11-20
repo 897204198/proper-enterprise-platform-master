@@ -15,17 +15,20 @@ import com.proper.enterprise.platform.core.model.CurrentModel;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
@@ -51,14 +54,20 @@ public class LoginController extends BaseController {
     @ApiOperation("‍用户登录")
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> login(@RequestBody LoginVO loginMap) throws IOException {
+    public ResponseEntity<String> login(@RequestBody LoginVO loginMap, HttpServletRequest request) throws IOException {
         String username = loginMap.getUsername();
         String pwd = loginMap.getPwd();
+
+        HttpHeaders headers = new HttpHeaders();
+        if (StringUtil.isNotEmpty(request.getHeader(StreamlineConstant.SERVICE_KEY))) {
+            headers.add(StreamlineConstant.SERVICE_KEY, request.getHeader(StreamlineConstant.SERVICE_KEY));
+            LOGGER.debug("request header service key is {}", request.getHeader(StreamlineConstant.SERVICE_KEY));
+        }
 
         LOGGER.debug("User {} want to login", username);
 
         if (authcService.authenticate(username, pwd)) {
-            return new ResponseEntity<>(jwtAuthcService.getUserToken(username), HttpStatus.OK);
+            return new ResponseEntity<>(jwtAuthcService.getUserToken(username), headers, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Failed to authenticate", HttpStatus.UNAUTHORIZED);
         }

@@ -17,7 +17,7 @@ public class AccessControlProperties {
     /**
      * 将自定义的 header 暴露给外部
      */
-    private String exposeHeaders = "X-PEP-ERR-TYPE";
+    private String exposeHeaders = "X-PEP-ERR-TYPE,X-SERVICE-KEY";
     private String maxAge = "1000";
 
     public String getAllowCredentials() {

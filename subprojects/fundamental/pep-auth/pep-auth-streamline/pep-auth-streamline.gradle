@@ -1,0 +1,7 @@
+dependencies {
+    compile project(':pep-streamline-client'),
+            project(':pep-auth-api')
+
+    testCompile project(':pep-test'),
+                project(':pep-auth-common-jpa')
+}

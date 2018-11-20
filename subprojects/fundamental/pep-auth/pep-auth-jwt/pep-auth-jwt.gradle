@@ -1,6 +1,7 @@
 dependencies {
 
-        implementation project(':pep-auth-common')
+        implementation project(':pep-auth-common'),
+                       project(':pep-streamline-sdk')
 
     testImplementation libraries.groovy_json
 

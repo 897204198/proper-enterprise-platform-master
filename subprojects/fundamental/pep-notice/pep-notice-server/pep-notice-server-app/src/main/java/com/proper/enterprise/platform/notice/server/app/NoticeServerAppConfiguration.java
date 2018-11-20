@@ -18,7 +18,7 @@ public class NoticeServerAppConfiguration {
 
     @Bean
     List<Trigger> pepJobListNotice(@Qualifier("noticeStatusSyncPending")Trigger noticeStatusSyncPending,
-                                   @Qualifier("noticeStatusSyncPending")Trigger noticeStatusSyncRetry) {
+                                   @Qualifier("noticeStatusSyncRetry")Trigger noticeStatusSyncRetry) {
         List<Trigger> pepJobList = new ArrayList<>();
         pepJobList.add(noticeStatusSyncPending);
         pepJobList.add(noticeStatusSyncRetry);
