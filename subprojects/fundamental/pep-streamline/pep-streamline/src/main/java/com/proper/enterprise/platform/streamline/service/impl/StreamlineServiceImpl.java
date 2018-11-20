@@ -7,7 +7,7 @@ import com.proper.enterprise.platform.streamline.api.service.StreamlineService;
 import com.proper.enterprise.platform.streamline.entity.SignEntity;
 import com.proper.enterprise.platform.streamline.repository.SignRepository;
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;
-import com.proper.enterprise.platform.sys.i18n.I18NService;
+import com.proper.enterprise.platform.core.i18n.I18NService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

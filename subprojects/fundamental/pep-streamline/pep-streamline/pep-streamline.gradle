@@ -1,8 +1,12 @@
 dependencies {
-    compile project(':pep-core-jpa'),
-            project(':pep-auth-api'),
-            project(':pep-streamline-api')
 
-    testCompile project(':pep-test'),
-                project(':pep-auth-common')
+        implementation project(':pep-auth-api'),
+                       project(':pep-core-jpa'),
+                       project(':pep-streamline-api')
+
+    testImplementation project(':pep-auth-common'),
+                       project(':pep-test')
+
+       testRuntimeOnly project(':pep-auth-common-jpa')
+
 }

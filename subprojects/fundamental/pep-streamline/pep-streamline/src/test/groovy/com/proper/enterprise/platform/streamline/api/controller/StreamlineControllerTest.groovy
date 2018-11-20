@@ -3,14 +3,14 @@ package com.proper.enterprise.platform.streamline.api.controller
 import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService
 import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractSpringTest
+import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.springframework.test.web.servlet.MvcResult
 
-class StreamlineControllerTest extends AbstractTest {
+class StreamlineControllerTest extends AbstractSpringTest {
 
     private static final URL = "/streamline"
 

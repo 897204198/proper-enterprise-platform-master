@@ -2,14 +2,14 @@ package com.proper.enterprise.platform.streamline.client
 
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest
 import com.proper.enterprise.platform.streamline.sdk.status.SignStatus
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.test.context.jdbc.Sql
 
 @Ignore
 @Sql
-class ClientTest extends AbstractTest {
+class ClientTest extends AbstractJPATest {
 
     private String serviceKey = "test"
 
