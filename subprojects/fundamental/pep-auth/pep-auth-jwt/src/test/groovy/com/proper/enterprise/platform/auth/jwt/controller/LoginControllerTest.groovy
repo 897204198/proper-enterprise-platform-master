@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstan
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import groovy.json.JsonSlurper
+import org.apache.commons.codec.binary.Base64
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
