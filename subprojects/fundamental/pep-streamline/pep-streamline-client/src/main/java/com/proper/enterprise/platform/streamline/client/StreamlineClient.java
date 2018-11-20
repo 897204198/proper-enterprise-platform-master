@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.streamline.client;
 
-import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.CoreProperties;
+import com.proper.enterprise.platform.core.PEPPropertiesLoader;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
 import com.proper.enterprise.platform.streamline.client.result.Result;
@@ -205,7 +206,7 @@ public class StreamlineClient {
         msg.append(" , response body : ");
         byte[] body = responseEntity.getBody();
         if (body != null) {
-            msg.append(new String(body, PEPConstants.DEFAULT_CHARSET.name()));
+            msg.append(new String(body, PEPPropertiesLoader.load(CoreProperties.class).getCharset()));
         }
         return msg.toString();
     }
