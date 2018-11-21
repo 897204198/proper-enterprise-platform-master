@@ -18,6 +18,9 @@ public class NoticeAnalysisUtil {
         if (noticeDocument.getAnalysisResult().equals(AnalysisResult.UNNECESSARY)) {
             return true;
         }
+        if (noticeDocument.getAnalysisResult().equals(AnalysisResult.ERROR)) {
+            return true;
+        }
         return false;
     }
 
