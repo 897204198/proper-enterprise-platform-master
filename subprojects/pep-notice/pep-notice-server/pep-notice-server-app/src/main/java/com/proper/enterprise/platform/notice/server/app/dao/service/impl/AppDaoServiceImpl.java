@@ -49,7 +49,6 @@ public class AppDaoServiceImpl implements AppDaoService {
     public DataTrunk<App> findAll(String appKey, String appName, String describe, Boolean enable, PageRequest pageRequest) {
         DataTrunk<App> data = new DataTrunk<>();
         Page<AppEntity> page = appRepository.findAll(appKey, appName, describe, enable, pageRequest);
-
         List<AppVO> appVOs = new ArrayList<>(BeanUtil.convert(page.getContent(), AppVO.class));
         for (AppVO app : appVOs) {
             buildHaveConf(app);
@@ -154,6 +153,8 @@ public class AppDaoServiceImpl implements AppDaoService {
     }
 
     private AppVO buildHaveConf(AppVO appVO) {
+
+
         appVO.setHaveEmailConf(false);
         appVO.setHaveSMSConf(false);
         appVO.setHavePushConf(false);

@@ -2,12 +2,15 @@ package com.proper.enterprise.platform.notice.server.push.controller;
 
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.notice.server.api.model.App;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgStatisticService;
 import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushMsgPieDataVO;
 import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgPieVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,5 +59,12 @@ public class PushNoticeStatisticController extends BaseController {
     public ResponseEntity<List<PushMsgPieDataVO>> getPieDataItems(@RequestParam("startDate") String startDate,
                                                                   @RequestParam("endDate") String endDate) {
         return new ResponseEntity<>(pushMsgStatisticService.findPieItems(startDate, endDate), HttpStatus.OK);
+    }
+
+    @GetMapping
+    @RequestMapping("/app")
+    public ResponseEntity<DataTrunk<App>> findApp(String appKey, String appName, String appDesc, Boolean enable) {
+        return responseOfGet(pushMsgStatisticService.findApp(appKey, appName,
+            appDesc, enable, getPageRequest(new Sort(Sort.Direction.DESC, "createTime"))));
     }
 }

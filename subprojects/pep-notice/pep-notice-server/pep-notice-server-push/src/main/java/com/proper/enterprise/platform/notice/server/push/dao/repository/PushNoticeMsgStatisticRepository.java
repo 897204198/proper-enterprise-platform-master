@@ -119,7 +119,7 @@ public interface PushNoticeMsgStatisticRepository extends BaseJpaRepository<Push
      * @param appkeys   应用
      * @return list 统计实体集合
      */
-    @Query(" SELECT sum(msg.msgCount) as num,msg.appKey from PushNoticeMsgStatisticEntity as msg "
+    @Query(" SELECT sum(msg.msgCount) as num,msg.appKey,msg.status from PushNoticeMsgStatisticEntity as msg "
         + " where msg.status in ('FAIL' ,'SUCCESS') and msg.sendDate between ?1 and ?2 and msg.appKey in ?3 "
         + " group by msg.appKey,msg.status  order by num desc ")
     List<Object[]> getPieData(String startDate, String endDate, List<String> appkeys);
@@ -149,5 +149,17 @@ public interface PushNoticeMsgStatisticRepository extends BaseJpaRepository<Push
         + " where msg.sendDate between ?1 and ?2 and msg.appKey in ?3 "
         + " group by msg.appKey  order by num desc ")
     List<Object[]> findPieItems(String startDate, String endDate, List<String> appkeys);
+
+
+    /**
+     * 获取项目近七日推送总数
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     * @return list
+     */
+    @Query(" SELECT sum(msg.msgCount) as num,msg.appKey from PushNoticeMsgStatisticEntity as msg "
+        + " where msg.sendDate between ?1 and ?2 "
+        + " group by msg.appKey  order by num desc ")
+    List<Object[]> getItemsTotalNum(String startDate, String endDate);
 
 }

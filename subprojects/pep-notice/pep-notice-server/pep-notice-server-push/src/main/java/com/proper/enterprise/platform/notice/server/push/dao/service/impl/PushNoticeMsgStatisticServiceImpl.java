@@ -1,7 +1,9 @@
 package com.proper.enterprise.platform.notice.server.push.dao.service.impl;
 
 import com.proper.enterprise.platform.core.PEPConstants;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -10,6 +12,7 @@ import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgStatisticEntity;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgStatisticRepository;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeMsgStatisticService;
+import com.proper.enterprise.platform.notice.server.push.vo.AppVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushMsgPieDataVO;
@@ -17,6 +20,7 @@ import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgPieVO;
 import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnalysisVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -114,7 +118,7 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
         for (Object[] pieDatum : pieData) {
             for (PushMsgPieDataVO pieDataVO : pushMsgPieDataVOS) {
                 if (pieDatum[1].toString().equals(pieDataVO.getAppKey())) {
-                    if (NoticeStatus.SUCCESS.name().equals(pieDatum[1].toString())) {
+                    if (NoticeStatus.SUCCESS.name().equals(pieDatum[2].toString())) {
                         pieDataVO.setSuccessNum(Integer.valueOf(pieDatum[0].toString()));
                     } else {
                         pieDataVO.setFailNum(Integer.valueOf(pieDatum[0].toString()));
@@ -168,6 +172,24 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
             }
         }
         return pieDataVOS;
+    }
+
+    @Override
+    public DataTrunk<App> findApp(String appKey, String appName, String appDesc, Boolean enable, PageRequest pageRequest) {
+        DataTrunk<App> result = appDaoService.findAll(appKey, appName, appDesc, enable, pageRequest);
+        String endDate = DateUtil.toDateString(new Date());
+        String startDate = DateUtil.toDateString(DateUtil.addDay(new Date(), -7));
+        List<Object[]> itemsTotalNum = pushNoticeMsgStatisticRepository.getItemsTotalNum(startDate, endDate);
+        List<AppVO> appVOs = new ArrayList<>(BeanUtil.convert(result.getData(), AppVO.class));
+        for (AppVO app : appVOs) {
+            for (Object[] item : itemsTotalNum) {
+                if (app.getAppKey().equals(item[1].toString())) {
+                    app.setChannelCount(Integer.valueOf(item[0].toString()));
+                }
+            }
+        }
+        result.setData(new ArrayList<>(appVOs));
+        return result;
     }
 
 
