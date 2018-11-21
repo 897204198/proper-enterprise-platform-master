@@ -5,6 +5,9 @@ import com.proper.enterprise.platform.workflow.service.DeployService;
 import com.proper.enterprise.platform.workflow.service.PEPModelService;
 import com.proper.enterprise.platform.workflow.vo.PEPModelVO;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.flowable.app.domain.editor.Model;
 import org.flowable.app.model.common.ResultListDataRepresentation;
 import org.flowable.app.service.api.ModelService;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/repository/models")
+@Api(tags = "/repository/models")
 public class ModelsController extends BaseController {
 
     @Autowired
@@ -35,7 +39,8 @@ public class ModelsController extends BaseController {
 
     @RequestMapping(value = "/{modelId}/deployment", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PEPModelVO> deployModel(@PathVariable String modelId) {
+    @ApiOperation("‍根据模板Id部署流程")
+    public ResponseEntity<PEPModelVO> deployModel(@PathVariable @ApiParam(value = "‍模板Id", required = true) String modelId) {
         Deployment deployment = deployService.deployModel(modelId);
         Model model = modelService.getModel(modelId);
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
@@ -50,13 +55,18 @@ public class ModelsController extends BaseController {
     }
 
     @RequestMapping(value = "/{modelId}", method = RequestMethod.PUT)
-    public ResponseEntity<PEPModelVO> changeModel(@PathVariable String modelId, @RequestBody PEPModelVO pepModel) {
+    @ApiOperation("‍根据模板Id修改model模型")
+    public ResponseEntity<PEPModelVO> changeModel(@PathVariable @ApiParam(value = "‍模板Id", required = true) String modelId,
+                                                  @RequestBody PEPModelVO pepModel) {
         pepModel.setId(modelId);
         return responseOfPut(pepModelService.update(pepModel));
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public ResultListDataRepresentation getModels(String filter, String sort, Integer modelType) {
+    @ApiOperation("‍获得流程model集合")
+    public ResultListDataRepresentation getModels(@ApiParam(value = "modelKey") String filter,
+                                                  @ApiParam(value = "‍排序 ModelSort") String sort,
+                                                  @ApiParam(value = "‍流程类型 AbstractModel") Integer modelType) {
         return pepModelService.getModels(filter, sort, modelType);
     }
 

@@ -13,6 +13,9 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.oopsearch.document.OOPSearchDocument;
 import com.proper.enterprise.platform.oopsearch.service.SearchService;
 import com.proper.enterprise.platform.oopsearch.config.service.SearchConfigService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
+@Api(tags = "/search")
 @RequestMapping("/search")
 public class OopSearchController extends BaseController {
 
@@ -52,13 +56,19 @@ public class OopSearchController extends BaseController {
     private AuthzService authzService;
 
     @GetMapping("/inverse")
-    public ResponseEntity<List<OOPSearchDocument>> searchInfo(@RequestParam String data, @RequestParam String moduleName) {
+    @ApiOperation("‍根据输入内容模糊匹配查询")
+    public ResponseEntity<List<OOPSearchDocument>> searchInfo(@ApiParam(value = "‍输入的内容") @RequestParam String data,
+                                                              @ApiParam(value = "‍模块名称", required = true) @RequestParam String moduleName) {
         List<OOPSearchDocument> docs = (List<OOPSearchDocument>) searchService.getSearchInfo(data, moduleName);
         return responseOfGet(docs);
     }
 
     @GetMapping("/query")
-    public void query(HttpServletRequest request, HttpServletResponse response, String restPath, String req, String moduleName) {
+    @ApiOperation("‍‍根据模块名获取访问路径")
+    public void query(HttpServletRequest request, HttpServletResponse response,
+                      @ApiParam(value = "‍rest参数", required = true) String restPath,
+                      @ApiParam(value = "‍请求参数", required = true) String req,
+                      @ApiParam(value = "‍模块名称", required = true) String moduleName) {
         String url = searchConfigService.getURL(moduleName.replace("$", "/"));
         if (StringUtil.isNull(url)) {
             return;

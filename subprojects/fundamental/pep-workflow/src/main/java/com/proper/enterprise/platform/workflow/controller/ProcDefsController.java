@@ -3,6 +3,9 @@ package com.proper.enterprise.platform.workflow.controller;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.workflow.service.PEPProcDefsService;
 import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.flowable.app.util.XmlUtil;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
@@ -27,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@Api(tags = "/repository/process-definitions/")
 @RequestMapping("/repository/process-definitions/")
 public class ProcDefsController extends BaseController {
 
@@ -44,7 +48,8 @@ public class ProcDefsController extends BaseController {
 
     @RequestMapping(value = "/{processDefinitionId}/diagram-size", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Map<String, Integer> getDiagramSize(@PathVariable String processDefinitionId) {
+    @ApiOperation("‍查询缩略图尺寸")
+    public Map<String, Integer> getDiagramSize(@PathVariable @ApiParam(value = "‍流程定义Id", required = true) String processDefinitionId) {
         LOGGER.debug("in getDiagramSize");
         Map<String, Integer> size = new HashMap<String, Integer>(2);
         try {
@@ -79,7 +84,9 @@ public class ProcDefsController extends BaseController {
     }
 
     @RequestMapping(value = "/{processDefinitionId}/diagram", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> getProcessDefinitionDiagram(@PathVariable String processDefinitionId) throws IOException {
+    @ApiOperation("‍查询缩略图")
+    public ResponseEntity<byte[]> getProcessDefinitionDiagram(@PathVariable @ApiParam(value = "‍流程定义Id", required = true)
+                                                                  String processDefinitionId) throws IOException {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Content-Type", "image/png");
         return new ResponseEntity<>(pepProcDefsService.getProcessDefinitionDiagram(processDefinitionId),
@@ -87,7 +94,9 @@ public class ProcDefsController extends BaseController {
     }
 
     @RequestMapping(value = "/{procDefKey}/latest", method = RequestMethod.GET)
-    public ResponseEntity<PEPProcessDefinitionVO> getLatest(@PathVariable String procDefKey) {
+    @ApiOperation("‍根据流程定义Key查询对应的最新流程版本")
+    public ResponseEntity<PEPProcessDefinitionVO> getLatest(@PathVariable @ApiParam(value = "‍流程定义Key", required = true)
+                                                                String procDefKey) {
         return responseOfGet(pepProcDefsService.getLatest(procDefKey));
     }
 
