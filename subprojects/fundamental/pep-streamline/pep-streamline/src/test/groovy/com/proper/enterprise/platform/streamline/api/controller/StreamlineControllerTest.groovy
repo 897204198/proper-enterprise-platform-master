@@ -1,21 +1,25 @@
 package com.proper.enterprise.platform.streamline.api.controller
 
 import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService
+import com.proper.enterprise.platform.streamline.repository.SignRepository
 import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest
-import com.proper.enterprise.platform.test.AbstractSpringTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MvcResult
 
-class StreamlineControllerTest extends AbstractSpringTest {
+class StreamlineControllerTest extends AbstractJPATest {
 
     private static final URL = "/streamline"
 
     @Autowired
     private PasswordEncryptService pwdService
+
+    @Autowired
+    private SignRepository signRepository
 
     @Test
     void "addSign"() {
