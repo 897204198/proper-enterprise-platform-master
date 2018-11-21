@@ -11,14 +11,14 @@
         <!--监听用户变化aop pointcut-->
         <!--save-->
         <aop:config>
-            <aop:aspect id="userSaveAspect" ref="streamlineAspect">
+            <aop:aspect id="userSaveAspect" ref="streamlineAspect" order="2">
                 <aop:after-returning
                     pointcut-ref="userSavePointcut"
                     returning="user"
                     method="insert"
                 />
             </aop:aspect>
-            <aop:aspect id="userSaveAspect" ref="streamlineAspect">
+            <aop:aspect id="userSaveAspect" ref="streamlineAspect" order="2">
                 <aop:after-returning
                     pointcut-ref="userSavePointcut"
                     returning="users"
@@ -28,14 +28,14 @@
         </aop:config>
         <!--update-->
         <aop:config>
-            <aop:aspect id="userUpdateAspect" ref="streamlineAspect">
+            <aop:aspect id="userUpdateAspect" ref="streamlineAspect" order="2">
                 <aop:after-returning
                     pointcut-ref="userUpdatePointcut"
                     returning="user"
                     method="update"
                 />
             </aop:aspect>
-            <aop:aspect id="userUpdateAspect" ref="streamlineAspect">
+            <aop:aspect id="userUpdateAspect" ref="streamlineAspect" order="2">
                 <aop:after-returning
                     pointcut-ref="userUpdatePointcut"
                     returning="users"
@@ -45,13 +45,13 @@
         </aop:config>
         <!--delete-->
         <aop:config>
-            <aop:aspect id="userDeleteAspect" ref="streamlineAspect">
+            <aop:aspect id="userDeleteAspect" ref="streamlineAspect" order="2">
                 <aop:after
                     pointcut-ref="userDeletePointcut"
                     method="delete"
                 />
             </aop:aspect>
-            <aop:aspect id="userDeleteAspect" ref="streamlineAspect">
+            <aop:aspect id="userDeleteAspect" ref="streamlineAspect" order="2">
                 <aop:after
                     pointcut-ref="userDeleteBatchPointcut"
                     method="delete"
