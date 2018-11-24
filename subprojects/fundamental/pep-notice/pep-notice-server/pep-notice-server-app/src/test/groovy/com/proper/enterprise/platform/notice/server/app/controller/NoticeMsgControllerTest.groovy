@@ -17,9 +17,9 @@ class NoticeMsgControllerTest extends AbstractServerAppTest {
     @Test
     @Sql("/com/proper/enterprise/platform/notice/server/app/dao/sql/queryNotices.sql")
     public void getTest() {
-        List searchList = JSONUtil.parse(get("/notice/server/msg?id=1&appKey=1&batchId=1&targetTo=1&content=1&noticeType=EMAIL&status=RETRY",
-            HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert searchList.size() == 1
+        DataTrunk searchList = JSONUtil.parse(get("/notice/server/msg?id=1&appKey=1&batchId=1&targetTo=1&content=1&noticeType=EMAIL&status=RETRY",
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert searchList.data.size() == 1
 
         DataTrunk dataTrunk = JSONUtil.parse(get("/notice/server/msg?pageNo=1&pageSize=2&noticeType=EMAIL&status=RETRY",
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
@@ -32,9 +32,9 @@ class NoticeMsgControllerTest extends AbstractServerAppTest {
     @Sql("/com/proper/enterprise/platform/notice/server/app/dao/sql/queryNotices.sql")
     public void getAppTest() {
         String token = initApp("1")
-        List searchList = JSONUtil.parse(get("/notice/server/msg/app?access_token=" + token,
-            HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert searchList.size() == 2
+        DataTrunk searchList = JSONUtil.parse(get("/notice/server/msg/app?access_token=" + token,
+            HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert searchList.data.size() == 2
 
         String token2 = initApp("3")
         DataTrunk dataTrunk = JSONUtil.parse(get("/notice/server/msg/app?access_token=" + token2

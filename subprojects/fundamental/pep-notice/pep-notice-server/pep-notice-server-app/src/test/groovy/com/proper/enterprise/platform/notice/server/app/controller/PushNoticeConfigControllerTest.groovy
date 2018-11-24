@@ -21,12 +21,10 @@ class PushNoticeConfigControllerTest extends AbstractJPATest {
         AppVO appVO = save(appKey, pushConfigVO)
         PushConfigVO getVO = JSONUtil.parse(get("/notice/server/push/config/" + appKey, HttpStatus.OK).getResponse().getContentAsString(), PushConfigVO.class)
         assert null != getVO.getHuaweiConf().get("id")
-
         def xiaomiConfig = new HashMap()
         xiaomiConfig.put("appSecret", "RGW+NA+T2ucpEX0a6bxyhA==")
         xiaomiConfig.put("pushPackage", "pushPackage")
         getVO.setXiaomiConf(xiaomiConfig)
-
         put("/notice/server/push/config/" + appKey, JSONUtil.toJSON(getVO), HttpStatus.CREATED)
         PushConfigVO getVO2 = JSONUtil.parse(get("/notice/server/push/config/" + appKey, HttpStatus.OK).getResponse().getContentAsString(), PushConfigVO.class)
         assert null != getVO2.getHuaweiConf().get("id")

@@ -6,11 +6,15 @@ import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity;
 import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Api(tags = "/notice")
 @RequestMapping("/notice")
 public class NoticeTokenController extends BaseController {
 
@@ -18,7 +22,9 @@ public class NoticeTokenController extends BaseController {
     DataDicService dataDicService;
 
     @PutMapping("/token")
-    public ResponseEntity<String> updateToken(@RequestParam(required = true, name = "accessToken") String accessToken) {
+    @ApiOperation("‍‍在字典表中修改Token")
+    public ResponseEntity<String> updateToken(@ApiParam(value = "‍‍Token串", required = true)
+                                              @RequestParam(required = true, name = "accessToken") String accessToken) {
         DataDic dataDic = dataDicService.get("NOTICE_SERVER", "TOKEN");
         if (dataDic == null) {
             dataDic = new DataDicEntity();
@@ -34,6 +40,7 @@ public class NoticeTokenController extends BaseController {
         return responseOfPut(accessToken);
     }
 
+    @ApiOperation("‍‍在字典表中获取Token")
     @GetMapping("/token")
     public ResponseEntity<String> getToken() {
         DataDic dataDic = dataDicService.get("NOTICE_SERVER", "TOKEN");
@@ -44,6 +51,7 @@ public class NoticeTokenController extends BaseController {
     }
 
     @GetMapping("/serverUrl")
+    @ApiOperation("‍‍在字典表中获取URL")
     public ResponseEntity<String> getUrl() {
         DataDic dataDic = dataDicService.get("NOTICE_SERVER", "URL");
         if (dataDic == null) {

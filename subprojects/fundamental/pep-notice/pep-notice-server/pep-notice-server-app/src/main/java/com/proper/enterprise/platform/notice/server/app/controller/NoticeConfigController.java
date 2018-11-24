@@ -6,6 +6,9 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.notice.server.api.factory.NoticeConfiguratorFactory;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@Api(tags = "/notice/server/config")
 @RequestMapping(path = "/notice/server/config")
 public class NoticeConfigController extends BaseController {
 
@@ -33,9 +37,10 @@ public class NoticeConfigController extends BaseController {
     }
 
     @PostMapping("/{noticeType}")
-    public ResponseEntity post(@PathVariable NoticeType noticeType,
-                               @RequestParam(required = false, name = "access_token") String accessToken,
-                               @RequestBody Map config, HttpServletRequest request) {
+    @ApiOperation("‍新增配置")
+    public ResponseEntity post(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
+                               @ApiParam(value = "‍Token") @RequestParam(required = false, name = "access_token") String accessToken,
+                               @ApiParam(value = "‍‍‍需要的参数配置", required = true) @RequestBody Map config, HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
         return responseOfPost(NoticeConfiguratorFactory.product(noticeType)
@@ -43,16 +48,19 @@ public class NoticeConfigController extends BaseController {
     }
 
     @PostMapping("/{noticeType}/{appKey}")
-    public ResponseEntity postAppConfig(@PathVariable NoticeType noticeType,
-                                        @PathVariable String appKey,
-                                        @RequestBody Map config, HttpServletRequest request) {
+    @ApiOperation("‍新增配置")
+    public ResponseEntity postAppConfig(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
+                                        @ApiParam(value = "‍App唯一标识", required = true) @PathVariable String appKey,
+                                        @ApiParam(value = "‍‍‍需要的参数配置", required = true) @RequestBody Map config,
+                                        HttpServletRequest request) {
         return responseOfPost(NoticeConfiguratorFactory.product(noticeType)
             .post(appKey, config, buildRequestMap(request)));
     }
 
     @DeleteMapping("/{noticeType}")
-    public ResponseEntity delete(@PathVariable NoticeType noticeType,
-                                 @RequestParam(required = false, name = "access_token") String accessToken,
+    @ApiOperation("‍删除配置")
+    public ResponseEntity delete(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
+                                 @ApiParam(value = "‍Token") @RequestParam(required = false, name = "access_token") String accessToken,
                                  HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
@@ -61,17 +69,20 @@ public class NoticeConfigController extends BaseController {
     }
 
     @DeleteMapping("/{noticeType}/{appKey}")
-    public ResponseEntity deleteAppConfig(@PathVariable NoticeType noticeType,
-                                          @PathVariable String appKey,
+    @ApiOperation("‍删除配置")
+    public ResponseEntity deleteAppConfig(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
+                                          @ApiParam(value = "‍App唯一标识", required = true) @PathVariable String appKey,
                                           HttpServletRequest request) {
         NoticeConfiguratorFactory.product(noticeType).delete(appKey, buildRequestMap(request));
         return responseOfDelete(true);
     }
 
     @PutMapping("/{noticeType}")
-    public ResponseEntity put(@PathVariable NoticeType noticeType,
-                              @RequestParam(required = false, name = "access_token") String accessToken,
-                              @RequestBody Map config, HttpServletRequest request) {
+    @ApiOperation("‍修改配置")
+    public ResponseEntity put(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
+                              @ApiParam(value = "‍Token") @RequestParam(required = false, name = "access_token") String accessToken,
+                              @ApiParam(value = "‍‍‍需要的参数信息", required = true) @RequestBody Map config,
+                              HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
         return responseOfPut(NoticeConfiguratorFactory.product(noticeType).put(accessTokenService
@@ -79,16 +90,19 @@ public class NoticeConfigController extends BaseController {
     }
 
     @PutMapping("/{noticeType}/{appKey}")
-    public ResponseEntity putAppConfig(@PathVariable NoticeType noticeType,
-                                       @PathVariable String appKey,
-                                       @RequestBody Map config, HttpServletRequest request) {
+    @ApiOperation("‍修改配置")
+    public ResponseEntity putAppConfig(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
+                                       @ApiParam(value = "‍App唯一标识", required = true) @PathVariable String appKey,
+                                       @ApiParam(value = "‍‍‍需要的参数信息", required = true) @RequestBody Map config,
+                                       HttpServletRequest request) {
         return responseOfPut(NoticeConfiguratorFactory.product(noticeType).put(appKey, config, buildRequestMap(request)));
     }
 
 
     @GetMapping("/{noticeType}")
-    public ResponseEntity get(@PathVariable NoticeType noticeType,
-                              @RequestParam(required = false, name = "access_token") String accessToken,
+    @ApiOperation("‍根据token获取配置")
+    public ResponseEntity get(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
+                              @ApiParam(value = "‍Token") @RequestParam(required = false, name = "access_token") String accessToken,
                               HttpServletRequest request) {
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
@@ -97,24 +111,29 @@ public class NoticeConfigController extends BaseController {
     }
 
     @GetMapping("/{noticeType}/{appKey}")
-    public ResponseEntity getAppConfig(@PathVariable NoticeType noticeType,
-                                       @PathVariable String appKey,
+    @ApiOperation("‍根据消息类型和appKey获取配置")
+    public ResponseEntity getAppConfig(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
+                                       @ApiParam(value = "‍App唯一标识", required = true) @PathVariable String appKey,
                                        HttpServletRequest request) {
         return responseOfGet(NoticeConfiguratorFactory.product(noticeType).get(appKey, buildRequestMap(request)));
     }
 
     @PostMapping(value = "/file")
-    public ResponseEntity<String> uploadFile(MultipartFile file) throws IOException {
+    @ApiOperation("‍保存文件")
+    public ResponseEntity<String> uploadFile(@ApiParam(value = "‍上传的文件内容", required = true) MultipartFile file) throws IOException {
         return responseOfPost(fileService.save(file).getId());
     }
 
     @PostMapping(path = "/file/{id}")
-    public ResponseEntity<String> updateFile(@PathVariable String id, MultipartFile file) throws IOException {
+    @ApiOperation("‍修改文件")
+    public ResponseEntity<String> updateFile(@ApiParam(value = "‍文件唯一标识", required = true) @PathVariable String id,
+                                             @ApiParam(value = "‍上传的文件内容", required = true) MultipartFile file) throws IOException {
         return responseOfPost(fileService.update(id, file).getId());
     }
 
     @DeleteMapping(value = "/file")
-    public ResponseEntity deleteFile(@RequestParam String ids) throws IOException {
+    @ApiOperation("‍批量删除文件")
+    public ResponseEntity deleteFile(@ApiParam(value = "‍文件id通过逗号(,)拼接成的字符串", required = true) @RequestParam String ids) throws IOException {
         return responseOfDelete(fileService.deleteByIds(ids));
     }
 

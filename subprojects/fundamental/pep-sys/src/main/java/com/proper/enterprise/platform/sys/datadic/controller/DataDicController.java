@@ -63,8 +63,8 @@ public class DataDicController extends BaseController {
     @GetMapping
     @ApiOperation("‍取得数据字典信息列表")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
-            @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
+        @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
+        @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
     })
     public ResponseEntity<DataTrunk> get(String catalog, String code, String name, DataDicTypeEnum dataDicType, EnableEnum enable) {
         if (isPageSearch()) {
