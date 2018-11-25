@@ -22,6 +22,8 @@ class PushNoticeMsgControllerTest extends AbstractTest {
         assert pushNoticeMsgVODataTrunk.getData()[0].id == "m_id_6"
         assert pushNoticeMsgVODataTrunk.getData()[0].sendDate == "2018-07-25 19:07:56"
         assert pushNoticeMsgVODataTrunk.getData()[0].pushChannel == PushChannelEnum.APNS.name()
+        assert pushNoticeMsgVODataTrunk.getData()[0].content == "content..."
 
+        assert pushNoticeMsgVODataTrunk.getData()[5].content == "content1"
     }
 }
