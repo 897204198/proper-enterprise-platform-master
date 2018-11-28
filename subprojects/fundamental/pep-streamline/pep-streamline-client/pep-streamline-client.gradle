@@ -1,7 +1,10 @@
-dependencies {
-    compile project(':pep-streamline-sdk'),
-            project(':pep-sys')
+apply plugin: 'java-library'
 
-    testCompile project(':pep-streamline'),
-                project(':pep-test')
+dependencies {
+                   api project(':pep-streamline-sdk')
+        implementation project(':pep-sys')
+
+    testImplementation project(':pep-streamline'),
+                       project(':pep-auth-common-jpa'),
+                       project(':pep-test')
 }

@@ -7,6 +7,6 @@ dependencies {
     testImplementation project(':pep-auth-common'),
                        project(':pep-test')
 
-       testRuntimeOnly project(':pep-auth-common-jpa')
+    testImplementation project(':pep-auth-common-jpa')
 
 }

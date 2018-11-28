@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
 import com.proper.enterprise.platform.notice.document.NoticeDocument;
 import com.proper.enterprise.platform.notice.document.NoticeSetDocument;
+import com.proper.enterprise.platform.notice.enums.AnalysisResult;
 import com.proper.enterprise.platform.notice.factory.NoticeCollectorFactory;
 import com.proper.enterprise.platform.notice.model.TargetModel;
 import com.proper.enterprise.platform.notice.repository.NoticeMsgRepository;
@@ -26,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -46,6 +48,8 @@ public class NoticeSendServiceImpl {
 
     @Autowired
     private UserDao userDao;
+
+    private static final int VAR200 = 200;
 
     public void sendNoticeChannel(String fromUserId, Set<String> toUserIds, String code, Map<String, Object>
         templateParams, Map<String, Object> custom) {
@@ -161,6 +165,13 @@ public class NoticeSendServiceImpl {
         noticeMsgRepository.save(noticeDocument);
     }
 
+    private void updateNotice(String batchId, String exception) {
+        NoticeDocument noticeDocument = noticeMsgRepository.findByBatchId(batchId);
+        noticeDocument.setAnalysisResult(AnalysisResult.ERROR);
+        noticeDocument.setNotes("The notice server return error message ", exception);
+        noticeMsgRepository.save(noticeDocument);
+    }
+
     private void accessNoticeServer(NoticeRequest noticeModel) {
         String noticeServerUrl = null;
         DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "URL");
@@ -175,16 +186,17 @@ public class NoticeSendServiceImpl {
         try {
             String data = JSONUtil.toJSON(noticeModel);
             LOGGER.debug("NOTICE SENDER SEND:" + data);
-            HttpClient.post(noticeServerUrl
+            ResponseEntity<byte[]> response = HttpClient.post(noticeServerUrl
                 + "/notice/server/send?access_token="
                 + noticeServerToken, MediaType.APPLICATION_JSON, data);
-
+            if (VAR200 != response.getStatusCode().value()) {
+                String str = StringUtil.toEncodedString(response.getBody());
+                this.updateNotice(noticeModel.getBatchId(), str);
+            }
         } catch (Exception e) {
             LOGGER.error("NoticeSender.accessNoticeServer[Exception]:", e);
-            updateNotice(noticeModel.getBatchId(), noticeServerUrl, e.getMessage());
+            this.updateNotice(noticeModel.getBatchId(), noticeServerUrl, e.getMessage());
         }
-
     }
-
 
 }

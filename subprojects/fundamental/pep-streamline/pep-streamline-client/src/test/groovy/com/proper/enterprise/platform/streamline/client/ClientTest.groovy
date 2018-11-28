@@ -1,15 +1,22 @@
 package com.proper.enterprise.platform.streamline.client
 
+import com.proper.enterprise.platform.api.auth.service.AccessTokenService
+import com.proper.enterprise.platform.auth.common.jpa.repository.AccessTokenRepository
+import com.proper.enterprise.platform.core.PEPApplicationContext
+import com.proper.enterprise.platform.streamline.repository.SignRepository
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest
 import com.proper.enterprise.platform.streamline.sdk.status.SignStatus
-import com.proper.enterprise.platform.test.AbstractJPATest
-import org.junit.Ignore
+import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity
+import com.proper.enterprise.platform.sys.datadic.repository.DataDicRepository
+import com.proper.enterprise.platform.sys.datadic.service.DataDicService
+import com.proper.enterprise.platform.test.AbstractIntegrationTest
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.springframework.test.context.jdbc.Sql
 
-@Ignore
 @Sql
-class ClientTest extends AbstractJPATest {
+class ClientTest extends AbstractIntegrationTest {
 
     private String serviceKey = "test"
 
@@ -82,5 +89,36 @@ class ClientTest extends AbstractJPATest {
         assert SignStatus.SUCCESS == new StreamlineClient(serviceKey).deleteSigns("testDeleteUser").getStatus()
         //新增签名
         assert SignStatus.SUCCESS == new StreamlineClient(serviceKey).addSign("testDeleteUser", "testDelete1", "testDelete1").getStatus()
+    }
+
+    @Before
+    void setup() {
+        DataDicEntity dataDic = new DataDicEntity()
+        dataDic.setId('streamline_server_url')
+        dataDic.setName(getPrefix())
+        dataDic.setCatalog('STREAMLINE_SERVER')
+        dataDic.setCode('URL')
+        PEPApplicationContext.getBean(DataDicService.class).update(dataDic)
+
+        DataDicEntity dataDic2 = new DataDicEntity()
+        dataDic2.setId('streamline_server_token')
+        dataDic2.setName('teststreamline')
+        dataDic2.setCatalog('STREAMLINE_SERVER')
+        dataDic2.setCode('TOKEN')
+        PEPApplicationContext.getBean(DataDicService.class).update(dataDic2)
+
+        MockAccessToken accessToken = new MockAccessToken()
+        accessToken.setName('streamline')
+        accessToken.setResourcesDescription('*:/streamline/**')
+        accessToken.setToken('teststreamline')
+        accessToken.setUserId('streamline')
+        PEPApplicationContext.getBean(AccessTokenService.class).saveOrUpdate(accessToken)
+    }
+
+    @After
+    void teardown() {
+        PEPApplicationContext.getBean(DataDicRepository.class).deleteAll()
+        PEPApplicationContext.getBean(AccessTokenRepository.class).deleteAll()
+        PEPApplicationContext.getBean(SignRepository.class).deleteAll()
     }
 }

@@ -15,7 +15,7 @@ abstract class AbstractIntegrationTest {
     @LocalServerPort
     protected int port
 
-    private def getPrefix() {
+    protected def getPrefix() {
         "http://localhost:$port"
     }
 
