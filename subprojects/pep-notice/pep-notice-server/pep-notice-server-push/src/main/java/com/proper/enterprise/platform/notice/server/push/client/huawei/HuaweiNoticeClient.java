@@ -104,7 +104,7 @@ public class HuaweiNoticeClient {
         // 目标设备Token
         JSONArray deviceTokens = new JSONArray();
         deviceTokens.add(notice.getTargetTo());
-        // 获取消息类型(chat, video, other)
+        // 获取消息类型(chat, video, other) 默认other
         PushType pushType = PushType.other;
         Map customs = notice.getNoticeExtMsgMap();
         if (customs != null) {
@@ -116,10 +116,6 @@ public class HuaweiNoticeClient {
                 pushType = PushType.valueOf(extPushType);
             }
             String uriKey = "uri";
-            String urlKey = "url";
-            if (null != customs.get(urlKey)) {
-                customs.put(uriKey, customs.get(urlKey));
-            }
             // chat类型推送不包含 uri 会导致推送失败 暂时改为非chat而变成other 等前端提供传递uri方案后改回异常
             if ((PushType.chat).equals(pushType) && StringUtil.isBlank((String) customs.get(uriKey))) {
                 pushType = PushType.other;
@@ -145,14 +141,24 @@ public class HuaweiNoticeClient {
         hps.put("msg", msg);
         //扩展信息，含BI消息统计，特定展示风格，消息折叠。
         JSONObject extJson = new JSONObject();
+        //将所有customize 数据封装进ext
+        if (customs != null) {
+            JSONArray customize = new JSONArray();
+            customize.add(customs);
+            extJson.put("customize", customize);
+        }
         //设置消息标签，如果带了这个标签，会在回执中推送给CP用于检测某种类型消息的到达率和状态
         extJson.put("biTag", "Trump");
         // TODO 自定义推送消息在通知栏的图标可在 extJson 中加入 icon 属性，value 为一个公网可以访问的URL
         hps.put("ext", extJson);
         JSONObject payload = new JSONObject();
         payload.put("hps", hps);
-        String format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(new Date(System.currentTimeMillis() + 3600 * 1000));
+        return httpPost(deviceTokens, payload, notice);
+    }
+
+    private BusinessNoticeResult httpPost(JSONArray deviceTokens, JSONObject payload, ReadOnlyNotice notice) {
         try {
+            String format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(new Date(System.currentTimeMillis() + 3600 * 1000));
             Map<String, String> ctx = new HashMap<>(2);
             ctx.put("ver", "1");
             ctx.put("appId", appId);
