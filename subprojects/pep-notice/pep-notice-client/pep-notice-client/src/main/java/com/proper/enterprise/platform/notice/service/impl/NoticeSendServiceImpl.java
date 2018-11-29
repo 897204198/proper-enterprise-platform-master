@@ -79,7 +79,7 @@ public class NoticeSendServiceImpl {
         sendNoticeChannel(fromUserId, toUserIds, noticeSetMap, title, content, custom, noticeType);
     }
 
-    private void sendNoticeChannel(String fromUserId,
+    public void sendNoticeChannel(String fromUserId,
                                    Set<String> toUserIds,
                                    Map<String, NoticeSetDocument> noticeSetMap,
                                    String title,
@@ -167,7 +167,7 @@ public class NoticeSendServiceImpl {
     private void updateNotice(String batchId, String exception) {
         NoticeDocument noticeDocument = noticeMsgRepository.findByBatchId(batchId);
         noticeDocument.setAnalysisResult(AnalysisResult.ERROR);
-        noticeDocument.setNotes("The notice server return error message ", exception);
+        noticeDocument.setNotes("The notice server return error message: " + exception);
         noticeMsgRepository.save(noticeDocument);
     }
 
