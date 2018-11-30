@@ -20,7 +20,7 @@
             <column name="NAME" value="常见问题"/>
             <column name="ROUTE" value="appconfig/question"/>
             <column name="SEQUENCE_NUMBER" valueNumeric="0"/>
-            <column name="PARENT_ID" value="app-apppz"/>
+            <column name="PARENT_ID" value="pep-others"/>
         </insert>
     </changeSet>
 
