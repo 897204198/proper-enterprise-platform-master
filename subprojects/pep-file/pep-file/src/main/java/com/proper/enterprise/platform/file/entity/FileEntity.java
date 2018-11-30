@@ -19,7 +19,7 @@ public class FileEntity extends BaseEntity implements File {
     /**
      * 文件名称
      */
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String fileName;
 
     /**
@@ -34,10 +34,20 @@ public class FileEntity extends BaseEntity implements File {
     /**
      * 文件路径
      */
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String filePath;
 
     private String fileExtMsg;
+
+    /**
+     * 虚拟文件路径
+     */
+    private String virPath;
+
+    /**
+     * 是否为文件夹
+     */
+    private Boolean isDir;
 
     public String getFileName() {
         return fileName;
@@ -92,5 +102,21 @@ public class FileEntity extends BaseEntity implements File {
 
     public void setFileExtMsgMap(Map<String, String> fileExtMsg) {
         this.fileExtMsg = JSONUtil.toJSONIgnoreException(fileExtMsg);
+    }
+
+    public String getVirPath() {
+        return virPath;
+    }
+
+    public void setVirPath(String virPath) {
+        this.virPath = virPath;
+    }
+
+    public Boolean getDir() {
+        return isDir;
+    }
+
+    public void setDir(Boolean dir) {
+        isDir = dir;
     }
 }

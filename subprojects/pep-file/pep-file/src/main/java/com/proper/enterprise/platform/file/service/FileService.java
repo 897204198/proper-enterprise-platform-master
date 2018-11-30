@@ -2,12 +2,14 @@ package com.proper.enterprise.platform.file.service;
 
 import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
 import com.proper.enterprise.platform.file.api.File;
+import com.proper.enterprise.platform.file.vo.FileVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 
 public interface FileService extends BaseJpaService<File, String> {
 
@@ -19,6 +21,16 @@ public interface FileService extends BaseJpaService<File, String> {
      * @throws IOException io异常
      */
     File save(MultipartFile file) throws IOException;
+
+    /**
+     * 保存文件
+     *
+     * @param file    文件
+     * @param virPath 虚拟文件路径
+     * @return 文件
+     * @throws IOException io异常
+     */
+    File save(MultipartFile file, String virPath) throws IOException;
 
     /**
      * 删除文件
@@ -59,4 +71,37 @@ public interface FileService extends BaseJpaService<File, String> {
      */
     InputStream download(String id) throws IOException;
 
+    /**
+     * 新建文件夹
+     *
+     * @param fileVO 文件夹信息
+     * @return id 文件夹id
+     */
+    File saveDir(FileVO fileVO);
+
+    /**
+     * 更新文件夹信息
+     *
+     * @param fileVO 待更新文件夹信息
+     * @return id 文件夹id
+     */
+    File updateDir(FileVO fileVO);
+
+    /**
+     * 删除文件夹
+     *
+     * @param ids id集合(, 分隔)
+     * @return 更新成功 true
+     * @throws IOException io异常
+     */
+    boolean deleteFileDirByIds(String ids) throws IOException;
+
+    /**
+     * 查找文件路径下文件夹以及文件
+     *
+     * @param virPath  虚拟路径
+     * @param fileName 文件名
+     * @return 文件夹以及文件列表
+     */
+    Collection<FileVO> findFileDir(String virPath, String fileName);
 }

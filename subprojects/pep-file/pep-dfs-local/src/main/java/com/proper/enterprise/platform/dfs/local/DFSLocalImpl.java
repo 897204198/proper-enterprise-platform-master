@@ -65,4 +65,33 @@ public class DFSLocalImpl extends AbstractDFSServiceSupport {
         }
     }
 
+    @Override
+    public void createDir(String dirPath) {
+        File file = new File(dirPath);
+        boolean mkdirs = file.mkdirs();
+        LOGGER.debug("The result of make dirs for {} is {}.", dirPath, mkdirs);
+    }
+
+    @Override
+    public void updateDir(String oldDirPath, String newDirPath) {
+        File file = new File(oldDirPath);
+        if (file.exists()) {
+            boolean result = file.renameTo(new File(newDirPath));
+            LOGGER.debug("rename file {} return result: {}", newDirPath, result);
+        } else {
+            LOGGER.debug("File {} not exists.", oldDirPath);
+        }
+    }
+
+    @Override
+    public void deleteDir(String dirPath) {
+        File file = new File(dirPath);
+        if (file.exists()) {
+            boolean result = file.delete();
+            LOGGER.debug("delete file {} return result: {}", dirPath, result);
+        } else {
+            LOGGER.debug("File {} not exists.", dirPath);
+        }
+    }
+
 }

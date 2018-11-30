@@ -53,5 +53,26 @@ public interface DFSService {
      */
     boolean deleteFile(String filePath) throws IOException;
 
+    /**
+     * 创建文件夹
+     *
+     * @param dirPath 文件夹路径
+     */
+    void createDir(String dirPath);
+
+    /**
+     * 文件夹重命名或移动操作
+     *
+     * @param oldDirPath 文件夹旧路径
+     * @param newDirPath 文件夹新路径
+     */
+    void updateDir(String oldDirPath, String newDirPath);
+
+    /**
+     * 删除文件夹
+     *
+     * @param dirPath 文件夹路径
+     */
+    void deleteDir(String dirPath);
 
 }

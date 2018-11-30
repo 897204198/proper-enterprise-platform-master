@@ -35,7 +35,6 @@ public abstract class AbstractQuerySupport {
         return !StringUtils.isEmpty(pageSize);
     }
 
-
     public PageRequest getPageRequest() {
         return getPageRequest(null);
     }
@@ -46,6 +45,11 @@ public abstract class AbstractQuerySupport {
 
     public PageRequest getPageRequest(Sort sort) {
         return buildPage(sort);
+    }
+
+    public Sort getSort() {
+        HttpServletRequest request = RequestUtil.getCurrentRequest();
+        return buildSort(request);
     }
 
     private Sort buildSort(HttpServletRequest request) {
