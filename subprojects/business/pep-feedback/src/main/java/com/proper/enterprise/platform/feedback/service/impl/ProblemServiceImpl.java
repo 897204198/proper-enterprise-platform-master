@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.feedback.service.impl;
 
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.feedback.entity.ProblemEntity;
@@ -43,7 +44,7 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public void updateProblem(String name, String answer, String id) {
-        ProblemEntity problem = problemRepository.findOne(id);
+        ProblemEntity problem = findProblemById(id);
         problem.setName(name);
         problem.setAnswer(answer);
         problemRepository.save(problem);
@@ -82,7 +83,7 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public ProblemVo saveProblemInfo(String problemId, String deviceId) {
-        ProblemEntity problemEntity = problemRepository.findOne(problemId);
+        ProblemEntity problemEntity = findProblemById(problemId);
         ProblemVo problemVo = new ProblemVo();
         BeanUtil.copyProperties(problemEntity, problemVo);
         problemVo.setAwesome(String.valueOf(problemEntity.getAwesome()));
@@ -107,7 +108,7 @@ public class ProblemServiceImpl implements ProblemService {
     public ProblemVo saveAccessProblem(String problemId, String deviceId, String code) {
 
         RecordEntity record = recordRepository.findByProblemIdAndDeviceId(problemId, deviceId);
-        ProblemEntity problem = problemRepository.findOne(problemId);
+        ProblemEntity problem = findProblemById(problemId);
         int count = problem.getAwesome();
         int reCount = problem.getTread();
         //当前设备没有对问题评价过
@@ -141,7 +142,7 @@ public class ProblemServiceImpl implements ProblemService {
                 } else {
                     //取消赞
                     count -= 1;
-                    recordRepository.delete(record.getId());
+                    recordRepository.deleteById(record.getId());
                 }
             } else {
                 if (!record.getAssess().equals(code)) {
@@ -153,7 +154,7 @@ public class ProblemServiceImpl implements ProblemService {
                 } else {
                     //取消踩
                     reCount -= 1;
-                    recordRepository.delete(record.getId());
+                    recordRepository.deleteById(record.getId());
                 }
             }
 
@@ -181,10 +182,8 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public ProblemEntity findProblemById(String problemId) {
-
-        ProblemEntity problem = problemRepository.findOne(problemId);
-
-        return problem;
+        return problemRepository.findById(problemId)
+                                .orElseThrow(() -> new ErrMsgException("Could NOT find entity with id " + problemId));
     }
 
 }
