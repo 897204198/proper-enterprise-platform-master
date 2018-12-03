@@ -19,6 +19,7 @@ import com.proper.enterprise.platform.notice.server.push.enums.apns.IOSErrCodeEn
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
 import com.proper.enterprise.platform.notice.server.push.sender.AbstractPushSendSupport
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushProfileEnum
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Ignore
@@ -172,5 +173,47 @@ class ApnsNoticeSenderTest extends AbstractTest {
         }
         assert flag
         pushNoticeMsgJpaRepository.deleteAll()
+    }
+
+    @Test
+    public void iosNoticeSendDevTest() {
+
+        String appKey = 'iosConfSendDevToken'
+        def accessToken = new AccessTokenVO(appKey, 'for test using', appKey, 'GET:/test')
+        accessTokenService.saveOrUpdate(accessToken)
+
+        //上传P12证书
+        Resource[] resourcesP12 = AntResourceUtil.getResources(IOSConstant.CENT_PATH_DEV)
+        String resultP12 = mockMvc.perform(
+            MockMvcRequestBuilders
+                .fileUpload("/file")
+                .file(
+                new MockMultipartFile("file", "icmp.dev-dev.p12", ",multipart/form-data", resourcesP12[0].inputStream)
+            )
+        ).andExpect(MockMvcResultMatchers.status().isCreated())
+            .andReturn().getResponse().getContentAsString()
+        FileVO fileP12VO = JSONUtil.parse(get("/file/" + resultP12 + "/meta", HttpStatus.OK).getResponse().getContentAsString(), FileVO.class)
+
+        Map conf = new HashMap()
+        conf.put("certPassword", IOSConstant.PASSWORD_DEV)
+        conf.put("pushPackage", IOSConstant.TOPIC)
+        conf.put("certificateId", fileP12VO.getId())
+        conf.put("pushProfile", PushProfileEnum.DEV)
+
+        Map request = new HashMap()
+        request.put("pushChannel", PushChannelEnum.APNS.toString())
+        pushNoticeConfigurator.post(appKey, conf, request)
+
+        MockPushNotice mockPushNotice = new MockPushNotice()
+        mockPushNotice.setAppKey(appKey)
+        mockPushNotice.setTargetTo(IOSConstant.TARGET_TO_DEV)
+        mockPushNotice.setTitle("555")
+        mockPushNotice.setContent("66666qwe")
+        mockPushNotice.setId("testtest")
+        iosNoticeSender.send(mockPushNotice)
+        waitExecutorDone()
+        assert pushNoticeMsgJpaRepository.findPushNoticeMsgEntitiesByNoticeId("testtest").getContent() == "66666qwe"
+        BusinessNoticeResult businessNoticeResult = iosNoticeSender.getStatus(mockPushNotice)
+        assert NoticeStatus.SUCCESS == iosNoticeSender.getStatus(mockPushNotice).getNoticeStatus()
     }
 }

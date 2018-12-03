@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.dao.document;
 import com.proper.enterprise.platform.core.mongo.document.BaseDocument;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushProfileEnum;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -47,6 +48,11 @@ public class PushConfDocument extends BaseDocument {
      * 证书密码
      */
     private String certPassword;
+
+    /**
+     * 推送环境配置(DEV/PRODUCTION IOS需要)
+     */
+    private PushProfileEnum pushProfile;
 
     public String getAppKey() {
         return appKey;
@@ -102,6 +108,14 @@ public class PushConfDocument extends BaseDocument {
 
     public void setCertPassword(String certPassword) {
         this.certPassword = certPassword;
+    }
+
+    public PushProfileEnum getPushProfile() {
+        return pushProfile;
+    }
+
+    public void setPushProfile(PushProfileEnum pushProfile) {
+        this.pushProfile = pushProfile;
     }
 
     @Override

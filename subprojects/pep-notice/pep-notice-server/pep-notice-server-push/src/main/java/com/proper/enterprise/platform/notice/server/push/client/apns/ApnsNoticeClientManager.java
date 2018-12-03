@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushProfileEnum;
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
 import org.slf4j.Logger;
@@ -64,7 +65,11 @@ public class ApnsNoticeClientManager implements ApnsNoticeClientManagerApi {
     }
 
     private ApnsClient initClient(PushConfDocument pushDocument) throws IOException {
+        // 默认使用PRODUCTION_APNS_HOST发送
         String applePushUrl = ApnsClientBuilder.PRODUCTION_APNS_HOST;
+        if (PushProfileEnum.DEV == pushDocument.getPushProfile()) {
+            applePushUrl = ApnsClientBuilder.DEVELOPMENT_APNS_HOST;
+        }
         ApnsClientBuilder builder = new ApnsClientBuilder().setApnsServer(applePushUrl);
         InputStream certInputStream = fileService.download(pushDocument.getCertificateId());
         try {
