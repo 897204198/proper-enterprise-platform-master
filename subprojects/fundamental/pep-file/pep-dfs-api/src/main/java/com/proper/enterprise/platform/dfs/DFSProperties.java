@@ -17,6 +17,11 @@ public class DFSProperties {
      */
     private String rootPath = "proper";
 
+    /**
+     * 文件或文件夹名称最大长度
+     */
+    private int nameMaxLength = 24;
+
     public long getUploadMaxsize() {
         return uploadMaxsize;
     }
@@ -33,4 +38,11 @@ public class DFSProperties {
         this.rootPath = rootPath;
     }
 
+    public int getNameMaxLength() {
+        return nameMaxLength;
+    }
+
+    public void setNameMaxLength(int nameMaxLength) {
+        this.nameMaxLength = nameMaxLength;
+    }
 }

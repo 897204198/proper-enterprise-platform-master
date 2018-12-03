@@ -46,7 +46,7 @@ public class StreamlineAspect extends UserPointcutSupport {
         Result result = new StreamlineClient(serviceKey).addSign(user.getId(), user.getUsername(), user.getPassword());
         if (SignStatus.FAIL.equals(result.getStatus())) {
             LOGGER.error("register to streamline throw an error : {}", result.getMessage());
-            throw new ErrMsgException(i18NService.getMessage("pep.core.connect.timeout"));
+            throw new ErrMsgException("Connection TIMEOUT");
         }
     }
 
@@ -70,7 +70,7 @@ public class StreamlineAspect extends UserPointcutSupport {
         Result result = new StreamlineClient(serviceKey).addSigns(signRequests);
         if (SignStatus.FAIL.equals(result.getStatus())) {
             LOGGER.error("register to streamline throw an error : {}", result.getMessage());
-            throw new ErrMsgException(i18NService.getMessage("pep.core.connect.timeout"));
+            throw new ErrMsgException("Connection TIMEOUT");
         }
     }
 
@@ -85,7 +85,7 @@ public class StreamlineAspect extends UserPointcutSupport {
         Result result = new StreamlineClient(serviceKey).updateSign(user.getUsername(), user.getPassword(), user.getId());
         if (SignStatus.FAIL.equals(result.getStatus())) {
             LOGGER.error("update to streamline throw an error : {}", result.getMessage());
-            throw new ErrMsgException(i18NService.getMessage("pep.core.connect.timeout"));
+            throw new ErrMsgException("Connection TIMEOUT");
         }
     }
 
@@ -109,7 +109,7 @@ public class StreamlineAspect extends UserPointcutSupport {
         Result result = new StreamlineClient(serviceKey).updateSigns(signRequests);
         if (SignStatus.FAIL.equals(result.getStatus())) {
             LOGGER.error("update to streamline throw an error : {}", result.getMessage());
-            throw new ErrMsgException(i18NService.getMessage("pep.core.connect.timeout"));
+            throw new ErrMsgException("Connection TIMEOUT");
         }
     }
 
@@ -125,7 +125,7 @@ public class StreamlineAspect extends UserPointcutSupport {
         Result result = new StreamlineClient(serviceKey).deleteSigns(ids);
         if (SignStatus.FAIL.equals(result.getStatus())) {
             LOGGER.error("delete from streamline throw an error : {}", result.getMessage());
-            throw new ErrMsgException(i18NService.getMessage("pep.core.connect.timeout"));
+            throw new ErrMsgException("Connection TIMEOUT");
         }
     }
 }

@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.notice.server.push.dao.service.impl;
 
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.model.App;
 import com.proper.enterprise.platform.notice.server.api.model.ReadOnlyNotice;
 import com.proper.enterprise.platform.notice.server.api.service.AppDaoService;
@@ -123,6 +124,7 @@ public class PushNoticeMsgServiceImpl implements PushNoticeMsgService {
         for (PushNoticeMsgEntity pushNoticeMsgEntity : page.getContent()) {
             PushNoticeMsgVO pushNoticeMsgVO = BeanUtil.convert(pushNoticeMsgEntity, PushNoticeMsgVO.class);
             pushNoticeMsgVO.setSendDate(pushNoticeMsgEntity.getCreateTime());
+            pushNoticeMsgVO.setContent(StringUtil.abbreviate(pushNoticeMsgVO.getContent(), 10));
             for (App app : apps) {
                 if (pushNoticeMsgVO.getAppKey().equals(app.getAppKey())) {
                     pushNoticeMsgVO.setAppName(app.getAppName());

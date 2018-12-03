@@ -5,8 +5,9 @@ import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.notice.server.push.dao.document.PushConfDocument;
-import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushConfigMongoRepository;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushProfileEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
@@ -80,6 +81,9 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
         PushConfDocument pushDocument = BeanUtil.convert(config, PushConfDocument.class);
         pushDocument.setAppKey(appKey);
         pushDocument.setPushChannel(getPushChannel(params));
+        if (pushDocument.getPushProfile() == null) {
+            pushDocument.setPushProfile(PushProfileEnum.PRODUCTION);
+        }
         return pushDocument;
     }
 

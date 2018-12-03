@@ -45,4 +45,10 @@
             <column name="FILE_EXT_MSG" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="2018-11-28-fileAddFolderColumn" author="fm">
+        <addColumn tableName="PEP_FILE">
+            <column name="VIR_PATH" type="VARCHAR(255)"/>
+            <column name="IS_DIR" type="CHAR(1)" defaultValue="N"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

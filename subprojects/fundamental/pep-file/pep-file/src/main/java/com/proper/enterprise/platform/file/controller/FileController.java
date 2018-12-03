@@ -2,6 +2,8 @@ package com.proper.enterprise.platform.file.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
+import com.proper.enterprise.platform.core.utils.BigDecimalUtil;
 import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.file.vo.FileVO;
 import io.swagger.annotations.*;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/file")
@@ -31,8 +34,9 @@ public class FileController extends BaseController {
     @PostMapping
     @ApiOperation(value = "‍上传文件", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> uploadFile(@ApiParam(value = "‍文件", required = true) MultipartFile file) throws IOException {
-        return responseOfPost(fileService.save(file).getId());
+    public ResponseEntity<String> uploadFile(@ApiParam(value = "‍文件", required = true) MultipartFile file,
+                                             @ApiParam("‍文件路径（显示用，不代表文件实际存储在磁盘上的路径）") String path) throws IOException {
+        return responseOfPost(fileService.save(file, path).getId());
     }
 
     @PostMapping(path = "/{id}")
@@ -54,7 +58,11 @@ public class FileController extends BaseController {
     @GetMapping(path = "/{id}/meta")
     @ApiOperation("‍根据id获取元文件")
     public ResponseEntity<FileVO> metainfo(@ApiParam(value = "‍文件id", required = true) @PathVariable String id) {
-        return responseOfGet(fileService.findById(id), FileVO.class);
+        FileVO fileVO = BeanUtil.convert(fileService.findById(id), FileVO.class);
+        if (fileVO != null) {
+            fileVO.setFileSizeUnit(BigDecimalUtil.parseSize(fileVO.getFileSize()));
+        }
+        return responseOfGet(fileVO);
     }
 
     @DeleteMapping
@@ -74,5 +82,25 @@ public class FileController extends BaseController {
         return responseOfGet(fileService.findPage(), FileVO.class);
     }
 
+    @PostMapping(path = "/dir")
+    public ResponseEntity<String> uploadFileDir(@RequestBody FileVO fileVO) {
+        return responseOfPost(fileService.saveDir(fileVO).getId());
+    }
+
+    @PutMapping(path = "/dir/{id}")
+    public ResponseEntity<String> updateDir(@PathVariable String id, @RequestBody FileVO fileVO) {
+        fileVO.setId(id);
+        return responseOfPut(fileService.updateDir(fileVO).getId());
+    }
+
+    @DeleteMapping(path = "/dir")
+    public ResponseEntity deleteFileDir(@RequestParam String ids) throws IOException {
+        return responseOfDelete(fileService.deleteFileDirByIds(ids));
+    }
+
+    @GetMapping(path = "/dir")
+    public ResponseEntity<Collection<FileVO>> getFileDir(String path, String fileName) {
+        return responseOfGet(fileService.findFileDir(path, fileName));
+    }
 
 }

@@ -91,6 +91,18 @@ public class DFSGridFSImpl extends AbstractDFSService {
     }
 
     @Override
+    public void createDir(String dirPath) {
+    }
+
+    @Override
+    public void updateDir(String oldDirPath, String newDirPath) {
+    }
+
+    @Override
+    public void deleteDir(String dirPath) {
+    }
+
+    @Override
     public boolean exists(String filePath) {
         return gridFS.findOne(filePath) != null;
     }

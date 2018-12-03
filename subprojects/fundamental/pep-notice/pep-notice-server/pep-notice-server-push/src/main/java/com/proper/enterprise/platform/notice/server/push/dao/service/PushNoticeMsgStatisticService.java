@@ -1,10 +1,13 @@
 package com.proper.enterprise.platform.notice.server.push.dao.service;
 
+import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.notice.server.api.model.App;
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgStatisticEntity;
 import com.proper.enterprise.platform.notice.server.push.enums.PushDataAnalysisDateRangeEnum;
 import com.proper.enterprise.platform.notice.server.push.vo.PushMsgPieDataVO;
 import com.proper.enterprise.platform.notice.server.push.vo.PushNoticeMsgPieVO;
 import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnalysisVO;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Date;
 import java.util.List;
@@ -70,4 +73,16 @@ public interface PushNoticeMsgStatisticService {
      * @return list
      */
     List<PushMsgPieDataVO> findPieItems(String startDate, String endDate);
+
+    /**
+     * 分页查询app
+     *
+     * @param appKey      应用唯一标识
+     * @param appName     应用名称
+     * @param appDesc    应用描述
+     * @param enable      启用停用
+     * @param pageRequest 分页参数
+     * @return 分页对象
+     */
+    DataTrunk<App> findApp(String appKey, String appName, String appDesc, Boolean enable, PageRequest pageRequest);
 }

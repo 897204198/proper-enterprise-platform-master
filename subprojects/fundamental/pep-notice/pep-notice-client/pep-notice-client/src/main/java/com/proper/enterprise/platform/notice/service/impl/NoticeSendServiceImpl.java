@@ -26,6 +26,7 @@ import com.proper.enterprise.platform.template.vo.TemplateVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -80,7 +81,7 @@ public class NoticeSendServiceImpl {
         sendNoticeChannel(fromUserId, toUserIds, noticeSetMap, title, content, custom, noticeType);
     }
 
-    private void sendNoticeChannel(String fromUserId,
+    public void sendNoticeChannel(String fromUserId,
                                    Set<String> toUserIds,
                                    Map<String, NoticeSetDocument> noticeSetMap,
                                    String title,
@@ -168,7 +169,7 @@ public class NoticeSendServiceImpl {
     private void updateNotice(String batchId, String exception) {
         NoticeDocument noticeDocument = noticeMsgRepository.findByBatchId(batchId);
         noticeDocument.setAnalysisResult(AnalysisResult.ERROR);
-        noticeDocument.setNotes("The notice server return error message ", exception);
+        noticeDocument.setNotes("The notice server return error message: " + exception);
         noticeMsgRepository.save(noticeDocument);
     }
 
@@ -189,7 +190,7 @@ public class NoticeSendServiceImpl {
             ResponseEntity<byte[]> response = HttpClient.post(noticeServerUrl
                 + "/notice/server/send?access_token="
                 + noticeServerToken, MediaType.APPLICATION_JSON, data);
-            if (VAR200 != response.getStatusCode().value()) {
+            if (HttpStatus.CREATED != response.getStatusCode()) {
                 String str = StringUtil.toEncodedString(response.getBody());
                 this.updateNotice(noticeModel.getBatchId(), str);
             }

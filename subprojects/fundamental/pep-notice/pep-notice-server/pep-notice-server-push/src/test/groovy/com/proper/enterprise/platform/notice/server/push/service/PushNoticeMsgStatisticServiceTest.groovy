@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.notice.server.push.service
 
+import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.utils.DateUtil
+import com.proper.enterprise.platform.notice.server.api.model.App
 import com.proper.enterprise.platform.notice.server.push.dao.entity.PushNoticeMsgStatisticEntity
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgJpaRepository
 import com.proper.enterprise.platform.notice.server.push.dao.repository.PushNoticeMsgStatisticRepository
@@ -12,6 +14,7 @@ import com.proper.enterprise.platform.notice.server.push.vo.PushServiceDataAnaly
 import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.test.context.jdbc.Sql
 
 class PushNoticeMsgStatisticServiceTest extends AbstractJPATest {
@@ -205,11 +208,34 @@ class PushNoticeMsgStatisticServiceTest extends AbstractJPATest {
         List<PushMsgPieDataVO> items = pushNoticeMsgStatisticService.findPieItems("2018-01-01", '2018-12-12')
         assert 3 == items.size()
         PushNoticeMsgPieVO pushNoticeMsgPieVO = pushNoticeMsgStatisticService.findPieDataByDateAndAppKey("2018-01-01", '2018-12-12', 'test,test2')
+        pushNoticeMsgPieVO.getPieData()
+        for (PushMsgPieDataVO pushMsgPieDataVO : pushNoticeMsgPieVO.getPieData()) {
+            if ("test" == pushMsgPieDataVO.getAppKey()) {
+                assert pushMsgPieDataVO.getTotalNum() == 5
+                assert pushMsgPieDataVO.getFailNum() == 4
+                assert pushMsgPieDataVO.getSuccessNum() == 1
+            }
+            if ("test2" == pushMsgPieDataVO.getAppKey()) {
+                assert pushMsgPieDataVO.getTotalNum() == 1
+                assert pushMsgPieDataVO.getFailNum() == 1
+                assert pushMsgPieDataVO.getSuccessNum() == 0
+            }
+        }
         List<PushMsgPieDataVO> pushMsgPieDataVOs = pushNoticeMsgPieVO.getPieData()
         assert 2 == pushMsgPieDataVOs.size()
         PushMsgPieDataVO pushMsgPieDataVO1 = pushMsgPieDataVOs.get(0)
         PushMsgPieDataVO pushMsgPieDataVO2 = pushMsgPieDataVOs.get(1)
         assert pushMsgPieDataVO1.getTotalNum() >= pushMsgPieDataVO2.getTotalNum()
+    }
+
+    @Test
+    @Sql([
+        "/com/proper/enterprise/platform/notice/server/push/statistic/push-app.sql"
+    ])
+    public void getAppTest() {
+        PageRequest pageRequest = new PageRequest(0, 10);
+        DataTrunk<App> dataTrunk = pushNoticeMsgStatisticService.findApp(null, null, null, null, pageRequest);
+        assert dataTrunk.data.size() == 3
     }
 
 }
