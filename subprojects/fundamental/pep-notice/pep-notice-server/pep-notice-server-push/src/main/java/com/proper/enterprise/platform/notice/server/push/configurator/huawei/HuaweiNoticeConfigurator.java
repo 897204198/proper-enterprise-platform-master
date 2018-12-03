@@ -1,7 +1,6 @@
 package com.proper.enterprise.platform.notice.server.push.configurator.huawei;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
-import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator;
 import com.proper.enterprise.platform.notice.server.push.client.huawei.HuaweiNoticeClientManagerApi;
@@ -30,7 +29,7 @@ public class HuaweiNoticeConfigurator extends AbstractPushConfigSupport implemen
             throw new ErrMsgException("appId can't be null");
         }
         Map result = super.post(appKey, config, params);
-        PushConfDocument pushDocument = BeanUtil.convert(config, PushConfDocument.class);
+        PushConfDocument pushDocument = buildPushDocument(appKey, config, params);
         huaweiNoticeClientManagerApi.post(appKey, pushDocument);
         return result;
     }
@@ -44,7 +43,7 @@ public class HuaweiNoticeConfigurator extends AbstractPushConfigSupport implemen
     @Override
     public Map put(String appKey, Map<String, Object> config, Map<String, Object> params) {
         Map result = super.put(appKey, config, params);
-        PushConfDocument pushDocument = BeanUtil.convert(config, PushConfDocument.class);
+        PushConfDocument pushDocument = buildPushDocument(appKey, config, params);
         huaweiNoticeClientManagerApi.put(appKey, pushDocument);
         return result;
     }

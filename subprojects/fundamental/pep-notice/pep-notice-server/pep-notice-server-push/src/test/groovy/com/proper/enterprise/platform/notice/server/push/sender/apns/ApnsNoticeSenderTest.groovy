@@ -175,8 +175,10 @@ class ApnsNoticeSenderTest extends AbstractJPATest {
         pushNoticeMsgJpaRepository.deleteAll()
     }
 
+    @Ignore
     @Test
     public void iosNoticeSendDevTest() {
+        // 测试机无法同时存在同一包名 development 和 production 的应用
 
         String appKey = 'iosConfSendDevToken'
         def accessToken = new AccessTokenVO(appKey, 'for test using', appKey, 'GET:/test')

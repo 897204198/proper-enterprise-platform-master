@@ -78,11 +78,17 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
     }
 
     protected PushConfDocument buildPushDocument(String appKey, Map<String, Object> config, Map<String, Object> params) {
-        PushConfDocument pushDocument = BeanUtil.convert(config, PushConfDocument.class);
+        String[] ignoreParam = {"pushProfile"};
+        PushConfDocument pushDocument = BeanUtil.convert(config, PushConfDocument.class, ignoreParam);
         pushDocument.setAppKey(appKey);
         pushDocument.setPushChannel(getPushChannel(params));
-        if (pushDocument.getPushProfile() == null) {
+        Object pushProfile = config.get("pushProfile");
+        if (pushProfile == null) {
             pushDocument.setPushProfile(PushProfileEnum.PRODUCTION);
+        } else if (pushProfile instanceof PushProfileEnum) {
+            pushDocument.setPushProfile((PushProfileEnum) pushProfile);
+        } else if (pushProfile instanceof String) {
+            pushDocument.setPushProfile(PushProfileEnum.valueOf((String) pushProfile));
         }
         return pushDocument;
     }
