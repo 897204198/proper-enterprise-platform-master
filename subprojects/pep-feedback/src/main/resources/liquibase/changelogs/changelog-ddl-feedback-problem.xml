@@ -23,7 +23,7 @@
 
             <column name="name" type="VARCHAR(255)"/>
             <column name="icon" type="VARCHAR(255)"/>
-            <column name="pageUrl" type="VARCHAR(255)"/>
+            <column name="page_url" type="VARCHAR(255)"/>
             <column name="sort" type="VARCHAR(255)"/>
 
         </createTable>
@@ -86,5 +86,14 @@
             <column name="assess" type="VARCHAR(255)"/>
 
         </createTable>
+    </changeSet>
+    <changeSet author="kouxin" id="15220181203-13">
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_PROBLEM_CATEGORY" tableName="PEP_PROBLEM_CATEGORY"/>
+    </changeSet>
+    <changeSet author="kouxin" id="15220181203-14">
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_PROBLEM_INFO" tableName="PEP_PROBLEM_INFO"/>
+    </changeSet>
+    <changeSet author="kouxin" id="15220181203-15">
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_PROBLEM_RECORD" tableName="PEP_PROBLEM_RECORD"/>
     </changeSet>
 </databaseChangeLog>
