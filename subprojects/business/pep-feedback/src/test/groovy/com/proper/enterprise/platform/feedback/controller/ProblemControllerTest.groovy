@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.feedback.entity.RecordEntity
 import com.proper.enterprise.platform.feedback.repository.ProblemRepository
 import com.proper.enterprise.platform.feedback.repository.RecordRepository
 import com.proper.enterprise.platform.feedback.service.ProblemService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -16,7 +16,7 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.MvcResult
 
 @Sql
-class ProblemControllerTest extends AbstractTest{
+class ProblemControllerTest extends AbstractJPATest{
 
     @Autowired
     ProblemService problemService

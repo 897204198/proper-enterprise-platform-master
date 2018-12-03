@@ -312,7 +312,9 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
             if (fileName.getBytes(coreProperties.getCharset()).length > dfsProperties.getNameMaxLength()) {
                 throw new ErrMsgException("The file or folder name is too long");
             }
-        } catch (UnsupportedEncodingException ignored) { }
+        } catch (UnsupportedEncodingException ex) {
+            throw new ErrMsgException(ex.getMessage());
+        }
     }
 
     private boolean isImage(String fileName) {

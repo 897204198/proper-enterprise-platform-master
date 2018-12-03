@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.feedback.entity.CategoryEntity
 import com.proper.enterprise.platform.feedback.repository.CategoryRepository
 import com.proper.enterprise.platform.feedback.service.CategoryService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MvcResult
 
-class CategoryControllerTest extends AbstractTest{
+class CategoryControllerTest extends AbstractJPATest{
 
     @Autowired
     CategoryService categoryService;
