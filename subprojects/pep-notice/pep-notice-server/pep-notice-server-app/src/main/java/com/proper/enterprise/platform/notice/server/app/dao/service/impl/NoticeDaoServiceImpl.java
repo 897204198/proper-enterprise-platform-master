@@ -108,18 +108,18 @@ public class NoticeDaoServiceImpl implements NoticeDaoService {
     @Override
     public List<Notice> findPendingNotices(LocalDateTime startModifyTime, LocalDateTime endModifyTime) {
         return noticeRepository.findPendingNotices(startModifyTime
-                .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)),
+                .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_TIMESTAMP_FORMAT)),
             endModifyTime
-                .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)));
+                .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_TIMESTAMP_FORMAT)));
     }
 
     @Override
     public List<Notice> findRetryNotices(LocalDateTime startModifyTime, LocalDateTime endModifyTime, Integer maxRetryCount) {
         return noticeRepository
             .findRetryNotices(startModifyTime
-                    .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)),
+                    .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_TIMESTAMP_FORMAT)),
                 endModifyTime
-                    .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_DATETIME_FORMAT)), maxRetryCount);
+                    .format(DateTimeFormatter.ofPattern(PEPConstants.DEFAULT_TIMESTAMP_FORMAT)), maxRetryCount);
     }
 
     @Override

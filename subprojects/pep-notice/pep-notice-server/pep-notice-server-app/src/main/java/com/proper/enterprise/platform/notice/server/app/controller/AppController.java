@@ -32,7 +32,7 @@ public class AppController extends BaseController {
 
     @GetMapping
     public ResponseEntity<DataTrunk<App>> get(String appKey, String appName, String appDesc, Boolean enable) {
-        return responseOfGet(appDaoService.findAll(appKey, appName,
+        return responseOfGet(appDaoService.findAllWithHaveConf(appKey, appName,
             appDesc, enable, getPageRequest(new Sort(Sort.Direction.DESC, "createTime"))));
     }
 
