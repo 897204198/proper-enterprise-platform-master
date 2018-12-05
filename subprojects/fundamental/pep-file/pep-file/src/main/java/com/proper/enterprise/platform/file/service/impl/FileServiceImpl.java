@@ -133,7 +133,7 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         }
         String folderName = fileVO.getFileName();
         if (StringUtil.isEmpty(folderName)) {
-            throw new ErrMsgException("pep.file.folderName.isEmpty");
+            throw new ErrMsgException("The folder name is empty");
         }
         FileEntity fileExistEntity = fileRepository.findOneByVirPathAndFileName(fileDir, folderName);
         if (fileExistEntity != null) {

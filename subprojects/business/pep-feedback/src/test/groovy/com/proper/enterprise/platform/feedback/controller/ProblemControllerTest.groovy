@@ -62,7 +62,7 @@ class ProblemControllerTest extends AbstractJPATest{
         get("/problem/info?deviceId=123321&problemId="+id, HttpStatus.OK)
 
         //验证浏览记录加1
-        ProblemEntity problem = problemRepository.findOne(id);
+        ProblemEntity problem = problemRepository.findById(id).get();
         assert problem.views == 1
 
          get("/problem/assess?code=1&deviceId=123321&problemId="+id, HttpStatus.OK)
