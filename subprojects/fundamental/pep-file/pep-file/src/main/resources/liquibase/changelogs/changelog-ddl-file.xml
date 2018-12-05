@@ -51,4 +51,7 @@
             <column name="IS_DIR" type="CHAR(1)" defaultValue="N"/>
         </addColumn>
     </changeSet>
+    <changeSet id="2018-12-04-fileChangeType" author="fm">
+        <addNotNullConstraint tableName="PEP_FILE" columnName="IS_DIR" columnDataType="CHAR(1)" defaultNullValue="N"/>
+    </changeSet>
 </databaseChangeLog>

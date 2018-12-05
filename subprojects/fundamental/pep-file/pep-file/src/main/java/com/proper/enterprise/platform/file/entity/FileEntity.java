@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.file.api.File;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -47,7 +48,9 @@ public class FileEntity extends BaseEntity implements File {
     /**
      * 是否为文件夹
      */
-    private Boolean isDir;
+    @Type(type = "yes_no")
+    @Column(nullable = false)
+    private Boolean isDir = false;
 
     public String getFileName() {
         return fileName;
