@@ -4,7 +4,6 @@ import com.proper.enterprise.platform.core.CoreProperties
 import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import com.proper.enterprise.platform.core.domain.PEPOrder
-import com.proper.enterprise.platform.core.i18n.I18NUtil
 import com.proper.enterprise.platform.core.utils.AntResourceUtil
 import com.proper.enterprise.platform.file.vo.FileVO
 import com.proper.enterprise.platform.test.AbstractJPATest
