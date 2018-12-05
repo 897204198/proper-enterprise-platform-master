@@ -7,11 +7,98 @@ Proper Enterprise Platform Developer Guidelines
 
 ### IntelliJ IDEA
 
+可使用 IDEA 直接打开项目路径，自动导入 gradle 项目。
+
+或者手动生成 idea 配置文件后，直接打开，如：
+
     $ ./gradlew cleanIdea idea
 
 > 在 IDEA 中需要配置为 gradle 项目才可部署至 tomcat 中开发
 
-### 使用静态资源
+
+Spring Boot 开发运行及调试
+------------------------
+
+Spring Boot 内置 tomcat 使用默认端口 `8080`，上下文根 `pep` 在 [application.properties](./subprojects/pep-application/src/main/resources/application.properties) 中配置。
+
+### 直接运行
+
+    $ ./gradlew bootRun
+    
+> `bootRun` 任务会将源码编译后启动运行。
+
+### 远程调试
+
+    $ ./gradlew bootRun --debug-jvm
+
+IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration](http://www.jetbrains.com/idea/webhelp/run-debug-configuration-remote.html)
+
+
+修改使用的关系型数据源
+-------------------
+
+平台开发及测试环境（profile）默认使用 h2 数据库作为关系型数据源，生产环境默认使用 mysql 数据源。
+
+当在开发环境需要调整数据源时，需调整如下两处内容：
+
+1. [application-dev.properties](./subprojects/pep-application/src/main/resources/application-dev.properties) 中设定需要使用的数据源连接信息
+1. [pep-application.gradle](./subprojects/pep-application/pep-application.gradle) 中添加所需数据源的驱动作为运行时依赖，并选择相应数据源的 oopsearch 同步组件
+
+    例如将默认的 h2 数据源修改为 mysql 时，需将
+    
+    ```
+    runtimeOnly libraries.h2,
+                project(':pep-oopsearch-sync-h2')
+    ```
+    
+    修改为
+    
+    ```
+    runtimeOnly libraries.mysql,
+                project(':pep-oopsearch-sync-mysql')
+    ```
+
+测试
+----
+
+* 单元测试 `$ ./gradlew test`
+* 测试及代码质量检查 `$ ./gradlew check`
+* 单元测试覆盖 bean 的方法：因为单体测试类可能会因为具体的测试功能需要不同的测试数据，之前的做法是在测试文件中添加一个 Mock 接口的实现类并通过 `@Primary` 将 Mock 的实现类设置为主要实现类，例如：
+    ```
+    @Primary
+    public class MockDepartmentServiceImpl extends DepartmentServiceImpl implements DepartmentService {
+        @Override
+        List<Department> getAllDepartments() {
+            ... ...
+        }
+    }
+    ```
+  但是这样处理后当出现有多个不同的测试数据需求时很难进行分别处理，如何解决这个问题呢？
+  单体测试可以使用从 Spring 上下文中获取具体实现类，通过新的实现类重写接口方法进行测试验证并在测试验证后将原有的实现类放回上下文中，具体操作如下：
+  第一步：通过上下文获取目标接口的实现类，如：
+    ```
+    DepartmentExtService departmentExtService = PEPApplicationContext.getBean("departmentExtService");
+    ```
+  第二步：通过 `overrideSingleton` 方法中 使用 `@Override` 方法重写该接口的方法返回所需测试数据，如：
+    ```
+    overrideSingleton("departmentExtService", new DepartmentExtService() {
+        @Override
+        List<Department> getAllDepartments() {
+            ... ...
+        }
+    })
+    ```
+  第三步：在验证测试数据后，需要将原接口的实现类放回至 Spring 上下文中，这样就不会对其他的测试类造成影响，如：
+    ```
+    overrideSingleton("departmentExtService", departmentExtService);
+    ```
+  最后，还有一点需要说明，如果要覆盖的 bean 已被其他 bean 所引用，则需要在测试类结束前恢复 **所有** 相关类的实例，否则可能会对其他需要用到未覆盖前 bean 的行为的单元测试造成意外影响！详细可见此 [示例](https://github.com/propersoft-cn/ihos/pull/1531)
+
+**推送代码至远程仓库或创建 `Pull Request` 之前需确保所有测试及检查能够在本地通过**
+
+### 连接前后台调试
+
+1. 使用静态资源
 
 - 准备一个nginx 将静态资源包解压到html目录，将静态资源粘贴到html根目录
 - 配置nginx，直接访问即可用。
@@ -25,50 +112,23 @@ Proper Enterprise Platform Developer Guidelines
 		    #服务端地址（具体地址自行修改）
 			proxy_pass http://127.0.0.1:8082/pep;
 		}
-- 编辑index.html 搜索src="/index  看这个js全名，如:index.db2d6a52.js
-  在静态资源中找到该js，搜索r="/api",将/api改为http://后台项目地址即可
 
-内嵌 servlet 容器开发及调试
-------------------------
-
-平台使用 [gretty](https://github.com/akhikhl/gretty) gradle 插件以支持在内嵌的容器中运行及调试。
-
-默认使用 tomcat7.x，端口 `8080`（在 [server.xml](subprojects/dev-kit/pep-dev-configs/src/main/resources/META-INF/configs/docker/tomcat/conf/server.xml) 中配置），上下文根 `pep`（在 [pep-application.gradle](subprojects/pep-application/pep-application.gradle) 中配置）。
-
-### 直接运行
-
-    $ ./gradlew assemble appRun
-
-> `assemble` 任务的作用是将各个模块均进行编译。当前 web 应用模块 `pep-application` 只是将其他模块作为运行时依赖，gradle tomcat 插件在运行时没自动编译这些运行时依赖，故需要手动执行编译，否则会报依赖的包不存在
-
-### 远程调试
-
-    $ ./gradlew assemble appRunDebug
-
-
-IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration](http://www.jetbrains.com/idea/webhelp/run-debug-configuration-remote.html)
-
-### 热部署修改
-
-    $ ./gradlew assemble
-
-> assemble 任务会将源码重新编译，class 更新后会被 `spring-loaded` 自动加载，实现热部署效果
-
-
+1.使用已提供好的的环境
+- 后端启动成功后，Ctrl+Alt+鼠标左键，根据需要选择想要连接[前端CD环境](https://propersoft-cn.github.io/Yellow-Page.html#%E5%89%8D%E7%AB%AF)的地址
+  
 开发规范
 -------
 
 * 统一使用 `PEPConstants.VERSION` 作为 `serialVersionUID`
-* 配置文件：
-    1. spring 配置文件放置在 `src/main/resources/spring/<module>`。spring 配置文件采用各个模块统一入口的方式来组织，文件名为 `applicationContext-<module>.xml`。在入口中将模块内的配置文件关联起来。需注意避免重复 import。
-    2. 其他配置文件放置在 `src/main/resources/conf/<module>`
-
-     
+* 配置类：
+    1. @ConfigurationProperties 注解可以把同类的配置信息自动封装成实体类，`com.proper.enterprise.platform.<module>..*Properties`放置在各个模块中
+    2. @Configuration 注解标注在类， 命名规则为：`com.proper.enterprise.platform.<module>..*Configuration`放置在各个模块中
+    3. 当 Properties 需要多个层级，可以加一级 properties 路径，如 `com.proper.enterprise.platform.configs.properties.*Properties`
 * Controller：`com.proper.enterprise.platform.<module>..controller.*Controller`，Controller 放置在各模块中。RESTFul Controller 可以继承 `BaseController`，以方便响应 RESTFul 请求。可参考 `UsersController`
-* 服务接口：`com.proper.enterprise.platform.api.<module>..service.*Service`
+* 服务接口：`com.proper.enterprise.platform.<module>..service.*Service`
 * 服务实现：`com.proper.enterprise.platform.<module>..service.impl.*ServiceImpl`
 
-  > 服务里 `get` 用来命名最多得到**一个**结果的查询，`find` 用来命名得到**集合**的查询；尽量使用动词开头命名 service 中的方法，如 `save*`、`delete*` 等，平台也将根据这些动词对 service 层中的方法进行事务控制。仅需要保存或改动数据的方法会得到可写事务，其余方法均只能使用只读事务。具体事务配置请参照 [applicationContext-transaction.xml](subprojects/pep-configs/src/main/resources/spring/dal/applicationContext-transaction.xml)
+  > 服务里 `get` 用来命名最多得到**一个**结果的查询，`find` 用来命名得到**集合**的查询；尽量使用动词开头命名 service 中的方法，如 `save*`、`delete*` 等，平台也将根据这些动词对 service 层中的方法进行事务控制。仅需要保存或改动数据的方法会得到可写事务，其余方法均只能使用只读事务。具体事务配置请参照 [applicationContext-jpa-transaction.xml](./subprojects/fundamental/pep-core/pep-core-jpa/src/main/resources/applicationContext-jpa-transaction.xml)
 * 平台数据来源包括 RDB 和 MongoDB 两类
 * 需操作关系型数据库时，可使用平台提供的 `BaseRepository` 按 `spring-data-jpa` 方式操作数据，也可使用 `NativeRepository` 使用 SQL 操作数据
 * 使用 MongoDB 时，可继承 `spring-data-mongodb` 提供的 `MongoRepository`，也可直接注入平台定义好的 `mongoClient` 或 `mongoDatabase`
@@ -135,13 +195,15 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
     ```
 * JPA Repository提供updateForSelective，更新单表非空字段
 
-* 单元测试：与被测试的类相同路径，被测试类名称为测试类名前缀，基于 `Junit` 的测试以 `Test` 为后缀，基于 `Spock` 的测试以 `Spec` 为后缀。需要 Spring Context 的测试需继承 `AbstractTest` 基类，如：
+* 单元测试：与被测试的类相同路径，被测试类名称为测试类名前缀，基于 `Junit` 的测试以 `Test` 为后缀。继承 `AbstractSpringTest`是针对controller 进行模拟的请求，如若有事务或者数据库相关，则需继承 `AbstractJPATest`；继承`AbstractIntegrationTest` 为集成测试基类，会真正启动服务，通过 http 请求调用接口，可以测试 filter、事务等在 AbstractSpringTest 和 AbstractJPATest 中无法测试的内容 如：
 
     ```
-    class CrudBaseTest extends AbstractTest
+    class AllowCrossOriginFilterTest extends AbstractIntegrationTest 
     ```
 * 建表及初始化数据：通过 Liquibase 的 Change Log 执行数据库建表语句及初始化数据，具体使用方式可参照 [说明文档](https://oopstorm.github.io/2018/05/15/2018-05-15-liquibase-with-gradle/)。
-Change Log 文件放在对应模块的 `src/main/resources/liquibase/changelogs` 路径下，为保证 DDL 优先于 DML 执行，命名规范为 `changelog-ddl-*.xml` 和 `changelog-dml-*.xml`。
+Change Log 文件放在对应模块下`src/main/resources/liquibase/changelogs`， 为保证 DDL 优先于 DML 执行，命名规范为 `changelog-ddl-*.xml` 和 `changelog-dml-*.xml`。
+
+* 当有较大版本升级时(例如：v0.4.x 升级到v0.5.x)，需要按照重整基线叠加变更的方式处理：changelog 按版本放置，历史版本(v0.4.x) 如：`src/main/resources/0.4.x/history/changelog-ddl-*.xml` 或者 `src/main/resources/0.4.x/history/changelog-dml-*.xml` ，新的版本的基线 如：`src/main/resources/0.5.x/init/changelog-ddl-*.xml`或者 `src/main/resources/0.5.x/init/changelog-dml-*.xml`，累计变更仍需放在原有的changelogs下 如：`src/main/resources/changelogs/changelog-ddl-*.xml`或者 `src/main/resources/changelogs/changelog-dml-*.xml`
 
 * 异常不允许直接 `printStackTrace`，应记录到日志中
 
@@ -162,29 +224,34 @@ Change Log 文件放在对应模块的 `src/main/resources/liquibase/changelogs`
 **TO BE CONTINUED**
 
 
-修改使用的关系型数据源
--------------------
+版本号规范
+---------
 
-平台开发及测试环境（profile）默认使用 h2 数据库作为关系型数据源，生产环境默认使用 mysql 数据源。
+版本号采用四位数字，如：`1.1522.49.327`
 
-当在开发环境需要调整数据源时，需调整如下两处内容：
+- 第一位表示`主版本`
+- 第二位表示`次版本`
+- 第三位表示`修订版`
+- 第四位表示`bug 修正` 等
 
-1. config.properties 中选择需要使用的数据源
-1. pep-application.gradle 中添加所需数据源的驱动作为运行时依赖，并选择相应数据源的 oopsearch 同步组件
+第四位为可选位，没有第四位时，第三位也可以表示 `bug 修正` 等含义。
 
-    例如将默认的 h2 数据源修改为 mysql 时，需将
-    
+> 前台、后台工程版本号需尽量保持一致（主版本及次版本号必须一致），方便两个工程对应。
+
+
+版本发布流程
+-----------
+
+1. 后端修改 build.gradle 中的 `version` 值，并同步修改 PEPVersion.java 中的 版本号 及 dependencies.gradle 中的 `versions.pep` 
+1. 提交代码打 tag，并将 tag 推送远程仓库，如：
     ```
-    runtime libraries.h2,
-            project(':pep-oopsearch-sync-h2')
+    $ git tag v0.4.0
+    $ git push upstream v0.4.0
     ```
-    
-    修改为
-    
-    ```
-    runtime libraries.mysql,
-            project(':pep-oopsearch-sync-mysql')
-    ```
+1. 编写 [Release Note](https://github.com/propersoft-cn/proper-enterprise-platform/releases)
+
+> 注意区分发布分支（master）和开发分支（develop），发布分支的内容自动合并至开发分支，在开发分支发布新版本后，将开发分支中的内容合并至发布分支
+
 
 开放问题
 -------
@@ -198,6 +265,33 @@ Change Log 文件放在对应模块的 `src/main/resources/liquibase/changelogs`
 
 **TO BE CONTINUED**
 
+持续集成环境
+----------
+
+平台使用 [TeamCity](https://www.jetbrains.com/teamcity/) 作为持续集成环境。
+为保证代码质量，任何提交到 `master` 分支的代码和任何 `Pull Request` 都会触发持续集成环境对代码质量的检查。
+
+Pull Request 的构建结果会直接在列表页和详细信息页面展现
+
+![](https://hhariri.files.wordpress.com/2013/02/image.png)
+
+master 分支的构建结果会在项目首页展现
+
+<a href="https://server.propersoft.cn/teamcity/viewType.html?buildTypeId=PEP_Build">
+  <img src="https://server.propersoft.cn/teamcity/app/rest/builds/buildType:(id:PEP_Build)/statusIcon.svg"/>
+</a>
+
+测试覆盖率结果也会在项目首页展现
+
+[![codecov](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform/branch/master/graph/badge.svg?token=uthbnLL68t)](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform)
+
+**每位工程师都要为项目构建失败或覆盖率下降负责！**
+
+-----
+
+以下内容待调整
+
+-----
 
 初始化新模块
 ----------
@@ -216,65 +310,3 @@ Change Log 文件放在对应模块的 `src/main/resources/liquibase/changelogs`
     模块的包路径，properties,spring配置文件及增删改查的基础代码和配套的单元测试
 
 > 注意：初始化任务执行时会先将改模块根路径删除
-
-
-测试
-----
-
-* 单元测试 `$ ./gradlew test`
-* 测试及代码质量检查 `$ ./gradlew check`
-* 单元测试覆盖 bean 的方法：因为单体测试类可能会因为具体的测试功能需要不同的测试数据，之前的做法是在测试文件中添加一个 Mock 接口的实现类并通过 `@Primary` 将 Mock 的实现类设置为主要实现类，例如：
-    ```
-    @Primary
-    public class MockDepartmentServiceImpl extends DepartmentServiceImpl implements DepartmentService {
-        @Override
-        List<Department> getAllDepartments() {
-            ... ...
-        }
-    }
-    ```
-  但是这样处理后当出现有多个不同的测试数据需求时很难进行分别处理，如何解决这个问题呢？
-  单体测试可以使用从 Spring 上下文中获取具体实现类，通过新的实现类重写接口方法进行测试验证并在测试验证后将原有的实现类放回上下文中，具体操作如下：
-  第一步：通过上下文获取目标接口的实现类，如：
-    ```
-    DepartmentExtService departmentExtService = PEPApplicationContext.getBean("departmentExtService");
-    ```
-  第二步：通过 `overrideSingleton` 方法中 使用 `@Override` 方法重写该接口的方法返回所需测试数据，如：
-    ```
-    overrideSingleton("departmentExtService", new DepartmentExtService() {
-        @Override
-        List<Department> getAllDepartments() {
-            ... ...
-        }
-    })
-    ```
-  第三步：在验证测试数据后，需要将原接口的实现类放回至 Spring 上下文中，这样就不会对其他的测试类造成影响，如：
-    ```
-    overrideSingleton("departmentExtService", departmentExtService);
-    ```
-  最后，还有一点需要说明，如果要覆盖的 bean 已被其他 bean 所引用，则需要在测试类结束前恢复 **所有** 相关类的实例，否则可能会对其他需要用到未覆盖前 bean 的行为的单元测试造成意外影响！详细可见此 [示例](https://github.com/propersoft-cn/ihos/pull/1531)
-
-**推送代码至远程仓库或创建 `Pull Request` 之前需确保所有测试及检查能够在本地通过**
-
-
-持续集成环境
-----------
-
-PEP 使用 [TeamCity](https://www.jetbrains.com/teamcity/) 作为持续集成环境。
-为保证代码质量，任何提交到 `master` 分支的代码和任何 `Pull Request` 都会触发持续集成环境对代码质量的检查。
-
-Pull Request 的构建结果会直接在列表页和详细信息页面展现
-
-![](https://hhariri.files.wordpress.com/2013/02/image.png)
-
-master 分支的构建结果会在项目首页展现
-
-<a href="https://server.propersoft.cn/teamcity/viewType.html?buildTypeId=PEP_Build">
-  <img src="https://server.propersoft.cn/teamcity/app/rest/builds/buildType:(id:PEP_Build)/statusIcon.svg"/>
-</a>
-
-测试覆盖率结果也会在项目首页展现
-
-[![codecov](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform/branch/master/graph/badge.svg?token=uthbnLL68t)](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform)
-
-**每位工程师都要为项目构建失败或覆盖率下降负责！**
