@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.file.service;
 import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
 import com.proper.enterprise.platform.file.api.File;
 import com.proper.enterprise.platform.file.vo.FileVO;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -101,7 +102,8 @@ public interface FileService extends BaseJpaService<File, String> {
      *
      * @param virPath  虚拟路径
      * @param fileName 文件名
+     * @param sort     排序
      * @return 文件夹以及文件列表
      */
-    Collection<FileVO> findFileDir(String virPath, String fileName);
+    Collection<FileVO> findFileDir(String virPath, String fileName, Sort sort);
 }

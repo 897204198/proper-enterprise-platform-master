@@ -55,11 +55,6 @@ public class FileVO extends BaseVO implements File {
      */
     private Boolean isDir;
 
-    /**
-     * 是否可写
-     */
-    private Boolean writable;
-
     @Override
     public String getFileName() {
         return fileName;
@@ -135,14 +130,6 @@ public class FileVO extends BaseVO implements File {
 
     public void setDir(Boolean dir) {
         isDir = dir;
-    }
-
-    public Boolean getWritable() {
-        return writable;
-    }
-
-    public void setWritable(Boolean writable) {
-        this.writable = writable;
     }
 
     @Override

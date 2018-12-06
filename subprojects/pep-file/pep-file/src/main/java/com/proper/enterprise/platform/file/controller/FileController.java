@@ -80,7 +80,7 @@ public class FileController extends BaseController {
 
     @GetMapping(path = "/dir")
     public ResponseEntity<Collection<FileVO>> getFileDir(String path, String fileName) {
-        return responseOfGet(fileService.findFileDir(path, fileName));
+        return responseOfGet(fileService.findFileDir(path, fileName, getSort()));
     }
 
 }

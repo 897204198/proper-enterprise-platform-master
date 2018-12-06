@@ -170,6 +170,10 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.folder.isExist"));
         }
         validMaxNameLength(fileVO);
+        boolean isEndWithSlash = fileVO.getVirPath().endsWith("/");
+        if (!isEndWithSlash) {
+            fileVO.setVirPath(fileVO.getVirPath() + "/");
+        }
         FileEntity fileDirOldEntity = (FileEntity) this.findOne(fileVO.getId());
         String subVirtualFileOldPath = fileDirOldEntity.getVirPath()
                                        + fileDirOldEntity.getFileName();
@@ -228,18 +232,15 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
     }
 
     @Override
-    public Collection<FileVO> findFileDir(String virPath, String fileName) {
+    public Collection<FileVO> findFileDir(String virPath, String fileName, Sort sort) {
         try {
             virPath = URLDecoder.decode(virPath, PEPConstants.DEFAULT_CHARSET.toString());
         } catch (UnsupportedEncodingException e) {
             throw new ErrMsgException("pep.filelist.find.failed");
         }
-        Sort sort = getSort();
         if (sort == null) {
             sort = new Sort(new Sort.Order(Sort.Direction.DESC, "isDir"),
-                            new Sort.Order("fileName"));
-        } else {
-            sort.and(new Sort("isDir"));
+                            new Sort.Order(Sort.Direction.DESC, "lastModifyTime"));
         }
         List<FileEntity> fileEntities;
         if (StringUtil.isNotEmpty(fileName)) {

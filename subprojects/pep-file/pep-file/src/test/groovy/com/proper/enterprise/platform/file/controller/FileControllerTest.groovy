@@ -130,6 +130,7 @@ class FileControllerTest extends AbstractTest {
             .andReturn().getResponse().getContentAsString()
         assert filResult != null
         FileVO fileVO = JSONUtil.parse(get("/file/" + filResult + "/meta", HttpStatus.OK).getResponse().getContentAsString(), FileVO.class)
+        assert fileVO.getFileSizeUnit() == "43.40 KB"
         assert fileVO.getFileName() == "测试上传文件.png"
 
         // 创建的文件架构为：
