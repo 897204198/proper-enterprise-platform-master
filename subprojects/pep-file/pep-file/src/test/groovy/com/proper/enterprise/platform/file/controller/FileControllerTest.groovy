@@ -113,11 +113,6 @@ class FileControllerTest extends AbstractTest {
         data3['path'] = 'com/upload/'
         assert I18NUtil.getMessage("pep.file.folder.isExist") == post("/file/dir", JSONUtil.toJSON(data3), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
 
-        data3['fileName'] = '测试一下最大文件名'
-        assert I18NUtil.getMessage("pep.file.upload.valid.maxnamelength") == post("/file/dir", JSONUtil.toJSON(data3), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
-        data3['fileName'] = '测试一下最大文件'
-        assert null != post("/file/dir", JSONUtil.toJSON(data3), HttpStatus.CREATED).getResponse().getContentAsString()
-
         // 上传文件
         Resource[] resources = AntResourceUtil.getResources('classpath*:com/proper/enterprise/platform/file/test/upload/测试上传文件.png')
         String filResult = mockMvc.perform(

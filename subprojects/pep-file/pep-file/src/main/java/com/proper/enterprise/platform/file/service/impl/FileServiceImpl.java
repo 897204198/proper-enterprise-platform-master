@@ -33,9 +33,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
     @Value("${dfs.upload.maxsize}")
     private long maxSize;
 
-    @Value("${dfs.upload.maxnamelength}")
-    private long maxNameLength;
-
     @Value("${dfs.upload.rootpath}")
     private String rootPath;
 
@@ -62,7 +59,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
     public File save(MultipartFile file, String virPath) throws IOException {
         File fileEntity = buildFileEntity(file, true);
         validMaxSize(fileEntity);
-        validMaxNameLength(fileEntity);
         if (StringUtil.isNotEmpty(virPath)) {
             virPath = URLDecoder.decode(virPath, PEPConstants.DEFAULT_CHARSET.toString());
             FileEntity fileExistEntity = fileRepository.findOneByVirPathAndFileName(virPath, fileEntity.getFileName());
@@ -147,7 +143,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         if (fileExistEntity != null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.folder.isExist"));
         }
-        validMaxNameLength(fileVO);
         boolean isEndWithSlash = fileDir.endsWith("/");
         if (!isEndWithSlash) {
             fileDir += "/";
@@ -169,7 +164,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         if (fileExistEntity != null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.folder.isExist"));
         }
-        validMaxNameLength(fileVO);
         boolean isEndWithSlash = fileVO.getVirPath().endsWith("/");
         if (!isEndWithSlash) {
             fileVO.setVirPath(fileVO.getVirPath() + "/");
@@ -272,7 +266,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         updateFile.setFilePath(oldFile.getFilePath());
         ((FileEntity) updateFile).setVirPath(((FileEntity) oldFile).getVirPath());
         validMaxSize(updateFile);
-        validMaxNameLength(updateFile);
         updateFile = super.updateForSelective(updateFile);
         dsfService.saveFile(file.getInputStream(), updateFile.getFilePath(), true);
         return updateFile;
@@ -307,13 +300,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
     private void validMaxSize(File file) {
         if (file.getFileSize() > maxSize) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.upload.valid.maxsize"));
-        }
-    }
-
-    private void validMaxNameLength(File file) {
-        String fileName = file.getFileName();
-        if (fileName.getBytes(PEPConstants.DEFAULT_CHARSET).length > maxNameLength) {
-            throw new ErrMsgException(I18NUtil.getMessage("pep.file.upload.valid.maxnamelength"));
         }
     }
 
