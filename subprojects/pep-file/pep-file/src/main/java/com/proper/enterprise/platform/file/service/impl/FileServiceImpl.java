@@ -2,19 +2,19 @@ package com.proper.enterprise.platform.file.service.impl;
 
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.*;
 import com.proper.enterprise.platform.dfs.api.service.DFSService;
+import com.proper.enterprise.platform.file.api.File;
 import com.proper.enterprise.platform.file.entity.FileEntity;
+import com.proper.enterprise.platform.file.repository.FileRepository;
+import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.file.vo.FileVO;
 import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
-import com.proper.enterprise.platform.file.api.File;
-import com.proper.enterprise.platform.file.repository.FileRepository;
-import com.proper.enterprise.platform.file.service.FileService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -32,9 +32,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
 
     @Value("${dfs.upload.maxsize}")
     private long maxSize;
-
-    @Value("${dfs.upload.maxnamelength}")
-    private long maxNameLength;
 
     @Value("${dfs.upload.rootpath}")
     private String rootPath;
@@ -62,7 +59,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
     public File save(MultipartFile file, String virPath) throws IOException {
         File fileEntity = buildFileEntity(file, true);
         validMaxSize(fileEntity);
-        validMaxNameLength(fileEntity);
         if (StringUtil.isNotEmpty(virPath)) {
             virPath = URLDecoder.decode(virPath, PEPConstants.DEFAULT_CHARSET.toString());
             FileEntity fileExistEntity = fileRepository.findOneByVirPathAndFileName(virPath, fileEntity.getFileName());
@@ -147,7 +143,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         if (fileExistEntity != null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.folder.isExist"));
         }
-        validMaxNameLength(fileVO);
         boolean isEndWithSlash = fileDir.endsWith("/");
         if (!isEndWithSlash) {
             fileDir += "/";
@@ -169,7 +164,10 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         if (fileExistEntity != null) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.folder.isExist"));
         }
-        validMaxNameLength(fileVO);
+        boolean isEndWithSlash = fileVO.getVirPath().endsWith("/");
+        if (!isEndWithSlash) {
+            fileVO.setVirPath(fileVO.getVirPath() + "/");
+        }
         FileEntity fileDirOldEntity = (FileEntity) this.findOne(fileVO.getId());
         String subVirtualFileOldPath = fileDirOldEntity.getVirPath()
                                        + fileDirOldEntity.getFileName();
@@ -271,7 +269,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
         updateFile.setFilePath(oldFile.getFilePath());
         ((FileEntity) updateFile).setVirPath(((FileEntity) oldFile).getVirPath());
         validMaxSize(updateFile);
-        validMaxNameLength(updateFile);
         updateFile = super.updateForSelective(updateFile);
         dsfService.saveFile(file.getInputStream(), updateFile.getFilePath(), true);
         return updateFile;
@@ -306,13 +303,6 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
     private void validMaxSize(File file) {
         if (file.getFileSize() > maxSize) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.upload.valid.maxsize"));
-        }
-    }
-
-    private void validMaxNameLength(File file) {
-        String fileName = file.getFileName();
-        if (fileName.getBytes(PEPConstants.DEFAULT_CHARSET).length > maxNameLength) {
-            throw new ErrMsgException(I18NUtil.getMessage("pep.file.upload.valid.maxnamelength"));
         }
     }
 
