@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.util;
 
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.document.NoticeDocument;
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity;
 import com.proper.enterprise.platform.notice.enums.AnalysisResult;
@@ -69,7 +70,7 @@ public class NoticeAnalysisUtil {
             noticeDocument.setAnalysisResult(AnalysisResult.PARTLY);
             noticeDocument.setNotes("%s is missing device info, please re login to the app.", user.getName());
         } else {
-            if (pushDeviceEntity.getPushToken() == null) {
+            if (StringUtil.isNull(pushDeviceEntity.getPushToken())) {
                 result = false;
                 noticeDocument.setAnalysisResult(AnalysisResult.PARTLY);
                 noticeDocument.setNotes("%s is missing push token, please re login to the app.", user.getName());
@@ -79,7 +80,7 @@ public class NoticeAnalysisUtil {
                 noticeDocument.setAnalysisResult(AnalysisResult.PARTLY);
                 noticeDocument.setNotes("%s is missing device type, please re login to the app.", user.getName());
             }
-            if (pushDeviceEntity.getPushMode() == null) {
+            if (StringUtil.isNull(pushDeviceEntity.getPushMode())) {
                 result = false;
                 noticeDocument.setAnalysisResult(AnalysisResult.PARTLY);
                 noticeDocument.setNotes("%s is missing push mode, please re login to the app.", user.getName());
