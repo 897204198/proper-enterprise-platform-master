@@ -1,8 +1,6 @@
 package com.proper.enterprise.platform.notice.server.sdk.request;
 
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -17,8 +15,6 @@ public class NoticeTarget implements Serializable {
     /**
      * 发送目标
      */
-    @NotEmpty(message = "{notice.server.param.target.cantBeEmpty}", groups = NoticeRequest.NoticeSendApi.class)
-    @Length(message = "{notice.server.param.target.isTooLong}", max = 255, groups = NoticeRequest.NoticeSendApi.class)
     private String to;
 
     /**

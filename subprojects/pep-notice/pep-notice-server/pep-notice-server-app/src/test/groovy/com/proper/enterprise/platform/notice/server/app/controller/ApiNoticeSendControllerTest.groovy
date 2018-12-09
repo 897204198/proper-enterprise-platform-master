@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.app.controller
 
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
+import com.proper.enterprise.platform.notice.server.app.dao.entity.NoticeEntity
 import com.proper.enterprise.platform.notice.server.app.handler.MockNoticeSender
 import com.proper.enterprise.platform.notice.server.app.vo.AppVO
 import com.proper.enterprise.platform.notice.server.app.AbstractServerAppTest
@@ -76,8 +77,10 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
         for (int i = 0; i < 2048; i++) {
             target.setTargetExtMsg("targetExt" + i, "targetExt")
         }
-        assert I18NUtil.getMessage("notice.server.param.targetExtMsg.isTooLong") == post("/notice/server/send?access_token=" + accessToken,
-            JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
+        waitExecutorDone()
+        List<NoticeEntity> noticeEntities = noticeRepository.findAll(null, "sendNoticeTest", "sendNoticeTest", "toMe", null, null, null, null)
+        assert noticeEntities.get(0).getErrorCode() == "notice.server.param.targetExtMsg.isTooLong"
         //测notice扩展信息长度
         Map targetExtMap = new HashMap()
         targetExtMap.put("targetExt", "targetExt")
@@ -92,8 +95,10 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
         noticeExtMap.put("noticeExt", "noticeExt")
         noticeRequest.setNoticeExtMsg(noticeExtMap)
         target.setTo("")
-        assert I18NUtil.getMessage("notice.server.param.target.cantBeEmpty") == post("/notice/server/send?access_token=" + accessToken,
-            JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
+        waitExecutorDone()
+        List<NoticeEntity> noticeEntitieNullTos = noticeRepository.findAll(null, "sendNoticeTest", "sendNoticeTest", null, null, null, null, null)
+        assert noticeEntitieNullTos.get(0).getErrorCode() == "notice.server.param.target.cantBeEmpty"
     }
 
     @Test
