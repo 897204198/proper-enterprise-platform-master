@@ -28,10 +28,11 @@ public interface FileService extends BaseJpaService<File, String> {
      *
      * @param file    文件
      * @param virPath 虚拟文件路径
+     * @param rename  是否重命名
      * @return 文件
      * @throws IOException io异常
      */
-    File save(MultipartFile file, String virPath) throws IOException;
+    File save(MultipartFile file, String virPath, Boolean rename) throws IOException;
 
     /**
      * 删除文件

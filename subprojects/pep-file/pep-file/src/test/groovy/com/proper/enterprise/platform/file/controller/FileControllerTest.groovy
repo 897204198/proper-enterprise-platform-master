@@ -108,10 +108,31 @@ class FileControllerTest extends AbstractTest {
             .getResponse().getContentAsString(), Collection.class)
         assert 1 == fileVOs.size()
 
+        // 创建的文件架构为(文件夹优先与文件的修改时间降序)：
+        // com-|
+        //     upload-|
+        //            subUpload (2)
+        //            subUpload (1)
+        //            subUpload
         def data3 = [:]
         data3['fileName'] = 'subUpload'
         data3['path'] = 'com/upload/'
-        assert I18NUtil.getMessage("pep.file.folder.isExist") == post("/file/dir", JSONUtil.toJSON(data3), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        String result3 = post("/file/dir", JSONUtil.toJSON(data3), HttpStatus.CREATED).getResponse().getContentAsString()
+        assert result3 != null
+        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/upload/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK)
+            .getResponse().getContentAsString(), Collection.class)
+        assert 2 == fileVOs.size()
+        assert "subUpload (1)" == fileVOs[0].fileName
+
+        def data4 = [:]
+        data4['fileName'] = 'subUpload'
+        data4['path'] = 'com/upload/'
+        String result4 = post("/file/dir", JSONUtil.toJSON(data4), HttpStatus.CREATED).getResponse().getContentAsString()
+        assert result4 != null
+        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/upload/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK)
+            .getResponse().getContentAsString(), Collection.class)
+        assert 3 == fileVOs.size()
+        assert "subUpload (2)" == fileVOs[0].fileName
 
         // 上传文件
         Resource[] resources = AntResourceUtil.getResources('classpath*:com/proper/enterprise/platform/file/test/upload/测试上传文件.png')
@@ -124,28 +145,52 @@ class FileControllerTest extends AbstractTest {
         ).andExpect(MockMvcResultMatchers.status().isCreated())
             .andReturn().getResponse().getContentAsString()
         assert filResult != null
-        FileVO fileVO = JSONUtil.parse(get("/file/" + filResult + "/meta", HttpStatus.OK).getResponse().getContentAsString(), FileVO.class)
-        assert fileVO.getFileSizeUnit() == "43.40 KB"
-        assert fileVO.getFileName() == "测试上传文件.png"
+        Map fileVO = JSONUtil.parse(get("/file/" + filResult + "/meta", HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert fileVO["fileSize"] == "43.40 KB"
+        assert fileVO["fileName"] == "测试上传文件.png"
+
+        assert I18NUtil.getMessage("pep.file.fileOrFolder.isExist") ==
+            mockMvc.perform(
+            MockMvcRequestBuilders
+                .fileUpload("/file?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()))
+                .file(
+                new MockMultipartFile("file", "测试上传文件.png", ",multipart/form-data", resources[0].inputStream)
+            )
+        ).andExpect(MockMvcResultMatchers.status().is5xxServerError())
+            .andReturn().getResponse().getContentAsString()
+
+        filResult = mockMvc.perform(
+            MockMvcRequestBuilders
+                .fileUpload("/file?rename=true&path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()))
+                .file(
+                new MockMultipartFile("file", "测试上传文件.png", ",multipart/form-data", resources[0].inputStream)
+            )
+        ).andExpect(MockMvcResultMatchers.status().isCreated())
+            .andReturn().getResponse().getContentAsString()
+        assert filResult != null
 
         // 创建的文件架构为：
         // com-|
         //              upload-|
-        //     测试上传文件.png-|
+        //                      subUpload (1)
         //                      subUpload
-
-        // 默认排序 文件夹优先于文件 名称排序
+        // 测试上传文件 (1).png-|
+        //     测试上传文件.png-|
+        // 默认排序 文件夹优先于文件 修改时间倒序
         fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
-        assert 2 == fileVOs.size()
+        assert 3 == fileVOs.size()
         assert fileVOs[0].dir
 
-        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()) + "&fileName=测试上", HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        fileVOs = JSONUtil.parse(get("/file/dir?fileName=测试上&path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        assert 2 == fileVOs.size()
+
+        fileVOs = JSONUtil.parse(get("/file/dir?fileName=测试上传文件 (1).png&path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
         assert 1 == fileVOs.size()
 
         List<PEPOrder> orders = new ArrayList<>()
         orders.add(new PEPOrder(Sort.Direction.DESC, "fileSize"))
         fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()) + "&orders=" + URLEncoder.encode(JSONUtil.toJSON(orders)), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
-        assert 2 == fileVOs.size()
+        assert 3 == fileVOs.size()
         assert fileVOs[0].fileName == "测试上传文件.png"
     }
 
@@ -182,9 +227,9 @@ class FileControllerTest extends AbstractTest {
         // 创建的文件架构为：
         // com-|
         //     upload-|
-        //    upload2-|
         //            subUpload
         //            测试上传文件.png
+        //    upload2-|
         def data3 = [:]
         data3['fileName'] = 'upload2'
         data3['path'] = 'com/'
@@ -204,12 +249,21 @@ class FileControllerTest extends AbstractTest {
         fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/uploadupload/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
         assert 2 == fileVOs.size()
 
-        // 修改文件夹名称 uploadupload => upload2
+        // 修改文件夹名称 uploadupload => upload2 文件名默认变成 upload2 (1)
         fileVO.setFileName("upload2")
-        assert I18NUtil.getMessage("pep.file.folder.isExist") == put("/file/dir/" + result, JSONUtil.toJSON(fileVO), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        put("/file/dir/" + result, JSONUtil.toJSON(fileVO), HttpStatus.OK)
 
-        // 移动文件夹 uploadupload 到 子目录中
-        fileVO.setVirPath("com/uploadupload/subUpload/")
+        fileVO = JSONUtil.parse(get("/file/" + result + "/meta", HttpStatus.OK).getResponse().getContentAsString(), FileVO.class)
+        assert fileVO.getFileName() == "upload2 (1)"
+
+        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/uploadupload/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        assert 0 == fileVOs.size()
+
+        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/upload2 (1)/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        assert 2 == fileVOs.size()
+
+        // 移动文件夹 upload2 (1) 到 子目录中
+        fileVO.setVirPath("com/upload2 (1)/subUpload/")
         assert I18NUtil.getMessage("pep.file.folder.move.error") == put("/file/dir/" + result, JSONUtil.toJSON(fileVO), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
 
         // 移动文件夹 subUpload 到 父目录中

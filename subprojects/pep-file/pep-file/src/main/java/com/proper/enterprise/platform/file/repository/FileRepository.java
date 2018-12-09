@@ -39,11 +39,21 @@ public interface FileRepository extends BaseJpaRepository<FileEntity, String> {
     List<FileEntity> findAllByVirPathAndFileNameContaining(String virPath, String fileName, Sort sort);
 
     /**
+     * 通过虚拟路径,文件名匹配该路径下的文件或者文件夹
+     * 匹配 a/b/ 下的文件名为 c 的文件或者文件夹, 以文件名重复序数倒序
+     *
+     * @param virPath  虚拟路径
+     * @param fileName 文件名
+     * @return 文件列表
+     */
+    List<FileEntity> findAllByVirPathAndFileNameLikeOrderByFileCountDesc(String virPath, String fileName);
+
+    /**
      * 通过虚拟路径和文件名匹配文件或文件夹
      * 匹配 a/b/ 下文件名为 c 的文件或文件夹
      *
-     * @param virPath   虚拟路径
-     * @param fileName  文件名
+     * @param virPath  虚拟路径
+     * @param fileName 文件名
      * @return 文件列表
      */
     FileEntity findOneByVirPathAndFileName(String virPath, String fileName);

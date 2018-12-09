@@ -1,9 +1,10 @@
 package com.proper.enterprise.platform.file.controller;
 
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
-import com.proper.enterprise.platform.core.utils.BigDecimalUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.file.service.FileService;
 import com.proper.enterprise.platform.file.vo.FileVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Collection;
 
 @RestController
@@ -28,8 +30,13 @@ public class FileController extends BaseController {
     }
 
     @PostMapping
-    public ResponseEntity<String> uploadFile(MultipartFile file, String path) throws IOException {
-        return responseOfPost(fileService.save(file, path).getId());
+    public ResponseEntity<String> uploadFile(MultipartFile file,
+                                             String path,
+                                             @RequestParam(defaultValue = "false") Boolean rename) throws IOException {
+        if (StringUtil.isNotEmpty(path)) {
+            path = URLDecoder.decode(path, PEPConstants.DEFAULT_CHARSET.toString());
+        }
+        return responseOfPost(fileService.save(file, path, rename).getId());
     }
 
     @PostMapping(path = "/{id}")
@@ -44,11 +51,8 @@ public class FileController extends BaseController {
     }
 
     @GetMapping(path = "/{id}/meta")
-    public ResponseEntity<FileVO> metainfo(@PathVariable String id) {
+    public ResponseEntity<FileVO> metaInfo(@PathVariable String id) {
         FileVO fileVO = BeanUtil.convert(fileService.findOne(id), FileVO.class);
-        if (fileVO != null) {
-            fileVO.setFileSizeUnit(BigDecimalUtil.parseSize(fileVO.getFileSize()));
-        }
         return responseOfGet(fileVO);
     }
 
