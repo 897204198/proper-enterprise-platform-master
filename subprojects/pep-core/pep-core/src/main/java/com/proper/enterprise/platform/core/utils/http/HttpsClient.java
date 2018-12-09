@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.utils.http;
 
+import com.proper.enterprise.platform.core.interceptor.HttpClientInterceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.internal.platform.Platform;
 import org.springframework.http.MediaType;
@@ -77,6 +78,16 @@ public class HttpsClient extends ClientUtil {
         hc.client = new OkHttpClient.Builder()
             .sslSocketFactory(sslSocketFactory, trustManager)
             .build();
+        return hc;
+    }
+
+    public static HttpsClient initClient(int executionCount) {
+        HttpClientInterceptor httpClientInterceptor = new HttpClientInterceptor();
+        httpClientInterceptor.setExecutionCount(executionCount);
+        HttpsClient hc = new HttpsClient();
+        hc.client = new OkHttpClient.Builder()
+                    .addInterceptor(httpClientInterceptor)
+                    .build();
         return hc;
     }
 
