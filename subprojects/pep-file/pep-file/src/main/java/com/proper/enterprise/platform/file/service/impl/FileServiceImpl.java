@@ -108,6 +108,21 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
     }
 
     @Override
+    public File updateFileName(String id, String fileName, Boolean resetFileType) throws IOException {
+        File updateFile = this.findOne(id);
+        if (null == updateFile) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.file.upload.put.notfind"));
+        }
+        String fileType = getFileType(fileName);
+        if (!resetFileType) {
+            if (fileType == null || !fileType.equals(updateFile.getFileType())) {
+                throw new ErrMsgException(I18NUtil.getMessage("pep.file.upload.put.notfind"));
+            }
+        }
+        return null;
+    }
+
+    @Override
     public void download(String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
         File file = this.findOne(id);
         if (null == file) {
