@@ -114,12 +114,26 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
             throw new ErrMsgException(I18NUtil.getMessage("pep.file.upload.put.notfind"));
         }
         String fileType = getFileType(fileName);
-        if (!resetFileType) {
-            if (fileType == null || !fileType.equals(updateFile.getFileType())) {
-                throw new ErrMsgException(I18NUtil.getMessage("pep.file.upload.put.notfind"));
-            }
+        Boolean fileTypeChanged = fileType == null || !fileType.equals(updateFile.getFileType());
+        if (!resetFileType && fileTypeChanged) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.file.rename.mayDestory"));
         }
-        return null;
+
+        boolean isUnique = fileOrFolderIsUnique(((FileEntity) updateFile).getVirPath(), fileName);
+        if (!isUnique) {
+            int count = generatedFileOrFolderCount(((FileEntity) updateFile).getVirPath(), fileName, false);
+            updateFile.setFileName(buildFileOrFolderName(fileName, count, false));
+            ((FileEntity) updateFile).setFileCount(count);
+        } else {
+            updateFile.setFileName(fileName);
+            updateFile.setFileType(fileType);
+            ((FileEntity) updateFile).setFileCount(0);
+        }
+        updateFile = super.updateForSelective(updateFile);
+
+        FileVO fileVO = new FileVO();
+        BeanUtil.copyProperties(updateFile, fileVO);
+        return fileVO;
     }
 
     @Override
