@@ -155,6 +155,8 @@ class NoticeSenderImplTest extends AbstractTest {
         result = noticeMsgRepository.findAll()
         assert result.get(0).getAnalysisResult() == AnalysisResult.ERROR
         assert result.get(0).getTargets().size() == 1
+        assert result.get(0).getTargets().get(0).id == "test1"
+        assert result.get(0).getTargets().get(0).name == "test1"
         assert result.get(0).getUsers().size() == 2
         assert result.get(0).getNotes().size() == 2
         assert result.get(0).getNotes().contains("test2 is missing device info, please re login to the app.")
