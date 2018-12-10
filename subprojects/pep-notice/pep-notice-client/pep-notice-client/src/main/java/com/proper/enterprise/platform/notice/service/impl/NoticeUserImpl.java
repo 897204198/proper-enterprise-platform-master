@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.notice.service.impl;
 
+import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.notice.service.NoticeUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,13 @@ import java.util.List;
 public class NoticeUserImpl implements NoticeUser {
 
     @Autowired
-    private UserService userService;
+    private UserDao userDao;
 
     public Collection<? extends User> getUsersByIds(List<String> ids) {
         if (CollectionUtil.isEmpty(ids)) {
             return new ArrayList<>();
         }
-        return userService.getUsersByIds(ids);
+        return userDao.findAll(ids);
     }
 
 }
