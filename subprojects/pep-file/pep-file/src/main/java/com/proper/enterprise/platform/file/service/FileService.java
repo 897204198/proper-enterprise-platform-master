@@ -54,6 +54,17 @@ public interface FileService extends BaseJpaService<File, String> {
     File update(String id, MultipartFile file) throws IOException;
 
     /**
+     * 修改文件名称
+     *
+     * @param id            文件id
+     * @param fileName      文件名称
+     * @param resetFileType 是否重设文件类型
+     * @return 文件
+     * @throws IOException io异常
+     */
+    File updateFileName(String id, String fileName, Boolean resetFileType) throws IOException;
+
+    /**
      * 下载文件
      *
      * @param id       文件id

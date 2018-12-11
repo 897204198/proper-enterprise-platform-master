@@ -44,6 +44,12 @@ public class FileController extends BaseController {
         return responseOfPost(fileService.update(id, file).getId());
     }
 
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<String> fileReName(@PathVariable String id,
+                                             String fileName,
+                                             @RequestParam(defaultValue = "false") Boolean resetFileType) throws IOException {
+        return responseOfPut(fileService.updateFileName(id, fileName, resetFileType).getId());
+    }
 
     @GetMapping(path = "/{id}")
     public void download(@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws IOException {
