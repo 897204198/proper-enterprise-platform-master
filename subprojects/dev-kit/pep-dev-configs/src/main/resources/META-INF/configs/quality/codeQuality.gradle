@@ -14,10 +14,6 @@ checkstyle {
     toolVersion = '8.14'
 }
 
-dependencies {
-    checkstyle libraries.pep_checkstyle
-}
-
 codenarc {
     configFile = new File(configDir, "codenarc.xml")
     toolVersion = '1.2.1'

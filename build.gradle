@@ -145,12 +145,14 @@ subprojects {
         annotationProcessor libraries.spring_boot_configuration_processor
 
                 compileOnly libraries.p3c_pmd,
+                            libraries.pep_checkstyle,
                             libraries.spring_boot_starter_web,
                             libraries.springfox
 
             testCompileOnly libraries.groovy,
                             libraries.groovy_dateutil,
                             libraries.p3c_pmd,
+                            libraries.pep_checkstyle,
                             libraries.spock,
                             libraries.spring_boot_starter_web
 
