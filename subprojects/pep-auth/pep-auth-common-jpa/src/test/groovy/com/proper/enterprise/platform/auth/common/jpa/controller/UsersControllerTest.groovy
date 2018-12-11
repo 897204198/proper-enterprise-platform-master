@@ -470,6 +470,25 @@ class UsersControllerTest extends AbstractTest {
         assert userService.getByUsername('user_dup', EnableEnum.ALL).getPassword() == pwdService.encrypt('456')
     }
 
+    @Test
+    void updateCurrent() {
+        def userReq = [:]
+        userReq['username'] = 'user_dup'
+        userReq['name'] = 'name'
+        userReq['password'] = 'password'
+        userReq['email'] = 'email'
+        userReq['phone'] = '123'
+        userReq['enable'] = true
+        UserVO userVO = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString, UserVO.class)
+        assert userVO.getUsername() == 'user_dup'
+        Authentication.setCurrentUserId(userVO.getId())
+
+        def updateReq = [:]
+        updateReq['username'] = 'user_update'
+        UserVO userAfterVO = JSONUtil.parse(put(URI + "/current", JSONUtil.toJSON(updateReq), HttpStatus.OK).response.contentAsString, UserVO.class)
+        assert userAfterVO.getUsername() == 'user_update'
+    }
+
     @After
     void tearDown() {
         userRepository.deleteAll()
