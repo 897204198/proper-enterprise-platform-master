@@ -213,6 +213,8 @@ libraries.reflections = 'org.reflections:reflections:0.9.11'
 
 libraries.servlet_api = 'javax.servlet:javax.servlet-api:3.1.0'
 
+//libraries.checkstyle_api = 'com.puppycrawl.tools:checkstyle:8.14'
+
 libraries.slf4j_api = "org.slf4j:slf4j-api:${versions.slf4j}"
 
 libraries.spock = [
