@@ -1,10 +1,8 @@
 package com.proper.enterprise.platform.file.controller
 
 import com.proper.enterprise.platform.core.CoreProperties
-import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import com.proper.enterprise.platform.core.domain.PEPOrder
-import com.proper.enterprise.platform.core.i18n.I18NUtil
 import com.proper.enterprise.platform.core.utils.AntResourceUtil
 import com.proper.enterprise.platform.file.vo.FileVO
 import com.proper.enterprise.platform.test.AbstractJPATest
@@ -105,10 +103,10 @@ class FileControllerTest extends AbstractJPATest {
         // com-|
         //     upload-|
         //            subUpload
-        def fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK)
+        def fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPPropertiesLoader.load(CoreProperties.class).getCharset()), HttpStatus.OK)
             .getResponse().getContentAsString(), Collection.class)
         assert 1 == fileVOs.size()
-        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/upload/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK)
+        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/upload/", PEPPropertiesLoader.load(CoreProperties.class).getCharset()), HttpStatus.OK)
             .getResponse().getContentAsString(), Collection.class)
         assert 1 == fileVOs.size()
 
@@ -126,7 +124,7 @@ class FileControllerTest extends AbstractJPATest {
         Resource[] resources = AntResourceUtil.getResources('classpath*:com/proper/enterprise/platform/file/test/upload/测试上传文件.png')
         String filResult = mockMvc.perform(
             MockMvcRequestBuilders
-                .fileUpload("/file?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()))
+                .fileUpload("/file?path=" + URLEncoder.encode("com/", PEPPropertiesLoader.load(CoreProperties.class).getCharset()))
                 .file(
                 new MockMultipartFile("file", "测试上传文件.png", ",multipart/form-data", resources[0].inputStream)
             )
@@ -143,16 +141,16 @@ class FileControllerTest extends AbstractJPATest {
         //                      subUpload
 
         // 默认排序 文件夹优先于文件 名称排序
-        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPPropertiesLoader.load(CoreProperties.class).getCharset()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
         assert 2 == fileVOs.size()
         assert fileVOs[0].dir
 
-        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()) + "&fileName=测试上", HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPPropertiesLoader.load(CoreProperties.class).getCharset()) + "&fileName=测试上", HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
         assert 1 == fileVOs.size()
 
         List<PEPOrder> orders = new ArrayList<>()
         orders.add(new PEPOrder(Sort.Direction.DESC, "fileSize"))
-        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()) + "&orders=" + URLEncoder.encode(JSONUtil.toJSON(orders)), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPPropertiesLoader.load(CoreProperties.class).getCharset()) + "&orders=" + URLEncoder.encode(JSONUtil.toJSON(orders)), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
         assert 2 == fileVOs.size()
         assert fileVOs[0].fileName == "测试上传文件.png"
     }
@@ -206,10 +204,10 @@ class FileControllerTest extends AbstractJPATest {
         fileVO.setFileName("uploadupload")
         put("/file/dir/" + result, JSONUtil.toJSON(fileVO), HttpStatus.OK)
 
-        def fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/upload/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        def fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/upload/", PEPPropertiesLoader.load(CoreProperties.class).getCharset()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
         assert 0 == fileVOs.size()
 
-        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/uploadupload/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/uploadupload/", PEPPropertiesLoader.load(CoreProperties.class).getCharset()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
         assert 2 == fileVOs.size()
 
         // 修改文件夹名称 uploadupload => upload2
@@ -226,7 +224,7 @@ class FileControllerTest extends AbstractJPATest {
         fileVO2.setVirPath("com/")
         put("/file/dir/" + result2, JSONUtil.toJSON(fileVO2), HttpStatus.OK)
 
-        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPPropertiesLoader.load(CoreProperties.class).getCharset()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
         assert 3 == fileVOs.size()
     }
 
@@ -241,7 +239,7 @@ class FileControllerTest extends AbstractJPATest {
         Resource[] resources = AntResourceUtil.getResources('classpath*:com/proper/enterprise/platform/file/test/upload/测试上传文件.png')
         String filResult = mockMvc.perform(
             MockMvcRequestBuilders
-                .fileUpload("/file?path=" + URLEncoder.encode("com/upload/", PEPConstants.DEFAULT_CHARSET.toString()))
+                .fileUpload("/file?path=" + URLEncoder.encode("com/upload/", PEPPropertiesLoader.load(CoreProperties.class).getCharset()))
                 .file(
                 new MockMultipartFile("file", "测试上传文件.png", ",multipart/form-data", resources[0].inputStream)
             )
@@ -260,7 +258,7 @@ class FileControllerTest extends AbstractJPATest {
 
         delete("/file/dir?ids=" + result, HttpStatus.NO_CONTENT)
 
-        def fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/upload/", PEPConstants.DEFAULT_CHARSET.toString()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        def fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/upload/", PEPPropertiesLoader.load(CoreProperties.class).getCharset()), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
         assert 0 == fileVOs.size()
 
         assert '' == get("/file/" + filResult + "/meta", HttpStatus.OK).getResponse().getContentAsString()
