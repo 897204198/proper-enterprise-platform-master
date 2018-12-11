@@ -6,10 +6,10 @@ import com.proper.enterprise.platform.notice.document.NoticeDocument
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity
 import com.proper.enterprise.platform.notice.enums.AnalysisResult
 import com.proper.enterprise.platform.notice.enums.PushDeviceType
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractSpringTest
 import org.junit.Test
 
-class NoticeAnalysisUtilTest extends AbstractTest {
+class NoticeAnalysisUtilTest extends AbstractSpringTest {
 
     @Test
     void isDeviceInfoOk() {
