@@ -3,11 +3,12 @@ package com.proper.enterprise.platform.notice.server.app.controller
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.i18n.I18NUtil
-import com.proper.enterprise.platform.notice.server.app.handler.MockNoticeSender
-import com.proper.enterprise.platform.notice.server.app.vo.AppVO
 import com.proper.enterprise.platform.notice.server.app.AbstractServerAppTest
+import com.proper.enterprise.platform.notice.server.app.dao.entity.NoticeEntity
 import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository
+import com.proper.enterprise.platform.notice.server.app.handler.MockNoticeSender
 import com.proper.enterprise.platform.notice.server.app.scheduler.NoticeStatusSyncScheduler
+import com.proper.enterprise.platform.notice.server.app.vo.AppVO
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest
@@ -77,8 +78,10 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
         for (int i = 0; i < 2048; i++) {
             target.setTargetExtMsg("targetExt" + i, "targetExt")
         }
-        assert I18NUtil.getMessage("notice.server.param.targetExtMsg.isTooLong") == post("/notice/server/send?access_token=" + accessToken,
-            JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
+        waitExecutorDone()
+        List<NoticeEntity> noticeEntities = noticeRepository.findAll(null, "sendNoticeTest", "sendNoticeTest", "toMe", null, null, null, null)
+        assert noticeEntities.get(0).getErrorCode() == "notice.server.param.targetExtMsg.isTooLong"
         //测notice扩展信息长度
         Map targetExtMap = new HashMap()
         targetExtMap.put("targetExt", "targetExt")
@@ -93,8 +96,10 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
         noticeExtMap.put("noticeExt", "noticeExt")
         noticeRequest.setNoticeExtMsg(noticeExtMap)
         target.setTo("")
-        assert I18NUtil.getMessage("notice.server.param.target.cantBeEmpty") == post("/notice/server/send?access_token=" + accessToken,
-            JSONUtil.toJSON(noticeRequest), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
+        waitExecutorDone()
+        List<NoticeEntity> noticeEntitieNullTos = noticeRepository.findAll(null, "sendNoticeTest", "sendNoticeTest", null, null, null, null, null)
+        assert noticeEntitieNullTos.get(0).getErrorCode() == "notice.server.param.target.cantBeEmpty"
     }
 
     @Test
@@ -116,14 +121,14 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
         noticeRequest.setTargets(targets)
         noticeRequest.setNoticeExtMsg("noticeExt", "noticeExt")
         post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
-        Thread.sleep(3000)
+        waitExecutorDone()
         DataTrunk searchPendingList = JSONUtil.parse(get("/notice/server/msg?appKey="
             + appKey + "&batchId=" + appKey,
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert searchPendingList.data.size() == 1
         assert searchPendingList.data.get(0).status == NoticeStatus.PENDING.name()
         noticeStatusSyncScheduler.syncPending()
-        Thread.sleep(3000)
+        waitExecutorDone()
         DataTrunk searchSuccessList = JSONUtil.parse(get("/notice/server/msg?appKey="
             + appKey + "&batchId=" + appKey,
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
@@ -150,7 +155,7 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
         noticeRequest.setTargets(targets)
         noticeRequest.setNoticeExtMsg("noticeExt", "noticeExt")
         post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
-        Thread.sleep(3000)
+        waitExecutorDone()
         mockUser("1", "admin")
         DataTrunk searchErrList = JSONUtil.parse(get("/notice/server/msg?appKey=mockErrSend&batchId=mockErrSend",
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
@@ -176,7 +181,7 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
         noticeRequest.setTargets(targets)
         noticeRequest.setNoticeExtMsg("noticeExt", "noticeExt")
         post("/notice/server/send?access_token=" + accessToken, JSONUtil.toJSON(noticeRequest), HttpStatus.CREATED)
-        Thread.sleep(3000)
+        waitExecutorDone()
         DataTrunk searchPendingList = JSONUtil.parse(get("/notice/server/msg?appKey="
             + MockNoticeSender.MOCK_RETRY_STATUS + "&batchId=" + MockNoticeSender.MOCK_RETRY_STATUS,
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
@@ -184,7 +189,6 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
         assert searchPendingList.data.get(0).status == NoticeStatus.RETRY.name()
         assert searchPendingList.data.get(0).retryCount == 0
         noticeStatusSyncScheduler.syncRetry()
-        Thread.sleep(3000)
         DataTrunk searchRetry1List = JSONUtil.parse(get("/notice/server/msg?appKey=" + MockNoticeSender.MOCK_RETRY_STATUS
             + "&batchId=" + MockNoticeSender.MOCK_RETRY_STATUS,
             HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)

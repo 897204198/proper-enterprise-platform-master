@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.api.factory.NoticeSenderFactory;
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler;
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult;
@@ -32,6 +33,8 @@ public class NoticeSenderImpl implements NoticeSender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NoticeSenderImpl.class);
 
+    private static final Integer MAX_TARGET_TO_SIZE = 255;
+
     private NoticeDaoService noticeDaoService;
 
     private NoticeServerAppProperties noticeServerAppProperties;
@@ -48,23 +51,14 @@ public class NoticeSenderImpl implements NoticeSender {
         if (!AppUtil.isEnable(appKey)) {
             throw new ErrMsgException(appKey + " is disabled");
         }
+        if (null != noticeRequest.getNoticeExtMsg()
+            && JSONUtil.toJSONIgnoreException(noticeRequest.getNoticeExtMsg()).length() > 2048) {
+            throw new ErrMsgException(I18NUtil.getMessage("notice.server.param.noticeExtMsg.isTooLong"));
+        }
         List<Notice> notices = RequestConvert.convert(noticeRequest);
-        NoticeSendHandler noticeSendHandler = NoticeSenderFactory.product(noticeRequest.getNoticeType());
         for (Notice notice : notices) {
-            if (null != notice.getNoticeExtMsgMap()
-                && JSONUtil.toJSONIgnoreException(notice.getNoticeExtMsgMap()).length() > 2048) {
-                throw new ErrMsgException(I18NUtil.getMessage("notice.server.param.noticeExtMsg.isTooLong"));
-            }
-            if (null != notice.getTargetExtMsgMap()
-                && JSONUtil.toJSONIgnoreException(notice.getTargetExtMsgMap()).length() > 2048) {
-                throw new ErrMsgException(I18NUtil.getMessage("notice.server.param.targetExtMsg.isTooLong"));
-            }
             notice.setAppKey(appKey);
             notice.setNoticeType(noticeRequest.getNoticeType());
-            BusinessNoticeResult businessNoticeResult = noticeSendHandler.beforeSend(notice);
-            if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
-                throw new ErrMsgException(businessNoticeResult.getMessage());
-            }
         }
         return notices;
     }
@@ -80,6 +74,43 @@ public class NoticeSenderImpl implements NoticeSender {
     public void sendAsync(Notice notice) {
         Notice saveNotice;
         try {
+            if (null != notice.getTargetExtMsgMap()
+                && JSONUtil.toJSONIgnoreException(notice.getTargetExtMsgMap()).length() > 2048) {
+                notice.setErrorMsg(I18NUtil.getMessage("notice.server.param.targetExtMsg.isTooLong")
+                    + ":" + JSONUtil.toJSONIgnoreException(notice.getTargetExtMsgMap()));
+                notice.setErrorCode("notice.server.param.targetExtMsg.isTooLong");
+                notice.setStatus(NoticeStatus.FAIL);
+                NoticeVO noticeVO = BeanUtil.convert(notice, NoticeVO.class);
+                noticeVO.setTargetExtMsg(null);
+                noticeDaoService.save(noticeVO);
+                return;
+            }
+            NoticeSendHandler noticeSendHandler = NoticeSenderFactory.product(notice.getNoticeType());
+            BusinessNoticeResult businessNoticeResult = noticeSendHandler.beforeSend(notice);
+            if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
+                notice.setErrorMsg(businessNoticeResult.getMessage());
+                notice.setErrorCode(businessNoticeResult.getCode());
+                notice.setStatus(NoticeStatus.FAIL);
+                noticeDaoService.save(BeanUtil.convert(notice, NoticeVO.class));
+                return;
+            }
+            if (StringUtil.isNotEmpty(notice.getTargetTo()) && notice.getTargetTo().length() > MAX_TARGET_TO_SIZE) {
+                notice.setErrorMsg(I18NUtil.getMessage("notice.server.param.target.isTooLong")
+                    + ":" + notice.getTargetTo());
+                notice.setErrorCode("notice.server.param.target.isTooLong");
+                notice.setStatus(NoticeStatus.FAIL);
+                notice.setTargetTo("");
+                noticeDaoService.save(BeanUtil.convert(notice, NoticeVO.class));
+                return;
+            }
+            if (StringUtil.isEmpty(notice.getTargetTo())) {
+                notice.setErrorMsg(I18NUtil.getMessage("notice.server.param.target.cantBeEmpty"));
+                notice.setErrorCode("notice.server.param.target.cantBeEmpty");
+                notice.setStatus(NoticeStatus.FAIL);
+                notice.setTargetTo("");
+                noticeDaoService.save(BeanUtil.convert(notice, NoticeVO.class));
+                return;
+            }
             saveNotice = noticeDaoService.save(BeanUtil.convert(notice, NoticeVO.class));
         } catch (Exception e) {
             LOGGER.error("notice persistence exception,batchId{},appKey:{}", notice.getBatchId(),

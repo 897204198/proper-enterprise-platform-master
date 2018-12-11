@@ -80,6 +80,16 @@ public class HttpsClient extends ClientUtil {
         return hc;
     }
 
+    public static HttpsClient initClient(int executionCount) {
+        HttpClientInterceptor httpClientInterceptor = new HttpClientInterceptor();
+        httpClientInterceptor.setExecutionCount(executionCount);
+        HttpsClient hc = new HttpsClient();
+        hc.client = new OkHttpClient.Builder()
+                    .addInterceptor(httpClientInterceptor)
+                    .build();
+        return hc;
+    }
+
     public ResponseEntity<byte[]> get(String url) throws IOException {
         return perform(client, url, GET, null, null, null);
     }

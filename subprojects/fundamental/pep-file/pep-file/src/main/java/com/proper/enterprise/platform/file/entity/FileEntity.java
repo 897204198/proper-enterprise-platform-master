@@ -11,7 +11,8 @@ import java.io.IOException;
 import java.util.Map;
 
 @Entity
-@Table(name = "PEP_FILE")
+@Table(name = "PEP_FILE", indexes = {
+    @Index(name = "UK_FILE_NAME_VIR_PATH", columnList = "fileName, virPath", unique = true)})
 public class FileEntity extends BaseEntity implements File {
 
     public FileEntity() {
@@ -51,6 +52,12 @@ public class FileEntity extends BaseEntity implements File {
     @Type(type = "yes_no")
     @Column(nullable = false)
     private Boolean isDir = false;
+
+    /**
+     * 文件名重复序数
+     */
+    @Column(nullable = false)
+    private Integer fileCount = 0;
 
     public String getFileName() {
         return fileName;
@@ -121,5 +128,13 @@ public class FileEntity extends BaseEntity implements File {
 
     public void setDir(Boolean dir) {
         isDir = dir;
+    }
+
+    public Integer getFileCount() {
+        return fileCount;
+    }
+
+    public void setFileCount(Integer fileCount) {
+        this.fileCount = fileCount;
     }
 }

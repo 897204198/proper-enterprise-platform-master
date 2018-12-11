@@ -64,7 +64,7 @@ public class UserVO extends BaseVO implements User {
     /**
      * 用户手机号
      */
-    @JsonView(value = {Single.class})
+    @JsonView(value = {Single.class, CurrentUser.class})
     private String phone;
 
     /**

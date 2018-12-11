@@ -1,9 +1,7 @@
 package com.proper.enterprise.platform.notice.service.impl;
 
-import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
-import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
@@ -17,6 +15,7 @@ import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
 import com.proper.enterprise.platform.notice.service.NoticeCollector;
 import com.proper.enterprise.platform.notice.service.NoticeSetService;
+import com.proper.enterprise.platform.notice.service.NoticeUser;
 import com.proper.enterprise.platform.notice.util.NoticeAnalysisUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
@@ -48,7 +47,7 @@ public class NoticeSendServiceImpl {
     private TemplateService templateService;
 
     @Autowired
-    private UserDao userDao;
+    private NoticeUser noticeUser;
 
     private static final int VAR200 = 200;
 
@@ -64,12 +63,12 @@ public class NoticeSendServiceImpl {
                     continue;
                 }
                 sendNoticeChannel(fromUserId,
-                                  toUserIds,
-                                  noticeSetMap,
-                                  templateDetailVO.getTitle(),
-                                  templateDetailVO.getTemplate(),
-                                  custom,
-                                  NoticeType.valueOf(templateDetailVO.getType()));
+                    toUserIds,
+                    noticeSetMap,
+                    templateDetailVO.getTitle(),
+                    templateDetailVO.getTemplate(),
+                    custom,
+                    NoticeType.valueOf(templateDetailVO.getType()));
             }
         }
     }
@@ -82,13 +81,13 @@ public class NoticeSendServiceImpl {
     }
 
     public void sendNoticeChannel(String fromUserId,
-                                   Set<String> toUserIds,
-                                   Map<String, NoticeSetDocument> noticeSetMap,
-                                   String title,
-                                   String content,
-                                   Map<String, Object> custom,
-                                   NoticeType noticeType) {
-        Collection<? extends User> users = this.getUsersByIds(new ArrayList<>(toUserIds));
+                                  Set<String> toUserIds,
+                                  Map<String, NoticeSetDocument> noticeSetMap,
+                                  String title,
+                                  String content,
+                                  Map<String, Object> custom,
+                                  NoticeType noticeType) {
+        Collection<? extends User> users = noticeUser.getUsersByIds(new ArrayList<>(toUserIds));
         NoticeCollector noticeCollector = NoticeCollectorFactory.create(noticeType);
         NoticeDocument noticeDocument = this.packageNoticeDocument(fromUserId, toUserIds, custom, noticeType, title, content);
         noticeCollector.addNoticeDocument(noticeDocument);
@@ -102,13 +101,6 @@ public class NoticeSendServiceImpl {
         if (!NoticeAnalysisUtil.isNecessaryResult(noticeDocument)) {
             accessNoticeServer(noticeVO);
         }
-    }
-
-    public Collection<? extends User> getUsersByIds(List<String> ids) {
-        if (CollectionUtil.isEmpty(ids)) {
-            return new ArrayList<>();
-        }
-        return userDao.findAll(ids);
     }
 
     private void analysis(NoticeDocument noticeDocument, Collection<? extends User> users) {
@@ -136,6 +128,7 @@ public class NoticeSendServiceImpl {
     private TargetModel packageTargetModel(User user) {
         TargetModel targetModel = new TargetModel();
         targetModel.setId(user.getId());
+        targetModel.setName(user.getName());
         return targetModel;
     }
 

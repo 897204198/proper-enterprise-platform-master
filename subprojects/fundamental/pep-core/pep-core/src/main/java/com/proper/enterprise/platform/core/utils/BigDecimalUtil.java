@@ -26,6 +26,7 @@ public class BigDecimalUtil {
      */
     public static String parseSize(Long size) {
         Long carryOver = 1024L;
+        double bigDecimal;
         if (size == null) {
             size = 0L;
         }
@@ -33,20 +34,20 @@ public class BigDecimalUtil {
             return
                 new BigDecimal(Double.toString(size / 1024.000)).setScale(2, RoundingMode.HALF_UP) + " KB";
         } else {
-            size = new BigDecimal(Double.toString(size / 1024.000)).setScale(2, RoundingMode.HALF_UP).longValue();
+            bigDecimal = new BigDecimal(Double.toString(size / 1024.000)).setScale(2, RoundingMode.HALF_UP).doubleValue();
         }
-        if (size < carryOver) {
+        if (bigDecimal < carryOver) {
             return
-                new BigDecimal(Double.toString(size)).setScale(2, RoundingMode.HALF_UP) + " KB";
+                new BigDecimal(Double.toString(bigDecimal)).setScale(2, RoundingMode.HALF_UP) + " KB";
         } else {
-            size = new BigDecimal(Double.toString(size / 1024.000)).setScale(2, RoundingMode.HALF_UP).longValue();
+            bigDecimal = new BigDecimal(Double.toString(bigDecimal / 1024.000)).setScale(2, RoundingMode.HALF_UP).doubleValue();
         }
-        if (size < carryOver) {
+        if (bigDecimal < carryOver) {
             return
-                new BigDecimal(Double.toString(size)).setScale(2, RoundingMode.HALF_UP) + " MB";
+                new BigDecimal(Double.toString(bigDecimal)).setScale(2, RoundingMode.HALF_UP) + " MB";
         } else {
             return
-                new BigDecimal(Double.toString(size / 1024.000)).setScale(2, RoundingMode.HALF_UP) + " GB";
+                new BigDecimal(Double.toString(bigDecimal / 1024.000)).setScale(2, RoundingMode.HALF_UP) + " GB";
         }
     }
 }

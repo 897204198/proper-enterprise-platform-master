@@ -20,9 +20,6 @@ import java.util.concurrent.TimeUnit;
 public class HttpClient extends ClientUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClient.class);
 
-
-    private static OkHttpClient client = new OkHttpClient();
-
     /**
      * 私有化工具类的构造函数，避免对工具类的实例化
      */
@@ -37,56 +34,90 @@ public class HttpClient extends ClientUtil {
     }
 
     public static ResponseEntity<byte[]> get(String url) throws IOException {
+        OkHttpClient client = new OkHttpClient();
         return perform(client, url, GET, null, null, null);
     }
 
     public static ResponseEntity<byte[]> get(String url, int timeout) throws IOException {
-        client = new OkHttpClient.Builder().readTimeout(timeout, TimeUnit.MILLISECONDS).build();
+        OkHttpClient client = new OkHttpClient.Builder().readTimeout(timeout, TimeUnit.MILLISECONDS).build();
         return perform(client, url, GET, null, null, null);
     }
 
     public static ResponseEntity<byte[]> get(String url, Map<String, String> headers) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        return perform(client, url, GET, headers, null, null);
+    }
+
+    public static ResponseEntity<byte[]> get(String url, Map<String, String> headers, int executionCount) throws IOException {
+        OkHttpClient client = initClient(executionCount);
         return perform(client, url, GET, headers, null, null);
     }
 
     public static ResponseEntity<byte[]> post(String url, MediaType type, String data) throws IOException {
+        OkHttpClient client = new OkHttpClient();
         return perform(client, url, POST, null, type, data);
     }
 
     public static ResponseEntity<byte[]> post(String url, MediaType type, String data, int timeout) throws IOException {
-        client = new OkHttpClient.Builder().readTimeout(timeout, TimeUnit.MILLISECONDS).build();
+        OkHttpClient client = new OkHttpClient.Builder().readTimeout(timeout, TimeUnit.MILLISECONDS).build();
         return perform(client, url, POST, null, type, data);
     }
 
     public static void post(String url, MediaType type, String data, Callback callback) {
+        OkHttpClient client = new OkHttpClient();
         perform(client, url, POST, null, type, data, callback);
     }
 
     public static ResponseEntity<byte[]> post(String url, Map<String, String> headers, MediaType type, String data) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        return perform(client, url, POST, headers, type, data);
+    }
+
+    public static ResponseEntity<byte[]> post(String url, Map<String, String> headers, MediaType type, String data,
+                                              int executionCount) throws IOException {
+        OkHttpClient client = initClient(executionCount);
         return perform(client, url, POST, headers, type, data);
     }
 
     public static ResponseEntity<byte[]> put(String url, MediaType type, String data) throws IOException {
+        OkHttpClient client = new OkHttpClient();
         return perform(client, url, PUT, null, type, data);
     }
 
     public static ResponseEntity<byte[]> put(String url, Map<String, String> headers, MediaType type, String data) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        return perform(client, url, PUT, headers, type, data);
+    }
+
+    public static ResponseEntity<byte[]> put(String url, Map<String, String> headers, MediaType type, String data,
+                                             int executionCount) throws IOException {
+        OkHttpClient client = initClient(executionCount);
         return perform(client, url, PUT, headers, type, data);
     }
 
     public static ResponseEntity<byte[]> delete(String url) throws IOException {
+        OkHttpClient client = new OkHttpClient();
         return perform(client, url, DELETE, null, null, null);
     }
 
     public static ResponseEntity<byte[]> delete(String url, Map<String, String> headers) throws IOException {
+        OkHttpClient client = new OkHttpClient();
         return perform(client, url, DELETE, headers, null, null);
     }
 
     public static ResponseEntity<byte[]> delete(String url, MediaType type, String data) throws IOException {
+        OkHttpClient client = new OkHttpClient();
         return perform(client, url, DELETE, null, type, data);
     }
 
     public static ResponseEntity<byte[]> delete(String url, Map<String, String> headers, MediaType type, String data) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        return perform(client, url, DELETE, headers, type, data);
+    }
+
+    public static ResponseEntity<byte[]> delete(String url, Map<String, String> headers, MediaType type, String data,
+                                                int executionCount) throws IOException {
+        OkHttpClient client = initClient(executionCount);
         return perform(client, url, DELETE, headers, type, data);
     }
 
@@ -125,6 +156,15 @@ public class HttpClient extends ClientUtil {
             stringBuffer.deleteCharAt(stringBuffer.length() - 1);
         }
         return stringBuffer.toString();
+    }
+
+    private static OkHttpClient initClient(int executionCount) {
+        HttpClientInterceptor httpClientInterceptor = new HttpClientInterceptor();
+        httpClientInterceptor.setExecutionCount(executionCount);
+        OkHttpClient client = new OkHttpClient.Builder()
+                              .addInterceptor(httpClientInterceptor)
+                              .build();
+        return client;
     }
 
 }
