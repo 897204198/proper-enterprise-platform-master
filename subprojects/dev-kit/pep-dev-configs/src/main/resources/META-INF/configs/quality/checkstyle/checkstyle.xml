@@ -23,11 +23,11 @@
     </module>
 
     <module name="TreeWalker">
-        <!--<module name="com.proper.enterprise.platform.kit.controller.MethodCheck">-->
+        <!--<module name="Swagger">-->
             <!--<property name="anno" value="@ApiOperation"/>-->
         <!--</module>-->
-        <module name="com.proper.enterprise.platform.kit.controller.MethodLimitCheck">
-            <property name="max" value="45"/>
+        <module name="MethodLimit">
+            <property name="max" value="2"/>
         </module>
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">

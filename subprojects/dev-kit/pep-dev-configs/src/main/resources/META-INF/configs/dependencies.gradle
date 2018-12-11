@@ -96,10 +96,12 @@ libraries.aspectjweaver = "org.aspectj:aspectjweaver:1.8.6"
 
 //libraries.cglib = 'cglib:cglib:2.2'
 
-libraries.commons_collections = 'commons-collections:commons-collections:3.2.2'
+libraries.checkstyle = 'com.puppycrawl.tools:checkstyle:8.14'
 
 libraries.cmb_b2b = 'com.cmb.b2b:cmb-b2b:1.0.0'
 libraries.cmb_pay = 'com.cmb.pay:cmb-pay:1.0.0'
+
+libraries.commons_collections = 'commons-collections:commons-collections:3.2.2'
 
 libraries.commons_codec = 'commons-codec:commons-codec:1.11'
 
@@ -213,8 +215,6 @@ libraries.reflections = 'org.reflections:reflections:0.9.11'
 
 libraries.servlet_api = 'javax.servlet:javax.servlet-api:3.1.0'
 
-//libraries.checkstyle_api = 'com.puppycrawl.tools:checkstyle:8.14'
-
 libraries.slf4j_api = "org.slf4j:slf4j-api:${versions.slf4j}"
 
 libraries.spock = [
@@ -318,6 +318,7 @@ libraries.pep_av_backend           = "com.proper.enterprise.platform:pep-av-back
 libraries.pep_cache_api            = "com.proper.enterprise.platform:pep-cache-api:${versions.pep}"
 libraries.pep_cache_ehcache        = "com.proper.enterprise.platform:pep-cache-ehcache:${versions.pep}"
 libraries.pep_cache_redis          = "com.proper.enterprise.platform:pep-cache-redis:${versions.pep}"
+libraries.pep_checkstyle           = "com.proper.enterprise.platform:pep-checkstyle:${versions.pep}"
 libraries.pep_configs              = "com.proper.enterprise.platform:pep-configs:${versions.pep}"
 libraries.pep_core                 = "com.proper.enterprise.platform:pep-core:${versions.pep}"
 libraries.pep_core_jpa             = "com.proper.enterprise.platform:pep-core-jpa:${versions.pep}"

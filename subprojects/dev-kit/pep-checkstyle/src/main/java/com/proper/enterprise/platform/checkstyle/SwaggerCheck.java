@@ -1,10 +1,10 @@
-package com.proper.enterprise.platform.kit.controller;
+package com.proper.enterprise.platform.checkstyle;
 
 import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class MethodCheck extends AbstractCheck {
+public class SwaggerCheck extends AbstractCheck {
 
     private static final String SWAGGER_ANNOTATION = "ApiOperation";
     private int anno = Integer.valueOf(SWAGGER_ANNOTATION);
