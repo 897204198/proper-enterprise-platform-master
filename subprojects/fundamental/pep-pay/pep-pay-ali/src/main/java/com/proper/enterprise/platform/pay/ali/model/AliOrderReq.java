@@ -21,6 +21,7 @@ public class AliOrderReq implements OrderReq {
     /**
      * 商户网站唯一订单号
      */
+
     private String outTradeNo;
     /**
      * 商品名称
