@@ -24,8 +24,8 @@ public class SwaggerCheck extends AbstractCheck {
         String str = fileContents.getFileName();
         if (str.endsWith("Controller.java")) {
             if (ast.branchContains(TokenTypes.METHOD_DEF)) {
-                if (ast.branchContains(TokenTypes.ANNOTATION_DEF)) {
-                    if (TokenTypes.ANNOTATION_DEF == Integer.parseInt(anno)) {
+                if (ast.branchContains(TokenTypes.ANNOTATIONS)) {
+                    if (String.valueOf(TokenTypes.ANNOTATIONS).contains(anno)) {
                         return;
                     }
                 } else {
