@@ -1,7 +1,10 @@
 package com.proper.enterprise.platform.checkstyle;
 
-public class MyClass {
+import org.springframework.web.bind.annotation.GetMapping;
 
+public class MyClassController {
+
+    @GetMapping
     public String getLatest() {
         return "";
     }

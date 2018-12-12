@@ -6,7 +6,6 @@ import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class SwaggerCheck extends AbstractCheck {
-
     private static final String SWAGGER_ANNOTATION = "@ApiOperation";
     private String anno = SWAGGER_ANNOTATION;
 
@@ -25,14 +24,14 @@ public class SwaggerCheck extends AbstractCheck {
         String str = fileContents.getFileName();
         if (str.endsWith("Controller.java")) {
             if (ast.branchContains(TokenTypes.METHOD_DEF)) {
-                if (ast.branchContains(TokenTypes.ANNOTATION)) {
-                    if (ast.branchContains(Integer.valueOf(anno))) {
+                if (ast.branchContains(TokenTypes.ANNOTATION_DEF)) {
+                    if (TokenTypes.ANNOTATION_DEF == Integer.parseInt(anno)) {
                         return;
                     }
+                } else {
+                    String message = "Failed！The methods no have swagger annotation";
+                    log(ast.getLineNo(), message);
                 }
-            } else {
-                String message = "Failed！The methods no have swagger annotation";
-                log(ast.getLineNo(), message);
             }
         }
     }
