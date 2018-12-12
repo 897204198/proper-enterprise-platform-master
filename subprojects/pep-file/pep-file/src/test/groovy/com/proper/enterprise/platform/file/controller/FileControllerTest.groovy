@@ -311,4 +311,69 @@ class FileControllerTest extends AbstractTest {
 
         assert '' == get("/file/" + filResult + "/meta", HttpStatus.OK).getResponse().getContentAsString()
     }
+
+    @Test
+    void renameFileTest() {
+        // com 下新建一个 upload 文件夹
+        def data = [:]
+        assert I18NUtil.getMessage("pep.file.filDir.isEmpty") == post("/file/dir", JSONUtil.toJSON(data), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        data['path'] = 'com/'
+        assert I18NUtil.getMessage("pep.file.folderName.isEmpty") == post("/file/dir", JSONUtil.toJSON(data), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+        data['fileName'] = 'upload'
+        String result = post("/file/dir", JSONUtil.toJSON(data), HttpStatus.CREATED).getResponse().getContentAsString()
+        assert result != null
+
+        // 上传文件
+        Resource[] resources = AntResourceUtil.getResources('classpath*:com/proper/enterprise/platform/file/test/upload/测试上传文件.png')
+        String filResult = mockMvc.perform(
+            MockMvcRequestBuilders
+                .fileUpload("/file?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()))
+                .file(
+                new MockMultipartFile("file", "测试上传文件.png", ",multipart/form-data", resources[0].inputStream)
+            )
+        ).andExpect(MockMvcResultMatchers.status().isCreated())
+            .andReturn().getResponse().getContentAsString()
+        assert filResult != null
+        Map fileVO = JSONUtil.parse(get("/file/" + filResult + "/meta", HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert fileVO["fileSize"] == "43.40 KB"
+        assert fileVO["fileName"] == "测试上传文件.png"
+
+        assert I18NUtil.getMessage("pep.file.fileOrFolder.isExist") ==
+            mockMvc.perform(
+                MockMvcRequestBuilders
+                    .fileUpload("/file?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()))
+                    .file(
+                    new MockMultipartFile("file", "测试上传文件.png", ",multipart/form-data", resources[0].inputStream)
+                )
+            ).andExpect(MockMvcResultMatchers.status().is5xxServerError())
+                .andReturn().getResponse().getContentAsString()
+
+        filResult = mockMvc.perform(
+            MockMvcRequestBuilders
+                .fileUpload("/file?rename=true&path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()))
+                .file(
+                new MockMultipartFile("file", "测试上传文件.png", ",multipart/form-data", resources[0].inputStream)
+            )
+        ).andExpect(MockMvcResultMatchers.status().isCreated())
+            .andReturn().getResponse().getContentAsString()
+        assert filResult != null
+
+        List<PEPOrder> orders = new ArrayList<>()
+        orders.add(new PEPOrder(Sort.Direction.DESC, "fileSize"))
+        def fileVOs = JSONUtil.parse(get("/file/dir?path=" + URLEncoder.encode("com/", PEPConstants.DEFAULT_CHARSET.toString()) + "&orders=" + URLEncoder.encode(JSONUtil.toJSON(orders)), HttpStatus.OK).getResponse().getContentAsString(), Collection.class)
+        assert 3 == fileVOs.size()
+        assert fileVOs[0].fileName == "测试上传文件.png"
+
+        // 更改文件名 测试上传文件 (1).png => 测试上传文件 (1).jpg
+        assert I18NUtil.getMessage("pep.file.rename.mayDestory") == put("/file/" + filResult + "?fileName=测试上传文件 (1).jpg", "", HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+
+        put("/file/" + filResult + "?fileName=测试上传文件 (1).jpg&resetFileType=true", "", HttpStatus.OK)
+
+        FileVO file = JSONUtil.parse(get("/file/" + filResult + "/meta", HttpStatus.OK).getResponse().getContentAsString(), FileVO.class)
+        assert file.getFileName() == "测试上传文件 (1).jpg"
+
+        put("/file/" + filResult + "?fileName=测试上传文件.png&resetFileType=true", "", HttpStatus.OK)
+        file = JSONUtil.parse(get("/file/" + filResult + "/meta", HttpStatus.OK).getResponse().getContentAsString(), FileVO.class)
+        assert file.getFileName() == "测试上传文件 (1).png"
+    }
 }

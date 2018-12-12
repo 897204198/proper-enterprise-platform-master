@@ -1428,4 +1428,35 @@
         </insert>
     </changeSet>
 
+    <changeSet id="20181207-add-auth-resources-for-updateCurrentUser" author="fm">
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-user-password-u"/>
+            <column name="CREATE_TIME" value="2018-12-07 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2018-12-07 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="update"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新当前用户密码"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users/password"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" value="pep-auth-users-user-current-u"/>
+            <column name="CREATE_TIME" value="2018-12-07 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2018-12-07 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="IDENTIFIER" value="update"/>
+            <column name="METHOD" value="PUT"/>
+            <column name="NAME" value="更新当前用户"/>
+            <column name="RESOURCE_CODE"/>
+            <column name="RESOURCE_TYPE" value="RESOURCE_TYPE;0"/>
+            <column name="URL" value="/auth/users/current"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
