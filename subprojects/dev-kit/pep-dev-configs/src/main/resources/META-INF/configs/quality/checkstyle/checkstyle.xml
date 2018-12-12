@@ -23,11 +23,8 @@
     </module>
 
     <module name="TreeWalker">
-        <!--<module name="Swagger">-->
-            <!--<property name="anno" value="@ApiOperation"/>-->
-        <!--</module>-->
-        <module name="MethodLimit">
-            <property name="max" value="2"/>
+        <module name="Swagger">
+            <property name="anno" value="@ApiOperation"/>
         </module>
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
