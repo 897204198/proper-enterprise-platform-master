@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.workflow.service;
 
 import com.proper.enterprise.platform.workflow.vo.PEPModelVO;
-import org.flowable.app.model.common.ResultListDataRepresentation;
+import org.flowable.ui.common.model.ResultListDataRepresentation;
 
 public interface PEPModelService {
     /**

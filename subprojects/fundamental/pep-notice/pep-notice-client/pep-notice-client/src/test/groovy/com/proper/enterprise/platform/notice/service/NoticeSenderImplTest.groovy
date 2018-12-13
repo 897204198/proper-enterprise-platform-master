@@ -155,11 +155,33 @@ class NoticeSenderImplTest extends AbstractJPATest {
         result = noticeMsgRepository.findAll()
         assert result.get(0).getAnalysisResult() == AnalysisResult.ERROR
         assert result.get(0).getTargets().size() == 1
+        assert result.get(0).getTargets().get(0).id == "test1"
+        assert result.get(0).getTargets().get(0).name == "test1"
         assert result.get(0).getUsers().size() == 2
         assert result.get(0).getNotes().size() == 2
         assert result.get(0).getNotes().contains("test2 is missing device info, please re login to the app.")
         assert result.get(0).getNotes().contains("The notice server url 'Not Configured' configuration error. ")
         noticeMsgRepository.deleteAll()
+    }
+
+    @Test
+    void analysisEmail() {
+        noticeMsgRepository.deleteAll()
+
+        Set<String> toUserIds = new HashSet<>()
+        toUserIds.add("test1")
+        toUserIds.add("test2")
+        Map<String, NoticeSetDocument> noticeSetMap = new HashMap<>()
+        NoticeSetDocument noticeSetDocument = new NoticeSetDocument()
+        List<String> noticeChannel = new ArrayList<>()
+        noticeChannel.add("email")
+        noticeSetDocument.setNoticeChannel(noticeChannel)
+        noticeSetMap.put("test1", noticeSetDocument)
+        noticeSetMap.put("test2", noticeSetDocument)
+        Map<String, Object> custom = new HashMap<>()
+        noticeSendService.sendNoticeChannel(null, toUserIds, noticeSetMap, "title", "content", custom, NoticeType.EMAIL)
+        List<NoticeDocument> result = noticeMsgRepository.findAll()
+        assert result.get(0).getTargets().get(0).getTo() == "test1<test1@test1.com>,test2<test1@test2.com>"
     }
 
     @Before

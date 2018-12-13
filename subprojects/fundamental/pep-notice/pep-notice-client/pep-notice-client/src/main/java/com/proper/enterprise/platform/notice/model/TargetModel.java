@@ -14,6 +14,11 @@ public class TargetModel implements Serializable {
     private String id;
 
     /**
+     * 名称
+     */
+    private String name;
+
+    /**
      * 发送目标
      */
     private String to;
@@ -55,5 +60,13 @@ public class TargetModel implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -3,7 +3,7 @@
   <process id="flowableFrame" name="框架测试流程" isExecutable="true">
     <documentation>1</documentation>
     <startEvent id="startEvent1" name="开始" flowable:formKey="mainForm"></startEvent>
-    <userTask id="sid-E26F3550-05B6-43C2-8D88-56B0749AB211" name="第一步" flowable:assignee="user1" flowable:formKey="mainForm">
+    <userTask id="sid-E26F3550-05B6-43C2-8D88-56B0749AB211" name="第一步" flowable:candidateUsers="user1" flowable:formKey="mainForm">
       <extensionElements>
         <modeler:activiti-idm-assignee xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-assignee>
         <modeler:assignee-info-email xmlns:modeler="http://flowable.org/modeler"><![CDATA[null]]></modeler:assignee-info-email>
@@ -14,11 +14,11 @@
     <sequenceFlow id="sid-7B371F01-87DF-4A64-A43D-CC1776C36D66" sourceRef="startEvent1" targetRef="sid-E26F3550-05B6-43C2-8D88-56B0749AB211"></sequenceFlow>
     <userTask id="sid-E40F2AE8-76D5-4B65-AE4A-DDF1720DF617" name="审核" default="sid-EC424DA2-D9E8-4221-9268-E51BC7A31FDA" flowable:assignee="user2" flowable:formKey="audit">
       <extensionElements>
-        <flowable:taskListener event="create" class="com.proper.enterprise.platform.workflow.listener.CustomHandlerListener"></flowable:taskListener>
+        <flowable:taskListener event="create" class="com.proper.enterprise.platform.workflow.listener.CustomCandidateListener"></flowable:taskListener>
         <modeler:activiti-idm-initiator xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>
       </extensionElements>
     </userTask>
-    <userTask id="sid-B789EC55-2869-4DB7-9C04-F769D74969ED" name="第四步" flowable:candidateRoles="role1" flowable:formKey="mainForm">
+    <userTask id="sid-B789EC55-2869-4DB7-9C04-F769D74969ED" name="第四步" flowable:candidateGroups="role1:ROLE" flowable:formKey="mainForm">
       <extensionElements>
         <modeler:activiti-idm-candidate-role xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-candidate-role>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>

@@ -14,11 +14,13 @@ import com.proper.enterprise.platform.notice.server.push.enums.huawei.HuaweiErrC
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,6 +35,11 @@ public class HuaweiNoticeClient {
      * 应用级消息下发API
      */
     private static final String API_URL = "https://api.push.hicloud.com/pushsend.do";
+
+    /**
+     * 华为返回503
+     */
+    private static final String ERR_503 = "503 Service Temporarily Unavailable";
 
     private String appId;
     private String appSecret;
@@ -211,7 +218,8 @@ public class HuaweiNoticeClient {
             String msgBody = MessageFormat.format(
                 "grant_type=client_credentials&client_secret={0}&client_id={1}",
                 URLEncoder.encode(appSecret, "UTF-8"), appId);
-            String response = post(tokenUrl, msgBody);
+            byte[] body = post(tokenUrl, msgBody).getBody();
+            String response = body == null ? "" : new String(body, StandardCharsets.UTF_8);
             LOGGER.debug("Get huawei access token response: {}", response);
             JSONObject obj = JSONObject.parseObject(response);
 
@@ -225,20 +233,22 @@ public class HuaweiNoticeClient {
         }
     }
 
-    private String post(String postUrl, String postBody) throws IOException {
+    private ResponseEntity<byte[]> post(String postUrl, String postBody) throws IOException {
         ResponseEntity<byte[]> post = HttpClient.post(postUrl, MediaType.APPLICATION_FORM_URLENCODED, postBody);
-        byte[] body = post.getBody();
-        if (null == body) {
-            return null;
-        }
-        return new String(body, "UTF-8");
+        return post;
     }
 
-    private BusinessNoticeResult isSuccess(String res, ReadOnlyNotice notice) {
+    private BusinessNoticeResult isSuccess(ResponseEntity<byte[]> res, ReadOnlyNotice notice) {
         LOGGER.debug("Push to huawei with noticeId:{} has response:{}", notice.getId(), res);
         String key = "msg";
         try {
-            JsonNode result = JSONUtil.parse(res, JsonNode.class);
+            if (res.getStatusCode() == HttpStatus.SERVICE_UNAVAILABLE) {
+                return new BusinessNoticeResult(NoticeStatus.RETRY,
+                    HuaweiErrCodeEnum.convertErrorCode(ERR_503), ERR_503);
+            }
+            byte[] body = res.getBody();
+            String resBody = body == null ? "" : new String(body, StandardCharsets.UTF_8);
+            JsonNode result = JSONUtil.parse(resBody, JsonNode.class);
             String successValue = "Success";
             if (result.get(key) != null && !successValue.equals(result.get(key).textValue())) {
                 return new BusinessNoticeResult(NoticeStatus.FAIL,

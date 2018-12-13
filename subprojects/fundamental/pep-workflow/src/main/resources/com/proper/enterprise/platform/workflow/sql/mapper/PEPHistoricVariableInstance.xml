@@ -5,7 +5,7 @@
 
     <!-- HISTORIC VARIABLE SELECT -->
 
-    <select id="selectHistoricVariableByQueryPredicate" parameterType="org.flowable.engine.common.impl.db.ListQueryParameterObject" resultMap="historicProcessVariableResultMap">
+    <select id="selectHistoricVariableByQueryPredicate" parameterType="org.flowable.common.engine.impl.db.ListQueryParameterObject" resultMap="historicProcessVariableResultMap">
         SELECT
         DISTINCT RES.ID_,
         RES.PROC_INST_ID_,

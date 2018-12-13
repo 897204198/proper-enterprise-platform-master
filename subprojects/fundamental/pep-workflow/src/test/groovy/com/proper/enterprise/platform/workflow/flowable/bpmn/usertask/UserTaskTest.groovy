@@ -51,10 +51,11 @@ class UserTaskTest extends AbstractJPATest {
     }
 
     @Test
-    @Sql("/com/proper/enterprise/platform/workflow/identity.sql")
+    @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     void validateAssignGroup() {
         def procInst = runtimeService.startProcessInstanceByKey("validateAssignGroup")
-        def task1 = taskService.createTaskQuery().taskCandidateGroup("group2").singleResult()
+        def task1 = taskService.createTaskQuery().taskCandidateGroup("group2:GROUP").singleResult()
         def task2 = taskService.createTaskQuery().taskCandidateOrAssigned("user2").singleResult()
         def task3 = taskService.createTaskQuery().taskCandidateOrAssigned("user3").singleResult()
         assert task1.id == task2.id
@@ -74,7 +75,8 @@ class UserTaskTest extends AbstractJPATest {
     }
 
     @Test
-    @Sql("/com/proper/enterprise/platform/workflow/identity.sql")
+    @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     void testUserTaskRole() {
         def processInstance = runtimeService.startProcessInstanceByKey("testUsertaskRole")
 
@@ -82,7 +84,7 @@ class UserTaskTest extends AbstractJPATest {
         def taskAssignee1 = taskService.createTaskQuery().taskAssignee("user1").singleResult()
         assert null == taskAssignee1
         //获取当前候选人user1  应无用户组任务
-        def taskGroup1 = taskService.createTaskQuery().taskCandidateGroup("group1").singleResult()
+        def taskGroup1 = taskService.createTaskQuery().taskCandidateGroup("group1:GROUP").singleResult()
         assert null == taskGroup1
         //获取当前候选人user2无role1角色 应查到task实例
         def taskUser2 = taskService.createTaskQuery().taskCandidateUser("user2").singleResult()
@@ -94,23 +96,23 @@ class UserTaskTest extends AbstractJPATest {
         def taskUser1 = taskService.createTaskQuery().taskCandidateUser("user1").singleResult()
         assert taskUser1.name == task1Name
         //获取当前角色候选 应查到task实例
-        def taskRole1 = taskService.createTaskQuery().taskCandidateRole("role1").singleResult()
+        def taskRole1 = taskService.createTaskQuery().taskCandidateGroup("role1:ROLE").singleResult()
         assert taskRole1.name == task1Name
         //获取当前角色候选 应查到task实例
-        def taskRole1In = taskService.createTaskQuery().taskCandidateRoleIn(["role1"]).singleResult()
+        def taskRole1In = taskService.createTaskQuery().taskCandidateGroupIn(["role1:ROLE"]).singleResult()
         assert taskRole1In.name == task1Name
         //获取当前角色候选 应查到task实例
         def taskCanOrAss1 = taskService.createTaskQuery().ignoreAssigneeValue()
             .taskCandidateOrAssigned("user1").singleResult()
         assert taskCanOrAss1.name == task1Name
 
-        taskService.addCandidateRole(taskCanOrAss1.getId(), 'role2')
-        taskService.deleteCandidateRole(taskCanOrAss1.getId(), 'role1')
+        taskService.addCandidateGroup(taskCanOrAss1.getId(), 'role2:ROLE')
+        taskService.deleteCandidateGroup(taskCanOrAss1.getId(), 'role1:ROLE')
         //动态删除候选角色 并验证role1候选任务为空
-        def delTaskRole1 = taskService.createTaskQuery().taskCandidateRole("role1").singleResult()
+        def delTaskRole1 = taskService.createTaskQuery().taskCandidateGroup("role1:ROLE").singleResult()
         assert null == delTaskRole1
         //动态添加候选角色 并验证role2候选任务存在
-        def addTaskRole2 = taskService.createTaskQuery().taskCandidateRole("role2").singleResult()
+        def addTaskRole2 = taskService.createTaskQuery().taskCandidateGroup("role2:ROLE").singleResult()
         assert addTaskRole2.name == task1Name
         //动态添加候选角色 并验证user2,user3属于role2候选任务存在
         def addTaskUser2 = taskService.createTaskQuery().taskCandidateUser("user2").singleResult()
@@ -153,7 +155,7 @@ class UserTaskTest extends AbstractJPATest {
 
     private static boolean hasRoleLink(String roleId, List<IdentityLinkInfo> links) {
         for (IdentityLinkInfo link : links) {
-            if (roleId == link.getRoleId()) {
+            if (roleId + ":ROLE" == link.getGroupId()) {
                 return true
             }
         }

@@ -4,11 +4,11 @@ import com.proper.enterprise.platform.sys.datadic.service.DataDicService
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.vo.PEPModelVO
-import org.flowable.app.domain.editor.AbstractModel
-import org.flowable.app.domain.editor.Model
-import org.flowable.app.model.common.ResultListDataRepresentation
-import org.flowable.app.repository.editor.ModelRepository
-import org.flowable.app.service.api.ModelService
+import org.flowable.ui.common.model.ResultListDataRepresentation
+import org.flowable.ui.modeler.domain.AbstractModel
+import org.flowable.ui.modeler.domain.Model
+import org.flowable.ui.modeler.repository.ModelRepository
+import org.flowable.ui.modeler.serviceapi.ModelService
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -34,7 +34,7 @@ class ModelsControllerTest extends AbstractJPATest {
 
 
     @Test
-    @Sql("/com/proper/enterprise/platform/workflow/datadics.sql")
+    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     void testGetModels() {
         def searchKey = "validateNamedUser"
         List<AbstractModel> models = modelRepository.findByModelTypeAndFilter(AbstractModel.MODEL_TYPE_BPMN, searchKey.toLowerCase(), null)

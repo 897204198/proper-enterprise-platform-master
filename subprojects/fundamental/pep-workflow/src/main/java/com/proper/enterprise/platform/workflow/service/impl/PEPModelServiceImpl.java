@@ -12,14 +12,15 @@ import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO;
 import com.proper.enterprise.platform.workflow.service.PEPModelService;
 import com.proper.enterprise.platform.workflow.vo.PEPPropertyVO;
 import org.apache.commons.lang3.StringUtils;
-import org.flowable.app.domain.editor.Model;
-import org.flowable.app.model.common.ResultListDataRepresentation;
-import org.flowable.app.repository.editor.ModelRepository;
+
 import org.flowable.engine.FormService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.form.FormProperty;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.ui.common.model.ResultListDataRepresentation;
+import org.flowable.ui.modeler.domain.Model;
+import org.flowable.ui.modeler.repository.ModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -72,6 +72,11 @@ public class CoreProperties {
      */
     private String secretAesKey = "CAFEBABEEBABEFAC";
 
+    /**
+     * gzip忽略文件路径
+     */
+    private String gzipExcludePathPatterns;
+
     public String getCharset() {
         return charset;
     }
@@ -174,5 +179,13 @@ public class CoreProperties {
 
     public void setSecretAesKey(String secretAesKey) {
         this.secretAesKey = secretAesKey;
+    }
+
+    public String getGzipExcludePathPatterns() {
+        return gzipExcludePathPatterns;
+    }
+
+    public void setGzipExcludePathPatterns(String gzipExcludePathPatterns) {
+        this.gzipExcludePathPatterns = gzipExcludePathPatterns;
     }
 }

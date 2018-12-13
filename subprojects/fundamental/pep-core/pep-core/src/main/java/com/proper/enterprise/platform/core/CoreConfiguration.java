@@ -1,9 +1,12 @@
 package com.proper.enterprise.platform.core;
 
 import com.proper.enterprise.platform.core.i18n.AntPatternReloadableResourceBundleMessageSource;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.gzip.filter.GZipFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.context.MessageSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -17,6 +20,13 @@ import java.util.Properties;
 @Configuration
 @PropertySource("classpath:/application-core.properties")
 public class CoreConfiguration {
+
+    private CoreProperties coreProperties;
+
+    @Autowired
+    public CoreConfiguration(CoreProperties coreProperties) {
+        this.coreProperties = coreProperties;
+    }
 
     @Bean
     public Jaxb2Marshaller marshaller() {
@@ -33,8 +43,15 @@ public class CoreConfiguration {
     }
 
     @Bean
-    public GZipFilter gzipFilter() {
-        return new GZipFilter();
+    public FilterRegistrationBean<GZipFilter> gzipFilter() {
+        FilterRegistrationBean<GZipFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new GZipFilter());
+        registration.addUrlPatterns("/*");
+        if (StringUtil.isNotEmpty(coreProperties.getGzipExcludePathPatterns())) {
+            registration.addInitParameter("excludePathPatterns", coreProperties.getGzipExcludePathPatterns());
+        }
+        registration.setName("gzipFilter");
+        return registration;
     }
 
     @Bean

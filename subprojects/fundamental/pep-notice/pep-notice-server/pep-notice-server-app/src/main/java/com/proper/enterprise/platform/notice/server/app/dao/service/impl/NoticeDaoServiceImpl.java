@@ -3,13 +3,12 @@ package com.proper.enterprise.platform.notice.server.app.dao.service.impl;
 import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
-import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
-
 import com.proper.enterprise.platform.notice.server.api.model.Notice;
 import com.proper.enterprise.platform.notice.server.api.service.NoticeDaoService;
-import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO;
 import com.proper.enterprise.platform.notice.server.app.dao.entity.NoticeEntity;
 import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository;
+import com.proper.enterprise.platform.notice.server.app.vo.NoticeVO;
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -111,18 +110,18 @@ public class NoticeDaoServiceImpl implements NoticeDaoService {
     @Override
     public List<Notice> findPendingNotices(LocalDateTime startModifyTime, LocalDateTime endModifyTime) {
         return noticeRepository.findPendingNotices(startModifyTime
-                .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultDatetimeFormat())),
+                .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultTimestampFormat())),
             endModifyTime
-                .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultDatetimeFormat())));
+                .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultTimestampFormat())));
     }
 
     @Override
     public List<Notice> findRetryNotices(LocalDateTime startModifyTime, LocalDateTime endModifyTime, Integer maxRetryCount) {
         return noticeRepository
             .findRetryNotices(startModifyTime
-                    .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultDatetimeFormat())),
+                    .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultTimestampFormat())),
                 endModifyTime
-                    .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultDatetimeFormat())), maxRetryCount);
+                    .format(DateTimeFormatter.ofPattern(coreProperties.getDefaultTimestampFormat())), maxRetryCount);
     }
 
     @Override

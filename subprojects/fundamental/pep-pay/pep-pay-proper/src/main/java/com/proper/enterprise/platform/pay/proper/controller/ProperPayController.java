@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.api.pay.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.enums.PayWay;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
+import com.proper.enterprise.platform.api.pay.model.OrderReq;
 import com.proper.enterprise.platform.api.pay.model.PayResultRes;
 import com.proper.enterprise.platform.api.pay.model.PrepayReq;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
@@ -11,10 +12,12 @@ import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.pay.proper.entity.ProperEntity;
-import com.proper.enterprise.platform.pay.proper.model.ProperOrderReq;
 import com.proper.enterprise.platform.pay.proper.model.ProperPayResultRes;
 import com.proper.enterprise.platform.pay.proper.repository.ProperRepository;
 import com.proper.enterprise.platform.pay.proper.service.ProperPayService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +38,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping(value = "/pay/proper")
+@Api(tags = "/pay/proper")
 public class ProperPayController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProperPayController.class);
@@ -56,6 +60,7 @@ public class ProperPayController extends BaseController {
      * @throws Exception 异常.
      */
     @PostMapping(value = "/prepay", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation("‍模拟支付预支付处理")
     public ResponseEntity<ProperPayResultRes> prepayProper(@RequestBody ProperOrderReq properReq) throws Exception {
         LOGGER.debug("------------- proper prepay business--------begin------------");
         ProperPayResultRes resObj = new ProperPayResultRes();
@@ -131,6 +136,50 @@ public class ProperPayController extends BaseController {
         res.put("resultCode", "SUCCESS");
         LOGGER.debug("-----------Ali async notice--------end------------");
         return responseOfPost(res);
+    }
+
+    public static class ProperOrderReq implements OrderReq {
+        /**
+         * 商户网站唯一订单号
+         */
+        @ApiModelProperty(name = "‍商户网站唯一订单号", required = true)
+        private String outTradeNo;
+
+        /**
+         * 商品详情
+         */
+        @ApiModelProperty(name = "‍商品详情", required = true)
+        private String body;
+
+        /**
+         * 商品总金额
+         */
+        @ApiModelProperty(name = "‍商品总金额", required = true)
+        private String totalFee;
+
+        public String getOutTradeNo() {
+            return outTradeNo;
+        }
+
+        public void setOutTradeNo(String outTradeNo) {
+            this.outTradeNo = outTradeNo;
+        }
+
+        public String getBody() {
+            return body;
+        }
+
+        public void setBody(String body) {
+            this.body = body;
+        }
+
+        public String getTotalFee() {
+            return totalFee;
+        }
+
+        public void setTotalFee(String totalFee) {
+            this.totalFee = totalFee;
+        }
     }
 
 }

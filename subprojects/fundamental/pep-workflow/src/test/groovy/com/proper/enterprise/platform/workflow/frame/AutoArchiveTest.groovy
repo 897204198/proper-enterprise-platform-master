@@ -17,7 +17,7 @@ class AutoArchiveTest extends WorkflowAbstractTest {
 
     @Test
     @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
-        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void autoArchiveTest() {
         identityService.setAuthenticatedUserId('user1')
         Map form1 = new HashMap()

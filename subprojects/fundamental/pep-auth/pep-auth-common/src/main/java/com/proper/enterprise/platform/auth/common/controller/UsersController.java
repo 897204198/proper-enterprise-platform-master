@@ -122,6 +122,14 @@ public class UsersController extends BaseController {
         return responseOfPut(userService.update(userVO), UserVO.class, UserVO.Single.class);
     }
 
+    @PutMapping(path = "/current")
+    @JsonView(UserVO.Single.class)
+    @ApiOperation("‍更新当前用户的用户信息")
+    public ResponseEntity<UserVO> updateCurrentUser(@RequestBody UserVO userVO) {
+        userVO.setId(Authentication.getCurrentUserId());
+        return responseOfPut(userService.update(userVO), UserVO.class, UserVO.Single.class);
+    }
+
     @GetMapping(path = "/{userId}")
     @JsonView(UserVO.Single.class)
     @ApiOperation("‍取得指定用户ID的用户信息")

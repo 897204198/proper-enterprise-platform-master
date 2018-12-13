@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
 import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.auth.service.JWTAuthcService;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.i18n.I18NService;
 import com.proper.enterprise.platform.core.model.CurrentModel;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
@@ -51,6 +52,9 @@ public class LoginController extends BaseController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private I18NService i18NService;
+
     @AuthcIgnore
     @ApiOperation("‍用户登录")
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
@@ -70,7 +74,7 @@ public class LoginController extends BaseController {
         if (authcService.authenticate(username, pwd)) {
             return new ResponseEntity<>(jwtAuthcService.getUserToken(username), headers, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Failed to authenticate", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(i18NService.getMessage("pep.auth.common.user.password.not.match"), HttpStatus.UNAUTHORIZED);
         }
     }
 

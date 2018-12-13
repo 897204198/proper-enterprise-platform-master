@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.workflow.controller;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.workflow.service.BPMService;
-import org.flowable.engine.common.api.FlowableException;
+import org.flowable.common.engine.api.FlowableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
