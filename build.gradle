@@ -106,7 +106,7 @@ subprojects {
     group = 'com.proper.enterprise.platform'
     // Needs to change version in dependencies.gradle:6:32 TOGETHER!!
     // Needs to change version code in core.properties:18:14 TOGETHER!!
-    version = '0.4.6'
+    version = '0.4.6.1'
 
     test {
         reports.html.enabled = false
