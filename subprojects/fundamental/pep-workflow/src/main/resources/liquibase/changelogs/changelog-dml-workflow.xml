@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet author="alphahinex" id="menus-1">
         <insert tableName="PEP_AUTH_MENUS">
             <column name="ID" value="pep-workflow"/>
@@ -297,7 +300,8 @@
             <column name="CATALOG" value="BPM"/>
             <column name="DESCRIPTION" value=""/>
             <column name="MUTI" value="Y"/>
-            <column name="DETAILS" value="[{&quot;title&quot;:&quot;您有一条已办消息&quot;,&quot;template&quot;:&quot;您的{processDefinitionName}已完成&quot;,&quot;type&quot;:&quot;push&quot;},{&quot;title&quot;:&quot;流程完结&quot;,&quot;template&quot;:&quot;您的【{processDefinitionName}】已完成，详情请在【发起历史】中查看。&quot;,&quot;type&quot;:&quot;email&quot;}]"/>
+            <column name="DETAILS"
+                    value="[{&quot;title&quot;:&quot;您有一条已办消息&quot;,&quot;template&quot;:&quot;您的{processDefinitionName}已完成&quot;,&quot;type&quot;:&quot;push&quot;},{&quot;title&quot;:&quot;流程完结&quot;,&quot;template&quot;:&quot;您的【{processDefinitionName}】已完成，详情请在【发起历史】中查看。&quot;,&quot;type&quot;:&quot;email&quot;}]"/>
         </insert>
         <insert tableName="PEP_TEMPLATE">
             <column name="ID" value="9f4ab1d9-cb86-41f2-b1bf-5f923e94b09b"/>
@@ -311,7 +315,8 @@
             <column name="CATALOG" value="BPM"/>
             <column name="DESCRIPTION"/>
             <column name="MUTI" value="Y"/>
-            <column name="DETAILS" value="[{&quot;title&quot;:&quot;您有一条新的待办消息&quot;,&quot;template&quot;:&quot;{name}的{processDefinitionName}&quot;,&quot;type&quot;:&quot;push&quot;},{&quot;title&quot;:&quot;流程待办&quot;,&quot;template&quot;:&quot;【{initiatorName}】发起的【{name}】的【{processDefinitionName}】已经到达您的代办，请您处理【&lt;a href={pageurl}&gt;{taskName}&lt;/a&gt;】。&quot;,&quot;type&quot;:&quot;email&quot;}]"/>
+            <column name="DETAILS"
+                    value="[{&quot;title&quot;:&quot;您有一条新的待办消息&quot;,&quot;template&quot;:&quot;{name}的{processDefinitionName}&quot;,&quot;type&quot;:&quot;push&quot;},{&quot;title&quot;:&quot;流程待办&quot;,&quot;template&quot;:&quot;【{initiatorName}】发起的【{name}】的【{processDefinitionName}】已经到达您的代办，请您处理【&lt;a href={pageurl}&gt;{taskName}&lt;/a&gt;】。&quot;,&quot;type&quot;:&quot;email&quot;}]"/>
         </insert>
         <insert tableName="PEP_TEMPLATE">
             <column name="ID" value="db54d08b-c9d5-4f76-b1bc-64fd4504f854"/>
@@ -325,7 +330,8 @@
             <column name="CATALOG" value="BPM"/>
             <column name="DESCRIPTION"/>
             <column name="MUTI" value="Y"/>
-            <column name="DETAILS" value="[{&quot;title&quot;:&quot;您有一条新的待办消息&quot;,&quot;template&quot;:&quot;{initiatorName}的{processDefinitionName}&quot;,&quot;type&quot;:&quot;push&quot;},{&quot;title&quot;:&quot;流程待办&quot;,&quot;template&quot;:&quot;【{initiatorName}】发起的【{processDefinitionName}】已经到达您的代办，请您处理【&lt;a href={pageurl}&gt;{taskName}&lt;/a&gt;】。&quot;,&quot;type&quot;:&quot;email&quot;}]"/>
+            <column name="DETAILS"
+                    value="[{&quot;title&quot;:&quot;您有一条新的待办消息&quot;,&quot;template&quot;:&quot;{initiatorName}的{processDefinitionName}&quot;,&quot;type&quot;:&quot;push&quot;},{&quot;title&quot;:&quot;流程待办&quot;,&quot;template&quot;:&quot;【{initiatorName}】发起的【{processDefinitionName}】已经到达您的代办，请您处理【&lt;a href={pageurl}&gt;{taskName}&lt;/a&gt;】。&quot;,&quot;type&quot;:&quot;email&quot;}]"/>
         </insert>
         <insert tableName="PEP_TEMPLATE">
             <column name="ID" value="c1204eec-93f2-4f57-ab7d-0398de909a7f"/>
@@ -339,7 +345,8 @@
             <column name="CATALOG" value="BPM"/>
             <column name="DESCRIPTION"/>
             <column name="MUTI" value="Y"/>
-            <column name="DETAILS" value="[{&quot;title&quot;:&quot;您有一条新的待办消息&quot;,&quot;template&quot;:&quot;{initiatorName}的{processDefinitionName}&quot;,&quot;type&quot;:&quot;push&quot;},{&quot;title&quot;:&quot;流程待办&quot;,&quot;template&quot;:&quot;【{initiatorName}】发起的【{processDefinitionName}】已经到达您的代办，请您处理【&lt;a href={pageurl}&gt;{taskName}&lt;/a&gt;】。&quot;,&quot;type&quot;:&quot;email&quot;}]"/>
+            <column name="DETAILS"
+                    value="[{&quot;title&quot;:&quot;您有一条新的待办消息&quot;,&quot;template&quot;:&quot;{initiatorName}的{processDefinitionName}&quot;,&quot;type&quot;:&quot;push&quot;},{&quot;title&quot;:&quot;流程待办&quot;,&quot;template&quot;:&quot;【{initiatorName}】发起的【{processDefinitionName}】已经到达您的代办，请您处理【&lt;a href={pageurl}&gt;{taskName}&lt;/a&gt;】。&quot;,&quot;type&quot;:&quot;email&quot;}]"/>
         </insert>
         <insert tableName="PEP_TEMPLATE">
             <column name="ID" value="8584c11b-eb24-44c8-957f-6a238ae0538d"/>
@@ -353,7 +360,46 @@
             <column name="CATALOG" value="BPM"/>
             <column name="DESCRIPTION"/>
             <column name="MUTI" value="Y"/>
-            <column name="DETAILS" value="[{&quot;title&quot;:&quot;您有一条多人可办的待办已被他人处理&quot;,&quot;template&quot;:&quot;{initiatorName}发起的{processDefinitionName}的{taskName}节点已被办理&quot;,&quot;type&quot;:&quot;push&quot;},{&quot;title&quot;:&quot;您有一条多人可办的待办已被他人处理&quot;,&quot;template&quot;:&quot;{initiatorName}发起的{processDefinitionName}的{taskName}节点已被办理&quot;,&quot;type&quot;:&quot;email&quot;}]"/>
+            <column name="DETAILS"
+                    value="[{&quot;title&quot;:&quot;您有一条多人可办的待办已被他人处理&quot;,&quot;template&quot;:&quot;{initiatorName}发起的{processDefinitionName}的{taskName}节点已被办理&quot;,&quot;type&quot;:&quot;push&quot;},{&quot;title&quot;:&quot;您有一条多人可办的待办已被他人处理&quot;,&quot;template&quot;:&quot;{initiatorName}发起的{processDefinitionName}的{taskName}节点已被办理&quot;,&quot;type&quot;:&quot;email&quot;}]"/>
+        </insert>
+    </changeSet>
+    <changeSet author="zjl (generated)" id="20181207-workflow-idm-query-config">
+        <insert tableName="PEP_WF_IDM_QUERY_CONF">
+            <column name="ID" value="workflow-idm-query-config-user"/>
+            <column name="CREATE_TIME" value="2018-10-11 17:32:18.651"/>
+            <column name="CREATE_USER_ID" value="pep-sysadmin"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2018-10-11 17:32:18.651"/>
+            <column name="LAST_MODIFY_USER_ID" value="pep-sysadmin"/>
+            <column name="TYPE" value="USER"/>
+            <column name="NAME" value="候选人"/>
+            <column name="BEAN_NAME" value="pepCandidateUserExtQuery"/>
+            <column name="SORT" value="1"/>
+        </insert>
+        <insert tableName="PEP_WF_IDM_QUERY_CONF">
+            <column name="ID" value="workflow-idm-query-config-group"/>
+            <column name="CREATE_TIME" value="2018-10-11 17:32:18.651"/>
+            <column name="CREATE_USER_ID" value="pep-sysadmin"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2018-10-11 17:32:18.651"/>
+            <column name="LAST_MODIFY_USER_ID" value="pep-sysadmin"/>
+            <column name="TYPE" value="GROUP"/>
+            <column name="NAME" value="候选用户组"/>
+            <column name="BEAN_NAME" value="pepCandidateGroupExtQuery"/>
+            <column name="SORT" value="2"/>
+        </insert>
+        <insert tableName="PEP_WF_IDM_QUERY_CONF">
+            <column name="ID" value="workflow-idm-query-config-role"/>
+            <column name="CREATE_TIME" value="2018-10-11 17:32:18.651"/>
+            <column name="CREATE_USER_ID" value="pep-sysadmin"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2018-10-11 17:32:18.651"/>
+            <column name="LAST_MODIFY_USER_ID" value="pep-sysadmin"/>
+            <column name="TYPE" value="ROLE"/>
+            <column name="NAME" value="候选角色"/>
+            <column name="BEAN_NAME" value="pepCandidateRoleExtQuery"/>
+            <column name="SORT" value="3"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

@@ -26,7 +26,7 @@ class SameAssigneeSkipTest extends WorkflowAbstractTest {
     private static final String SKIP_PROC_KEY = "sameAssigneeSkipTest"
 
     @Test
-    @Sql("/com/proper/enterprise/platform/workflow/datadics.sql")
+    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void sameAssigneeSkipOtherInitiatorTest() {
         Authentication.setCurrentUserId("user1")
         identityService.setAuthenticatedUserId("user1")

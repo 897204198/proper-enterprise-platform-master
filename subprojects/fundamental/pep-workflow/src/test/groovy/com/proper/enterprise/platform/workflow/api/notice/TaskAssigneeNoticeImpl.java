@@ -12,7 +12,6 @@ import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +26,6 @@ public class TaskAssigneeNoticeImpl extends AbstractWorkFlowNoticeSupport implem
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskAssigneeOrCandidateNoticeImpl.class);
 
     public static final String TASK_ASSIGNEE_NOTICE_CODE_KEY = "taskAssigneeNoticeCode";
-
-    @Value("${pep.mail.mailDefaultFrom}")
-    private String from;
 
     private NoticeSender noticeSender;
 

@@ -66,4 +66,10 @@ public class WorkFlowConstants {
      */
     public static final String NO_SAME_ASSIGNEE_SKIP_REMARK = "noSameAssigneeSkipSign";
 
+    /**
+     * 流程扩展实现字典KEY
+     */
+    public static final String WF_CANDIDATE_QUERY_IMPL_KEY = "WF_CANDIDATE_QUERY_IMPL";
+
+
 }

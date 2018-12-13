@@ -3,11 +3,10 @@ package com.proper.enterprise.platform.workflow.frame
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.i18n.I18NUtil
-import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants
+import com.proper.enterprise.platform.workflow.test.WorkflowAbstractTest
 import com.proper.enterprise.platform.workflow.util.VariableUtil
-import com.proper.enterprise.platform.workflow.vo.CustomHandlerVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum
@@ -20,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 
-class FrameControllerTest extends AbstractJPATest {
+class FrameControllerTest extends WorkflowAbstractTest {
 
     private static final String FRAME_WORKFLOW_KEY = 'flowableFrame'
     private static final String VALIDATE_ASSIGN_GROUP_KEY = 'validateAssignGroup'
@@ -41,7 +40,7 @@ class FrameControllerTest extends AbstractJPATest {
      */
     @Test
     @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
-        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void flowableTest() {
         mockUser('user1', 'testuser1', '123456')
         identityService.setAuthenticatedUserId('user1')
@@ -59,12 +58,13 @@ class FrameControllerTest extends AbstractJPATest {
         String procInstId = pepProcInstVO.getProcInstId()
         assert findHis(procInstId).hisTasks.size() == 0
         assert findHis(procInstId).currentTasks.get(0).endTime == null
-        assert findHis(procInstId).currentTasks.get(0).assignee == "user1"
+        assert findHis(procInstId).currentTasks.get(0).candidates[0].data[0].id == "user1"
         start(VALIDATE_ASSIGN_GROUP_KEY, formTestVO)
         assert "处理中" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getStateValue()
         assert "user1" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getStartUserId()
         assert "框架测试流程" == findProcessStartByKey(FRAME_WORKFLOW_KEY).getProcessDefinitionName()
         Map step1 = getTask("第一步")
+        assert findHisCurr(procInstId, "第一步").candidates[0].data[0].name == "c"
         assert step1.taskId.length() == 36
         String processTitle = I18NUtil.getMessage("workflow.default.process.title")
         processTitle = processTitle.replace("\${initiatorName}", "c")
@@ -92,10 +92,7 @@ class FrameControllerTest extends AbstractJPATest {
         Map step2 = getTask("第二步")
         assertTaskMsg(step2, "第二步")
         completeStep2(step2)
-        mockUser('user2', 'testuser2', '123456')
-        Authentication.setCurrentUserId("user2")
-        identityService.setAuthenticatedUserId("user2")
-        org.flowable.engine.common.impl.identity.Authentication.getAuthenticatedUserId()
+        setCurrentUserId('user2')
         List<PEPTaskVO> assigneeIsMeApproveBefore = findTaskAssigneeIsMePagination("框架测试流程", 1, 10)
         assert assigneeIsMeApproveBefore.size() == 0
         Map approve = getTask("审核")
@@ -106,25 +103,23 @@ class FrameControllerTest extends AbstractJPATest {
         assert pepProcInstVO.getProcInstId() == assigneeIsMeApproveAfter.get(0).pepProcInst.procInstId
         assert "这不能通过将第二步好好填填" == findHis(procInstId, "审核").form.formData.approveDesc
 
-        mockUser('user1', 'testuser1', '123456')
-        Authentication.setCurrentUserId("user1")
+        setCurrentUserId('user1')
         Map step2Again = getTask("第二步")
         completeStep2Again(step2Again)
         Map approveAgain = getTask("审核")
-        assert findHisCurr(procInstId, "审核").candidateGroupNames.contains("testgroup1")
+        assert findHisCurr(procInstId, "审核").candidates[0].data[0].name.contains("testgroup1")
         completeApprove(approveAgain, false)
         assert "这不能通过将第二步好好填填" == findHis(procInstId, "审核").form.formData.approveDesc
 
         Map step2Again2 = getTask("第二步")
         completeStep2Again2(step2Again2)
-        mockUser('user3', 'testuser3', '123456')
-        Authentication.setCurrentUserId("user3")
+
+        setCurrentUserId('user3')
         Map approveAgain2 = getTask("审核")
         completeApprove(approveAgain2, true)
         assert "这次OK" == findHis(procInstId, "审核").form.formData.approveDesc
 
-        mockUser('user1', 'testuser1', '123456')
-        Authentication.setCurrentUserId("user1")
+        setCurrentUserId('user1')
         Map step3 = getTask("第三步")
         completeStep3(step3)
         Map step4 = getTask("第四步")
@@ -141,7 +136,7 @@ class FrameControllerTest extends AbstractJPATest {
 
     @Test
     @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
-        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void findStartByMeTest() {
         Authentication.setCurrentUserId("pep-sysadmin")
         identityService.setAuthenticatedUserId("pep-sysadmin")
@@ -159,7 +154,7 @@ class FrameControllerTest extends AbstractJPATest {
 
     @Test
     @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
-        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void findTodoTest() {
         identityService.setAuthenticatedUserId('user1')
         Authentication.setCurrentUserId("user1")
@@ -178,7 +173,7 @@ class FrameControllerTest extends AbstractJPATest {
 
     @Test
     @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
-        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void testStartUserName() {
         identityService.setAuthenticatedUserId("user1")
         Authentication.setCurrentUserId("user1")
@@ -195,12 +190,13 @@ class FrameControllerTest extends AbstractJPATest {
         assert "处理中" == pepTaskVO.pepProcInst.stateValue
     }
 
-    private PEPProcInstVO start(String key, Map<String, Object> form) {
+
+    public PEPProcInstVO start(String key, Map<String, Object> form) {
         PEPProcInstVO pepProcInstVO = JSONUtil.parse(post('/workflow/process/' + key, JSONUtil.toJSON(form), HttpStatus.CREATED).getResponse().getContentAsString(), PEPProcInstVO.class)
         return pepProcInstVO
     }
 
-    private Map getTask(String taskName) {
+    public Map getTask(String taskName) {
         DataTrunk dataTrunk = JSONUtil.parse(get('/workflow/task?pageNo=1&pageSize=10', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         for (Map pepTaskVO : dataTrunk.getData()) {
             if (taskName.equals(pepTaskVO.name)) {
@@ -219,9 +215,9 @@ class FrameControllerTest extends AbstractJPATest {
     private void completeStep2(Map step2) {
         Map<String, Object> taskFormMap = new HashMap<>()
         taskFormMap.put("step2", "step2")
-        CustomHandlerVO customHandlerVO = new CustomHandlerVO()
-        customHandlerVO.setAssignee("user2")
-        taskFormMap.put("customHandler", customHandlerVO)
+        Map<String, Object> customCandidateMap = new HashMap<>()
+        customCandidateMap.put("assignee", "user2")
+        taskFormMap.put("customCandidate", customCandidateMap)
         post('/workflow/task/' + step2.taskId, JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
     }
 
@@ -234,22 +230,25 @@ class FrameControllerTest extends AbstractJPATest {
     private void completeStep2Again(Map step2) {
         Map<String, Object> taskFormMap = new HashMap<>()
         taskFormMap.put("step2", "好好填填")
-        CustomHandlerVO customHandlerVO = new CustomHandlerVO()
         List<String> groupIds = new ArrayList<>()
         groupIds.add("group1")
-        customHandlerVO.setCandidateGroups(groupIds)
-        taskFormMap.put("customHandler", customHandlerVO)
+        Map<String, Object> customCandidateMap = new HashMap<>()
+        customCandidateMap.put("GROUP", groupIds)
+        taskFormMap.put("customCandidate", customCandidateMap)
         post('/workflow/task/' + step2.taskId, JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
     }
 
     private void completeStep2Again2(Map step2) {
         Map<String, Object> taskFormMap = new HashMap<>()
         taskFormMap.put("step2", "好好填填")
-        CustomHandlerVO customHandlerVO = new CustomHandlerVO()
+        Map<String, Object> customCandidateMap = new HashMap<>()
         List<String> roleIds = new ArrayList<>()
         roleIds.add("role2")
-        customHandlerVO.setCandidateRoles(roleIds)
-        taskFormMap.put("customHandler", customHandlerVO)
+        customCandidateMap.put("ROLE", roleIds)
+        List<String> groupIds = new ArrayList<>()
+        groupIds.add("group2")
+        customCandidateMap.put("GROUP", groupIds)
+        taskFormMap.put("customCandidate", customCandidateMap)
         post('/workflow/task/' + step2.taskId, JSONUtil.toJSON(taskFormMap), HttpStatus.CREATED)
     }
 
@@ -276,7 +275,7 @@ class FrameControllerTest extends AbstractJPATest {
         return dataTrunk.getData()
     }
 
-    private List<PEPTaskVO> findTaskAssigneeIsMePagination(String processDefinitionKey, Integer pageNo, Integer pageSize) {
+    public List<PEPTaskVO> findTaskAssigneeIsMePagination(String processDefinitionKey, Integer pageNo, Integer pageSize) {
         DataTrunk<PEPTaskVO> dataTrunk = JSONUtil.parse(get('/workflow/task/assignee?processDefinitionName=' + processDefinitionKey + '&pageNo=' + pageNo + '&pageSize=' + pageSize, HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         return dataTrunk.getData()
     }
@@ -292,12 +291,12 @@ class FrameControllerTest extends AbstractJPATest {
         return null
     }
 
-    private Map findHis(String procInstId) {
+    public Map findHis(String procInstId) {
         Map pepWorkflowPathVO = JSONUtil.parse(get('/workflow/process/' + procInstId + '/path', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         return pepWorkflowPathVO
     }
 
-    private Map findHis(String procInstId, String name) {
+    public Map findHis(String procInstId, String name) {
         Map pepWorkflowPathVO = JSONUtil.parse(get('/workflow/process/' + procInstId + '/path', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
         for (Map pepTaskVO : pepWorkflowPathVO.hisTasks) {
             if (name.equals(pepTaskVO.name)) {

@@ -12,7 +12,7 @@ class DataDicSupportTest extends WorkflowAbstractTest {
 
     @Test
     @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
-        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void dataDicSupportTest() {
         Map map = new HashMap()
         map.put("a", "{\"catalog\":\"12313\",\"code\":\"4442\"}")

@@ -5,11 +5,10 @@ ext {
 
 versions.pep                = '0.5.0-SNAPSHOT'
 
-versions.flowable           = '6.2.1-SNAPSHOT'
+versions.flowable           = '6.4.0'
 versions.groovy             = '2.5.0'
 versions.hibernate          = '5.2.17.Final'
 versions.jackson            = '2.9.6'
-//versions.jcaptcha         = '1.0'
 versions.logback            = '1.2.3'
 versions.mongo              = '3.4.0'
 versions.quartz             = '2.3.0'
@@ -17,8 +16,6 @@ versions.slf4j              = '1.7.25'
 versions.spring             = '5.1.2.RELEASE'
 versions.spring_boot        = '2.0.6.RELEASE'
 versions.spring_data        = 'Kay-SR11'
-//versions.spring_integration = '5.1.0.RELEASE'
-//versions.spring_security    = '5.1.1.RELEASE'
 versions.springfox          = '3.0.0-SNAPSHOT'
 
 configurations.all {
@@ -37,6 +34,9 @@ configurations.all {
         } else if (req.group == 'io.netty' && req.version =="4.1.29.Final") {
             //暂且未知4.1.29这个版本的netty是谁引入的  使用pushy引用的netty版本4.1.25
             details.useVersion "4.1.25.Final"
+        } else if (req.name == 'flowable-ui-common'){
+            //强制使用流程flowable-ui-common为proper包
+            details.useTarget("com.proper.enterprise.platform:flowable-ui-common:${versions.flowable}-SNAPSHOT")
         }
 
         def nameVers = [
@@ -74,15 +74,20 @@ configurations.all {
     exclude group: 'org.apache.commons.logging'
     exclude group: 'org.apache.log4j'
     exclude group: 'log4j'
+
+    // Exclude spring security
     exclude group: 'org.springframework.security', module: 'spring-security-web'
     exclude group: 'org.springframework.security', module: 'spring-security-config'
     exclude group: 'org.springframework.security', module: 'spring-security-crypto'
 
-    // Exclude Woodstox implement of Stax API
-    // which has different behaviours with JDK default implement
-    // depend by Activiti
-    // https://cloud.propersoft.cn/youtrack/issue/PEP-154
-    exclude group: 'org.codehaus.woodstox', module: 'wstx-asl'
+    // Exclude HikariCP
+    exclude module: 'HikariCP'
+
+    // Exclude flowable cmmn, dmn, idm engines and other dependencies not used
+    exclude module: 'flowable-cmmn-api'
+    exclude module: 'flowable-content-api'
+    exclude module: 'flowable-dmn-api'
+    exclude module: 'flowable-spring-security'
 }
 
 libraries.ali_webpay = 'com.ali.webpay:ali-webpay:1.0.0'
@@ -111,15 +116,17 @@ libraries.druid_spring_boot_starter = 'com.alibaba:druid-spring-boot-starter:1.1
 
 libraries.el_api="javax.el:el-api:3.0"
 
-libraries.flowable_engine = "com.proper.enterprise.platform:flowable-engine:${versions.flowable}"
-libraries.flowable_http="com.proper.enterprise.platform:flowable-http:${versions.flowable}"
-libraries.flowable_json_converter = "com.proper.enterprise.platform:flowable-json-converter:${versions.flowable}"
-libraries.flowable_rest = "com.proper.enterprise.platform:flowable-rest:${versions.flowable}"
-libraries.flowable_spring = "com.proper.enterprise.platform:flowable-spring:${versions.flowable}"
-//libraries.flowable_ui_modeler_conf="com.proper.enterprise.platform:flowable-ui-modeler-conf:${versions.flowable}"
-libraries.flowable_ui_modeler_logic = "com.proper.enterprise.platform:flowable-ui-modeler-logic:${versions.flowable}"
-libraries.flowable_ui_modeler_rest = "com.proper.enterprise.platform:flowable-ui-modeler-rest:${versions.flowable}"
-libraries.flowable_web_designer="com.proper.enterprise.platform:flowable-web-designer:${versions.flowable}"
+libraries.flowable_engine                      = "org.flowable:flowable-engine:${versions.flowable}"
+libraries.flowable_http                        = "org.flowable:flowable-http:${versions.flowable}"
+libraries.flowable_idm_spring_configurator     = "org.flowable:flowable-idm-spring-configurator:${versions.flowable}"
+libraries.flowable_json_converter              = "org.flowable:flowable-json-converter:${versions.flowable}"
+libraries.flowable_rest                        = "org.flowable:flowable-rest:${versions.flowable}"
+libraries.flowable_spring                      = "org.flowable:flowable-spring:${versions.flowable}"
+libraries.flowable_spring_boot_autoconfigure   = "org.flowable:flowable-spring-boot-autoconfigure:${versions.flowable}"
+libraries.flowable_spring_boot_starter_process = "org.flowable:flowable-spring-boot-starter-process:${versions.flowable}"
+libraries.flowable_ui_modeler_rest             = "org.flowable:flowable-ui-modeler-rest:${versions.flowable}"
+
+libraries.flowable_web_designer                = "com.proper.enterprise.platform:flowable-web-designer:${versions.flowable}-SNAPSHOT"
 
 // groovy-all include all below modules, used by code quality and workflow module
 libraries.groovy_all = "org.codehaus.groovy:groovy-all:${versions.groovy}"
@@ -165,11 +172,6 @@ libraries.javax_el="org.glassfish.web:javax.el:2.2.4"
 libraries.javax_inject = "javax.inject:javax.inject:1"
 
 libraries.jaxws_rt = 'com.sun.xml.ws:jaxws-rt:2.3.1'
-
-//libraries.jcaptcha = dependencies.module("com.octo.captcha:jcaptcha:${versions.jcaptcha}") {
-//    dependency "com.octo.captcha:jcaptcha-api:${versions.jcaptcha}"
-//   exclude group: 'com.jhlabs', module: 'imaging'
-//}
 
 libraries.jpa_api = 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final'
 
@@ -228,7 +230,7 @@ libraries.spring_boot_devtools                = 'org.springframework.boot:spring
 libraries.spring_boot_starter_actuator        = 'org.springframework.boot:spring-boot-starter-actuator'
 libraries.spring_boot_starter_cache           = 'org.springframework.boot:spring-boot-starter-cache'
 libraries.spring_boot_starter_data_jpa        = 'org.springframework.boot:spring-boot-starter-data-jpa'
-libraries.spring_boot_starter_mail            ='org.springframework.boot:spring-boot-starter-mail'
+libraries.spring_boot_starter_mail            = 'org.springframework.boot:spring-boot-starter-mail'
 libraries.spring_boot_starter_data_mongodb    = 'org.springframework.boot:spring-boot-starter-data-mongodb'
 libraries.spring_boot_starter_test            = 'org.springframework.boot:spring-boot-starter-test'
 libraries.spring_boot_starter_web             = 'org.springframework.boot:spring-boot-starter-web'
@@ -258,21 +260,6 @@ libraries.spring_data_neo4j= 'org.springframework.data:spring-data-neo4j'
 //    'org.apache.commons:commons-pool2:2.2',
 //    'redis.clients:jedis:2.9.0'
 //]
-
-//libraries.spring_integration = "org.springframework.integration:spring-integration-core:${versions.spring_integration}"
-//libraries.spring_integration_stream = "org.springframework.integration:spring-integration-stream:${versions.spring_integration}"
-//libraries.spring_integration_ws = "org.springframework.integration:spring-integration-ws:${versions.spring_integration}"
-//libraries.spring_integration_xml = "org.springframework.integration:spring-integration-xml:${versions.spring_integration}"
-//libraries.spring_integration_jdbc = "org.springframework.integration:spring-integration-jdbc:${versions.spring_integration}"
-
-//libraries.spring_security_acl = "org.springframework.security:spring-security-acl:${versions.spring_security}"
-//libraries.spring_security_cas = "org.springframework.security:spring-security-cas:${versions.spring_security}"
-//libraries.spring_security_config = "org.springframework.security:spring-security-config:${versions.spring_security}"
-//libraries.spring_security_core = "org.springframework.security:spring-security-core:${versions.spring_security}"
-//libraries.spring_security_crypto = "org.springframework.security:spring-security-crypto:${versions.spring_security}"
-//libraries.spring_security_taglibs = "org.springframework.security:spring-security-taglibs:${versions.spring_security}"
-//libraries.spring_security_test = "org.springframework.security:spring-security-test:${versions.spring_security}"
-//libraries.spring_security_web = "org.springframework.security:spring-security-web:${versions.spring_security}"
 
 libraries.springfox = [
     "io.springfox:springfox-spring-webmvc:${versions.springfox}",

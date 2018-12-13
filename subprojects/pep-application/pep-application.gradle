@@ -1,43 +1,104 @@
+import groovy.transform.Field
+
 apply plugin: 'org.springframework.boot'
 
 dependencies {
 
-       compileOnly libraries.groovy
+         compileOnly libraries.groovy
 
-    implementation libraries.spring_boot_starter_web
+    runtimeClasspath libraries.spring_boot_starter_web
 
-       // Choose by datasource
-       // available choices: libraries.h2, libraries.mysql_driver
-       runtimeOnly libraries.h2,
-                   // available choices: project(':pep-oopsearch-sync-h2'), project(':pep-oopsearch-sync-mysql')
-                   project(':pep-oopsearch-sync-h2')
+    // Choose by datasource
+    // available choices: libraries.h2, libraries.mysql_driver
+    runtimeClasspath libraries.h2,
+                     // available choices: project(':pep-oopsearch-sync-h2'), project(':pep-oopsearch-sync-mysql')
+                     project(':pep-oopsearch-sync-h2')
 
-       // Necessary when using Web Service
-//       runtimeOnly libraries.jaxws_rt
+         // Necessary when using Web Service
+//         runtimeOnly libraries.jaxws_rt
 
-       // Select when need pep monitor
-//       runtimeOnly project(':pep-monitor')
+         // Select when need pep monitor
+//         runtimeOnly project(':pep-monitor')
 
-       // Select when need swagger
-//       runtimeOnly project(':pep-swagger')
+         // Select when need swagger
+//         runtimeOnly project(':pep-swagger')
 
-       // Mandatory for PEP
-       runtimeOnly project(':pep-auth-common-jpa'),
-                   // Needs one cache implementation if use cache API
-                   project(':pep-cache-ehcache'),
-                   project(':pep-configs'),
-                   project(':pep-oopsearch')
+    // Mandatory for PEP
+    runtimeClasspath project(':pep-auth-common-jpa'),
+                     // Needs one cache implementation if use cache API
+                     project(':pep-cache-ehcache'),
+                     project(':pep-configs'),
+                     project(':pep-oopsearch')
 
-       // Select on demand
-       runtimeOnly project(':pep-auth-jwt'),
-                   project(':pep-oopsearch'),
-                   // Needs one dfs implementation if use DFS API
-                   // MUST change 'pep.dfs.root-path' together
-                   project(':pep-dfs-mongo'),
-                   project(':pep-file'),
-                   project(':pep-oopsearch-sync-mongo'),
-                   project(':pep-workflow')
+    // Select on demand
+    runtimeClasspath project(':pep-auth-jwt'),
+                     project(':pep-oopsearch'),
+                     // Needs one dfs implementation if use DFS API
+                     // MUST change 'pep.dfs.root-path' together
+                     project(':pep-dfs-mongo'),
+                     project(':pep-file'),
+                     project(':pep-oopsearch-sync-mongo'),
+                     project(':pep-workflow')
 
+}
+
+task delPathingJar(type: Delete) {
+    delete 'build/libs'
+    followSymlinks = true
+}
+
+@Field jarNames = new ArrayList<>()
+//将所需jar包 copy至build/libs
+task copyPathingJar(type: Copy) {
+    dependsOn delPathingJar
+    Collection<String> paths = new ArrayList<>()
+    List<Configuration> configurationCollect = configurations.collect()
+    for (Configuration configuration : configurationCollect) {
+        if (!configuration.isCanBeResolved()) {
+            continue
+        }
+        Iterator<Dependency> dependencys = configuration.allDependencies.iterator()
+        while (dependencys.hasNext()) {
+            Dependency dependency = dependencys.next()
+            Set<File> files = configuration.files(dependency)
+            if (files == null || files.size() == 0) {
+                continue;
+            }
+            for (File file : files) {
+                paths.add(file.getAbsolutePath())
+                jarNames.add(file.getName())
+            }
+        }
+    }
+    for (String path : paths) {
+        from path
+        into 'build/libs'
+    }
+}
+
+//打包 将jar包路径写入MAINFEST.MF
+task pathingJar(type: Jar) {
+    dependsOn copyPathingJar
+    def relativePaths = ""
+    //遍历jar包名称  写入相对路径
+    for (String name : jarNames) {
+        relativePaths += name + " "
+    }
+    doFirst {
+        manifest {
+            attributes "Class-Path": relativePaths
+        }
+    }
+}
+
+//重写bootRun windows情况下读取$buildDir下文件及jar包中的MAINFEST.MF文件
+bootRun {
+    if (System.properties['os.name'].contains('Windows')) {
+        dependsOn pathingJar
+        doFirst {
+            classpath = files("$buildDir/classes/java/main", "$buildDir/classes/groovy/main", "$buildDir/resources/main", pathingJar.archivePath)
+        }
+    }
 }
 
 uploadArchives.enabled = false

@@ -78,9 +78,6 @@ public abstract class AbstractWorkFlowNoticeSupport {
                 if (identityLinkEntity.isGroup()) {
                     userIds.addAll(queryUserIdByGroup(identityLinkEntity.getGroupId()));
                 }
-                if (identityLinkEntity.isRole()) {
-                    userIds.addAll(queryUserIdByRole(identityLinkEntity.getGroupId()));
-                }
             }
         }
         return userIds;

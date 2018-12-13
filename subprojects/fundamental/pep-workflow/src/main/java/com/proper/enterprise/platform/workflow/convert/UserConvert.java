@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.workflow.convert;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import org.flowable.idm.engine.impl.persistence.entity.UserEntityImpl;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

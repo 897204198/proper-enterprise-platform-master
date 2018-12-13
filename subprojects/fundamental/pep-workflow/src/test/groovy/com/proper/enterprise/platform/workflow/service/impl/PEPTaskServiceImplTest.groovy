@@ -15,7 +15,7 @@ class PEPTaskServiceImplTest extends WorkflowAbstractTest {
 
     @Test
     @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
-        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     void testTodoCount() {
         setCurrentUserId("admin")
         Map mainForm = new HashMap()

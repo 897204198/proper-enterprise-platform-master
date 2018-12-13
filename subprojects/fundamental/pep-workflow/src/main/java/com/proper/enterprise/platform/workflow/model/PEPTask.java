@@ -1,17 +1,19 @@
 package com.proper.enterprise.platform.workflow.model;
 
-import com.proper.enterprise.platform.api.auth.dao.RoleDao;
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
-import com.proper.enterprise.platform.api.auth.dao.UserGroupDao;
-import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.PEPPropertiesLoader;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.*;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
+import com.proper.enterprise.platform.workflow.entity.WFIdmQueryConfEntity;
+import com.proper.enterprise.platform.workflow.factory.PEPCandidateExtQueryFactory;
+import com.proper.enterprise.platform.workflow.service.impl.PEPCandidateUserExtQueryImpl;
+import com.proper.enterprise.platform.workflow.util.CandidateIdUtil;
+import com.proper.enterprise.platform.workflow.util.WFIdmQueryConfUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.flowable.engine.HistoryService;
@@ -94,30 +96,17 @@ public class PEPTask {
      * 当前经办人名称
      */
     private String assigneeName;
+
     /**
-     * 候选人集合
+     * 候选集合展示
      */
-    private Set<String> candidateUsers;
+    private List<PEPTaskCandidate> candidates;
+
     /**
-     * 候选人集合
+     * 候选集合拼接
      */
-    private Set<String> candidateUserNames;
-    /**
-     * 候选角色集合
-     */
-    private Set<String> candidateRoles;
-    /**
-     * 候选角色名称集合
-     */
-    private Set<String> candidateRoleNames;
-    /**
-     * 候选用户组集合
-     */
-    private Set<String> candidateGroups;
-    /**
-     * 候选用户组集合
-     */
-    private Set<String> candidateGroupNames;
+    private Map<String, PEPTaskCandidate> candidatesMap;
+
     /**
      * 任务表单
      */
@@ -149,6 +138,45 @@ public class PEPTask {
      */
     private Boolean sameAssigneeSkip;
 
+    /**
+     * 将candidatesMap 中的数据整合并排序
+     *
+     * @return 任务候选集合
+     */
+    public List<PEPTaskCandidate> getCandidates() {
+        if (CollectionUtil.isEmpty(this.candidatesMap)) {
+            return new ArrayList<>();
+        }
+        this.candidates = new ArrayList<>();
+        Collection<WFIdmQueryConfEntity> wfIdmQueryConfEntities = WFIdmQueryConfUtil.findAll();
+        for (WFIdmQueryConfEntity wfIdmQueryConfEntity : wfIdmQueryConfEntities) {
+            PEPTaskCandidate pepTaskCandidateMap = candidatesMap.get(wfIdmQueryConfEntity.getType());
+            if (null == pepTaskCandidateMap) {
+                continue;
+            }
+            PEPTaskCandidate pepTaskCandidate = new PEPTaskCandidate(wfIdmQueryConfEntity.getType(),
+                wfIdmQueryConfEntity.getName());
+            pepTaskCandidate.setData(pepTaskCandidateMap.getData());
+            candidates.add(pepTaskCandidate);
+        }
+        return candidates;
+    }
+
+    public void setCandidates(List<PEPTaskCandidate> candidates) {
+        this.candidates = candidates;
+    }
+
+    public Map<String, PEPTaskCandidate> getCandidatesMap() {
+        return candidatesMap;
+    }
+
+    public void setCandidatesMap(Map<String, PEPTaskCandidate> candidatesMap) {
+        this.candidatesMap = candidatesMap;
+    }
+
+    public void setSameAssigneeSkip(Boolean sameAssigneeSkip) {
+        this.sameAssigneeSkip = sameAssigneeSkip;
+    }
 
     public String getTaskId() {
         return taskId;
@@ -192,86 +220,6 @@ public class PEPTask {
         this.assigneeName = assigneeName;
     }
 
-    public Set<String> getCandidateUsers() {
-        return candidateUsers;
-    }
-
-    public void setCandidateUsers(Set<String> candidateUsers) {
-        this.candidateUsers = candidateUsers;
-    }
-
-    public Set<String> getCandidateUserNames() {
-        if (CollectionUtil.isNotEmpty(this.candidateUserNames)) {
-            return this.candidateUserNames;
-        }
-        if (CollectionUtil.isEmpty(this.getCandidateUsers())) {
-            return null;
-        }
-        List<User> users = new ArrayList<>(PEPApplicationContext.getBean(UserDao.class).findAll(this.getCandidateUsers()));
-        Set<String> userNames = new HashSet<>();
-        for (User user : users) {
-            userNames.add(user.getName());
-        }
-        return userNames;
-    }
-
-    public void setCandidateUserNames(Set<String> candidateUserNames) {
-        this.candidateUserNames = candidateUserNames;
-    }
-
-    public Set<String> getCandidateRoles() {
-        return candidateRoles;
-    }
-
-    public void setCandidateRoles(Set<String> candidateRoles) {
-        this.candidateRoles = candidateRoles;
-    }
-
-    public Set<String> getCandidateRoleNames() {
-        if (CollectionUtil.isNotEmpty(this.candidateRoleNames)) {
-            return this.candidateRoleNames;
-        }
-        if (CollectionUtil.isEmpty(this.getCandidateRoles())) {
-            return null;
-        }
-        List<Role> roles = new ArrayList<>(PEPApplicationContext.getBean(RoleDao.class).findAllById(this.getCandidateRoles()));
-        Set<String> roleNames = new HashSet<>();
-        for (Role role : roles) {
-            roleNames.add(role.getName());
-        }
-        return roleNames;
-    }
-
-    public void setCandidateRoleNames(Set<String> candidateRoleNames) {
-        this.candidateRoleNames = candidateRoleNames;
-    }
-
-    public Set<String> getCandidateGroups() {
-        return candidateGroups;
-    }
-
-    public void setCandidateGroups(Set<String> candidateGroups) {
-        this.candidateGroups = candidateGroups;
-    }
-
-    public Set<String> getCandidateGroupNames() {
-        if (CollectionUtil.isNotEmpty(this.candidateGroupNames)) {
-            return this.candidateGroupNames;
-        }
-        if (CollectionUtil.isEmpty(this.getCandidateGroups())) {
-            return null;
-        }
-        List<UserGroup> groups = new ArrayList<>(PEPApplicationContext.getBean(UserGroupDao.class).findAll(this.getCandidateGroups()));
-        Set<String> groupNames = new HashSet<>();
-        for (UserGroup userGroup : groups) {
-            groupNames.add(userGroup.getName());
-        }
-        return groupNames;
-    }
-
-    public void setCandidateGroupNames(Set<String> candidateGroupNames) {
-        this.candidateGroupNames = candidateGroupNames;
-    }
 
     public PEPForm getForm() {
         return form;
@@ -348,35 +296,19 @@ public class PEPTask {
         return JSONUtil.toJSONIgnoreException(this);
     }
 
-
-    public void addCandidateUser(String candidateUserId) {
-        if (StringUtil.isEmpty(candidateUserId)) {
-            return;
+    public void addCandidate(PEPCandidateModel pepCandidateModel) {
+        if (CollectionUtil.isEmpty(this.candidatesMap)) {
+            this.candidatesMap = new HashMap<>(16);
         }
-        if (null == this.candidateUsers) {
-            this.candidateUsers = new HashSet<>();
+        if (null == this.candidatesMap.get(pepCandidateModel.getType())) {
+            WFIdmQueryConfEntity wfIdmQueryConfEntity = WFIdmQueryConfUtil.findByType(pepCandidateModel.getType());
+            if (null == wfIdmQueryConfEntity) {
+                throw new ErrMsgException("can't find type:" + pepCandidateModel.getType() + ":wfIdmQueryConfEntity");
+            }
+            this.candidatesMap.put(pepCandidateModel.getType(),
+                new PEPTaskCandidate(wfIdmQueryConfEntity.getType(), wfIdmQueryConfEntity.getName()));
         }
-        candidateUsers.add(candidateUserId);
-    }
-
-    public void addCandidateRole(String candidateRoleId) {
-        if (StringUtil.isEmpty(candidateRoleId)) {
-            return;
-        }
-        if (null == this.candidateRoles) {
-            this.candidateRoles = new HashSet<>();
-        }
-        candidateRoles.add(candidateRoleId);
-    }
-
-    public void addCandidateGroup(String candidateGroupId) {
-        if (StringUtil.isEmpty(candidateGroupId)) {
-            return;
-        }
-        if (null == this.candidateGroups) {
-            this.candidateGroups = new HashSet<>();
-        }
-        candidateGroups.add(candidateGroupId);
+        this.candidatesMap.get(pepCandidateModel.getType()).getData().add(pepCandidateModel);
     }
 
     public Map<String, Object> getGlobalData() {
@@ -396,9 +328,17 @@ public class PEPTask {
         }
         for (IdentityLinkInfo identityLinkInfo : identityLinkInfos) {
             if ("candidate".equals(identityLinkInfo.getType())) {
-                pepTask.addCandidateUser(identityLinkInfo.getUserId());
-                pepTask.addCandidateGroup(identityLinkInfo.getGroupId());
-                pepTask.addCandidateRole(identityLinkInfo.getRoleId());
+                if (StringUtil.isNotEmpty(identityLinkInfo.getUserId())) {
+                    pepTask.addCandidate(PEPCandidateExtQueryFactory
+                        .product(PEPCandidateUserExtQueryImpl.USER_DATADIC_CODE)
+                        .findCandidateById(identityLinkInfo.getUserId()));
+                }
+                if (StringUtil.isNotEmpty(identityLinkInfo.getGroupId())) {
+                    CandidateIdUtil.CandidateId candidateId = CandidateIdUtil.decode(identityLinkInfo.getGroupId());
+                    pepTask.addCandidate(PEPCandidateExtQueryFactory
+                        .product(candidateId.getType())
+                        .findCandidateById(candidateId.getId()));
+                }
             }
             if ("assigne".equals(identityLinkInfo.getType())) {
                 pepTask.setAssignee(identityLinkInfo.getUserId());

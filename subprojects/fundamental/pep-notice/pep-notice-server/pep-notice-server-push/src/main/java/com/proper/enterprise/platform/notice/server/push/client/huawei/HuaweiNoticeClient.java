@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -217,7 +218,8 @@ public class HuaweiNoticeClient {
             String msgBody = MessageFormat.format(
                 "grant_type=client_credentials&client_secret={0}&client_id={1}",
                 URLEncoder.encode(appSecret, "UTF-8"), appId);
-            String response = new String(post(tokenUrl, msgBody).getBody(), "UTF-8");
+            byte[] body = post(tokenUrl, msgBody).getBody();
+            String response = body == null ? "" : new String(body, StandardCharsets.UTF_8);
             LOGGER.debug("Get huawei access token response: {}", response);
             JSONObject obj = JSONObject.parseObject(response);
 
@@ -244,7 +246,8 @@ public class HuaweiNoticeClient {
                 return new BusinessNoticeResult(NoticeStatus.RETRY,
                     HuaweiErrCodeEnum.convertErrorCode(ERR_503), ERR_503);
             }
-            String resBody = new String(res.getBody(), "UTF-8");
+            byte[] body = res.getBody();
+            String resBody = body == null ? "" : new String(body, StandardCharsets.UTF_8);
             JsonNode result = JSONUtil.parse(resBody, JsonNode.class);
             String successValue = "Success";
             if (result.get(key) != null && !successValue.equals(result.get(key).textValue())) {

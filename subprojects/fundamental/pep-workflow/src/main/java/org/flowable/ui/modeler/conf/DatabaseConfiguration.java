@@ -1,4 +1,4 @@
-package org.flowable.app.conf;
+package org.flowable.ui.modeler.conf;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -8,8 +8,8 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.flowable.app.service.exception.InternalServerErrorException;
-import org.flowable.engine.common.api.FlowableException;
+import org.flowable.common.engine.api.FlowableException;
+import org.flowable.ui.common.service.exception.InternalServerErrorException;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
@@ -39,6 +39,7 @@ public class DatabaseConfiguration {
     protected Environment env;
     @Autowired
     protected ResourceLoader resourceLoader;
+
     @Autowired
     protected DataSource dataSource;
 
@@ -98,8 +99,8 @@ public class DatabaseConfiguration {
             properties.put("prefix", env.getProperty("datasource.prefix", ""));
             properties.put("blobType", "BLOB");
             properties.put("boolValue", "TRUE");
-
-            properties.load(this.getClass().getClassLoader().getResourceAsStream("org/flowable/db/properties/" + databaseType + ".properties"));
+            //boolValue=1 oracle  去掉数据库差异化 我们目前只支持mysql和h2
+            //properties.load(this.getClass().getClassLoader().getResourceAsStream("org/flowable/db/properties/" + databaseType + ".properties"));
 
             sqlSessionFactoryBean.setConfigurationProperties(properties);
             sqlSessionFactoryBean

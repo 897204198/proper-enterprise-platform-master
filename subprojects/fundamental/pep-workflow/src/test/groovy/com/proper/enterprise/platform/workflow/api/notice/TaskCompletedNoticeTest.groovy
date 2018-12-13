@@ -18,7 +18,7 @@ class TaskCompletedNoticeTest extends WorkflowAbstractTest {
     private TaskService taskService
 
     @Test
-    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/adminUsers.sql"])
+    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/adminUsers.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void testTaskCompletedNotice() {
         identityService.setAuthenticatedUserId("PEP_SYS")
         Authentication.setCurrentUserId("PEP_SYS")

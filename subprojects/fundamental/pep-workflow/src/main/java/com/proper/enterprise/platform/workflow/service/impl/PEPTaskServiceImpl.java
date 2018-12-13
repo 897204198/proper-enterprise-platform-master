@@ -1,9 +1,7 @@
 package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
-import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
-import com.proper.enterprise.platform.api.auth.model.UserGroup;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.security.Authentication;
@@ -15,13 +13,13 @@ import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.TaskConvert;
 import com.proper.enterprise.platform.workflow.convert.VariableConvert;
+import com.proper.enterprise.platform.workflow.flowable.idm.service.impl.PEPGroupQueryImpl;
 import com.proper.enterprise.platform.workflow.model.PEPExtForm;
 import com.proper.enterprise.platform.workflow.model.PEPWorkflowPage;
 import com.proper.enterprise.platform.workflow.predicate.VariableQueryPredicate;
 import com.proper.enterprise.platform.workflow.repository.PEPHistoricVariableInstanceRepository;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.service.PEPTaskService;
-import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
 import com.proper.enterprise.platform.workflow.util.VariableUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO;
@@ -29,13 +27,13 @@ import org.apache.commons.collections.MapUtils;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.TaskService;
 import org.flowable.identitylink.api.IdentityLinkInfo;
+import org.flowable.idm.api.Group;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
 import org.flowable.variable.api.history.HistoricVariableInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -43,9 +41,6 @@ import java.util.*;
 
 @Service
 public class PEPTaskServiceImpl implements PEPTaskService {
-
-    @Value("${workflow.global.variables}")
-    private List<String> globalVariableKeys;
 
     private TaskService taskService;
 
@@ -95,7 +90,6 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         if (StringUtil.isNotEmpty(formKey)) {
             globalVariables.put(formKey, variables);
         }
-        globalVariables = GlobalVariableUtil.setGlobalVariable(globalVariables, variables, globalVariableKeys);
         if (null == task.getAssignee()) {
             taskService.claim(taskId, Authentication.getCurrentUserId());
         }
@@ -138,18 +132,6 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         if (null == user) {
             throw new ErrMsgException(I18NUtil.getMessage("workflow.task.complete.no.permissions"));
         }
-        List<String> userGroupIds = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(user.getUserGroups())) {
-            for (UserGroup userGroup : user.getUserGroups()) {
-                userGroupIds.add(userGroup.getId());
-            }
-        }
-        List<String> roleIds = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(user.getRoles())) {
-            for (Role role : user.getRoles()) {
-                roleIds.add(role.getId());
-            }
-        }
         if (CollectionUtil.isNotEmpty(task.getIdentityLinks())) {
             for (IdentityLinkInfo identityLinkInfo : task.getIdentityLinks()) {
                 if ("candidate".equals(identityLinkInfo.getType())) {
@@ -157,14 +139,15 @@ public class PEPTaskServiceImpl implements PEPTaskService {
                         && identityLinkInfo.getUserId().equals(user.getId())) {
                         return;
                     }
-                    if (StringUtil.isNotEmpty(identityLinkInfo.getGroupId())
-                        && userGroupIds.contains(identityLinkInfo.getGroupId())) {
-                        return;
-
-                    }
-                    if (StringUtil.isNotEmpty(identityLinkInfo.getRoleId())
-                        && roleIds.contains(identityLinkInfo.getRoleId())) {
-                        return;
+                    if (StringUtil.isNotEmpty(identityLinkInfo.getGroupId())) {
+                        List<Group> groups = new PEPGroupQueryImpl()
+                            .groupMember(Authentication.getCurrentUserId())
+                            .list();
+                        for (Group group : groups) {
+                            if (identityLinkInfo.getGroupId().equals(group.getId())) {
+                                return;
+                            }
+                        }
                     }
                 }
             }

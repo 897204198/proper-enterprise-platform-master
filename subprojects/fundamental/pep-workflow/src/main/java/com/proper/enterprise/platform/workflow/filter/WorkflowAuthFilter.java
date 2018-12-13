@@ -1,11 +1,15 @@
 package com.proper.enterprise.platform.workflow.filter;
 
-import com.proper.enterprise.platform.core.security.Authentication;
-import org.springframework.stereotype.Service;
+import org.flowable.common.engine.impl.identity.Authentication;
+
 import javax.servlet.*;
 import java.io.IOException;
 
-@Service("wfAuthFilter")
+/**
+ * 流程登录人与系统登录人做一个同步
+ * 拦截器后于AccessTokenFilter
+ * 发现请求后将我们的当前登录人同步至flowable
+ */
 public class WorkflowAuthFilter implements Filter {
 
     @Override
@@ -15,7 +19,7 @@ public class WorkflowAuthFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        org.flowable.engine.common.impl.identity.Authentication.setAuthenticatedUserId(Authentication.getCurrentUserId());
+        Authentication.setAuthenticatedUserId(com.proper.enterprise.platform.core.security.Authentication.getCurrentUserId());
         chain.doFilter(request, response);
     }
 

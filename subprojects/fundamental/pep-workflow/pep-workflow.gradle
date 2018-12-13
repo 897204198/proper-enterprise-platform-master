@@ -4,12 +4,10 @@ dependencies {
 
                    api libraries.flowable_engine
 
-       implementation  libraries.flowable_json_converter,
-                       libraries.flowable_rest,
-                       libraries.flowable_spring,
+        implementation libraries.flowable_idm_spring_configurator,
+                       libraries.flowable_spring_boot_autoconfigure,
+                       libraries.flowable_spring_boot_starter_process,
                        libraries.flowable_ui_modeler_rest,
-                       libraries.flowable_http,
-                       libraries.groovy_all,
                        libraries.javax_inject,
                        libraries.liquibase
 
