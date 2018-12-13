@@ -24,7 +24,7 @@
 
     <module name="TreeWalker">
         <module name="Swagger">
-            <property name="anno" value="@ApiOperation"/>
+            <property name="anno" value="ApiOperation"/>
         </module>
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">

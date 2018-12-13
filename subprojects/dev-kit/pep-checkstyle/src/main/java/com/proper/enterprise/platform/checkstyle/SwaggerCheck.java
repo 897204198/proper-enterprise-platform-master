@@ -4,9 +4,15 @@ import com.puppycrawl.tools.checkstyle.api.AbstractCheck;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.checks.annotation.AnnotationLocationCheck;
+import com.puppycrawl.tools.checkstyle.utils.AnnotationUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class SwaggerCheck extends AbstractCheck {
-    private static final String SWAGGER_ANNOTATION = "@ApiOperation";
+    @Autowired
+    AnnotationLocationCheck annotationLocationCheck;
+
+    private static final String SWAGGER_ANNOTATION = "ApiOperation";
     private String anno = SWAGGER_ANNOTATION;
 
     public void setAnno(String anno) {
@@ -15,7 +21,7 @@ public class SwaggerCheck extends AbstractCheck {
 
     @Override
     public int[] getDefaultTokens() {
-        return new int[]{TokenTypes.METHOD_DEF, TokenTypes.ANNOTATION};
+        return new int[]{TokenTypes.METHOD_DEF};
     }
 
     @Override
@@ -23,15 +29,11 @@ public class SwaggerCheck extends AbstractCheck {
         FileContents fileContents = getFileContents();
         String str = fileContents.getFileName();
         if (str.endsWith("Controller.java")) {
-            if (ast.branchContains(TokenTypes.METHOD_DEF)) {
-                if (ast.branchContains(TokenTypes.ANNOTATIONS)) {
-                    if (String.valueOf(TokenTypes.ANNOTATIONS).contains(anno)) {
-                        return;
-                    }
-                } else {
-                    String message = "Failed！The methods no have swagger annotation";
-                    log(ast.getLineNo(), message);
-                }
+            if (AnnotationUtil.containsAnnotation(ast, anno)) {
+                return;
+            } else {
+                String message = "Failed！The methods no have swagger annotation";
+                log(ast.getLineNo(), message);
             }
         }
     }
