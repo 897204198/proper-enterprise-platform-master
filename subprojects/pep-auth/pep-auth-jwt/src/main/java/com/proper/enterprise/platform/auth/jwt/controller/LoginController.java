@@ -16,6 +16,7 @@ import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant;
+import com.proper.enterprise.platform.sys.i18n.I18NService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,9 @@ public class LoginController extends BaseController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private I18NService i18NService;
+
     @AuthcIgnore
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> login(@RequestBody Map<String, String> loginMap, HttpServletRequest request) throws IOException {
@@ -67,7 +71,7 @@ public class LoginController extends BaseController {
         if (authcService.authenticate(username, pwd)) {
             return new ResponseEntity<>(jwtAuthcService.getUserToken(username), headers, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Failed to authenticate", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(i18NService.getMessage("pep.auth.common.user.password.not.match"), HttpStatus.UNAUTHORIZED);
         }
     }
 

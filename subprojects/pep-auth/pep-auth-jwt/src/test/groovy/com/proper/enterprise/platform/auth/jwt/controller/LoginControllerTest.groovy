@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.model.CurrentModel
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.core.utils.ConfCenter
 import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant
+import com.proper.enterprise.platform.sys.i18n.I18NUtil
 import com.proper.enterprise.platform.test.AbstractTest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import groovy.json.JsonSlurper
@@ -31,9 +32,11 @@ class LoginControllerTest extends AbstractTest {
         // wrong produce type
         mockLogin('admin', '123456', MediaType.APPLICATION_JSON, HttpStatus.NOT_ACCEPTABLE)
         // wrong password
-        mockLogin('admin', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
+        assert I18NUtil.getMessage("pep.auth.common.user.password.not.match") ==
+            mockLogin('admin', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
         // wrong account
-        mockLogin('test', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
+        assert I18NUtil.getMessage("pep.auth.common.user.password.not.match") ==
+            mockLogin('test', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
         Authentication.setCurrentUserId(DEFAULT_USER)
         post('/auth/logout', '', HttpStatus.CREATED)
     }
