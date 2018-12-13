@@ -35,8 +35,9 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
             HuaweiNoticeClient huaweiNoticeClient = huaweiNoticeClientManagerApi.get(notice.getAppKey());
             if (isCmdMessage(notice)) {
                 BusinessNoticeResult businessNoticeCmdResult = huaweiNoticeClient.sendCmdMessage(notice);
-                if (NoticeStatus.FAIL == businessNoticeCmdResult.getNoticeStatus()) {
-                    super.updateStatus(pushId, NoticeStatus.FAIL,
+                if (NoticeStatus.FAIL == businessNoticeCmdResult.getNoticeStatus()
+                    || NoticeStatus.RETRY == businessNoticeCmdResult.getNoticeStatus()) {
+                    super.updateStatus(pushId, businessNoticeCmdResult.getNoticeStatus(),
                         businessNoticeCmdResult.getCode(), businessNoticeCmdResult.getMessage());
                     return businessNoticeCmdResult;
                 }
@@ -44,8 +45,9 @@ public class HuaweiNoticeSender extends AbstractPushSendSupport implements Notic
                 return businessNoticeCmdResult;
             }
             BusinessNoticeResult businessNoticeResult = huaweiNoticeClient.sendMessage(notice);
-            if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
-                super.updateStatus(pushId, NoticeStatus.FAIL,
+            if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()
+                || NoticeStatus.RETRY == businessNoticeResult.getNoticeStatus()) {
+                super.updateStatus(pushId, businessNoticeResult.getNoticeStatus(),
                     businessNoticeResult.getCode(), businessNoticeResult.getMessage());
                 return businessNoticeResult;
             }

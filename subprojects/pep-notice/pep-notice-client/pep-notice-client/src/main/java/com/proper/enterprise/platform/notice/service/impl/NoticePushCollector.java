@@ -12,6 +12,9 @@ import com.proper.enterprise.platform.notice.util.NoticeAnalysisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Map;
+
 
 @Service
 public class NoticePushCollector implements NoticeCollector {
@@ -30,16 +33,24 @@ public class NoticePushCollector implements NoticeCollector {
     private static final String PUSH = "push";
 
     @Override
-    public void addNoticeTarget(NoticeDocument noticeDocument, TargetModel targetModel, NoticeType noticeType, User user, NoticeSetDocument
-        noticeSetDocument) {
-        if (noticeSetDocument.getNoticeChannel().contains(PUSH) && noticeType.equals(NoticeType.PUSH)) {
-            PushDeviceEntity pushDeviceEntity = pushDeviceService.findDeviceByUserId(user.getId());
-            boolean isOk = NoticeAnalysisUtil.isDeviceInfoOk(noticeDocument, user, pushDeviceEntity);
-            if (isOk) {
-                targetModel.setTo(pushDeviceEntity.getPushToken());
-                targetModel.setTargetExtMsg("deviceType", pushDeviceEntity.getDeviceType());
-                targetModel.setTargetExtMsg("pushChannel", pushDeviceEntity.getPushMode());
-                noticeDocument.setTarget(targetModel);
+    public void addNoticeTarget(NoticeDocument noticeDocument,
+                                NoticeType noticeType,
+                                Collection<? extends User> users,
+                                Map<String, NoticeSetDocument> noticeSetMap) {
+        for (User user : users) {
+            NoticeSetDocument noticeSetDocument = noticeSetMap.get(user.getId());
+            TargetModel targetModel = new TargetModel();
+            targetModel.setId(user.getId());
+            targetModel.setName(user.getName());
+            if (noticeSetDocument.getNoticeChannel().contains(PUSH) && noticeType.equals(NoticeType.PUSH)) {
+                PushDeviceEntity pushDeviceEntity = pushDeviceService.findDeviceByUserId(user.getId());
+                boolean isOk = NoticeAnalysisUtil.isDeviceInfoOk(noticeDocument, user, pushDeviceEntity);
+                if (isOk) {
+                    targetModel.setTo(pushDeviceEntity.getPushToken());
+                    targetModel.setTargetExtMsg("deviceType", pushDeviceEntity.getDeviceType());
+                    targetModel.setTargetExtMsg("pushChannel", pushDeviceEntity.getPushMode());
+                    noticeDocument.setTarget(targetModel);
+                }
             }
         }
     }

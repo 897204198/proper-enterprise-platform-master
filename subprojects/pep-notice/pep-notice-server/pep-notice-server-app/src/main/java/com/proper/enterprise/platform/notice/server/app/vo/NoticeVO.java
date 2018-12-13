@@ -54,7 +54,7 @@ public class NoticeVO extends BaseVO implements Notice {
      * 发送目标的唯一标识
      */
     @NotNull(message = "{notice.server.param.target.cantBeEmpty}")
-    @Length(message = "{notice.server.param.target.isTooLong}", max = 255)
+    @Length(message = "{notice.server.param.target.isTooLong}", max = 2048)
     private String targetTo;
 
     /**

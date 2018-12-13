@@ -7,7 +7,12 @@ public enum HuaweiErrCodeEnum {
     /**
      * 无效目标
      */
-    INVALID_TARGET("All the tokens are invalid", NoticeErrorCodeConstants.INVALID_TARGET);
+    INVALID_TARGET("All the tokens are invalid", NoticeErrorCodeConstants.INVALID_TARGET),
+
+    /**
+     * 无效目标
+     */
+    SERVICE_UNAVAILABLE("503 Service Temporarily Unavailable", NoticeErrorCodeConstants.SERVICE_UNAVAILABLE);
 
     HuaweiErrCodeEnum(String code, String noticeCode) {
         this.code = code;

@@ -164,6 +164,26 @@ class NoticeSenderImplTest extends AbstractTest {
         noticeMsgRepository.deleteAll()
     }
 
+    @Test
+    void analysisEmail() {
+        noticeMsgRepository.deleteAll()
+
+        Set<String> toUserIds = new HashSet<>()
+        toUserIds.add("test1")
+        toUserIds.add("test2")
+        Map<String, NoticeSetDocument> noticeSetMap = new HashMap<>()
+        NoticeSetDocument noticeSetDocument = new NoticeSetDocument()
+        List<String> noticeChannel = new ArrayList<>()
+        noticeChannel.add("email")
+        noticeSetDocument.setNoticeChannel(noticeChannel)
+        noticeSetMap.put("test1", noticeSetDocument)
+        noticeSetMap.put("test2", noticeSetDocument)
+        Map<String, Object> custom = new HashMap<>()
+        noticeSendService.sendNoticeChannel(null, toUserIds, noticeSetMap, "title", "content", custom, NoticeType.EMAIL)
+        List<NoticeDocument> result = noticeMsgRepository.findAll()
+        assert result.get(0).getTargets().get(0).getTo() == "test1<test1@test1.com>,test2<test1@test2.com>"
+    }
+
     @Before
     void init() {
         NoticeSetDocument noticeSetDocument1 = new NoticeSetDocument()
