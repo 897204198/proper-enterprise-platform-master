@@ -88,6 +88,9 @@ class ApnsNoticeSenderTest extends AbstractTest {
         waitExecutorDone()
         assert pushNoticeMsgJpaRepository.findPushNoticeMsgEntitiesByNoticeId("testtest").getContent() == "66666qwe"
         BusinessNoticeResult businessNoticeResult = iosNoticeSender.getStatus(mockPushNotice)
+        if (businessNoticeResult.getNoticeStatus() != NoticeStatus.SUCCESS) {
+            println("==============================" + businessNoticeResult.getMessage())
+        }
         assert NoticeStatus.SUCCESS == iosNoticeSender.getStatus(mockPushNotice).getNoticeStatus()
 
         //token无效严验证
