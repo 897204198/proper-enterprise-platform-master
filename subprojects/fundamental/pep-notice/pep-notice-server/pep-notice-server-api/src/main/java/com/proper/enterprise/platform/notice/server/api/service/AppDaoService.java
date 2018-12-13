@@ -29,6 +29,18 @@ public interface AppDaoService {
     DataTrunk<App> findAll(String appKey, String appName, String describe, Boolean enable, PageRequest pageRequest);
 
     /**
+     * 分页查询app, 并返回配置了哪些渠道
+     *
+     * @param appKey      应用唯一标识
+     * @param appName     应用名称
+     * @param describe    应用描述
+     * @param enable      启用停用
+     * @param pageRequest 分页参数
+     * @return 分页对象
+     */
+    DataTrunk<App> findAllWithHaveConf(String appKey, String appName, String describe, Boolean enable, PageRequest pageRequest);
+
+    /**
      * 保存应用
      *
      * @param app 应用

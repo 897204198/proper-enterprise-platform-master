@@ -19,7 +19,6 @@ import com.proper.enterprise.platform.workflow.model.PEPProcInst;
 import com.proper.enterprise.platform.workflow.model.PEPWorkflowPage;
 import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.service.PEPTaskService;
-import com.proper.enterprise.platform.workflow.util.GlobalVariableUtil;
 import com.proper.enterprise.platform.workflow.util.VariableUtil;
 import com.proper.enterprise.platform.workflow.vo.*;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
@@ -35,7 +34,6 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -46,9 +44,6 @@ import java.util.Map;
 
 @Service
 public class PEPProcessServiceImpl implements PEPProcessService {
-
-    @Value("#{'${workflow.global.variables}'.split(',')}")
-    private List<String> globalVariableKeys;
 
     private RuntimeService runtimeService;
 
@@ -112,7 +107,6 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         //设置允许是skip
         globalVariables.put(WorkFlowConstants.SKIP_EXPRESSION_ENABLED, true);
         globalVariables = globalVariableInitDecorator.init(globalVariables, processDefinition);
-        globalVariables = GlobalVariableUtil.setGlobalVariable(globalVariables, variables, globalVariableKeys);
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
         return new PEPProcInst(processInstance).convert();
     }

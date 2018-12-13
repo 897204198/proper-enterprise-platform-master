@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.pay.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.enums.PayWay;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
+import com.proper.enterprise.platform.api.pay.model.OrderReq;
 import com.proper.enterprise.platform.api.pay.model.PayResultRes;
 import com.proper.enterprise.platform.api.pay.model.PrepayReq;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
@@ -14,9 +15,11 @@ import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.pay.wechat.entity.WechatEntity;
 import com.proper.enterprise.platform.pay.wechat.model.WechatNoticeRes;
-import com.proper.enterprise.platform.pay.wechat.model.WechatOrderReq;
 import com.proper.enterprise.platform.pay.wechat.model.WechatPayResultRes;
 import com.proper.enterprise.platform.pay.wechat.service.WechatPayService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -41,6 +44,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(value = "/pay/wechat")
+@Api(tags = "/pay/wechat")
 public class WechatController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WechatController.class);
@@ -63,6 +67,7 @@ public class WechatController extends BaseController {
      * @throws Exception 异常.
      */
     @PostMapping(value = "/prepay", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation("‍微信预支付处理")
     public ResponseEntity<WechatPayResultRes> prepayWechat(@RequestBody WechatOrderReq wechatReq) throws Exception {
         LOGGER.debug(DateUtil.getTimestamp(true) + "------------- Wechat prepay business--------begin------------");
         WechatPayResultRes resObj = new WechatPayResultRes();
@@ -163,6 +168,50 @@ public class WechatController extends BaseController {
         out.write(resultMsg);
         out.flush();
         out.close();
+    }
+
+    public static class WechatOrderReq implements OrderReq {
+        /**
+         * 商户网站唯一订单号
+         */
+        @ApiModelProperty(name = "‍商户网站唯一订单号", required = true)
+        private String outTradeNo;
+
+        /**
+         * 商品详情
+         */
+        @ApiModelProperty(name = "‍商品详情", required = true)
+        private String body;
+
+        /**
+         * 商品总金额
+         */
+        @ApiModelProperty(name = "‍商品总金额", required = true)
+        private String totalFee;
+
+        public String getOutTradeNo() {
+            return outTradeNo;
+        }
+
+        public void setOutTradeNo(String outTradeNo) {
+            this.outTradeNo = outTradeNo;
+        }
+
+        public String getBody() {
+            return body;
+        }
+
+        public void setBody(String body) {
+            this.body = body;
+        }
+
+        public String getTotalFee() {
+            return totalFee;
+        }
+
+        public void setTotalFee(String totalFee) {
+            this.totalFee = totalFee;
+        }
     }
 
 }

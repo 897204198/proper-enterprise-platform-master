@@ -8,8 +8,8 @@ import com.proper.enterprise.platform.workflow.vo.PEPExtFormVO
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
 import com.proper.enterprise.platform.workflow.vo.PEPPropertyVO
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO
-import org.flowable.app.model.common.ResultListDataRepresentation
 import org.flowable.engine.IdentityService
+import org.flowable.ui.common.model.ResultListDataRepresentation
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -23,7 +23,7 @@ class ManyFormTest extends AbstractJPATest {
     IdentityService identityService
 
     @Test
-    @Sql("/com/proper/enterprise/platform/workflow/datadics.sql")
+    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void testProcessPage() {
         Authentication.setCurrentUserId("admin")
         identityService.setAuthenticatedUserId("admin")
@@ -67,7 +67,7 @@ class ManyFormTest extends AbstractJPATest {
     }
 
     @Test
-    @Sql("/com/proper/enterprise/platform/workflow/datadics.sql")
+    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void testTaskPage() {
         Authentication.setCurrentUserId("admin")
         identityService.setAuthenticatedUserId("admin")

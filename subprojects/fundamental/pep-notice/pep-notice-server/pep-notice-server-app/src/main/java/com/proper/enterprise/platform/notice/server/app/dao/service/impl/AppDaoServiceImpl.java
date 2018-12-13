@@ -52,12 +52,18 @@ public class AppDaoServiceImpl implements AppDaoService {
         DataTrunk<App> data = new DataTrunk<>();
         Page<AppEntity> page = appRepository.findAll(appKey, appName, describe, enable, pageRequest);
         List<AppVO> appVOs = new ArrayList<>(BeanUtil.convert(page.getContent(), AppVO.class));
-        for (AppVO app : appVOs) {
-            buildHaveConf(app);
-        }
         data.setData(new ArrayList<>(appVOs));
         data.setCount(page.getTotalElements());
         return data;
+    }
+
+    @Override
+    public DataTrunk<App> findAllWithHaveConf(String appKey, String appName, String describe, Boolean enable, PageRequest pageRequest) {
+        DataTrunk<App> apps = findAll(appKey, appName, describe, enable, pageRequest);
+        for (App app : apps.getData()) {
+            buildHaveConf((AppVO) app);
+        }
+        return apps;
     }
 
 
@@ -154,9 +160,13 @@ public class AppDaoServiceImpl implements AppDaoService {
         return result;
     }
 
+    /**
+     * 判断配置详情中是否配置了 EMAIL/SMS/PUSH
+     *
+     * @param appVO 配置详情
+     * @return 配置详情以及配置渠道
+     */
     private AppVO buildHaveConf(AppVO appVO) {
-
-
         appVO.setHaveEmailConf(false);
         appVO.setHaveSMSConf(false);
         appVO.setHavePushConf(false);

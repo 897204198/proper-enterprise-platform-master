@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
 import java.lang.reflect.Modifier
+import java.util.concurrent.BlockingQueue
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -183,6 +184,11 @@ abstract class AbstractSpringTest {
     }
 
     protected def waitExecutorDone() {
+        BlockingQueue<Runnable> queue = threadPoolTaskExecutor.getThreadPoolExecutor().getQueue()
+        while (queue != null && !queue.isEmpty()) {
+            println "sleep 5 milliseconds to wait, current blocking queue is ${queue.size()}"
+            sleep(5)
+        }
         while (threadPoolTaskExecutor.activeCount > 0) {
             println("sleep 5 milliseconds to wait, current active count is ${threadPoolTaskExecutor.activeCount}")
             sleep(5)

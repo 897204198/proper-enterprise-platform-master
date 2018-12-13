@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.utils.http
 
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import spock.lang.Specification
 
 class HttpsClientSpec extends Specification {
@@ -24,6 +25,33 @@ class HttpsClientSpec extends Specification {
         expect:
         res.getStatusCode() == HttpStatus.OK
         println res.getBody()
+    }
+
+    def "test connectException"() {
+        def url = "http://localhost:8080/"
+        def data = '{"user":"123"}'
+        def headers = ['h1': 'header1', 'h2': 'header2']
+        HttpsClient hc = HttpsClient.initClient(2)
+        when:
+        hc.get(url, headers)
+        then:
+        thrown(ConnectException)
+
+        when:
+        hc.post(url, headers, MediaType.APPLICATION_FORM_URLENCODED, data)
+        then:
+        thrown(ConnectException)
+
+        when:
+        hc.put(url, headers, MediaType.APPLICATION_FORM_URLENCODED, data)
+        then:
+        thrown(ConnectException)
+
+        when:
+        hc.delete(url, headers, MediaType.APPLICATION_FORM_URLENCODED, data)
+        then:
+        thrown(ConnectException)
+
     }
 
 }

@@ -3,10 +3,10 @@ package com.proper.enterprise.platform.workflow
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.workflow.enums.ProcDefDeployType
 import com.proper.enterprise.platform.workflow.service.DeployService
-import org.flowable.app.domain.editor.AbstractModel
-import org.flowable.app.domain.editor.Model
-import org.flowable.app.repository.editor.ModelRepository
-import org.flowable.app.repository.editor.ModelSort
+import org.flowable.ui.modeler.domain.AbstractModel
+import org.flowable.ui.modeler.domain.Model
+import org.flowable.ui.modeler.repository.ModelRepository
+import org.flowable.ui.modeler.repository.ModelSort
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -38,7 +38,7 @@ class ProcDefInitializerTest extends AbstractJPATest {
     @Test
     void checkProcDefUpdate() {
         // First deploy when initial procDefInitializer bean
-        pdi.deployType = ProcDefDeployType.OVERRIDE
+        pdi.workflowProperties.deployType = ProcDefDeployType.OVERRIDE
         // deploy twice
         2.times {
             pdi.init()
@@ -50,14 +50,14 @@ class ProcDefInitializerTest extends AbstractJPATest {
         for (int i = 0; i < list.size(); i++) {
             models[3 * i].comment == list[i].name + list[i].id
         }
-        pdi.deployType = ProcDefDeployType.NONE
+        pdi.workflowProperties.deployType = ProcDefDeployType.NONE
         2.times {
             pdi.init()
             pdi.shutdown()
         }
         assert queryDeployment().size() == 3
 
-        pdi.deployType = ProcDefDeployType.DROP_CREATE
+        pdi.workflowProperties.deployType = ProcDefDeployType.DROP_CREATE
         pdi.init()
         assert queryDeployment().size() == 1
         pdi.shutdown()
@@ -71,12 +71,12 @@ class ProcDefInitializerTest extends AbstractJPATest {
     @Test
     void onlyDeployOnce() {
         // Clean deployments
-        pdi.deployType = ProcDefDeployType.DROP_CREATE
+        pdi.workflowProperties.deployType = ProcDefDeployType.DROP_CREATE
         pdi.shutdown()
 
         pdi.resetDeployed()
         assert queryDeployment().size() == 0
-        pdi.deployType = ProcDefDeployType.ONCE
+        pdi.workflowProperties.deployType = ProcDefDeployType.ONCE
         pdi.init()
         assert queryDeployment().size() == 1
         pdi.shutdown()

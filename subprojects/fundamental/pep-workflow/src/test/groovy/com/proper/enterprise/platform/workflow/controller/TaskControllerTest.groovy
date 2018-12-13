@@ -13,7 +13,7 @@ class TaskControllerTest extends WorkflowAbstractTest {
 
     @Test
     @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
-        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void todoCountTest() {
         setCurrentUserId("admin")
         Map mainForm = new HashMap()
@@ -27,7 +27,7 @@ class TaskControllerTest extends WorkflowAbstractTest {
 
     @Test
     @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
-        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void get() {
         setCurrentUserId("admin")
         Map mainForm = new HashMap()
@@ -42,7 +42,7 @@ class TaskControllerTest extends WorkflowAbstractTest {
 
     @Test
     @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
-        "/com/proper/enterprise/platform/workflow/datadics.sql"])
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     void findTaskAssigneeIsMe() {
         setCurrentUserId("admin")
         Map mainForm = new HashMap()

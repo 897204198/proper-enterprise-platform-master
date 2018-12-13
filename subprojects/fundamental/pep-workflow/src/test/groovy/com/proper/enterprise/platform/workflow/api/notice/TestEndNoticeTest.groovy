@@ -18,7 +18,7 @@ class TestEndNoticeTest extends AbstractJPATest {
     private IdentityService identityService
 
     @Test
-    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/adminUsers.sql"])
+    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/adminUsers.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void testEndNotice() {
         identityService.setAuthenticatedUserId("PEP_SYS")
         Authentication.setCurrentUserId("PEP_SYS")

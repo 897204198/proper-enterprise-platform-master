@@ -8,7 +8,7 @@ import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
 import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
-import org.flowable.app.domain.editor.Model;
+import org.flowable.ui.modeler.domain.Model;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.Convert;

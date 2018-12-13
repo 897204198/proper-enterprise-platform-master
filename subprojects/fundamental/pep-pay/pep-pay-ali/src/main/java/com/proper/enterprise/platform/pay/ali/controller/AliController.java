@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.pay.PayConstants;
 import com.proper.enterprise.platform.api.pay.enums.PayResType;
 import com.proper.enterprise.platform.api.pay.enums.PayWay;
 import com.proper.enterprise.platform.api.pay.factory.PayFactory;
+import com.proper.enterprise.platform.api.pay.model.OrderReq;
 import com.proper.enterprise.platform.api.pay.model.PayResultRes;
 import com.proper.enterprise.platform.api.pay.model.PrepayReq;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
@@ -14,9 +15,11 @@ import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.pay.ali.PayAliProperties;
 import com.proper.enterprise.platform.pay.ali.entity.AliEntity;
-import com.proper.enterprise.platform.pay.ali.model.AliOrderReq;
 import com.proper.enterprise.platform.pay.ali.model.AliPayResultRes;
 import com.proper.enterprise.platform.pay.ali.service.AliPayService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +40,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(value = "/pay/ali")
+@Api(tags = "/pay/ali")
 public class AliController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AliController.class);
@@ -58,6 +62,7 @@ public class AliController extends BaseController {
      * @throws Exception 异常.
      */
     @PostMapping(value = "/prepay", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation("‍支付宝预支付")
     public ResponseEntity<AliPayResultRes> prepayAli(@RequestBody AliOrderReq aliReq) throws Exception {
         LOGGER.debug("------------- Ali prepay business--------begin------------");
         AliPayResultRes resObj = new AliPayResultRes();
@@ -65,7 +70,7 @@ public class AliController extends BaseController {
             // 预支付
             PrepayReq prepayReq = new PrepayReq();
             PayService payService = (PayService) aliService;
-            // 预支付业务处理
+            // ALI预支付业务处理
             PayResultRes checkRes = payService.savePrepayBusiness(PayWay.ALI.toString(), prepayReq, aliReq);
             if (checkRes.getResultCode() != null && checkRes.getResultCode().equals(PayResType.SYSERROR)) {
                 BeanUtils.copyProperties(checkRes, resObj);
@@ -168,5 +173,49 @@ public class AliController extends BaseController {
         }
         LOGGER.debug("-----------Ali async notice--------end-------------");
         return responseOfPost(ret ? "SUCCESS" : "FAIL");
+    }
+
+    public static class AliOrderReq implements OrderReq {
+        /**
+         * 商户网站唯一订单号
+         */
+        @ApiModelProperty(name = "‍商户网站唯一订单号", required = true)
+        private String outTradeNo;
+
+        /**
+         * 商品详情
+         */
+        @ApiModelProperty(name = "‍商品详情", required = true)
+        private String body;
+
+        /**
+         * 商品总金额
+         */
+        @ApiModelProperty(name = "‍商品总金额", required = true)
+        private String totalFee;
+
+        public String getOutTradeNo() {
+            return outTradeNo;
+        }
+
+        public void setOutTradeNo(String outTradeNo) {
+            this.outTradeNo = outTradeNo;
+        }
+
+        public String getBody() {
+            return body;
+        }
+
+        public void setBody(String body) {
+            this.body = body;
+        }
+
+        public String getTotalFee() {
+            return totalFee;
+        }
+
+        public void setTotalFee(String totalFee) {
+            this.totalFee = totalFee;
+        }
     }
 }

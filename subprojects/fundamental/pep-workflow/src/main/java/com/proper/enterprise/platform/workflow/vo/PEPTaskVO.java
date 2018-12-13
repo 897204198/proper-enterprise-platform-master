@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.workflow.api.PEPForm;
+import com.proper.enterprise.platform.workflow.model.PEPTaskCandidate;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class PEPTaskVO {
 
@@ -32,30 +33,12 @@ public class PEPTaskVO {
      * 当前经办人名称
      */
     private String assigneeName;
+
     /**
-     * 候选人集合
+     * 候选集合展示
      */
-    private Set<String> candidateUsers;
-    /**
-     * 候选人集合
-     */
-    private Set<String> candidateUserNames;
-    /**
-     * 候选角色集合
-     */
-    private Set<String> candidateRoles;
-    /**
-     * 候选角色名称集合
-     */
-    private Set<String> candidateRoleNames;
-    /**
-     * 候选用户组集合
-     */
-    private Set<String> candidateGroups;
-    /**
-     * 候选用户组集合
-     */
-    private Set<String> candidateGroupNames;
+    private List<PEPTaskCandidate> candidates;
+
     /**
      * 任务表单
      */
@@ -162,54 +145,6 @@ public class PEPTaskVO {
         this.assigneeName = assigneeName;
     }
 
-    public Set<String> getCandidateUsers() {
-        return candidateUsers;
-    }
-
-    public void setCandidateUsers(Set<String> candidateUsers) {
-        this.candidateUsers = candidateUsers;
-    }
-
-    public Set<String> getCandidateRoles() {
-        return candidateRoles;
-    }
-
-    public void setCandidateRoles(Set<String> candidateRoles) {
-        this.candidateRoles = candidateRoles;
-    }
-
-    public Set<String> getCandidateGroups() {
-        return candidateGroups;
-    }
-
-    public void setCandidateGroups(Set<String> candidateGroups) {
-        this.candidateGroups = candidateGroups;
-    }
-
-    public Set<String> getCandidateUserNames() {
-        return candidateUserNames;
-    }
-
-    public void setCandidateUserNames(Set<String> candidateUserNames) {
-        this.candidateUserNames = candidateUserNames;
-    }
-
-    public Set<String> getCandidateRoleNames() {
-        return candidateRoleNames;
-    }
-
-    public void setCandidateRoleNames(Set<String> candidateRoleNames) {
-        this.candidateRoleNames = candidateRoleNames;
-    }
-
-    public Set<String> getCandidateGroupNames() {
-        return candidateGroupNames;
-    }
-
-    public void setCandidateGroupNames(Set<String> candidateGroupNames) {
-        this.candidateGroupNames = candidateGroupNames;
-    }
-
     public Boolean getSameAssigneeSkip() {
         return sameAssigneeSkip;
     }
@@ -224,6 +159,14 @@ public class PEPTaskVO {
 
     public void setGlobalData(Map<String, Object> globalData) {
         this.globalData = globalData;
+    }
+
+    public List<PEPTaskCandidate> getCandidates() {
+        return candidates;
+    }
+
+    public void setCandidates(List<PEPTaskCandidate> candidates) {
+        this.candidates = candidates;
     }
 
     @Override

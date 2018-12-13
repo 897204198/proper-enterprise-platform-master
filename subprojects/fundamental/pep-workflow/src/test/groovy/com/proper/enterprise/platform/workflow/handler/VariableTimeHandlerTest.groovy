@@ -17,7 +17,7 @@ class VariableTimeHandlerTest extends WorkflowAbstractTest {
     TaskService taskService
 
     @Test
-    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/adminUsers.sql"])
+    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/adminUsers.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void test() {
         Map map2 = new HashMap()
         Date date = new Date()
@@ -36,7 +36,7 @@ class VariableTimeHandlerTest extends WorkflowAbstractTest {
 
 
     @Test
-    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/adminUsers.sql"])
+    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/adminUsers.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void testOld() {
         Map map2 = new HashMap()
         Date date = new Date()

@@ -15,4 +15,9 @@ public class NoticeErrorCodeConstants {
      * 无效的接收方
      */
     public static final String INVALID_TARGET = "Invalid target";
+
+    /**
+     * 服务不可用(503)
+     */
+    public static final String SERVICE_UNAVAILABLE = "Service Unavailable";
 }

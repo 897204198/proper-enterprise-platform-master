@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,8 +53,8 @@ public class NoticeVO extends BaseVO implements Notice {
     /**
      * 发送目标的唯一标识
      */
-    @NotEmpty(message = "{notice.server.param.target.cantBeEmpty}")
-    @Length(message = "{notice.server.param.target.isTooLong}", max = 255)
+    @NotNull(message = "{notice.server.param.target.cantBeEmpty}")
+    @Length(message = "{notice.server.param.target.isTooLong}", max = 2048)
     private String targetTo;
 
     /**
@@ -91,7 +92,6 @@ public class NoticeVO extends BaseVO implements Notice {
     /**
      * 异常信息
      */
-    @Length(message = "{notice.server.param.errMsg.isTooLong}", max = 2048)
     private String errorMsg;
 
 

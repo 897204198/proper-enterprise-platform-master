@@ -46,6 +46,8 @@ location ^~ /ng2/workflow {
 
 平台流程自定义配置
 ----
+获取流程变量: `${variableName}`, variableName 为想获取变量的名称(表单中的字段名称)
+
 平台为流程设计器提供了几个自定义操作
 - 流程提供全局变量一览
 
@@ -90,6 +92,10 @@ location ^~ /ng2/workflow {
      > 不设置则使用系统默认待办提醒模板, 默认待办提醒模板内容为: 1. 邮件内容：`【xx(发起人)】发起的【xx(流程定义名称)】已经到达您的代办，请您处理【xx(待办节点名称)】节点。` 2. 推送提醒: `xx(发起人)的xx(流程定义名称)`
      
   2. 在需要获取待办提醒的任务节点 > 任务监听器 > 增加一条任务监听 > `事件` 设置为 `create`, `表达式` 设置为 `#{taskAssigneeOrCandidateNotice.notice(task)}`
+  
+- 自定义流程抢办提醒
+  
+  在需要获取抢办提醒的任务节点 > 任务监听器 > 增加一条任务监听 > `事件` 设置为 `complete`, `表达式` 设置为 `#{taskCompletedNotice.notice(task)}`
   
 - 自定义流程结束提醒
   1. 在流程设计器中选择 > 数据对象 > 增加一条数据对象 > `Id` 设置为 `endNoticeCode`, `名称` 设置为 `endNoticeCode`, `类型` 为 `string`, `默认值` 设置为需要使用模板的`code`(如: `TestEndCode`)
@@ -136,6 +142,9 @@ location ^~ /ng2/workflow {
   
   获取 候选人/用户组/角色 实现 [CandidateByOrganizationRule](./src/main/java/com/proper/enterprise/platform/workflow/rule/CandidateByOrganizationRule.java)来获取候选人/用户组/角色Id集合。 
   
+  >产品提供了部门负责人的获取 #{assigneeByOrgHeadRule.execute(organizationId)}
+  部门副总的获取 #{assigneeByOrgVicePresidentRule.execute(organizationId)}
+  
 - 全局变量自定义初始化
   
   平台提供以上全局变量之外, 还提供自定义添加全局变量。
@@ -143,3 +152,14 @@ location ^~ /ng2/workflow {
   使用方法:
   
   实现 [GlobalVariableInitHandler](./src/main/java/com/proper/enterprise/platform/workflow/handler/GlobalVariableInitHandler.java) 即可, 例子可见 [GlobalVariableInitHandlerImpl](./src/test/groovy/com/proper/enterprise/platform/workflow/frame/handler/GlobalVariableInitHandlerImpl.java)
+  
+  >产品中提供了 organizationId organizationName organizationEmail 三个全局变量的提供
+
+- 自动归档
+  
+  在流程设计器中选择 > 脚本任务节点
+  配置脚本任务节点：
+  1. 脚本格式设置为 `groovy`
+  2. 脚本编写为 `com.proper.enterprise.platform.workflow.util.ArchiveUtil.archiveToMongo(execution, 'testForm')`
+     >其中 testForm 为需要归档的表单数据的表单关键字。
+      需要归档多个表单则后面增加表单关键字即可, 如 archiveToMongo(execution, 'testForm', 'test2Form')

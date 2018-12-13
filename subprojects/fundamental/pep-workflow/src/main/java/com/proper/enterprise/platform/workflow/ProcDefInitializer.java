@@ -3,16 +3,15 @@ package com.proper.enterprise.platform.workflow;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.enums.ProcDefDeployType;
 import com.proper.enterprise.platform.workflow.service.DeployService;
-import org.flowable.app.domain.editor.AbstractModel;
-import org.flowable.app.service.api.ModelService;
 import org.flowable.engine.repository.Deployment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.flowable.ui.modeler.domain.AbstractModel;
+import org.flowable.ui.modeler.serviceapi.ModelService;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -26,41 +25,35 @@ public class ProcDefInitializer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcDefInitializer.class);
 
-    @Value("${workflow.procDef.deployType}")
-    private ProcDefDeployType deployType;
-
-    /**
-     * Ant 风格的路径匹配,可使用逗号间隔多个路径模式
-     */
-    @Value("${workflow.procDefLocations}")
-    private String procDefLocations;
+    private WorkflowProperties workflowProperties;
 
     private DeployService deployService;
 
     private ModelService modelService;
 
     @Autowired
-    public ProcDefInitializer(DeployService deployService, ModelService modelService) {
+    public ProcDefInitializer(DeployService deployService, ModelService modelService, WorkflowProperties workflowProperties) {
         this.deployService = deployService;
         this.modelService = modelService;
+        this.workflowProperties = workflowProperties;
     }
 
     public static final String DEPLOY_NAME = "PEP system processes";
 
     @PostConstruct
     public void init() throws IOException {
-        if (ProcDefDeployType.NONE.equals(deployType)) {
+        if (ProcDefDeployType.NONE.equals(workflowProperties.getDeployType())) {
             return;
         }
         cleanIfNecessary();
-        if (hasDeployed() && ProcDefDeployType.ONCE.equals(deployType)) {
+        if (hasDeployed() && ProcDefDeployType.ONCE.equals(workflowProperties.getDeployType())) {
             return;
         }
-        deployService.deployFromResourcePattern(DEPLOY_NAME, procDefLocations);
+        deployService.deployFromResourcePattern(DEPLOY_NAME, workflowProperties.getDeployLocations());
     }
 
     private void cleanIfNecessary() {
-        if (ProcDefDeployType.DROP_CREATE.equals(deployType)) {
+        if (ProcDefDeployType.DROP_CREATE.equals(workflowProperties.getDeployType())) {
             resetDeployed();
         }
     }

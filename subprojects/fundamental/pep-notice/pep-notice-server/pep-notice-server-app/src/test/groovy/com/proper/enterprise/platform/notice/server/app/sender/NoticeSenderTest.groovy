@@ -36,6 +36,7 @@ class NoticeSenderTest extends AbstractServerAppTest {
         noticeRequest.setBatchId("batchId")
         noticeRequest.setNoticeType(NoticeType.MOCK)
         noticeRequest.setContent("content")
+        noticeRequest.setTitle("bbb")
         List<NoticeTarget> targets = new ArrayList<>()
         NoticeTarget target = new NoticeTarget()
         target.setTo("1")
