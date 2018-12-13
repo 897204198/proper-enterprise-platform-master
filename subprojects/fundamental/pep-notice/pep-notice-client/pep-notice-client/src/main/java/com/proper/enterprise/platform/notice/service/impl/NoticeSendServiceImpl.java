@@ -9,7 +9,6 @@ import com.proper.enterprise.platform.notice.document.NoticeDocument;
 import com.proper.enterprise.platform.notice.document.NoticeSetDocument;
 import com.proper.enterprise.platform.notice.enums.AnalysisResult;
 import com.proper.enterprise.platform.notice.factory.NoticeCollectorFactory;
-import com.proper.enterprise.platform.notice.model.TargetModel;
 import com.proper.enterprise.platform.notice.repository.NoticeMsgRepository;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
@@ -91,11 +90,7 @@ public class NoticeSendServiceImpl {
         NoticeCollector noticeCollector = NoticeCollectorFactory.create(noticeType);
         NoticeDocument noticeDocument = this.packageNoticeDocument(fromUserId, toUserIds, custom, noticeType, title, content);
         noticeCollector.addNoticeDocument(noticeDocument);
-        for (User user : users) {
-            NoticeSetDocument noticeSetDocument = noticeSetMap.get(user.getId());
-            TargetModel targetModel = this.packageTargetModel(user);
-            noticeCollector.addNoticeTarget(noticeDocument, targetModel, noticeDocument.getNoticeType(), user, noticeSetDocument);
-        }
+        noticeCollector.addNoticeTarget(noticeDocument, noticeDocument.getNoticeType(), users, noticeSetMap);
         analysis(noticeDocument, users);
         NoticeRequest noticeVO = this.saveNotice(noticeDocument);
         if (!NoticeAnalysisUtil.isNecessaryResult(noticeDocument)) {
@@ -123,13 +118,6 @@ public class NoticeSendServiceImpl {
         noticeDocument.setNoticeExtMsg(custom);
         noticeDocument.setNoticeExtMsg("from", fromUserId);
         return noticeDocument;
-    }
-
-    private TargetModel packageTargetModel(User user) {
-        TargetModel targetModel = new TargetModel();
-        targetModel.setId(user.getId());
-        targetModel.setName(user.getName());
-        return targetModel;
     }
 
     private Set<String> checkUserNull(Set<String> userIds) {

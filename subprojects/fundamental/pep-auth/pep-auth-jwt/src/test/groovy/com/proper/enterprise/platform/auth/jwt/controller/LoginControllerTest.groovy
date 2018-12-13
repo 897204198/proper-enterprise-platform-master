@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.jwt.controller
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.core.CoreProperties
 import com.proper.enterprise.platform.core.PEPPropertiesLoader
+import com.proper.enterprise.platform.core.i18n.I18NUtil
 import com.proper.enterprise.platform.core.model.CurrentModel
 import com.proper.enterprise.platform.core.security.Authentication
 import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant
@@ -32,9 +33,11 @@ class LoginControllerTest extends AbstractJPATest {
         // wrong produce type
         mockLogin('admin', '123456', MediaType.APPLICATION_JSON, HttpStatus.NOT_ACCEPTABLE)
         // wrong password
-        mockLogin('admin', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
+        assert I18NUtil.getMessage("pep.auth.common.user.password.not.match") ==
+            mockLogin('admin', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
         // wrong account
-        mockLogin('test', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
+        assert I18NUtil.getMessage("pep.auth.common.user.password.not.match") ==
+            mockLogin('test', '1234567', MediaType.TEXT_PLAIN, HttpStatus.UNAUTHORIZED)
         Authentication.setCurrentUserId(DEFAULT_USER)
         post('/auth/logout', '', HttpStatus.CREATED)
     }

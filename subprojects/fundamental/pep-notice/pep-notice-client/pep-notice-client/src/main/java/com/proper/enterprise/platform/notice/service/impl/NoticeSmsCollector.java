@@ -8,6 +8,9 @@ import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import com.proper.enterprise.platform.notice.service.NoticeCollector;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Map;
+
 
 @Service
 public class NoticeSmsCollector implements NoticeCollector {
@@ -19,11 +22,19 @@ public class NoticeSmsCollector implements NoticeCollector {
     private static final String SMS = "sms";
 
     @Override
-    public void addNoticeTarget(NoticeDocument noticeDocument, TargetModel targetModel, NoticeType noticeType, User user, NoticeSetDocument
-        noticeSetDocument) {
-        if (noticeSetDocument.getNoticeChannel().contains(SMS) && noticeType.equals(NoticeType.SMS)) {
-            targetModel.setTo(user.getPhone());
-            noticeDocument.setTarget(targetModel);
+    public void addNoticeTarget(NoticeDocument noticeDocument,
+                                NoticeType noticeType,
+                                Collection<? extends User> users,
+                                Map<String, NoticeSetDocument> noticeSetMap) {
+        for (User user : users) {
+            NoticeSetDocument noticeSetDocument = noticeSetMap.get(user.getId());
+            TargetModel targetModel = new TargetModel();
+            targetModel.setId(user.getId());
+            targetModel.setName(user.getName());
+            if (noticeSetDocument.getNoticeChannel().contains(SMS) && noticeType.equals(NoticeType.SMS)) {
+                targetModel.setTo(user.getPhone());
+                noticeDocument.setTarget(targetModel);
+            }
         }
     }
 

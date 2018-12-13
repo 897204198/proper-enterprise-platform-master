@@ -3,16 +3,24 @@ package com.proper.enterprise.platform.notice.server.push.sender.huawei
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult
+import com.proper.enterprise.platform.notice.server.app.dao.entity.NoticeEntity
+import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository
+import com.proper.enterprise.platform.notice.server.app.scheduler.NoticeStatusSyncScheduler
 import com.proper.enterprise.platform.notice.server.push.constant.HuaweiConstant
-import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
 import com.proper.enterprise.platform.notice.server.push.enums.huawei.HuaweiErrCodeEnum
 import com.proper.enterprise.platform.notice.server.push.mock.MockPushNotice
+import com.proper.enterprise.platform.notice.server.push.mock.MockRetryNotice
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
+import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
 import com.proper.enterprise.platform.test.AbstractJPATest
+import com.proper.enterprise.platform.test.annotation.NoTx
 import org.apache.groovy.dateutil.extensions.DateUtilExtensions
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 
 class HuaweiNoticeSenderTest extends AbstractJPATest {
 
@@ -21,6 +29,12 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
 
     @Autowired
     private NoticeSendHandler pushNoticeSender
+
+    @Autowired
+    private NoticeRepository noticeRepository
+
+    @Autowired
+    private NoticeStatusSyncScheduler noticeStatusSyncScheduler
 
     @Test
     void testHuaweiPush() {
@@ -126,6 +140,39 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
         BusinessNoticeResult businessNoticeResult = pushNoticeSender.send(notice)
         assert HuaweiErrCodeEnum.INVALID_TARGET.getNoticeCode() == businessNoticeResult.getCode()
         assert HuaweiErrCodeEnum.INVALID_TARGET.getCode() == businessNoticeResult.getMessage()
+    }
+
+    @Test
+    @NoTx
+    void serviceUnavailableTest() {
+        MockRetryNotice mockRetryNotice = new MockRetryNotice()
+        ResponseEntity<byte[]> res = new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE)
+        def notice = new MockPushNotice()
+
+        NoticeEntity noticeSync = new NoticeEntity()
+        noticeSync.setAppKey('MobileOADev1')
+        noticeSync.setTargetTo("0867110029070702300001436000CN32")
+        noticeSync.setTitle(System.getProperty('os.name'))
+        noticeSync.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${new Date().format('yyyy-MM-dd HH:mm:ss')} in test case")
+        noticeSync.setNoticeType(NoticeType.PUSH)
+        noticeSync.setTargetExtMsg("pushChannel", "HUAWEI")
+        noticeSync.setBatchId("batchId")
+        noticeSync.setRetryCount(0)
+        noticeSync.setStatus(NoticeStatus.PENDING)
+        def id = noticeRepository.save(noticeSync).getId()
+        BusinessNoticeResult businessNoticeResult = mockRetryNotice.isSuccess(res, notice)
+        if (businessNoticeResult.getNoticeStatus() == NoticeStatus.RETRY) {
+            NoticeEntity noticeSync2 = noticeRepository.findOne(id)
+            noticeSync2.setStatus(NoticeStatus.RETRY)
+            noticeSync2.setErrorCode(businessNoticeResult.getCode())
+            noticeSync2.setErrorMsg(businessNoticeResult.getMessage())
+            noticeRepository.updateForSelective(noticeSync2)
+        }
+        assert noticeRepository.findOne(id).getStatus() == NoticeStatus.RETRY
+        assert noticeRepository.findOne(id).getRetryCount() == 0
+
+        noticeStatusSyncScheduler.syncRetry()
+        assert noticeRepository.findOne(id).getRetryCount() == 1
     }
 
 }
