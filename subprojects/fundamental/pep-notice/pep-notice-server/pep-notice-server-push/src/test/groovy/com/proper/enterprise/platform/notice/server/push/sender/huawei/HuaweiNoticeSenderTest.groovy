@@ -162,17 +162,17 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
         def id = noticeRepository.save(noticeSync).getId()
         BusinessNoticeResult businessNoticeResult = mockRetryNotice.isSuccess(res, notice)
         if (businessNoticeResult.getNoticeStatus() == NoticeStatus.RETRY) {
-            NoticeEntity noticeSync2 = noticeRepository.findOne(id)
+            NoticeEntity noticeSync2 = noticeRepository.findById(id).get()
             noticeSync2.setStatus(NoticeStatus.RETRY)
             noticeSync2.setErrorCode(businessNoticeResult.getCode())
             noticeSync2.setErrorMsg(businessNoticeResult.getMessage())
             noticeRepository.updateForSelective(noticeSync2)
         }
-        assert noticeRepository.findOne(id).getStatus() == NoticeStatus.RETRY
-        assert noticeRepository.findOne(id).getRetryCount() == 0
+        assert noticeRepository.findById(id).get().getStatus() == NoticeStatus.RETRY
+        assert noticeRepository.findById(id).get().getRetryCount() == 0
 
         noticeStatusSyncScheduler.syncRetry()
-        assert noticeRepository.findOne(id).getRetryCount() == 1
+        assert noticeRepository.findById(id).get().getRetryCount() == 1
     }
 
 }
