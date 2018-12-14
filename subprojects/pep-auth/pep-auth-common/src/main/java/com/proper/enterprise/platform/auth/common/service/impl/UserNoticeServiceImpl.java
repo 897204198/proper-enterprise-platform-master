@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.auth.common.service.impl;
 
-import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserNoticeService;
+import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.api.auth.service.ValidCodeService;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -25,14 +25,14 @@ public class UserNoticeServiceImpl implements UserNoticeService {
     private NoticeSender noticeSender;
 
     @Autowired
-    private UserDao userDao;
+    private UserService userService;
 
     @Autowired
     private ValidCodeService validCodeService;
 
     @Override
     public String sendValidCode(String userName) {
-        User user = userDao.getByUsername(userName, EnableEnum.ALL);
+        User user = userService.getByUsername(userName, EnableEnum.ALL);
         if (null == user) {
             throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.username.not.exist"));
         }
