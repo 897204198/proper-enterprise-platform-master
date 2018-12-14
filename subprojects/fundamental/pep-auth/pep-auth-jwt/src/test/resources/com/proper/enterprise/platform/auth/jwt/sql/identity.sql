@@ -1,5 +1,5 @@
 INSERT INTO pep_auth_users (id, username, password, superuser, pep_dtype, name, phone, email, enable,avatar) VALUES ('user1', 'testuser1', 'e10adc3949ba59abbe56e057f20f883e', 'Y', 'UserEntity', 'c', '12345678901', 'test1@test.com', 'Y','avatar');
-INSERT INTO pep_auth_users (id, username, password, superuser, pep_dtype, name, phone, email, enable) VALUES ('user2', 'testuser2', 'e10adc3949ba59abbe56e057f20f883e', 'F',
+INSERT INTO pep_auth_users (id, username, password, superuser, pep_dtype, name, phone, email, enable) VALUES ('user2', 'testuser2', 'e10adc3949ba59abbe56e057f20f883e', 'N',
 'UserEntity', 'b', '12345678902', 'test2@test.com', 'Y');
 INSERT INTO pep_auth_users (id, username, password, superuser, pep_dtype, name, phone, email, enable) VALUES ('user3', 'testuser3', 'e10adc3949ba59abbe56e057f20f883e', 'N', 'UserEntity', 'a', '12345678903', 'test3@test.com', 'Y');
 
