@@ -129,19 +129,6 @@ subprojects {
     }
 
     dependencies {
-//        compile libraries.slf4j_api,
-//                libraries.spring_webmvc,
-//                libraries.springfox
-//
-//        runtime libraries.druid,
-//                libraries.logback_classic
-
-//        testCompile libraries.spring_test
-//
-//        testRuntime libraries.aspectjweaver,
-//                    libraries.servlet_api,
-//                    libraries.spring_context_support
-
         annotationProcessor libraries.spring_boot_configuration_processor
 
                 compileOnly libraries.p3c_pmd,
