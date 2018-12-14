@@ -8,7 +8,7 @@ public class IOSConstant {
 
     public static final String TOPIC = "com.proper.icmp.dev";
 
-    public static final String TARGET_TO = "b61485a194f6492d3319966f4ff633d4bbb12a6b712c7a69b4d83a63b58a7f5e";
+    public static final String TARGET_TO = "594ff237f7f64e03cbf2c06459a6cf6de7ce27b88bd712ac12287cf309849333";
 
     public static final String CENT_PATH_DEV = "classpath*:com/proper/enterprise/platform/notice/server/push/ios/cert/icmp.dev-dev.p12";
 

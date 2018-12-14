@@ -1,0 +1,12 @@
+task regModules << {
+    def dep = project.file('build/resources/main/META-INF/configs/dependencies.gradle')
+    def supplement = new StringBuilder('\r\n')
+    rootProject.allprojects.each { it
+        if (it != rootProject) {
+            supplement.append("libraries.${it.name.replaceAll('-', '_')} = '${it.group}:${it.name}:${it.version}'\r\n")
+        }
+    }
+    dep.append(supplement)
+}
+
+jar.dependsOn regModules
