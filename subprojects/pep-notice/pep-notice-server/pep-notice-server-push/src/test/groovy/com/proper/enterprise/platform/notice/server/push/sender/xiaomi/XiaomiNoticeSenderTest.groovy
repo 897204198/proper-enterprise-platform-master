@@ -66,6 +66,28 @@ class XiaomiNoticeSenderTest extends AbstractTest {
     }
 
     @Test
+    void testSendLongTitleMessage() {
+        def notice = new MockPushNotice()
+        notice.setTargetTo(PUSHTOKEN)
+        notice.setAppKey(APPKEY)
+        def count = 100
+        def a = ""
+        count.times {
+            a = a + "1"
+        }
+        notice.setTitle(a)
+        notice.setContent("test")
+        xiaomiNoticeSender.beforeSend(notice)
+        xiaomiNoticeSender.send(notice)
+        xiaomiNoticeSender.afterSend(notice)
+        BusinessNoticeResult businessNoticeResult = xiaomiNoticeSender.getStatus(notice)
+        if (NoticeStatus.FAIL == businessNoticeResult.getNoticeStatus()) {
+            throw new ErrMsgException(businessNoticeResult.getMessage())
+        }
+        assert NoticeStatus.SUCCESS == businessNoticeResult.getNoticeStatus()
+    }
+
+    @Test
     void testPassThrough() {
         def notice = new MockPushNotice()
         notice.setAppKey(APPKEY)

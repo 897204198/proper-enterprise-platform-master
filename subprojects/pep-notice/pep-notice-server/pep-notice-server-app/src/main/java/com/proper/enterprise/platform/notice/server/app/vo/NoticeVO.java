@@ -41,7 +41,7 @@ public class NoticeVO extends BaseVO implements Notice {
     /**
      * 消息标题
      */
-    @Length(message = "{notice.server.param.title.isTooLong}", max = 36)
+    @Length(message = "{notice.server.param.title.isTooLong}", max = 255)
     private String title;
     /**
      * 消息内容

@@ -32,7 +32,7 @@ public class NoticeRequest implements Serializable {
     /**
      * 消息标题
      */
-    @Length(message = "{notice.server.param.title.isTooLong}", max = 36, groups = NoticeSendApi.class)
+    @Length(message = "{notice.server.param.title.isTooLong}", max = 255, groups = NoticeSendApi.class)
     private String title;
 
     /**
