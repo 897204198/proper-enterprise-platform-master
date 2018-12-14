@@ -15,7 +15,7 @@ checkstyle {
 }
 
 dependencies {
-    checkstyle libraries.pep_checkstyle
+    checkstyle libraries.checkstyle_proper
 }
 
 codenarc {
