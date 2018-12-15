@@ -38,7 +38,7 @@ public class NoticeEntity extends BaseEntity implements Notice {
     /**
      * 消息标题
      */
-    @Column(length = 36)
+    @Column
     private String title;
     /**
      * 消息内容

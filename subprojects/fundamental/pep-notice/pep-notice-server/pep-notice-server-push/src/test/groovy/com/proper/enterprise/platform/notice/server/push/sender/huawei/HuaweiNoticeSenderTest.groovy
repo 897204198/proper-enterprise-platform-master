@@ -83,6 +83,27 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
             assert "Please check Huawei push config" == pushNoticeSender.getStatus(notice).getMessage()
             e.getMessage().contains("Please check Huawei push config")
         }
+
+        def notice2 = new MockPushNotice()
+        notice2.setTargetTo(HuaweiConstant.TARGET_TO)
+        notice2.setAppKey('MobileOADev')
+        // 最大长度为255
+        def count = 80
+        def title = System.getProperty('os.name') + "_MaxTitle_"
+        count.times {
+            title = title + "1"
+        }
+        notice2.setTitle(title)
+        notice2.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${new Date().format('yyyy-MM-dd HH:mm:ss')} in test case")
+
+        notice2.setTargetExtMsg('pushChannel', 'HUAWEI')
+
+        def customs2 = [:]
+        customs2['_proper_badge'] = 2
+        notice2.setNoticeExtMsg('customs', customs)
+
+        assert NoticeStatus.SUCCESS == pushNoticeSender.send(notice2).getNoticeStatus()
+        assert NoticeStatus.SUCCESS == pushNoticeSender.getStatus(notice2).getNoticeStatus()
     }
 
     @Test

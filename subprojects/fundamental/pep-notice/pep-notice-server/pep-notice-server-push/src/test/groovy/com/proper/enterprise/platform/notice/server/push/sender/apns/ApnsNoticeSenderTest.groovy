@@ -110,6 +110,24 @@ class ApnsNoticeSenderTest extends AbstractJPATest {
         assert IOSErrCodeEnum.BAD_DEVICE_TOKEN.getNoticeCode() == badToken.getCode()
         assert IOSErrCodeEnum.BAD_DEVICE_TOKEN.getCode() == badToken.getMessage()
 
+        //title 超长测试
+        MockPushNotice mockPushNoticeLongTitle = new MockPushNotice()
+        mockPushNoticeLongTitle.setAppKey(appKey)
+        mockPushNoticeLongTitle.setTargetTo(IOSConstant.TARGET_TO)
+        def count = 100
+        def a = ""
+        count.times {
+            a = a + "1"
+        }
+        mockPushNoticeLongTitle.setTitle(a)
+        mockPushNoticeLongTitle.setContent("66666qwe")
+        mockPushNoticeLongTitle.setId("testtest")
+        iosNoticeSender.send(mockPushNoticeLongTitle)
+        waitExecutorDone()
+        assert pushNoticeMsgJpaRepository.findPushNoticeMsgEntitiesByNoticeId("testtest").getContent() == "66666qwe"
+        BusinessNoticeResult businessNoticeLongTitleResult = iosNoticeSender.getStatus(mockPushNoticeLongTitle)
+        assert NoticeStatus.SUCCESS == iosNoticeSender.getStatus(mockPushNoticeLongTitle).getNoticeStatus()
+
         //todo Unregistered异常无法重现
     }
 
