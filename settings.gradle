@@ -23,4 +23,3 @@ private String separatorConvert(String path) {
     path = path.replaceAll("\\${File.separator}", "/")
     return path.substring(1, path.length())
 }
-
