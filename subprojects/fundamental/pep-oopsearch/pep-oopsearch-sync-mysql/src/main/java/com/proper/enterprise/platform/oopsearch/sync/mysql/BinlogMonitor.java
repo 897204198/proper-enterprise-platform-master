@@ -42,7 +42,7 @@ public class BinlogMonitor {
     @Value("${spring.datasource.password}")
     private String password;
 
-    @Scheduled(fixedDelay = 1000L)
+    @Scheduled(fixedDelay = 60000L)
     public void syncMysqlBinlog() {
         String url = databaseUrl.toLowerCase();
         String mysqlUrlKey = "mysql";
