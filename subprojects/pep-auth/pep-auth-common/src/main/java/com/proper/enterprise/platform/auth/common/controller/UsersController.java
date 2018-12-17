@@ -4,8 +4,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.RetrievePasswordParam;
+import com.proper.enterprise.platform.api.auth.service.UserNoticeService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
-import com.proper.enterprise.platform.auth.common.vo.*;
+import com.proper.enterprise.platform.auth.common.vo.ChangePasswordParam;
+import com.proper.enterprise.platform.auth.common.vo.RoleVO;
+import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
+import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.security.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,8 @@ public class UsersController extends BaseController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserNoticeService userNoticeService;
 
     @PostMapping
     @JsonView(UserVO.Single.class)
@@ -86,7 +92,7 @@ public class UsersController extends BaseController {
     @AuthcIgnore
     @GetMapping(path = "/{username}/validCode")
     public ResponseEntity<String> sendValidCode(@PathVariable String username) {
-        return responseOfGet(userService.sendValidCode(username));
+        return responseOfGet(userNoticeService.sendValidCode(username));
     }
 
     /**
