@@ -6,12 +6,12 @@ import com.proper.enterprise.platform.api.auth.service.UserNoticeService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.api.auth.service.ValidCodeService;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.encrypt.EncryptUtil;
 import com.proper.enterprise.platform.notice.service.NoticeSender;
 import com.proper.enterprise.platform.sys.datadic.enums.AppConfigEnum;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
-import com.proper.enterprise.platform.sys.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -9,10 +9,6 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.core.utils.encrypt.EncryptUtil;
-import com.proper.enterprise.platform.notice.service.NoticeSender;
-import com.proper.enterprise.platform.sys.datadic.enums.AppConfigEnum;
-import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import com.proper.enterprise.platform.core.i18n.I18NService;
 import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +104,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(String id) {
-        return userDao.findOne(id);
+        return userDao.findById(id);
     }
 
     @Override
