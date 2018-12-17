@@ -91,6 +91,7 @@ public class ResourcesController extends BaseController {
     }
 
     @GetMapping(path = "/{resourceId}/roles")
+    @ApiOperation("‍获取指定资源角色集合")
     @JsonView(RoleVO.Single.class)
     public ResponseEntity<Collection<RoleVO>> getResourceRoles(@ApiParam(value = "‍资源的id", required = true) @PathVariable String resourceId,
                                                                @ApiParam("‍角色状态(ALL;ENABLE为默认;DISABLE)‍") @RequestParam(defaultValue = "ENABLE")
