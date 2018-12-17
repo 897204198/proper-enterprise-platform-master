@@ -4,14 +4,14 @@ import com.proper.enterprise.platform.api.auth.model.User
 import com.proper.enterprise.platform.api.auth.service.UserService
 import com.proper.enterprise.platform.auth.service.APISecret
 import com.proper.enterprise.platform.auth.service.JWTService
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 
-class JWTAuthAspectTest extends AbstractTest {
+class JWTAuthAspectTest extends AbstractJPATest {
 
     @Autowired
     private APISecret secret
