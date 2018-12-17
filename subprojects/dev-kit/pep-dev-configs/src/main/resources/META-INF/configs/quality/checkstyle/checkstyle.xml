@@ -30,7 +30,7 @@
             <property name="filter" value="Controller.java"/>
         </module>
         <module name="MethodLimit">
-            <property name="max" value="45"/>
+            <property name="max" value="65"/>
         </module>
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
