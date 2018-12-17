@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.service.impl;
 
 import com.proper.enterprise.platform.api.auth.model.User;
+import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -14,7 +15,6 @@ import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
 import com.proper.enterprise.platform.notice.service.NoticeCollector;
 import com.proper.enterprise.platform.notice.service.NoticeSetService;
-import com.proper.enterprise.platform.notice.service.NoticeUser;
 import com.proper.enterprise.platform.notice.util.NoticeAnalysisUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
@@ -46,7 +46,7 @@ public class NoticeSendServiceImpl {
     private TemplateService templateService;
 
     @Autowired
-    private NoticeUser noticeUser;
+    private UserService userService;
 
     private static final int VAR200 = 200;
 
@@ -86,7 +86,7 @@ public class NoticeSendServiceImpl {
                                   String content,
                                   Map<String, Object> custom,
                                   NoticeType noticeType) {
-        Collection<? extends User> users = noticeUser.getUsersByIds(new ArrayList<>(toUserIds));
+        Collection<? extends User> users = userService.getUsersByIds(new ArrayList<>(toUserIds));
         NoticeCollector noticeCollector = NoticeCollectorFactory.create(noticeType);
         NoticeDocument noticeDocument = this.packageNoticeDocument(fromUserId, toUserIds, custom, noticeType, title, content);
         noticeCollector.addNoticeDocument(noticeDocument);

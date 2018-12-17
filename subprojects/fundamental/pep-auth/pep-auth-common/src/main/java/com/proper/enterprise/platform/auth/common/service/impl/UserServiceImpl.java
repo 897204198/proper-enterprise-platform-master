@@ -46,9 +46,6 @@ public class UserServiceImpl implements UserService {
     private PasswordEncryptService pwdService;
 
     @Autowired
-    private NoticeSender noticeSender;
-
-    @Autowired
     private ValidCodeService validCodeService;
 
     @Override
@@ -110,28 +107,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String sendValidCode(String userName) {
-        User user = this.getByUsername(userName, EnableEnum.ALL);
-        if (null == user) {
-            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.username.not.exist"));
-        }
-        if (StringUtil.isEmpty(user.getEmail())) {
-            throw new ErrMsgException(I18NUtil.getMessage("pep.auth.common.password.retrieve.email.not.exit"));
-        }
-        Map<String, Object> templateParams = new HashMap<>(16);
-        templateParams.put("appName", DataDicUtil.get(AppConfigEnum.NAME).getName());
-        templateParams.put("userName", user.getUsername());
-        templateParams.put("validCode", validCodeService.getPasswordValidCode(userName));
-        Map<String, Object> custom = new HashMap<>(0);
-        //设置标题
-        custom.put("title", DataDicUtil.get(AppConfigEnum.NAME).getName() + I18NUtil.getMessage("pep.auth.common.password.retrieve"));
-        noticeSender.sendNotice(user.getId(), "passwordRetrieve", templateParams, custom);
-        return I18NUtil.getMessage("pep.auth.common.password.retrieve.email.sent") + ":" + EncryptUtil.encryptEmail(user.getEmail());
-    }
-
-    @Override
     public User get(String id) {
-        return userDao.findById(id);
+        return userDao.findOne(id);
     }
 
     @Override
