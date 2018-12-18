@@ -56,12 +56,13 @@ public class SampleController {
     @ResponseBody
     public Map<String, Object> createOrQuery(@ApiParam(value = "‍集合名称", required = true) @PathVariable String collection,
                                              @ApiParam(value = "‍对操作的 json 描述", required = true,
-                                                 example = "create: {\"name\":\"test\"}; " +
-                                                           "query: {\"_method\":\"GET\",\"limit\":2,\"skip\":1,\"order\":\"-TT,name\"," +
-                                                                   "\"where\":{\"name\":\"test3\"," +
-                                                                              "\"objectId\":\"5c1872ca30bae50851ed693f\"," +
-                                                                              "\"_id\":{\"$in\":[\"5c1872ca30bae50851ed693f\",\"5c1872ce30bae50851ed6940\"]}}}; " +
-                                                           "count: {\"_method\":\"GET\",\"count\":1,\"where\":{}}")
+                                                 example = "create: {\"name\":\"test\"}; "
+                                                         + "query: {\"_method\":\"GET\",\"limit\":2,\"skip\":1,\"order\":\"-TT,name\","
+                                                                 + "\"where\":{\"name\":\"test3\","
+                                                                            + "\"objectId\":\"5c1872ca30bae50851ed693f\","
+                                                                            + "\"_id\":{\"$in\":"
+                                                                                 + "[\"5c1872ca30bae50851ed693f\",\"5c1872ce30bae50851ed6940\"]}}}; "
+                                                         + "count: {\"_method\":\"GET\",\"count\":1,\"where\":{}}")
                                                  @RequestBody String objectStr) {
         return handler(collection, null, objectStr);
     }
@@ -72,8 +73,8 @@ public class SampleController {
     public Map<String, Object> delOrUpdate(@ApiParam(value = "‍集合名称", required = true) @PathVariable String collection,
                                            @ApiParam(value = "‍对象 id（更新时）或 id 集合（删除时）", required = true) @PathVariable String objectIds,
                                            @ApiParam(value = "‍对操作的 json 描述", required = true,
-                                               example = "put: {\"_method\":\"PUT\",\"enable\":false,\"name\":\"test1\"}; " +
-                                                         "delete: {\"_method\":\"DELETE\"}")
+                                               example = "put: {\"_method\":\"PUT\",\"enable\":false,\"name\":\"test1\"}; "
+                                                       + "delete: {\"_method\":\"DELETE\"}")
                                                @RequestBody String objectStr) {
         return handler(collection, objectIds, objectStr);
     }
