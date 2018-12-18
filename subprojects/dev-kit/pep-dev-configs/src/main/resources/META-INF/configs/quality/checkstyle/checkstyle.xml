@@ -23,12 +23,7 @@
     </module>
 
     <module name="TreeWalker">
-        <module name="Swagger">
-            <property name="anno" value="ApiOperation"/>
-        </module>
-        <module name="Swagger">
-            <property name="filter" value="Controller.java"/>
-        </module>
+        <module name="Swagger"/>
         <module name="MethodLimit">
             <property name="max" value="65"/>
         </module>
