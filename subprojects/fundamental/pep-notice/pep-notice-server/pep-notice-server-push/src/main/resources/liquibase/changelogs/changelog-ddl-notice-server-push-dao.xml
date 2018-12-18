@@ -99,4 +99,8 @@
             <column name="ERROR_CODE" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="20181214-change_PEP_PUSH_NOTICE_MSG_TITLE" author="fm">
+        <modifyDataType tableName="PEP_PUSH_NOTICE_MSG" columnName="TITLE" newDataType="VARCHAR(255)"/>
+    </changeSet>
 </databaseChangeLog>

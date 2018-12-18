@@ -76,14 +76,6 @@ public interface UserService {
     User updateResetPassword(String userName, String validCode, String password);
 
     /**
-     * 发送验证码
-     *
-     * @param userName 用户名
-     * @return 发送提示
-     */
-    String sendValidCode(String userName);
-
-    /**
      * 获取当前用户
      * 用户为启用状态
      *

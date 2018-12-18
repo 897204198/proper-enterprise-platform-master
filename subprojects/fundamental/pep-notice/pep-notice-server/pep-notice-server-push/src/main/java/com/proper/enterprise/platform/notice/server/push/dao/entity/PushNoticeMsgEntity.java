@@ -38,7 +38,7 @@ public class PushNoticeMsgEntity extends BaseEntity {
     /**
      * 消息标题
      */
-    @Column(length = 36)
+    @Column
     private String title;
 
     /**

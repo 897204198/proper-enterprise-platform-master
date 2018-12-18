@@ -14,6 +14,7 @@ import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.api.auth.service.UserNoticeService;
 import io.swagger.annotations.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class UsersController extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserNoticeService userNoticeService;
 
 
     @PostMapping
@@ -82,8 +86,8 @@ public class UsersController extends BaseController {
     @ApiOperation("‍用户修改密码")
     public ResponseEntity<UserVO> changePassword(@RequestBody ChangePasswordParam changePasswordParam) {
         return responseOfPut(userService.updateChangePassword(Authentication.getCurrentUserId(),
-                changePasswordParam.getOldPassword(), changePasswordParam.getPassword()),
-                UserVO.class, UserVO.Single.class);
+            changePasswordParam.getOldPassword(), changePasswordParam.getPassword()),
+            UserVO.class, UserVO.Single.class);
     }
 
     @AuthcIgnore
@@ -91,16 +95,16 @@ public class UsersController extends BaseController {
     @ApiOperation("‍用户重置密码")
     public ResponseEntity resetPassword(@RequestBody RetrievePasswordParam retrievePasswordParam) {
         userService.updateResetPassword(retrievePasswordParam.getUsername(),
-                retrievePasswordParam.getValidCode(),
-                retrievePasswordParam.getPassword());
+            retrievePasswordParam.getValidCode(),
+            retrievePasswordParam.getPassword());
         return responseOfPut("");
     }
 
     @AuthcIgnore
     @GetMapping(path = "/{username}/validCode")
     @ApiOperation("‍发送验证码")
-    public ResponseEntity<String> sendValidCode(@ApiParam(value = "‍用户名‍", required = true) @PathVariable String username) {
-        return responseOfGet(userService.sendValidCode(username));
+    public ResponseEntity<String> sendValidCode(@PathVariable String username) {
+        return responseOfGet(userNoticeService.sendValidCode(username));
     }
 
     @DeleteMapping(path = "/{userId}/role/{roleId}")
@@ -141,8 +145,8 @@ public class UsersController extends BaseController {
     @JsonView(UserVO.Single.class)
     @ApiOperation("‍取得查询用户信息列表")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
-            @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
+        @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
+        @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
     })
     public ResponseEntity<DataTrunk<UserVO>> getUsers(@ApiParam("‍用户名") String username, @ApiParam("‍用户显示名") String name,
                                                       @ApiParam("‍用户邮箱") String email, @ApiParam("‍用户手机号") String phone,
