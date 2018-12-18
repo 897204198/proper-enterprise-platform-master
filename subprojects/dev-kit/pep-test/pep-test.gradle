@@ -2,23 +2,19 @@ dependencies {
 
            compileOnly libraries.druid_spring_boot_starter,
                        libraries.hibernate_ehcache
-    
+
            // only used in application-test.properties
            compileOnly project(':pep-core-jpa')
 
-        implementation libraries.groovy,
-                       libraries.groovy_json,
-                       libraries.jpa_api,
-                       libraries.spring_boot_starter_test,
-                       libraries.spring_orm,
-                       libraries.spring_tx
-
-           runtimeOnly libraries.h2
-
-       runtimeElements libraries.h2
-
-       runtimeElements project(':pep-configs'),
-                       project(':pep-core-jpa')
+        implementation  project(':pep-configs'),
+                        project(':pep-core-jpa')
+        implementation  libraries.groovy,
+                        libraries.groovy_json,
+                        libraries.h2,
+                        libraries.jpa_api,
+                        libraries.spring_boot_starter_test,
+                        libraries.spring_orm,
+                        libraries.spring_tx
 
     testImplementation project(':pep-configs'),
                        project(':pep-core-jpa')

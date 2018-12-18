@@ -2,16 +2,15 @@ apply plugin: 'java-library'
 
 dependencies {
 
-                   api libraries.commons_codec
+                   api libraries.commons_codec,
+                       libraries.commons_lang3
 
         implementation libraries.aspectjweaver,
                        libraries.okhttp,
                        libraries.pinyin4j,
                        libraries.spring_data_commons,
                        libraries.spring_oxm
-
-       runtimeElements libraries.commons_lang3
-
+    
     testImplementation project(':pep-test')
 
        testCompileOnly project(':pep-configs')
