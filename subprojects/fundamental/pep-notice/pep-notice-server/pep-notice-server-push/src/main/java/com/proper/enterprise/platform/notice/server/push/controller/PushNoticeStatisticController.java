@@ -20,11 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
-/**
- * 推送消息统计
- *
- * @author guozhimin
- */
 @RestController
 @Api(tags = "/notice/server/push/statistic")
 @RequestMapping("/notice/server/push/statistic")
@@ -42,7 +37,7 @@ public class PushNoticeStatisticController extends BaseController {
     }
 
     @GetMapping
-    @ApiOperation(value = "‍根据基础日期获取推送统计数据", httpMethod = "GET")
+    @ApiOperation("‍根据基础日期获取推送统计数据")
     @RequestMapping("/dataAnalysis/{dateType}")
     @ApiImplicitParams(value = {
         @ApiImplicitParam(name = "pageNo", value = "‍页码", paramType = "query", dataType = "int"),
@@ -58,7 +53,7 @@ public class PushNoticeStatisticController extends BaseController {
     }
 
     @GetMapping
-    @ApiOperation(value = "‍统计今天的推送数据", httpMethod = "GET")
+    @ApiOperation("‍统计今天的推送数据")
     @RequestMapping("/init")
     public ResponseEntity<?> init() {
         Date date = new Date();
@@ -75,7 +70,7 @@ public class PushNoticeStatisticController extends BaseController {
 
     @GetMapping
     @RequestMapping("/pieDataItems")
-    @ApiOperation(value = "‍获取饼图左侧项目相关数据", httpMethod = "GET")
+    @ApiOperation("‍获取饼图左侧项目相关数据")
     @ApiImplicitParams(value = {
         @ApiImplicitParam(name = "pageNo", value = "‍页码", paramType = "query", dataType = "int"),
         @ApiImplicitParam(name = "pageSize", value = "‍每页条数", paramType = "query", dataType = "int")
@@ -93,7 +88,9 @@ public class PushNoticeStatisticController extends BaseController {
 
     @GetMapping
     @RequestMapping("/app")
-    public ResponseEntity<DataTrunk<App>> findApp(String appKey, String appName, String appDesc, Boolean enable) {
+    @ApiOperation("‍分页查询app")
+    public ResponseEntity<DataTrunk<App>> findApp(@ApiParam("‍应用唯一标识‍") String appKey, @ApiParam("‍应用名称‍")String appName,
+                                                  @ApiParam("‍应用描述‍")String appDesc, @ApiParam("‍启用停用‍")Boolean enable) {
         return responseOfGet(pushMsgStatisticService.findApp(appKey, appName,
             appDesc, enable, getPageRequest(new Sort(Sort.Direction.DESC, "createTime"))));
     }

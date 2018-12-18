@@ -101,10 +101,13 @@ libraries.aspectjweaver = "org.aspectj:aspectjweaver:1.8.6"
 
 //libraries.cglib = 'cglib:cglib:2.2'
 
-libraries.commons_collections = 'commons-collections:commons-collections:3.2.2'
+libraries.checkstyle = 'com.puppycrawl.tools:checkstyle:8.14'
+libraries.checkstyle_proper = 'com.proper:proper-checkstyle:0.1.0-SNAPSHOT'
 
 libraries.cmb_b2b = 'com.cmb.b2b:cmb-b2b:1.0.0'
 libraries.cmb_pay = 'com.cmb.pay:cmb-pay:1.0.0'
+
+libraries.commons_collections = 'commons-collections:commons-collections:3.2.2'
 
 libraries.commons_codec = 'commons-codec:commons-codec:1.11'
 

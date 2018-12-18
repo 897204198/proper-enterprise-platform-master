@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.api.pay.service.NoticeService;
 import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.pay.proper.entity.ProperEntity;
 import com.proper.enterprise.platform.pay.proper.model.ProperPayResultRes;
 import com.proper.enterprise.platform.pay.proper.repository.ProperRepository;
@@ -22,12 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -109,12 +108,14 @@ public class ProperPayController extends BaseController {
      * @throws Exception 处理异步通知异常
      */
     @PostMapping(value = "/query")
-    public ResponseEntity<Map<String, Object>> queryProperPay(@RequestBody Map<String, Object> reqMap) throws Exception {
+    @ApiOperation("‍模拟支付结果查询并进行异步通知处理")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Map<String, Object>> queryProperPay(@RequestBody ProperPayReq reqMap) throws Exception {
         LOGGER.debug("-----------Ali async notice--------begin------------");
 
-        String orderNo = (String)reqMap.get("orderNo");
-        String subject = (String)reqMap.get("subject");
-        String totalFee = (String)reqMap.get("totalFee");
+        String orderNo = reqMap.getOrderNo();
+        String subject = reqMap.getSubject();
+        String totalFee = reqMap.getTotalFee();
 
         ProperEntity properInfo = new ProperEntity();
         properInfo.setOutTradeNo(orderNo);
@@ -179,6 +180,52 @@ public class ProperPayController extends BaseController {
 
         public void setTotalFee(String totalFee) {
             this.totalFee = totalFee;
+        }
+
+        @Override
+        public String toString() {
+            return JSONUtil.toJSONIgnoreException(this);
+        }
+    }
+
+    public static class ProperPayReq {
+
+        @ApiModelProperty(name = "‍商户网站唯一订单号", required = true)
+        private String orderNo;
+
+        @ApiModelProperty(name = "‍商品名称", required = true)
+        private String subject;
+
+        @ApiModelProperty(name = "‍商品总金额", required = true)
+        private String totalFee;
+
+        public String getOrderNo() {
+            return orderNo;
+        }
+
+        public void setOrderNo(String orderNo) {
+            this.orderNo = orderNo;
+        }
+
+        public String getSubject() {
+            return subject;
+        }
+
+        public void setSubject(String subject) {
+            this.subject = subject;
+        }
+
+        public String getTotalFee() {
+            return totalFee;
+        }
+
+        public void setTotalFee(String totalFee) {
+            this.totalFee = totalFee;
+        }
+
+        @Override
+        public String toString() {
+            return JSONUtil.toJSONIgnoreException(this);
         }
     }
 

@@ -125,7 +125,7 @@
         </insert>
     </changeSet>
 
-    <changeSet author="alphahinex" id="20180524-dev-role-menus">
+    <changeSet author="alphahinex" id="20180524-dev-role-menus" failOnError="false">
         <insert tableName="PEP_AUTH_ROLES_MENUS">
             <column name="ROLE_ID" value="role-dev"/>
             <column name="MENU_ID" value="pep-devtools"/>

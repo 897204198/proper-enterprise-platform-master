@@ -8,6 +8,9 @@ import com.proper.enterprise.platform.api.service.MongoDataBaseService;
 import com.proper.enterprise.platform.core.mongo.constants.MongoConstants;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.DateUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Api(tags = "/avdemo")
 @Controller
-
 @RequestMapping("/avdemo")
 public class SampleController {
 
@@ -39,47 +40,57 @@ public class SampleController {
 
     private static final String FILE_NAME_COUNT = "count";
 
-    @Autowired
     private MongoDataBaseService mongoDBService;
 
-    public SampleController() {
-        LOGGER.info("------------load SampleController-----------------");
-
+    @Autowired
+    public SampleController(MongoDataBaseService mongoDBService) {
+        this.mongoDBService = mongoDBService;
     }
-
-    @RequestMapping(value = "/classes/{collection}", method = RequestMethod.POST)
-    @ResponseBody
 
     /**
      * TODO
      * RESTFul 响应处理 response body 外还要有不同的响应码表示状态，参考 BaseController 和 UsersController
      */
-    Map<String, Object> createOrQuery(@PathVariable String collection, @RequestBody String objectStr,
-                                      HttpServletRequest request, HttpServletResponse res) {
-        String url = request.getRequestURI();
-        return handler(collection, null, objectStr, url);
+    @ApiOperation("‍创建对象，或检索，或计数")
+    @RequestMapping(value = "/classes/{collection}", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> createOrQuery(@ApiParam(value = "‍集合名称", required = true) @PathVariable String collection,
+                                             @ApiParam(required = true, value = "‍对操作的 json 描述。"
+                                                         + "‍创建对象: {\"name\":\"test\"}; "
+                                                         + "‍检索: {\"_method\":\"GET\",\"limit\":2,\"skip\":1,\"order\":\"-TT,name\","
+                                                                 + "\"where\":{\"name\":\"test3\","
+                                                                            + "\"objectId\":\"5c1872ca30bae50851ed693f\","
+                                                                            + "\"_id\":{\"$in\":"
+                                                                                 + "[\"5c1872ca30bae50851ed693f\",\"5c1872ce30bae50851ed6940\"]}}}; "
+                                                         + "‍计数: {\"_method\":\"GET\",\"count\":1,\"where\":{}}")
+                                                 @RequestBody String objectStr) {
+        return handler(collection, null, objectStr);
     }
 
+    @ApiOperation("‍更新或删除对象")
     @RequestMapping(value = "/classes/{collection}/{objectIds}", method = RequestMethod.POST)
     @ResponseBody
-    Map<String, Object> delOrUpdate(@PathVariable String collection, @PathVariable String objectIds,
-                                    @RequestBody String objectStr, HttpServletRequest request, HttpServletResponse response) {
-        String url = request.getRequestURI();
-        return handler(collection, objectIds, objectStr, url);
+    public Map<String, Object> delOrUpdate(@ApiParam(value = "‍集合名称", required = true) @PathVariable String collection,
+                                           @ApiParam(value = "‍对象 id（更新时）或 id 集合（删除时）", required = true) @PathVariable String objectIds,
+                                           @ApiParam(required = true, value = "‍对操作的 json 描述。"
+                                                       + "‍更新: {\"_method\":\"PUT\",\"enable\":false,\"name\":\"test1\"}; "
+                                                       + "‍删除: {\"_method\":\"DELETE\"}")
+                                               @RequestBody String objectStr) {
+        return handler(collection, objectIds, objectStr);
     }
 
-    private Map<String, Object> handler(String collection, String objectId, String objectStr, String url) {
+    private Map<String, Object> handler(String collection, String objectId, String objectStr) {
         LOGGER.info("Received payload: {}", objectStr);
 
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(objectStr);
             if (innerMethod(root, METHOD_DELETE)) {
-                return doDelete(collection, objectId, url);
+                return doDelete(collection, objectId);
             } else if (innerMethod(root, METHOD_PUT)) {
-                return doPut(root, collection, objectId, url);
+                return doPut(root, collection, objectId);
             } else if (root.has(FILE_NAME_WHERE) && innerMethod(root, METHOD_GET)) {
-                return doQuery(root, collection, url);
+                return doQuery(root, collection);
             } else {
                 return doCreate(root, collection);
             }
@@ -94,20 +105,20 @@ public class SampleController {
         return node.has("_method") && method.equals(node.get("_method").textValue());
     }
 
-    private Map<String, Object> doDelete(String collection, String objectIds, String url) throws Exception {
+    private Map<String, Object> doDelete(String collection, String objectIds) throws Exception {
 
         mongoDBService.delete(collection, objectIds);
-        return new HashMap<String, Object>(3);
+        return new HashMap<>(3);
 
     }
 
-    private Map<String, Object> doPut(JsonNode root, String collection, String objectId, String url) throws Exception {
+    private Map<String, Object> doPut(JsonNode root, String collection, String objectId) throws Exception {
         // TODO delete 返回个空 map 能说通，put 也返回空 map？
         ObjectNode node = root.deepCopy();
         node.put(MongoConstants.LAST_MODIFY_TIME, DateUtil.getTimestamp());
         node.put(MongoConstants.LAST_MODIFY_USER_ID, Authentication.getCurrentUserId());
         mongoDBService.updateById(node, collection, objectId);
-        return new HashMap<String, Object>(5);
+        return new HashMap<>(5);
     }
 
     private Map<String, Object> doCreate(JsonNode root, String collection) throws Exception {
@@ -118,14 +129,14 @@ public class SampleController {
         node.put(MongoConstants.LAST_MODIFY_USER_ID, Authentication.getCurrentUserId());
 
         Document doc = mongoDBService.insertOne(node, collection);
-        Map<String, Object> result = new HashMap<String, Object>(3);
+        Map<String, Object> result = new HashMap<>(3);
         result.put("objectId", doc.getObjectId("_id").toHexString());
         result.put("createdAt", ISO8601Utils.format(new Date(), true));
         return result;
     }
 
-    private Map<String, Object> doQuery(JsonNode root, String collection, String url) throws Exception {
-        Map<String, Object> result = new HashMap<String, Object>(3);
+    private Map<String, Object> doQuery(JsonNode root, String collection) throws Exception {
+        Map<String, Object> result = new HashMap<>(3);
         if (needCount(root)) {
             long count = mongoDBService.count(root, collection);
             result.put(FILE_NAME_COUNT, count);
@@ -137,10 +148,7 @@ public class SampleController {
     }
 
     private boolean needCount(JsonNode root) {
-        if (root.has(FILE_NAME_COUNT)) {
-            return true;
-        }
-        return false;
+        return root.has(FILE_NAME_COUNT);
     }
 
 }

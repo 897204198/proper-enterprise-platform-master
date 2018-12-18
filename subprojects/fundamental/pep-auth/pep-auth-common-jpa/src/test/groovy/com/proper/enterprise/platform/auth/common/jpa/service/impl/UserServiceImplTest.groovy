@@ -333,14 +333,13 @@ class UserServiceImplTest extends AbstractJPATest {
         assert userService.getUserMenus(userEntity.getId(), EnableEnum.ALL).size() == 0
     }
 
-
-
     @After
     void clearAll() {
         userRepository.deleteAll()
         userGroupRepository.deleteAll()
         roleRepository.deleteAll()
         resourceRepository.deleteAll()
+        menuRepository.deleteAll()
     }
 
 }

@@ -23,6 +23,10 @@
     </module>
 
     <module name="TreeWalker">
+        <module name="Swagger"/>
+        <module name="MethodLimit">
+            <property name="max" value="65"/>
+        </module>
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
             <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>

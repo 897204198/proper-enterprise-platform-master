@@ -1,16 +1,14 @@
-package com.proper.enterprise.platform.core.jpa.curd.a.controller;
+package com.proper.enterprise.platform.core.jpa.curd.a.controller
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.core.jpa.curd.a.service.AService;
-import com.proper.enterprise.platform.core.jpa.curd.a.vo.AVO;
-import com.proper.enterprise.platform.core.jpa.curd.b.api.B;
-import com.proper.enterprise.platform.core.jpa.curd.b.entity.BEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
+import com.fasterxml.jackson.annotation.JsonView
+import com.proper.enterprise.platform.core.controller.BaseController
+import com.proper.enterprise.platform.core.jpa.curd.a.service.AService
+import com.proper.enterprise.platform.core.jpa.curd.a.vo.AVO
+import com.proper.enterprise.platform.core.jpa.curd.b.api.B
+import com.proper.enterprise.platform.core.jpa.curd.b.entity.BEntity
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/a")
