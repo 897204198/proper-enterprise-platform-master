@@ -31,12 +31,17 @@ dependencies {
                      project(':pep-oopsearch')
 
     // Select on demand
-    runtimeClasspath project(':pep-auth-jwt'),
-                     project(':pep-oopsearch'),
+    runtimeClasspath project(':pep-announcement'),
+                     project(':pep-auth-jwt'),
+                     project(':pep-av-backend'),
+                     project(':pep-dev-tools'),
                      // Needs one dfs implementation if use DFS API
                      // MUST change 'pep.dfs.root-path' together
                      project(':pep-dfs-mongo'),
+                     project(':pep-feedback'),
                      project(':pep-file'),
+                     project(':pep-image-handler'),
+                     project(':pep-notice-server-app'),
                      project(':pep-oopsearch-sync-mongo'),
                      project(':pep-workflow')
 

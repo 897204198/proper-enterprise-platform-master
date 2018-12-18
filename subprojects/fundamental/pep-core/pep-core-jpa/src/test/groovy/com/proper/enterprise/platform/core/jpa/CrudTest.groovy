@@ -10,7 +10,8 @@ class CrudTest extends CrudBaseTest {
         retrieve()
         update()
         updateCheck()
-        delete()
+        assert true == delete()
+        assert false == delete()
     }
 
 }

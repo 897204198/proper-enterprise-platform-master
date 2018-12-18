@@ -45,6 +45,7 @@ ext {
     projectGenerator = [:]
     projectGenerator.name = 'pep'
     projectGenerator.path = 'platform'
+    projectGenerator.version = '0.5.x'
     liquibaseUrl = 'jdbc:h2:~/data/h2/pep_dev;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;MVCC=TRUE'
     liquibaseOldUrl = 'jdbc:h2:~/data/h2-diff/pep_dev;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;MVCC=TRUE'
     liquibaseUsername = 'sa'

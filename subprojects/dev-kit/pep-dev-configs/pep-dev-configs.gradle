@@ -1,4 +1,5 @@
-task regModules << {
+task regModules
+regModules.doLast {
     def dep = project.file('build/resources/main/META-INF/configs/dependencies.gradle')
     def supplement = new StringBuilder('\r\n')
     rootProject.allprojects.each { it
