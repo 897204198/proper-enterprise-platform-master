@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class AccessControlProperties {
 
     private String allowCredentials = "true";
-    private String allowHeaders = "Content-Type, Authorization, X-Requested-With, X-PEP-TOKEN, X-PEP-ERR-TYPE";
+    private String allowHeaders = "Content-Type, Authorization, X-Requested-With, X-PEP-TOKEN, X-PEP-ERR-TYPE, X-SERVICE-KEY";
     private String allowMethods = "GET, PUT, POST, DELETE, OPTIONS";
     /**
      * 允许跨域访问的来源
