@@ -32,6 +32,11 @@ public class DataTrunk<T> implements Serializable {
     public DataTrunk() {
     }
 
+    public DataTrunk(Collection<T> data) {
+        this.data = data;
+        this.count = null == data ? 0 : data.size();
+    }
+
     public DataTrunk(Collection<T> data, long count) {
         this.data = data;
         this.count = count;

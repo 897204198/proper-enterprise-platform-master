@@ -105,6 +105,14 @@ import groovy.transform.Field
  * VO名
  */
 @Field voName
+/**
+ * Configuration名
+ */
+@Field configurationName
+/**
+ * properties名
+ */
+@Field propertiesName
 
 task buildCode
 buildCode.doLast {
@@ -148,7 +156,7 @@ def initProjectParam() {
     this.testPropertiesPath = "$subProjRoot/src/test/resources/conf/$modelPackagePath"
     this.testI18nPath = "$subProjRoot/src/test/resources/i18n/$modelPackagePath"
     this.testSpringPath = "$subProjRoot/src/test/resources/spring/$modelPackagePath"
-    this.liquibasePath = "$subProjRoot/src/main/resources/liquibase/changelogs"
+    this.liquibasePath = "$subProjRoot/src/main/resources/liquibase/${projectGenerator.version}/changelogs/"+("pep"==projectGenerator.name?"":projectGenerator.name)
 }
 
 def parseModelPackage() {
@@ -193,6 +201,8 @@ def initBusinessParam() {
     this.entityName = "jpa" == this.modelDAOType ? toFirstUpperCase("${businessName}Entity") : ""
     this.apiName = toFirstUpperCase("${businessName}")
     this.voName = toFirstUpperCase("${businessName}VO")
+    this.configurationName= toFirstUpperCase("${businessName}Configuration")
+    this.propertiesName= toFirstUpperCase("${businessName}Properties")
     this.testControllerPath = "${testProGroovyPath}/${singleControllerPackageName}"
     this.testMockPath = "${testProGroovyPath}/mock"
     this.testMockPackageName = "${projectPackageName}.mock"
@@ -205,8 +215,8 @@ def mkProcessDir() {
     mkdir("$subProjRoot/src/main/resources")
     mkdir(testProGroovyPath)
     mkdir("$subProjRoot/src/test/resources")
-    mkdir(testPropertiesPath)
-    mkdir(testSpringPath)
+//    mkdir(testPropertiesPath)
+//    mkdir(testSpringPath)
     mkdir(testI18nPath)
     mkdir(liquibasePath)
 }
@@ -219,7 +229,6 @@ def mkBusinessDir() {
     mkdir(servicePath)
     mkdir(implPath)
     mkdir(controllerPath)
-
 }
 
 def mkTestDir() {
@@ -229,11 +238,12 @@ def mkTestDir() {
 def mkProcess() {
     file("$subProjRoot/${modelName}.gradle").withWriter {
         it.write("""dependencies {
-    compile project(':pep-core-${modelDAOType}')
 
-    testCompile project(':pep-auth-common'),
-                project(':pep-test')
-    testRuntime project(':pep-cache-ehcache')
+        implementation project(':pep-core-jpa')
+
+    testImplementation project(':pep-auth-common-jpa'),
+                       project(':pep-test')
+
 }""")
     }
     file("$subProjRoot/README.md").withWriter {
@@ -321,6 +331,8 @@ def mkLiquibase() {
 def mkTest() {
     mkControllerTest()
     mkResourceTest()
+    mkConfiguration()
+    mkProperties()
 }
 
 def mkControllerTest() {
@@ -329,25 +341,69 @@ def mkControllerTest() {
     }
 }
 
-def mkResourceTest() {
-    file("$testPropertiesPath/${modelResourceName}.properties").withWriter(charset) {
-        it.write("#test 中的配置文件仅在单元测试环境中有效，若想全局代码有效将单元测试中的源文件及目录一同粘贴到main下resources")
-    }
-    file("$testSpringPath/applicationContext-${modelResourceName}.xml").withWriter(charset) {
-        it.write("""<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-    <beans>
-        <context:property-placeholder ignore-unresolvable="true"
-                                      location="classpath:conf/${modelPackagePath}/${modelResourceName}.properties"/>
-    </beans>
+def  mkConfiguration(){
+    file("${testProGroovyPath}/${configurationName}.java").withWriter(charset) {
+        it.write("""package ${projectPackageName};
 
-</beans>""")
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * 统一命名{模块名}+Configuration.java
+ * 在test环境有效 若要使用迁移到 java目录下即可
+ * 对于bean的配置声明等在Configuration中完成
+ */
+@Configuration
+public class ${configurationName} {
+}""")
     }
+}
+
+def  mkProperties(){
+    file("${testProGroovyPath}/${propertiesName}.java").withWriter(charset) {
+        it.write("""package ${projectPackageName};
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+/**
+ * 统一命名{模块名}+Properties.java
+ * 此配置在test环境有效 若要使用迁移到 java目录下即可
+ *
+ * 规范
+ * prefix中的{项目名}.{模块名}为配置的命名空间
+ * 若需要添加配置仅需在此文件下新建成员变量及对应的get,set方法即可
+ * 要求javaDoc完整，若有默认值则给成员变量添加默认值即可
+ * 驼峰命名
+ *
+ * 满足规范且编译后 会在配置文件中查看到对于此配置的描述及默认值
+ */
+@Component
+@ConfigurationProperties(prefix = "${projectGenerator.name}.${businessName}")
+public class ${propertiesName} {
+}""")
+    }
+}
+
+
+def mkResourceTest() {
+//    file("$testPropertiesPath/${modelResourceName}.properties").withWriter(charset) {
+//        it.write("#test 中的配置文件仅在单元测试环境中有效，若想全局代码有效将单元测试中的源文件及目录一同粘贴到main下resources")
+//    }
+//    file("$testSpringPath/applicationContext-${modelResourceName}.xml").withWriter(charset) {
+//        it.write("""<?xml version="1.0" encoding="UTF-8"?>
+//<beans xmlns="http://www.springframework.org/schema/beans"
+//       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+//       xmlns:context="http://www.springframework.org/schema/context"
+//       xsi:schemaLocation="http://www.springframework.org/schema/beans
+//                           http://www.springframework.org/schema/beans/spring-beans.xsd
+//                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+//    <beans>
+//        <context:property-placeholder ignore-unresolvable="true"
+//                                      location="classpath:conf/${modelPackagePath}/${modelResourceName}.properties"/>
+//    </beans>
+//
+//</beans>""")
+//    }
     file("$testI18nPath/${modelResourceName}-i18n.properties").withWriter(charset) {
         it.write("""#test 中的配置文件仅在单元测试环境中有效，若想全局代码有效将单元测试中的源文件及目录一同粘贴到main下resources
 ${testI18nKey}=test max value 100""")
@@ -413,6 +469,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.view.BaseView;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Max;
 
@@ -424,6 +481,7 @@ public class ${voName} extends BaseVO {
 
     @JsonView(Single.class)
     @Max(value = 100, message = "{${testI18nKey}}")
+    @ApiModelProperty(name = "‍测试字段")
     private Integer test;
 
     public Integer getTest() {
@@ -450,14 +508,20 @@ def mkJpaController() {
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.entity.DataTrunk;
 import ${voPackageName}.${voName};
 import ${servicePackageName}.${serviceName};
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/${businessName}")
+@Api(tags = "/${businessName}")
 public class ${controllerName} extends BaseController {
 
     @Autowired
@@ -465,26 +529,34 @@ public class ${controllerName} extends BaseController {
 
     @PostMapping
     @JsonView(${voName}.Single.class)
+    @ApiOperation("‍新增${businessName}")
     public ResponseEntity<${voName}> post(@RequestBody ${voName} ${toFirstLowerCase(voName)}) {
         return responseOfPost(${toFirstLowerCase(serviceName)}.save(${toFirstLowerCase(voName)}));
     }
 
     @DeleteMapping
+    @ApiOperation("‍删除${businessName}")
     public ResponseEntity delete(@RequestParam String id) {
         return responseOfDelete(${toFirstLowerCase(serviceName)}.deleteById(id));
     }
 
     @PutMapping
     @JsonView(${voName}.Single.class)
+    @ApiOperation("‍修改${businessName}")
     public ResponseEntity<${voName}> put(@RequestBody ${voName} ${toFirstLowerCase(voName)}) {
         return responseOfPut(${toFirstLowerCase(serviceName)}.update(${toFirstLowerCase(voName)}));
     }
 
     @GetMapping
     @JsonView(${voName}.Single.class)
-    public ResponseEntity<?> get(Integer test) {
+    @ApiOperation("‍查询${businessName}列表")
+    @ApiImplicitParams(value = {
+        @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
+        @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
+    })
+    public ResponseEntity<DataTrunk> get(Integer test) {
         return isPageSearch() ? responseOfGet(${toFirstLowerCase(serviceName)}.findAll(test, getPageRequest()))
-            : responseOfGet(${toFirstLowerCase(serviceName)}.findAll(test));
+            : responseOfGet(new DataTrunk<>(${toFirstLowerCase(serviceName)}.findAll(test)));
     }
 }""")
     }
@@ -499,10 +571,10 @@ import org.junit.Test
 import org.springframework.http.HttpStatus
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import ${voPackageName}.${voName}
-import com.proper.enterprise.platform.test.AbstractTest
+import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 
-class ${controllerName}Test extends AbstractTest {
+class ${controllerName}Test extends AbstractJPATest {
 
     private static final URL = "/${businessName}"
 
@@ -510,7 +582,7 @@ class ${controllerName}Test extends AbstractTest {
     void "post"() {
         mockUser('test1', 't1', 'pwd')
         assert I18NUtil.getMessage("${testI18nKey}") == post(URL, JSONUtil.toJSON(new ${voName}().setTest(999)), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
-        ${voName} result = postAndReturn(URL, new ${voName}())
+        ${voName} result = resOfPost(URL, new ${voName}())
         expect:
         assert null != result.getId()
     }
@@ -519,7 +591,7 @@ class ${controllerName}Test extends AbstractTest {
     void "delete"() {
         mockUser('test1', 't1', 'pwd')
         delete(URL + "?id=1", HttpStatus.NOT_FOUND)
-        ${voName} result = postAndReturn(URL, new ${voName}())
+        ${voName} result = resOfPost(URL, new ${voName}())
         delete(URL + "?id=" + result.getId(), HttpStatus.NO_CONTENT)
     }
 
@@ -528,7 +600,7 @@ class ${controllerName}Test extends AbstractTest {
         mockUser('test1', 't1', 'pwd')
         ${voName} vo = new ${voName}()
         vo.setTest(1)
-        ${voName} result = postAndReturn(URL, vo)
+        ${voName} result = resOfPost(URL, vo)
         result.setTest(2)
         ${voName} result2 = JSONUtil.parse(put(URL, JSONUtil.toJSON(result), HttpStatus.OK)
             .getResponse().getContentAsString(), ${voName}.class)
@@ -542,19 +614,19 @@ class ${controllerName}Test extends AbstractTest {
         ${voName} vo1 = new ${voName}().setTest(1)
         ${voName} vo2 = new ${voName}().setTest(2)
         ${voName} vo3 = new ${voName}().setTest(3)
-        postAndReturn(URL, vo1)
-        postAndReturn(URL, vo2)
-        postAndReturn(URL, vo3)
-        List<${voName}> list = JSONUtil.parse(get(URL, HttpStatus.OK).getResponse().getContentAsString(), List)
+        resOfPost(URL, vo1)
+        resOfPost(URL, vo2)
+        resOfPost(URL, vo3)
+        DataTrunk<${voName}> dataTrunk = JSONUtil.parse(get(URL, HttpStatus.OK).getResponse().getContentAsString(), DataTrunk)
         DataTrunk<${voName}> page = JSONUtil.parse(get(URL + "?pageNo=1&pageSize=1", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk)
-        List<${voName}> queryTest3 = JSONUtil.parse(get(URL + "?test=3", HttpStatus.OK).getResponse().getContentAsString(), List)
+        DataTrunk<${voName}> queryTest3 = JSONUtil.parse(get(URL + "?test=3", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk)
 
         expect:
-        assert 3 == list.size()
+        assert 3 == dataTrunk.getCount()
         assert 3 == page.count
         assert 1 == page.getData().size()
-        assert 1 == queryTest3.size()
-        assert 3 == queryTest3.get(0).test
+        assert 1 == queryTest3.getCount()
+        assert 3 == queryTest3.getData()[0].test
     }
 }""")
     }
@@ -653,7 +725,7 @@ public class ${implName} implements ${serviceName} {
 
     @Override
     public boolean deleteById(String id) {
-        return ${toFirstLowerCase(businessName)}Repository.deleteById(id);
+        return ${toFirstLowerCase(businessName)}Repository.delete(id);
     }
 
     @Override
@@ -664,7 +736,10 @@ public class ${implName} implements ${serviceName} {
 
     @Override
     public Collection<${voName}> findAll(Integer test) {
-        return BeanUtil.convert(${toFirstLowerCase(businessName)}Repository.findAll(test), ${voName}.class);
+        if (null == test) {
+            return BeanUtil.convert(${toFirstLowerCase(businessName)}Repository.findAll(), ${voName}.class);
+        }
+        return BeanUtil.convert(${toFirstLowerCase(businessName)}Repository.findAllByTestOrderByTestDesc(test), ${voName}.class);
     }
 
     @Override
@@ -727,16 +802,15 @@ public interface ${repositoryName} extends BaseJpaRepository<${entityName}, Stri
 
     /**
      * 根据修改时间倒叙查询列表
-     *
+     * 不传参数 spring-data风格的查询会返回空
      * @param test 查询参数
      * @return 实体集合
      */
-    @Query("select t from ${entityName} t where (t.test=:test or :test is null )")
-    List<${entityName}> findAll(@Param("test") Integer test);
+    List<${entityName}> findAllByTestOrderByTestDesc(@Param("test") Integer test);
 
     /**
      * 根据修改时间倒叙分页查询
-     *
+     * 建议优先使用 spring-data风格的查询 若查询的条件过多 spring-data风格写起来过于复杂 考虑使用@Query实现查询
      * @param test     查询参数
      * @param pageable 分页参数
      * @return 分页实体集合

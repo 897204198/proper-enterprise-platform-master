@@ -43,8 +43,8 @@ class CrudBaseTest extends AbstractJPATest {
         assert user.description == 'desc of user1'
     }
 
-    void delete() {
-        repository.deleteById(id)
+    def delete() {
+       return repository.delete(id)
     }
 
     @Test
