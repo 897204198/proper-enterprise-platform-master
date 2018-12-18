@@ -8,7 +8,9 @@ import com.proper.enterprise.platform.api.service.MongoDataBaseService;
 import com.proper.enterprise.platform.core.mongo.constants.MongoConstants;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.DateUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Api(tags = "/avdemo")
 @Controller
 @RequestMapping("/avdemo")
 public class SampleController {
@@ -48,18 +51,20 @@ public class SampleController {
      * TODO
      * RESTFul 响应处理 response body 外还要有不同的响应码表示状态，参考 BaseController 和 UsersController
      */
-    @ApiOperation("")
+    @ApiOperation("‍创建或查询对象")
     @RequestMapping(value = "/classes/{collection}", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> createOrQuery(@PathVariable String collection, @RequestBody String objectStr) {
+    public Map<String, Object> createOrQuery(@ApiParam(value = "‍集合名称", required = true) @PathVariable String collection,
+                                             @ApiParam(value = "‍需要的参数配置", required = true) @RequestBody String objectStr) {
         return handler(collection, null, objectStr);
     }
 
-    @ApiOperation("")
+    @ApiOperation("‍删除或更新对象")
     @RequestMapping(value = "/classes/{collection}/{objectIds}", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> delOrUpdate(@PathVariable String collection, @PathVariable String objectIds,
-                                    @RequestBody String objectStr) {
+    public Map<String, Object> delOrUpdate(@ApiParam(value = "‍集合名称", required = true) @PathVariable String collection,
+                                           @ApiParam(value = "‍对象 id（更新时）或 id 集合（删除时）", required = true) @PathVariable String objectIds,
+                                           @ApiParam(value = "‍需要的参数配置", required = true) @RequestBody String objectStr) {
         return handler(collection, objectIds, objectStr);
     }
 
