@@ -56,13 +56,13 @@ public class SampleController {
     @ResponseBody
     public Map<String, Object> createOrQuery(@ApiParam(value = "‍集合名称", required = true) @PathVariable String collection,
                                              @ApiParam(required = true, value = "‍对操作的 json 描述。"
-                                                         + "创建对象: {\"name\":\"test\"}; "
-                                                         + "检索: {\"_method\":\"GET\",\"limit\":2,\"skip\":1,\"order\":\"-TT,name\","
+                                                         + "‍创建对象: {\"name\":\"test\"}; "
+                                                         + "‍检索: {\"_method\":\"GET\",\"limit\":2,\"skip\":1,\"order\":\"-TT,name\","
                                                                  + "\"where\":{\"name\":\"test3\","
                                                                             + "\"objectId\":\"5c1872ca30bae50851ed693f\","
                                                                             + "\"_id\":{\"$in\":"
                                                                                  + "[\"5c1872ca30bae50851ed693f\",\"5c1872ce30bae50851ed6940\"]}}}; "
-                                                         + "计数: {\"_method\":\"GET\",\"count\":1,\"where\":{}}")
+                                                         + "‍计数: {\"_method\":\"GET\",\"count\":1,\"where\":{}}")
                                                  @RequestBody String objectStr) {
         return handler(collection, null, objectStr);
     }
@@ -73,8 +73,8 @@ public class SampleController {
     public Map<String, Object> delOrUpdate(@ApiParam(value = "‍集合名称", required = true) @PathVariable String collection,
                                            @ApiParam(value = "‍对象 id（更新时）或 id 集合（删除时）", required = true) @PathVariable String objectIds,
                                            @ApiParam(required = true, value = "‍对操作的 json 描述。"
-                                                       + "更新: {\"_method\":\"PUT\",\"enable\":false,\"name\":\"test1\"}; "
-                                                       + "删除: {\"_method\":\"DELETE\"}")
+                                                       + "‍更新: {\"_method\":\"PUT\",\"enable\":false,\"name\":\"test1\"}; "
+                                                       + "‍删除: {\"_method\":\"DELETE\"}")
                                                @RequestBody String objectStr) {
         return handler(collection, objectIds, objectStr);
     }
