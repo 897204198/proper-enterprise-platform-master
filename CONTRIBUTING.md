@@ -58,6 +58,26 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
                 project(':pep-oopsearch-sync-mysql')
     ```
 
+    
+初始化新模块
+----------
+
+例如要新增一个 `pep-test-init` 模块，可以通过下面的任务初始化该模块的基本路径及文件：
+
+    $ ./gradlew buildCode -Pmodel=pep-test-init 
+支持参数
+ 
+    -Pmodel 模块名 example  -Pmodel=pep-isme             required 
+    -Pbusiness 模块下业务名 example  -Pbusiness=api              
+    -PparentPath 模块父包名 example  -PparentPath=pep-is/ 
+    
+初始化内容包括：
+
+    模块的包路径，properties, spring 配置类及增删改查的基础代码和配套的单元测试
+
+> 注意：初始化任务执行时会先将该模块根路径删除
+
+
 测试
 ----
 
@@ -96,7 +116,9 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
 
 **推送代码至远程仓库或创建 `Pull Request` 之前需确保所有测试及检查能够在本地通过**
 
-### 连接前后台调试
+
+连接前后台调试
+------------
 
 1. 使用静态资源
 
@@ -115,7 +137,8 @@ IDEA 开启远程调试方式可参见 [IntelliJ Remote Run/Debug Configuration]
 
 1.使用已提供好的的环境
 - 后端启动成功后，Ctrl+Alt+鼠标左键，根据需要选择想要连接[前端CD环境](https://propersoft-cn.github.io/Yellow-Page.html#%E5%89%8D%E7%AB%AF)的地址
-  
+
+
 开发规范
 -------
 
@@ -239,6 +262,69 @@ Change Log 文件放在对应模块下`src/main/resources/liquibase/changelogs`�
 > 前台、后台工程版本号需尽量保持一致（主版本及次版本号必须一致），方便两个工程对应。
 
 
+Change Log 规范
+---------------
+
+Change log 按版本放置（主版本或次版本），每个版本划定一个 Change Log 的基线，从基线开始变化。
+
+#### 路径规范
+
+以 v0.4.x 和 v0.5.x 两个版本为例：
+
+* 平台
+
+```
+resources/liquibase/0.5.x/base —— v0.5.x 基线初始化语句
+resources/liquibase/0.5.x/base/changelog-ddl-{module}.xml
+resources/liquibase/0.5.x/base/changelog-dml-{module}.xml
+resources/liquibase/0.5.x/changelogs —— v0.5.x 累积变更
+resources/liquibase/0.5.x/changelogs/changelog-ddl-{module}.xml
+resources/liquibase/0.5.x/changelogs/changelog-dml-{module}.xml
+resources/liquibase/0.4.x/changelogs —— v0.4.x 累积变更
+resources/liquibase/0.4.x/changelogs/changelog-ddl-{module}.xml
+resources/liquibase/0.4.x/changelogs/changelog-dml-{module}.xml
+```
+
+* 产品
+
+```
+resources/liquibase/icmp/3.x/base
+resources/liquibase/icmp/3.x/base/changelog-ddl-{module}.xml
+resources/liquibase/icmp/3.x/base/changelog-dml-{module}.xml
+resources/liquibase/icmp/3.x/changelogs
+resources/liquibase/icmp/3.x/changelogs/changelog-ddl-{module}.xml
+resources/liquibase/icmp/3.x/changelogs/changelog-dml-{module}.xml
+resources/liquibase/icmp/2.x/changelogs
+resources/liquibase/icmp/2.x/changelogs/changelog-ddl-{module}.xml
+resources/liquibase/icmp/2.x/changelogs/changelog-dml-{module}.xml
+```
+
+* 项目
+
+```
+resources/liquibase/icmp/propersoft/2.x/base
+resources/liquibase/icmp/propersoft/2.x/base/changelog-ddl-{module}.xml
+resources/liquibase/icmp/propersoft/2.x/base/changelog-dml-{module}.xml
+resources/liquibase/icmp/propersoft/2.x/changelogs
+resources/liquibase/icmp/propersoft/2.x/changelogs/changelog-ddl-{module}.xml
+resources/liquibase/icmp/propersoft/2.x/changelogs/changelog-dml-{module}.xml
+resources/liquibase/icmp/propersoft/1.x/changelogs
+resources/liquibase/icmp/propersoft/1.x/changelogs/changelog-ddl-{module}.xml
+resources/liquibase/icmp/propersoft/1.x/changelogs/changelog-dml-{module}.xml
+```
+
+#### 各种阶段和情况应对方案
+
+以 v0.4.x 和 v0.5.x 两个版本为例：
+
+* 处于 v0.4.x，不想升级到 v0.5.x —— 使用平台 v0.4.x 版本即可，无影响
+* 处于 v0.4.x，想升级到 v0.5.x —— 代码先升级到 v0.5.x，includeAll liquibase/0.4.x/changelogs && liquibase/0.5.x/changelogs
+> 如果已经执行过 v0.4.x 中规范路径前的 changelog，需要修改数据库中的记录，将执行过的 changelog 文件的路径修改为规范后的路径
+* v0.5.x brand new —— includeAll liquibase/0.5.x/base && liquibase/0.5.x/changelogs 下内容即可
+* 处于 v0.5.0-SNAPSHOT —— 修改已执行过的 changelog 记录，将路径调整为规范后的路径，之后 includeAll liquibase/0.5.x/changelogs 即可
+> 多出了基线的 base 路径 —— 不需要 include 进去，因为应该在 SNAPSHOT 的 changelog 中都已经执行过了
+
+
 版本发布流程
 -----------
 
@@ -265,6 +351,7 @@ Change Log 文件放在对应模块下`src/main/resources/liquibase/changelogs`�
 
 **TO BE CONTINUED**
 
+
 持续集成环境
 ----------
 
@@ -277,8 +364,8 @@ Pull Request 的构建结果会直接在列表页和详细信息页面展现
 
 master 分支的构建结果会在项目首页展现
 
-<a href="https://server.propersoft.cn/teamcity/viewType.html?buildTypeId=PEP_Build">
-  <img src="https://server.propersoft.cn/teamcity/app/rest/builds/buildType:(id:PEP_Build)/statusIcon.svg"/>
+<a href="https://cloud.propersoft.cn/teamcities/viewType.html?buildTypeId=ProperEnterprise_PepParallel">
+  <img src="https://cloud.propersoft.cn/teamcities/app/rest/builds/buildType:(id:ProperEnterprise_PepParallel)/statusIcon.svg"/>
 </a>
 
 测试覆盖率结果也会在项目首页展现
@@ -286,27 +373,3 @@ master 分支的构建结果会在项目首页展现
 [![codecov](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform/branch/master/graph/badge.svg?token=uthbnLL68t)](https://codecov.io/gh/propersoft-cn/proper-enterprise-platform)
 
 **每位工程师都要为项目构建失败或覆盖率下降负责！**
-
------
-
-以下内容待调整
-
------
-
-初始化新模块
-----------
-
-例如要新增一个 `pep-test-init` 模块，可以通过下面的任务初始化该模块的基本路径及文件：
-
-    $ ./gradlew buildCode -Pmodel=pep-test-init 
-支持参数
- 
-    -Pmodel 模块名 example  -Pmodel=pep-isme             required 
-    -Pbusiness 模块下业务名 example  -Pbusiness=api              
-    -PparentPath 模块父包名 example  -PparentPath=pep-is/ 
-    
-初始化内容包括：
-
-    模块的包路径，properties,spring配置文件及增删改查的基础代码和配套的单元测试
-
-> 注意：初始化任务执行时会先将改模块根路径删除
