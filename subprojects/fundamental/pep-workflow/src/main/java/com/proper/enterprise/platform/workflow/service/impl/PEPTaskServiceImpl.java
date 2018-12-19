@@ -33,6 +33,8 @@ import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
 import org.flowable.variable.api.history.HistoricVariableInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,8 @@ import java.util.*;
 
 @Service
 public class PEPTaskServiceImpl implements PEPTaskService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PEPTaskServiceImpl.class);
 
     private TaskService taskService;
 
@@ -93,7 +97,12 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         if (null == task.getAssignee()) {
             taskService.claim(taskId, Authentication.getCurrentUserId());
         }
-        taskService.complete(taskId, globalVariables);
+        try {
+            taskService.complete(taskId, globalVariables);
+        } catch (Exception e) {
+            LOGGER.error("workflow complete task error:taskId:{}", taskId, e);
+            throw new ErrMsgException(I18NUtil.getMessage("workflow.task.complete.error"));
+        }
     }
 
     @Override
