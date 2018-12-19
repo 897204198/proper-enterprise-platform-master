@@ -60,15 +60,16 @@ class AppVersionManagerControllerTest extends AbstractJPATest {
 
     @Test
     void saveThenReleaseThenUpdate() {
-        AppVersionManagerController.AppVersionVO ver = new AppVersionManagerController.AppVersionVO('vt1', '.apk', 'abc')
-        post(prefix, JSONUtil.toJSON(ver), HttpStatus.CREATED)
+        def str = '{"ver":"vt1","androidUrl":".apk","iosUrl":null,"note":"abc"}'
+        post(prefix, str, HttpStatus.CREATED)
+        assert repository.findByVersion('vt1') != null
+        assert !repository.findByVersion('vt1').released
 
-        post("$prefix/latest", JSONUtil.toJSON(ver), HttpStatus.CREATED)
-        assert repository.findAll().findAll {it.version == 'vt1'}.size() == 1
+        post("$prefix/latest", str, HttpStatus.CREATED)
+        assert repository.findByVersion('vt1').released
 
-        put(prefix, JSONUtil.toJSON(ver), HttpStatus.OK)
-        assert repository.find().findAll().get(17).version == 'vt1'
-        assert repository.find().findAll().get(17).released == true
+        put(prefix, '{"ver":"vt1","androidUrl":"ad.apk","iosUrl":".ipa","note":"abcdef"}', HttpStatus.OK)
+        assert repository.findByVersion('vt1').iosURL == '.ipa'
     }
 
     @Test

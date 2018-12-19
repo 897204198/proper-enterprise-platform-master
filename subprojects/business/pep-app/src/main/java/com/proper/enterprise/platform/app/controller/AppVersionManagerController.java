@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.app.controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proper.enterprise.platform.app.document.AppVersionDocument;
 import com.proper.enterprise.platform.app.service.AppVersionService;
 import com.proper.enterprise.platform.core.controller.BaseController;
@@ -75,12 +76,15 @@ public class AppVersionManagerController extends BaseController {
     public static class AppVersionVO {
 
         @ApiModelProperty(name = "‍版本号", required = true)
+        @JsonProperty("ver")
         private String version;
 
         @ApiModelProperty(name = "‍android下载地址", required = true)
+        @JsonProperty("androidUrl")
         private String androidURL;
 
         @ApiModelProperty(name = "‍ios下载地址", required = true)
+        @JsonProperty("iosUrl")
         private String iosURL;
 
         @ApiModelProperty(name = "‍版本说明", required = true)
