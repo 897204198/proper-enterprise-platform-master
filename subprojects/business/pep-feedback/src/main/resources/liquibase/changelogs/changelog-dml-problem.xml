@@ -18,7 +18,7 @@
             <column name="MENU_CODE"/>
             <column name="MENU_TYPE"/>
             <column name="NAME" value="常见问题"/>
-            <column name="ROUTE" value="appconfig/question"/>
+            <column name="ROUTE" value="other/question"/>
             <column name="SEQUENCE_NUMBER" valueNumeric="0"/>
             <column name="PARENT_ID" value="pep-others"/>
         </insert>
