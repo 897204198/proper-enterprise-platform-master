@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="pep (generator)" id="init_ver0.5.x_sys_dataDic_ddl">
+        <createTable tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DD_CATALOG" type="VARCHAR(255)">
+               <constraints nullable="false"/>
+            </column>
+            <column name="DD_CODE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="N" name="IS_DEFAULT" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="SYSTEM" name="dd_type" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DD_NAME" type="VARCHAR(255)">
+               <constraints nullable="false"/>
+            </column>
+            <column name="DD_ORDER" type="INT(10)" defaultValueNumeric="1">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_SYS_DATA_DIC" tableName="PEP_SYS_DATA_DIC"/>
+        <addUniqueConstraint columnNames="dd_catalog, dd_code" constraintName="UK_CATALOG_CODE"
+                             tableName="pep_sys_data_dic"/>
+    </changeSet>
+
+    <changeSet author="pep (generator)" id="init_ver0.5.x_sys_rules_ddl">
+        <createTable tableName="PEP_SYS_RULES">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CATALOGUE" type="VARCHAR(255)"/>
+            <column name="RULE_DESCRIPTION" type="VARCHAR(4000)"/>
+            <column name="RULE_HOWTOUSE" type="VARCHAR(4000)"/>
+            <column name="RULE_NAME" type="VARCHAR(255)"/>
+            <column name="RULE" type="VARCHAR(4000)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_SYS_RULES" tableName="PEP_SYS_RULES"/>
+    </changeSet>
+
+    <changeSet id="pep (generator)" author="init_ver0.5.x_sys_dataDic_catalog_ddl">
+        <createTable tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DD_CATALOG_CODE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DD_CATALOG_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="SYSTEM" name="DD_CATALOG_TYPE" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="1" name="DD_CATALOG_ORDER" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_DATA_DIC_CATALOG_CODE_ID" tableName="PEP_SYS_DATA_DIC_CATALOG"/>
+        <addUniqueConstraint columnNames="DD_CATALOG_CODE" constraintName="UK_DD_CATALOG_CODE"
+                             tableName="PEP_SYS_DATA_DIC_CATALOG"/>
+    </changeSet>
+</databaseChangeLog>

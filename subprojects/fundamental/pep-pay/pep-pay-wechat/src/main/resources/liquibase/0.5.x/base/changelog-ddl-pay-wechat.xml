@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="pep (generator)" id="init_ver0.5.x_pay_wechat_ddl">
+        <createTable tableName="PEP_PAY_WECHAT_PAYINFO">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APPID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ATTACH" type="VARCHAR(255)"/>
+            <column name="BANK_TYPE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CASH_FEE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CASH_FEE_TYPE" type="VARCHAR(255)"/>
+            <column name="COUPON_COUNT" type="VARCHAR(255)"/>
+            <column name="COUPON_FEE" type="VARCHAR(255)"/>
+            <column name="DEVICE_INFO" type="VARCHAR(255)"/>
+            <column name="ERR_CODE" type="VARCHAR(255)"/>
+            <column name="ERR_CODE_DES" type="VARCHAR(255)"/>
+            <column name="FEE_TYPE" type="VARCHAR(255)"/>
+            <column name="IS_SUBSCRIBE" type="VARCHAR(255)"/>
+            <column name="MCH_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NONCE_STR" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OPENID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OUT_TRADE_NO" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RESULT_CODE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RETURN_CODE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RETURN_MSG" type="VARCHAR(255)"/>
+            <column name="SIGN" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TIME_END" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOTAL_FEE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TRADE_TYPE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TRANSACTION_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_PAY_WECHAT_PAYINFO" tableName="PEP_PAY_WECHAT_PAYINFO"/>
+        <addUniqueConstraint columnNames="OUT_TRADE_NO" constraintName="UK_PEP_PAY_WECHAT_PAYINFO_OUT_TRADE_NO" tableName="PEP_PAY_WECHAT_PAYINFO"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_pay_wechat_refundInfo_ddl">
+        <createTable tableName="PEP_PAY_WECHAT_REFUNDINFO">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APP_ID" type="VARCHAR(255)"/>
+            <column name="CASH_FEE" type="VARCHAR(255)"/>
+            <column name="CASH_REFUND_FEE" type="VARCHAR(255)"/>
+            <column name="COUPON_REFUND_COUNT" type="VARCHAR(255)"/>
+            <column name="COUPON_REFUND_FEE" type="VARCHAR(255)"/>
+            <column name="COUPON_REFUND_ID" type="VARCHAR(255)"/>
+            <column name="DEVICE_INFO" type="VARCHAR(255)"/>
+            <column name="ERR_CODE" type="VARCHAR(255)"/>
+            <column name="ERR_CODE_DES" type="VARCHAR(255)"/>
+            <column name="FEE_TYPE" type="VARCHAR(255)"/>
+            <column name="MCH_ID" type="VARCHAR(255)"/>
+            <column name="NONCE_STR" type="VARCHAR(255)"/>
+            <column name="OUT_REFUND_NO" type="VARCHAR(255)"/>
+            <column name="OUT_TRADE_NO" type="VARCHAR(255)"/>
+            <column name="REFUND_CHANNEL" type="VARCHAR(255)"/>
+            <column name="REFUND_FEE" type="VARCHAR(255)"/>
+            <column name="REFUND_ID" type="VARCHAR(255)"/>
+            <column name="REFUND_NO" type="VARCHAR(255)"/>
+            <column name="RESULT_CODE" type="VARCHAR(255)"/>
+            <column name="RETURN_CODE" type="VARCHAR(255)"/>
+            <column name="RETURN_MSG" type="VARCHAR(255)"/>
+            <column name="SIGN" type="VARCHAR(255)"/>
+            <column name="TOTAL_FEE" type="VARCHAR(255)"/>
+            <column name="TRANSACTION_ID" type="VARCHAR(255)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_PAY_WECHAT_REFUNDINFO" tableName="PEP_PAY_WECHAT_REFUNDINFO"/>
+    </changeSet>
+</databaseChangeLog>

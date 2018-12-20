@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="pep (generator)" id="init_ver0.5.x_notice_msg_ddl">
+        <createTable tableName="PEP_NOTICE_MSG">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BATCH_ID" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APP_KEY" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)"/>
+            <column name="CONTENT" type="VARCHAR(2048)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TARGET_TO" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TARGET_EXT_MSG" type="VARCHAR(2048)">
+            </column>
+            <column name="NOTICE_EXT_MSG" type="VARCHAR(2048)">
+            </column>
+            <column name="STATUS" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NOTICE_TYPE" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RETRY_COUNT" type="INT(1)" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ERROR_MSG" type="LONGTEXT"/>
+            <column name="ERROR_CODE" type="VARCHAR(255)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_NOTICE_MSG" tableName="PEP_NOTICE_MSG"/>
+    </changeSet>
+
+    <changeSet author="pep (generator)" id="init_ver0.5.x_notice_app_ddl">
+        <createTable tableName="PEP_NOTICE_APP">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APP_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APP_KEY" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APP_TOKEN" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APP_DESC" type="VARCHAR(255)"/>
+            <column name="COLOR" type="VARCHAR(255)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_NOTICE_APP" tableName="PEP_NOTICE_APP"/>
+        <addUniqueConstraint columnNames="APP_KEY" constraintName="UK_PEP_NOTICE_APP_APP_KEY"
+                             tableName="PEP_NOTICE_APP"/>
+        <addUniqueConstraint columnNames="APP_TOKEN" constraintName="UK_PEP_NOTICE_APP_APP_TOKEN"
+                             tableName="PEP_NOTICE_APP"/>
+    </changeSet>
+</databaseChangeLog>

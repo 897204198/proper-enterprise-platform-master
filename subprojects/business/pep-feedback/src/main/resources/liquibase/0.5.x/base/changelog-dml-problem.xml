@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="pep (generator)" id="init_ver0.5.x_feedback_problem_dml_menus">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="app-apppz-problem"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="question-circle-o"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE"/>
+            <column name="NAME" value="常见问题"/>
+            <column name="ROUTE" value="other/question"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="0"/>
+            <column name="PARENT_ID" value="pep-others"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="pep (generator)" id="init_ver0.5.x_feedback_problem_ddl_dataDic">
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="ihos_commonproblem_no"/>
+            <column name="CREATE_TIME" value="2018-08-30 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2018-08-30 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="ihos_problem_access"/>
+            <column name="DD_CODE" value="2"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="踩"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+            <column name="ENABLE" value="Y"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="ihos_commonproblem_yes"/>
+            <column name="CREATE_TIME" value="2018-08-30 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2018-08-30 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="ihos_problem_access"/>
+            <column name="DD_CODE" value="1"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="赞"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+            <column name="ENABLE" value="Y"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="pep (generator)" id="init_ver0.5.x_file_ddl">
+        <createTable tableName="PEP_FILE">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_PATH" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_COUNT" type="INT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_SIZE" type="BIGINT(19)"/>
+            <column name="FILE_TYPE" type="VARCHAR(255)"/>
+            <column name="FILE_EXT_MSG" type="VARCHAR(255)"/>
+            <column name="VIR_PATH" type="VARCHAR(255)"/>
+            <column name="IS_DIR" type="CHAR(1)" defaultValue="N"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="pep (generator)" id="init_ver0.5.x_file_ddl_notNull">
+        <addNotNullConstraint tableName="PEP_FILE" columnName="IS_DIR" columnDataType="CHAR(1)" defaultNullValue="N"/>
+        <addUniqueConstraint tableName="PEP_FILE" columnNames="FILE_NAME, VIR_PATH" constraintName="UK_FILE_NAME_VIR_PATH"/>
+    </changeSet>
+</databaseChangeLog>

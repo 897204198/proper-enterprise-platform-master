@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="pep (generator)" id="init_ver0.5.x_sequence_dml_dataDic">
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_sequence_no_clear"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="CLEAR_TYPE"/>
+            <column name="DD_CODE" value="NO_CLEAR"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="不清零"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_sequence_day_clear"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="CLEAR_TYPE"/>
+            <column name="DD_CODE" value="DAY_CLEAR"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="日清零"/>
+            <column name="DD_ORDER" valueNumeric="1"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_sequence_month_clear"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="CLEAR_TYPE"/>
+            <column name="DD_CODE" value="MONTH_CLEAR"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="月清零"/>
+            <column name="DD_ORDER" valueNumeric="2"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_sequence_year_clear"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="CLEAR_TYPE"/>
+            <column name="DD_CODE" value="YEAR_CLEAR"/>
+            <column name="IS_DEFAULT" value="N"/>
+            <column name="DD_NAME" value="年清零"/>
+            <column name="DD_ORDER" valueNumeric="3"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="CLEAR_TYPE"/>
+            <column name="DD_CATALOG_CODE" value="CLEAR_TYPE"/>
+            <column name="DD_CATALOG_NAME" value="清零方式"/>
+            <column name="DD_CATALOG_ORDER" value="24"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

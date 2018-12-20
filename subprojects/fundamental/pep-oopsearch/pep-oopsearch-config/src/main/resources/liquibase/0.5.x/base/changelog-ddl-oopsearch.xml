@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="pep (generator)" id="init_ver0.5.x_oopsearch_ddl">
+        <createTable tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="RDB" name="DATA_BASE_TYPE" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COLUMN_ALIAS" type="VARCHAR(255)"/>
+            <column name="COLUMN_DESC" type="VARCHAR(255)"/>
+            <column name="COLUMN_TYPE" type="VARCHAR(255)"/>
+            <column name="MODULE_NAME" type="VARCHAR(255)"/>
+            <column name="SEARCH_COLUMN" type="VARCHAR(255)"/>
+            <column name="TABLE_NAME" type="VARCHAR(255)"/>
+            <column name="URL" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_oopsearch_ddl_primaryKey">
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_OOPSEARCH_CONFIG" tableName="PEP_OOPSEARCH_CONFIG"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_oopsearch_ddl_unique">
+        <addUniqueConstraint columnNames="TABLE_NAME, SEARCH_COLUMN, URL" constraintName="UK_TABLE_NAME_SEARCH_COLUMN_URL" tableName="PEP_OOPSEARCH_CONFIG"/>
+        <addUniqueConstraint columnNames="TABLE_NAME, COLUMN_ALIAS, URL" constraintName="UK_TABLE_NAME_COLUMN_ALIAS_URL" tableName="PEP_OOPSEARCH_CONFIG"/>
+    </changeSet>
+</databaseChangeLog>

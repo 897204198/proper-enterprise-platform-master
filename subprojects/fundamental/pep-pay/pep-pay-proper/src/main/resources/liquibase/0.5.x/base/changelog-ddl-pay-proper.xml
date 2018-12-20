@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="pep (generator)" id="init_ver0.5.x_payProper_ddl">
+        <createTable tableName="PEP_PAY_PROPER_PAYINFO">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NOTIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OUT_TRADE_NO" type="VARCHAR(255)"/>
+            <column name="SUBJECT" type="VARCHAR(255)"/>
+            <column name="TOTAL_FEE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TRADE_NO" type="VARCHAR(255)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_PAY_PROPER_PAYINFO" tableName="PEP_PAY_PROPER_PAYINFO"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_payProper_refundInfo_ddl">
+        <createTable tableName="PEP_PAY_PROPER_REFUNDINFO">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CODE" type="VARCHAR(255)"/>
+            <column name="MSG" type="VARCHAR(255)"/>
+            <column name="OUT_TRADE_NO" type="VARCHAR(255)"/>
+            <column name="REFUND_FEE" type="VARCHAR(255)"/>
+            <column name="REFUND_NO" type="VARCHAR(255)"/>
+            <column name="REFUND_TIME" type="VARCHAR(255)"/>
+            <column name="TRADE_NO" type="VARCHAR(255)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_PAY_PROPER_REFUNDINFO" tableName="PEP_PAY_PROPER_REFUNDINFO"/>
+    </changeSet>
+</databaseChangeLog>

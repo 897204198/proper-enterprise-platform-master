@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_dataRestrains_table">
+        <createTable tableName="PEP_AUTH_DATARESTRAINS">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILTER_NAME" type="VARCHAR(255)"/>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="SQL_STR" type="VARCHAR(255)"/>
+            <column name="TABLE_NAME" type="VARCHAR(255)"/>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_DATARESTRAINS" tableName="PEP_AUTH_DATARESTRAINS"/>
+        <addUniqueConstraint columnNames="NAME" constraintName="UK_OUTKYSGOE2LWKWJH4IME9RUAQ"
+                             tableName="PEP_AUTH_DATARESTRAINS"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_group_roles">
+        <createTable tableName="PEP_AUTH_GROUPS_ROLES">
+            <column name="GROUP_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ROLE_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_menus">
+        <createTable tableName="PEP_AUTH_MENUS">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ICON" type="VARCHAR(255)"/>
+            <column name="IDENTIFIER" type="VARCHAR(255)"/>
+            <column name="MENU_CODE" type="VARCHAR(255)"/>
+            <column name="MENU_TYPE" type="VARCHAR(255)"/>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ROUTE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SEQUENCE_NUMBER" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PARENT_ID" type="VARCHAR(255)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_MENUS" tableName="PEP_AUTH_MENUS"/>
+        <addUniqueConstraint columnNames="ROUTE" constraintName="UK_RBVJ8E5FVAFV4HRKD95VQYEY"
+                             tableName="PEP_AUTH_MENUS"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_menus_resources">
+        <createTable tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RES_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_resources">
+        <createTable tableName="PEP_AUTH_RESOURCES">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IDENTIFIER" type="VARCHAR(255)"/>
+            <column name="METHOD" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RESOURCE_CODE" type="VARCHAR(255)"/>
+            <column name="RESOURCE_TYPE" type="VARCHAR(255)"/>
+            <column name="URL" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_RESOURCES" tableName="PEP_AUTH_RESOURCES"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_resources_dataRestrains">
+        <createTable tableName="PEP_AUTH_RESOURCES_DATARESTRAINS">
+            <column name="RESOURCE_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATARESTRAIN_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_roles">
+        <createTable tableName="PEP_AUTH_ROLES">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PARENT_ID" type="VARCHAR(255)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_ROLES" tableName="PEP_AUTH_ROLES"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_roles_menus">
+        <createTable tableName="PEP_AUTH_ROLES_MENUS">
+            <column name="ROLE_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MENU_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_roles_resources">
+        <createTable tableName="PEP_AUTH_ROLES_RESOURCES">
+            <column name="ROLE_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RESOURCE_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_userGroups">
+        <createTable tableName="PEP_AUTH_USERGROUPS">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SEQ" type="INT(10)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_USERGROUPS" tableName="PEP_AUTH_USERGROUPS"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_users_table">
+        <createTable tableName="PEP_AUTH_USERS">
+            <column name="PEP_DTYPE" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EMAIL" type="VARCHAR(255)"/>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="PASSWORD" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PHONE" type="VARCHAR(255)"/>
+            <column defaultValue="N" name="SUPERUSER" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USERNAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="avatar" type="VARCHAR(255)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_USERS" tableName="PEP_AUTH_USERS"/>
+        <addUniqueConstraint columnNames="USERNAME" constraintName="UK_SBQ9GVGCOYTAE85479WEDP2T6"
+                             tableName="PEP_AUTH_USERS"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_users_userGroups">
+        <createTable tableName="PEP_AUTH_USERS_GROUPS">
+            <column name="USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER_GROUP_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_users_roles">
+        <createTable tableName="PEP_AUTH_USERS_ROLES">
+            <column name="USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ROLE_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_roles_resources_roleIdIndex">
+        <createIndex indexName="FK_20RYJP4LCS64HSTSJA4AK8RBU_INDEX_E" tableName="PEP_AUTH_ROLES_RESOURCES">
+            <column name="ROLE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_roles_menus_menuIdIndex">
+        <createIndex indexName="FK_2DNGCM8XXLR1L98JMJ4MFJSF4_INDEX_3" tableName="PEP_AUTH_ROLES_MENUS">
+            <column name="MENU_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_users_groups_userGroupIndex">
+        <createIndex indexName="FK_4TRHE953BOEKSYCCL7X4YKPGW_INDEX_7" tableName="PEP_AUTH_USERS_GROUPS">
+            <column name="USER_GROUP_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_menus_resources_resIdIndex">
+        <createIndex indexName="FK_5IXGA28WN1HC3UD4HJMFMG8AG_INDEX_B" tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="RES_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_users_userGroups_userIdIndex">
+        <createIndex indexName="FK_8N8PULRA7T0MJ3TND29DYLWP0_INDEX_7" tableName="PEP_AUTH_USERS_GROUPS">
+            <column name="USER_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_roles_parentIdIndex">
+        <createIndex indexName="FK_A2YCH177P0ICCMGHNH5J946GS_INDEX_6" tableName="PEP_AUTH_ROLES">
+            <column name="PARENT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_users_roles_roleIdIndex">
+        <createIndex indexName="FK_ADT0X8V29ABPQFAB7YHGJO4GA_INDEX_4" tableName="PEP_AUTH_USERS_ROLES">
+            <column name="ROLE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_resources_dataRestrains_resourceIdIndex">
+        <createIndex indexName="FK_FUE44EM3GVTKFQVY4IKBVWAT_INDEX_5" tableName="PEP_AUTH_RESOURCES_DATARESTRAINS">
+            <column name="RESOURCE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_roles_resources_resIdIndex">
+        <createIndex indexName="FK_IFBIVK33AAHFS3RDUQLI3K6GF_INDEX_E" tableName="PEP_AUTH_ROLES_RESOURCES">
+            <column name="RESOURCE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_roles_menus_roleIdIndex">
+        <createIndex indexName="FK_M9KUPHKKTWNBMLXGWPCKK93S7_INDEX_3" tableName="PEP_AUTH_ROLES_MENUS">
+            <column name="ROLE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_ddl_res_data_dataIdIndex">
+        <createIndex indexName="FK_MPERD18U77Q34SEYCYNXSF32X_INDEX_5" tableName="PEP_AUTH_RESOURCES_DATARESTRAINS">
+            <column name="DATARESTRAIN_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_groups_roles_roleIdIndex">
+        <createIndex indexName="FK_OAJII6MODSO2K8T4HGV03FNOO_INDEX_3" tableName="PEP_AUTH_GROUPS_ROLES">
+            <column name="ROLE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_menus_parentIdIndex">
+        <createIndex indexName="FK_QBJRKVVQ5R6D1CAVG0UFF4VX3_INDEX_6" tableName="PEP_AUTH_MENUS">
+            <column name="PARENT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_menus_res_menuIdIndex">
+        <createIndex indexName="FK_QJ6WU0LNH065V6GAONCYAA32A_INDEX_B" tableName="PEP_AUTH_MENUS_RESOURCES">
+            <column name="MENU_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_groups_roles_groupIdIndex">
+        <createIndex indexName="FK_RUUK0QM979HC72093WFA9QG6P_INDEX_3" tableName="PEP_AUTH_GROUPS_ROLES">
+            <column name="GROUP_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_users_roles_userIdIndex">
+        <createIndex indexName="FK_SSDW7RMQ5DTPK72E2IHQRV5U3_INDEX_4" tableName="PEP_AUTH_USERS_ROLES">
+            <column name="USER_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_userIdAndRoleIdIndex">
+        <createIndex indexName="UK_1CELYM0BXLNX3RSKCHD7IS7Q3_INDEX_4" tableName="PEP_AUTH_USERS_ROLES" unique="true">
+            <column name="USER_ID"/>
+            <column name="ROLE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_resIdAndDataRestrainIdIndex">
+        <createIndex indexName="UK_4BIWJDMUJPCRWVWWXNYTVSEW5_INDEX_5" tableName="PEP_AUTH_RESOURCES_DATARESTRAINS"
+                     unique="true">
+            <column name="RESOURCE_ID"/>
+            <column name="DATARESTRAIN_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_roleIdAndMenuIdIndex">
+        <createIndex indexName="UK_5TN295MA8M3IKP7UIG4L4AD0M_INDEX_3" tableName="PEP_AUTH_ROLES_MENUS" unique="true">
+            <column name="ROLE_ID"/>
+            <column name="MENU_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_roleIdAndResourceIdIndex">
+        <createIndex indexName="UK_86B8X34F6EV8EDHCDIHMN39F3_INDEX_E" tableName="PEP_AUTH_ROLES_RESOURCES"
+                     unique="true">
+            <column name="ROLE_ID"/>
+            <column name="RESOURCE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_groupIdAndRoleIdIndex">
+        <createIndex indexName="UK_8O6D72RK0HYNBU3I201LXS6X0_INDEX_3" tableName="PEP_AUTH_GROUPS_ROLES" unique="true">
+            <column name="GROUP_ID"/>
+            <column name="ROLE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_menuIdAndResIdIndex">
+        <createIndex indexName="UK_G6VCQW7KBWG7ES8QASQO8ON3L_INDEX_B" tableName="PEP_AUTH_MENUS_RESOURCES"
+                     unique="true">
+            <column name="MENU_ID"/>
+            <column name="RES_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_urlAndMethodIndex">
+        <createIndex indexName="UK_G81FRCLGVQ2YY6WWNDK87F7W5_INDEX_C" tableName="PEP_AUTH_RESOURCES" unique="true">
+            <column name="URL"/>
+            <column name="METHOD"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_userIdAndUserGroupIdIndex">
+        <createIndex indexName="UK_T33OUS54S5AP1H87DQYPS7665_INDEX_7" tableName="PEP_AUTH_USERS_GROUPS" unique="true">
+            <column name="USER_ID"/>
+            <column name="USER_GROUP_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_roles_resForeignKey">
+        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_ROLES_RESOURCES"
+                                 constraintName="FK_20RYJP4LCS64HSTSJA4AK8RBU" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_roles_menusForeignKey">
+        <addForeignKeyConstraint baseColumnNames="MENU_ID" baseTableName="PEP_AUTH_ROLES_MENUS"
+                                 constraintName="FK_2DNGCM8XXLR1L98JMJ4MFJSF4" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_MENUS"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_users_usersGroupsForeignKey">
+        <addForeignKeyConstraint baseColumnNames="USER_GROUP_ID" baseTableName="PEP_AUTH_USERS_GROUPS"
+                                 constraintName="FK_4TRHE953BOEKSYCCL7X4YKPGW" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERGROUPS"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_menus_resourcesForeignKey">
+        <addForeignKeyConstraint baseColumnNames="RES_ID" baseTableName="PEP_AUTH_MENUS_RESOURCES"
+                                 constraintName="FK_5IXGA28WN1HC3UD4HJMFMG8AG" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_RESOURCES"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_users_userGroupsForeignKey">
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="PEP_AUTH_USERS_GROUPS"
+                                 constraintName="FK_8N8PULRA7T0MJ3TND29DYLWP0" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERS"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_rolesForeignKey">
+        <addForeignKeyConstraint baseColumnNames="PARENT_ID" baseTableName="PEP_AUTH_ROLES"
+                                 constraintName="FK_A2YCH177P0ICCMGHNH5J946GS" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_users_rolesForeignKey">
+        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_USERS_ROLES"
+                                 constraintName="FK_ADT0X8V29ABPQFAB7YHGJO4GA" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_res_dataRestrainsForeignKey">
+        <addForeignKeyConstraint baseColumnNames="RESOURCE_ID" baseTableName="PEP_AUTH_RESOURCES_DATARESTRAINS"
+                                 constraintName="FK_FUE44EM3GVTKFQVY4IKBVWAT" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_RESOURCES"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_roles_resourcesForeignKey">
+        <addForeignKeyConstraint baseColumnNames="RESOURCE_ID" baseTableName="PEP_AUTH_ROLES_RESOURCES"
+                                 constraintName="FK_IFBIVK33AAHFS3RDUQLI3K6GF" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_RESOURCES"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_role_menusForeignKey">
+        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_ROLES_MENUS"
+                                 constraintName="FK_M9KUPHKKTWNBMLXGWPCKK93S7" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_resources_dataRestrainsForeignKey">
+        <addForeignKeyConstraint baseColumnNames="DATARESTRAIN_ID" baseTableName="PEP_AUTH_RESOURCES_DATARESTRAINS"
+                                 constraintName="FK_MPERD18U77Q34SEYCYNXSF32X" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_DATARESTRAINS"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_groups_rolesForeignKey">
+        <addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="PEP_AUTH_GROUPS_ROLES"
+                                 constraintName="FK_OAJII6MODSO2K8T4HGV03FNOO" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_ROLES"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_menusForeignKey">
+        <addForeignKeyConstraint baseColumnNames="PARENT_ID" baseTableName="PEP_AUTH_MENUS"
+                                 constraintName="FK_QBJRKVVQ5R6D1CAVG0UFF4VX3" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_MENUS"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_menus_resForeignKey">
+        <addForeignKeyConstraint baseColumnNames="MENU_ID" baseTableName="PEP_AUTH_MENUS_RESOURCES"
+                                 constraintName="FK_QJ6WU0LNH065V6GAONCYAA32A" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_MENUS"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_groupsAndRolesForeignKey">
+        <addForeignKeyConstraint baseColumnNames="GROUP_ID" baseTableName="PEP_AUTH_GROUPS_ROLES"
+                                 constraintName="FK_RUUK0QM979HC72093WFA9QG6P" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERGROUPS"/>
+    </changeSet>
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_usersAndRolesForeignKey">
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="PEP_AUTH_USERS_ROLES"
+                                 constraintName="FK_SSDW7RMQ5DTPK72E2IHQRV5U3" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PEP_AUTH_USERS"/>
+    </changeSet>
+
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_changebyauth_refactor">
+        <addUniqueConstraint tableName="PEP_AUTH_MENUS" columnNames="NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_RESOURCES" columnNames="NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_ROLES" columnNames="NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_USERS" columnNames="USERNAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_USERGROUPS" columnNames="NAME"/>
+    </changeSet>
+
+    <changeSet author="pep (generator)" id="init_ver0.5.x_auth_token_table">
+        <createTable tableName="PEP_AUTH_TOKENS">
+            <column name="ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="CREATE_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="CREATE_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="Y" name="ENABLE" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="2017-02-20 00:00:00" name="LAST_MODIFY_TIME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="PEP" name="LAST_MODIFY_USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="RESOURCES_DESCRIPTION" type="VARCHAR(4000)"/>
+            <column name="TOKEN" type="VARCHAR(255)"/>
+            <column name="USER_ID" type="VARCHAR(255)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_TOKENS" tableName="PEP_AUTH_TOKENS"/>
+        <addUniqueConstraint columnNames="TOKEN" constraintName="UK_PEP_AUTH_TOKENS_TOKEN" tableName="PEP_AUTH_TOKENS"/>
+        <addUniqueConstraint columnNames="USER_ID" constraintName="UK_PEP_AUTH_TOKENS_USER_ID" tableName="PEP_AUTH_TOKENS"/>
+    </changeSet>
+</databaseChangeLog>
