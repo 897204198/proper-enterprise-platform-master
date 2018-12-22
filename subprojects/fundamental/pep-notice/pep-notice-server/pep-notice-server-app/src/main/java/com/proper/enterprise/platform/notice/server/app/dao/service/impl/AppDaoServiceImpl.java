@@ -44,7 +44,7 @@ public class AppDaoServiceImpl implements AppDaoService {
 
     @Override
     public App get(String appKey) {
-        return buildHaveConf(BeanUtil.convert(appRepository.findByAppKey(appKey), AppVO.class));
+        return buildWhichNoticeTypesAreConf(BeanUtil.convert(appRepository.findByAppKey(appKey), AppVO.class));
     }
 
     @Override
@@ -58,10 +58,14 @@ public class AppDaoServiceImpl implements AppDaoService {
     }
 
     @Override
-    public DataTrunk<App> findAllWithHaveConf(String appKey, String appName, String describe, Boolean enable, PageRequest pageRequest) {
+    public DataTrunk<App> findAllWithNoticeTypesAreConf(String appKey,
+                                                        String appName,
+                                                        String describe,
+                                                        Boolean enable,
+                                                        PageRequest pageRequest) {
         DataTrunk<App> apps = findAll(appKey, appName, describe, enable, pageRequest);
         for (App app : apps.getData()) {
-            buildHaveConf((AppVO) app);
+            buildWhichNoticeTypesAreConf((AppVO) app);
         }
         return apps;
     }
@@ -166,7 +170,7 @@ public class AppDaoServiceImpl implements AppDaoService {
      * @param appVO 配置详情
      * @return 配置详情以及配置渠道
      */
-    private AppVO buildHaveConf(AppVO appVO) {
+    private AppVO buildWhichNoticeTypesAreConf(AppVO appVO) {
         appVO.setHaveEmailConf(false);
         appVO.setHaveSMSConf(false);
         appVO.setHavePushConf(false);

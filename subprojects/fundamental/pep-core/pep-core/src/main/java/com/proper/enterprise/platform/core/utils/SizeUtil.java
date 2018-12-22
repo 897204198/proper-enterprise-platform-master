@@ -3,19 +3,19 @@ package com.proper.enterprise.platform.core.utils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class BigDecimalUtil {
+public class SizeUtil {
 
     /**
      * 私有化工具类的构造函数，避免对工具类的实例化
      */
-    private BigDecimalUtil() {
+    private SizeUtil() {
     }
 
     /**
      * 静态方法调用私有构造函数，以覆盖对构造函数的测试
      */
     static {
-        new BigDecimalUtil();
+        new SizeUtil();
     }
 
     /**

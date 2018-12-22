@@ -38,7 +38,7 @@ public interface AppDaoService {
      * @param pageRequest 分页参数
      * @return 分页对象
      */
-    DataTrunk<App> findAllWithHaveConf(String appKey, String appName, String describe, Boolean enable, PageRequest pageRequest);
+    DataTrunk<App> findAllWithNoticeTypesAreConf(String appKey, String appName, String describe, Boolean enable, PageRequest pageRequest);
 
     /**
      * 保存应用

@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.file.vo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
-import com.proper.enterprise.platform.core.utils.BigDecimalUtil;
+import com.proper.enterprise.platform.core.utils.SizeUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.file.api.File;
 
@@ -77,7 +77,7 @@ public class FileVO extends BaseVO implements File {
     }
 
     public String getFileSizeUnit() {
-        return BigDecimalUtil.parseSize(this.fileSize);
+        return SizeUtil.parseSize(this.fileSize);
     }
 
     public void setFileSizeUnit(String fileSizeUnit) {
