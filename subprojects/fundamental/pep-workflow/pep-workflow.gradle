@@ -5,9 +5,9 @@ dependencies {
                    api libraries.flowable_engine
 
         implementation libraries.flowable_idm_spring_configurator,
-                       libraries.flowable_spring_configurator,
                        libraries.flowable_spring_boot_starter_process,
                        libraries.flowable_spring_boot_starter_process_rest,
+                       libraries.flowable_spring_configurator,
                        libraries.flowable_ui_modeler_rest,
                        libraries.javax_inject,
                        libraries.liquibase
