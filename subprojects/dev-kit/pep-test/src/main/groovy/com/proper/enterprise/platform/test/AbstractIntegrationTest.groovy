@@ -73,7 +73,18 @@ abstract class AbstractIntegrationTest {
         def str = isSuccess('GET', connection.getResponseCode()) ? connection.getInputStream().getText() : ''
         try {
             str = new JsonSlurper().parseText(str)
-        } catch (ignored) { }
+        } catch (ignored) {
+        }
+        str
+    }
+
+    protected def resOfPost(String url, String data, HttpStatus status) {
+        def connection = post(url, data, status)
+        def str = isSuccess('GET', connection.getResponseCode()) ? connection.getInputStream().getText() : ''
+        try {
+            str = new JsonSlurper().parseText(str)
+        } catch (ignored) {
+        }
         str
     }
 

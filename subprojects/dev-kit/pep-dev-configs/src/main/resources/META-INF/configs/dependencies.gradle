@@ -86,7 +86,7 @@ configurations.all {
     // Exclude flowable cmmn, dmn, idm engines and other dependencies not used
     exclude module: 'flowable-cmmn-api'
     exclude module: 'flowable-content-api'
-    exclude module: 'flowable-dmn-api'
+//    exclude module: 'flowable-dmn-api'
     exclude module: 'flowable-spring-security'
 }
 
@@ -125,8 +125,9 @@ libraries.flowable_idm_spring_configurator     = "org.flowable:flowable-idm-spri
 libraries.flowable_json_converter              = "org.flowable:flowable-json-converter:${versions.flowable}"
 libraries.flowable_rest                        = "org.flowable:flowable-rest:${versions.flowable}"
 libraries.flowable_spring                      = "org.flowable:flowable-spring:${versions.flowable}"
-libraries.flowable_spring_boot_autoconfigure   = "org.flowable:flowable-spring-boot-autoconfigure:${versions.flowable}"
+libraries.flowable_spring_configurator         = "org.flowable:flowable-spring-configurator:${versions.flowable}"
 libraries.flowable_spring_boot_starter_process = "org.flowable:flowable-spring-boot-starter-process:${versions.flowable}"
+libraries.flowable_spring_boot_starter_process_rest = "org.flowable:flowable-spring-boot-starter-process-rest:${versions.flowable}"
 libraries.flowable_ui_modeler_rest             = "org.flowable:flowable-ui-modeler-rest:${versions.flowable}"
 
 libraries.flowable_web_designer                = "com.proper.enterprise.platform:flowable-web-designer:${versions.flowable}-SNAPSHOT"
