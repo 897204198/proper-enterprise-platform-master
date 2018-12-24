@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.workflow.factory.PEPCandidateExtQueryFacto
 import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
 import com.proper.enterprise.platform.workflow.service.impl.PEPCandidateUserExtQueryImpl;
 import com.proper.enterprise.platform.workflow.util.CandidateIdUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/modeler")
+@Api("/modeler")
 public class ModelerController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/candidate/{candidateType}")
