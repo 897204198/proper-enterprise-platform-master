@@ -1436,4 +1436,24 @@
         </insert>
     </changeSet>
 
+    <changeSet id="init_ver0.5.x_auth_menus_dml_resources_for_addOtherMenu" author="fm">
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-others"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="fork"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;0"/>
+            <column name="NAME" value="其它"/>
+            <column name="ROUTE" value="other"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="2"/>
+            <column name="PARENT_ID"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
