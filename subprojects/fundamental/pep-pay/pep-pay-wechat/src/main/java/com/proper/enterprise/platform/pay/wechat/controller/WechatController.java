@@ -117,6 +117,7 @@ public class WechatController extends BaseController {
      */
     @AuthcIgnore
     @PostMapping(value = "/noticeWechatPayInfo")
+    @ApiOperation("‍接收微信异步通知结果")
     public void receiveWeixinNoticeInfo(HttpServletRequest request, HttpServletResponse resp) throws Exception {
         boolean ret = false;
 

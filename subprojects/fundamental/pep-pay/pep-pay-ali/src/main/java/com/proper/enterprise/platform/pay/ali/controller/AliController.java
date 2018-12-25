@@ -112,6 +112,7 @@ public class AliController extends BaseController {
      */
     @AuthcIgnore
     @PostMapping(value = "/noticeAliPayInfo")
+    @ApiOperation("‍支付宝支付结果异步通知")
     public ResponseEntity<String> dealAliNoticePay(HttpServletRequest request) throws Exception {
         LOGGER.debug("-----------Ali async notice--------begin-------------");
 

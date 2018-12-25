@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.template.service.TemplateService;
 import com.proper.enterprise.platform.template.vo.TemplateVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Api(tags = "/templates")
 @RequestMapping(path = "/templates")
 public class TemplatesController extends TemplateController {
 
@@ -17,6 +20,7 @@ public class TemplatesController extends TemplateController {
 
     @Override
     @PostMapping
+    @ApiOperation("‍保存模板")
     @JsonView(TemplateVO.Details.class)
     public ResponseEntity<TemplateVO> add(@RequestBody TemplateVO templateVO) {
         templateVO.setMuti(true);
@@ -25,6 +29,7 @@ public class TemplatesController extends TemplateController {
 
     @Override
     @PutMapping("/{id}")
+    @ApiOperation("‍修改模板")
     @JsonView(TemplateVO.Details.class)
     public ResponseEntity<TemplateVO> update(@PathVariable String id, @RequestBody TemplateVO templateVO) {
         if (StringUtil.isNotBlank(id)) {
@@ -37,6 +42,7 @@ public class TemplatesController extends TemplateController {
 
     @Override
     @GetMapping("/{id}")
+    @ApiOperation("‍查询指定模板")
     @JsonView(TemplateVO.Details.class)
     public ResponseEntity<TemplateVO> get(@PathVariable String id) {
         return responseOfGet(templateService.get(id));
@@ -45,6 +51,7 @@ public class TemplatesController extends TemplateController {
     @Override
     @GetMapping
     @JsonView(TemplateVO.Details.class)
+    @ApiOperation("‍获得模板分页信息")
     public ResponseEntity find(@RequestParam(defaultValue = "") String code,
                                @RequestParam(defaultValue = "") String name,
                                @RequestParam(defaultValue = "") String description,

@@ -10,6 +10,8 @@ import com.proper.enterprise.platform.pay.web.ali.PayWebAliProperties;
 import com.proper.enterprise.platform.pay.web.ali.entity.AliwebEntity;
 import com.proper.enterprise.platform.pay.web.ali.service.AliwebPayResService;
 import com.proper.enterprise.platform.pay.web.ali.service.AliwebPayService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import java.util.Map;
  * 支付宝web支付Controller.
  */
 @RestController
+@Api(tags = "/pay/aliweb")
 @RequestMapping(value = "/pay/aliweb")
 public class AliwebController extends BaseController {
 
@@ -51,6 +54,7 @@ public class AliwebController extends BaseController {
      * @throws Exception 处理异常
      */
     @AuthcIgnore
+    @ApiOperation("‍支付宝网页支付结果异步通知")
     @PostMapping(value = "/noticeAliwebPayInfo")
     public ResponseEntity<String> dealAliwebNoticePay(HttpServletRequest request) throws Exception {
         LOGGER.debug("-----------Ali web async notice--------begin-------------");
