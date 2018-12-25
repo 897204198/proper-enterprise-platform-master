@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.notice.schedule;
 
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.http.HttpClient;
 import com.proper.enterprise.platform.notice.service.PushDeviceService;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class DelPushTokenTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DelPushTokenTask.class);
+    private static final String INIT_URL = "initNoticeServerUrl";
 
     @Autowired
     PushDeviceService pushDeviceService;
@@ -29,8 +31,10 @@ public class DelPushTokenTask {
     public void getErrorToken() {
         String noticeServerUrl = null;
         DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "URL");
-        if (dataDic != null) {
+        if (dataDic != null && !dataDic.getName().equals(INIT_URL)) {
             noticeServerUrl = dataDic.getName();
+        } else {
+            return;
         }
 
         String noticeServerToken = null;
@@ -49,15 +53,16 @@ public class DelPushTokenTask {
             Charset charset = Charset.defaultCharset();
             ByteBuffer buf = ByteBuffer.wrap(body);
             CharBuffer content = charset.decode(buf);
-            List<Map<String, Object>> list = JSONUtil.parse(content.toString(), List.class);
-            if (CollectionUtil.isNotEmpty(list)) {
-                for (Map map : list) {
-                    if ("FAIL".equals(map.get("status")) && "Invalid target".equals(map.get("errorCode"))) {
-                        pushDeviceService.deleteByToken(map.get("targetTo").toString());
+            if (StringUtil.isNotEmpty(content.toString())) {
+                List<Map<String, Object>> list = JSONUtil.parse(content.toString(), List.class);
+                if (CollectionUtil.isNotEmpty(list)) {
+                    for (Map map : list) {
+                        if ("FAIL".equals(map.get("status")) && "Invalid target".equals(map.get("errorCode"))) {
+                            pushDeviceService.deleteByToken(map.get("targetTo").toString());
+                        }
                     }
                 }
             }
-
         } catch (Exception e) {
             LOGGER.error("delPushTokenTask[Exception]:", e);
         }

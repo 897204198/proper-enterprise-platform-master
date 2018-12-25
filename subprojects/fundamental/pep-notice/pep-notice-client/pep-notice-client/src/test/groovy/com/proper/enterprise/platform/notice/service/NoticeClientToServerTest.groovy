@@ -54,8 +54,10 @@ class NoticeClientToServerTest extends AbstractJPATest {
     void configEmail() {
         String noticeServerUrl = null;
         DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "URL");
-        if (dataDic != null) {
-            noticeServerUrl = dataDic.getName();
+        if (dataDic != null && !"initNoticeServerUrl".equals(dataDic.getName())) {
+            noticeServerUrl = dataDic.getName()
+        } else {
+            println "noticeServerUrl is" + dataDic.getName() + "need init"
         }
         String noticeServerToken = null;
         dataDic = DataDicUtil.get("NOTICE_SERVER", "TOKEN");

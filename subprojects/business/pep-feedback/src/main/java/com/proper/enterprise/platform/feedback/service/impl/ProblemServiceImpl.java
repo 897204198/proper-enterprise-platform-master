@@ -98,6 +98,7 @@ public class ProblemServiceImpl implements ProblemService {
 
         int count = problemEntity.getViews() + 1;
         problemEntity.setViews(count);
+        problemVo.setViews(String.valueOf(count));
         problemRepository.save(problemEntity);
         return problemVo;
     }
