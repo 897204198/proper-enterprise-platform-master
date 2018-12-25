@@ -143,14 +143,20 @@ class MenusControllerTest extends AbstractJPATest {
         delete('/auth/menus?ids=' + childId, HttpStatus.NO_CONTENT)
 
         def req = [:]
-        def list = ['test-c']
+        def list = [id]
         req['ids'] = list
+        req['enable'] = false
+        put('/auth/menus', JSONUtil.toJSON(req), HttpStatus.OK)
+        menuObj = JSONUtil.parse(get('/auth/menus/' + id, HttpStatus.OK)
+            .getResponse().getContentAsString(), Map.class)
+        assert false == menuObj.get('enable')
+
         req['enable'] = true
         put('/auth/menus', JSONUtil.toJSON(req), HttpStatus.OK)
         menuObj = JSONUtil.parse(get('/auth/menus/' + id, HttpStatus.OK)
             .getResponse().getContentAsString(), Map.class)
         assert menuObj.get('enable')
-        menuObj.get("url") == "/auth/test"
+        assert menuObj.get("route") == "/bbb"
 
         menu['icon'] = 'test_icon_change'
         put('/auth/menus/' + id, JSONUtil.toJSON(menu), HttpStatus.OK)
@@ -174,6 +180,43 @@ class MenusControllerTest extends AbstractJPATest {
         assert parents.size() == 3
         assert parents.get(0).size() == 13
 
+    }
+
+    @Test
+    @NoTx
+    void testEnableMenu() {
+        mockUser('test1', 't1', 'pwd')
+
+        def menu = [:]
+        menu['icon'] = 'test_icon'
+        menu['name'] = 'test_name1'
+        menu['route'] = '/bbb'
+        menu['enable'] = true
+        menu['sequenceNumber'] = 55
+        menu['menuCode'] = '1'
+        def menuObj = JSONUtil.parse(post('/auth/menus', JSONUtil.toJSON(menu), HttpStatus.CREATED)
+            .getResponse().getContentAsString(), Map.class)
+        def id = menuObj.get('id')
+        menuObj = JSONUtil.parse(get('/auth/menus/' + id, HttpStatus.OK)
+            .getResponse().getContentAsString(), Map.class)
+        assert menuObj.get("icon") == 'test_icon'
+
+        menu['icon'] = 'test_icon_change'
+        menu['sequenceNumber'] = 88
+        menu['enable'] = false
+        put('/auth/menus/' + id, JSONUtil.toJSON(menu), HttpStatus.OK)
+        menuObj = JSONUtil.parse(get('/auth/menus/' + id, HttpStatus.OK)
+            .getResponse().getContentAsString(), Map.class)
+        assert false == menuObj.get('enable')
+        assert 88 == menuObj.get('sequenceNumber')
+
+        menu['enable'] = true
+        menu['sequenceNumber'] = 55
+        put('/auth/menus/' + id, JSONUtil.toJSON(menu), HttpStatus.OK)
+        menuObj = JSONUtil.parse(get('/auth/menus/' + id, HttpStatus.OK)
+            .getResponse().getContentAsString(), Map.class)
+        assert menuObj.get('enable')
+        assert 55 == menuObj.get('sequenceNumber')
     }
 
     @Test

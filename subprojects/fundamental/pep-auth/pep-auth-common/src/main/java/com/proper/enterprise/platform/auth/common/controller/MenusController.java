@@ -184,13 +184,13 @@ public class MenusController extends BaseController {
         private String route;
 
         @ApiModelProperty(name = "‍菜单状态", required = true)
-        private String enable;
+        private Boolean enable;
 
         @ApiModelProperty(name = "‍父节点ID", required = true)
         private String parentId;
 
         @ApiModelProperty(name = "‍菜单同级排序号", required = true)
-        private String sequenceNumber;
+        private Integer sequenceNumber;
 
         @ApiModelProperty(name = "‍菜单类型编码(0:应用/1:页面/2:功能)", required = true)
         private String menuCode;
@@ -219,11 +219,11 @@ public class MenusController extends BaseController {
             this.route = route;
         }
 
-        public String getEnable() {
+        public Boolean getEnable() {
             return enable;
         }
 
-        public void setEnable(String enable) {
+        public void setEnable(Boolean enable) {
             this.enable = enable;
         }
 
@@ -235,11 +235,11 @@ public class MenusController extends BaseController {
             this.parentId = parentId;
         }
 
-        public String getSequenceNumber() {
+        public Integer getSequenceNumber() {
             return sequenceNumber;
         }
 
-        public void setSequenceNumber(String sequenceNumber) {
+        public void setSequenceNumber(Integer sequenceNumber) {
             this.sequenceNumber = sequenceNumber;
         }
 

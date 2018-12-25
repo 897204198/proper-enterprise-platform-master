@@ -215,6 +215,37 @@ class ResourcesControllerTest extends AbstractJPATest {
     }
 
     @Test
+    void testResourceEnable() {
+        mockUser('test5', 't5', 'pwd', true)
+        def req = [:]
+        def list = ['test-c']
+        req['ids'] = list
+        req['enable'] = false
+        put('/auth/resources', JSONUtil.toJSON(req), HttpStatus.OK)
+        def resource = JSONUtil.parse(get('/auth/resources/test-c', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert false == resource.get('enable')
+        assert resource.get("url") == "/auth/test"
+
+        req['enable'] = true
+        put('/auth/resources', JSONUtil.toJSON(req), HttpStatus.OK)
+        resource = JSONUtil.parse(get('/auth/resources/test-c', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert resource.get('enable')
+        assert resource.get("url") == "/auth/test"
+
+        def resourceReq = resource
+        resourceReq['enable'] = false
+        put('/auth/resources/test-c', JSONUtil.toJSON(resourceReq), HttpStatus.OK)
+        resource = JSONUtil.parse(get('/auth/resources/test-c', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert false == resource.get('enable')
+
+        resourceReq['enable'] = true
+        put('/auth/resources/test-c', JSONUtil.toJSON(resourceReq), HttpStatus.OK)
+        resource = JSONUtil.parse(get('/auth/resources/test-c', HttpStatus.OK).getResponse().getContentAsString(), Map.class)
+        assert resource.get('enable')
+
+    }
+
+    @Test
     void testResourceType() {
         resourceType.getCatalog()
         resourceType.method().getCode()

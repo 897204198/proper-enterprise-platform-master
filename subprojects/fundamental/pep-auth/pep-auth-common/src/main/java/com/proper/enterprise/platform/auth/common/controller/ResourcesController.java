@@ -138,10 +138,10 @@ public class ResourcesController extends BaseController {
         private String url;
 
         @ApiModelProperty(name = "‍请求方法", required = true)
-        private String method;
+        private RequestMethod method;
 
         @ApiModelProperty(name = "‍资源状态", required = true)
-        private String enable;
+        private Boolean enable;
 
         @ApiModelProperty(name = "‍资源类型编码(0:方法)", required = true)
         private String resourceCode;
@@ -162,19 +162,19 @@ public class ResourcesController extends BaseController {
             this.url = url;
         }
 
-        public String getMethod() {
+        public RequestMethod getMethod() {
             return method;
         }
 
-        public void setMethod(String method) {
+        public void setMethod(RequestMethod method) {
             this.method = method;
         }
 
-        public String getEnable() {
+        public Boolean getEnable() {
             return enable;
         }
 
-        public void setEnable(String enable) {
+        public void setEnable(Boolean enable) {
             this.enable = enable;
         }
 
