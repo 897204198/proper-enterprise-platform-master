@@ -54,24 +54,20 @@ class BinlogExecutorTest extends AbstractJPATest {
     @Autowired
     private SearchConfigRepository searchConfigRepository
 
-    private String hostname = "127.0.0.1"
-
-    private int port = 3307
+    private BinaryLogClient client = new BinaryLogClient("127.0.0.1",
+                                                    3307,
+                                                "slave",
+                                                "testbinlog")
 
     private String schema = "pep_dev,pep_test"
-
-    private String username = "slave"
-
-    private String password = "testbinlog"
-
 
     @Test
     void testEventDataFormatFail() {
         BinlogExecutor binlogThread = new BinlogExecutor(mongoDataSyncService, searchConfigService, nativeRepository, mongoTemplate,
-            mongoSyncService, hostname, port, schema, username, password)
-        binlogThread.executor()
+            mongoSyncService, schema)
+        binlogThread.executor(client)
         sleep(3000)
-        List<BinaryLogClient.EventListener> eventListenerList = binlogThread.client.getEventListeners()
+        List<BinaryLogClient.EventListener> eventListenerList = client.getEventListeners()
 
         EventHeader header = new EventHeaderV4()
         header.setEventType(EventType.EXT_WRITE_ROWS)
@@ -112,10 +108,10 @@ class BinlogExecutorTest extends AbstractJPATest {
     @Test
     void testXid() {
         BinlogExecutor binlogThread = new BinlogExecutor(mongoDataSyncService, searchConfigService, nativeRepository, mongoTemplate,
-            mongoSyncService, hostname, port, schema, username, password)
-        binlogThread.executor()
+            mongoSyncService, schema)
+        binlogThread.executor(client)
         sleep(3000)
-        List<BinaryLogClient.EventListener> eventListenerList = binlogThread.client.getEventListeners()
+        List<BinaryLogClient.EventListener> eventListenerList = client.getEventListeners()
 
         EventHeader header = new EventHeaderV4()
         header.setEventType(EventType.XID)
@@ -141,10 +137,10 @@ class BinlogExecutorTest extends AbstractJPATest {
         queryCache.clear()
 
         BinlogExecutor binlogThread = new BinlogExecutor(mongoDataSyncService, searchConfigService, nativeRepository, mongoTemplate,
-            mongoSyncService, hostname, port, schema, username, password)
-        binlogThread.executor()
+            mongoSyncService, schema)
+        binlogThread.executor(client)
         sleep(3000)
-        List<BinaryLogClient.EventListener> eventListenerList = binlogThread.client.getEventListeners()
+        List<BinaryLogClient.EventListener> eventListenerList = client.getEventListeners()
 
         EventHeader header = new EventHeaderV4()
         header.setEventType(EventType.TABLE_MAP)
@@ -177,10 +173,10 @@ class BinlogExecutorTest extends AbstractJPATest {
         syncMongoRepository.deleteAll()
 
         BinlogExecutor binlogThread = new BinlogExecutor(mongoDataSyncService, searchConfigService, nativeRepository, mongoTemplate,
-            mongoSyncService, hostname, port, schema, username, password)
-        binlogThread.executor()
+            mongoSyncService, schema)
+        binlogThread.executor(client)
         sleep(3000)
-        List<BinaryLogClient.EventListener> eventListenerList = binlogThread.client.getEventListeners()
+        List<BinaryLogClient.EventListener> eventListenerList = client.getEventListeners()
 
         // init tableobject
         TableObject tableObject = new TableObject()

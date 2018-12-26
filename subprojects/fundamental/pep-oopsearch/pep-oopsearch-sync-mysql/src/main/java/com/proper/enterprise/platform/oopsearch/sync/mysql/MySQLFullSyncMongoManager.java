@@ -19,9 +19,6 @@ public class MySQLFullSyncMongoManager implements InitializingBean {
     @Autowired
     private MySQLMongoDataSync mySQLMongoDataSync;
 
-    @Autowired
-    private BinlogMonitor binlogMonitor;
-
     @Override
     public void afterPropertiesSet() {
         // 初始同步mysql数据到mongodb中

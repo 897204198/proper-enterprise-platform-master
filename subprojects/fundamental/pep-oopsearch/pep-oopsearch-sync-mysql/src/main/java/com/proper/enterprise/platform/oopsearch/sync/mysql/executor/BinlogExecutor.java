@@ -30,8 +30,6 @@ public class BinlogExecutor {
 
     private SearchConfigService searchConfigService;
 
-    private BinaryLogClient client;
-
     private NativeRepository nativeRepository;
 
     private List<TableObject> tableObjects = new ArrayList<>();
@@ -42,39 +40,20 @@ public class BinlogExecutor {
 
     private SyncCacheService mongoSyncService;
 
-    private String hostname;
-
-    private int port;
-
     private Set<String> schemaSet;
 
-    private String username;
-
-    private String password;
-
     public BinlogExecutor(MySQLMongoDataSync mySQLMongoDataSync, SearchConfigService searchConfigService, NativeRepository nativeRepository,
-                          MongoTemplate mongoTemplate, SyncCacheService mongoSyncService, String hostname,
-                          int port, String schema, String username, String password) {
+                          MongoTemplate mongoTemplate, SyncCacheService mongoSyncService, String schema) {
         this.searchConfigService = searchConfigService;
         this.mySQLMongoDataSync = mySQLMongoDataSync;
         this.nativeRepository = nativeRepository;
         this.mongoTemplate = mongoTemplate;
         this.mongoSyncService = mongoSyncService;
-        this.hostname = hostname;
-        this.port = port;
         String[] arr = schema.split(",");
         this.schemaSet = new HashSet<>(Arrays.asList(arr));
-
-        this.username = username;
-        this.password = password;
     }
 
-    public void executor() {
-        initMySQLClient();
-    }
-
-    private void initMySQLClient() {
-        client = new BinaryLogClient(this.hostname, this.port, this.username, this.password);
+    public void executor(BinaryLogClient client) {
         client.registerEventListener(new BinaryLogClient.EventListener() {
             @Override
             public void onEvent(Event event) {
@@ -103,7 +82,6 @@ public class BinlogExecutor {
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
         }
-
     }
 
     private void xid() {
