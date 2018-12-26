@@ -4,7 +4,8 @@ dependencies {
 
                    api libraries.flowable_engine
 
-        implementation libraries.flowable_idm_spring_configurator,
+        implementation libraries.flowable_http,
+                       libraries.flowable_idm_spring_configurator,
                        libraries.flowable_spring_boot_starter_process,
                        libraries.flowable_spring_boot_starter_process_rest,
                        libraries.flowable_spring_configurator,

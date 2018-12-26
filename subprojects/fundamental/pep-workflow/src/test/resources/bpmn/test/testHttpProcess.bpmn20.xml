@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="testProcess" name="测试流程" isExecutable="true">
+    <startEvent id="startEvent1"></startEvent>
+    <sequenceFlow id="sid-689E5872-9C4F-4C3D-AB6F-1C241F389EDB" sourceRef="startEvent1" targetRef="sid-60CD76AA-6776-4423-A64F-8675BF7B7D85"></sequenceFlow>
+    <serviceTask id="sid-60CD76AA-6776-4423-A64F-8675BF7B7D85" flowable:type="http">
+      <extensionElements>
+        <flowable:field name="requestMethod">
+          <flowable:string><![CDATA[GET]]></flowable:string>
+        </flowable:field>
+        <flowable:field name="requestUrl">
+          <flowable:string><![CDATA[https://api.exmail.qq.com/cgi-bin/gettoken?corpid=wm49756ac8386a31d5&corpsecret=fg9_Xjj7yaounJkKTEjCyQ2Y9EmVcYHG1SELLLuWnWCCKeuI-_Ew_583DPxIHwbF]]></flowable:string>
+        </flowable:field>
+        <flowable:field name="responseVariableName">
+          <flowable:string><![CDATA[tencentMailRes]]></flowable:string>
+        </flowable:field>
+        <flowable:field name="saveRequestVariables">
+          <flowable:string><![CDATA[true]]></flowable:string>
+        </flowable:field>
+        <flowable:field name="saveResponseParameters">
+          <flowable:string><![CDATA[true]]></flowable:string>
+        </flowable:field>
+      </extensionElements>
+    </serviceTask>
+    <endEvent id="sid-97E143B9-E9B2-4E89-B608-9357C57ADE5A"></endEvent>
+    <sequenceFlow id="sid-293D5237-6684-4A89-B3D6-5DAD74D4329B" sourceRef="sid-60CD76AA-6776-4423-A64F-8675BF7B7D85" targetRef="sid-97E143B9-E9B2-4E89-B608-9357C57ADE5A"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_testProcess">
+    <bpmndi:BPMNPlane bpmnElement="testProcess" id="BPMNPlane_testProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-60CD76AA-6776-4423-A64F-8675BF7B7D85" id="BPMNShape_sid-60CD76AA-6776-4423-A64F-8675BF7B7D85">
+        <omgdc:Bounds height="80.0" width="100.0" x="175.0" y="138.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-97E143B9-E9B2-4E89-B608-9357C57ADE5A" id="BPMNShape_sid-97E143B9-E9B2-4E89-B608-9357C57ADE5A">
+        <omgdc:Bounds height="28.0" width="28.0" x="320.0" y="164.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-293D5237-6684-4A89-B3D6-5DAD74D4329B" id="BPMNEdge_sid-293D5237-6684-4A89-B3D6-5DAD74D4329B">
+        <omgdi:waypoint x="275.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-689E5872-9C4F-4C3D-AB6F-1C241F389EDB" id="BPMNEdge_sid-689E5872-9C4F-4C3D-AB6F-1C241F389EDB">
+        <omgdi:waypoint x="130.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="175.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
