@@ -24,16 +24,16 @@ public class NoticeServerPushConfiguration {
     }
 
     @Bean
-    public CronTriggerFactoryBean saveMsgStatisticInfoScheduleTrigger(@Qualifier("pushStatisticTask")
-                                                                          JobDetail pushStatisticTask) {
+    public CronTriggerFactoryBean saveMsgStatisticInfoScheduleTrigger(@Qualifier("pushStatisticTaskDetail")
+                                                                          JobDetail pushStatisticTaskDetail) {
         CronTriggerFactoryBean noticeStatusSyncPending = new CronTriggerFactoryBean();
-        noticeStatusSyncPending.setJobDetail(pushStatisticTask);
+        noticeStatusSyncPending.setJobDetail(pushStatisticTaskDetail);
         noticeStatusSyncPending.setCronExpression("0 0 3 * * ?");
         return noticeStatusSyncPending;
     }
 
     @Bean
-    public PEPMethodInvokingJobDetailFactoryBean pushStatisticTask() {
+    public PEPMethodInvokingJobDetailFactoryBean pushStatisticTaskDetail() {
         PEPMethodInvokingJobDetailFactoryBean noticeStatusSyncScheduler = new PEPMethodInvokingJobDetailFactoryBean();
         noticeStatusSyncScheduler.setTargetBeanName("pushStatisticTask");
         noticeStatusSyncScheduler.setTargetMethod("saveYesterdayPushStatistic");

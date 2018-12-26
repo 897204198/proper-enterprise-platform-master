@@ -115,6 +115,9 @@ public abstract class AbstractPushSendSupport {
             readOnlyNotice.setAllNoticeExtMsg(new HashMap<>(16));
         }
         Map customMap = readOnlyNotice.getNoticeExtMsgMap();
+        if (null == customMap) {
+            customMap = new HashMap(16);
+        }
         customMap.put("_proper_title", readOnlyNotice.getTitle());
         customMap.put("_proper_content", readOnlyNotice.getContent());
         readOnlyNotice.setAllNoticeExtMsg(customMap);

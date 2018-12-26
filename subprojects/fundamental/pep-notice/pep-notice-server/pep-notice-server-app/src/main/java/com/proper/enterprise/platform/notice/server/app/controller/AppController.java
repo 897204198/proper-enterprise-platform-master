@@ -46,7 +46,7 @@ public class AppController extends BaseController {
                                          @ApiParam("‍‍‍‍‍‍‍‍‍‍‍‍是否启用 ") Boolean enable) {
 
 
-        return responseOfGet(appDaoService.findAll(appKey, appName,
+        return responseOfGet(appDaoService.findAllWithNoticeTypesAreConf(appKey, appName,
             appDesc, enable, getPageRequest(new Sort(Sort.Direction.DESC, "createTime"))));
     }
 
