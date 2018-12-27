@@ -17,4 +17,12 @@ public interface RuleRepository extends BaseRepository<RuleEntity, String> {
     @CacheQuery
     Optional<RuleEntity> findById(String id);
 
+    /**
+     * 获取角色
+     * @param catalogue 目录
+     * @return 角色集合
+     */
+    @CacheQuery
+    Iterable<RuleEntity> findAllByCatalogue(String catalogue);
+
 }
