@@ -5,6 +5,9 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+
 class HttpClientSpec extends Specification {
 
     def static final TEAMCITY = 'https://cloud.propersoft.cn/teamcities'
@@ -36,23 +39,29 @@ class HttpClientSpec extends Specification {
     }
 
     def "Async request with callback"() {
+        CountDownLatch latch = new CountDownLatch(3)
+
         def cb = new Callback() {
             @Override
             void onSuccess(ResponseEntity<byte[]> responseEntity) {
                 println 'success'
                 println responseEntity
+                latch.countDown()
             }
 
             @Override
             void onError(IOException ioe) {
                 println 'error'
                 println ioe
+                latch.countDown()
             }
         }
 
         expect:
         HttpClient.post("$TEAMCITY/login.html", MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}', cb)
-        HttpClient.post('https://www.google.com', MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}', cb)
+        HttpClient.post('https://www.google.com', MediaType.APPLICATION_FORM_URLENCODED, '{"user":"123"}', 200, cb)
+        HttpClient.get('http://localhost:9090/pep', 200, cb)
+        latch.await(1, TimeUnit.SECONDS)
     }
 
     def "test getFormUrlEncodedData"() {

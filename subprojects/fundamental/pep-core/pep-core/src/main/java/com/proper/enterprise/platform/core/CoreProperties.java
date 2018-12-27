@@ -77,6 +77,11 @@ public class CoreProperties {
      */
     private String gzipExcludePathPatterns;
 
+    /**
+     * 搜集平台统计信息站点地址
+     */
+    private String statSite = "https://cloud.propersoft.cn/requesturl";
+
     public String getCharset() {
         return charset;
     }
@@ -187,5 +192,13 @@ public class CoreProperties {
 
     public void setGzipExcludePathPatterns(String gzipExcludePathPatterns) {
         this.gzipExcludePathPatterns = gzipExcludePathPatterns;
+    }
+
+    public String getStatSite() {
+        return statSite;
+    }
+
+    public void setStatSite(String statSite) {
+        this.statSite = statSite;
     }
 }
