@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/modeler")
-@Api("/modeler")
+@RequestMapping("/workflow/service/app/rest/ext/modeler")
+@Api("/workflow/service/app/rest/ext/modeler")
 public class ModelerController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/candidate/{candidateType}")
