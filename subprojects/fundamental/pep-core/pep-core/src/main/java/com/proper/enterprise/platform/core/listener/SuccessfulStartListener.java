@@ -47,8 +47,16 @@ class SuccessfulStartListener implements ApplicationListener<ContextRefreshedEve
         sendStatInfo(profile, start, null);
 
         PrintStream ps = System.out;
+        String success = "|| Propersoft Enterprise Platform (v" + PEPVersion.getVersion() + ") Started Successfully! ||";
+        int len = success.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            sb.append("=");
+        }
         ps.println();
-        ps.println("Propersoft Enterprise Platform (v" + PEPVersion.getVersion() + ") Started Successfully!");
+        ps.println(sb.toString());
+        ps.println(success);
+        ps.println(sb.toString());
         ps.println();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> sendStatInfo(profile, start, System.currentTimeMillis())));
