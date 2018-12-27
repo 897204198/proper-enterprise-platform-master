@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service("variableTimeHandler")
+@Deprecated
 public class VariableTimeHandler {
 
     /**

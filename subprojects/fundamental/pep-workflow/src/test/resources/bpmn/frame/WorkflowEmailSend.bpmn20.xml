@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="WorkflowEmailSend" name="WorkflowEmailSend" isExecutable="true">
+    <startEvent id="startEvent1"></startEvent>
+    <scriptTask id="sid-26B53552-D29A-489C-9195-28B88BFA5C33" name="邮件发送1" flowable:autoStoreVariables="false">
+      <script><![CDATA[#{workflowMailSenderImpl.send("Wf@propersoft.cn,Wf@propersoft.cn","testSendMailCode",execution)}]]></script>
+    </scriptTask>
+    <sequenceFlow id="sid-B402A80E-C972-413B-8286-847F42669811" sourceRef="startEvent1" targetRef="sid-26B53552-D29A-489C-9195-28B88BFA5C33"></sequenceFlow>
+    <endEvent id="sid-9D4DB798-86F9-4A28-9040-EF699571F58E"></endEvent>
+    <sequenceFlow id="sid-D9658FBD-06FD-4168-8B73-483D2E1B9130" sourceRef="sid-26B53552-D29A-489C-9195-28B88BFA5C33" targetRef="sid-792D2F35-B15D-438E-98F5-2186B66687BE"></sequenceFlow>
+    <scriptTask id="sid-792D2F35-B15D-438E-98F5-2186B66687BE" name="邮件发送2" flowable:autoStoreVariables="false">
+      <script><![CDATA[#{workflowMailSenderImpl.send("Wf@propersoft.cn","Wf@propersoft.cn,Wf@propersoft.cn","testSendMailCode",execution)}]]></script>
+    </scriptTask>
+    <scriptTask id="sid-CBB15B22-BAE2-4EFB-8EFA-11FF4E784DBD" name="邮件发送3" flowable:autoStoreVariables="false">
+      <script><![CDATA[#{workflowMailSenderImpl.send("Wf@propersoft.cn","Wf@propersoft.cn","Wf@propersoft.cn,Wf@propersoft.cn","testSendMailCode",execution)}]]></script>
+    </scriptTask>
+    <sequenceFlow id="sid-71495DEA-CA47-4DF4-9F5D-9B5E79BC8D5C" sourceRef="sid-792D2F35-B15D-438E-98F5-2186B66687BE" targetRef="sid-CBB15B22-BAE2-4EFB-8EFA-11FF4E784DBD"></sequenceFlow>
+    <scriptTask id="sid-3EF79159-8E2B-4894-965F-B8BB3B7C2FD1" name="邮件发送4" flowable:autoStoreVariables="false">
+      <script><![CDATA[#{workflowMailSenderImpl.send("Wf@propersoft.cn",null,null,"testSendMailCode",execution,attachment1,attachment2)}]]></script>
+    </scriptTask>
+    <sequenceFlow id="sid-AE34A71F-C6F7-4F7C-9865-CF88783F3EB6" sourceRef="sid-CBB15B22-BAE2-4EFB-8EFA-11FF4E784DBD" targetRef="sid-3EF79159-8E2B-4894-965F-B8BB3B7C2FD1"></sequenceFlow>
+    <sequenceFlow id="sid-75C74F30-C0F6-4320-9DAC-FB00C5D49E09" sourceRef="sid-3EF79159-8E2B-4894-965F-B8BB3B7C2FD1" targetRef="sid-9D4DB798-86F9-4A28-9040-EF699571F58E"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_WorkflowEmailSend">
+    <bpmndi:BPMNPlane bpmnElement="WorkflowEmailSend" id="BPMNPlane_WorkflowEmailSend">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-26B53552-D29A-489C-9195-28B88BFA5C33" id="BPMNShape_sid-26B53552-D29A-489C-9195-28B88BFA5C33">
+        <omgdc:Bounds height="80.0" width="100.0" x="199.0" y="138.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-9D4DB798-86F9-4A28-9040-EF699571F58E" id="BPMNShape_sid-9D4DB798-86F9-4A28-9040-EF699571F58E">
+        <omgdc:Bounds height="28.0" width="28.0" x="795.0" y="164.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-792D2F35-B15D-438E-98F5-2186B66687BE" id="BPMNShape_sid-792D2F35-B15D-438E-98F5-2186B66687BE">
+        <omgdc:Bounds height="80.0" width="100.0" x="345.0" y="138.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-CBB15B22-BAE2-4EFB-8EFA-11FF4E784DBD" id="BPMNShape_sid-CBB15B22-BAE2-4EFB-8EFA-11FF4E784DBD">
+        <omgdc:Bounds height="80.0" width="100.0" x="495.0" y="138.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-3EF79159-8E2B-4894-965F-B8BB3B7C2FD1" id="BPMNShape_sid-3EF79159-8E2B-4894-965F-B8BB3B7C2FD1">
+        <omgdc:Bounds height="80.0" width="100.0" x="645.0" y="138.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-D9658FBD-06FD-4168-8B73-483D2E1B9130" id="BPMNEdge_sid-D9658FBD-06FD-4168-8B73-483D2E1B9130">
+        <omgdi:waypoint x="299.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="345.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-75C74F30-C0F6-4320-9DAC-FB00C5D49E09" id="BPMNEdge_sid-75C74F30-C0F6-4320-9DAC-FB00C5D49E09">
+        <omgdi:waypoint x="745.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="795.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-B402A80E-C972-413B-8286-847F42669811" id="BPMNEdge_sid-B402A80E-C972-413B-8286-847F42669811">
+        <omgdi:waypoint x="130.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="199.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-AE34A71F-C6F7-4F7C-9865-CF88783F3EB6" id="BPMNEdge_sid-AE34A71F-C6F7-4F7C-9865-CF88783F3EB6">
+        <omgdi:waypoint x="595.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="645.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-71495DEA-CA47-4DF4-9F5D-9B5E79BC8D5C" id="BPMNEdge_sid-71495DEA-CA47-4DF4-9F5D-9B5E79BC8D5C">
+        <omgdi:waypoint x="445.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="495.0" y="178.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

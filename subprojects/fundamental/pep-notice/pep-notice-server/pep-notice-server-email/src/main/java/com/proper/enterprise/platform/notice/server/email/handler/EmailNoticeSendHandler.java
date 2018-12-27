@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.notice.server.email.handler;
 
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 @Service("emailNoticeSender")
@@ -77,12 +79,14 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
                     helper.setBcc(bcc.split(","));
                 }
                 // 获取附件
-                String attachmentId = (String) notice.getTargetExtMsgMap().get("attachmentId");
-                if (StringUtil.isNotBlank(attachmentId)) {
-                    File file = fileService.findById(attachmentId);
-                    if (null != file) {
-                        InputStream attachmentInputStream = fileService.download(attachmentId);
-                        helper.addAttachment(file.getFileName(),  new ByteArrayResource(IOUtils.toByteArray(attachmentInputStream)));
+                List<String> attachmentIds = (List<String>) notice.getTargetExtMsgMap().get("attachmentIds");
+                if (CollectionUtil.isNotEmpty(attachmentIds)) {
+                    for (String attachmentId : attachmentIds) {
+                        File file = fileService.findById(attachmentId);
+                        if (null != file) {
+                            InputStream attachmentInputStream = fileService.download(attachmentId);
+                            helper.addAttachment(file.getFileName(), new ByteArrayResource(IOUtils.toByteArray(attachmentInputStream)));
+                        }
                     }
                 }
             }

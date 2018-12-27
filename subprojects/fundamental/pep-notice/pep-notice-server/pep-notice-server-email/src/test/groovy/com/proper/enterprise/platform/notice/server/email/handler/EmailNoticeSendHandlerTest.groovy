@@ -77,7 +77,8 @@ class EmailNoticeSendHandlerTest extends AbstractJPATest {
             noticeOperation2.setTargetExtMsg('cc', '抄送<test2@test.cn>')
             noticeOperation2.setTargetExtMsg('bcc', '密送<test2@test.cn>')
             noticeOperation2.setTargetExtMsg('replyTo', '回复到<test@test.cn>')
-            noticeOperation2.setTargetExtMsg('attachmentId', fileVO2.getId())
+            def fileIds = [fileVO2.getId()]
+            noticeOperation2.setTargetExtMsg('attachmentIds', fileIds)
             noticeOperation2.setNoticeExtMsg('from', '测试邮箱<test2@test.cn>')
             //设置发送时间
             noticeOperation2.setNoticeExtMsg('sentDate', '2017-12-29T10:23:23.998Z')
@@ -89,7 +90,8 @@ class EmailNoticeSendHandlerTest extends AbstractJPATest {
             Notice noticeOperation1 = new MockNotice()
             noticeOperation1.setAppKey('pep')
             noticeOperation1.setTargetTo('收件人<test2@test.cn>')
-            noticeOperation1.setTargetExtMsg('attachmentId', fileVO.getId())
+            def attachmentIds = [fileVO.getId(), fileVO2.getId()]
+            noticeOperation1.setTargetExtMsg('attachmentIds', attachmentIds)
             noticeOperation1.setTitle('测试邮件')
             noticeOperation1.setContent('测试邮件, 请勿回复')
             emailNoticeSender.send(noticeOperation1)

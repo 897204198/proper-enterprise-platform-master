@@ -16,12 +16,17 @@ dependencies {
         implementation project(':pep-auth-common-jpa'),
                        project(':pep-cache-api'),
                        project(':pep-core-mongo'),
-                       project(':pep-notice-client')
+                       project(':pep-notice-client'),
+                       project(':pep-template')
 
            runtimeOnly libraries.commons_fileupload,
                        libraries.flowable_web_designer
 
-    testImplementation project(':pep-test')
+    testImplementation project(':pep-test'),
+                       project(':pep-file'),
+                       project(':pep-dfs-mongo'),
+                       project(':pep-notice-server-app'),
+                       project(':pep-notice-server-email')
 
        testRuntimeOnly project(':pep-auth-jwt'),
                        project(':pep-cache-ehcache')
