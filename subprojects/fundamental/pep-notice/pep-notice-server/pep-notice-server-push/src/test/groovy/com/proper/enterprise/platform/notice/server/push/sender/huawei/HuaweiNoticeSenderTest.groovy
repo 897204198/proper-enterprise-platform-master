@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.notice.server.push.sender.huawei
 import com.proper.enterprise.platform.notice.server.api.configurator.NoticeConfigurator
 import com.proper.enterprise.platform.notice.server.api.handler.NoticeSendHandler
 import com.proper.enterprise.platform.notice.server.api.model.BusinessNoticeResult
+import com.proper.enterprise.platform.notice.server.api.sender.NoticeSender
 import com.proper.enterprise.platform.notice.server.app.dao.entity.NoticeEntity
 import com.proper.enterprise.platform.notice.server.app.dao.repository.NoticeRepository
 import com.proper.enterprise.platform.notice.server.app.scheduler.NoticeStatusSyncScheduler
@@ -14,13 +15,15 @@ import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum
 import com.proper.enterprise.platform.test.AbstractJPATest
-import com.proper.enterprise.platform.test.annotation.NoTx
 import org.apache.groovy.dateutil.extensions.DateUtilExtensions
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+
+import java.time.Duration
+import java.time.LocalDateTime
 
 class HuaweiNoticeSenderTest extends AbstractJPATest {
 
@@ -35,6 +38,9 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
 
     @Autowired
     private NoticeStatusSyncScheduler noticeStatusSyncScheduler
+
+    @Autowired
+    private NoticeSender noticeSendService;
 
     @Test
     void testHuaweiPush() {
@@ -51,7 +57,7 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
         notice.setTargetTo(HuaweiConstant.TARGET_TO)
         notice.setAppKey('MobileOADev')
         notice.setTitle(System.getProperty('os.name'))
-        notice.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${DateUtilExtensions.format(new Date(),'yyyy年MM月dd日')} in test case")
+        notice.setContent("${System.getProperty('os.name')} ${System.getProperty('os.arch')} push this notification to test Huawei push app at ${DateUtilExtensions.format(new Date(), 'yyyy年MM月dd日')} in test case")
 
         notice.setTargetExtMsg('pushChannel', 'HUAWEI')
 
@@ -164,7 +170,6 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
     }
 
     @Test
-    @NoTx
     void serviceUnavailableTest() {
         MockRetryNotice mockRetryNotice = new MockRetryNotice()
         ResponseEntity<byte[]> res = new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE)
@@ -192,8 +197,12 @@ class HuaweiNoticeSenderTest extends AbstractJPATest {
         assert noticeRepository.findById(id).get().getStatus() == NoticeStatus.RETRY
         assert noticeRepository.findById(id).get().getRetryCount() == 0
 
-        noticeStatusSyncScheduler.syncRetry()
-        assert noticeRepository.findById(id).get().getRetryCount() == 1
+        noticeSendService.retryNoticesAsync(LocalDateTime.now().minus(Duration.ofMinutes(10)), LocalDateTime.now());
+        waitExecutorDone()
+
+        assert noticeRepository
+            .findAll(id, null, null, null, null, null, null, NoticeStatus.RETRY).size() == 1
+
     }
 
 }
