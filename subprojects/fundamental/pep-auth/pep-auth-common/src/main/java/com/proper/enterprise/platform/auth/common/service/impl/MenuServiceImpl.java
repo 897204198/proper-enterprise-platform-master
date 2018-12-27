@@ -264,6 +264,18 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public Boolean deleteResourceOfMenu(String menuId, String resourceId) {
+        Resource resource = resourceDao.findById(resourceId);
+
+        Menu menus = this.get(menuId);
+        if (menus != null) {
+            menus.remove(resource);
+        }
+        resourceDao.delete(resource);
+        return true;
+    }
+
+    @Override
     public Collection<? extends Resource> getMenuResources(String menuId, EnableEnum menuEnable, EnableEnum resourceEnable) {
         Menu menu = this.get(menuId);
         if (menu != null) {

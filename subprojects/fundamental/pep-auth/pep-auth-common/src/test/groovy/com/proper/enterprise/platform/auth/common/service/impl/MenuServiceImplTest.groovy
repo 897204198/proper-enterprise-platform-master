@@ -210,6 +210,22 @@ class MenuServiceImplTest extends AbstractJPATest {
     }
 
     @Test
+    void testDeleteResourceOfMenu() {
+        def menu = menuInit()
+        ResourceEntity resourceEntity = new ResourceEntity()
+        resourceEntity.setName('测试删除资源')
+        resourceEntity.setUrl('/test/test')
+        resourceEntity.setResourceCode('testCode')
+        resourceEntity.setIdentifier('identifier2')
+        def resource = menuService.addResourceOfMenu(menu.id, resourceEntity)
+        assert '测试删除资源' == resource.name
+        menuService.deleteResourceOfMenu(menu.id, resource.id)
+        def resources = menuService.getMenuResources(menu.id, EnableEnum.ALL, EnableEnum.ALL)
+        assert resources.size() == 1
+        assert resources[0].name != '测试删除资源'
+    }
+
+    @Test
     void test_GetMenuResources() {
         def menu = menuInit()
         def resources = menuService.getMenuResources(menu.id, EnableEnum.ENABLE, EnableEnum.ENABLE)

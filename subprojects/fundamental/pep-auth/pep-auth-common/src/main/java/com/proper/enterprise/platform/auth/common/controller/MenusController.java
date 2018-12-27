@@ -142,6 +142,14 @@ public class MenusController extends BaseController {
         return responseOfPost(service.addResourceOfMenu(menuId, resourceReq), ResourceVO.class, ResourceVO.Single.class);
     }
 
+    @DeleteMapping(path = "/{menuId}/resources/{resourceId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("‍删除资源")
+    public ResponseEntity deleteMenuResource(@ApiParam(value = "‍菜单的id", required = true) @PathVariable String menuId,
+                                             @ApiParam(value = "‍资源的id", required = true) @PathVariable String resourceId) {
+        return responseOfDelete(service.deleteResourceOfMenu(menuId, resourceId));
+    }
+
     public static class MenuReqMap {
 
         @ApiModelProperty(name = "‍ID列表", required = true)

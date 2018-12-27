@@ -139,6 +139,14 @@ public interface MenuService {
     Resource addResourceOfMenu(String menuId, Resource resourceReq);
 
     /**
+     * 菜单删除资源
+     * @param menuId     菜单Id
+     * @param resourceId 资源Id
+     * @return
+     */
+    Boolean deleteResourceOfMenu(String menuId, String resourceId);
+
+    /**
      * 获取指定菜单资源集合
      *
      * @param menuId 菜单ID

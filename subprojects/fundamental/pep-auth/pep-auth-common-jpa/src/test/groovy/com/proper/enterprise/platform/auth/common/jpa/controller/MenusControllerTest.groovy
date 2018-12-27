@@ -361,6 +361,35 @@ class MenusControllerTest extends AbstractJPATest {
         }
     }
 
+    @Test
+    void testMenuResourcesDelete() {
+        mockUser('test1', 't1', 'pwd', true)
+
+        ResourceEntity resourceEntity = new ResourceEntity()
+        resourceEntity.addURL("/testMenuResource/delete")
+        resourceEntity.setName("MenuResourcesDelete")
+        resourceEntity.setMethod(RequestMethod.DELETE)
+        resourceEntity.setEnable(true)
+        resourceEntity = resourceService.save(resourceEntity)
+
+        MenuEntity menuEntity = new MenuEntity()
+        menuEntity.setId("tmrDelete")
+        menuEntity.setName("test_menu_resource_delete")
+        menuEntity.setEnable(true)
+        menuEntity.setIcon('test_icona')
+        menuEntity.setSequenceNumber(50)
+        menuEntity.setRoute("/testMenuResource")
+
+        menuEntity.add(resourceEntity)
+        menuEntity = menuRepository.save(menuEntity)
+
+        def resBefore = JSONUtil.parse(get('/auth/menus/' + menuEntity.getId() +'/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+
+        delete('/auth/menus/' + menuEntity.getId() + '/resources/' + resourceEntity.getId(), HttpStatus.NO_CONTENT)
+        def resAfter = JSONUtil.parse(get('/auth/menus/' + menuEntity.getId() +'/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert 1 == resBefore.size() - resAfter.size()
+    }
+
     @Sql("/com/proper/enterprise/platform/auth/common/jpa/datadics.sql")
     @Test
     void testMenuType() {
