@@ -48,8 +48,6 @@ public class NoticeSendServiceImpl {
     @Autowired
     private UserService userService;
 
-    private static final int VAR200 = 200;
-
     public void sendNoticeChannel(String fromUserId, Set<String> toUserIds, String code, Map<String, Object>
         templateParams, Map<String, Object> custom) {
         toUserIds = checkUserNull(toUserIds);
@@ -87,6 +85,18 @@ public class NoticeSendServiceImpl {
                                   Map<String, Object> custom,
                                   NoticeType noticeType) {
         Collection<? extends User> users = userService.getUsersByIds(new ArrayList<>(toUserIds));
+        this.sendNoticeChannel(fromUserId, toUserIds, noticeSetMap, title, content, custom, noticeType, users, true);
+    }
+
+    public NoticeRequest sendNoticeChannel(String fromUserId,
+                                           Set<String> toUserIds,
+                                           Map<String, NoticeSetDocument> noticeSetMap,
+                                           String title,
+                                           String content,
+                                           Map<String, Object> custom,
+                                           NoticeType noticeType,
+                                           Collection<? extends User> users,
+                                           Boolean sender) {
         NoticeCollector noticeCollector = NoticeCollectorFactory.create(noticeType);
         NoticeDocument noticeDocument = this.packageNoticeDocument(fromUserId, toUserIds, custom, noticeType, title, content);
         noticeCollector.addNoticeDocument(noticeDocument);
@@ -94,8 +104,13 @@ public class NoticeSendServiceImpl {
         analysis(noticeDocument, users);
         NoticeRequest noticeVO = this.saveNotice(noticeDocument);
         if (!NoticeAnalysisUtil.isNecessaryResult(noticeDocument)) {
-            accessNoticeServer(noticeVO);
+            if (sender) {
+                accessNoticeServer(noticeVO);
+            } else {
+                return noticeVO;
+            }
         }
+        return null;
     }
 
     private void analysis(NoticeDocument noticeDocument, Collection<? extends User> users) {
@@ -154,16 +169,20 @@ public class NoticeSendServiceImpl {
         noticeMsgRepository.save(noticeDocument);
     }
 
-    private void accessNoticeServer(NoticeRequest noticeModel) {
+    public void accessNoticeServer(NoticeRequest noticeModel) {
+        String noticeServerToken = null;
+        DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "TOKEN");
+        if (dataDic != null) {
+            noticeServerToken = dataDic.getName();
+        }
+        accessNoticeServer(noticeModel, noticeServerToken);
+    }
+
+    public void accessNoticeServer(NoticeRequest noticeModel, String noticeServerToken) {
         String noticeServerUrl = null;
         DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "URL");
         if (dataDic != null) {
             noticeServerUrl = dataDic.getName();
-        }
-        String noticeServerToken = null;
-        dataDic = DataDicUtil.get("NOTICE_SERVER", "TOKEN");
-        if (dataDic != null) {
-            noticeServerToken = dataDic.getName();
         }
         try {
             String data = JSONUtil.toJSON(noticeModel);
@@ -172,7 +191,7 @@ public class NoticeSendServiceImpl {
                 + "/notice/server/send?access_token="
                 + noticeServerToken, MediaType.APPLICATION_JSON, data);
             if (HttpStatus.CREATED != response.getStatusCode()) {
-                String str = StringUtil.toEncodedString(response.getBody());
+                String str = "[" + response.getStatusCode() + "]" + StringUtil.toEncodedString(response.getBody());
                 this.updateNotice(noticeModel.getBatchId(), str);
             }
         } catch (Exception e) {

@@ -12,6 +12,10 @@ import com.proper.enterprise.platform.notice.repository.NoticeSetRepository
 import com.proper.enterprise.platform.notice.repository.PushDeviceRepository
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType
 import com.proper.enterprise.platform.notice.service.impl.NoticeSendServiceImpl
+import com.proper.enterprise.platform.sys.datadic.DataDic
+import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity
+import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum
+import com.proper.enterprise.platform.sys.datadic.service.DataDicService
 import com.proper.enterprise.platform.template.entity.TemplateEntity
 import com.proper.enterprise.platform.template.repository.TemplateRepository
 import com.proper.enterprise.platform.template.vo.TemplateDetailVO
@@ -41,10 +45,13 @@ class NoticeSenderImplTest extends AbstractJPATest {
     TemplateRepository templateRepository
 
     @Autowired
-    NoticeSendServiceImpl noticeSendService;
+    NoticeSendServiceImpl noticeSendService
 
     @Autowired
     PushDeviceRepository deviceRepository
+
+    @Autowired
+    DataDicService dataDicService
 
     @Test
     void sendNoticeSingle() {
@@ -153,14 +160,13 @@ class NoticeSenderImplTest extends AbstractJPATest {
 
         noticeSendService.sendNoticeChannel(null, toUserIds, noticeSetMap, "title", "content", custom, NoticeType.PUSH)
         result = noticeMsgRepository.findAll()
-        assert result.get(0).getAnalysisResult() == AnalysisResult.ERROR
+        assert result.get(0).getAnalysisResult() == AnalysisResult.PARTLY
         assert result.get(0).getTargets().size() == 1
         assert result.get(0).getTargets().get(0).id == "test1"
         assert result.get(0).getTargets().get(0).name == "test1"
         assert result.get(0).getUsers().size() == 2
-        assert result.get(0).getNotes().size() == 2
+        assert result.get(0).getNotes().size() == 1
         assert result.get(0).getNotes().contains("test2 is missing device info, please re login to the app.")
-        assert result.get(0).getNotes().contains("The notice server url 'Not Configured' configuration error. ")
         noticeMsgRepository.deleteAll()
     }
 
@@ -221,6 +227,32 @@ class NoticeSenderImplTest extends AbstractJPATest {
         details.add(detail3)
         templateDocument.details = details
         templateRepository.save(templateDocument)
+
+        DataDic dataDic = dataDicService.get("NOTICE_SERVER", "TOKEN")
+        if (dataDic == null) {
+            dataDic = new DataDicEntity()
+            dataDic.setCatalog("NOTICE_SERVER")
+            dataDic.setCode("TOKEN")
+            dataDic.setName(accessToken)
+            dataDic.setOrder(1)
+            dataDic.setDataDicType(DataDicTypeEnum.BUSINESS)
+            dataDic.setEnable(true)
+        }
+        dataDic.setName("testToken")
+        dataDicService.save(dataDic)
+
+        dataDic = dataDicService.get("NOTICE_SERVER", "URL");
+        if (dataDic == null) {
+            dataDic = new DataDicEntity()
+            dataDic.setCatalog("NOTICE_SERVER")
+            dataDic.setCode("URL")
+            dataDic.setName(accessToken)
+            dataDic.setOrder(1)
+            dataDic.setDataDicType(DataDicTypeEnum.BUSINESS)
+            dataDic.setEnable(true)
+        }
+        dataDic.setName("http://test")
+        dataDicService.save(dataDic)
     }
 
     @After

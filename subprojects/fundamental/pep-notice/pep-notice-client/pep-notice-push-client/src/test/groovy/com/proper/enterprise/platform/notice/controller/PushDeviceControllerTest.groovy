@@ -1,73 +1,47 @@
 package com.proper.enterprise.platform.notice.controller
 
-import com.proper.enterprise.platform.core.utils.JSONUtil
-import com.proper.enterprise.platform.core.utils.StringUtil
-import com.proper.enterprise.platform.core.utils.http.HttpClient
 import com.proper.enterprise.platform.notice.entity.PushDeviceEntity
 import com.proper.enterprise.platform.notice.repository.PushDeviceRepository
+import com.proper.enterprise.platform.notice.service.PushDeviceService
 import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.After
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 
-class PushDeviceControllerTest extends AbstractJPATest{
-
-    private static final String URL_STARTPUSH = "/push/device"
+class PushDeviceControllerTest extends AbstractJPATest {
 
     @Autowired
     PushDeviceRepository deviceRepo
 
-    def appkey = "appkey-123"
-    def deviceTypeInvalid = "invalid_devicetype"
-    def pushToken = "push_token_test"
-    def userid = "userid_test"
-    def deviceid = "deviceid_test"
+    @Autowired
+    PushDeviceService pushDeviceService
 
     @After
-    void afterData(){
+    void afterData() {
         deviceRepo.deleteAll();
     }
 
-    @Test
-    void save() {
+    void saveAndCheck(String appKey, String pushToken, String userId, String deviceId) {
         Map<String, Object> param = new HashMap<>()
         //注册设备
-        param.put("appkey", appkey)
+        param.put("appkey", appKey)
         param.put("unbind_other_device", "true")
         param.put("push_token", pushToken)
-        param.put("userid", userid)
-        param.put("deviceid", deviceid)
-        pushRequest(URL_STARTPUSH, param)
-        PushDeviceEntity p = deviceRepo.findByUserId(userid)
-        assert p.userId == userid
+        param.put("userid", userId)
+        param.put("deviceid", deviceId)
+        post("/push/device?appkey=" + appKey + "&unbind_other_device=true&push_token=" + pushToken + "&userid=" + userId + "&deviceid=" + deviceId, "", HttpStatus.OK)
     }
 
-    /**
-     * http请求
-     * @param url 请求地址
-     * @param param 参数
-     * @param status 期待返回的状态码
-     * @return 将http 请求返回的json字符串转换成map
-     */
-    Map<String, Object> pushRequest(String url, Map<String, Object> param, HttpStatus status) {
-        String str = post(url,
-            MediaType.APPLICATION_FORM_URLENCODED,
-            MediaType.APPLICATION_JSON_UTF8,
-            HttpClient.getFormUrlEncodedData(param),
-            status).getResponse()
-            .getContentAsString();
-        if (StringUtil.isEmpty(str)) {
-            return new HashMap<>()
-        }
+    @Test
+    void saveAndList() {
+        this.saveAndCheck("appkey1", "push_token1", "userid1", "deviceid1")
+        PushDeviceEntity p = deviceRepo.findByUserId("userid1")
+        assert p.userId == "userid1"
 
-        return JSONUtil.parse(
-            str,
-            Map.class)
-    }
-
-    Map<String, Object> pushRequest(String url, Map<String, Object> param) {
-        pushRequest(url, param, HttpStatus.OK)
+        this.saveAndCheck("appkey1", "push_token2", "userid2", "deviceid1")
+        this.saveAndCheck("appkey2", "push_token4", "userid4", "deviceid3")
+        List<String> list = pushDeviceService.findUserIdsByAppKey("appkey1")
+        assert list.size() == 2
     }
 }

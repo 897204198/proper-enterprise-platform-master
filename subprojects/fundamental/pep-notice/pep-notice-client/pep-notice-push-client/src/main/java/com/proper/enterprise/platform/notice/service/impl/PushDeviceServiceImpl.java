@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class PushDeviceServiceImpl implements PushDeviceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushDeviceServiceImpl.class);
@@ -63,6 +66,16 @@ public class PushDeviceServiceImpl implements PushDeviceService {
         deviceRepo.deleteByPushToken(token);
     }
 
+    @Override
+    public List<String> findUserIdsByAppKey(String appKey) {
+        List<PushDeviceEntity> list = deviceRepo.findByAppKeyAndUserIdIsNotNull(appKey);
+        List<String> userIds = new ArrayList<>();
+        for (PushDeviceEntity pushDeviceEntity : list) {
+            userIds.add(pushDeviceEntity.getUserId());
+        }
+        return userIds;
+    }
+
     private void bindDevice(String appKey,
                             String userId,
                             String pushMode,
@@ -70,7 +83,7 @@ public class PushDeviceServiceImpl implements PushDeviceService {
                             String deviceId,
                             String deviceOtherInfo,
                             PushDeviceType deviceType) {
-        PushDeviceEntity device =  new PushDeviceEntity();
+        PushDeviceEntity device = new PushDeviceEntity();
         device.setAppKey(appKey);
         device.setDeviceId(deviceId);
         device.setDeviceType(deviceType);
