@@ -19,7 +19,7 @@
             <column name="NAME" value="公告通知"/>
             <column name="ROUTE" value="other/notice"/>
             <column name="SEQUENCE_NUMBER" valueNumeric="0"/>
-            <column name="PARENT_ID" value="pep-others"/>
+            <column name="PARENT_ID"/>
         </insert>
     </changeSet>
 </databaseChangeLog>
