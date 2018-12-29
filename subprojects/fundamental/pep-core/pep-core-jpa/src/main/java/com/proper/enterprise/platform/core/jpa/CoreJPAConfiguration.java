@@ -32,6 +32,9 @@ public class CoreJPAConfiguration {
     @Value("${spring.profiles.active}")
     private String profile;
 
+    @Value("${spring.liquibase.change-log}")
+    private String changelog;
+
     @Autowired
     public CoreJPAConfiguration(JpaProperties jpaProperties) {
         this.jpaProperties = jpaProperties;
@@ -51,7 +54,7 @@ public class CoreJPAConfiguration {
     public SpringLiquibase liquibase(DruidDataSource dataSource) {
         SpringLiquibase springLiquibase = new SpringLiquibase();
         springLiquibase.setDataSource(dataSource);
-        springLiquibase.setChangeLog("classpath:liquibase/changelog.xml");
+        springLiquibase.setChangeLog(changelog);
         LOGGER.debug("Initialize liquibase with context '{}'", profile);
         springLiquibase.setContexts(profile);
         return springLiquibase;
