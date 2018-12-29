@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.app.vo.AppCatalogVO
 import com.proper.enterprise.platform.app.vo.ApplicationVO
 import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.i18n.I18NService
+import com.proper.enterprise.platform.core.i18n.I18NUtil
 import com.proper.enterprise.platform.core.utils.JSONUtil
 import com.proper.enterprise.platform.test.AbstractJPATest
 import org.junit.Test
@@ -57,6 +58,9 @@ class ApplicationControllerTest extends AbstractJPATest {
         List<AppCatalogVO> list = resOfGet(url1, HttpStatus.OK)
         assert list.size() == 3
         assert list.get(0).code == "testCate"
+
+        assert I18NUtil.getMessage("pep.app.application.add.catalog") ==
+            post(url1, JSONUtil.toJSON(appCatalog3), HttpStatus.INTERNAL_SERVER_ERROR).response.contentAsString
 
         String typeName = "modifyTypeName"
         put(url1 + '/' + appCatalog3.getCode() + '?typeName=modifyTypeName', typeName, HttpStatus.OK)

@@ -145,6 +145,10 @@ public class ApplicationServiceImpl extends AbstractJpaServiceSupport<Applicatio
 
     @Override
     public AppCatalogVO addCatalog(AppCatalogVO appCatalogVO) {
+        AppCatalogEntity appCatalogExistEntity = appCatalogRepository.findByCode(appCatalogVO.getCode());
+        if (appCatalogExistEntity != null) {
+            throw new ErrMsgException(i18NService.getMessage("pep.app.application.add.catalog"));
+        }
         AppCatalogEntity catalogEntity = new AppCatalogEntity();
         BeanUtils.copyProperties(appCatalogVO, catalogEntity);
         catalogEntity = appCatalogRepository.save(catalogEntity);
