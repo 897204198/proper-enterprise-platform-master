@@ -113,9 +113,11 @@ class MenusControllerTest extends AbstractJPATest {
         resource['method'] = RequestMethod.GET
         resource['enable'] = true
         resource['resourceCode'] = '2'
+        resource['identifier'] = 'get'
         def value = JSONUtil.parse(post('/auth/menus/' + menuObj.get('id') + '/resources', JSONUtil.toJSON(resource), HttpStatus.CREATED)
             .getResponse().getContentAsString(), Map.class)
         assert value.get('name') == 'test123'
+        assert value.get('identifier') == 'get'
 
         def resourcesOfMenu = resOfGet("/auth/menus/${menuObj['id']}/resources", HttpStatus.OK)
         assert resourcesOfMenu.size() > 0

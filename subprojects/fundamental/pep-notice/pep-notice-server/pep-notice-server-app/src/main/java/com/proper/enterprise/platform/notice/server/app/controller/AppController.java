@@ -136,6 +136,9 @@ public class AppController extends BaseController {
         @ApiModelProperty(name = "‍是否包含推送配置", required = true)
         private Boolean havePushConf;
 
+        @ApiModelProperty(name = "‍启/停用", required = true)
+        private Boolean enable;
+
         public String getAppName() {
             return appName;
         }
@@ -198,6 +201,14 @@ public class AppController extends BaseController {
 
         public void setHavePushConf(Boolean havePushConf) {
             this.havePushConf = havePushConf;
+        }
+
+        public Boolean getEnable() {
+            return enable;
+        }
+
+        public void setEnable(Boolean enable) {
+            this.enable = enable;
         }
 
         @Override

@@ -20,12 +20,16 @@ class AppControllerTest extends AbstractJPATest {
         appVO.setAppToken(token)
         appVO.setColor("color")
         appVO.setAppDesc("describe")
+        appVO.setEnable(false)
         AppVO saveAPP = post(appVO)
         assert saveAPP.getAppDesc() == "describe"
+        assert !saveAPP.getEnable()
 
         saveAPP.setAppDesc("qqq")
+        saveAPP.setEnable(true)
         AppVO putApp = put(saveAPP)
         assert putApp.getAppDesc() == "qqq"
+        assert saveAPP.getEnable()
 
         //验证token
         Map config = new HashMap()

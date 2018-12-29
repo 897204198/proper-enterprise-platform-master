@@ -51,6 +51,7 @@ class SearchConfigControllerTest extends AbstractJPATest{
         configReq['dataBaseType'] = 'RDB'
         configReq['enable'] = true
         put("$URL/001", JSONUtil.toJSON(configReq), HttpStatus.OK)
+        put("$URL/001", JSONUtil.toJSON(configReq), HttpStatus.INTERNAL_SERVER_ERROR)
         put("$URL/000", JSONUtil.toJSON(configReq), HttpStatus.INTERNAL_SERVER_ERROR)
         AbstractSearchConfigs abstractSearchConfigs = searchConfigService.getSearchConfig('testuser')
         assert abstractSearchConfigs.getTableNameList()[0] == 'test_user'
@@ -67,6 +68,7 @@ class SearchConfigControllerTest extends AbstractJPATest{
         searchConfigEntity['url'] = '/url'
         searchConfigEntity['dataBaseType'] = 'RDB'
         post(URL, JSONUtil.toJSON(searchConfigEntity), HttpStatus.CREATED)
+        post(URL, JSONUtil.toJSON(searchConfigEntity), HttpStatus.INTERNAL_SERVER_ERROR)
         searchConfigEntity['url'] = ' '
         post(URL, JSONUtil.toJSON(searchConfigEntity), HttpStatus.INTERNAL_SERVER_ERROR)
         searchConfigEntity['url'] = '/url'

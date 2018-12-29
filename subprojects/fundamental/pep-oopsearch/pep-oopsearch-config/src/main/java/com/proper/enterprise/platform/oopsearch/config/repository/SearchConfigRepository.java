@@ -78,4 +78,24 @@ public interface SearchConfigRepository extends BaseJpaRepository<SearchConfigEn
     Page<SearchConfigEntity> findSearchConfigPagination(String moduleName, String url, String tableName,
                                                         String searchColumn, String columnAlias, String columnDesc,
                                                         Boolean configEnable, Pageable pageable);
+
+    /**
+     * 表名和字段名称和url唯一
+     *
+     * @param tableName    表名
+     * @param searchColumn 字段名称
+     * @param url          URL
+     * @return 配置详情
+     */
+    SearchConfigEntity findByTableNameAndSearchColumnAndUrl(String tableName, String searchColumn, String url);
+
+    /**
+     * 表名和字段别名和url唯一
+     *
+     * @param tableName   表名
+     * @param columnAlias 字段别名
+     * @param url         url
+     * @return 配置详情
+     */
+    SearchConfigEntity findByTableNameAndColumnAliasAndUrl(String tableName, String columnAlias, String url);
 }

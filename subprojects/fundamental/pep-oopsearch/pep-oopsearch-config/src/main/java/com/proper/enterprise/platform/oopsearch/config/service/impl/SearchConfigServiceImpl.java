@@ -204,6 +204,7 @@ public class SearchConfigServiceImpl extends AbstractJpaServiceSupport<SearchCon
         try {
             searchConfigVO.setId(id);
             checkParam(searchConfigVO);
+            checkUnique(searchConfigVO);
             SearchConfigEntity searchConfigEntity = new SearchConfigEntity();
             BeanUtils.copyProperties(searchConfigVO, searchConfigEntity);
             BeanUtils.copyProperties(searchConfigRepository.updateForSelective(searchConfigEntity), searchConfigVO);
@@ -222,6 +223,7 @@ public class SearchConfigServiceImpl extends AbstractJpaServiceSupport<SearchCon
     public SearchConfigVO add(SearchConfigVO searchConfigVO) {
         if (null != searchConfigVO) {
             checkParam(searchConfigVO);
+            checkUnique(searchConfigVO);
             SearchConfigEntity searchConfigEntity = new SearchConfigEntity();
             BeanUtils.copyProperties(searchConfigVO, searchConfigEntity);
             BeanUtils.copyProperties(searchConfigRepository.save(searchConfigEntity), searchConfigVO);
@@ -239,6 +241,24 @@ public class SearchConfigServiceImpl extends AbstractJpaServiceSupport<SearchCon
             || StringUtil.isBlank(searchConfigVO.getModuleName())
             || StringUtil.isBlank(searchConfigVO.getUrl())) {
             throw new ErrMsgException("oopsearch config Param is null or ' ' ");
+        }
+    }
+
+    private void checkUnique(SearchConfigVO searchConfigVO) {
+        SearchConfigEntity existEntity = searchConfigRepository
+            .findByTableNameAndSearchColumnAndUrl(searchConfigVO.getTableName(),
+                                                  searchConfigVO.getSearchColumn(),
+                                                  searchConfigVO.getUrl());
+        if (existEntity != null) {
+            throw new ErrMsgException(i18NService.getMessage("search.config.tableNameAndSearchColumnAndUrl.unique"));
+        }
+
+        existEntity = searchConfigRepository
+            .findByTableNameAndColumnAliasAndUrl(searchConfigVO.getTableName(),
+                                                 searchConfigVO.getColumnAlias(),
+                                                 searchConfigVO.getUrl());
+        if (existEntity != null) {
+            throw new ErrMsgException(i18NService.getMessage("search.config.tableNameAndColumnAliasAndUrl.unique"));
         }
     }
 

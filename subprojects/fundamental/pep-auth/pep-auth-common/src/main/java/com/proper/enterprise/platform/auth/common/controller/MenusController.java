@@ -283,6 +283,9 @@ public class MenusController extends BaseController {
         @ApiModelProperty(name = "‍资源类型编码(0:方法)", required = true)
         private String resourceCode;
 
+        @ApiModelProperty(name = "‍标识", required = true)
+        private String identifier;
+
         public String getName() {
             return name;
         }
@@ -321,6 +324,14 @@ public class MenusController extends BaseController {
 
         public void setResourceCode(String resourceCode) {
             this.resourceCode = resourceCode;
+        }
+
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        public void setIdentifier(String identifier) {
+            this.identifier = identifier;
         }
 
         @Override
