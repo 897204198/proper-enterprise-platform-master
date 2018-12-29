@@ -1,35 +1,36 @@
 package com.proper.enterprise.platform.oopsearch.sync.mongo.monitor.notice;
 
-import com.mongodb.DBObject;
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
+import org.bson.Document;
 
 public interface Notice {
 
     /**
      * 删除操作
      *
-     * @param op DB对象
+     * @param changeStreamDocument 变更对象
      */
-    void handleDelete(DBObject op);
+    void handleDelete(ChangeStreamDocument<Document> changeStreamDocument);
 
     /**
      * 插入操作
      *
-     * @param op DB对象
+     * @param changeStreamDocument 变更对象
      */
-    void handleInsert(DBObject op);
+    void handleInsert(ChangeStreamDocument<Document> changeStreamDocument);
 
     /**
      * 更新操作
      *
-     * @param op DB对象
+     * @param changeStreamDocument 变更对象
      */
-    void handleUpdate(DBObject op);
+    void handleUpdate(ChangeStreamDocument<Document> changeStreamDocument);
 
     /**
      * 其他操作
      *
-     * @param op DB对象
+     * @param changeStreamDocument 变更对象
      */
-    void handleOtherOp(DBObject op);
+    void handleOtherOp(ChangeStreamDocument<Document> changeStreamDocument);
 
 }

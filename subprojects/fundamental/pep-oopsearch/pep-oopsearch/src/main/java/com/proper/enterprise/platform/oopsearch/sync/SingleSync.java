@@ -78,7 +78,9 @@ public class SingleSync {
         SearchDocument searchDocument = new SearchDocument();
         searchDocument.setCon(doc.getCona());
         searchDocument.setTab(doc.getTab());
-        searchDocument.setCol(doc.getCol().toLowerCase());
+        if (null != doc.getCol()) {
+            searchDocument.setCol(doc.getCol().toLowerCase());
+        }
         searchDocument.setPri(doc.getPri());
         searchDocument.setDes(doc.getDes());
         searchDocument.setAli(doc.getAlias());

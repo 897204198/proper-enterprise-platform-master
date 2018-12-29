@@ -6,5 +6,6 @@ dependencies {
     testImplementation project(':pep-test')
 
        testRuntimeOnly project(':pep-cache-ehcache')
-
+    testRuntimeOnly project(':pep-auth-common-jpa'),
+                    project(':pep-cache-ehcache')
 }
