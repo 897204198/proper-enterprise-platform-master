@@ -32,26 +32,26 @@ public class PEPUserQueryImpl extends UserQueryImpl {
         if (getId() != null) {
             List<User> result = new ArrayList<>();
             result.add(convert(PEPCandidateExtQueryFactory
-                .product(PEPCandidateUserExtQueryImpl.USER_DATADIC_CODE).findCandidateById(getId())));
+                .product(PEPCandidateUserExtQueryImpl.USER_CONF_CODE).findCandidateById(getId())));
             return result;
 
         } else if (getIdIgnoreCase() != null) {
             List<User> result = new ArrayList<>();
             result.add(convert(PEPCandidateExtQueryFactory
-                .product(PEPCandidateUserExtQueryImpl.USER_DATADIC_CODE)
+                .product(PEPCandidateUserExtQueryImpl.USER_CONF_CODE)
                 .findCandidateById(getIdIgnoreCase())));
             return result;
         } else if (getFullNameLike() != null) {
             return convert(PEPCandidateExtQueryFactory
-                .product(PEPCandidateUserExtQueryImpl.USER_DATADIC_CODE)
+                .product(PEPCandidateUserExtQueryImpl.USER_CONF_CODE)
                 .findCandidatesByNameLike(getFullNameLike()));
         } else if (getFullNameLikeIgnoreCase() != null) {
             return convert(PEPCandidateExtQueryFactory
-                .product(PEPCandidateUserExtQueryImpl.USER_DATADIC_CODE)
+                .product(PEPCandidateUserExtQueryImpl.USER_CONF_CODE)
                 .findCandidatesByNameLike(getFullNameLikeIgnoreCase()));
         } else {
             return convert(PEPCandidateExtQueryFactory
-                .product(PEPCandidateUserExtQueryImpl.USER_DATADIC_CODE)
+                .product(PEPCandidateUserExtQueryImpl.USER_CONF_CODE)
                 .findAllCandidates());
         }
     }

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.workflow.flowable.rest.api;
 
+import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.factory.PEPCandidateExtQueryFactory;
@@ -19,8 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/workflow/service/app/rest/ext/modeler")
-@Api("/workflow/service/app/rest/ext/modeler")
+@RequestMapping("/workflow/ext/modeler")
+@Api("/workflow/ext/modeler")
+@AuthcIgnore
 public class ModelerController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/candidate/{candidateType}")
@@ -35,7 +37,7 @@ public class ModelerController extends BaseController {
     @ApiOperation("‍流程设计器查询经办人")
     public ResponseEntity<Collection<ModelerIdmModel>> get(@ApiParam("‍名称") String name) {
         return responseOfGet(convert(PEPCandidateExtQueryFactory
-            .product(PEPCandidateUserExtQueryImpl.USER_DATADIC_CODE)
+            .product(PEPCandidateUserExtQueryImpl.USER_CONF_CODE)
             .findCandidatesByNameLike(name)));
     }
 
@@ -56,10 +58,12 @@ public class ModelerController extends BaseController {
         }
         ModelerIdmModel modelerIdmModel = new ModelerIdmModel();
         modelerIdmModel.setId(CandidateIdUtil.encode(pepCandidateModel.getId(), pepCandidateModel.getType()));
-        if (PEPCandidateUserExtQueryImpl.USER_DATADIC_CODE.equals(pepCandidateModel.getType())) {
+        if (PEPCandidateUserExtQueryImpl.USER_CONF_CODE.equals(pepCandidateModel.getType())) {
             modelerIdmModel.setId(pepCandidateModel.getId());
         }
         modelerIdmModel.setName(pepCandidateModel.getName());
+        modelerIdmModel.setType(pepCandidateModel.getType());
+        modelerIdmModel.setTypeName(pepCandidateModel.getTypeName());
         return modelerIdmModel;
     }
 
@@ -78,6 +82,16 @@ public class ModelerController extends BaseController {
          */
         private String name;
 
+        /**
+         * 类型
+         */
+        private String type;
+
+        /**
+         * 类型名称
+         */
+        private String typeName;
+
         public String getId() {
             return id;
         }
@@ -92,6 +106,22 @@ public class ModelerController extends BaseController {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getTypeName() {
+            return typeName;
+        }
+
+        public void setTypeName(String typeName) {
+            this.typeName = typeName;
         }
     }
 

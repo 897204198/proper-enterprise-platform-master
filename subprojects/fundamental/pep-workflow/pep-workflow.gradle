@@ -19,8 +19,7 @@ dependencies {
                        project(':pep-notice-client'),
                        project(':pep-template')
 
-           runtimeOnly libraries.commons_fileupload,
-                       libraries.flowable_web_designer
+           runtimeOnly libraries.commons_fileupload
 
     testImplementation project(':pep-test'),
                        project(':pep-file'),

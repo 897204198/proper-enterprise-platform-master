@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.Order;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.Filter;
@@ -30,18 +29,6 @@ public class WorkflowConfiguration implements WebMvcConfigurer {
         httpClientConfig.setConnectionRequestTimeout(workflowProperties.getHttp().getConnectionRequestTimeout());
         httpClientConfig.setRequestRetryLimit(workflowProperties.getHttp().getRequestRetryLimit());
         springProcessEngineConfiguration.setHttpClientConfig(httpClientConfig);
-    }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/workflow/*.html").addResourceLocations("classpath:/META-INF/resources/designer/");
-        registry.addResourceHandler("/workflow/editor-app/**").addResourceLocations("classpath:/META-INF/resources/designer/editor-app/");
-        registry.addResourceHandler("/workflow/fonts/**").addResourceLocations("classpath:/META-INF/resources/designer/fonts/");
-        registry.addResourceHandler("/workflow/i18n/**").addResourceLocations("classpath:/META-INF/resources/designer/i18n/");
-        registry.addResourceHandler("/workflow/libs/**").addResourceLocations("classpath:/META-INF/resources/designer/libs/");
-        registry.addResourceHandler("/workflow/scripts/**").addResourceLocations("classpath:/META-INF/resources/designer/scripts/");
-        registry.addResourceHandler("/workflow/styles/**").addResourceLocations("classpath:/META-INF/resources/designer/styles/");
-        registry.addResourceHandler("/workflow/views/**").addResourceLocations("classpath:/META-INF/resources/designer/views/");
     }
 
     @Bean

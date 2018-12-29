@@ -13,6 +13,11 @@ public class PEPCandidateModel {
     private String type;
 
     /**
+     * 候选类型名称
+     */
+    private String typeName;
+
+    /**
      * 名称
      */
     private String name;
@@ -39,5 +44,13 @@ public class PEPCandidateModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 }

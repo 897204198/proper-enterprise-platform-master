@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
 import com.proper.enterprise.platform.workflow.service.PEPCandidateExtQuery;
+import com.proper.enterprise.platform.workflow.util.WFIdmQueryConfUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.List;
 @Service("pepCandidateRoleExtQuery")
 public class PEPCandidateRoleExtQueryImpl implements PEPCandidateExtQuery {
 
-    private static final String ROLE_DATADIC_CODE = "ROLE";
+    private static final String ROLE_CONF_CODE = "ROLE";
 
     private RoleService roleService;
 
@@ -73,7 +74,8 @@ public class PEPCandidateRoleExtQueryImpl implements PEPCandidateExtQuery {
     private PEPCandidateModel convert(Role role) {
         PEPCandidateModel pepCandidateModel = new PEPCandidateModel();
         pepCandidateModel.setId(role.getId());
-        pepCandidateModel.setType(ROLE_DATADIC_CODE);
+        pepCandidateModel.setType(ROLE_CONF_CODE);
+        pepCandidateModel.setTypeName(WFIdmQueryConfUtil.findByType(ROLE_CONF_CODE).getName());
         pepCandidateModel.setName(role.getName());
         return pepCandidateModel;
     }

@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
 import com.proper.enterprise.platform.workflow.service.PEPCandidateExtQuery;
+import com.proper.enterprise.platform.workflow.util.WFIdmQueryConfUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
 @Service("pepCandidateUserExtQuery")
 public class PEPCandidateUserExtQueryImpl implements PEPCandidateExtQuery {
 
-    public static final String USER_DATADIC_CODE = "USER";
+    public static final String USER_CONF_CODE = "USER";
 
     private UserService userService;
 
@@ -59,7 +60,8 @@ public class PEPCandidateUserExtQueryImpl implements PEPCandidateExtQuery {
     private PEPCandidateModel convert(User user) {
         PEPCandidateModel pepCandidateModel = new PEPCandidateModel();
         pepCandidateModel.setId(user.getId());
-        pepCandidateModel.setType(USER_DATADIC_CODE);
+        pepCandidateModel.setType(USER_CONF_CODE);
+        pepCandidateModel.setTypeName(WFIdmQueryConfUtil.findByType(USER_CONF_CODE).getName());
         pepCandidateModel.setName(user.getName());
         return pepCandidateModel;
     }

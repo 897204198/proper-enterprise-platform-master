@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/workflow/idm/conf")
-@Api(tags = "/workflow/idm/conf")
+@RequestMapping("/workflow/ext/idm/conf")
+@Api(tags = "/workflow/ext/idm/conf")
 public class WFIdmQueryConfController extends BaseController {
 
     private WFIdmQueryConfService wfIdmQueryConfService;

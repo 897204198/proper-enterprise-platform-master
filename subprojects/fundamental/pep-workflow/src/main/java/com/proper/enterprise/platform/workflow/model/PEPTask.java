@@ -330,7 +330,7 @@ public class PEPTask {
             if ("candidate".equals(identityLinkInfo.getType())) {
                 if (StringUtil.isNotEmpty(identityLinkInfo.getUserId())) {
                     pepTask.addCandidate(PEPCandidateExtQueryFactory
-                        .product(PEPCandidateUserExtQueryImpl.USER_DATADIC_CODE)
+                        .product(PEPCandidateUserExtQueryImpl.USER_CONF_CODE)
                         .findCandidateById(identityLinkInfo.getUserId()));
                 }
                 if (StringUtil.isNotEmpty(identityLinkInfo.getGroupId())) {

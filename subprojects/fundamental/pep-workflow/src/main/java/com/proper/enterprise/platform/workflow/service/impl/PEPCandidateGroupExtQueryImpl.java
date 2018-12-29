@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
 import com.proper.enterprise.platform.workflow.service.PEPCandidateExtQuery;
+import com.proper.enterprise.platform.workflow.util.WFIdmQueryConfUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @Service("pepCandidateGroupExtQuery")
 public class PEPCandidateGroupExtQueryImpl implements PEPCandidateExtQuery {
 
-    private static final String GROUP_DATADIC_CODE = "GROUP";
+    private static final String GROUP_CONF_CODE = "GROUP";
 
     private UserGroupService userGroupService;
 
@@ -76,7 +77,8 @@ public class PEPCandidateGroupExtQueryImpl implements PEPCandidateExtQuery {
     private PEPCandidateModel convert(UserGroup userGroup) {
         PEPCandidateModel pepCandidateModel = new PEPCandidateModel();
         pepCandidateModel.setId(userGroup.getId());
-        pepCandidateModel.setType(GROUP_DATADIC_CODE);
+        pepCandidateModel.setType(GROUP_CONF_CODE);
+        pepCandidateModel.setTypeName(WFIdmQueryConfUtil.findByType(GROUP_CONF_CODE).getName());
         pepCandidateModel.setName(userGroup.getName());
         return pepCandidateModel;
     }
