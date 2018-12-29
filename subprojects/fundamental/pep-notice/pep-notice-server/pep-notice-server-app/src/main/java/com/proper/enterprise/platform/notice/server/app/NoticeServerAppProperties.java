@@ -15,7 +15,11 @@ public class NoticeServerAppProperties {
     /**
      * 应用app token权限
      */
-    private String resource = "POST:/notice/server/send,*:/notice/server/config/*,*:/notice/server/push/config,GET:/notice/server/app/appKey";
+    private String resource = "POST:/notice/server/send,"
+                            + "*:/notice/server/config/*,"
+                            + "*:/notice/server/push/config,"
+                            + "GET:/notice/server/app/appKey,"
+                            + "GET:/file/*";
 
     public Integer getMaxRetryCount() {
         return maxRetryCount;

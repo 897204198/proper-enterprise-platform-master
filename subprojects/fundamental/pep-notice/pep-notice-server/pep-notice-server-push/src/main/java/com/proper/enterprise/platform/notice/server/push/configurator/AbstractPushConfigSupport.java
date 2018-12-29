@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.configurator;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NService;
 import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
@@ -17,16 +18,19 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
     @Autowired
     private PushConfigMongoRepository pushRepository;
 
+    @Autowired
+    private I18NService i18NService;
+
     private static final String PUSH_PACKAGE = "pushPackage";
 
     @Override
     public Map post(String appKey, Map<String, Object> config, Map<String, Object> params) {
         if (null == config.get(PUSH_PACKAGE)) {
-            throw new ErrMsgException("pushPackage can't be null");
+            throw new ErrMsgException(i18NService.getMessage("server.push.package.notNull"));
         }
         PushConfDocument pushConf = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(params));
         if (null != pushConf) {
-            throw new ErrMsgException("The current configuration of the appKey and push channels already exists");
+            throw new ErrMsgException(i18NService.getMessage("server.push.appkey.pushChannel.exist"));
         }
         pushRepository.save(buildPushDocument(appKey, config, params));
         return config;
@@ -45,7 +49,7 @@ public abstract class AbstractPushConfigSupport extends AbstractPushChannelSuppo
             throw new ErrMsgException(I18NUtil.getMessage("pep.push.notice.config.notExist"));
         }
         if (null == config.get(PUSH_PACKAGE)) {
-            throw new ErrMsgException("pushPackage can't be null");
+            throw new ErrMsgException(i18NService.getMessage("server.push.package.notNull"));
         }
         String pushDocumentId = pushRepository.findByAppKeyAndPushChannel(appKey, getPushChannel(params)).getId();
         PushConfDocument pushDocument = buildPushDocument(appKey, config, params);

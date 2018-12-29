@@ -2,10 +2,14 @@ package com.proper.enterprise.platform.configs.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,6 +17,9 @@ import java.io.IOException;
 /**
  * 为响应增加允许跨域访问头的过滤器
  */
+@Service
+@WebFilter(urlPatterns = "/*")
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class AllowCrossOriginFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AllowCrossOriginFilter.class);

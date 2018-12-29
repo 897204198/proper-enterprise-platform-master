@@ -25,7 +25,7 @@ import java.util.Optional;
  */
 @Service
 @WebFilter(urlPatterns = "/*")
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE + 10)
 public class AccessTokenFilter implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenFilter.class);
