@@ -7,6 +7,34 @@
         </encoder>
     </appender>
 
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/pep.%d{yyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%5p [%d{yy-MM-dd-HH:mm:ss}] %40.40c:%4L - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <springProperty name="host" source="spring.data.mongodb.host"/>
+    <springProperty name="port" source="spring.data.mongodb.port"/>
+    <springProperty name="database" source="spring.data.mongodb.database"/>
+    <springProperty name="username" source="spring.data.mongodb.username"/>
+    <springProperty name="password" source="spring.data.mongodb.password"/>
+    <springProperty name="replica" source="pep.core.mongo.replica-set"/>
+    <appender name="mongo" class="com.proper.enterprise.platform.core.mongo.logback.MongoDBAppender">
+        <connectionSource class="com.proper.enterprise.platform.core.mongo.logback.MongoDBConnectionSource">
+            <host>${host}</host>
+            <port>${port}</port>
+            <database>${database}</database>
+            <username>${username}</username>
+            <password>${password}</password>
+            <replica>${replica}</replica>
+            <collection>LOGS</collection>
+        </connectionSource>
+    </appender>
+
     <logger name="com.proper" level="debug" />
     <logger name="org.springframework.web" level="debug" />
 
