@@ -4,8 +4,11 @@ import com.proper.enterprise.platform.api.cache.CacheDuration;
 import com.proper.enterprise.platform.app.document.AppVersionDocument;
 import com.proper.enterprise.platform.app.repository.AppVersionRepository;
 import com.proper.enterprise.platform.app.service.AppVersionService;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.DateUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -29,6 +32,16 @@ public class AppVersionServiceImpl implements AppVersionService {
     @Autowired
     public AppVersionServiceImpl(AppVersionRepository repo) {
         this.repo = repo;
+    }
+
+    public void validVersion(String version) {
+        if (StringUtil.isEmpty(version)) {
+            return;
+        }
+        AppVersionDocument appVersionDocument = repo.findByVersion(version);
+        if (null != appVersionDocument) {
+            throw new ErrMsgException(I18NUtil.getMessage("pep.app.version.repeat"));
+        }
     }
 
     @Override

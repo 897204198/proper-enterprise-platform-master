@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.app.controller
 import com.proper.enterprise.platform.app.document.AppVersionDocument
 import com.proper.enterprise.platform.app.repository.AppVersionRepository
 import com.proper.enterprise.platform.app.service.AppVersionService
+import com.proper.enterprise.platform.core.i18n.I18NUtil
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.After
@@ -102,6 +103,13 @@ class AppVersionManagerControllerTest extends AbstractJPATest {
         assert list[0].androidUrl > ''
         assert list[0].iosUrl == null
         assert list[0].ver == '0005000003'
+    }
+
+    @Test
+    void repeatTest() {
+        def v300001 = new AppVersionManagerController.AppVersionVO('300001', '*.apk', 'abcdef')
+        assert I18NUtil.getMessage("pep.app.version.repeat") == post("$prefix", JSONUtil.toJSON(v300001), HttpStatus.INTERNAL_SERVER_ERROR)
+            .getResponse().getContentAsString()
     }
 
     @After

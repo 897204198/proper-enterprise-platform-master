@@ -33,6 +33,7 @@ public class AppVersionManagerController extends BaseController {
     @ApiOperation("‍添加新的版本，版本号需唯一，返回添加后的版本信息")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AppVersionDocument> create(@RequestBody AppVersionVO appVersionVO) {
+        appVersionService.validVersion(appVersionVO.version);
         AppVersionDocument appVersionDocument = new AppVersionDocument();
         BeanUtils.copyProperties(appVersionVO, appVersionDocument);
         return responseOfPost(appVersionService.saveOrUpdate(appVersionDocument));
@@ -90,7 +91,8 @@ public class AppVersionManagerController extends BaseController {
         @ApiModelProperty(name = "‍版本说明", required = true)
         private String note;
 
-        private AppVersionVO() { }
+        private AppVersionVO() {
+        }
 
         private AppVersionVO(String version, String androidURL, String note) {
             this.version = version;
