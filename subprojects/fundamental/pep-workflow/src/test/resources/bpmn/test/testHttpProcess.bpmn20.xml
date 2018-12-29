@@ -9,7 +9,7 @@
           <flowable:string><![CDATA[GET]]></flowable:string>
         </flowable:field>
         <flowable:field name="requestUrl">
-          <flowable:string><![CDATA[https://api.exmail.qq.com/cgi-bin/gettoken?corpid=wm49756ac8386a31d5&corpsecret=fg9_Xjj7yaounJkKTEjCyQ2Y9EmVcYHG1SELLLuWnWCCKeuI-_Ew_583DPxIHwbF]]></flowable:string>
+          <flowable:string><![CDATA[https://cloud.propersoft.cn/teamcities/]]></flowable:string>
         </flowable:field>
         <flowable:field name="responseVariableName">
           <flowable:string><![CDATA[tencentMailRes]]></flowable:string>

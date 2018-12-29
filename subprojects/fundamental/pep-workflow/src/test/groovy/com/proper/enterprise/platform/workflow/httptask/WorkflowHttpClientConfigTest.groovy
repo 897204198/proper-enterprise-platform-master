@@ -14,9 +14,9 @@ class WorkflowHttpClientConfigTest extends WorkflowAbstractTest {
         HttpClientConfig httpClientConfig
 
         httpClientConfig = PEPApplicationContext.getBean(SpringProcessEngineConfiguration.class).getHttpClientConfig()
-        assert 5000 == httpClientConfig.getConnectTimeout()
-        assert 5000 == httpClientConfig.getSocketTimeout()
-        assert 5000 == httpClientConfig.getConnectionRequestTimeout()
+        assert 500000 == httpClientConfig.getConnectTimeout()
+        assert 500000 == httpClientConfig.getSocketTimeout()
+        assert 500000 == httpClientConfig.getConnectionRequestTimeout()
         assert 3 == httpClientConfig.getRequestRetryLimit()
     }
 
