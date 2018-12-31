@@ -194,7 +194,7 @@ libraries.mail = 'com.sun.mail:javax.mail:1.6.2'
 
 libraries.mongodb_driver = "org.mongodb:mongodb-driver:${versions.mongo}"
 
-libraries.mysql_binlog_connector_java = 'com.github.shyiko:mysql-binlog-connector-java:0.13.0'
+libraries.mysql_binlog_connector_java = 'com.github.shyiko:mysql-binlog-connector-java:0.16.1'
 
 libraries.mysql_driver = 'org.mariadb.jdbc:mariadb-java-client:1.5.4'
 //libraries.mysql_driver = 'mysql:mysql-connector-java:5.1.38'

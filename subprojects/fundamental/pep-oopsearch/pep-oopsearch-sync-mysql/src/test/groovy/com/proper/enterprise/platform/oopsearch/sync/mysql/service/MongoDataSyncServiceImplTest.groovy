@@ -8,9 +8,11 @@ import com.proper.enterprise.platform.oopsearch.repository.SyncMongoRepository
 import com.proper.enterprise.platform.oopsearch.sync.SingleSync
 import com.proper.enterprise.platform.oopsearch.sync.mysql.service.impl.MySQLMongoDataSync
 import com.proper.enterprise.platform.test.AbstractJPATest
+import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
+@Ignore
 class MongoDataSyncServiceImplTest extends AbstractJPATest{
 
     @Autowired

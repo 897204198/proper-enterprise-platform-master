@@ -1,5 +1,5 @@
 pep-mysql:
-  image: mysql
+  image: mysql:5.7.24
   volumes:
     - ./mysql/data:/var/lib/mysql
     - ./mysql/conf:/etc/mysql/conf.d
