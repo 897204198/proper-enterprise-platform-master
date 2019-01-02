@@ -143,6 +143,7 @@ subprojects {
                             libraries.spring_boot_starter_web
 
             testRuntimeOnly libraries.groovy_all,
+                            libraries.spock,
                             libraries.spring_boot_starter_web
 
          testImplementation libraries.spring_boot_starter_test

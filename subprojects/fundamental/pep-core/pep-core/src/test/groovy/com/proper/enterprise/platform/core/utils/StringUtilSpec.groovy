@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.utils
 
-import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.CoreProperties
+import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -14,10 +15,10 @@ class StringUtilSpec extends Specification {
         result == StringUtil.isNull(input)
 
         where:
-        input   | result
-        ''      | true
-        ' '     | true
-        ' ab '  | false
+        input  | result
+        ''     | true
+        ' '    | true
+        ' ab ' | false
     }
 
     @Unroll
@@ -26,10 +27,10 @@ class StringUtilSpec extends Specification {
         result == StringUtil.isNotNull(input)
 
         where:
-        input   | result
-        ''      | false
-        ' '     | false
-        ' ab '  | true
+        input  | result
+        ''     | false
+        ' '    | false
+        ' ab ' | true
     }
 
     @Unroll
@@ -38,28 +39,29 @@ class StringUtilSpec extends Specification {
         result == StringUtil.join(input, separator)
 
         where:
-        separator   | input         | result
-        '.'         | ['a', 'b']    | 'a.b'
-        ''          | []            | ''
-        null        | []            | ''
-        ''          | ['a', 'b']    | 'ab'
-        ','         | ['a']         | 'a'
+        separator | input      | result
+        '.'       | ['a', 'b'] | 'a.b'
+        ''        | []         | ''
+        null      | []         | ''
+        ''        | ['a', 'b'] | 'ab'
+        ','       | ['a']      | 'a'
     }
 
     @Unroll
-    def "CamelCase'#input' camelToSnake is #result"(){
+    def "CamelCase'#input' camelToSnake is #result"() {
         expect:
-        result == StringUtil.camelToSnake (input)
+        result == StringUtil.camelToSnake(input)
         where:
-        input                |           result
-        'likeThis'           |           'like_this'
-        'MyTest'             |           'my_test'
-        'TestTest'           |           'test_test'
+        input      | result
+        'likeThis' | 'like_this'
+        'MyTest'   | 'my_test'
+        'TestTest' | 'test_test'
     }
 
     def "test toEncodedString"() {
         expect:
-        '这个是中文' == StringUtil.toEncodedString('这个是中文'.getBytes(PEPConstants.DEFAULT_CHARSET))
+        '这个是中文' == StringUtil.toEncodedString('这个是中文'.getBytes(PEPPropertiesLoader.load(CoreProperties.class)
+            .getCharset()))
         '这个是中文' != StringUtil.toEncodedString('这个是中文'.getBytes(Charset.forName("GBK")))
         '' == StringUtil.toEncodedString(null)
     }

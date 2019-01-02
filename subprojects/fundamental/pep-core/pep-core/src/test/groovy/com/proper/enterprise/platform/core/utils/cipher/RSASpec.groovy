@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.utils.cipher
 
-import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.CoreProperties
+import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import spock.lang.Specification
 
 
@@ -31,11 +32,11 @@ class RSASpec extends Specification {
         def publicKey = map.publicKey
         def privateKey = map.privateKey
 
-        def encrypted = c.encrypt(content.getBytes(PEPConstants.DEFAULT_CHARSET), publicKey)
+        def encrypted = c.encrypt(content.getBytes(PEPPropertiesLoader.load(CoreProperties.class).getCharset()), publicKey)
         def decrypted = c.decrypt(encrypted, privateKey)
 
         expect:
-        assert content.getBytes(PEPConstants.DEFAULT_CHARSET) == decrypted
+        assert content.getBytes(PEPPropertiesLoader.load(CoreProperties.class).getCharset()) == decrypted
     }
 
     def "RSA sign and verify"() {

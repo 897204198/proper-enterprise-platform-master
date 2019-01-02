@@ -6,7 +6,7 @@ class PEPConstantsSpec extends Specification {
 
     def 'defaultMonthFormat'() {
         expect:
-        'yyyy-MM' == PEPConstants.DEFAULT_MONTH_FORMAT
+        'yyyy-MM' == PEPPropertiesLoader.load(CoreProperties.class).getDefaultMonthFormat()
     }
 
 }

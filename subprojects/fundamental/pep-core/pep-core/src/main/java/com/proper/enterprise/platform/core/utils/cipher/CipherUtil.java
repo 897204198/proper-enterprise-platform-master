@@ -1,7 +1,6 @@
 package com.proper.enterprise.platform.core.utils.cipher;
 
 import com.proper.enterprise.platform.core.CoreProperties;
-import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.PEPPropertiesLoader;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -65,10 +64,9 @@ public class CipherUtil {
 
     @Deprecated
     protected String encrypt(String content) throws Exception {
-        return new String(execute(content.getBytes(Charset.forName(PEPApplicationContext
-            .getBean(CoreProperties.class)
-            .getCharset())), getSecretKey(), true), Charset.forName(PEPApplicationContext
-            .getBean(CoreProperties.class).getCharset()));
+        return new String(execute(content.getBytes(Charset.forName(PEPPropertiesLoader.load(CoreProperties.class)
+            .getCharset())), getSecretKey(), true), Charset.forName(PEPPropertiesLoader
+            .load(CoreProperties.class).getCharset()));
     }
 
     protected byte[] encrypt(byte[] data) throws Exception {
@@ -77,8 +75,8 @@ public class CipherUtil {
 
     @Deprecated
     protected String encrypt(String content, String publicKey) throws Exception {
-        return new String(execute(content.getBytes(Charset.forName(PEPApplicationContext
-            .getBean(CoreProperties.class).getCharset())), getPublicKey(publicKey), true),
+        return new String(execute(content.getBytes(Charset.forName(PEPPropertiesLoader
+            .load(CoreProperties.class).getCharset())), getPublicKey(publicKey), true),
             Charset.forName(PEPPropertiesLoader.load(CoreProperties.class).getCharset()));
     }
 
@@ -89,8 +87,8 @@ public class CipherUtil {
     private byte[] execute(byte[] data, Key key, boolean encrypt) throws Exception {
         LOGGER.trace("{} data with {}({})",
             encrypt ? "Encrypt" : "Decrypt",
-            new String(key.getEncoded(), Charset.forName(PEPApplicationContext
-                .getBean(CoreProperties.class).getCharset())), amp(algorithm, mode, padding));
+            new String(key.getEncoded(), Charset.forName(PEPPropertiesLoader.load(CoreProperties.class)
+                .getCharset())), amp(algorithm, mode, padding));
 
         byte[] result;
         Cipher cipher = Cipher.getInstance(amp(algorithm, mode, padding));
@@ -106,15 +104,15 @@ public class CipherUtil {
     }
 
     private Key getSecretKey() {
-        return new SecretKeySpec(secretKey.getBytes(Charset.forName(PEPApplicationContext
-            .getBean(CoreProperties.class)
+        return new SecretKeySpec(secretKey.getBytes(Charset.forName(PEPPropertiesLoader
+            .load(CoreProperties.class)
             .getCharset())), algorithm);
     }
 
     @Deprecated
     protected String decrypt(String content) throws Exception {
-        return new String(execute(content.getBytes(Charset.forName(PEPApplicationContext
-            .getBean(CoreProperties.class).getCharset())), getSecretKey(), false),
+        return new String(execute(content.getBytes(Charset.forName(PEPPropertiesLoader
+            .load(CoreProperties.class).getCharset())), getSecretKey(), false),
             Charset.forName(PEPPropertiesLoader.load(CoreProperties.class).getCharset()));
     }
 
@@ -124,8 +122,8 @@ public class CipherUtil {
 
     @Deprecated
     protected String decrypt(String content, String privateKey) throws Exception {
-        return new String(execute(content.getBytes(Charset.forName(PEPApplicationContext
-            .getBean(CoreProperties.class)
+        return new String(execute(content.getBytes(Charset.forName(PEPPropertiesLoader
+            .load(CoreProperties.class)
             .getCharset())), getPrivateKey(privateKey), false),
             Charset.forName(PEPPropertiesLoader.load(CoreProperties.class).getCharset()));
     }

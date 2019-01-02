@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.core.utils.cipher
 
-import com.proper.enterprise.platform.core.PEPConstants
+import com.proper.enterprise.platform.core.CoreProperties
+import com.proper.enterprise.platform.core.PEPPropertiesLoader
 import spock.lang.Specification
 
 class AESSpec extends Specification {
@@ -19,11 +20,11 @@ class AESSpec extends Specification {
 
     def "AES encrypt and decrypt (byte[])"() {
         def c = new AES('ECB', 'PKCS5Padding', key)
-        def encrypted = c.encrypt(content.getBytes(PEPConstants.DEFAULT_CHARSET))
+        def encrypted = c.encrypt(content.getBytes(PEPPropertiesLoader.load(CoreProperties.class).getCharset()))
         def decrypted = c.decrypt(encrypted)
 
         expect:
-        assert content.getBytes(PEPConstants.DEFAULT_CHARSET) == decrypted
+        assert content.getBytes(PEPPropertiesLoader.load(CoreProperties.class).getCharset()) == decrypted
     }
 
 }

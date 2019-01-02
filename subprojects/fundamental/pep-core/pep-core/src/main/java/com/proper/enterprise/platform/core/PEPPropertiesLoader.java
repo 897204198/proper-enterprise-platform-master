@@ -13,6 +13,9 @@ public class PEPPropertiesLoader {
 
     public static <T> T load(Class<T> properties) {
         try {
+            if (null == PEPApplicationContext.getApplicationContext()) {
+                return properties.newInstance();
+            }
             return PEPApplicationContext.getBean(properties);
         } catch (Exception e) {
             try {
