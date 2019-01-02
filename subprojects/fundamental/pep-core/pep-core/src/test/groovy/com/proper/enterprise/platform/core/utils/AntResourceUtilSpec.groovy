@@ -5,10 +5,10 @@ import spock.lang.Specification
 class AntResourceUtilSpec extends Specification {
 
     def "Support multi-locations separated by comma"() {
-        def res = AntResourceUtil.getResources('classpath*:com/proper/**/*.p12')
+        def res = AntResourceUtil.getResources('classpath*:com/proper/**/*.p12,classpath*:banner.txt')
 
         expect:
-        res.length == 1// According to actual files under src/test/resources
+        res.length == 2 // According to actual files under path pattern
     }
 
 }
