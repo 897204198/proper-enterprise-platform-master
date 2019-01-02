@@ -71,6 +71,7 @@ public class SyncCacheService {
         } catch (JsonProcessingException e) {
             LOGGER.error(e.getMessage());
         }
+        LOGGER.debug("push data change to cache pos:{},pri:{}", pos, syncDocumentModel.getPri());
         cache.put(pos, value);
         return value;
     }

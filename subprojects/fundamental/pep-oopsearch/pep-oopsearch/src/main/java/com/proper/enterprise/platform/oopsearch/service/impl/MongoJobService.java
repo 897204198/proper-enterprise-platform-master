@@ -53,6 +53,7 @@ public class MongoJobService {
                     return;
                 }
                 if (!syncDocumentModel.isProcess()) {
+                    LOGGER.debug("sync data change to mongo pri:{}", syncDocumentModel.getPri());
                     singleSync.singleSynchronization(syncDocumentModel);
                     syncDocumentModel.setProcess(true);
                     try {
@@ -60,6 +61,7 @@ public class MongoJobService {
                     } catch (JsonProcessingException e) {
                         LOGGER.error(e.getMessage());
                     }
+                    LOGGER.debug("sync data change to mongo finish pri:{}", syncDocumentModel.getPri());
                     return;
                 }
             }
