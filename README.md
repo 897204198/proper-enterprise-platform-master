@@ -96,7 +96,7 @@ Spring boot 默认配置 tomcat 使用的字符集为 `UTF-8`（org.springframew
 使用的 connector 为 `Http11NioProtocol`（org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory#DEFAULT_PROTOCOL）。
 
 **推荐使用** docker 容器 + Jar 包的形式部署及运行，避免因运行环境差异导致的各种问题。
-通过 `Docker Compose` 编排和运行服务（单节点），可以在 [docker-compose.yml](./subprojects/dev-kit/pep-dev-configs/src/main/resources/META-INF/configs/docker/docker-compose.yml) 中调整所需服务，并运行
+通过 `Docker Compose` 编排和运行服务（单节点），可以在 [docker-compose.yml](./docker/docker-compose.yml) 中调整所需服务，并运行
 
     $ docker-compose up -d
 

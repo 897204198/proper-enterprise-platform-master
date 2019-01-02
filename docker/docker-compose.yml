@@ -11,7 +11,7 @@ pep-mysql:
     - MYSQL_PASSWORD=pep
 # Could deploy mongo shard cluster using https://github.com/propersoft-cn/docker-mongo-shard-cluster
 pep-mongo:
-  image: mongo:3.6.5
+  image: mongo:3.6.9
   entrypoint: /code/devops/current/mongoEp.sh
   volumes:
     - ./mongo/data:/data/db

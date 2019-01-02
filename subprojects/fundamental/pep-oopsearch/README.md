@@ -72,7 +72,7 @@ column_alias 设置为 userId，那么在调用的方法中，应有一个对应
 
 ### 设置mysql
 
-mysql 相关设置已在 `pep-dev-configs` 模块内的 docker-compose.yml 中配置好，使用 docker 方式启动 mysql 即可。
+mysql 相关设置已在 `docker-compose.yml` 中配置好，使用 docker 方式启动 mysql 即可。
 
 若需以其他方式启动，需检查 mysql 的 binlog 格式需配置为 `row`，并且在 datasource 中使用的用户需包含 
 [REPLICATION SLAVE](http://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html#priv_replication-slave)、
