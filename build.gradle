@@ -107,9 +107,8 @@ subprojects {
     targetCompatibility = 1.8
 
     group = 'com.proper.enterprise.platform'
-    // Needs to change version in dependencies.gradle:6:32 TOGETHER!!
     // Needs to change version in PEPVersion.java:10:17 TOGETHER!!
-    version = '0.5.0-SNAPSHOT'
+    version = '0.5.0'
 
     test {
         reports.html.enabled = false

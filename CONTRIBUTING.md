@@ -329,7 +329,7 @@ resources/liquibase/icmp/propersoft/1.x/changelogs/changelog-dml-{module}.xml
 版本发布流程
 -----------
 
-1. 后端修改 build.gradle 中的 `version` 值，并同步修改 PEPVersion.java 中的 版本号 及 dependencies.gradle 中的 `versions.pep` 
+1. 后端修改 build.gradle 中的 `version` 值，并同步修改 PEPVersion.java 中的 版本号 
 1. 提交代码打 tag，并将 tag 推送远程仓库，如：
     ```
     $ git tag v0.4.0
