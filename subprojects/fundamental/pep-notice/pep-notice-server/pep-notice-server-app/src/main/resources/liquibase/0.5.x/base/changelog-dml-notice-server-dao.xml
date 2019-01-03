@@ -219,7 +219,7 @@
             <column name="MENU_CODE"/>
             <column name="MENU_TYPE" value="MENU_TYPE;0"/>
             <column name="NAME" value="应用配置管理"/>
-            <column name="ROUTE" value="app"/>
+            <column name="ROUTE" value="message"/>
             <column name="SEQUENCE_NUMBER" valueNumeric="1"/>
             <column name="PARENT_ID"/>
         </insert>
