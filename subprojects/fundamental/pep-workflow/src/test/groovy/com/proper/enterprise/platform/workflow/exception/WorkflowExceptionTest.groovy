@@ -18,6 +18,7 @@ class WorkflowExceptionTest extends WorkflowAbstractTest {
         "/com/proper/enterprise/platform/workflow/datadics.sql",
         "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void workflowTargetExceptionTest() {
+        setCurrentUserId("admin")
         start(WORKFLOW_TARGET_EXCEPTION_KEY, new HashMap<String, Object>())
         Map task = getTask("step1")
         assert I18NUtil.getMessage("workflow.task.complete.error") == post('/workflow/task/' + task.taskId, JSONUtil.toJSON(new HashMap<String, Object>()),
@@ -29,6 +30,7 @@ class WorkflowExceptionTest extends WorkflowAbstractTest {
         "/com/proper/enterprise/platform/workflow/datadics.sql",
         "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     public void workflowAutoTaskErrorTest(){
+        setCurrentUserId("admin")
         start(WORKFLOW_AUTO_TASK_ERROR, new HashMap<String, Object>())
         Map task = getTask("step1")
         assert I18NUtil.getMessage("workflow.task.complete.error") == post('/workflow/task/' + task.taskId, JSONUtil.toJSON(new HashMap<String, Object>()),
