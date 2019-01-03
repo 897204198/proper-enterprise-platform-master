@@ -173,15 +173,69 @@ public class WechatController extends BaseController {
 
     public static class WechatOrderReq implements OrderReq {
         /**
+         * 随机字符串
+         */
+        @ApiModelProperty(name = "‍随机字符串", required = true)
+        private String nonceStr;
+
+        /**
+         * 商品详情
+         */
+        @ApiModelProperty(name = "‍商品详情")
+        private String detail;
+
+        /**
+         * 附加数据
+         */
+        @ApiModelProperty(name = "‍附加数据")
+        private String attach;
+
+        /**
+         * 终端IP 必填
+         */
+        @ApiModelProperty(name = "‍终端IP", required = true)
+        private String spbillCreateIp;
+
+        /**
+         * 交易起始时间
+         */
+        @ApiModelProperty(name = "‍交易起始时间")
+        private String timeStart;
+
+        /**
+         * 交易结束时间
+         */
+        @ApiModelProperty(name = "‍交易结束时间")
+        private String timeExpire;
+
+        /**
+         * 商品标记
+         */
+        @ApiModelProperty(name = "‍商品标记")
+        private String goodsTag;
+
+        /**
+         * 通知地址
+         */
+        @ApiModelProperty(name = "‍通知地址", required = true)
+        private String notifyUrl;
+
+        /**
+         * 指定支付方式
+         */
+        @ApiModelProperty(name = "‍指定支付方式")
+        private String limitPay;
+
+        /**
          * 商户网站唯一订单号
          */
         @ApiModelProperty(name = "‍商户网站唯一订单号", required = true)
         private String outTradeNo;
 
         /**
-         * 商品详情
+         * 商品描述
          */
-        @ApiModelProperty(name = "‍商品详情", required = true)
+        @ApiModelProperty(name = "‍商品描述", required = true)
         private String body;
 
         /**
@@ -189,6 +243,78 @@ public class WechatController extends BaseController {
          */
         @ApiModelProperty(name = "‍商品总金额", required = true)
         private String totalFee;
+
+        public String getNonceStr() {
+            return nonceStr;
+        }
+
+        public void setNonceStr(String nonceStr) {
+            this.nonceStr = nonceStr;
+        }
+
+        public String getDetail() {
+            return detail;
+        }
+
+        public void setDetail(String detail) {
+            this.detail = detail;
+        }
+
+        public String getAttach() {
+            return attach;
+        }
+
+        public void setAttach(String attach) {
+            this.attach = attach;
+        }
+
+        public String getSpbillCreateIp() {
+            return spbillCreateIp;
+        }
+
+        public void setSpbillCreateIp(String spbillCreateIp) {
+            this.spbillCreateIp = spbillCreateIp;
+        }
+
+        public String getTimeStart() {
+            return timeStart;
+        }
+
+        public void setTimeStart(String timeStart) {
+            this.timeStart = timeStart;
+        }
+
+        public String getTimeExpire() {
+            return timeExpire;
+        }
+
+        public void setTimeExpire(String timeExpire) {
+            this.timeExpire = timeExpire;
+        }
+
+        public String getGoodsTag() {
+            return goodsTag;
+        }
+
+        public void setGoodsTag(String goodsTag) {
+            this.goodsTag = goodsTag;
+        }
+
+        public String getNotifyUrl() {
+            return notifyUrl;
+        }
+
+        public void setNotifyUrl(String notifyUrl) {
+            this.notifyUrl = notifyUrl;
+        }
+
+        public String getLimitPay() {
+            return limitPay;
+        }
+
+        public void setLimitPay(String limitPay) {
+            this.limitPay = limitPay;
+        }
 
         public String getOutTradeNo() {
             return outTradeNo;

@@ -158,6 +158,18 @@ public class ProperPayController extends BaseController {
         @ApiModelProperty(name = "‍商品总金额", required = true)
         private String totalFee;
 
+        /**
+         * 商品名称
+         */
+        @ApiModelProperty(name = "‍商品名称", required = true)
+        private String subject;
+
+        /**
+         * 服务器异步通知页面路径
+         */
+        @ApiModelProperty(name = "‍服务器异步通知页面路径", required = true)
+        private String notifyUrl;
+
         public String getOutTradeNo() {
             return outTradeNo;
         }
@@ -180,6 +192,22 @@ public class ProperPayController extends BaseController {
 
         public void setTotalFee(String totalFee) {
             this.totalFee = totalFee;
+        }
+
+        public String getSubject() {
+            return subject;
+        }
+
+        public void setSubject(String subject) {
+            this.subject = subject;
+        }
+
+        public String getNotifyUrl() {
+            return notifyUrl;
+        }
+
+        public void setNotifyUrl(String notifyUrl) {
+            this.notifyUrl = notifyUrl;
         }
 
         @Override
