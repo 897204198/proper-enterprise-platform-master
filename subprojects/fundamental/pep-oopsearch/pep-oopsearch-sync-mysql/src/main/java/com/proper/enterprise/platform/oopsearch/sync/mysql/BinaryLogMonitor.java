@@ -4,6 +4,8 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import com.proper.enterprise.platform.core.jpa.repository.NativeRepository;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.HexConvertUtil;
+import com.proper.enterprise.platform.core.utils.MacAddressUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.oopsearch.api.enums.DataBaseType;
 import com.proper.enterprise.platform.oopsearch.api.enums.SyncMethod;
@@ -79,7 +81,8 @@ public class BinaryLogMonitor {
         String[] hostAndPort = (lowerCaseUrl.substring(url.indexOf("//"), lowerCaseUrl.lastIndexOf("/")).substring(2)).split(":");
         String schema = lowerCaseUrl.substring(lowerCaseUrl.lastIndexOf("/") + 1);
         schemaSet = new HashSet<>(Arrays.asList(schema.split(",")));
-        client = new BinaryLogClient(hostAndPort[0], Integer.parseInt(hostAndPort[1]), username, password);
+        client = new BinaryLogClient(hostAndPort[0], Integer.parseInt(hostAndPort[1]), schema, username, password);
+        client.setServerId(HexConvertUtil.convert64To10(MacAddressUtil.getFullMacAddress()));
     }
 
     private void registerEventListener() {
@@ -192,9 +195,9 @@ public class BinaryLogMonitor {
                     continue;
                 }
                 counter = syncToMongo(tableObject.getTableName(), tableObject.getColumnNames().get(i),
-                               null, row[i].toString(),
-                                      getPrimaryKeysValue(tableObject, row), SyncMethod.INSERT,
-                                      pos, counter);
+                    null, row[i].toString(),
+                    getPrimaryKeysValue(tableObject, row), SyncMethod.INSERT,
+                    pos, counter);
             }
         }
     }
@@ -202,14 +205,14 @@ public class BinaryLogMonitor {
     /**
      * 同步数据至 mongo，并返回计数值
      *
-     * @param  table       表名
-     * @param  column      列名
-     * @param  before      旧值
-     * @param  after       新值
-     * @param  primaryKeys 主键
-     * @param  method      同步方法
-     * @param  pos         位置
-     * @param  inc         初始计数值
+     * @param table       表名
+     * @param column      列名
+     * @param before      旧值
+     * @param after       新值
+     * @param primaryKeys 主键
+     * @param method      同步方法
+     * @param pos         位置
+     * @param inc         初始计数值
      * @return 更新后的计数值
      */
     private int syncToMongo(String table, String column, String before, String after, String primaryKeys, SyncMethod method, long pos, int inc) {
@@ -229,6 +232,7 @@ public class BinaryLogMonitor {
             syncDocumentModel.setPri(primaryKeys);
             syncDocumentModel.setDataBaseType(DataBaseType.RDB);
             syncDocumentModel.setMethod(method);
+            LOGGER.debug("start push data change pos:{},pri:{}", pos, syncDocumentModel.getPri());
             mongoSyncService.push(pos + ":" + inc++ + ":" + method, syncDocumentModel);
         }
         return inc;
@@ -295,8 +299,8 @@ public class BinaryLogMonitor {
                     String columnContentBefore = null == before[i] ? null : before[i].toString();
                     String columnContentAfter = null == after[i] ? null : after[i].toString();
                     counter = syncToMongo(tableObject.getTableName(), tableObject.getColumnNames().get(i),
-                                          columnContentBefore, columnContentAfter, null,
-                                          SyncMethod.UPDATE, pos, counter);
+                        columnContentBefore, columnContentAfter, null,
+                        SyncMethod.UPDATE, pos, counter);
                 }
             }
         }
@@ -320,8 +324,8 @@ public class BinaryLogMonitor {
                 String columnName = tableObject.getColumnNames().get(i);
                 String primaryKeysValue = getPrimaryKeysValue(tableObject, row);
                 counter = syncToMongo(tableName, columnName,
-                               null, row[i].toString(), primaryKeysValue,
-                                      SyncMethod.DELETE, pos, counter);
+                    null, row[i].toString(), primaryKeysValue,
+                    SyncMethod.DELETE, pos, counter);
             }
         }
     }
