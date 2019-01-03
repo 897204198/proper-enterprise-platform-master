@@ -47,7 +47,7 @@
     </changeSet>
     <changeSet author="pep (generator)" id="init_ver0.5.x_feedback_dml_menus">
         <insert tableName="PEP_AUTH_MENUS">
-            <column name="ID" value="pep-yjfk"/>
+            <column name="ID" value="pep-yjfk-parent"/>
             <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
             <column name="CREATE_USER_ID" value="PEP"/>
             <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
@@ -60,8 +60,25 @@
             <column name="MENU_TYPE" value="MENU_TYPE;0"/>
             <column name="NAME" value="意见反馈"/>
             <column name="ROUTE" value="feedback"/>
-            <column name="SEQUENCE_NUMBER" valueNumeric="3"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="0"/>
             <column name="PARENT_ID"/>
+        </insert>
+        <insert tableName="PEP_AUTH_MENUS">
+            <column name="ID" value="pep-yjfk"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DESCRIPTION"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="ICON" value="form"/>
+            <column name="IDENTIFIER"/>
+            <column name="MENU_CODE"/>
+            <column name="MENU_TYPE" value="MENU_TYPE;1"/>
+            <column name="NAME" value="意见反馈"/>
+            <column name="ROUTE" value="feedback/feedback"/>
+            <column name="SEQUENCE_NUMBER" valueNumeric="3"/>
+            <column name="PARENT_ID" value="pep-yjfk-parent"/>
         </insert>
     </changeSet>
     <changeSet author="pep (generator)" id="init_ver0.5.x_feedback_dml_roles">
