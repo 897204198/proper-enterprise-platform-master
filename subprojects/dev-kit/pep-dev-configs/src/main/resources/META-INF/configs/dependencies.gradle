@@ -40,10 +40,7 @@ configurations.all {
         }
 
         def nameVers = [
-//            'guava': '20.0',
             'javassist': '3.19.0-GA',
-            // related with hibernate 5.2.17.Final
-            'jboss-logging': '3.3.2.Final',
             'jcl-over-slf4j': versions.slf4j,
             'logback': versions.logback ,
             'springloaded': '1.2.8.RELEASE',
