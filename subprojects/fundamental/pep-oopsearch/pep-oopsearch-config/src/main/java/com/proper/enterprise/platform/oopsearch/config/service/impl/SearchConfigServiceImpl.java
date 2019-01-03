@@ -107,7 +107,6 @@ public class SearchConfigServiceImpl extends AbstractJpaServiceSupport<SearchCon
     public Map<String, Object> getSearchConfigs(DataBaseType dataBaseType) {
         List<SearchConfigEntity> result = searchConfigRepository.findByDataBaseType(dataBaseType);
         if (result == null || result.size() == 0) {
-            LOGGER.error("no search config result , db is empty");
             return null;
         }
         int limit = oopSearchProperties.getSearchLimit();

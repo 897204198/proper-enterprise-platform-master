@@ -79,7 +79,6 @@ public class SyncCacheService {
     private SearchConfigEntity getSyncConf(SyncDocumentModel syncDocumentModel) {
         Map<String, Object> searchConfigBeans = searchConfigService.getSearchConfigs(syncDocumentModel.getDataBaseType());
         if (searchConfigBeans == null) {
-            LOGGER.debug("search config is null");
             return null;
         }
         //key=tableName+|+colunmName
