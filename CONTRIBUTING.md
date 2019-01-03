@@ -320,6 +320,7 @@ resources/liquibase/icmp/propersoft/1.x/changelogs/changelog-dml-{module}.xml
 * 处于 v0.4.x，不想升级到 v0.5.x —— 使用平台 v0.4.x 版本即可，无影响
 * 处于 v0.4.x，想升级到 v0.5.x —— 代码先升级到 v0.5.x，includeAll liquibase/0.4.x/changelogs && liquibase/0.5.x/changelogs
 > 如果已经执行过 v0.4.x 中规范路径前的 changelog，需要修改数据库中的记录，将执行过的 changelog 文件的路径修改为规范后的路径
+> 需执行语句：update DATABASECHANGELOG set FILENAME = replace(FILENAME,'liquibase/changelogs/changelog-','liquibase/0.5.x/base/changelog-')
 * v0.5.x brand new —— includeAll liquibase/0.5.x/base && liquibase/0.5.x/changelogs 下内容即可
 * 处于 v0.5.0-SNAPSHOT —— 修改已执行过的 changelog 记录，将路径调整为规范后的路径，之后 includeAll liquibase/0.5.x/changelogs 即可
 > 多出了基线的 base 路径 —— 不需要 include 进去，因为应该在 SNAPSHOT 的 changelog 中都已经执行过了
