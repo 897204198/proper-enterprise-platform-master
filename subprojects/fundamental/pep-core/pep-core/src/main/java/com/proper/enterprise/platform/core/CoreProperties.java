@@ -82,6 +82,11 @@ public class CoreProperties {
      */
     private String statSite = "https://cloud.propersoft.cn/requesturl";
 
+    /**
+     * http 请求重试间隔
+     */
+    private long httpRetryInterval = 5000;
+
     public String getCharset() {
         return charset;
     }
@@ -200,5 +205,13 @@ public class CoreProperties {
 
     public void setStatSite(String statSite) {
         this.statSite = statSite;
+    }
+
+    public long getHttpRetryInterval() {
+        return httpRetryInterval;
+    }
+
+    public void setHttpRetryInterval(long httpRetryInterval) {
+        this.httpRetryInterval = httpRetryInterval;
     }
 }

@@ -11,7 +11,7 @@ class CorePropertiesTest extends AbstractSpringTest {
 
     @Test
     void testDefdatetime() {
-        assert "yyyyMMddHHmmss" == coreProperties.getDefaultDatetimeFormat()
+        assert "AAABBBBCCCCC" == coreProperties.getSecretAesKey()
         assert coreProperties.getDefaultOperatorId() > ''
     }
 }
