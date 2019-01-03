@@ -4,6 +4,8 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import com.proper.enterprise.platform.core.jpa.repository.NativeRepository;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.core.utils.HexConvertUtil;
+import com.proper.enterprise.platform.core.utils.MacAddressUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.oopsearch.api.enums.DataBaseType;
 import com.proper.enterprise.platform.oopsearch.api.enums.SyncMethod;
@@ -80,6 +82,7 @@ public class BinaryLogMonitor {
         String schema = lowerCaseUrl.substring(lowerCaseUrl.lastIndexOf("/") + 1);
         schemaSet = new HashSet<>(Arrays.asList(schema.split(",")));
         client = new BinaryLogClient(hostAndPort[0], Integer.parseInt(hostAndPort[1]), schema, username, password);
+        client.setServerId(HexConvertUtil.convert64To10(MacAddressUtil.getFullMacAddress()));
     }
 
     private void registerEventListener() {
@@ -157,9 +160,9 @@ public class BinaryLogMonitor {
 
     private TableObject initTableObject(String schema, String tableName) {
         String sql = "SELECT COLUMN_NAME "
-            + "FROM INFORMATION_SCHEMA.COLUMNS "
-            + "WHERE TABLE_NAME = '" + tableName + "' "
-            + "AND TABLE_SCHEMA = '" + schema + "'";
+                     + "FROM INFORMATION_SCHEMA.COLUMNS "
+                    + "WHERE TABLE_NAME = '" + tableName + "' "
+                      + "AND TABLE_SCHEMA = '" + schema + "'";
 
         TableObject tableObject = new TableObject();
         tableObject.setSchema(schema);
@@ -167,10 +170,10 @@ public class BinaryLogMonitor {
         tableObject.setColumnNames(nativeRepository.executeQuery(sql));
 
         sql = "SELECT COLUMN_NAME "
-            + "FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE "
-            + "WHERE TABLE_NAME = '" + tableName + "' "
-            + "AND TABLE_SCHEMA = '" + schema + "' "
-            + "AND CONSTRAINT_NAME = 'PRIMARY'";
+              + "FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE "
+             + "WHERE TABLE_NAME = '" + tableName + "' "
+               + "AND TABLE_SCHEMA = '" + schema + "' "
+               + "AND CONSTRAINT_NAME = 'PRIMARY'";
 
         StringBuilder primaryKeys = new StringBuilder();
         for (Object primaryColumnName : nativeRepository.executeQuery(sql)) {

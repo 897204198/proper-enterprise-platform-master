@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.oopsearch.sync.mongo.monitor.executor;
 
+import com.mongodb.MongoCommandException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
@@ -18,6 +19,8 @@ public class OplogExecutor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OplogExecutor.class);
 
+    private static final String UNRECOGNIZED_PIPELINE = "Unrecognized pipeline stage name: '$changeStream'";
+
     @Autowired
     OplogMonitor oplogMonitor;
 
@@ -31,9 +34,10 @@ public class OplogExecutor {
             while (cursor.hasNext()) {
                 NoticeHandle.notice(cursor.next());
             }
+        } catch (MongoCommandException e) {
+            LOGGER.error("MongoCommandException can't start oplog", e);
         } catch (Exception e) {
             LOGGER.error("sync oplog error:", e);
-        } finally {
             oplogMonitor.start(collection);
             LOGGER.info("restart oplog");
         }
