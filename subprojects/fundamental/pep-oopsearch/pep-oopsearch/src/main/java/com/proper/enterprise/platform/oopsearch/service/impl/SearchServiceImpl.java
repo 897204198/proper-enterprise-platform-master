@@ -35,7 +35,7 @@ public class SearchServiceImpl implements SearchService {
     public List<SearchDocument> getSearchInfo(String inputStr, String moduleName) {
         AbstractSearchConfigs searchConfigs = searchConfigService.getSearchConfig(moduleName);
         if (searchConfigs == null) {
-            LOGGER.error("get search config class fail");
+            LOGGER.debug("get search config class fail");
             return null;
         }
         List<SearchDocument> demoUserDocumentList;

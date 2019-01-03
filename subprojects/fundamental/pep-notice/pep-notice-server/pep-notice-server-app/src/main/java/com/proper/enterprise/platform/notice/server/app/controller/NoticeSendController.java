@@ -53,11 +53,11 @@ public class NoticeSendController extends BaseController {
         BeanUtils.copyProperties(noticeRequestVO, noticeRequest);
         String accessTokenHeader = request.getHeader(AccessTokenService.TOKEN_FLAG_HEADER);
         String token = StringUtil.isEmpty(accessTokenHeader) ? accessToken : accessTokenHeader;
-        LOGGER.info("Receive client messages batchId:{}", noticeRequest.getBatchId());
+        LOGGER.debug("Receive client messages batchId:{}", noticeRequest.getBatchId());
         try {
             List<Notice> notices = noticeSendService
                 .beforeSend(accessTokenService.getUserId(token).get(), noticeRequest);
-            LOGGER.info("client messages check batchId:{}", noticeRequest.getBatchId());
+            LOGGER.debug("client messages check batchId:{}", noticeRequest.getBatchId());
             noticeSendService.sendAsync(notices);
             return responseOfPost(null);
         } catch (Exception e) {

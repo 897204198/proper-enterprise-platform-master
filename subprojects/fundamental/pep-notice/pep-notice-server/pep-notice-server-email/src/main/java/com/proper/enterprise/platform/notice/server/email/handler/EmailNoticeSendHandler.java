@@ -46,7 +46,7 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
 
     @Override
     public BusinessNoticeResult send(ReadOnlyNotice notice) {
-        LOGGER.info("start email: " + JSONUtil.toJSONIgnoreException(notice));
+        LOGGER.debug("start email: " + JSONUtil.toJSONIgnoreException(notice));
         JavaMailSenderImpl javaMailSender = (JavaMailSenderImpl) noticeConfigurator.getJavaMailSender(notice.getAppKey());
         MimeMessage mailMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper;

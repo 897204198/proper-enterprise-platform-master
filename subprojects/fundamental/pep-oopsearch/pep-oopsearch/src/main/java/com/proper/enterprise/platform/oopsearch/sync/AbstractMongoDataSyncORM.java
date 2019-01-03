@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.oopsearch.sync;
 
 import com.proper.enterprise.platform.core.jpa.repository.NativeRepository;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.oopsearch.api.enums.DataBaseType;
 import com.proper.enterprise.platform.oopsearch.document.SearchDocument;
 import com.proper.enterprise.platform.oopsearch.api.model.SearchColumnModel;
@@ -54,7 +55,6 @@ public abstract class AbstractMongoDataSyncORM extends AbstractMongoDataSync {
      */
     @Override
     public void fullSynchronization() {
-        // 整理所有需要查询的表名，及表名中对应的字段
         Map<String, Object> searchConfigBeans = searchConfigService.getSearchConfigs(DataBaseType.RDB);
         if (searchConfigBeans == null) {
             return;
@@ -64,9 +64,20 @@ public abstract class AbstractMongoDataSyncORM extends AbstractMongoDataSync {
         for (Map.Entry<String, List<SearchColumnModel>> tableColumnEntry : tableColumnMap.entrySet()) {
             StringBuffer querySql = new StringBuffer();
             List<SearchColumnModel> searchColumnList = tableColumnEntry.getValue();
-            // 获取查询sql语句
             getQuerySql(tableColumnEntry, searchColumnList, querySql);
-            List<Map<String, Object>> resultList = nativeRepository.executeEntityMapQuery(querySql.toString());
+            if (StringUtil.isEmpty(querySql)) {
+                continue;
+            }
+            List<Map<String, Object>> resultList;
+            try {
+                resultList = nativeRepository.executeEntityMapQuery(querySql.toString());
+            } catch (Exception e) {
+                LOGGER.error("init binlog conf error,sql:{}", querySql, e);
+                continue;
+            }
+            if (null == resultList) {
+                continue;
+            }
             Map<String, List<String>> contextFilterMap = new HashMap<>(16);
             for (Map<String, Object> resultMap : resultList) {
                 String priValue = "";
@@ -83,9 +94,9 @@ public abstract class AbstractMongoDataSyncORM extends AbstractMongoDataSync {
                     if (!"pri".equalsIgnoreCase(column)) {
                         SearchColumnModel searchColumnMongo = getSearchColumnMongo(searchColumnList, column);
                         if (searchColumnMongo == null) {
-                            LOGGER.error("can not find search column");
+                            LOGGER.error("can not find search column:{}", column);
+                            continue;
                         }
-                        // 插入mongodb
                         String value;
                         Object objValue = entry.getValue();
                         boolean isRepeat = false;
@@ -109,15 +120,7 @@ public abstract class AbstractMongoDataSyncORM extends AbstractMongoDataSync {
                                     contextFilterMap.put(value, columnList);
                                 }
                                 if (!isRepeat) {
-                                    SearchDocument demoUserDocument = new SearchDocument();
-                                    demoUserDocument.setCon(value);
-                                    demoUserDocument.setCol(searchColumnMongo.getColumn());
-                                    demoUserDocument.setTab(searchColumnMongo.getTable());
-                                    demoUserDocument.setDes(searchColumnMongo.getDescColumn());
-                                    demoUserDocument.setPri(priValue);
-                                    demoUserDocument.setAli(searchColumnMongo.getColumnAlias());
-                                    demoUserDocument.setUrl(searchColumnMongo.getUrl());
-                                    documentList.add(demoUserDocument);
+                                    documentList.add(buildDocument(value, priValue, searchColumnMongo));
                                 }
                             }
                         }
@@ -131,13 +134,25 @@ public abstract class AbstractMongoDataSyncORM extends AbstractMongoDataSync {
         }
     }
 
+    private SearchDocument buildDocument(String value, String priValue, SearchColumnModel searchColumnMongo) {
+        SearchDocument demoUserDocument = new SearchDocument();
+        demoUserDocument.setCon(value);
+        demoUserDocument.setCol(searchColumnMongo.getColumn());
+        demoUserDocument.setTab(searchColumnMongo.getTable());
+        demoUserDocument.setDes(searchColumnMongo.getDescColumn());
+        demoUserDocument.setPri(priValue);
+        demoUserDocument.setAli(searchColumnMongo.getColumnAlias());
+        demoUserDocument.setUrl(searchColumnMongo.getUrl());
+        return demoUserDocument;
+    }
+
     /**
      * 获取查询sql语句
      * example: SELECT columnA, CONCAT( 'dbname|tablename|', ID ) AS pri FROM tablename
      *
      * @param tableColumnEntry 表名字段关系集合
      * @param searchColumnList 查询字段列表
-     * @param querySql 查询sql语句
+     * @param querySql         查询sql语句
      */
     private void getQuerySql(Map.Entry<String, List<SearchColumnModel>> tableColumnEntry, List<SearchColumnModel> searchColumnList,
                              StringBuffer querySql) {
@@ -145,6 +160,7 @@ public abstract class AbstractMongoDataSyncORM extends AbstractMongoDataSync {
         // 取出该表将要查询的字段
         if (searchColumnList.size() == 0) {
             LOGGER.error("can not find search column");
+            return;
         }
         for (int j = 0; j < searchColumnList.size(); j++) {
             SearchColumnModel searchColumn = searchColumnList.get(j);

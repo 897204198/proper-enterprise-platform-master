@@ -43,7 +43,7 @@ public class PEPCandidateUserExtQueryImpl implements PEPCandidateExtQuery {
     @Override
     public List<PEPCandidateModel> findCandidatesByNameLike(String name) {
         return convert(new ArrayList<>(userService
-            .getUsersByAndCondition(name, null, null, null, EnableEnum.ENABLE)));
+            .getUsersByAndCondition(null, name, null, null, EnableEnum.ENABLE)));
     }
 
     private List<PEPCandidateModel> convert(Collection<User> users) {

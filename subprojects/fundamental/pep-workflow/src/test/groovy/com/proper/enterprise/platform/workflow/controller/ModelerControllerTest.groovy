@@ -32,9 +32,9 @@ class ModelerControllerTest extends AbstractJPATest {
         assert candidateRole2s.get(0).typeName == "候选角色"
 
         //候选用户查询
-        List<ModelerController.ModelerIdmModel> candidateUser1s = JSONUtil.parse(get("/workflow/ext/modeler/candidate/USER?name=user", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert candidateUser1s.size() == 3
-        List<ModelerController.ModelerIdmModel> candidateUser2s = JSONUtil.parse(get("/workflow/ext/modeler/candidate/USER?name=user1", HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        List<ModelerController.ModelerIdmModel> candidateUser1s = JSONUtil.parse(get("/workflow/ext/modeler/candidate/USER?name=b", HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert candidateUser1s.size() == 1
+        List<ModelerController.ModelerIdmModel> candidateUser2s = JSONUtil.parse(get("/workflow/ext/modeler/candidate/USER?name=c", HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert candidateUser2s.size() == 1
         assert candidateUser2s.get(0).name == "c"
         assert candidateUser2s.get(0).typeName == "候选人"
@@ -47,9 +47,9 @@ class ModelerControllerTest extends AbstractJPATest {
     public void modelerAssignee(){
 
         //候选用户查询
-        List<ModelerController.ModelerIdmModel> assigneeUser1s = JSONUtil.parse(get("/workflow/ext/modeler/assignee?name=user", HttpStatus.OK).getResponse().getContentAsString(), List.class)
-        assert assigneeUser1s.size() == 3
-        List<ModelerController.ModelerIdmModel> assigneeUser2s = JSONUtil.parse(get("/workflow/ext/modeler/assignee?name=user1", HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        List<ModelerController.ModelerIdmModel> assigneeUser1s = JSONUtil.parse(get("/workflow/ext/modeler/assignee?name=b", HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert assigneeUser1s.size() == 1
+        List<ModelerController.ModelerIdmModel> assigneeUser2s = JSONUtil.parse(get("/workflow/ext/modeler/assignee?name=c", HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert assigneeUser2s.size() == 1
         assert assigneeUser2s.get(0).typeName == "候选人"
         assert assigneeUser2s.get(0).name == "c"

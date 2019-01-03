@@ -58,7 +58,7 @@ public class PushDeviceServiceImpl implements PushDeviceService {
     @Override
     public void deleteByUserId(String userId) {
         deviceRepo.deleteByUserId(userId);
-        LOGGER.info("unbindDevice of user:" + userId);
+        LOGGER.debug("unbindDevice of user:" + userId);
     }
 
     @Override

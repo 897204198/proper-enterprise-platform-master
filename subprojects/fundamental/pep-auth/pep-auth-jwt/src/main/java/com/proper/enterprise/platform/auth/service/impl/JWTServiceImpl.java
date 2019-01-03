@@ -84,7 +84,7 @@ public class JWTServiceImpl extends AccessTokenServiceImpl implements JWTService
             JWTHeader header = getHeader(token);
             String apiSecret = secret.getAPISecret(header.getId());
             if (!sign.equals(hmacSha256Base64(apiSecret, headerBase64 + TOKEN_SEPARATOR + payloadBase64))) {
-                LOGGER.info("Token is INVALID or EXPIRED! Sign is {}", sign);
+                LOGGER.debug("Token is INVALID or EXPIRED! Sign is {}", sign);
                 return false;
             }
             return true;

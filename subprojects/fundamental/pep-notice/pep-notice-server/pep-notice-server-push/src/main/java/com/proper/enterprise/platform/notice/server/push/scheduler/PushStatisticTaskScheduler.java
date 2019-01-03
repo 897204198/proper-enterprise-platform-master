@@ -40,7 +40,7 @@ public class PushStatisticTaskScheduler {
         //昨天时间
         Date dateStart = DateUtil.addDay(dateEnd, -1);
         List<PushNoticeMsgStatisticEntity> pushMsgStatistics = pushNoticeMsgStatisticService.getPushStatistic(dateStart, dateEnd);
-        LOGGER.info("startDate:{} endDate:{} entityList:{}", DateUtil.toString(dateStart, coreProperties.getDefaultDatetimeFormat()),
+        LOGGER.debug("startDate:{} endDate:{} entityList:{}", DateUtil.toString(dateStart, coreProperties.getDefaultDatetimeFormat()),
             DateUtil.toString(dateEnd, coreProperties.getDefaultDatetimeFormat()), entityList);
         pushNoticeMsgStatisticService.deleteBySendDate(dateStart);
         pushNoticeMsgStatisticService.saveAll(pushMsgStatistics);

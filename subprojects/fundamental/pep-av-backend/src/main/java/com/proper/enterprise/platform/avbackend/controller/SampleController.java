@@ -80,7 +80,7 @@ public class SampleController {
     }
 
     private Map<String, Object> handler(String collection, String objectId, String objectStr) {
-        LOGGER.info("Received payload: {}", objectStr);
+        LOGGER.debug("Received payload: {}", objectStr);
 
         try {
             ObjectMapper mapper = new ObjectMapper();

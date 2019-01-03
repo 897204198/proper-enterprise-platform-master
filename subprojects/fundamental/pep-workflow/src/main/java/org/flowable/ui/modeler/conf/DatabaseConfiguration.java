@@ -126,12 +126,12 @@ public class DatabaseConfiguration {
             connection = dataSource.getConnection();
             DatabaseMetaData databaseMetaData = connection.getMetaData();
             String databaseProductName = databaseMetaData.getDatabaseProductName();
-            LOGGER.info("database product name: '{}'", databaseProductName);
+            LOGGER.debug("database product name: '{}'", databaseProductName);
             databaseType = DATABASE_TYPE_MAPPINGS.getProperty(databaseProductName);
             if (databaseType == null) {
                 throw new FlowableException("couldn't deduct database type from database product name '" + databaseProductName + "'");
             }
-            LOGGER.info("using database type: {}", databaseType);
+            LOGGER.debug("using database type: {}", databaseType);
 
         } catch (SQLException e) {
             LOGGER.error("Exception while initializing Database connection", e);

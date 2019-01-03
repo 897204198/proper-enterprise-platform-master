@@ -31,7 +31,7 @@ public abstract class AbstractDFSService implements DFSService {
         }
         LOGGER.debug("Prepare to save file:{} ...", filePath);
         doSaveFile(is, filePath);
-        LOGGER.info("Save file:{} done.", filePath);
+        LOGGER.debug("Save file:{} done.", filePath);
         is.close();
     }
 
@@ -57,7 +57,7 @@ public abstract class AbstractDFSService implements DFSService {
         if (is == null) {
             return null;
         } else {
-            LOGGER.info("Get file:{} and return, remember to close InputStream after use.", filePath);
+            LOGGER.debug("Get file:{} and return, remember to close InputStream after use.", filePath);
             return is;
         }
     }
@@ -77,7 +77,7 @@ public abstract class AbstractDFSService implements DFSService {
             return false;
         }
         doDeleteFile(filePath);
-        LOGGER.info("Delete file:{} done.", filePath);
+        LOGGER.debug("Delete file:{} done.", filePath);
         return true;
     }
 
