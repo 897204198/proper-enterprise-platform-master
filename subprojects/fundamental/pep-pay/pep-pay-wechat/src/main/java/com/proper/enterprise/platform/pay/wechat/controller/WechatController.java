@@ -12,9 +12,11 @@ import com.proper.enterprise.platform.api.pay.service.NoticeService;
 import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.pay.wechat.entity.WechatEntity;
 import com.proper.enterprise.platform.pay.wechat.model.WechatNoticeRes;
+import com.proper.enterprise.platform.pay.wechat.model.WechatOrderReq;
 import com.proper.enterprise.platform.pay.wechat.model.WechatPayResultRes;
 import com.proper.enterprise.platform.pay.wechat.service.WechatPayService;
 import io.swagger.annotations.Api;
@@ -76,17 +78,20 @@ public class WechatController extends BaseController {
             PrepayReq prepayReq = new PrepayReq();
             PayService payService = (PayService) wechatPayService;
             // 预支付业务处理
-            PayResultRes checkRes = payService.savePrepayBusiness(PayWay.WECHAT.toString(), prepayReq, wechatReq);
+            com.proper.enterprise.platform.pay.wechat.model.WechatOrderReq wechatOrderReq =
+                new com.proper.enterprise.platform.pay.wechat.model.WechatOrderReq();
+            BeanUtil.copyProperties(wechatReq, wechatOrderReq);
+            PayResultRes checkRes = payService.savePrepayBusiness(PayWay.WECHAT.toString(), prepayReq, wechatOrderReq);
             if (checkRes.getResultCode() != null && checkRes.getResultCode().equals(PayResType.SYSERROR)) {
                 BeanUtils.copyProperties(checkRes, resObj);
                 return responseOfPost(resObj);
             }
             // 订单号
-            prepayReq.setOutTradeNo(wechatReq.getOutTradeNo());
+            prepayReq.setOutTradeNo(wechatOrderReq.getOutTradeNo());
             // 订单金额
-            prepayReq.setTotalFee(String.valueOf(wechatReq.getTotalFee()));
+            prepayReq.setTotalFee(String.valueOf(wechatOrderReq.getTotalFee()));
             // 支付用途
-            prepayReq.setPayIntent(wechatReq.getBody());
+            prepayReq.setPayIntent(wechatOrderReq.getBody());
             // 支付方式
             prepayReq.setPayWay(PayWay.WECHAT.toString());
             // 获取预支付信息
@@ -242,7 +247,7 @@ public class WechatController extends BaseController {
          * 商品总金额
          */
         @ApiModelProperty(name = "‍商品总金额", required = true)
-        private String totalFee;
+        private int totalFee;
 
         public String getNonceStr() {
             return nonceStr;
@@ -332,11 +337,11 @@ public class WechatController extends BaseController {
             this.body = body;
         }
 
-        public String getTotalFee() {
+        public int getTotalFee() {
             return totalFee;
         }
 
-        public void setTotalFee(String totalFee) {
+        public void setTotalFee(int totalFee) {
             this.totalFee = totalFee;
         }
     }

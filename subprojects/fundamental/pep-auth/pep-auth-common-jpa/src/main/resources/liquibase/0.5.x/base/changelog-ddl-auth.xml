@@ -503,11 +503,11 @@
     </changeSet>
 
     <changeSet author="pep (generator)" id="init_ver0.5.x_auth_changebyauth_refactor">
-        <addUniqueConstraint tableName="PEP_AUTH_MENUS" columnNames="NAME"/>
-        <addUniqueConstraint tableName="PEP_AUTH_RESOURCES" columnNames="NAME"/>
-        <addUniqueConstraint tableName="PEP_AUTH_ROLES" columnNames="NAME"/>
-        <addUniqueConstraint tableName="PEP_AUTH_USERS" columnNames="USERNAME"/>
-        <addUniqueConstraint tableName="PEP_AUTH_USERGROUPS" columnNames="NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_MENUS" columnNames="NAME,PARENT_ID" constraintName="UK_PEP_AUTH_MENUS_NAME_PARENTID"/>
+        <addUniqueConstraint tableName="PEP_AUTH_RESOURCES" columnNames="NAME" constraintName="UK_PEP_AUTH_RESOURCES_NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_ROLES" columnNames="NAME" constraintName="UK_PEP_AUTH_ROLES_NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_USERS" columnNames="USERNAME" constraintName="UK_PEP_AUTH_USERS_USERNAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_USERGROUPS" columnNames="NAME" constraintName="UK_PEP_AUTH_USERGROUPS_NAME"/>
     </changeSet>
 
     <changeSet author="pep (generator)" id="init_ver0.5.x_auth_token_table">

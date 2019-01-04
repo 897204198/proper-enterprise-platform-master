@@ -12,9 +12,11 @@ import com.proper.enterprise.platform.api.pay.service.NoticeService;
 import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.common.pay.utils.PayUtils;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.pay.ali.PayAliProperties;
 import com.proper.enterprise.platform.pay.ali.entity.AliEntity;
+import com.proper.enterprise.platform.pay.ali.model.AliOrderReq;
 import com.proper.enterprise.platform.pay.ali.model.AliPayResultRes;
 import com.proper.enterprise.platform.pay.ali.service.AliPayService;
 import io.swagger.annotations.Api;
@@ -71,17 +73,20 @@ public class AliController extends BaseController {
             PrepayReq prepayReq = new PrepayReq();
             PayService payService = (PayService) aliService;
             // ALI预支付业务处理
-            PayResultRes checkRes = payService.savePrepayBusiness(PayWay.ALI.toString(), prepayReq, aliReq);
+            com.proper.enterprise.platform.pay.ali.model.AliOrderReq aliOrderReq =
+                new com.proper.enterprise.platform.pay.ali.model.AliOrderReq();
+            BeanUtil.copyProperties(aliReq, aliOrderReq);
+            PayResultRes checkRes = payService.savePrepayBusiness(PayWay.ALI.toString(), prepayReq, aliOrderReq);
             if (checkRes.getResultCode() != null && checkRes.getResultCode().equals(PayResType.SYSERROR)) {
                 BeanUtils.copyProperties(checkRes, resObj);
                 return responseOfPost(resObj);
             }
             // 订单号
-            prepayReq.setOutTradeNo(aliReq.getOutTradeNo());
+            prepayReq.setOutTradeNo(aliOrderReq.getOutTradeNo());
             // 订单金额
-            prepayReq.setTotalFee(aliReq.getTotalFee());
+            prepayReq.setTotalFee(aliOrderReq.getTotalFee());
             // 支付用途
-            prepayReq.setPayIntent(aliReq.getBody());
+            prepayReq.setPayIntent(aliOrderReq.getBody());
             // 支付方式
             prepayReq.setPayWay(PayWay.ALI.toString());
             // 获取预支付信息
@@ -195,6 +200,18 @@ public class AliController extends BaseController {
         @ApiModelProperty(name = "‍商品总金额", required = true)
         private String totalFee;
 
+        /**
+         * 商品名称
+         */
+        @ApiModelProperty(name = "‍商品名称")
+        private String subject;
+
+        /**
+         * 服务器异步通知页面路径
+         */
+        @ApiModelProperty(name = "‍‍商品名称")
+        private String notifyUrl;
+
         public String getOutTradeNo() {
             return outTradeNo;
         }
@@ -217,6 +234,22 @@ public class AliController extends BaseController {
 
         public void setTotalFee(String totalFee) {
             this.totalFee = totalFee;
+        }
+
+        public String getSubject() {
+            return subject;
+        }
+
+        public void setSubject(String subject) {
+            this.subject = subject;
+        }
+
+        public String getNotifyUrl() {
+            return notifyUrl;
+        }
+
+        public void setNotifyUrl(String notifyUrl) {
+            this.notifyUrl = notifyUrl;
         }
     }
 }
