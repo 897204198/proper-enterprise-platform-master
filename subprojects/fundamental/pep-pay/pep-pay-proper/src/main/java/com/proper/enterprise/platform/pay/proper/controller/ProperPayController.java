@@ -10,9 +10,11 @@ import com.proper.enterprise.platform.api.pay.model.PrepayReq;
 import com.proper.enterprise.platform.api.pay.service.NoticeService;
 import com.proper.enterprise.platform.api.pay.service.PayService;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.pay.proper.entity.ProperEntity;
+import com.proper.enterprise.platform.pay.proper.model.ProperOrderReq;
 import com.proper.enterprise.platform.pay.proper.model.ProperPayResultRes;
 import com.proper.enterprise.platform.pay.proper.repository.ProperRepository;
 import com.proper.enterprise.platform.pay.proper.service.ProperPayService;
@@ -68,17 +70,20 @@ public class ProperPayController extends BaseController {
             PrepayReq prepayReq = new PrepayReq();
             PayService payService = (PayService) properPayService;
             // 预支付业务处理
-            PayResultRes checkRes = payService.savePrepayBusiness(PayWay.PROPER.toString(), prepayReq, properReq);
+            com.proper.enterprise.platform.pay.proper.model.ProperOrderReq properOrderReq =
+                new com.proper.enterprise.platform.pay.proper.model.ProperOrderReq();
+            BeanUtil.copyProperties(properReq, properOrderReq);
+            PayResultRes checkRes = payService.savePrepayBusiness(PayWay.PROPER.toString(), prepayReq, properOrderReq);
             if (checkRes.getResultCode() != null && checkRes.getResultCode().equals(PayResType.SYSERROR)) {
                 BeanUtils.copyProperties(checkRes, resObj);
                 return responseOfPost(resObj);
             }
             // 订单号
-            prepayReq.setOutTradeNo(properReq.getOutTradeNo());
+            prepayReq.setOutTradeNo(properOrderReq.getOutTradeNo());
             // 订单金额
-            prepayReq.setTotalFee(properReq.getTotalFee());
+            prepayReq.setTotalFee(properOrderReq.getTotalFee());
             // 支付用途
-            prepayReq.setPayIntent(properReq.getBody());
+            prepayReq.setPayIntent(properOrderReq.getBody());
             // 支付方式
             prepayReq.setPayWay(PayWay.PROPER.toString());
             // 获取预支付信息

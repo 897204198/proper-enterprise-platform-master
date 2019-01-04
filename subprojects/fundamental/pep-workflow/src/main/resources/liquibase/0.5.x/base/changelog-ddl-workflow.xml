@@ -24,7 +24,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="TYPE" type="VARCHAR(255)">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="NAME" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -37,5 +37,6 @@
             </column>
         </createTable>
         <addPrimaryKey columnNames="ID" constraintName="UK_PEP_WF_IDM_QUERY_CONF" tableName="PEP_WF_IDM_QUERY_CONF"/>
+        <addUniqueConstraint tableName="PEP_WF_IDM_QUERY_CONF" columnNames="TYPE" constraintName="UK_PEP_WF_IDM_QUERY_CONF_TYPE"/>
     </changeSet>
 </databaseChangeLog>

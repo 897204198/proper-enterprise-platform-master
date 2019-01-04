@@ -24,7 +24,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="SEQUENCE_CODE" type="VARCHAR(255)">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="SEQUENCE_NAME" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -35,5 +35,6 @@
             <column name="CLEAR_TYPE" type="VARCHAR(255)"/>
         </createTable>
         <addPrimaryKey columnNames="ID" constraintName="UK_PEP_SEQUENCE" tableName="PEP_SEQUENCE"/>
+        <addUniqueConstraint tableName="PEP_SEQUENCE" columnNames="SEQUENCE_CODE" constraintName="UK_PEP_SEQUENCE_SEQUENCE_CODE"/>
     </changeSet>
 </databaseChangeLog>
