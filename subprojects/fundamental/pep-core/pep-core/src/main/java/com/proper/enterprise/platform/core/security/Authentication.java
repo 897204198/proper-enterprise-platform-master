@@ -35,7 +35,10 @@ public class Authentication {
         return currentUserId;
     }
 
-    private static void remove() {
+    /**
+     * 清空当前线程中的当前登录人信息
+     */
+    public static void remove() {
         currentUserThreadLocal.remove();
     }
 }

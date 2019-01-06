@@ -52,7 +52,7 @@ public class AccessTokenFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-
+        Authentication.remove();
         if (shouldIgnore(req)) {
             filterChain.doFilter(request, response);
             return;
