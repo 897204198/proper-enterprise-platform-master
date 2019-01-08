@@ -212,6 +212,7 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         return findTopMostProcInstId(historicProcessInstance.getSuperProcessInstanceId());
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, Object> getFormData(Map<String, Object> processVariables, String formKey) {
         if (StringUtil.isEmpty(formKey)) {
             return null;
@@ -219,11 +220,12 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         return (Map<String, Object>) processVariables.get(formKey);
     }
 
+    @SuppressWarnings("unchecked")
     private PEPStartVO findStart(String procInstId) {
         HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery()
             .includeProcessVariables().processInstanceId(procInstId).singleResult();
         PEPStartVO pepStartVO = new PEPStartVO();
-        pepStartVO.setCreateTime(DateUtil.toString(processInstance.getStartTime(),
+        pepStartVO.setCreateTime(DateUtil.toString(DateUtil.toLocalDateTime(processInstance.getStartTime()),
             PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
         pepStartVO.setStartUserId(processInstance.getStartUserId());
         pepStartVO.setProcessDefinitionName(processInstance.getProcessDefinitionName());

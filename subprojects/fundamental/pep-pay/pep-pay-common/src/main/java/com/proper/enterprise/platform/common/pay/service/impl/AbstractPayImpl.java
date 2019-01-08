@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 /**
  * 支付抽象类
  */
+@SuppressWarnings("unchecked")
 public abstract class AbstractPayImpl implements PayService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPayImpl.class);

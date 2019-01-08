@@ -157,7 +157,8 @@ public class DataDicServiceImpl extends AbstractJpaServiceSupport<DataDic, DataD
     }
 
     @Override
-    public DataDic save(DataDic dataDic) {
+    @SuppressWarnings("unchecked")
+    public <S extends DataDic> S save(S dataDic) {
         DataDicEntity  dataDicEntity = (DataDicEntity) dataDic;
         if (null == dataDicEntity.getDataDicType()) {
             dataDicEntity.setDataDicType(DataDicTypeEnum.SYSTEM);
@@ -169,7 +170,9 @@ public class DataDicServiceImpl extends AbstractJpaServiceSupport<DataDic, DataD
             dataDicEntity.setDeft(false);
         }
         validate(dataDicEntity);
-        return repository.save(dataDicEntity);
+        dataDicEntity = repository.save(dataDicEntity);
+        dataDic = (S) dataDicEntity;
+        return dataDic;
     }
 
     @Override

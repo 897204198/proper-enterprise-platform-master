@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
-import static java.util.Collections.singletonList;
-
 @Component
 public class MongoMonitorClient {
 
@@ -49,7 +47,7 @@ public class MongoMonitorClient {
         BSONTimestamp lastTimeStamp = new BSONTimestamp(getSecondTimestampTwo(new Date()), 1);
         for (String shardTime : shardTimeNames) {
             this.getTimeDB().getCollection(shardTime).update(new BasicDBObject(), new BasicDBObject("$set", new BasicDBObject("ts",
-                lastTimeStamp)), true, true, WriteConcern.SAFE);
+                lastTimeStamp)), true, true, WriteConcern.ACKNOWLEDGED);
         }
     }
 
@@ -65,16 +63,11 @@ public class MongoMonitorClient {
             serverAddresses.add(new ServerAddress(address + ":" + mongoProperties.getPort()));
         }
         this.hostMongo = new MongoClient(serverAddresses, getMongoCredential(mongoProperties.getUsername(),
-            mongoProperties.getPassword()));
+            mongoProperties.getPassword()), new MongoClientOptions.Builder().build());
     }
 
-    private List<MongoCredential> getMongoCredential(String userName, char[] password) {
-        List<MongoCredential> credentialList = Collections.emptyList();
-        if (StringUtils.isNotBlank(userName)) {
-            credentialList = singletonList(MongoCredential.createCredential(userName,
-                "admin", password));
-        }
-        return credentialList;
+    private MongoCredential getMongoCredential(String userName, char[] password) {
+        return StringUtils.isNotBlank(userName) ? MongoCredential.createCredential(userName, "admin", password) : null;
     }
 
     private void initShardSetClients() {

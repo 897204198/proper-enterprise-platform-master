@@ -114,7 +114,7 @@ public interface DataDicService extends BaseJpaService<DataDic, String> {
      * @param dataDic 数据字典
      * @return 保存后的数据字典
      */
-    DataDic save(DataDic dataDic);
+    <S extends DataDic> S save(S dataDic);
 
     /**
      * 更新数据字典

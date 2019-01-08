@@ -45,6 +45,7 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public BusinessNoticeResult send(ReadOnlyNotice notice) {
         LOGGER.debug("start email: " + JSONUtil.toJSONIgnoreException(notice));
         JavaMailSenderImpl javaMailSender = (JavaMailSenderImpl) noticeConfigurator.getJavaMailSender(notice.getAppKey());
@@ -94,7 +95,7 @@ public class EmailNoticeSendHandler implements NoticeSendHandler {
             if (notice.getNoticeExtMsgMap() != null) {
                 String sentDate = (String) notice.getNoticeExtMsgMap().get("sentDate");
                 if (StringUtil.isNotBlank(sentDate) && DateUtil.isDate(sentDate)) {
-                    helper.setSentDate(DateUtil.parseGMTSpecial(sentDate));
+                    helper.setSentDate(DateUtil.toDate(DateUtil.parseGMTSpecialToLocalDateTime(sentDate)));
                 }
             }
             helper.setSubject(notice.getTitle());

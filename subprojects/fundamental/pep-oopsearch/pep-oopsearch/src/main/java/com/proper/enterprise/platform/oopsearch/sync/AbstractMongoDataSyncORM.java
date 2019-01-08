@@ -54,6 +54,7 @@ public abstract class AbstractMongoDataSyncORM extends AbstractMongoDataSync {
      * 将配置中需要查询的表，及字段的内容，全部同步到mongodb当中
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void fullSynchronization() {
         Map<String, Object> searchConfigBeans = searchConfigService.getSearchConfigs(DataBaseType.RDB);
         if (searchConfigBeans == null) {

@@ -12,7 +12,10 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -53,7 +56,7 @@ public class NoticeMsgController extends BaseController {
                 targetTo, content, noticeType, null, status, getPageRequest()));
         } else {
             List<Notice> notices = noticeDaoService.findAll(id, appKey, batchId, targetTo, content, noticeType, null, status);
-            DataTrunk dataTrunk = new DataTrunk();
+            DataTrunk<Notice> dataTrunk = new DataTrunk<>();
             dataTrunk.setData(notices);
             dataTrunk.setCount(notices.size());
             return responseOfGet(dataTrunk);
@@ -81,7 +84,7 @@ public class NoticeMsgController extends BaseController {
                 targetTo, null, noticeType, errorCode, status, getPageRequest()));
         } else {
             List<Notice> notices = noticeDaoService.findAll(null, appKey, batchId, targetTo, null, noticeType, errorCode, status);
-            DataTrunk dataTrunk = new DataTrunk();
+            DataTrunk<Notice> dataTrunk = new DataTrunk<>();
             dataTrunk.setData(notices);
             dataTrunk.setCount(notices.size());
             return responseOfGet(dataTrunk);

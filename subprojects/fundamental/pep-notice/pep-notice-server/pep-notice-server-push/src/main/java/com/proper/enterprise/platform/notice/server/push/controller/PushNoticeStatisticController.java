@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class PushNoticeStatisticController extends BaseController {
     public ResponseEntity<?> get(@ApiParam(value = "‍推送数据分析枚举", required = true) @PathVariable PushDataAnalysisDateRangeEnum dateType,
                                  @ApiParam(value = "‍应用唯一标识", required = true) String appKey) {
         List<PushServiceDataAnalysisVO> dataAnalysisVOS = pushMsgStatisticService.findByDateTypeAndAppKey(new Date(), dateType, appKey);
-        DataTrunk dataTrunk = new DataTrunk();
+        DataTrunk<PushServiceDataAnalysisVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setCount(dataAnalysisVOS.size());
         dataTrunk.setData(dataAnalysisVOS);
         return new ResponseEntity<>(dataTrunk, HttpStatus.OK);
@@ -56,8 +57,7 @@ public class PushNoticeStatisticController extends BaseController {
     @ApiOperation("‍统计今天的推送数据")
     @RequestMapping("/init")
     public ResponseEntity<?> init() {
-        Date date = new Date();
-        pushMsgStatisticService.saveStatisticSomeday(DateUtil.toString(date, coreProperties.getDefaultDateFormat()));
+        pushMsgStatisticService.saveStatisticSomeday(DateUtil.toString(LocalDateTime.now(), coreProperties.getDefaultDateFormat()));
         return new ResponseEntity<>(null, null, HttpStatus.OK);
     }
 
@@ -80,7 +80,7 @@ public class PushNoticeStatisticController extends BaseController {
                                                                        @ApiParam(value = "‍结束时间", required = true)
                                                                        @RequestParam("endDate") String endDate) {
         List<PushMsgPieDataVO> pieItems = pushMsgStatisticService.findPieItems(startDate, endDate);
-        DataTrunk dataTrunk = new DataTrunk();
+        DataTrunk<PushMsgPieDataVO> dataTrunk = new DataTrunk<>();
         dataTrunk.setData(pieItems);
         dataTrunk.setCount(pieItems.size());
         return new ResponseEntity<>(dataTrunk, HttpStatus.OK);

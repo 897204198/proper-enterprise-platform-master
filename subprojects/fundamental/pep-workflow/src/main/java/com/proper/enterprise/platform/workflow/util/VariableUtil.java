@@ -30,7 +30,7 @@ public class VariableUtil {
                 continue;
             }
             if (isDate((String) entry.getValue())) {
-                variables.put(entry.getKey(), DateUtil.parseGMTSpecial((String) entry.getValue()));
+                variables.put(entry.getKey(), DateUtil.parseGMTSpecialToLocalDateTime((String) entry.getValue()));
                 continue;
             }
             if (isDataDic((String) entry.getValue())) {

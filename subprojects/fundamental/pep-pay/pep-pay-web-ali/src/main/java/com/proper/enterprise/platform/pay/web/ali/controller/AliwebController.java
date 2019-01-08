@@ -56,6 +56,7 @@ public class AliwebController extends BaseController {
     @AuthcIgnore
     @ApiOperation("‍支付宝网页支付结果异步通知")
     @PostMapping(value = "/noticeAliwebPayInfo")
+    @SuppressWarnings("unchecked")
     public ResponseEntity<String> dealAliwebNoticePay(HttpServletRequest request) throws Exception {
         LOGGER.debug("-----------Ali web async notice--------begin-------------");
 

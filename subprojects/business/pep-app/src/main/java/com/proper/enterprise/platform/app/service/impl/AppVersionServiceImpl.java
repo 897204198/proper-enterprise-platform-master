@@ -17,7 +17,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,6 +33,7 @@ public class AppVersionServiceImpl implements AppVersionService {
         this.repo = repo;
     }
 
+    @Override
     public void validVersion(String version) {
         if (StringUtil.isEmpty(version)) {
             return;
@@ -66,7 +66,7 @@ public class AppVersionServiceImpl implements AppVersionService {
         }
         version.setReleased(true);
         version.setPublisherId(Authentication.getCurrentUserId());
-        version.setPublishTime(DateUtil.toTimestamp(new Date()));
+        version.setPublishTime(DateUtil.getTimestamp());
         return repo.save(version);
     }
 

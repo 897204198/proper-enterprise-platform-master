@@ -280,7 +280,7 @@ public class FileServiceImpl extends AbstractJpaServiceSupport<File, FileReposit
             throw new ErrMsgException("The file list find failed");
         }
         if (sort == null) {
-            sort = new Sort(new Sort.Order(Sort.Direction.DESC, "isDir"),
+            sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "isDir"),
                             new Sort.Order(Sort.Direction.DESC, "lastModifyTime"));
         }
         List<FileEntity> fileEntities;

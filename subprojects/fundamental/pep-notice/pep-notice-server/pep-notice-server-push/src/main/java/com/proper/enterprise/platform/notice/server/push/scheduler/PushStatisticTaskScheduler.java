@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,13 +36,14 @@ public class PushStatisticTaskScheduler {
     public void saveYesterdayPushStatistic() {
         List<PushNoticeMsgStatisticEntity> entityList = new ArrayList<>();
         //当天时间
-        Date dateEnd = new Date();
+        LocalDateTime dateEnd = LocalDateTime.now();
         //昨天时间
-        Date dateStart = DateUtil.addDay(dateEnd, -1);
-        List<PushNoticeMsgStatisticEntity> pushMsgStatistics = pushNoticeMsgStatisticService.getPushStatistic(dateStart, dateEnd);
+        LocalDateTime dateStart = DateUtil.addDay(dateEnd, -1);
+        List<PushNoticeMsgStatisticEntity> pushMsgStatistics = pushNoticeMsgStatisticService.getPushStatistic(DateUtil.toDate(dateStart),
+                DateUtil.toDate(dateEnd));
         LOGGER.debug("startDate:{} endDate:{} entityList:{}", DateUtil.toString(dateStart, coreProperties.getDefaultDatetimeFormat()),
             DateUtil.toString(dateEnd, coreProperties.getDefaultDatetimeFormat()), entityList);
-        pushNoticeMsgStatisticService.deleteBySendDate(dateStart);
+        pushNoticeMsgStatisticService.deleteBySendDate(DateUtil.toDate(dateStart));
         pushNoticeMsgStatisticService.saveAll(pushMsgStatistics);
     }
 }

@@ -23,7 +23,7 @@ public class PEPProcInst {
 
     public PEPProcInst(ProcessInstance processInstance) {
         this.setProcInstId(processInstance.getId());
-        this.setCreateTime(DateUtil.toString(processInstance.getStartTime(),
+        this.setCreateTime(DateUtil.toString(DateUtil.toLocalDateTime(processInstance.getStartTime()),
             PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
         this.setEnded(processInstance.isEnded());
         this.setProcessDefinitionId(processInstance.getProcessDefinitionId());
@@ -34,7 +34,7 @@ public class PEPProcInst {
     }
 
     public PEPProcInst(HistoricProcessInstance historicProcessInstance) {
-        this.setCreateTime(DateUtil.toString(historicProcessInstance.getStartTime(),
+        this.setCreateTime(DateUtil.toString(DateUtil.toLocalDateTime(historicProcessInstance.getStartTime()),
             PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
         this.setEnded(null != historicProcessInstance.getEndTime());
         this.setProcInstId(historicProcessInstance.getId());
@@ -43,7 +43,7 @@ public class PEPProcInst {
         this.setProcessDefinitionName(historicProcessInstance.getProcessDefinitionName());
         this.setStartUserId(historicProcessInstance.getStartUserId());
         this.setEndTime(this.getEnded()
-            ? DateUtil.toString(historicProcessInstance.getEndTime(),
+            ? DateUtil.toString(DateUtil.toLocalDateTime(historicProcessInstance.getEndTime()),
             PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
             : null);
         this.setProcessTitle(buildProcessTitle(historicProcessInstance.getProcessVariables()));

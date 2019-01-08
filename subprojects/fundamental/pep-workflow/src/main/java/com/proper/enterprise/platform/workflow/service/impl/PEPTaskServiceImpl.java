@@ -285,6 +285,7 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         return new ArrayList<>(BeanUtil.convert(TaskConvert.convert(tasks), PEPTaskVO.class));
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, Object> addNoSameAssigneeSkipMark(Task task, Map<String, Object> variables) {
         Set<String> noSameAssigneeSkipActIds = (Set<String>) variables.get(WorkFlowConstants.NO_SAME_ASSIGNEE_SKIP_REMARK);
         if (null == noSameAssigneeSkipActIds) {

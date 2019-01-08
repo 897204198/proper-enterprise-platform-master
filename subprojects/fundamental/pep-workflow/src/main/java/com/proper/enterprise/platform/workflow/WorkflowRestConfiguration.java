@@ -14,6 +14,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 @Configuration
 @EnableConfigurationProperties(FlowableModelerAppProperties.class)
+@SuppressWarnings("unchecked")
 @ComponentScan(basePackages = {
     "org.flowable.ui.modeler.conf",
     "org.flowable.ui.modeler.repository",

@@ -38,6 +38,7 @@ public class NoticeConfigController extends BaseController {
 
     @PostMapping("/{noticeType}")
     @ApiOperation("‍新增配置")
+    @SuppressWarnings("unchecked")
     public ResponseEntity post(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
                                @ApiParam(value = "‍Token") @RequestParam(required = false, name = "access_token") String accessToken,
                                @ApiParam(value = "‍‍‍需要的参数配置", required = true) @RequestBody Map config, HttpServletRequest request) {
@@ -49,6 +50,7 @@ public class NoticeConfigController extends BaseController {
 
     @PostMapping("/{noticeType}/{appKey}")
     @ApiOperation("‍新增配置")
+    @SuppressWarnings("unchecked")
     public ResponseEntity postAppConfig(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
                                         @ApiParam(value = "‍App唯一标识", required = true) @PathVariable String appKey,
                                         @ApiParam(value = "‍‍‍需要的参数配置", required = true) @RequestBody Map config,
@@ -79,6 +81,7 @@ public class NoticeConfigController extends BaseController {
 
     @PutMapping("/{noticeType}")
     @ApiOperation("‍修改配置")
+    @SuppressWarnings("unchecked")
     public ResponseEntity put(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
                               @ApiParam(value = "‍Token") @RequestParam(required = false, name = "access_token") String accessToken,
                               @ApiParam(value = "‍‍‍需要的参数信息", required = true) @RequestBody Map config,
@@ -91,6 +94,7 @@ public class NoticeConfigController extends BaseController {
 
     @PutMapping("/{noticeType}/{appKey}")
     @ApiOperation("‍修改配置")
+    @SuppressWarnings("unchecked")
     public ResponseEntity putAppConfig(@ApiParam(value = "‍消息类型", required = true) @PathVariable NoticeType noticeType,
                                        @ApiParam(value = "‍App唯一标识", required = true) @PathVariable String appKey,
                                        @ApiParam(value = "‍‍‍需要的参数信息", required = true) @RequestBody Map config,

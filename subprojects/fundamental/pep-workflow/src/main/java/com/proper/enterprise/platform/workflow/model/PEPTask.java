@@ -32,7 +32,7 @@ public class PEPTask {
         this.setAssignee(task.getAssignee());
         this.setForm(new PEPExtForm(task).convert());
         this.setName(task.getName());
-        this.setCreateTime(DateUtil.toString(task.getCreateTime(),
+        this.setCreateTime(DateUtil.toString(DateUtil.toLocalDateTime(task.getCreateTime()),
             PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
         buildIdentityMsg(this, task.getIdentityLinks());
     }
@@ -45,10 +45,10 @@ public class PEPTask {
         this.setAssignee(historicTaskInstance.getAssignee());
         this.setName(historicTaskInstance.getName());
         this.setEndTime(null != historicTaskInstance.getEndTime()
-            ? DateUtil.toString(historicTaskInstance.getEndTime(),
+            ? DateUtil.toString(DateUtil.toLocalDateTime(historicTaskInstance.getEndTime()),
             PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
             : null);
-        this.setCreateTime(DateUtil.toString(historicTaskInstance.getCreateTime(),
+        this.setCreateTime(DateUtil.toString(DateUtil.toLocalDateTime(historicTaskInstance.getCreateTime()),
             PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
     }
 
@@ -73,10 +73,10 @@ public class PEPTask {
         this.setAssignee(historicTaskInstance.getAssignee());
         this.setName(historicTaskInstance.getName());
         this.setEndTime(null != historicTaskInstance.getEndTime()
-            ? DateUtil.toString(historicTaskInstance.getEndTime(),
+            ? DateUtil.toString(DateUtil.toLocalDateTime(historicTaskInstance.getEndTime()),
             PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat())
             : null);
-        this.setCreateTime(DateUtil.toString(historicTaskInstance.getCreateTime(),
+        this.setCreateTime(DateUtil.toString(DateUtil.toLocalDateTime(historicTaskInstance.getCreateTime()),
             PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
     }
 
@@ -275,6 +275,7 @@ public class PEPTask {
         this.pepProcInst = pepProcInst;
     }
 
+    @SuppressWarnings("unchecked")
     public Boolean getSameAssigneeSkip() {
         if (null == this.getForm() || null == this.getForm().getGlobalData()) {
             this.sameAssigneeSkip = false;

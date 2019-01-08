@@ -102,6 +102,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
      * @throws Exception 保存异常
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected <T extends PayResultRes, R extends OrderReq> T savePrepayImpl(R req)  throws Exception {
         // 返回给请求客户端处理结果
         AliwebPayResultRes resObj = new AliwebPayResultRes();
@@ -150,6 +151,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
      * @return 处理结果
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected <T> T getPayQueryRes(String outTradeNo) {
         AlipayTradeQueryResponse res = new AlipayTradeQueryResponse();
         // SDK 公共请求类，包含公共请求参数，以及封装了签名与验签，开发者无需关注签名与验签
@@ -177,6 +179,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
      * @return 支付宝退款请求对象
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected <T> T getRefundReq(RefundReq refundReq) {
         AliwebRefundReq aliRefundReq = new AliwebRefundReq();
         aliRefundReq.setRefundNo(refundReq.getOutRequestNo());
@@ -193,6 +196,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
      * @return 支付宝退款结果
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected <T> T saveRefundProcess(T refundBody) throws Exception {
         AlipayTradeRefundResponse res = new AlipayTradeRefundResponse();
         AliwebRefundReq aliRefundReq = (AliwebRefundReq) refundBody;
@@ -238,6 +242,7 @@ public class AliwebPayServiceImpl extends AbstractPayImpl implements PayService,
      * @return 查询支付宝退款结果
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected <T> T getRefundQueryRes(String orderNo, String refundNo) {
         AlipayTradeFastpayRefundQueryResponse res = new AlipayTradeFastpayRefundQueryResponse();
 

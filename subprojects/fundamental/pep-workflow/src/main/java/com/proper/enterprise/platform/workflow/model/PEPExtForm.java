@@ -103,6 +103,7 @@ public class PEPExtForm implements PEPForm {
      * @param processVariables 全局变量
      * @return formData
      */
+    @SuppressWarnings("unchecked")
     private Map<String, Object> buildFormData(Map<String, Object> processVariables) {
         if (MapUtils.isEmpty(processVariables)) {
             return null;

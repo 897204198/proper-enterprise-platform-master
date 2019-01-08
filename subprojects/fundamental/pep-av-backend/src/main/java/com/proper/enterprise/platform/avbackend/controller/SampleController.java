@@ -1,16 +1,19 @@
+
 package com.proper.enterprise.platform.avbackend.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import com.proper.enterprise.platform.api.service.MongoDataBaseService;
+import com.proper.enterprise.platform.core.CoreProperties;
+import com.proper.enterprise.platform.core.PEPPropertiesLoader;
 import com.proper.enterprise.platform.core.mongo.constants.MongoConstants;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Api(tags = "/avdemo")
 @Controller
@@ -131,7 +131,8 @@ public class SampleController {
         Document doc = mongoDBService.insertOne(node, collection);
         Map<String, Object> result = new HashMap<>(3);
         result.put("objectId", doc.getObjectId("_id").toHexString());
-        result.put("createdAt", ISO8601Utils.format(new Date(), true));
+        result.put("createdAt", DateFormatUtils.format(new Date(), PEPPropertiesLoader.load(CoreProperties.class).getDefaultTimestampFormat(),
+                TimeZone.getTimeZone("UTC"), Locale.US));
         return result;
     }
 

@@ -66,6 +66,7 @@ public class DataDicController extends BaseController {
         @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
         @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
     })
+    @SuppressWarnings("unchecked")
     public ResponseEntity<DataTrunk> get(String catalog, String code, String name, DataDicTypeEnum dataDicType, EnableEnum enable) {
         if (isPageSearch()) {
             return responseOfGet(dataDicService.findPage(catalog, code, name, dataDicType, enable));

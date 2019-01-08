@@ -1,3 +1,4 @@
+
 package com.proper.enterprise.platform.oopsearch.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -57,6 +58,7 @@ public class OopSearchController extends BaseController {
 
     @GetMapping("/inverse")
     @ApiOperation("‍根据输入内容模糊匹配查询")
+    @SuppressWarnings("unchecked")
     public ResponseEntity<List<OOPSearchDocument>> searchInfo(@ApiParam(value = "‍输入的内容") @RequestParam String data,
                                                               @ApiParam(value = "‍模块名称", required = true) @RequestParam String moduleName) {
         List<OOPSearchDocument> docs = (List<OOPSearchDocument>) searchService.getSearchInfo(data, moduleName);
@@ -123,6 +125,7 @@ public class OopSearchController extends BaseController {
         return stringBuffer.toString();
     }
 
+    @SuppressWarnings("unchecked")
     private String handleRestUrl(String url, String restPath, HttpServletResponse response) throws HttpRequestMethodNotSupportedException {
         Map<String, String> restPathMap = new HashMap<>(16);
         if (StringUtil.isNotEmpty(restPath)) {

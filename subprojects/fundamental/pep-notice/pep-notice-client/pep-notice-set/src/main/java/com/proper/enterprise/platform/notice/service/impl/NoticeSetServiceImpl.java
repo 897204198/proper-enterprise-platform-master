@@ -21,6 +21,7 @@ public class NoticeSetServiceImpl implements NoticeSetService {
     private static final String NOTICE_TYPE_BPM = "BPM";
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<NoticeSetDocument> findByUserId(String userId) {
         List<DataDic> noticeCatalogs = (List<DataDic>) DataDicUtil.findByCatalog("NOTICE_CATALOG");
         Map<String, NoticeSetDocument> setMap = this.findUserSetMap(userId);

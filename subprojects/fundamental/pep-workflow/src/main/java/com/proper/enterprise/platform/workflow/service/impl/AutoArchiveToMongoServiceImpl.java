@@ -33,6 +33,7 @@ public class AutoArchiveToMongoServiceImpl implements AutoArchiveService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void insert(ExecutionEntity execution, String formKey) {
         if (StringUtil.isEmpty(formKey)) {
             return;

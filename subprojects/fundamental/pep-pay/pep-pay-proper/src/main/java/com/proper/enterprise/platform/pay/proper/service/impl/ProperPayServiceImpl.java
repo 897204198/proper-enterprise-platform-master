@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
  */
 @Profile({"dev", "test"})
 @Service("pay_way_proper")
+@SuppressWarnings("unchecked")
 public class ProperPayServiceImpl extends AbstractPayImpl implements PayService, ProperPayService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProperPayServiceImpl.class);

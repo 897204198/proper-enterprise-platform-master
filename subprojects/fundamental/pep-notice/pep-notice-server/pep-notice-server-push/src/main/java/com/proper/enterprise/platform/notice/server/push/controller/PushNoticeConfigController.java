@@ -59,6 +59,7 @@ public class PushNoticeConfigController extends BaseController {
         return responseOfPost(null);
     }
 
+    @SuppressWarnings("unchecked")
     private PushConfigVO convertVo(PushConfigVo pushConfigVo) {
         PushConfigItem huaweiConfItem = pushConfigVo.getHuaweiConf();
         PushConfigItem xiaomiConfItem = pushConfigVo.getXiaomiConf();

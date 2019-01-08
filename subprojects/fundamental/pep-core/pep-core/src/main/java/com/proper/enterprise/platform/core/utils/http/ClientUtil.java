@@ -68,7 +68,7 @@ public class ClientUtil {
         }
         RequestBody body = null;
         if (StringUtil.isNotNull(data)) {
-            Assert.notNull(type);
+            Assert.notNull(type, "Data is not null!");
             body = RequestBody.create(okhttp3.MediaType.parse(type.toString()), data);
         }
         builder = builder.method(method, body);

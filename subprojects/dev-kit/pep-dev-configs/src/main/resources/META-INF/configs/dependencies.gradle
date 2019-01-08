@@ -174,11 +174,8 @@ libraries.jaxws_rt = 'com.sun.xml.ws:jaxws-rt:2.3.1'
 
 libraries.jpa_api = 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final'
 
-//libraries.json_lib = 'net.sf.json-lib:json-lib:2.4:jdk15@jar'
+libraries.jsr305 = 'com.google.code.findbugs:jsr305:3.0.2'
 
-//libraries.jsp_api = 'javax.servlet.jsp:jsp-api:2.2'
-
-//libraries.jstl = 'jstl:jstl:1.2'
 libraries.liquibase = 'com.proper.enterprise.platform:liquibase-core:3.6.2-SNAPSHOT'
 libraries.logback_classic = dependencies.module("ch.qos.logback:logback-classic:${versions.logback}") {
     dependency "ch.qos.logback:logback-core:${versions.logback}"

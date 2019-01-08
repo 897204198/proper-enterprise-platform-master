@@ -107,6 +107,7 @@ public abstract class AbstractPushSendSupport {
      *
      * @param readOnlyNotice 只读消息
      */
+    @SuppressWarnings("unchecked")
     protected void buildCommonCustomProperty(ReadOnlyNotice readOnlyNotice) {
         if (null == readOnlyNotice) {
             return;

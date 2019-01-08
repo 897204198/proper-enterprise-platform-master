@@ -83,6 +83,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object getKeyValueByClassName(String cacheName, String key, String className) throws Exception {
         Cache cache = cacheManager.getCache(cacheName);
         if (cache == null) {

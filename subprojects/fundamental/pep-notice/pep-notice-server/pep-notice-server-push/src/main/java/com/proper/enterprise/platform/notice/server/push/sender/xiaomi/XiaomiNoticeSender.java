@@ -60,6 +60,7 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public BusinessNoticeResult send(ReadOnlyNotice notice) {
         PushNoticeMsgEntity pushNoticeMsgEntity = PushMsgConvert.convert(notice);
         pushNoticeMsgEntity.setPushChannel(PushChannelEnum.XIAOMI);
@@ -96,6 +97,7 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Message buildMessage(ReadOnlyNotice notice) {
         Message.Builder msgBuilder = new Message.Builder();
         // 推送标题

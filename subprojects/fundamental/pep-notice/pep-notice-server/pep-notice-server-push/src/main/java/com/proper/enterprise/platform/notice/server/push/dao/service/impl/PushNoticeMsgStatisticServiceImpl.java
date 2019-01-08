@@ -23,6 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -46,8 +49,8 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
     @Override
     public List<PushNoticeMsgStatisticEntity> getPushStatistic(Date startDate, Date endDate) {
         List<Object[]> statisticList = pushNoticeMsgStatisticRepository.getPushStatistic(
-            DateUtil.toString(startDate, coreProperties.getDefaultDateFormat()),
-            DateUtil.toString(endDate, coreProperties.getDefaultDateFormat()));
+                DateUtil.toString(DateUtil.toLocalDateTime(startDate), coreProperties.getDefaultDateFormat()),
+                DateUtil.toString(DateUtil.toLocalDateTime(endDate), coreProperties.getDefaultDateFormat()));
         List<PushNoticeMsgStatisticEntity> entityList = new ArrayList<>();
         if (CollectionUtil.isEmpty(statisticList)) {
             return new ArrayList<>();
@@ -56,10 +59,11 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
             PushNoticeMsgStatisticEntity entity = new PushNoticeMsgStatisticEntity();
             entity.setAppKey((String) rows[0]);
             entity.setPushChannel(PushChannelEnum.valueOf((String) rows[1]));
-            Date sendDate = DateUtil.toDate((String) rows[2], coreProperties.getDefaultDateFormat());
-            entity.setSendDate(DateUtil.toString(sendDate, coreProperties.getDefaultDateFormat()));
+            LocalDate localDate = DateUtil.toLocalDate((String) rows[2], coreProperties.getDefaultDateFormat());
+            Date sendDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            entity.setSendDate(DateUtil.toString(DateUtil.toLocalDateTime(sendDate), coreProperties.getDefaultDateFormat()));
             entity.setWeek(buildWeekRange(sendDate));
-            entity.setMonth(DateUtil.toString(sendDate, coreProperties.getDefaultMonthFormat()));
+            entity.setMonth(DateUtil.toString(DateUtil.toLocalDateTime(sendDate), coreProperties.getDefaultMonthFormat()));
             entity.setStatus(NoticeStatus.valueOf((String) rows[3]));
             String obj4 = rows[4].toString();
             entity.setMsgCount(Integer.valueOf(obj4));
@@ -75,7 +79,8 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
 
     @Override
     public void deleteBySendDate(Date sendDate) {
-        pushNoticeMsgStatisticRepository.deleteBySendDate(DateUtil.toString(sendDate, coreProperties.getDefaultDateFormat()));
+        pushNoticeMsgStatisticRepository.deleteBySendDate(DateUtil.toString(DateUtil.toLocalDateTime(sendDate),
+                coreProperties.getDefaultDateFormat()));
     }
 
     @Override
@@ -94,10 +99,10 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
 
     @Override
     public void saveStatisticSomeday(String date) {
-        Date dateStart = DateUtil.toDate(date, coreProperties.getDefaultDateFormat());
-        Date dateEnd = DateUtil.addDay(dateStart, 1);
-        List<PushNoticeMsgStatisticEntity> pushNoticeMsgStatistics = this.getPushStatistic(dateStart, dateEnd);
-        this.deleteBySendDate(dateStart);
+        LocalDateTime dateStart = DateUtil.toLocalDateTime(date, coreProperties.getDefaultDateFormat());
+        LocalDateTime dateEnd = DateUtil.addDay(dateStart, 1);
+        List<PushNoticeMsgStatisticEntity> pushNoticeMsgStatistics = this.getPushStatistic(DateUtil.toDate(dateStart), DateUtil.toDate(dateEnd));
+        this.deleteBySendDate(DateUtil.toDate(dateStart));
         this.saveAll(pushNoticeMsgStatistics);
     }
 
@@ -182,8 +187,8 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
     @Override
     public DataTrunk<App> findApp(String appKey, String appName, String appDesc, Boolean enable, PageRequest pageRequest) {
         DataTrunk<App> result = appDaoService.findAll(appKey, appName, appDesc, enable, pageRequest);
-        String endDate = DateUtil.toDateString(new Date());
-        String startDate = DateUtil.toDateString(DateUtil.addDay(new Date(), -7));
+        String endDate = DateUtil.toLocalDateString(LocalDateTime.now());
+        String startDate = DateUtil.toLocalDateString(DateUtil.addDay(LocalDateTime.now(), -7));
         List<Object[]> itemsTotalNum = pushNoticeMsgStatisticRepository.getItemsTotalNum(startDate, endDate);
         List<AppVO> appVOs = new ArrayList<>(BeanUtil.convert(result.getData(), AppVO.class));
         for (AppVO app : appVOs) {
@@ -208,44 +213,44 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
     private List<PushServiceDataAnalysisVO> findPushStatisticByDay(Date startDate, String appKey) {
         Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap = new HashMap<>(16);
         //构造每天视图 共七天
-        String oneDate = DateUtil.toString(startDate, coreProperties.getDefaultDateFormat());
+        String oneDate = DateUtil.toString(DateUtil.toLocalDateTime(startDate), coreProperties.getDefaultDateFormat());
         PushServiceDataAnalysisVO one = new PushServiceDataAnalysisVO();
         one.setDataAnalysisDate(oneDate);
         pushServiceDataAnalysisMap.put(oneDate, one);
 
-        String twoDate = DateUtil.toString(DateUtil.addDay(startDate, -1), coreProperties.getDefaultDateFormat());
+        String twoDate = DateUtil.toString(DateUtil.addDay(DateUtil.toLocalDateTime(startDate), -1), coreProperties.getDefaultDateFormat());
         PushServiceDataAnalysisVO two = new PushServiceDataAnalysisVO();
         two.setDataAnalysisDate(twoDate);
         pushServiceDataAnalysisMap.put(twoDate, two);
 
-        String threeDate = DateUtil.toString(DateUtil.addDay(startDate, -2), coreProperties.getDefaultDateFormat());
+        String threeDate = DateUtil.toString(DateUtil.addDay(DateUtil.toLocalDateTime(startDate), -2), coreProperties.getDefaultDateFormat());
         PushServiceDataAnalysisVO three = new PushServiceDataAnalysisVO();
         three.setDataAnalysisDate(threeDate);
         pushServiceDataAnalysisMap.put(threeDate, three);
 
-        String fourDate = DateUtil.toString(DateUtil.addDay(startDate, -3), coreProperties.getDefaultDateFormat());
+        String fourDate = DateUtil.toString(DateUtil.addDay(DateUtil.toLocalDateTime(startDate), -3), coreProperties.getDefaultDateFormat());
         PushServiceDataAnalysisVO four = new PushServiceDataAnalysisVO();
         four.setDataAnalysisDate(fourDate);
         pushServiceDataAnalysisMap.put(fourDate, four);
 
-        String fiveDate = DateUtil.toString(DateUtil.addDay(startDate, -4), coreProperties.getDefaultDateFormat());
+        String fiveDate = DateUtil.toString(DateUtil.addDay(DateUtil.toLocalDateTime(startDate), -4), coreProperties.getDefaultDateFormat());
         PushServiceDataAnalysisVO five = new PushServiceDataAnalysisVO();
         five.setDataAnalysisDate(fiveDate);
         pushServiceDataAnalysisMap.put(fiveDate, five);
 
-        String sixDate = DateUtil.toString(DateUtil.addDay(startDate, -5), coreProperties.getDefaultDateFormat());
+        String sixDate = DateUtil.toString(DateUtil.addDay(DateUtil.toLocalDateTime(startDate), -5), coreProperties.getDefaultDateFormat());
         PushServiceDataAnalysisVO six = new PushServiceDataAnalysisVO();
         six.setDataAnalysisDate(sixDate);
         pushServiceDataAnalysisMap.put(sixDate, six);
 
-        String sevenDate = DateUtil.toString(DateUtil.addDay(startDate, -6), coreProperties.getDefaultDateFormat());
+        String sevenDate = DateUtil.toString(DateUtil.addDay(DateUtil.toLocalDateTime(startDate), -6), coreProperties.getDefaultDateFormat());
         PushServiceDataAnalysisVO seven = new PushServiceDataAnalysisVO();
         seven.setDataAnalysisDate(sevenDate);
         pushServiceDataAnalysisMap.put(sevenDate, seven);
 
         //获取七天内统计数据
-        Date sendDate = DateUtil.addDay(startDate, -6);
-        String sendDateStr = DateUtil.toString(sendDate, coreProperties.getDefaultDateFormat());
+        Date sendDate = DateUtil.toDate(DateUtil.addDay(DateUtil.toLocalDateTime(startDate), -6));
+        String sendDateStr = DateUtil.toString(DateUtil.toLocalDateTime(sendDate), coreProperties.getDefaultDateFormat());
         List<PushNoticeMsgStatisticEntity> result;
         if (StringUtil.isEmpty(appKey)) {
             result = convert(pushNoticeMsgStatisticRepository.findAllGroupDay(sendDateStr));
@@ -285,39 +290,39 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
         one.setDataAnalysisDate(oneDate);
         pushServiceDataAnalysisMap.put(oneDate, one);
 
-        String twoDate = buildWeekRange(DateUtil.addWeek(startDate, -1));
+        String twoDate = buildWeekRange(DateUtil.toDate(DateUtil.addWeek(DateUtil.toLocalDateTime(startDate), -1)));
         PushServiceDataAnalysisVO two = new PushServiceDataAnalysisVO();
         two.setDataAnalysisDate(twoDate);
         pushServiceDataAnalysisMap.put(twoDate, two);
 
-        String threeDate = buildWeekRange(DateUtil.addWeek(startDate, -2));
+        String threeDate = buildWeekRange(DateUtil.toDate(DateUtil.addWeek(DateUtil.toLocalDateTime(startDate), -2)));
         PushServiceDataAnalysisVO three = new PushServiceDataAnalysisVO();
         three.setDataAnalysisDate(threeDate);
         pushServiceDataAnalysisMap.put(threeDate, three);
 
-        String fourDate = buildWeekRange(DateUtil.addWeek(startDate, -3));
+        String fourDate = buildWeekRange(DateUtil.toDate(DateUtil.addWeek(DateUtil.toLocalDateTime(startDate), -3)));
         PushServiceDataAnalysisVO four = new PushServiceDataAnalysisVO();
         four.setDataAnalysisDate(fourDate);
         pushServiceDataAnalysisMap.put(fourDate, four);
 
-        String fiveDate = buildWeekRange(DateUtil.addWeek(startDate, -4));
+        String fiveDate = buildWeekRange(DateUtil.toDate(DateUtil.addWeek(DateUtil.toLocalDateTime(startDate), -4)));
         PushServiceDataAnalysisVO five = new PushServiceDataAnalysisVO();
         five.setDataAnalysisDate(fiveDate);
         pushServiceDataAnalysisMap.put(fiveDate, five);
 
-        String sixDate = buildWeekRange(DateUtil.addWeek(startDate, -5));
+        String sixDate = buildWeekRange(DateUtil.toDate(DateUtil.addWeek(DateUtil.toLocalDateTime(startDate), -5)));
         PushServiceDataAnalysisVO six = new PushServiceDataAnalysisVO();
         six.setDataAnalysisDate(sixDate);
         pushServiceDataAnalysisMap.put(sixDate, six);
 
-        String sevenDate = buildWeekRange(DateUtil.addWeek(startDate, -6));
+        String sevenDate = buildWeekRange(DateUtil.toDate(DateUtil.addWeek(DateUtil.toLocalDateTime(startDate), -6)));
         PushServiceDataAnalysisVO seven = new PushServiceDataAnalysisVO();
         seven.setDataAnalysisDate(sevenDate);
         pushServiceDataAnalysisMap.put(sevenDate, seven);
 
 
         //获取七天内统计数据
-        Date sendDate = DateUtil.addWeek(startDate, -6);
+        LocalDateTime sendDate = DateUtil.addWeek(DateUtil.toLocalDateTime(startDate), -6);
         String sendDateStr = DateUtil.toString(sendDate, coreProperties.getDefaultDateFormat());
         List<PushNoticeMsgStatisticEntity> result;
         if (StringUtil.isEmpty(appKey)) {
@@ -350,43 +355,43 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
     public List<PushServiceDataAnalysisVO> findPushStatisticByMonth(Date startDate, String appKey) {
         Map<String, PushServiceDataAnalysisVO> pushServiceDataAnalysisMap = new HashMap<>(16);
         //构造每月视图 共七月
-        String oneDate = DateUtil.toString(startDate, coreProperties.getDefaultMonthFormat());
+        String oneDate = DateUtil.toString(DateUtil.toLocalDateTime(startDate), coreProperties.getDefaultMonthFormat());
         PushServiceDataAnalysisVO one = new PushServiceDataAnalysisVO();
         one.setDataAnalysisDate(oneDate);
         pushServiceDataAnalysisMap.put(oneDate, one);
 
-        String twoDate = DateUtil.toString(DateUtil.addMonth(startDate, -1), coreProperties.getDefaultMonthFormat());
+        String twoDate = DateUtil.toString(DateUtil.addMonth(DateUtil.toLocalDateTime(startDate), -1), coreProperties.getDefaultMonthFormat());
         PushServiceDataAnalysisVO two = new PushServiceDataAnalysisVO();
         two.setDataAnalysisDate(twoDate);
         pushServiceDataAnalysisMap.put(twoDate, two);
 
-        String threeDate = DateUtil.toString(DateUtil.addMonth(startDate, -2), coreProperties.getDefaultMonthFormat());
+        String threeDate = DateUtil.toString(DateUtil.addMonth(DateUtil.toLocalDateTime(startDate), -2), coreProperties.getDefaultMonthFormat());
         PushServiceDataAnalysisVO three = new PushServiceDataAnalysisVO();
         three.setDataAnalysisDate(threeDate);
         pushServiceDataAnalysisMap.put(threeDate, three);
 
-        String fourDate = DateUtil.toString(DateUtil.addMonth(startDate, -3), coreProperties.getDefaultMonthFormat());
+        String fourDate = DateUtil.toString(DateUtil.addMonth(DateUtil.toLocalDateTime(startDate), -3), coreProperties.getDefaultMonthFormat());
         PushServiceDataAnalysisVO four = new PushServiceDataAnalysisVO();
         four.setDataAnalysisDate(fourDate);
         pushServiceDataAnalysisMap.put(fourDate, four);
 
-        String fiveDate = DateUtil.toString(DateUtil.addMonth(startDate, -4), coreProperties.getDefaultMonthFormat());
+        String fiveDate = DateUtil.toString(DateUtil.addMonth(DateUtil.toLocalDateTime(startDate), -4), coreProperties.getDefaultMonthFormat());
         PushServiceDataAnalysisVO five = new PushServiceDataAnalysisVO();
         five.setDataAnalysisDate(fiveDate);
         pushServiceDataAnalysisMap.put(fiveDate, five);
 
-        String sixDate = DateUtil.toString(DateUtil.addMonth(startDate, -5), coreProperties.getDefaultMonthFormat());
+        String sixDate = DateUtil.toString(DateUtil.addMonth(DateUtil.toLocalDateTime(startDate), -5), coreProperties.getDefaultMonthFormat());
         PushServiceDataAnalysisVO six = new PushServiceDataAnalysisVO();
         six.setDataAnalysisDate(sixDate);
         pushServiceDataAnalysisMap.put(sixDate, six);
 
-        String sevenDate = DateUtil.toString(DateUtil.addMonth(startDate, -6), coreProperties.getDefaultMonthFormat());
+        String sevenDate = DateUtil.toString(DateUtil.addMonth(DateUtil.toLocalDateTime(startDate), -6), coreProperties.getDefaultMonthFormat());
         PushServiceDataAnalysisVO seven = new PushServiceDataAnalysisVO();
         seven.setDataAnalysisDate(sevenDate);
         pushServiceDataAnalysisMap.put(sevenDate, seven);
 
         //获取七月内统计数据
-        Date beginMonth = DateUtil.addMonth(startDate, -7);
+        LocalDateTime beginMonth = DateUtil.addMonth(DateUtil.toLocalDateTime(startDate), -7);
         String sendDateStr = DateUtil.toString(beginMonth, coreProperties.getDefaultMonthFormat());
         List<PushNoticeMsgStatisticEntity> result;
         if (StringUtil.isEmpty(appKey)) {
@@ -459,12 +464,12 @@ public class PushNoticeMsgStatisticServiceImpl implements PushNoticeMsgStatistic
      * @return 时间周范围 例如:2018-07-02~2018-07-08
      */
     private String buildWeekRange(Date date) {
+
         StringBuilder sb = new StringBuilder();
-        Date mondayOfThisWeek = DateUtil.getDayOfWeek(date, 1);
-        Date sundayOfThisWeek = DateUtil.getDayOfWeek(date, 7);
+        LocalDateTime mondayOfThisWeek = DateUtil.getDayOfWeek(DateUtil.toLocalDateTime(date), 1);
+        LocalDateTime sundayOfThisWeek = DateUtil.getDayOfWeek(DateUtil.toLocalDateTime(date), 7);
         sb.append(DateUtil.toString(mondayOfThisWeek, coreProperties.getDefaultDateFormat()))
-            .append("～")
-            .append(DateUtil.toString(sundayOfThisWeek, coreProperties.getDefaultDateFormat()));
+                .append("～").append(DateUtil.toString(sundayOfThisWeek, coreProperties.getDefaultDateFormat()));
         return sb.toString();
     }
 

@@ -99,6 +99,7 @@ public class FileEntity extends BaseEntity implements File {
         this.fileExtMsg = fileExtMsg;
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, String> getFileExtMsgMap() {
         if (StringUtil.isEmpty(fileExtMsg)) {
             return null;

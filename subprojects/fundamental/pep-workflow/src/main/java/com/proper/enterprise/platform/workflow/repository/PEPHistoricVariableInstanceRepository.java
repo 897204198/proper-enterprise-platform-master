@@ -26,6 +26,7 @@ public class PEPHistoricVariableInstanceRepository {
      * @param variableQueryPredicate Id集合
      * @return 任务变量集合
      */
+    @SuppressWarnings("unchecked")
     public List<HistoricVariableInstance> findHistoricVariableByQueryPredicate(VariableQueryPredicate variableQueryPredicate) {
         List<HistoricVariableInstance> historicVariableInstances = new ArrayList<>();
         if (variableQueryPredicate == null) {

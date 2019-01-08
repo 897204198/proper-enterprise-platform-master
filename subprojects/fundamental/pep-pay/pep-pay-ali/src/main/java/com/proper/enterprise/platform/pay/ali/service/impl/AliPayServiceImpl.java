@@ -35,6 +35,7 @@ import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -107,6 +108,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
      * @throws Exception 保存异常
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected <T extends PayResultRes, R extends OrderReq> T savePrepayImpl(R req) throws Exception {
         // 返回给请求客户端处理结果
         AliPayResultRes resObj = new AliPayResultRes();
@@ -145,6 +147,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
      * @return 处理结果
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected <T> T getPayQueryRes(String outTradeNo) {
         AliPayTradeQueryRes res = new AliPayTradeQueryRes();
         Map<String, String> bizContentMap = new HashMap<String, String>(1);
@@ -169,6 +172,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
      * @return 支付宝退款请求对象
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected <T> T getRefundReq(RefundReq refundReq) {
         AliRefundReq aliRefundReq = new AliRefundReq();
         aliRefundReq.setRefundNo(refundReq.getOutRequestNo());
@@ -185,6 +189,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
      * @return 支付宝退款结果
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected <T> T saveRefundProcess(T refundBody) throws Exception {
         AliRefundReq aliRefundReq = (AliRefundReq) refundBody;
         AliRefundEntity refund = new AliRefundEntity();
@@ -229,6 +234,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
      * @return 查询支付宝退款结果
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected <T> T getRefundQueryRes(String orderNo, String refundNo) {
         AliRefundTradeQueryRes res = new AliRefundTradeQueryRes();
         Map<String, String> bizContentMap = new HashMap<String, String>(2);
@@ -352,7 +358,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
             paramStr.append("&method=");
             paramStr.append(method);
             paramStr.append("&sign_type=" + signType);
-            paramStr.append("&timestamp=").append(DateUtil.toTimestamp(new Date()));
+            paramStr.append("&timestamp=").append(DateUtil.toTimestamp(LocalDateTime.now()));
             paramStr.append("&version=1.0");
             String sign = rsa.sign(paramStr.toString(), privateKey);
             sign = URLEncoder.encode(sign, coreProperties.getCharset());
@@ -499,8 +505,8 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
         for (Map.Entry entry : array.entrySet()) {
             String key = (String) entry.getKey();
             String value = (String) entry.getValue();
-            if (value == null || value.equals("") || key.equalsIgnoreCase("sign")
-                || key.equalsIgnoreCase("sign_type")) {
+            if (null == value || "".equals(value) || "sign".equalsIgnoreCase(key)
+                || "sign_type".equalsIgnoreCase(key)) {
                 continue;
             }
             result.put(key, value);
@@ -537,6 +543,7 @@ public class AliPayServiceImpl extends AbstractPayImpl implements PayService, Al
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected <T> T getBillProcess(BillReq billReq) throws Exception {
         DateFormat dft = new SimpleDateFormat("yyyy-MM-dd");
         try {

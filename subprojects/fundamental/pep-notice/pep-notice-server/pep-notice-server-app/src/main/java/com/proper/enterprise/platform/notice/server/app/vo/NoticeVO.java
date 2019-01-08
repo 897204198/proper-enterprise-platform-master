@@ -1,18 +1,18 @@
 package com.proper.enterprise.platform.notice.server.app.vo;
 
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.notice.server.api.model.Notice;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeStatus;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
-import com.proper.enterprise.platform.notice.server.api.model.Notice;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.HashMap;
@@ -132,6 +132,7 @@ public class NoticeVO extends BaseVO implements Notice {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getTargetExtMsgMap() {
         if (StringUtil.isEmpty(this.targetExtMsg)) {
             return null;
@@ -169,6 +170,7 @@ public class NoticeVO extends BaseVO implements Notice {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getNoticeExtMsgMap() {
         if (StringUtil.isEmpty(this.noticeExtMsg)) {
             return null;

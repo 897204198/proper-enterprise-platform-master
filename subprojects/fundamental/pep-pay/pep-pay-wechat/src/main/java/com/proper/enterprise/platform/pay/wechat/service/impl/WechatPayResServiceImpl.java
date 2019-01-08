@@ -18,6 +18,7 @@ import java.util.Map;
  * 微信接口响应ServiceImpl
  */
 @Service
+@SuppressWarnings("unchecked")
 public class WechatPayResServiceImpl implements WechatPayResService {
 
     @Autowired

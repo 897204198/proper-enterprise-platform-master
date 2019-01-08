@@ -23,6 +23,7 @@ public class RefundFactoryImpl implements RefundFactory {
      * @return 各个退款业务实例service
      */
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends RefundService> T newRefundService(String business) {
         //noinspection unchecked
         return (T)wac.getBean("refund_business_".concat(business));

@@ -113,6 +113,7 @@ public class PushNoticeConfigServiceImpl implements PushNoticeConfigService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public PushConfigVO get(String appKey) {
         PushConfigVO pushConfigVO = new PushConfigVO();
         Map<String, Object> huaweiParam = new HashMap<>(16);

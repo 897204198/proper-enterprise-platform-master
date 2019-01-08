@@ -3,9 +3,10 @@ package com.proper.enterprise.platform.sys.datadic.vo;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
-import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.*;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.validation.constraints.NotEmpty;
 
 public class DataDicCatalogVO extends BaseVO {
 

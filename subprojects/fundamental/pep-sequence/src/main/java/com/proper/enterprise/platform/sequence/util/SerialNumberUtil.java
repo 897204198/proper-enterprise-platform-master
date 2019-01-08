@@ -13,7 +13,6 @@ import com.proper.enterprise.platform.sequence.service.SequenceService;
 import com.proper.enterprise.platform.sequence.vo.SequenceVO;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -104,7 +103,7 @@ public class SerialNumberUtil {
             String[] subContext = context.split(":");
             switch (subContext[0].toUpperCase()) {
                 case "DATE" :
-                    formulaMap.put("DATE", DateUtil.toString(new Date(), subContext[1]));
+                    formulaMap.put("DATE", DateUtil.toString(LocalDateTime.now(), subContext[1]));
                     formula = formula.replaceAll("\\$\\{" + context + "\\}", StringUtil.isEmpty(subContext[1]) ? "" : "\\$\\{DATE\\}");
                     break;
                 case "LENGTH" :

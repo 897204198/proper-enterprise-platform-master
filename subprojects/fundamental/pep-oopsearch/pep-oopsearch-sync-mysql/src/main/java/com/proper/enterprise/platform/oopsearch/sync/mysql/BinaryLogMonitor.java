@@ -158,6 +158,7 @@ public class BinaryLogMonitor {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     private TableObject initTableObject(String schema, String tableName) {
         String sql = "SELECT COLUMN_NAME "
                      + "FROM INFORMATION_SCHEMA.COLUMNS "

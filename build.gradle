@@ -30,7 +30,12 @@ allprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = 'utf-8'
-        options.compilerArgs = ['-Xlint:-options']
+        options.compilerArgs = [
+            '-Xlint:-options',
+            '-Xlint:deprecation',
+            '-Xlint:unchecked',
+//            '-Werror'
+        ]
     }
 
     tasks.withType(GroovyCompile) {
@@ -131,7 +136,8 @@ subprojects {
     dependencies {
         annotationProcessor libraries.spring_boot_configuration_processor
 
-                compileOnly libraries.p3c_pmd,
+                compileOnly libraries.jsr305,
+                            libraries.p3c_pmd,
                             libraries.spring_boot_starter_web,
                             libraries.springfox
 

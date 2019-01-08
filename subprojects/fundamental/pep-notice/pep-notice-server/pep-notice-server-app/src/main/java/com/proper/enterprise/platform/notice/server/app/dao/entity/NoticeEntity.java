@@ -135,6 +135,7 @@ public class NoticeEntity extends BaseEntity implements Notice {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getTargetExtMsgMap() {
         if (StringUtil.isEmpty(this.targetExtMsg)) {
             return null;
@@ -172,6 +173,7 @@ public class NoticeEntity extends BaseEntity implements Notice {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getNoticeExtMsgMap() {
         if (StringUtil.isEmpty(this.noticeExtMsg)) {
             return null;

@@ -26,7 +26,7 @@ public class MySQLMongoDataSync extends AbstractMongoDataSyncORM {
             String sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = '"
                 + tableName + "' AND CONSTRAINT_NAME = 'PRIMARY' AND CONSTRAINT_SCHEMA = '"
                 + url.substring(url.lastIndexOf("/") + 1) + "'";
-            List<Object> resultList = nativeRepository.executeQuery(sql);
+            List resultList = nativeRepository.executeQuery(sql);
             for (Object row : resultList) {
                 if (row != null) {
                     primaryKeys.add(row.toString());

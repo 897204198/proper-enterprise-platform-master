@@ -1,10 +1,10 @@
 package com.proper.enterprise.platform.streamline.api.service;
 
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
 
 /**

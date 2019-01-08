@@ -32,6 +32,7 @@ public class ApplicationSwaggerConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
+    @SuppressWarnings("unchecked")
     public Docket docket() {
         final List<ResponseMessage> globalResponse = Arrays.asList(
             new ResponseMessageBuilder().code(400).message("Bad Request").build(),

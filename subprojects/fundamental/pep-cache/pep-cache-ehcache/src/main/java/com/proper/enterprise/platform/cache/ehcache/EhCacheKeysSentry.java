@@ -11,6 +11,7 @@ import java.util.Collection;
 public class EhCacheKeysSentry implements CacheKeysSentry {
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<Object> keySet(Cache cache) {
         Ehcache ehcache = (Ehcache) cache.getNativeCache();
         // noinspection unchecked

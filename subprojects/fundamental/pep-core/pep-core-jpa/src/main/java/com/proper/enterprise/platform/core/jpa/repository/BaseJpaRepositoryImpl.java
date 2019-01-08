@@ -20,6 +20,7 @@ public class BaseJpaRepositoryImpl<T, IDT extends Serializable> extends SimpleJp
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T updateForSelective(T var1) {
         if (entityInformation.isNew(var1)) {
             throw new PersistenceException("entity not persist");

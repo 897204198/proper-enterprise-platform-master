@@ -115,6 +115,7 @@ public class ProperPayController extends BaseController {
     @PostMapping(value = "/query")
     @ApiOperation("‍模拟支付结果查询并进行异步通知处理")
     @ResponseStatus(HttpStatus.CREATED)
+    @SuppressWarnings("unchecked")
     public ResponseEntity<Map<String, Object>> queryProperPay(@RequestBody ProperPayReq reqMap) throws Exception {
         LOGGER.debug("-----------Ali async notice--------begin------------");
 

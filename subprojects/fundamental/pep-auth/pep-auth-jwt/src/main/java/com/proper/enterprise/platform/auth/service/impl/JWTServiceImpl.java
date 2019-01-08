@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class JWTServiceImpl extends AccessTokenServiceImpl implements JWTService
     }
 
     private String hmacSha256Base64(String secret, String message) {
-        String result = Base64.encodeBase64URLSafeString(HmacUtils.hmacSha256(secret, message));
+        String result = Base64.encodeBase64URLSafeString(new HmacUtils(HmacAlgorithms.HMAC_SHA_256, secret).hmac(message));
         LOGGER.debug("API secrect is {}, message is {} and result is {}", secret, message, result);
         return result;
     }

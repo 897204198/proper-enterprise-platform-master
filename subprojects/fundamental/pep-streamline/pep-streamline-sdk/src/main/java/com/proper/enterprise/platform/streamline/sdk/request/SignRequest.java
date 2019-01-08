@@ -1,7 +1,8 @@
 package com.proper.enterprise.platform.streamline.sdk.request;
 
 import com.proper.enterprise.platform.core.utils.JSONUtil;
-import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotEmpty;
 
 /**
  * 签名参数

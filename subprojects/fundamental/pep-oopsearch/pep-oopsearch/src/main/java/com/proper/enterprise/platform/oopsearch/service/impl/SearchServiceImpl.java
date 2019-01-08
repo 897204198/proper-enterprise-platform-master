@@ -42,7 +42,7 @@ public class SearchServiceImpl implements SearchService {
         List<SearchDocument> resultList = new ArrayList<>();
         try {
             filterDate(resultList, inputStr, searchConfigs);
-            PageRequest pageRequest = new PageRequest(0, searchConfigs.getLimit() - resultList.size());
+            PageRequest pageRequest = PageRequest.of(0, searchConfigs.getLimit() - resultList.size());
             demoUserDocumentList = searchMongoRepository.findByTabInAndConLike(searchConfigs.getTableNameList(), inputStr, pageRequest);
             resultList.addAll(demoUserDocumentList);
         } catch (Exception e) {

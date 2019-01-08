@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -127,7 +128,7 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
         feedBackDocument.setNetType(netType);
         feedBackDocument.setPlatform(platform);
         feedBackDocument.setAppVersion(appVersion);
-        String opinionTime = DateUtil.toString(new Date(), "yyyy-MM-dd HH:mm");
+        String opinionTime = DateUtil.toString(LocalDateTime.now(), "yyyy-MM-dd HH:mm");
         feedBackDocument.setOpinionTime(opinionTime);
         List<FeedBackDocument> list = feedBackDoc.getFeedBackDocuments();
         list.add(feedBackDocument);
@@ -144,7 +145,7 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
         userFeedBackDocument.setStatusCode(replyDic.getCode());
         List<FeedBackDocument> list = userFeedBackDocument.getFeedBackDocuments();
         FeedBackDocument feedBackDocument = new FeedBackDocument();
-        feedBackDocument.setFeedbackTime(DateUtil.toString(new Date(), "yyyy-MM-dd HH:mm"));
+        feedBackDocument.setFeedbackTime(DateUtil.toString(LocalDateTime.now(), "yyyy-MM-dd HH:mm"));
         feedBackDocument.setFeedback(feedback);
         ListIterator<FeedBackDocument> it = list.listIterator(list.size());
         while (it.hasPrevious()) {

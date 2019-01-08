@@ -17,6 +17,7 @@ import java.util.Map;
  * 解析规则
  * key:v assignee经办人  candidateUsers候选人     {Code}候选其它
  */
+@SuppressWarnings("unchecked")
 public class CustomCandidateListener implements TaskListener {
 
     private static final String CUSTOM_HANDLER_KEY = "customCandidate";

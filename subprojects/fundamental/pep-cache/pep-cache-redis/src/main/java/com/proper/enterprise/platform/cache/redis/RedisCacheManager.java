@@ -36,6 +36,7 @@ import java.util.concurrent.ConcurrentMap;
  * Copy from {@link RedissonSpringCacheManager} v3.5.3
  * Extend {@link RedissonSpringCacheManager#afterPropertiesSet()} to support {@link CacheDuration}
  */
+@SuppressWarnings("unchecked")
 public class RedisCacheManager implements CacheManager, ResourceLoaderAware, InitializingBean {
 
     ResourceLoader resourceLoader;

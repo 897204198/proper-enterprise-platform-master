@@ -201,6 +201,7 @@ public class EhCacheManagerFactoryBean implements FactoryBean<CacheManager>, Ini
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EhCacheManagerFactoryBean.class);
 
+    @SuppressWarnings("unchecked")
     private void supplementConfigurationWithCacheDuration(Configuration configuration) {
         CacheDuration cd;
         String cacheName;

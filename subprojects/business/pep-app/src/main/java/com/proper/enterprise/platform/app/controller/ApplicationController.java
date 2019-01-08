@@ -64,7 +64,7 @@ public class ApplicationController extends BaseController {
             return responseOfGet(applicationService.findPagination(code, applicationName, applicationPage));
         } else {
             List<ApplicationVO> list = applicationService.getAllOrApplication(code);
-            DataTrunk<ApplicationVO> dataTrunk = new DataTrunk();
+            DataTrunk<ApplicationVO> dataTrunk = new DataTrunk<>();
             dataTrunk.setData(list);
             dataTrunk.setCount(list.size());
             return responseOfGet(dataTrunk);

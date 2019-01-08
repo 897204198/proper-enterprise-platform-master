@@ -48,7 +48,7 @@ public class TemplateUtil {
                 result = b ? "true" : "false";
             } else if (param instanceof Date) {
                 Date date = (Date) param;
-                result = DateUtil.toString(date, "yyyy-MM-dd");
+                result = DateUtil.toString(DateUtil.toLocalDateTime(date), "yyyy-MM-dd");
             } else {
                 result = null;
             }

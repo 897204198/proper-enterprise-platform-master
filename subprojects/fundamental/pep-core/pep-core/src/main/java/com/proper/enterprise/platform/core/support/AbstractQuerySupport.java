@@ -70,7 +70,7 @@ public abstract class AbstractQuerySupport {
         try {
             List<PEPOrder> sortOrders = JSONUtil.parse(orders, new TypeReference<List<PEPOrder>>() {
             });
-            return new Sort(convert(sortOrders));
+            return Sort.by(convert(sortOrders));
         } catch (IOException e) {
             logger.error("buildSort error sort:{}", orders, e);
             throw new ErrMsgException("buildSort error sort:" + orders);
@@ -96,7 +96,7 @@ public abstract class AbstractQuerySupport {
         if (ZERO.equals(pageNo)) {
             throw new ErrMsgException("pageNo cant be 0");
         }
-        return new PageRequest(Integer.parseInt(pageNo) - 1, Integer.parseInt(pageSize), sort);
+        return PageRequest.of(Integer.parseInt(pageNo) - 1, Integer.parseInt(pageSize), sort);
     }
 
     private List<Sort.Order> convert(List<PEPOrder> pepOrders) {

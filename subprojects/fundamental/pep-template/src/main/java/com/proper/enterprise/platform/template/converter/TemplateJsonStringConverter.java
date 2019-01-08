@@ -19,6 +19,7 @@ public class TemplateJsonStringConverter implements AttributeConverter<List, Str
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List convertToEntityAttribute(String dbData) {
         List result = new ArrayList<>();
         if (StringUtil.isNotBlank(dbData)) {

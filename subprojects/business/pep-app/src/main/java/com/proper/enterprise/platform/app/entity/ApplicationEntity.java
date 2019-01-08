@@ -81,7 +81,7 @@ public class ApplicationEntity extends BaseEntity implements Serializable {
         this.style = style;
     }
 
-    public void setData(Map data) {
+    public void setData(Map<String, String> data) {
         this.data = data;
     }
 

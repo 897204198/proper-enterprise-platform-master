@@ -28,6 +28,7 @@ public class DelPushTokenTask {
     @Autowired
     PushDeviceService pushDeviceService;
 
+    @SuppressWarnings("unchecked")
     public void getErrorToken() {
         String noticeServerUrl = null;
         DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "URL");

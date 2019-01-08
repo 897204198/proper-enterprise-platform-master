@@ -37,6 +37,7 @@ public class AliPayResServiceImpl implements AliPayResService {
      * @throws Exception 参数获取异常
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Object convertMap2AliPayRes(String strRes, String responseKey, Object res) throws Exception {
         LOGGER.debug("strRes:{}", strRes);
         Map<String, Object> queryMap = JSONUtil.parse(strRes, Map.class);

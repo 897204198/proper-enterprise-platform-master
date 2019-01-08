@@ -35,7 +35,7 @@ public class WorkflowMailSenderImpl implements WorkflowMailSender {
     public void send(String to,
                      String code,
                      ExecutionEntity execution) {
-        send(to, null, null, code, execution, null);
+        send(to, null, null, code, execution, (String[]) null);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class WorkflowMailSenderImpl implements WorkflowMailSender {
                      String cc,
                      String code,
                      ExecutionEntity execution) {
-        send(to, cc, null, code, execution, null);
+        send(to, cc, null, code, execution, (String[]) null);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class WorkflowMailSenderImpl implements WorkflowMailSender {
                      String bcc,
                      String code,
                      ExecutionEntity execution) {
-        send(to, cc, bcc, code, execution, null);
+        send(to, cc, bcc, code, execution, (String[]) null);
     }
 
     @Override

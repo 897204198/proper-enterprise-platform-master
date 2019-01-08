@@ -36,6 +36,7 @@ import java.util.Date;
  * 微信支付ServiceImpl
  */
 @Service("pay_way_wechat")
+@SuppressWarnings("unchecked")
 public class WechatPayServiceImpl extends AbstractPayImpl implements PayService, WechatPayService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WechatPayServiceImpl.class);
@@ -77,7 +78,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(new Date());
                 cal.add(Calendar.MINUTE, Integer.parseInt(req.getOverMinuteTime()));
-                wechatPrepay.setTimeExpire(DateUtil.toString(cal.getTime(), "yyyyMMddHHmmss"));
+                wechatPrepay.setTimeExpire(DateUtil.toString(DateUtil.toLocalDateTime(cal.getTime()), "yyyyMMddHHmmss"));
             }
             return wechatPrepay;
         } catch (Exception e) {
@@ -239,7 +240,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
             LOGGER.debug("Wechat refund Error!", e);
             return null;
         }
-        return (T)res;
+        return (T) res;
     }
 
     /**
@@ -268,7 +269,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
             LOGGER.debug("Wechat refund query error!", e);
             return null;
         }
-        return (T)queryRes;
+        return (T) queryRes;
     }
     //-------------------------重写抽象类中的共通处理函数--------------------END------------------
 
@@ -376,9 +377,9 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
         String requestXML = writer.toString();
         LOGGER.debug("{}_requestXML:{}", beanId, requestXML);
         if (isHttpsRequest) {
-            return (T)wechatPayResService.getWechatApiRes(url, beanId, requestXML, true);
+            return wechatPayResService.getWechatApiRes(url, beanId, requestXML, true);
         } else {
-            return (T)wechatPayResService.getWechatApiRes(url, beanId, requestXML, false);
+            return wechatPayResService.getWechatApiRes(url, beanId, requestXML, false);
         }
     }
 
@@ -395,7 +396,7 @@ public class WechatPayServiceImpl extends AbstractPayImpl implements PayService,
             String sign = signAdapter.marshalObject(wechatBillReq, WechatBillReq.class);
             wechatBillReq.setSign(sign);
             // 使用httsClient通过证书请求微信退款
-            return (T) getWechatRes(wechatBillReq, payWechatProperties.getUrlBill(), "unmarshallWechatBillRes", true);
+            return getWechatRes(wechatBillReq, payWechatProperties.getUrlBill(), "unmarshallWechatBillRes", true);
         } catch (Exception e) {
             LOGGER.error("Export wechat bill failed! {},{}", dft.format(billReq.getDate()), e);
             throw e;

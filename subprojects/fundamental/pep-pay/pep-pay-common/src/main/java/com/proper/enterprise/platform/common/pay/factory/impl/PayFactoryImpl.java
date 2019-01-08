@@ -11,6 +11,7 @@ import org.springframework.web.context.WebApplicationContext;
  * 工厂方法实现类
  */
 @Component
+@SuppressWarnings("unchecked")
 public class PayFactoryImpl implements PayFactory {
 
     @Autowired
