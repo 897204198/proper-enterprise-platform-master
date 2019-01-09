@@ -62,8 +62,10 @@ public class MongoMonitorClient {
         for (String address : mongoProperties.getHost().split(COMMA_SYMBOL)) {
             serverAddresses.add(new ServerAddress(address + ":" + mongoProperties.getPort()));
         }
-        this.hostMongo = new MongoClient(serverAddresses, getMongoCredential(mongoProperties.getUsername(),
-            mongoProperties.getPassword()), new MongoClientOptions.Builder().build());
+        MongoCredential mongoCredential = getMongoCredential(mongoProperties.getUsername(), mongoProperties.getPassword());
+        MongoClientOptions options = new MongoClientOptions.Builder().build();
+        this.hostMongo = mongoCredential == null ? new MongoClient(serverAddresses, options) :
+                                                   new MongoClient(serverAddresses, mongoCredential, options);
     }
 
     private MongoCredential getMongoCredential(String userName, char[] password) {
@@ -98,7 +100,8 @@ public class MongoMonitorClient {
 
         private MongoClient getMongoClient(List<ServerAddress> shardSet) {
             MongoClientOptions opts = new MongoClientOptions.Builder().readPreference(ReadPreference.primary()).build();
-            return new MongoClient(shardSet, getMongoCredential(mongoProperties.getUsername(), mongoProperties.getPassword()), opts);
+            MongoCredential credential = getMongoCredential(mongoProperties.getUsername(), mongoProperties.getPassword());
+            return credential == null ? new MongoClient(shardSet, opts) : new MongoClient(shardSet, credential, opts);
         }
 
         private List<ServerAddress> buildServerAddressList(DBObject next) {
