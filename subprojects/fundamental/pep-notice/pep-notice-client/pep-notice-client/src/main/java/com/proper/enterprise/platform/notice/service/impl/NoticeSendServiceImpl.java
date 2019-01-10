@@ -10,6 +10,7 @@ import com.proper.enterprise.platform.notice.document.NoticeDocument;
 import com.proper.enterprise.platform.notice.document.NoticeSetDocument;
 import com.proper.enterprise.platform.notice.enums.AnalysisResult;
 import com.proper.enterprise.platform.notice.factory.NoticeCollectorFactory;
+import com.proper.enterprise.platform.notice.model.TargetModel;
 import com.proper.enterprise.platform.notice.repository.NoticeMsgRepository;
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
 import com.proper.enterprise.platform.notice.server.sdk.request.NoticeRequest;
@@ -113,6 +114,19 @@ public class NoticeSendServiceImpl {
         return null;
     }
 
+    public void sendNoticeSMS(String phone, String content, Map<String, Object> custom) {
+        Set<String> set = new HashSet<>();
+        set.add(phone);
+        TargetModel targetModel = new TargetModel();
+        targetModel.setId(phone);
+        targetModel.setName(phone);
+        targetModel.setTo(phone);
+        NoticeDocument noticeDocument = this.packageNoticeDocument(null, set, custom, NoticeType.SMS, "SMS", content);
+        noticeDocument.setTarget(targetModel);
+        NoticeRequest noticeVO = this.saveNotice(noticeDocument);
+        accessNoticeServer(noticeVO);
+    }
+
     private void analysis(NoticeDocument noticeDocument, Collection<? extends User> users) {
         NoticeAnalysisUtil.isUsersExist(noticeDocument);
         NoticeAnalysisUtil.isThereATarget(noticeDocument);
@@ -132,6 +146,8 @@ public class NoticeSendServiceImpl {
         noticeDocument.setUsers(toUserIds);
         noticeDocument.setNoticeExtMsg(custom);
         noticeDocument.setNoticeExtMsg("from", fromUserId);
+        noticeDocument.setNoticeUrl(this.getNoticeDic("URL"));
+        noticeDocument.setToken(this.getNoticeDic("TOKEN"));
         return noticeDocument;
     }
 
@@ -156,12 +172,6 @@ public class NoticeSendServiceImpl {
         return noticeRequest;
     }
 
-    private void updateNotice(String batchId, String noticeServerUrl, String exception) {
-        NoticeDocument noticeDocument = noticeMsgRepository.findByBatchId(batchId);
-        NoticeAnalysisUtil.accessNoticeServer(noticeDocument, exception, noticeServerUrl);
-        noticeMsgRepository.save(noticeDocument);
-    }
-
     private void updateNotice(String batchId, String exception) {
         NoticeDocument noticeDocument = noticeMsgRepository.findByBatchId(batchId);
         noticeDocument.setAnalysisResult(AnalysisResult.ERROR);
@@ -169,21 +179,22 @@ public class NoticeSendServiceImpl {
         noticeMsgRepository.save(noticeDocument);
     }
 
-    public void accessNoticeServer(NoticeRequest noticeModel) {
+    public String getNoticeDic(String code) {
         String noticeServerToken = null;
-        DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "TOKEN");
+        DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", code);
         if (dataDic != null) {
             noticeServerToken = dataDic.getName();
         }
+        return noticeServerToken;
+    }
+
+    public void accessNoticeServer(NoticeRequest noticeModel) {
+        String noticeServerToken = this.getNoticeDic("TOKEN");
         accessNoticeServer(noticeModel, noticeServerToken);
     }
 
     public void accessNoticeServer(NoticeRequest noticeModel, String noticeServerToken) {
-        String noticeServerUrl = null;
-        DataDic dataDic = DataDicUtil.get("NOTICE_SERVER", "URL");
-        if (dataDic != null) {
-            noticeServerUrl = dataDic.getName();
-        }
+        String noticeServerUrl = this.getNoticeDic("URL");
         try {
             String data = JSONUtil.toJSON(noticeModel);
             LOGGER.debug("NOTICE SENDER SEND:" + data);
@@ -196,7 +207,7 @@ public class NoticeSendServiceImpl {
             }
         } catch (Exception e) {
             LOGGER.error("NoticeSender.accessNoticeServer[Exception]:", e);
-            this.updateNotice(noticeModel.getBatchId(), noticeServerUrl, e.getMessage());
+            this.updateNotice(noticeModel.getBatchId(), e.toString());
         }
     }
 

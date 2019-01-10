@@ -9,6 +9,16 @@ import java.util.Set;
 public interface NoticeSender {
 
     /**
+     * 根据手机号发送短信
+     *
+     * @param phone        手机号
+     * @param content      短信内容
+     * @param custom       扩展属性
+     */
+    @Async
+    void sendNoticeSMS(String phone, String content, Map<String, Object> custom);
+
+    /**
      * 无发送人，单人消息接口
      *
      * @param toUserId         通知接收人ID

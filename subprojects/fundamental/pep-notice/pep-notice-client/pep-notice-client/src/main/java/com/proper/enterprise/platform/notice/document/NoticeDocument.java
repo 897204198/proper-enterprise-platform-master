@@ -36,6 +36,10 @@ public class NoticeDocument extends BaseDocument {
 
     private AnalysisResult analysisResult;
 
+    private String noticeUrl;
+
+    private String token;
+
     public String getBatchId() {
         return batchId;
     }
@@ -142,5 +146,21 @@ public class NoticeDocument extends BaseDocument {
 
     public void setAnalysisResult(AnalysisResult analysisResult) {
         this.analysisResult = analysisResult;
+    }
+
+    public String getNoticeUrl() {
+        return noticeUrl;
+    }
+
+    public void setNoticeUrl(String noticeUrl) {
+        this.noticeUrl = noticeUrl;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

@@ -118,14 +118,41 @@ class NoticeSenderImplTest extends AbstractJPATest {
         custom.put("url", "1")
         Map<String, Object> templateParams = new HashMap<>()
         templateParams.put("pageurl", "2")
-        Set<String> userIds = new HashSet<>()
         noticeSender.sendNotice("test2", "EndBpmCode", templateParams, custom)
         waitExecutorDone()
     }
 
     @Test
-    void analysis() {
+    void analysisEmail() {
+        Set<String> toUserIds = new HashSet<>()
+        toUserIds.add("test1")
+        toUserIds.add("test2")
+        Map<String, NoticeSetDocument> noticeSetMap = new HashMap<>()
+        NoticeSetDocument noticeSetDocument = new NoticeSetDocument()
+        List<String> noticeChannel = new ArrayList<>()
+        noticeChannel.add("email")
+        noticeSetDocument.setNoticeChannel(noticeChannel)
+        noticeSetMap.put("test1", noticeSetDocument)
+        noticeSetMap.put("test2", noticeSetDocument)
+        Map<String, Object> custom = new HashMap<>()
+        noticeSendService.sendNoticeChannel(null, toUserIds, noticeSetMap, "title", "content", custom, NoticeType.EMAIL)
+        List<NoticeDocument> result = noticeMsgRepository.findAll()
+        assert result.get(0).getTargets().get(0).getTo() == "test1<test1@test1.com>,test2<test1@test2.com>"
+    }
 
+    @Test
+    void sendSMS() {
+        Map<String, Object> custom = new HashMap<>()
+        noticeSendService.sendNoticeSMS("12345678901", "ceshi SMS", custom)
+        waitExecutorDone()
+        List<NoticeDocument> result = noticeMsgRepository.findAll()
+        assert result.get(0).getTargets().get(0).getTo() == "12345678901"
+        assert result.get(0).getNoticeUrl() == "http://test"
+        assert result.get(0).getToken() == "testToken"
+    }
+
+    @Test
+    void analysisPushUnnecessary() {
         Set<String> toUserIds = new HashSet<>()
         toUserIds.add("test1")
         toUserIds.add("test2")
@@ -146,6 +173,22 @@ class NoticeSenderImplTest extends AbstractJPATest {
         assert result.get(0).getNotes().contains("test1 is missing device info, please re login to the app.")
         assert result.get(0).getNotes().contains("test2 is missing device info, please re login to the app.")
         assert result.get(0).getNotes().contains("Can't find effective notice receivers.")
+    }
+
+    @Test
+    void analysisPushPartly() {
+
+        Set<String> toUserIds = new HashSet<>()
+        toUserIds.add("test1")
+        toUserIds.add("test2")
+        Map<String, NoticeSetDocument> noticeSetMap = new HashMap<>();
+        NoticeSetDocument noticeSetDocument = new NoticeSetDocument()
+        List<String> noticeChannel = new ArrayList<>()
+        noticeChannel.add("push")
+        noticeSetDocument.setNoticeChannel(noticeChannel)
+        noticeSetMap.put("test1", noticeSetDocument)
+        noticeSetMap.put("test2", noticeSetDocument)
+        Map<String, Object> custom = new HashMap<>()
 
         PushDeviceEntity pushDeviceEntity = new PushDeviceEntity()
         pushDeviceEntity.appKey = "MobileOADev"
@@ -156,38 +199,16 @@ class NoticeSenderImplTest extends AbstractJPATest {
         pushDeviceEntity.pushMode = PushMode.XIAOMI
         pushDeviceEntity.pushToken = "w69uYXiVgywg4VE/GJmGnfnomKwfGYs743z09wGK8rjexgJ1hgmmg32O4WpahuFd"
         deviceRepository.save(pushDeviceEntity)
-        noticeMsgRepository.deleteAll()
 
         noticeSendService.sendNoticeChannel(null, toUserIds, noticeSetMap, "title", "content", custom, NoticeType.PUSH)
-        result = noticeMsgRepository.findAll()
-        assert result.get(0).getAnalysisResult() == AnalysisResult.PARTLY
+        List<NoticeDocument> result = noticeMsgRepository.findAll()
+        assert result.get(0).getAnalysisResult() == AnalysisResult.ERROR
         assert result.get(0).getTargets().size() == 1
         assert result.get(0).getTargets().get(0).id == "test1"
         assert result.get(0).getTargets().get(0).name == "test1"
         assert result.get(0).getUsers().size() == 2
-        assert result.get(0).getNotes().size() == 1
+        assert result.get(0).getNotes().size() == 2
         assert result.get(0).getNotes().contains("test2 is missing device info, please re login to the app.")
-        noticeMsgRepository.deleteAll()
-    }
-
-    @Test
-    void analysisEmail() {
-        noticeMsgRepository.deleteAll()
-
-        Set<String> toUserIds = new HashSet<>()
-        toUserIds.add("test1")
-        toUserIds.add("test2")
-        Map<String, NoticeSetDocument> noticeSetMap = new HashMap<>()
-        NoticeSetDocument noticeSetDocument = new NoticeSetDocument()
-        List<String> noticeChannel = new ArrayList<>()
-        noticeChannel.add("email")
-        noticeSetDocument.setNoticeChannel(noticeChannel)
-        noticeSetMap.put("test1", noticeSetDocument)
-        noticeSetMap.put("test2", noticeSetDocument)
-        Map<String, Object> custom = new HashMap<>()
-        noticeSendService.sendNoticeChannel(null, toUserIds, noticeSetMap, "title", "content", custom, NoticeType.EMAIL)
-        List<NoticeDocument> result = noticeMsgRepository.findAll()
-        assert result.get(0).getTargets().get(0).getTo() == "test1<test1@test1.com>,test2<test1@test2.com>"
     }
 
     @Before
@@ -257,6 +278,7 @@ class NoticeSenderImplTest extends AbstractJPATest {
 
     @After
     void destroy() {
+        noticeMsgRepository.deleteAll()
         noticeSetRepository.deleteAll()
         templateRepository.deleteAll()
     }
