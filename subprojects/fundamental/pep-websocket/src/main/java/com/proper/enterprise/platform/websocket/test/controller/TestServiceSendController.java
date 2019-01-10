@@ -28,7 +28,7 @@ public class TestServiceSendController extends BaseController {
     @GetMapping("/test/socket/sendAll")
     @ApiOperation("sendAll")
     public String sendAll(String payload, HttpServletRequest request) {
-        LOGGER.info("Received {}", request);
+        LOGGER.info("Received {}", request.getRequestURI());
         template.convertAndSend("/topic/all", StringUtil.isBlank(payload) ? "all" : payload);
         return "Broadcast at " + DateUtil.getTimestamp();
     }
