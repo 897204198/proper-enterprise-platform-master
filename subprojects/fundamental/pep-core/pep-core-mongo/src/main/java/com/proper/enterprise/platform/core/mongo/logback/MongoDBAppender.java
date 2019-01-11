@@ -27,7 +27,7 @@ public class MongoDBAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     protected void append(ILoggingEvent eventObject) {
         Document document = new Document();
         document.append("lv", eventObject.getLevel().toString());
-        String timestamp = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventObject.getTimeStamp()), ZoneId.of("GMT")).format(DateTimeFormatter
+        String timestamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(eventObject.getTimeStamp()), ZoneId.of("GMT")).format(DateTimeFormatter
                 .ofPattern(PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()));
         document.append("tm", timestamp);
         StackTraceElement stackTraceElement = eventObject.getCallerData()[0];
