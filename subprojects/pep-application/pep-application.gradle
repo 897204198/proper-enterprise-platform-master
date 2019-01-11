@@ -49,6 +49,7 @@ dependencies {
 }
 
 task delPathingJar(type: Delete) {
+    dependsOn buildDependents
     delete 'build/libs'
     followSymlinks = true
 }
