@@ -187,7 +187,7 @@ public class UserGroupServiceImpl implements UserGroupService {
             throw new ErrMsgException("can't save because user not find");
         }
         user.add(userGroup);
-        userService.save(user);
+        userService.update(user);
         return userGroup;
     }
 
@@ -202,7 +202,7 @@ public class UserGroupServiceImpl implements UserGroupService {
             throw new ErrMsgException("can't save because user not find");
         }
         user.remove(userGroup);
-        userService.save(user);
+        userService.update(user);
         userGroup.remove(user);
         return userGroup;
     }
@@ -218,7 +218,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                     continue;
                 }
                 user.remove(userGroup);
-                userService.save(user);
+                userService.update(user);
                 userGroup.remove(user);
             }
         }
@@ -236,7 +236,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         Collection<? extends User> collection = userService.getUsersByIds(userIds);
         for (User user : collection) {
             user.add(userGroup);
-            userService.save(user);
+            userService.update(user);
             userGroup.add(user);
         }
         return userGroup;
