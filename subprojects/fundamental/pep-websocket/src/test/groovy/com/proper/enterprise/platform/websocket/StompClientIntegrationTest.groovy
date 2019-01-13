@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.websocket
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
 import com.proper.enterprise.platform.auth.common.vo.AccessTokenVO
 import com.proper.enterprise.platform.test.AbstractIntegrationTest
+import com.proper.enterprise.platform.websocket.StompClientIntegrationTest.EmbeddedHandler
 import com.proper.enterprise.platform.websocket.controller.JsonMsgController
 import org.junit.After
 import org.junit.Before

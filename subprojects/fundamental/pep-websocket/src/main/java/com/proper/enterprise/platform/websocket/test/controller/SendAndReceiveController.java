@@ -11,8 +11,8 @@ import org.springframework.stereotype.Controller;
 public class SendAndReceiveController {
 
 
-    @MessageMapping("/sendAndReceive")
-    @SendTo("/sendAndReceive")
+    @MessageMapping("/topic/sendAndReceive")
+    @SendTo("/topic/sendAndReceive")
     @ApiOperation("sendAndReceive")
     public String sendAndReceive(String message) throws Exception {
         Thread.sleep(1000);

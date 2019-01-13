@@ -26,7 +26,7 @@ public class WebsocketSyncRadio {
         template.convertAndSend("/topic/sync", "syncSendAll:" + DateUtil.getTimestamp());
     }
 
-    @Scheduled(cron = "* * * * * ?")
+    @Scheduled(cron = "0/15 * * * * ?")
     public void randomSendOne() {
         randomUser().ifPresent(user ->
             template.convertAndSendToUser(user, "/topic/sync", "syncSendOne: " + user + " " + DateUtil.getTimestamp())
@@ -42,7 +42,7 @@ public class WebsocketSyncRadio {
         }
     }
 
-    @Scheduled(cron = "0/2 * * * * ?")
+    @Scheduled(cron = "0/15 * * * * ?")
     public void randomSendSome() {
         int count = 3;
         Set<String> userSet = new HashSet<>(count);
