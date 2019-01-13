@@ -100,12 +100,14 @@ class MenusControllerTest extends AbstractJPATest {
         menu['enable'] = true
         menu['sequenceNumber'] = 55
         menu['menuCode'] = '1'
+        menu['description'] = '1222'
         def menuObj = JSONUtil.parse(post('/auth/menus', JSONUtil.toJSON(menu), HttpStatus.CREATED)
             .getResponse().getContentAsString(), Map.class)
         def id = menuObj.get('id')
         menuObj = JSONUtil.parse(get('/auth/menus/' + id, HttpStatus.OK)
             .getResponse().getContentAsString(), Map.class)
         assert menuObj.get("icon") == 'test_icon'
+        assert menuObj.get("description") == '1222'
 
         def resource = [:]
         resource['name'] = 'test123'

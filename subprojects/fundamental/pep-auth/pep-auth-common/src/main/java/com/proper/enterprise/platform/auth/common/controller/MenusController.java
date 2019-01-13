@@ -203,6 +203,9 @@ public class MenusController extends BaseController {
         @ApiModelProperty(name = "‍菜单类型编码(0:应用/1:页面/2:功能)", required = true)
         private String menuCode;
 
+        @ApiModelProperty(name = "‍功能描述")
+        private String description;
+
         public String getIcon() {
             return icon;
         }
@@ -257,6 +260,14 @@ public class MenusController extends BaseController {
 
         public void setMenuCode(String menuCode) {
             this.menuCode = menuCode;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
         }
 
         @Override
