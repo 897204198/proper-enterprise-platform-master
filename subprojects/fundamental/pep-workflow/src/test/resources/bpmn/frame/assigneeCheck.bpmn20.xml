@@ -18,7 +18,7 @@
       </extensionElements>
     </userTask>
     <sequenceFlow id="sid-0DC5026F-0D67-48E1-93E4-BE05DD48FD88" sourceRef="sid-495ED627-4353-4D47-86E6-9979D15CAB29" targetRef="sid-E4BD98FC-9C7B-44AA-9C68-1D8C477FF950"></sequenceFlow>
-    <userTask id="sid-EFF433A8-9449-4304-BF02-9C1A93C42B13" name="候选用户组" flowable:candidateGroups="group1:GROUP">
+    <userTask id="sid-EFF433A8-9449-4304-BF02-9C1A93C42B13" name="候选用户组" flowable:candidateGroups="group1_GROUP">
       <extensionElements>
         <modeler:group-info-name-4e5246fa-57e5-4ecb-abec-19fb566af8c6 xmlns:modeler="http://flowable.org/modeler"><![CDATA[zjlces]]></modeler:group-info-name-4e5246fa-57e5-4ecb-abec-19fb566af8c6>
         <modeler:activiti-idm-candidate-group xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-candidate-group>
@@ -26,7 +26,7 @@
       </extensionElements>
     </userTask>
     <sequenceFlow id="sid-A30043A6-69A3-40D9-A9D4-084EC34F92AC" sourceRef="sid-E4BD98FC-9C7B-44AA-9C68-1D8C477FF950" targetRef="sid-EFF433A8-9449-4304-BF02-9C1A93C42B13"></sequenceFlow>
-    <userTask id="sid-8DCC1ABF-8551-4967-A956-E73D2A68130F" name="候选角色" flowable:candidateGroups="role1:ROLE">
+    <userTask id="sid-8DCC1ABF-8551-4967-A956-E73D2A68130F" name="候选角色" flowable:candidateGroups="role1_ROLE">
       <extensionElements>
         <modeler:role-info-name-rolehr xmlns:modeler="http://flowable.org/modeler"><![CDATA[HR操作员]]></modeler:role-info-name-rolehr>
         <modeler:activiti-idm-candidate-role xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-candidate-role>

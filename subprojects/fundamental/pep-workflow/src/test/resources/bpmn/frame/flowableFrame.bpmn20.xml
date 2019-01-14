@@ -18,7 +18,7 @@
         <modeler:activiti-idm-initiator xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-initiator>
       </extensionElements>
     </userTask>
-    <userTask id="sid-B789EC55-2869-4DB7-9C04-F769D74969ED" name="第四步" flowable:candidateGroups="role1:ROLE" flowable:formKey="mainForm">
+    <userTask id="sid-B789EC55-2869-4DB7-9C04-F769D74969ED" name="第四步" flowable:candidateGroups="role1_ROLE" flowable:formKey="mainForm">
       <extensionElements>
         <modeler:activiti-idm-candidate-role xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-candidate-role>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>

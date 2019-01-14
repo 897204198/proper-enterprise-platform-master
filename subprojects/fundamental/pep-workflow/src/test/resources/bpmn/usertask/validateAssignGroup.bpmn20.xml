@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
   <process id="validateAssignGroup" name="validateAssignGroup" isExecutable="true">
     <startEvent id="startEvent1"></startEvent>
-    <userTask id="sid-979B9796-0F7F-404C-947F-E8C97292791F" name="validateAssginGroup" flowable:candidateGroups="group2:GROUP">
+    <userTask id="sid-979B9796-0F7F-404C-947F-E8C97292791F" name="validateAssginGroup" flowable:candidateGroups="group2_GROUP">
       <extensionElements>
         <modeler:group-info-name-c02f6371-9a27-4939-a597-c397471017b0 xmlns:modeler="http://flowable.org/modeler"><![CDATA[group2]]></modeler:group-info-name-c02f6371-9a27-4939-a597-c397471017b0>
         <modeler:activiti-idm-candidate-group xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-candidate-group>
