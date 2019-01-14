@@ -89,14 +89,6 @@ public class NoticeAnalysisUtil {
         return result;
     }
 
-    public static void accessNoticeServer(NoticeDocument noticeDocument, String exception, String serverUrl) {
-        noticeDocument.setException(exception);
-        if (exception.contains(UNEXPECTED_URL)) {
-            noticeDocument.setAnalysisResult(AnalysisResult.ERROR);
-            noticeDocument.setNotes("The notice server url '%s' configuration error. ", serverUrl);
-        }
-    }
-
     private static Map<String, User> convertToUserMap(Collection<? extends User> users) {
         Map<String, User> result = new HashMap<>(0);
         for (User user : users) {

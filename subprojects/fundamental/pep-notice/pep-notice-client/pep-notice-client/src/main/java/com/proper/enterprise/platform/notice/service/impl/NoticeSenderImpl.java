@@ -96,4 +96,9 @@ public class NoticeSenderImpl implements NoticeSender {
         noticeSendService.sendNoticeChannel(fromUserId, toUserIds, title, content, custom, catalog, noticeType);
     }
 
+    @Override
+    public void sendNoticeSMS(String phone, String content, Map<String, Object> custom) {
+        noticeSendService.sendNoticeSMS(phone, content, custom);
+    }
+
 }
