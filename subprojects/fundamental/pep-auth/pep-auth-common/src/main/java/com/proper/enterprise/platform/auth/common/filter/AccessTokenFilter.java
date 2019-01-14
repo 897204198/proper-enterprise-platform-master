@@ -52,19 +52,18 @@ public class AccessTokenFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-        Optional<String> token = accessTokenService.getToken(req);
-        if (token.isPresent()) {
-            setCurrentUserId(token.get());
-        }
+        Authentication.remove();
         if (shouldIgnore(req)) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        Optional<String> token = accessTokenService.getToken(req);
         if (token.isPresent() && accessTokenService.verify(token.get())) {
             LOGGER.trace("Access token verify succeed.");
             Optional<String> userId = accessTokenService.getUserId(token.get());
             if (userId.isPresent()) {
+                Authentication.setCurrentUserId(userId.get());
                 if (authzService.accessible(req, userId.get())) {
                     LOGGER.trace("Current user with {} could access {}:{}, invoke next filter in filter chain.",
                         token.get(), req.getMethod(), req.getRequestURI());
@@ -141,13 +140,6 @@ public class AccessTokenFilter implements Filter {
 
     @Override
     public void init(FilterConfig arg0) {
-    }
-
-    private void setCurrentUserId(String token) {
-        Optional<String> userId = accessTokenService.getUserId(token);
-        if (userId.isPresent()) {
-            Authentication.setCurrentUserId(userId.get());
-        }
     }
 
 }
