@@ -28,7 +28,7 @@ public class CandidateIdUtil {
         if (StringUtil.isEmpty(type)) {
             throw new ErrMsgException("CandidateType can't be empty");
         }
-        return id + ":" + type;
+        return id + "_" + type;
     }
 
     /**
@@ -63,7 +63,7 @@ public class CandidateIdUtil {
         if (StringUtil.isEmpty(wfCandidateId)) {
             throw new ErrMsgException("wfCandidateId is empty");
         }
-        String[] parse = wfCandidateId.split(":");
+        String[] parse = wfCandidateId.split("_");
         if (parse.length != PARSE_SIZE) {
             throw new ErrMsgException("wfCandidateId is not a standard format");
         }

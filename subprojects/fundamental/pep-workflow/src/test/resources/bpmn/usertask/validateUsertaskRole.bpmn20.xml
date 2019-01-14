@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
   <process id="testUsertaskRole" name="testUsertaskRole" isExecutable="true">
     <startEvent id="startEvent1"></startEvent>
-    <userTask id="sid-A6460DA4-7BAF-40FE-A176-62BAB8992A68" name="role1" flowable:candidateGroups="role1:ROLE">
+    <userTask id="sid-A6460DA4-7BAF-40FE-A176-62BAB8992A68" name="role1" flowable:candidateGroups="role1_ROLE">
       <extensionElements>
         <modeler:role-info-name-role1 xmlns:modeler="http://flowable.org/modeler"><![CDATA[testrole1]]></modeler:role-info-name-role1>
         <modeler:activiti-idm-candidate-role xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-candidate-role>
@@ -10,7 +10,7 @@
       </extensionElements>
     </userTask>
     <sequenceFlow id="sid-3DE69F1A-7BA2-4A0A-B874-C2FF9AF39B3A" sourceRef="startEvent1" targetRef="sid-A6460DA4-7BAF-40FE-A176-62BAB8992A68"></sequenceFlow>
-    <userTask id="sid-A0731C30-FF3A-43AF-B5DF-246D640F1F14" name="role1ORrole2" flowable:candidateGroups="role1:ROLE,role2:ROLE">
+    <userTask id="sid-A0731C30-FF3A-43AF-B5DF-246D640F1F14" name="role1ORrole2" flowable:candidateGroups="role1_ROLE,role2_ROLE">
       <extensionElements>
         <modeler:role-info-name-role1 xmlns:modeler="http://flowable.org/modeler"><![CDATA[testrole1]]></modeler:role-info-name-role1>
         <modeler:role-info-name-role2 xmlns:modeler="http://flowable.org/modeler"><![CDATA[testrole2]]></modeler:role-info-name-role2>
