@@ -86,12 +86,13 @@ class CRUDTest extends AbstractJPATest {
     @NoTx
     void "complex"() {
         //存B
-        BVO resultB = resOfPost("/b", JSONUtil.toJSON(new BVO().setTest(1).setVoStrB("BBB")), HttpStatus.CREATED)
-        BVO resultB2 = resOfPost("/b", JSONUtil.toJSON(new BVO().setTest(1).setVoStrB("BBB2")), HttpStatus.CREATED)
+        BVO resultB = resOfPost("/b", JSONUtil.toJSON(new BVO().setTest(1).addB("BBB")), HttpStatus.CREATED)
+        BVO resultB2 = resOfPost("/b", JSONUtil.toJSON(new BVO().setTest(1).addB("BBB2")), HttpStatus.CREATED)
 
         CVO resultC2 = resOfPost("/c", JSONUtil.toJSON(new CVO().setTest(2)), HttpStatus.CREATED)
         //C存B
         CVO resultCB = resOfPost("/c/${resultC2.getId()}/b/${resultB.getId()}", JSONUtil.toJSON(new CVO()), HttpStatus.CREATED)
+
         assert resultCB.bvo.getVoStrB() == "BBB"
         //C有B不过没有显示调用所以懒加载不加载
         List<CVO> listC = JSONUtil.parse(get("/c", HttpStatus.OK).getResponse().getContentAsString(), List)
@@ -103,7 +104,7 @@ class CRUDTest extends AbstractJPATest {
         AVO avo = resOfPost(URL, JSONUtil.toJSON(entity1), HttpStatus.CREATED)
         //A关联C
         AVO avoc = resOfPost(URL + "/" + avo.getId() + "/c/" + resultC.getId(), JSONUtil.toJSON(entity1), HttpStatus.CREATED)
-        assert avoc.bvos.size() == 0
+        assert avoc.bvos == null
         assert avoc.cvo.getTest() == 1
         AVO avob = resOfPost(URL + "/" + avo.getId() + "/b/" + resultB.getId(), JSONUtil.toJSON(entity1), HttpStatus.CREATED)
         assert avob.cvo == null
@@ -124,7 +125,7 @@ class CRUDTest extends AbstractJPATest {
     @NoTx
     void oneToMany() {
         //存B
-        BVO resultB = resOfPost("/b", JSONUtil.toJSON(new BVO().setTest(1).setVoStrB("BBB")), HttpStatus.CREATED)
+        BVO resultB = resOfPost("/b", JSONUtil.toJSON(new BVO().setTest(1).addB("BBB")), HttpStatus.CREATED)
         //存C
         CVO resultC = resOfPost("/c", JSONUtil.toJSON(new CVO().setTest(1)), HttpStatus.CREATED)
         CVO resultC2 = resOfPost("/c", JSONUtil.toJSON(new CVO().setTest(2)), HttpStatus.CREATED)

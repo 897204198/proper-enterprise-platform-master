@@ -1,14 +1,14 @@
-package com.proper.enterprise.platform.core.copy;
+package com.proper.enterprise.platform.core.utils.copy;
 
-import com.proper.enterprise.platform.core.copy.api.B;
+import com.proper.enterprise.platform.core.utils.copy.api.B;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 
-public class BVO implements B {
+public class BBO implements B {
 
     public String toString() {
-        String pepBVOStr = "";
-        pepBVOStr = JSONUtil.toJSONIgnoreException(this);
-        return pepBVOStr;
+        String pepBBOStr = "";
+        pepBBOStr = JSONUtil.toJSONIgnoreException(this);
+        return pepBBOStr;
     }
 
     private String sex;

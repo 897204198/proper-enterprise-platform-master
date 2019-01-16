@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.auth.common.vo.ResourceVO;
 import com.proper.enterprise.platform.auth.common.vo.RoleVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.BeanUtils;
@@ -31,21 +32,21 @@ public class MenusController extends BaseController {
     @JsonView(MenuVO.Single.class)
     @ApiOperation("‍管理端取得App所有用户意见反馈的集合")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
-            @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
+        @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
+        @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
     })
     public ResponseEntity<DataTrunk<MenuVO>> get(@ApiParam("‍菜单名称‍") String name, @ApiParam("‍菜单描述‍") String description,
                                                  @ApiParam("‍前端路径‍") String route,
                                                  @ApiParam("‍菜单状态‍") @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable,
                                                  @ApiParam("‍父节点ID‍") String parentId) {
         if (isPageSearch()) {
-            return responseOfGet(service.findMenusPagination(name, description, route, menuEnable, parentId), MenuVO.class, MenuVO.Single.class);
+            return responseOfGet(BeanUtil.convert(service.findMenusPagination(name, description, route, menuEnable, parentId), MenuVO.class));
         } else {
             Collection collection = service.getMenus(name, description, route, menuEnable, parentId);
             DataTrunk<Menu> dataTrunk = new DataTrunk();
             dataTrunk.setCount(collection.size());
             dataTrunk.setData(collection);
-            return responseOfGet(dataTrunk, MenuVO.class, MenuVO.Single.class);
+            return responseOfGet(BeanUtil.convert(dataTrunk, MenuVO.class));
         }
     }
 
@@ -56,7 +57,7 @@ public class MenusController extends BaseController {
     public ResponseEntity<Collection<MenuVO>> updateEnable(@RequestBody MenuReqMap reqMap) {
         Collection<String> idList = reqMap.getIds();
         boolean enable = reqMap.enable;
-        return responseOfPut(service.updateEnable(idList, enable), MenuVO.class, MenuVO.Single.class);
+        return responseOfPut(BeanUtil.convert(service.updateEnable(idList, enable), MenuVO.class));
     }
 
     @PostMapping
@@ -66,7 +67,7 @@ public class MenusController extends BaseController {
     public ResponseEntity<MenuVO> addMenu(@RequestBody MenuModelVO menuModelVO) {
         MenuVO reqMenu = new MenuVO();
         BeanUtils.copyProperties(menuModelVO, reqMenu);
-        return responseOfPost(service.save(reqMenu), MenuVO.class, MenuVO.Single.class);
+        return responseOfPost(BeanUtil.convert(service.save(reqMenu), MenuVO.class));
     }
 
     @DeleteMapping
@@ -80,7 +81,7 @@ public class MenusController extends BaseController {
     @JsonView(MenuVO.Single.class)
     @ApiOperation("‍取得指定菜单ID详情信息")
     public ResponseEntity<MenuVO> getMenuDetail(@ApiParam(value = "‍菜单的id", required = true) @PathVariable String menuId) {
-        return responseOfGet(service.get(menuId), MenuVO.class, MenuVO.Single.class);
+        return responseOfGet(BeanUtil.convert(service.get(menuId), MenuVO.class));
     }
 
     @PutMapping(path = "/{menuId}")
@@ -95,7 +96,7 @@ public class MenusController extends BaseController {
             reqMenu.setId(menuId);
             menu = service.update(reqMenu);
         }
-        return responseOfPut(menu, MenuVO.class, MenuVO.Single.class);
+        return responseOfPut(BeanUtil.convert(menu, MenuVO.class));
     }
 
     @GetMapping(path = "/{menuId}/resources")
@@ -104,14 +105,14 @@ public class MenusController extends BaseController {
     public ResponseEntity<Collection<ResourceVO>> getMenuResources(@ApiParam(value = "‍菜单的id", required = true) @PathVariable String menuId,
                                                                    @ApiParam("‍资源状态(ALL;ENABLE为默认;DISABLE)‍")
                                                                    @RequestParam(defaultValue = "ENABLE") EnableEnum resourceEnable) {
-        return responseOfGet(service.getMenuResources(menuId, EnableEnum.ALL, resourceEnable), ResourceVO.class, ResourceVO.Single.class);
+        return responseOfGet(BeanUtil.convert(service.getMenuResources(menuId, EnableEnum.ALL, resourceEnable), ResourceVO.class));
     }
 
     @GetMapping(path = "/resources")
     @JsonView(MenuVO.MenuWithResource.class)
     @ApiOperation("‍获取用户菜单以及资源的组合列表（用于构造功能树）")
     public ResponseEntity<Collection<MenuVO>> getMenuResources() {
-        return responseOfGet(service.getMenuAllResources(), MenuVO.class, MenuVO.MenuWithResource.class);
+        return responseOfGet(BeanUtil.convert(service.getMenuAllResources(), MenuVO.class));
     }
 
     @GetMapping(path = "/{menuId}/roles")
@@ -120,7 +121,7 @@ public class MenusController extends BaseController {
     public ResponseEntity<Collection<RoleVO>> getMenuRoles(@ApiParam(value = "‍菜单的id", required = true) @PathVariable String menuId,
                                                            @ApiParam("‍资源状态(ALL;ENABLE为默认;DISABLE)‍")
                                                            @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(service.getMenuRoles(menuId, EnableEnum.ALL, roleEnable), RoleVO.class, RoleVO.Single.class);
+        return responseOfGet(BeanUtil.convert(service.getMenuRoles(menuId, EnableEnum.ALL, roleEnable), RoleVO.class));
     }
 
     @GetMapping(path = "/parents")
@@ -128,7 +129,7 @@ public class MenusController extends BaseController {
     @ApiOperation("‍父节点菜单列表")
     public ResponseEntity<Collection<MenuVO>> getMenuParents(@ApiParam("‍资源状态(ALL为默认;ENABLE;DISABLE)‍")
                                                              @RequestParam(defaultValue = "ALL") EnableEnum menuEnable) {
-        return responseOfGet(service.getMenuParents(menuEnable), MenuVO.class, MenuVO.Single.class);
+        return responseOfGet(BeanUtil.convert(service.getMenuParents(menuEnable), MenuVO.class));
     }
 
     @PostMapping(path = "/{menuId}/resources")
@@ -139,7 +140,7 @@ public class MenusController extends BaseController {
                                                        @RequestBody ResourceModelVO resourceModelVO) {
         ResourceVO resourceReq = new ResourceVO();
         BeanUtils.copyProperties(resourceModelVO, resourceReq);
-        return responseOfPost(service.addResourceOfMenu(menuId, resourceReq), ResourceVO.class, ResourceVO.Single.class);
+        return responseOfPost(BeanUtil.convert(service.addResourceOfMenu(menuId, resourceReq), ResourceVO.class));
     }
 
     @DeleteMapping(path = "/{menuId}/resources/{resourceId}")

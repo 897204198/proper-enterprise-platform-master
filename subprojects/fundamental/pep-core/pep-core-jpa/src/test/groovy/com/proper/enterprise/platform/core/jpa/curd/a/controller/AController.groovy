@@ -2,10 +2,12 @@ package com.proper.enterprise.platform.core.jpa.curd.a.controller
 
 import com.fasterxml.jackson.annotation.JsonView
 import com.proper.enterprise.platform.core.controller.BaseController
+import com.proper.enterprise.platform.core.jpa.curd.a.entity.AEntity
 import com.proper.enterprise.platform.core.jpa.curd.a.service.AService
 import com.proper.enterprise.platform.core.jpa.curd.a.vo.AVO
 import com.proper.enterprise.platform.core.jpa.curd.b.api.B
 import com.proper.enterprise.platform.core.jpa.curd.b.entity.BEntity
+import com.proper.enterprise.platform.core.utils.BeanUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -19,7 +21,7 @@ public class AController extends BaseController {
 
     @PostMapping
     public ResponseEntity<AVO> post(@RequestBody AVO avo) {
-        return responseOfPost(aservice.save(avo), AVO.class);
+        return responseOfPost(aservice.save(BeanUtil.convert(avo, AEntity.class)), AVO.class);
     }
 
     @DeleteMapping
@@ -29,16 +31,16 @@ public class AController extends BaseController {
 
     @PutMapping
     public ResponseEntity<AVO> put(@RequestBody AVO avo) {
-        return responseOfPut(aservice.updateForSelective(avo), AVO.class);
+        return responseOfPut(aservice.updateForSelective(BeanUtil.convert(avo, AEntity.class)), AVO.class);
     }
 
     @GetMapping
     @JsonView(AVO.Single.class)
     public ResponseEntity<?> get() {
         if (isPageSearch()) {
-            return responseOfGet(aservice.findPage(), AVO.class, AVO.Single.class);
+            return responseOfGet(aservice.findPage(), AVO.class);
         }
-        return responseOfGet(aservice.findAll(), AVO.class, AVO.Single.class);
+        return responseOfGet(aservice.findAll(), AVO.class);
     }
 
     @GetMapping(path = "/bs")

@@ -3,8 +3,6 @@ package com.proper.enterprise.platform.auth.common.vo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
-import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
-import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
@@ -15,8 +13,6 @@ import java.util.Collection;
 
 @POJORelevance(relevanceDOClassName = "com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity")
 public class MenuVO extends BaseVO implements Menu {
-
-    private static final String MENU_ENTITY_PATH = "com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity";
 
     public interface Single extends BaseView {
 
@@ -30,8 +26,6 @@ public class MenuVO extends BaseVO implements Menu {
     }
 
     @JsonView(value = {Single.class})
-    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
-        fieldName = "children", fromHandleBy = MenuVoFromHandler.class)
     private Boolean leaf;
 
 
@@ -53,9 +47,6 @@ public class MenuVO extends BaseVO implements Menu {
     /**
      * 父菜单
      */
-    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
-        fieldName = "parent",
-        targetClassName = MENU_ENTITY_PATH)
     @JsonView(value = {MenuWithResource.class})
     private MenuVO parent;
 
@@ -63,8 +54,6 @@ public class MenuVO extends BaseVO implements Menu {
      * 上级菜单 id
      */
     @JsonView(value = {Single.class})
-    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
-        fieldName = "parentId", fromHandleBy = MenuVoFromHandler.class)
     private String parentId;
 
     /**
@@ -76,20 +65,11 @@ public class MenuVO extends BaseVO implements Menu {
     /**
      * 子菜单集合
      */
-    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
-        fieldName = "children",
-        targetClassName = MENU_ENTITY_PATH)
     @JsonView(value = {MenuWithResource.class})
     private Collection<MenuVO> children;
 
-    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
-        fieldName = "roleEntities",
-        targetClassName = MENU_ENTITY_PATH)
     private Collection<RoleVO> roles;
 
-    @POJOConverter(fromClassName = MENU_ENTITY_PATH,
-        fieldName = "resourceEntities",
-        targetClassName = MENU_ENTITY_PATH)
     @JsonView(value = {MenuWithResource.class})
     private Collection<ResourceVO> resources;
 
@@ -168,7 +148,7 @@ public class MenuVO extends BaseVO implements Menu {
     }
 
     @Override
-    public Menu getParent() {
+    public MenuVO getParent() {
         return parent;
     }
 
@@ -195,7 +175,7 @@ public class MenuVO extends BaseVO implements Menu {
     }
 
     @Override
-    public Menu getApplication() {
+    public MenuVO getApplication() {
         return application;
     }
 

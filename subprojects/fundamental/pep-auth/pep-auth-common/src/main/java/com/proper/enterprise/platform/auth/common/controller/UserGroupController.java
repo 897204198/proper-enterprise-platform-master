@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.auth.common.vo.UserGroupVO;
 import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
@@ -32,20 +33,20 @@ public class UserGroupController extends BaseController {
     @JsonView(value = {UserGroupVO.Single.class})
     @ApiOperation("‍取得查询用户组信息列表")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
-            @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
+        @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
+        @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
     })
     public ResponseEntity<DataTrunk<UserGroupVO>> getGroups(@ApiParam("‍用户组名") String name, @ApiParam("‍用户组描述") String description,
                                                             @ApiParam("‍用户组状态(ALL;ENABLE为默认;DISABLE)")
                                                             @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
         if (isPageSearch()) {
-            return responseOfGet(service.getGroupsPagination(name, description, userGroupEnable), UserGroupVO.class, UserGroupVO.Single.class);
+            return responseOfGet(BeanUtil.convert(service.getGroupsPagination(name, description, userGroupEnable), UserGroupVO.class));
         } else {
             Collection collection = service.getGroups(name, description, userGroupEnable);
             DataTrunk<UserGroup> dataTrunk = new DataTrunk();
             dataTrunk.setCount(collection.size());
             dataTrunk.setData(collection);
-            return responseOfGet(dataTrunk, UserGroupVO.class, UserGroupVO.Single.class);
+            return responseOfGet(BeanUtil.convert(dataTrunk, UserGroupVO.class));
         }
     }
 
@@ -56,7 +57,7 @@ public class UserGroupController extends BaseController {
     public ResponseEntity<Collection<UserGroupVO>> updateEnable(@RequestBody UserGroupReqMap reqMap) {
         Collection<String> idList = reqMap.getIds();
         boolean enable = reqMap.enable;
-        return responseOfPut(service.updateEnable(idList, enable), UserGroupVO.class, UserGroupVO.Single.class);
+        return responseOfPut(BeanUtil.convert(service.updateEnable(idList, enable), UserGroupVO.class));
     }
 
     @PostMapping
@@ -66,7 +67,7 @@ public class UserGroupController extends BaseController {
     public ResponseEntity<UserGroupVO> create(@RequestBody UserGroupModelVO userGroupModelVO) {
         UserGroupVO userGroupVO = new UserGroupVO();
         BeanUtils.copyProperties(userGroupModelVO, userGroupVO);
-        return responseOfPost(service.save(userGroupVO), UserGroupVO.class, UserGroupVO.Single.class);
+        return responseOfPost(BeanUtil.convert(service.save(userGroupVO), UserGroupVO.class));
     }
 
     @DeleteMapping
@@ -80,7 +81,7 @@ public class UserGroupController extends BaseController {
     @JsonView(value = {UserGroupVO.Single.class})
     @ApiOperation("‍取得指定用户组ID的用户组信息")
     public ResponseEntity<UserGroupVO> get(@ApiParam(value = "‍用户组的ID‍", required = true) @PathVariable String id) {
-        return responseOfGet(service.get(id, EnableEnum.ALL), UserGroupVO.class, UserGroupVO.Single.class);
+        return responseOfGet(BeanUtil.convert(service.get(id, EnableEnum.ALL), UserGroupVO.class));
     }
 
     @PutMapping("/{id}")
@@ -94,7 +95,7 @@ public class UserGroupController extends BaseController {
         if (group != null) {
             userGroupVO.setId(id);
         }
-        return responseOfPut(service.update(userGroupVO), UserGroupVO.class, UserGroupVO.Single.class);
+        return responseOfPut(BeanUtil.convert(service.update(userGroupVO), UserGroupVO.class));
     }
 
     @DeleteMapping("/{id}")
@@ -111,7 +112,7 @@ public class UserGroupController extends BaseController {
     @ApiOperation("‍用户组添加新的角色")
     public ResponseEntity<UserGroupVO> addUserGroupRole(@ApiParam(value = "‍用户组ID‍", required = true) @PathVariable String id,
                                                         @ApiParam(value = "‍角色ID‍", required = true) @PathVariable String roleId) {
-        return responseOfPost(service.saveUserGroupRole(id, roleId), UserGroupVO.class, UserGroupVO.GroupWithRole.class);
+        return responseOfPost(BeanUtil.convert(service.saveUserGroupRole(id, roleId), UserGroupVO.class));
     }
 
     @DeleteMapping("/{id}/role/{roleId}")
@@ -128,7 +129,7 @@ public class UserGroupController extends BaseController {
     public ResponseEntity<Collection<RoleVO>> getGroupRoles(@ApiParam(value = "‍用户组ID‍", required = true) @PathVariable String id,
                                                             @ApiParam("‍角色组状态(ALL;ENABLE为默认;DISABLE)‍")
                                                             @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(service.getGroupRoles(id, EnableEnum.ALL, roleEnable), RoleVO.class, RoleVO.Single.class);
+        return responseOfGet(BeanUtil.convert(service.getGroupRoles(id, EnableEnum.ALL, roleEnable), RoleVO.class));
     }
 
     @PostMapping(path = "/{groupId}/user/{userId}")
@@ -137,7 +138,7 @@ public class UserGroupController extends BaseController {
     @ApiOperation("‍用户组添加用户")
     public ResponseEntity<UserGroupVO> addUserGroup(@ApiParam(value = "‍用户组ID‍", required = true) @PathVariable String groupId,
                                                     @ApiParam(value = "‍用户ID‍", required = true) @PathVariable String userId) {
-        return responseOfPost(service.addGroupUser(groupId, userId), UserGroupVO.class, UserGroupVO.Single.class);
+        return responseOfPost(BeanUtil.convert(service.addGroupUser(groupId, userId), UserGroupVO.class));
     }
 
     @DeleteMapping(path = "/{groupId}/user/{userId}")
@@ -162,7 +163,7 @@ public class UserGroupController extends BaseController {
     public ResponseEntity<Collection<UserVO>> getGroupUsers(@ApiParam(value = "‍用户组ID‍", required = true) @PathVariable String id,
                                                             @ApiParam("‍用户状态(ALL;ENABLE为默认;DISABLE)‍")
                                                             @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
-        return responseOfGet(service.getGroupUsers(id, EnableEnum.ALL, userEnable), UserVO.class, UserVO.Single.class);
+        return responseOfGet(BeanUtil.convert(service.getGroupUsers(id, EnableEnum.ALL, userEnable), UserVO.class));
     }
 
     @PutMapping(path = "/{id}/users")
@@ -174,7 +175,7 @@ public class UserGroupController extends BaseController {
         if (StringUtils.isNotEmpty(ids)) {
             idsList = Arrays.asList(ids.split(","));
         }
-        return responseOfGet(service.addGroupUserByUserIds(id, idsList), UserGroupVO.class, UserGroupVO.Single.class);
+        return responseOfGet(BeanUtil.convert(service.addGroupUserByUserIds(id, idsList), UserGroupVO.class));
     }
 
     public static class UserGroupReqMap {

@@ -1,9 +1,11 @@
 package com.proper.enterprise.platform.core.jpa.curd.c.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.controller.BaseController
+import com.proper.enterprise.platform.core.jpa.curd.c.entity.CEntity;
 import com.proper.enterprise.platform.core.jpa.curd.c.service.CService;
-import com.proper.enterprise.platform.core.jpa.curd.c.vo.CVO;
+import com.proper.enterprise.platform.core.jpa.curd.c.vo.CVO
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class CController extends BaseController {
 
     @PostMapping
     public ResponseEntity<CVO> post(@RequestBody CVO cvo) {
-        return responseOfPost(cservice.save(cvo), CVO.class);
+        return responseOfPost(cservice.save(BeanUtil.convert(cvo, CEntity.class)), CVO.class);
     }
 
     @DeleteMapping
@@ -35,7 +37,7 @@ public class CController extends BaseController {
     @GetMapping
     @JsonView(value = CVO.Single.class)
     public ResponseEntity<?> get() {
-        return responseOfGet(cservice.findAll(), CVO.class, CVO.Single.class);
+        return responseOfGet(cservice.findAll(), CVO.class);
     }
 
 }

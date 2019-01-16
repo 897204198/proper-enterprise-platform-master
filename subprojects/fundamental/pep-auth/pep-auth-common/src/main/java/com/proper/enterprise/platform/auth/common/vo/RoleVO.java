@@ -2,9 +2,8 @@ package com.proper.enterprise.platform.auth.common.vo;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.model.*;
-import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
-import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 
 import java.util.Collection;
@@ -27,7 +26,6 @@ public class RoleVO extends BaseVO implements Role {
     public RoleVO() {
     }
 
-    private static final String ROLE_ENTITY_PATH = "com.proper.enterprise.platform.auth.common.jpa.entity.RoleEntity";
     /**
      * 名称
      */
@@ -43,42 +41,31 @@ public class RoleVO extends BaseVO implements Role {
     /**
      * 父菜单
      */
-    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
-        fieldName = "parent",
-        targetClassName = ROLE_ENTITY_PATH)
     @JsonView(value = UserGroupVO.GroupWithRole.class)
     private RoleVO parent;
 
-    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
-        fieldName = "parent", fromHandleBy = RoleVoFromHandler.class)
     @JsonView(value = {UserGroupVO.GroupWithRole.class, Single.class})
     private String parentId;
 
     @JsonView(value = {UserGroupVO.GroupWithRole.class, Single.class})
     private String parentName;
 
-    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
-        fieldName = "menuEntities",
-        targetClassName = ROLE_ENTITY_PATH)
     private Collection<MenuVO> menus;
 
-    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
-        fieldName = "userEntities",
-        targetClassName = ROLE_ENTITY_PATH)
     private Collection<UserVO> users;
 
-    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
-        fieldName = "userGroupEntities",
-        targetClassName = ROLE_ENTITY_PATH)
     private Collection<UserGroupVO> userGroups;
 
-    @POJOConverter(fromClassName = ROLE_ENTITY_PATH,
-        fieldName = "resourcesEntities",
-        targetClassName = ROLE_ENTITY_PATH)
     private Collection<ResourceVO> resources;
 
     public String getParentId() {
-        return parentId;
+        if (StringUtil.isNotEmpty(this.parentId)) {
+            return this.parentId;
+        }
+        if (null == this.getParent()) {
+            return null;
+        }
+        return this.getParent().getId();
     }
 
     public void setParentId(String parentId) {
@@ -121,7 +108,7 @@ public class RoleVO extends BaseVO implements Role {
     }
 
     @Override
-    public Role getParent() {
+    public RoleVO getParent() {
         return parent;
     }
 
@@ -175,7 +162,13 @@ public class RoleVO extends BaseVO implements Role {
     }
 
     public String getParentName() {
-        return parentName;
+        if (StringUtil.isNotEmpty(this.parentName)) {
+            return this.parentName;
+        }
+        if (null == this.getParent()) {
+            return null;
+        }
+        return this.getParent().getName();
     }
 
     public void setParentName(String parentName) {

@@ -1,7 +1,7 @@
-package com.proper.enterprise.platform.core.copy;
+package com.proper.enterprise.platform.core.utils.copy;
 
-import com.proper.enterprise.platform.core.copy.api.A;
-import com.proper.enterprise.platform.core.copy.api.B;
+import com.proper.enterprise.platform.core.utils.copy.api.A;
+import com.proper.enterprise.platform.core.utils.copy.api.B;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 

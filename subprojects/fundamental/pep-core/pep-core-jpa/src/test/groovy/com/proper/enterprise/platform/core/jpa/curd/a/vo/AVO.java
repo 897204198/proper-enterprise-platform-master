@@ -2,10 +2,8 @@ package com.proper.enterprise.platform.core.jpa.curd.a.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
-import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
+import com.proper.enterprise.platform.core.convert.annotation.DeclareType;
 import com.proper.enterprise.platform.core.jpa.curd.a.api.A;
-import com.proper.enterprise.platform.core.jpa.curd.a.entity.AEntity;
 import com.proper.enterprise.platform.core.jpa.curd.b.api.B;
 import com.proper.enterprise.platform.core.jpa.curd.b.vo.BVO;
 import com.proper.enterprise.platform.core.jpa.curd.c.api.C;
@@ -18,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@POJORelevance(relevanceDO = AEntity.class)
 public class AVO extends BaseVO implements A {
 
     public String toString() {
@@ -39,19 +36,15 @@ public class AVO extends BaseVO implements A {
 
     }
 
-    @POJOConverter(fromBy = AEntity.class, fieldName = "test", targetBy = AEntity.class)
     @JsonView(value = {Single.class})
     private Integer test;
 
-    @POJOConverter(fromBy = AEntity.class, fieldName = "doStr", targetBy = AEntity.class)
     @JsonView(value = {Single.class})
     private String voStr;
 
-    @POJOConverter(fromBy = AEntity.class, fieldName = "bentities", targetBy = AEntity.class)
     @JsonView(value = {WithB.class})
     private Collection<BVO> bvos;
 
-    @POJOConverter(fromBy = AEntity.class, fieldName = "centity", targetBy = AEntity.class)
     private CVO cvo;
 
     @Override
@@ -83,7 +76,7 @@ public class AVO extends BaseVO implements A {
     }
 
     public CVO getCvo() {
-        return cvo;
+        return getCentity();
     }
 
     public void setCvo(CVO cvo) {
@@ -93,12 +86,12 @@ public class AVO extends BaseVO implements A {
     @Override
     @JsonIgnore
     public String getDoStr() {
-        return null;
+        return voStr;
     }
 
     @Override
     public void setDoStr(String doStr) {
-
+        this.setVoStr(doStr);
     }
 
     @Override
@@ -112,9 +105,13 @@ public class AVO extends BaseVO implements A {
 
     @Override
     @JsonIgnore
-    public AVO setBs(List<? extends B> bs) {
+    @DeclareType(classType = BVO.class)
+    public List<BVO> setBs(List<? extends B> bs) {
         this.setBvos((Collection<BVO>) bs);
-        return this;
+        if (null == this.bvos) {
+            return null;
+        }
+        return new ArrayList<>(this.bvos);
     }
 
     @Override
@@ -124,9 +121,8 @@ public class AVO extends BaseVO implements A {
     }
 
     @Override
-    public AVO setCentity(C c) {
+    public void setCentity(C c) {
         this.setCvo((CVO) c);
-        return this;
     }
 
     @Override

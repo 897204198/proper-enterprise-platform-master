@@ -43,7 +43,7 @@ public interface A extends IBase {
      * @param bs bs
      * @return A
      */
-    public A setBs(List<? extends B> bs);
+    public List<? extends B> setBs(List<? extends B> bs);
 
     /**
      * 获取centity
@@ -56,7 +56,7 @@ public interface A extends IBase {
      * @param c c
      * @return A
      */
-    public A setCentity(C c);
+    public void setCentity(C c);
 
     /**
      * add()方法

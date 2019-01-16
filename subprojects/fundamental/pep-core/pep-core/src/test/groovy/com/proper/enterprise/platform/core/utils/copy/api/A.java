@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.core.copy.api;
+package com.proper.enterprise.platform.core.utils.copy.api;
 
 import java.util.List;
 

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
-import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
-import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
@@ -22,8 +20,6 @@ public class UserGroupVO extends BaseVO implements UserGroup {
     public interface GroupWithRole extends Single {
 
     }
-
-    private static final String USER_GROUP_ENTITY_PATH = "com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity";
 
     /**
      * 用户组名称
@@ -46,17 +42,11 @@ public class UserGroupVO extends BaseVO implements UserGroup {
     /**
      * 用户组内用户列信息列表
      */
-    @POJOConverter(fromClassName = USER_GROUP_ENTITY_PATH,
-        fieldName = "userEntities",
-        targetClassName = USER_GROUP_ENTITY_PATH)
     private Collection<UserVO> users;
 
     /**
      * 用户组内角色列信息列表
      */
-    @POJOConverter(fromClassName = USER_GROUP_ENTITY_PATH,
-        fieldName = "roleGroupEntities",
-        targetClassName = USER_GROUP_ENTITY_PATH)
     @JsonView(value = GroupWithRole.class)
     private Collection<RoleVO> roles;
 

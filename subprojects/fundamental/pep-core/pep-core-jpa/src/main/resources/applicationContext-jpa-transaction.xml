@@ -31,15 +31,4 @@
                       expression="execution(* com.proper..service.impl.*ServiceImpl.*(..)) or execution(* com.proper..service.impl.*ServiceSupport.*(..)) or execution(* com.proper..repository.*Repository.*(..))"/>
         <aop:advisor pointcut-ref="txEntryPoint" advice-ref="txAdvice" order="1"/>
     </aop:config>
-    <bean id="beforeService" class="com.proper.enterprise.platform.core.interceptor.ServiceConvertInterceptor"/>
-    <aop:config>
-        <aop:pointcut id="servicePointcutTarget"
-                      expression="execution(* com.proper..service.impl.*ServiceImpl.*(..)) or execution(* com.proper..service.impl.*ServiceSupport.*(..))"/>
-        <aop:aspect id="beforeServiceAspect" ref="beforeService" order="1">
-            <aop:around
-                pointcut-ref="servicePointcutTarget"
-                method="serviceBeforeInterceptor"
-            />
-        </aop:aspect>
-    </aop:config>
 </beans>

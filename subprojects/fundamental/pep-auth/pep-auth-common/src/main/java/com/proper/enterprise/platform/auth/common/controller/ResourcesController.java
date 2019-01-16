@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.auth.common.vo.MenuVO;
 import com.proper.enterprise.platform.auth.common.vo.ResourceVO;
 import com.proper.enterprise.platform.auth.common.vo.RoleVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -37,7 +38,7 @@ public class ResourcesController extends BaseController {
     public ResponseEntity<Collection<ResourceVO>> updateEnable(@RequestBody ResourceReqMap reqMap) {
         Collection<String> idList = reqMap.getIds();
         boolean enable = reqMap.enable;
-        return responseOfPut(resourceService.updateEnable(idList, enable), ResourceVO.class, ResourceVO.Single.class);
+        return responseOfPut(BeanUtil.convert(resourceService.updateEnable(idList, enable), ResourceVO.class));
     }
 
     @DeleteMapping
@@ -52,7 +53,7 @@ public class ResourcesController extends BaseController {
     @JsonView(ResourceVO.Single.class)
     @ApiOperation("‍取得指定资源ID的资源信息")
     public ResponseEntity<ResourceVO> find(@ApiParam(value = "‍资源的id", required = true) @PathVariable String resourceId) {
-        return responseOfGet(resourceService.get(resourceId), ResourceVO.class, ResourceVO.Single.class);
+        return responseOfGet(BeanUtil.convert(resourceService.get(resourceId), ResourceVO.class));
     }
 
     @PutMapping(path = "/{resourceId}")
@@ -67,7 +68,7 @@ public class ResourcesController extends BaseController {
             resourceReq.setId(resourceId);
             resource = resourceService.update(resourceReq);
         }
-        return responseOfPut(resource, ResourceVO.class, ResourceVO.Single.class);
+        return responseOfPut(BeanUtil.convert(resource, ResourceVO.class));
     }
 
     @DeleteMapping(path = "/{resourceId}")
@@ -86,8 +87,8 @@ public class ResourcesController extends BaseController {
     @ApiOperation("‍取得指定资源ID的菜单列表")
     public ResponseEntity<Collection<MenuVO>> getResourceMenus(@ApiParam(value = "‍资源的id", required = true) @PathVariable String resourceId,
                                                                @ApiParam("‍菜单状态(ALL;ENABLE为默认;DISABLE)‍") @RequestParam(defaultValue = "ENABLE")
-                                                                       EnableEnum menuEnable) {
-        return responseOfGet(resourceService.getResourceMenus(resourceId, menuEnable), MenuVO.class, MenuVO.Single.class);
+                                                                   EnableEnum menuEnable) {
+        return responseOfGet(BeanUtil.convert(resourceService.getResourceMenus(resourceId, menuEnable), MenuVO.class));
     }
 
     @GetMapping(path = "/{resourceId}/roles")
@@ -95,8 +96,8 @@ public class ResourcesController extends BaseController {
     @JsonView(RoleVO.Single.class)
     public ResponseEntity<Collection<RoleVO>> getResourceRoles(@ApiParam(value = "‍资源的id", required = true) @PathVariable String resourceId,
                                                                @ApiParam("‍角色状态(ALL;ENABLE为默认;DISABLE)‍") @RequestParam(defaultValue = "ENABLE")
-                                                                       EnableEnum roleEnable) {
-        return responseOfGet(resourceService.getResourceRoles(resourceId, roleEnable), RoleVO.class, RoleVO.Single.class);
+                                                                   EnableEnum roleEnable) {
+        return responseOfGet(BeanUtil.convert(resourceService.getResourceRoles(resourceId, roleEnable), RoleVO.class));
     }
 
     public static class ResourceReqMap {

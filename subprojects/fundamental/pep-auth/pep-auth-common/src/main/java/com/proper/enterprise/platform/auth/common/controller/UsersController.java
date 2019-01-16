@@ -13,6 +13,7 @@ import com.proper.enterprise.platform.auth.common.vo.UserVO;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.security.Authentication;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.api.auth.service.UserNoticeService;
 import io.swagger.annotations.*;
@@ -43,7 +44,7 @@ public class UsersController extends BaseController {
     public ResponseEntity<UserVO> create(@RequestBody UserModelVO userModelVO) {
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(userModelVO, userVO);
-        return responseOfPost(userService.save(userVO), UserVO.class, UserVO.Single.class);
+        return responseOfPost(BeanUtil.convert(userService.save(userVO), UserVO.class));
     }
 
     @PostMapping(path = "/{userId}/role/{roleId}")
@@ -77,7 +78,7 @@ public class UsersController extends BaseController {
     public ResponseEntity<Collection<UserVO>> updateEnable(@RequestBody UserReqMap reqMap) {
         Collection<String> idList = reqMap.getIds();
         boolean enable = reqMap.enable;
-        return responseOfPut(userService.updateEnable(idList, enable), UserVO.class, UserVO.Single.class);
+        return responseOfPut(BeanUtil.convert(userService.updateEnable(idList, enable), UserVO.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -85,9 +86,9 @@ public class UsersController extends BaseController {
     @JsonView(UserVO.Single.class)
     @ApiOperation("‍用户修改密码")
     public ResponseEntity<UserVO> changePassword(@RequestBody ChangePasswordParam changePasswordParam) {
-        return responseOfPut(userService.updateChangePassword(Authentication.getCurrentUserId(),
+        return responseOfPut(BeanUtil.convert(userService.updateChangePassword(Authentication.getCurrentUserId(),
             changePasswordParam.getOldPassword(), changePasswordParam.getPassword()),
-            UserVO.class, UserVO.Single.class);
+            UserVO.class));
     }
 
     @AuthcIgnore
@@ -123,7 +124,7 @@ public class UsersController extends BaseController {
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(userModelVO, userVO);
         userVO.setId(userId);
-        return responseOfPut(userService.update(userVO), UserVO.class, UserVO.Single.class);
+        return responseOfPut(BeanUtil.convert(userService.update(userVO), UserVO.class));
     }
 
     @PutMapping(path = "/current")
@@ -131,14 +132,14 @@ public class UsersController extends BaseController {
     @ApiOperation("‍更新当前用户的用户信息")
     public ResponseEntity<UserVO> updateCurrentUser(@RequestBody UserVO userVO) {
         userVO.setId(Authentication.getCurrentUserId());
-        return responseOfPut(userService.update(userVO), UserVO.class, UserVO.Single.class);
+        return responseOfPut(BeanUtil.convert(userService.update(userVO), UserVO.class));
     }
 
     @GetMapping(path = "/{userId}")
     @JsonView(UserVO.Single.class)
     @ApiOperation("‍取得指定用户ID的用户信息")
     public ResponseEntity<UserVO> get(@ApiParam(value = "‍‍‍用户ID‍", required = true) @PathVariable String userId) {
-        return responseOfGet(userService.get(userId), UserVO.class, UserVO.Single.class);
+        return responseOfGet(BeanUtil.convert(userService.get(userId), UserVO.class));
     }
 
     @GetMapping
@@ -153,13 +154,13 @@ public class UsersController extends BaseController {
                                                       @ApiParam("‍用户状态(ALL;ENABLE为默认;DISABLE)")
                                                       @RequestParam(defaultValue = "ENABLE") EnableEnum userEnable) {
         if (isPageSearch()) {
-            return responseOfGet(userService.findUsersPagination(username, name, email, phone, userEnable), UserVO.class, UserVO.Single.class);
+            return responseOfGet(BeanUtil.convert(userService.findUsersPagination(username, name, email, phone, userEnable), UserVO.class));
         } else {
             Collection collection = userService.getUsersByAndCondition(username, name, email, phone, userEnable);
             DataTrunk<User> dataTrunk = new DataTrunk();
             dataTrunk.setCount(collection.size());
             dataTrunk.setData(collection);
-            return responseOfGet(dataTrunk, UserVO.class, UserVO.Single.class);
+            return responseOfGet(BeanUtil.convert(dataTrunk, UserVO.class));
         }
     }
 
@@ -168,7 +169,7 @@ public class UsersController extends BaseController {
     @ApiOperation("‍按照用户名或者显示名或者手机号查询用户信息列表")
     public ResponseEntity<Collection<UserVO>> getUsers(@ApiParam("‍用户名或者显示名或者手机号‍") @RequestParam String condition,
                                                        @RequestParam(defaultValue = "ENABLE") EnableEnum enable) {
-        return responseOfGet(userService.getUsersByOrCondition(condition, enable), UserVO.class, UserVO.Single.class);
+        return responseOfGet(BeanUtil.convert(userService.getUsersByOrCondition(condition, enable), UserVO.class));
     }
 
     @GetMapping(path = "/{userId}/user-groups")
@@ -177,7 +178,7 @@ public class UsersController extends BaseController {
     public ResponseEntity<Collection<UserGroupVO>> getUserGroups(@ApiParam(value = "‍‍‍用户ID‍", required = true) @PathVariable String userId,
                                                                  @ApiParam("‍用户组状态(ALL;ENABLE为默认;DISABLE)‍")
                                                                  @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
-        return responseOfGet(userService.getUserGroups(userId, userGroupEnable), UserGroupVO.class, UserGroupVO.Single.class);
+        return responseOfGet(BeanUtil.convert(userService.getUserGroups(userId, userGroupEnable), UserGroupVO.class));
     }
 
     @GetMapping(path = "/{userId}/roles")
@@ -186,7 +187,7 @@ public class UsersController extends BaseController {
     public ResponseEntity<Collection<RoleVO>> getUserRoles(@ApiParam(value = "‍‍‍用户ID‍", required = true) @PathVariable String userId,
                                                            @ApiParam("‍角色状态(ALL;ENABLE为默认;DISABLE)‍")
                                                            @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(userService.getUserRoles(userId, roleEnable), RoleVO.class, RoleVO.Single.class);
+        return responseOfGet(BeanUtil.convert(userService.getUserRoles(userId, roleEnable), RoleVO.class));
     }
 
     public static class UserModelVO {

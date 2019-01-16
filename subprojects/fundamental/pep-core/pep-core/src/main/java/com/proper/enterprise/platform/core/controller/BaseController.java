@@ -5,7 +5,6 @@ import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.support.AbstractQuerySupport;
-import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,10 +48,6 @@ public abstract class BaseController extends AbstractQuerySupport {
         return new ResponseEntity<>(entity, HttpStatus.CREATED);
     }
 
-    protected <T, S> ResponseEntity<T> responseOfPost(S entity, Class<T> classType, Class... showType) {
-        return new ResponseEntity<>(BeanUtil.convertToVO(entity, classType, showType), HttpStatus.CREATED);
-    }
-
     /**
      * 返回 POST 请求的响应
      * 创建实体成功时返回 201 Created 状态及被创建的实体
@@ -77,19 +72,6 @@ public abstract class BaseController extends AbstractQuerySupport {
      */
     protected <T> ResponseEntity<T> responseOfGet(T entity) {
         return responseOKWithOrWithoutContent(entity, null);
-    }
-
-
-    protected <T, S> ResponseEntity<T> responseOfGet(S entity, Class<T> classType, Class... showType) {
-        return responseOKWithOrWithoutContent(BeanUtil.convertToVO(entity, classType, showType), null);
-    }
-
-    protected <T, S> ResponseEntity<DataTrunk<T>> responseOfGet(DataTrunk<S> entity, Class<T> classType, Class... showType) {
-        return responseOKWithOrWithoutContent(BeanUtil.convertToVO(entity, classType, showType), null);
-    }
-
-    protected <T, S> ResponseEntity<Collection<T>> responseOfGet(Collection<S> entity, Class<T> classType, Class... showType) {
-        return responseOKWithOrWithoutContent(BeanUtil.convertToVO(entity, classType, showType), null);
     }
 
     /**
@@ -148,14 +130,6 @@ public abstract class BaseController extends AbstractQuerySupport {
      */
     protected <T> ResponseEntity<T> responseOfPut(T entity) {
         return responseOKWithOrWithoutContent(entity, null);
-    }
-
-    protected <T, S> ResponseEntity<T> responseOfPut(S entity, Class<T> classType, Class... showType) {
-        return responseOKWithOrWithoutContent(BeanUtil.convertToVO(entity, classType, showType), null);
-    }
-
-    protected <T, S> ResponseEntity<Collection<T>> responseOfPut(Collection<S> collection, Class<T> classType, Class... showType) {
-        return responseOKWithOrWithoutContent(BeanUtil.convertToVO(collection, classType, showType), null);
     }
 
     /**

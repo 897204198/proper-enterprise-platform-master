@@ -1,8 +1,10 @@
 package com.proper.enterprise.platform.core.jpa.curd.b.controller;
 
-import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.controller.BaseController
+import com.proper.enterprise.platform.core.jpa.curd.b.entity.BEntity;
 import com.proper.enterprise.platform.core.jpa.curd.b.service.BService;
-import com.proper.enterprise.platform.core.jpa.curd.b.vo.BVO;
+import com.proper.enterprise.platform.core.jpa.curd.b.vo.BVO
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +18,7 @@ public class BController extends BaseController {
 
     @PostMapping
     public ResponseEntity<BVO> post(@RequestBody BVO bvo) {
-        return responseOfPost(bservice.save(bvo), BVO.class);
+        return responseOfPost(bservice.save(BeanUtil.convert(bvo, BEntity.class)), BVO.class);
     }
 
     @DeleteMapping
@@ -26,7 +28,7 @@ public class BController extends BaseController {
 
     @PutMapping
     public ResponseEntity<BVO> put(@RequestBody BVO bvo) {
-        return responseOfPut(bservice.updateForSelective(bvo), BVO.class);
+        return responseOfPut(bservice.updateForSelective(BeanUtil.convert(bvo, BEntity.class)), BVO.class);
     }
 
     @GetMapping

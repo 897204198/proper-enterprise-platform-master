@@ -1,16 +1,15 @@
 package com.proper.enterprise.platform.core.jpa.curd.c.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
-import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
 import com.proper.enterprise.platform.core.jpa.curd.a.vo.AVO;
+import com.proper.enterprise.platform.core.jpa.curd.b.api.B;
 import com.proper.enterprise.platform.core.jpa.curd.b.vo.BVO;
 import com.proper.enterprise.platform.core.jpa.curd.c.api.C;
-import com.proper.enterprise.platform.core.jpa.curd.c.entity.CEntity;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 
-@POJORelevance(relevanceDOClassName = "com.proper.enterprise.platform.core.jpa.curd.c.entity.CEntity")
 public class CVO extends BaseVO implements C {
 
     public String toString() {
@@ -23,6 +22,17 @@ public class CVO extends BaseVO implements C {
         super.setEnable(true);
     }
 
+    @Override
+    @JsonIgnore
+    public BVO getB() {
+        return bvo;
+    }
+
+    @Override
+    public void setB(B b) {
+        this.bvo = BeanUtil.convert(b, BVO.class);
+    }
+
     public interface Single {
 
     }
@@ -30,7 +40,6 @@ public class CVO extends BaseVO implements C {
     @JsonView(value = {AVO.WithB.class, Single.class})
     private Integer test;
 
-    @POJOConverter(fromBy = CEntity.class, fieldName = "bentity", targetBy = CEntity.class)
     private BVO bvo;
 
     public Integer getTest() {

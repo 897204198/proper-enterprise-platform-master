@@ -69,4 +69,14 @@ public class BEntity extends BaseEntity implements B {
     }
 
 
+    @Override
+    @Transient
+    public String getStrB() {
+        return doStrB;
+    }
+
+    @Override
+    public void setStrB(String strB) {
+        this.setDoStrB(strB);
+    }
 }

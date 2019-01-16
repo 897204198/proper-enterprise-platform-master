@@ -76,7 +76,7 @@ public class PEPModelServiceImpl implements PEPModelService {
     public PEPModelVO update(PEPModelVO pepModelVO) {
         Model targetModel = modelRepository.get(pepModelVO.getId());
         Model updateModel = updateModelEditJson(pepModelVO.convert(), targetModel);
-        BeanUtil.copyProperties(updateModel, targetModel, true);
+        BeanUtil.copyProperties(updateModel, targetModel);
         targetModel.setLastUpdated(new Date());
         targetModel.setLastUpdatedBy(Authentication.getCurrentUserId());
         modelRepository.save(targetModel);

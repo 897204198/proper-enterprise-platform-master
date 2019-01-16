@@ -94,7 +94,7 @@ public class FileController extends BaseController {
             @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
     })
     public ResponseEntity<DataTrunk<FileVO>> query() {
-        return responseOfGet(fileService.findPage(), FileVO.class);
+        return responseOfGet(BeanUtil.convert(fileService.findPage(), FileVO.class));
     }
 
     @PostMapping(path = "/dir")

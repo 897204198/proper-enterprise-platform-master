@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.core.jpa.curd.a.entity;
 
+import com.proper.enterprise.platform.core.convert.annotation.DeclareType;
 import com.proper.enterprise.platform.core.jpa.curd.a.api.A;
 import com.proper.enterprise.platform.core.jpa.curd.b.api.B;
 import com.proper.enterprise.platform.core.jpa.curd.b.entity.BEntity;
@@ -73,14 +74,16 @@ public class AEntity extends BaseEntity implements A {
 
 
     @Override
-    public List<? extends B> getBs() {
+    @DeclareType(classType = BEntity.class)
+    public List<BEntity> getBs() {
         return bentities;
     }
 
     @Override
-    public AEntity setBs(List<? extends B> bs) {
+    @DeclareType(classType = BEntity.class)
+    public List<BEntity> setBs(List<? extends B> bs) {
         this.bentities = (List<BEntity>) bs;
-        return this;
+        return this.bentities;
     }
 
     @Override
@@ -89,8 +92,7 @@ public class AEntity extends BaseEntity implements A {
     }
 
     @Override
-    public AEntity setCentity(C centity) {
+    public void setCentity(C centity) {
         this.centity = (CEntity) centity;
-        return this;
     }
 }

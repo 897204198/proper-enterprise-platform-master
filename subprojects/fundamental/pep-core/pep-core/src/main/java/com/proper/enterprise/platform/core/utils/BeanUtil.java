@@ -1,9 +1,6 @@
 package com.proper.enterprise.platform.core.utils;
 
-import com.proper.enterprise.platform.core.convert.ConvertElement;
-import com.proper.enterprise.platform.core.convert.CycleConvertElement;
-import com.proper.enterprise.platform.core.convert.ViewConvertElement;
-import com.proper.enterprise.platform.core.convert.enums.ConvertType;
+import com.proper.enterprise.platform.core.convert.annotation.DeclareType;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -20,6 +17,8 @@ public class BeanUtil {
     private BeanUtil() {
     }
 
+    private static final String VOID_STR = "void";
+
     /**
      * 根据类型实例化对象
      *
@@ -27,7 +26,7 @@ public class BeanUtil {
      * @param <T>       泛型
      * @return 泛型实例
      */
-    public static <T> T newInstance(Class<T> classType) {
+    private static <T> T newInstance(Class<T> classType) {
         T t;
         try {
             t = classType.newInstance();
@@ -57,26 +56,6 @@ public class BeanUtil {
     }
 
     /**
-     * 根据属性名称获取属性
-     *
-     * @param entityClass 业务实体类
-     * @param fieldName   属性名称
-     * @return 属性
-     */
-    public static Field getField(Class<?> entityClass, String fieldName) {
-        if (StringUtils.isEmpty(fieldName)) {
-            return null;
-        }
-        List<Field> fields = getAllFields(entityClass);
-        for (Field field : fields) {
-            if (fieldName.equals(field.getName())) {
-                return field;
-            }
-        }
-        return null;
-    }
-
-    /**
      * copy source的属性值至具有相同属性的target
      * 支持同属性不同类型的copy
      * 支持集合copy 集合支持list，set
@@ -86,7 +65,7 @@ public class BeanUtil {
      * @param ignoreProperties 需要忽略的属性
      */
     public static void copyProperties(Object source, Object target, String... ignoreProperties) {
-        copyProperties(source, target, false, ignoreProperties);
+        copyProperties(source, target, false, 0, 1, ignoreProperties);
     }
 
     /**
@@ -99,7 +78,8 @@ public class BeanUtil {
      * @param ignoreNull       是否忽略空属性 默认false
      * @param ignoreProperties 需要忽略的属性
      */
-    public static void copyProperties(Object source, Object target, boolean ignoreNull, String... ignoreProperties) {
+    public static void copyProperties(Object source, Object target, boolean ignoreNull, long currentDepth,
+                                      long expectDepth, String... ignoreProperties) {
         Assert.notNull(source, "Source must not be null");
         Assert.notNull(target, "Target must not be null");
         Class<?> actualEditable = target.getClass();
@@ -126,7 +106,7 @@ public class BeanUtil {
                             }
                             //处理集合
                             if (Collection.class.isAssignableFrom(sourcePd.getPropertyType())) {
-                                copyCollection(value, source, sourcePd, target, targetPd, ignoreProperties);
+                                copyCollection(value, source, sourcePd, target, targetPd, ignoreNull, currentDepth, expectDepth, ignoreProperties);
                                 continue;
                             }
                             //处理类型不一致  多用于bean类型不一致但是bean之间有相同属性
@@ -134,7 +114,8 @@ public class BeanUtil {
                                 if (targetPd.getPropertyType().isInterface()) {
                                     continue;
                                 }
-                                copyBean(value, target, sourcePd, targetPd, ignoreProperties);
+
+                                copyBean(value, target, sourcePd, targetPd, ignoreNull, currentDepth, expectDepth, ignoreProperties);
                                 continue;
                             }
                             writeMethod.invoke(target, value);
@@ -193,13 +174,18 @@ public class BeanUtil {
      */
     private static void copyBean(Object value,
                                  Object target, PropertyDescriptor sourcePd, PropertyDescriptor targetPd,
+                                 boolean ignoreNull, long currentDepth, long expectDepth,
                                  String... ignoreProperties) throws InvocationTargetException, IllegalAccessException {
-        Method writeMethod = targetPd.getWriteMethod();
+
         if (null == value) {
             return;
         }
+        if (currentDepth >= expectDepth) {
+            return;
+        }
+        Method writeMethod = targetPd.getWriteMethod();
         Object copy = BeanUtil.newInstance(targetPd.getPropertyType());
-        copyProperties(value, copy, handleIgnoreProperties(sourcePd.getName(), ignoreProperties));
+        copyProperties(value, copy, ignoreNull, currentDepth + 1, expectDepth, handleIgnoreProperties(sourcePd.getName(), ignoreProperties));
         writeMethod.invoke(target, copy);
     }
 
@@ -222,10 +208,20 @@ public class BeanUtil {
     private static void copyCollection(Object value, Object source,
                                        PropertyDescriptor sourcePd, Object target,
                                        PropertyDescriptor targetPd,
+                                       boolean ignoreNull, long currentDepth, long expectDepth,
                                        String... ignoreProperties) throws InvocationTargetException, IllegalAccessException {
+
         Class sourceGenericityType = BeanUtil.getCollectionGenericityType(source.getClass(), sourcePd.getName());
         Class targetGenericityType = BeanUtil.getCollectionGenericityType(target.getClass(), targetPd.getName());
+        //通过get方法描述属性 无field
+        //尝试通过返回值获取具体类型
+        if (null == sourceGenericityType) {
+            sourceGenericityType = getDeclareType(sourcePd.getReadMethod());
+        }
         Method writeMethod = targetPd.getWriteMethod();
+        if (null == targetGenericityType) {
+            targetGenericityType = getDeclareType(writeMethod);
+        }
         if (null == targetGenericityType || null == sourceGenericityType) {
             return;
         }
@@ -233,72 +229,33 @@ public class BeanUtil {
             writeMethod.invoke(target, value);
             return;
         }
-        value = convertCollection((Collection) value, targetGenericityType, targetPd, handleIgnoreProperties(sourcePd.getName(), ignoreProperties));
+        value = convertCollection((Collection) value, targetGenericityType, targetPd, ignoreNull, currentDepth,
+            expectDepth, handleIgnoreProperties(sourcePd.getName(), ignoreProperties));
         writeMethod.invoke(target, value);
     }
 
-    private static Collection convertCollection(Collection sources,
-                                                Class targetGenericityType,
-                                                PropertyDescriptor targetPd, String... ignoreProperties) {
+    private static Collection<Object> convertCollection(Collection sources,
+                                                        Class targetGenericityType,
+                                                        PropertyDescriptor targetPd,
+                                                        boolean ignoreNull, long currentDepth, long expectDepth,
+                                                        String... ignoreProperties) {
         if (CollectionUtil.isEmpty(sources)) {
             return null;
         }
-        Collection targets;
+        Collection<Object> targets;
         //特殊处理集合 目前支持Set,List的copy
         if (Set.class.isAssignableFrom(targetPd.getPropertyType())) {
-            targets = new HashSet();
+            targets = new HashSet<>();
         } else {
             //若target为Collection 而没有实现 默认用list实现
-            targets = new ArrayList();
+            targets = new ArrayList<>();
         }
         for (Object source : sources) {
             Object target = BeanUtil.newInstance(targetGenericityType);
-            copyProperties(source, target, ignoreProperties);
+            copyProperties(source, target, ignoreNull, currentDepth + 1, expectDepth, ignoreProperties);
             targets.add(target);
         }
         return targets;
-    }
-
-    @Deprecated
-    public static <T, S> T convertToDO(S source, Class<T> classType) {
-        return convert(source, classType, ConvertType.TARGET_TYPE, false, false, (Class) null);
-    }
-
-    @Deprecated
-    public static <T, S> Collection<T> convertToDO(Collection<S> collection, Class<T> classType) {
-        return convert(collection, classType, ConvertType.TARGET_TYPE, false, false, (Class) null);
-    }
-
-    @Deprecated
-    public static <T, S> DataTrunk<T> convertToDO(DataTrunk<S> dataTrunk, Class<T> classType) {
-        return convert(dataTrunk, classType, ConvertType.TARGET_TYPE, false, false, (Class) null);
-    }
-
-    @Deprecated
-    public static <T, S> T convertToVO(S source, Class<T> classType, Class... showType) {
-        return convert(source, classType, ConvertType.FROM_TYPE, false, true, showType);
-    }
-
-    @Deprecated
-    public static <T, S> Collection<T> convertToVO(Collection<S> collection, Class<T> classType, Class... showType) {
-        return convert(collection, classType, ConvertType.FROM_TYPE, false, true, showType);
-    }
-
-    @Deprecated
-    public static <T, S> DataTrunk<T> convertToVO(DataTrunk<S> dataTrunk, Class<T> classType, Class... showType) {
-        return convert(dataTrunk, classType, ConvertType.FROM_TYPE, false, true, showType);
-    }
-
-    @Deprecated
-    public static <T, S> T convert(S source, Class<T> classType, ConvertType convertType,
-                                   boolean ignoreCycle, boolean ignoreWithView, Class... showType) {
-        if (ignoreWithView) {
-            return new ViewConvertElement<>(source, classType, convertType, new HashMap<>(1), showType).convert();
-        }
-        if (ignoreCycle) {
-            return new CycleConvertElement<>(source, classType, convertType, new HashMap<>(1)).convert();
-        }
-        return new ConvertElement<>(source, classType, convertType).convert();
     }
 
     /**
@@ -315,7 +272,7 @@ public class BeanUtil {
             return null;
         }
         T t = newInstance(targetCls);
-        copyProperties(source, t, false, ignoreProperties);
+        copyProperties(source, t, false, 0, 1, ignoreProperties);
         return t;
     }
 
@@ -335,9 +292,9 @@ public class BeanUtil {
         // 区分list和set，其余按照list处理
         Collection<T> targets;
         if (Set.class.isAssignableFrom(sources.getClass())) {
-            targets = new HashSet();
+            targets = new HashSet<>();
         } else {
-            targets = new ArrayList();
+            targets = new ArrayList<>();
         }
         for (Object source : sources) {
             targets.add(convert(source, targetCls, ignoreProperties));
@@ -364,29 +321,14 @@ public class BeanUtil {
         return dataTrunk;
     }
 
-    @Deprecated
-    public static <T, S> Collection<T> convert(Collection<S> collection, Class<T> classType, ConvertType convertType,
-                                               boolean ignoreCycle, boolean ignoreWithView, Class... showType) {
-        if (null == collection) {
+    public static <T> DataTrunk<T> convert(DataTrunk page, Class<T> targetCls, String... ignoreProperties) {
+        if (null == page) {
             return null;
         }
-        Collection<T> result = new ArrayList<>(collection.size());
-        for (S s : collection) {
-            result.add(convert(s, classType, convertType, ignoreCycle, ignoreWithView, showType));
-        }
-        return result;
-    }
-
-    @Deprecated
-    public static <T, S> DataTrunk<T> convert(DataTrunk<S> dataTrunk, Class<T> classType, ConvertType convertType,
-                                              boolean ignoreCycle, boolean ignoreWithView, Class... showType) {
-        if (null == dataTrunk) {
-            return null;
-        }
-        DataTrunk<T> dataTrunkT = new DataTrunk<>();
-        dataTrunkT.setCount(dataTrunk.getCount());
-        dataTrunkT.setData(convert(dataTrunk.getData(), classType, convertType, ignoreCycle, ignoreWithView, showType));
-        return dataTrunkT;
+        DataTrunk<T> dataTrunk = new DataTrunk<>();
+        dataTrunk.setCount(page.getCount());
+        dataTrunk.setData(convert(page.getData(), targetCls, ignoreProperties));
+        return dataTrunk;
     }
 
     /**
@@ -405,6 +347,24 @@ public class BeanUtil {
         T t = newInstance(targetCls);
         copyProperties(source, t, false, ignoreProperties);
         return t;
+    }
+
+    /**
+     * 根据className获得类型
+     *
+     * @param className className
+     * @return 类型
+     */
+    public static Class getClassType(String className) {
+        Class targetClassType = null;
+        if (StringUtil.isNotEmpty(className)) {
+            try {
+                targetClassType = Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                throw new FatalBeanException("can't find class by className:" + className, e);
+            }
+        }
+        return targetClassType;
     }
 
     /**
@@ -434,33 +394,31 @@ public class BeanUtil {
         return BeanUtil.getCollectionActualType(Objects.requireNonNull(filed));
     }
 
+    private static Class getDeclareType(Method method) {
+        DeclareType declareType = method.getAnnotation(DeclareType.class);
+        if (null == declareType) {
+            return null;
+        }
+        return declareType.classType();
+    }
+
     /**
-     * 根据className获得类型
+     * 根据属性名称获取属性
      *
-     * @param className className
-     * @return 类型
+     * @param entityClass 业务实体类
+     * @param fieldName   属性名称
+     * @return 属性
      */
-    public static Class getClassType(String className) {
-        Class targetClassType = null;
-        if (StringUtil.isNotEmpty(className)) {
-            try {
-                targetClassType = Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                throw new FatalBeanException("can't find class by className:" + className, e);
+    public static Field getField(Class<?> entityClass, String fieldName) {
+        if (StringUtils.isEmpty(fieldName)) {
+            return null;
+        }
+        List<Field> fields = getAllFields(entityClass);
+        for (Field field : fields) {
+            if (fieldName.equals(field.getName())) {
+                return field;
             }
         }
-        return targetClassType;
+        return null;
     }
-
-    /**
-     * 判断两个类型是否一致
-     *
-     * @param a a类型
-     * @param b b类型
-     * @return 是否一致 一致true 不一致false
-     */
-    public static boolean classTypeEqual(Class a, Class b) {
-        return a == b;
-    }
-
 }

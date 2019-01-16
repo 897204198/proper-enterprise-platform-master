@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.api.auth.service.RoleService;
 import com.proper.enterprise.platform.auth.common.vo.*;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.BeanUtils;
@@ -30,21 +31,21 @@ public class RolesController extends BaseController {
     @ApiOperation("‍获取用户角色列表")
     @JsonView(RoleVO.Single.class)
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
-            @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
+        @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
+        @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
     })
     public ResponseEntity<DataTrunk<RoleVO>> get(@ApiParam("‍角色名称‍") String name, @ApiParam("‍角色描述‍") String description,
                                                  @ApiParam("‍角色父节点ID‍") String parentId,
                                                  @ApiParam("‍角色状态‍") @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
         if (isPageSearch()) {
-            return responseOfGet(roleService.findRolesPagination(name, description, parentId, roleEnable),
-                    RoleVO.class, RoleVO.Single.class);
+            return responseOfGet(BeanUtil.convert(roleService.findRolesPagination(name, description, parentId, roleEnable),
+                RoleVO.class));
         } else {
             Collection collection = roleService.findRolesLike(name, description, parentId, roleEnable);
             DataTrunk<Role> dataTrunk = new DataTrunk();
             dataTrunk.setCount(collection.size());
             dataTrunk.setData(collection);
-            return responseOfGet(dataTrunk, RoleVO.class, RoleVO.Single.class);
+            return responseOfGet(BeanUtil.convert(dataTrunk, RoleVO.class));
         }
     }
 
@@ -55,7 +56,7 @@ public class RolesController extends BaseController {
     public ResponseEntity<RoleVO> create(@RequestBody RoleReqVO roleReqVO) {
         RoleVO roleReq = new RoleVO();
         BeanUtils.copyProperties(roleReqVO, roleReq);
-        return responseOfPost(roleService.save(roleReq), RoleVO.class, RoleVO.Single.class);
+        return responseOfPost(BeanUtil.convert(roleService.save(roleReq), RoleVO.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -65,7 +66,7 @@ public class RolesController extends BaseController {
     public ResponseEntity<Collection<RoleVO>> updateEnable(@RequestBody RoleReqMap reqMap) {
         Collection<String> idList = reqMap.getIds();
         boolean enable = reqMap.enable;
-        return responseOfPut(roleService.updateEnable(idList, enable), RoleVO.class, RoleVO.Single.class);
+        return responseOfPut(BeanUtil.convert(roleService.updateEnable(idList, enable), RoleVO.class));
     }
 
     @DeleteMapping
@@ -79,7 +80,7 @@ public class RolesController extends BaseController {
     @JsonView(RoleVO.Single.class)
     @ApiOperation("‍取得指定角色ID详情信息")
     public ResponseEntity<RoleVO> find(@ApiParam(value = "‍角色的id", required = true) @PathVariable String roleId) {
-        return responseOfGet(roleService.get(roleId), RoleVO.class, RoleVO.Single.class);
+        return responseOfGet(BeanUtil.convert(roleService.get(roleId), RoleVO.class));
     }
 
     @PutMapping(path = "/{roleId}")
@@ -90,7 +91,7 @@ public class RolesController extends BaseController {
         RoleVO roleReq = new RoleVO();
         BeanUtils.copyProperties(roleReqVO, roleReq);
         roleReq.setId(roleId);
-        return responseOfPut(roleService.update(roleReq), RoleVO.class, RoleVO.Single.class);
+        return responseOfPut(BeanUtil.convert(roleService.update(roleReq), RoleVO.class));
     }
 
     @GetMapping(path = "/{roleId}/menus")
@@ -98,8 +99,9 @@ public class RolesController extends BaseController {
     @ApiOperation("‍取得指定角色ID的菜单列表")
     public ResponseEntity<Collection<MenuVO>> getRoleMenus(@ApiParam(value = "‍角色的id", required = true) @PathVariable String roleId,
                                                            @ApiParam("‍资源状态(ALL;ENABLE为默认;DISABLE)‍") @RequestParam(defaultValue = "ENABLE")
-                                                                   EnableEnum menuEnable) {
-        return responseOfGet(roleService.getRoleMenus(roleId, menuEnable), MenuVO.class, MenuVO.Single.class);
+                                                               EnableEnum menuEnable) {
+
+        return responseOfGet(BeanUtil.convert(roleService.getRoleMenus(roleId, menuEnable), MenuVO.class));
     }
 
 
@@ -111,7 +113,7 @@ public class RolesController extends BaseController {
     public ResponseEntity<RoleVO> addRoleMenus(@ApiParam(value = "‍角色的id", required = true) @PathVariable String roleId,
                                                @ApiParam(value = "‍ids列表", required = true) @RequestBody RoleReqList reqMap) {
         List<String> ids = reqMap.getIds();
-        return responseOfPost(roleService.addRoleMenus(roleId, ids), RoleVO.class, RoleVO.RoleWithMenu.class);
+        return responseOfPost(BeanUtil.convert(roleService.addRoleMenus(roleId, ids), RoleVO.class));
     }
 
     @DeleteMapping("/{roleId}/menus")
@@ -128,7 +130,7 @@ public class RolesController extends BaseController {
     public ResponseEntity<Collection<ResourceVO>> getRoleResources(@ApiParam(value = "‍角色的id", required = true) @PathVariable String roleId,
                                                                    @ApiParam("‍资源状态(ALL;ENABLE为默认;DISABLE)‍")
                                                                    @RequestParam(defaultValue = "ENABLE") EnableEnum resourceEnable) {
-        return responseOfGet(roleService.getRoleResources(roleId, resourceEnable), ResourceVO.class, ResourceVO.Single.class);
+        return responseOfGet(BeanUtil.convert(roleService.getRoleResources(roleId, resourceEnable), ResourceVO.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -139,7 +141,7 @@ public class RolesController extends BaseController {
     public ResponseEntity<RoleVO> addRoleResources(@ApiParam(value = "‍角色的id", required = true) @PathVariable String roleId,
                                                    @ApiParam(value = "‍资源信息Id列表(使用\",\"分割)", required = true) @RequestBody RoleReqList reqMap) {
         List<String> ids = reqMap.getIds();
-        return responseOfPost(roleService.addRoleResources(roleId, ids), RoleVO.class, RoleVO.RoleWithResource.class);
+        return responseOfPost(BeanUtil.convert(roleService.addRoleResources(roleId, ids), RoleVO.class));
     }
 
     @DeleteMapping("/{roleId}/resources")
@@ -155,8 +157,8 @@ public class RolesController extends BaseController {
     @ApiOperation("‍取得指定角色ID的用户列表")
     public ResponseEntity<Collection<UserVO>> getRoleUsers(@ApiParam(value = "‍角色的id", required = true) @PathVariable String roleId,
                                                            @ApiParam("‍用户状态(ALL;ENABLE为默认;DISABLE)‍") @RequestParam(defaultValue = "ENABLE")
-                                                                   EnableEnum userEnable) {
-        return responseOfGet(roleService.getRoleUsers(roleId, EnableEnum.ALL, userEnable), UserVO.class, UserVO.Single.class);
+                                                               EnableEnum userEnable) {
+        return responseOfGet(BeanUtil.convert(roleService.getRoleUsers(roleId, EnableEnum.ALL, userEnable), UserVO.class));
     }
 
     @GetMapping(path = "/{roleId}/user-groups")
@@ -165,14 +167,14 @@ public class RolesController extends BaseController {
     public ResponseEntity<Collection<UserGroupVO>> getRoleUserGroups(@ApiParam(value = "‍角色的id", required = true) @PathVariable String roleId,
                                                                      @ApiParam("‍用户组状态(ALL;ENABLE为默认;DISABLE)‍")
                                                                      @RequestParam(defaultValue = "ENABLE") EnableEnum userGroupEnable) {
-        return responseOfGet(roleService.getRoleUserGroups(roleId, EnableEnum.ALL, userGroupEnable), UserGroupVO.class, UserGroupVO.Single.class);
+        return responseOfGet(BeanUtil.convert(roleService.getRoleUserGroups(roleId, EnableEnum.ALL, userGroupEnable), UserGroupVO.class));
     }
 
     @GetMapping(path = "/{roleId}/parents")
     @JsonView(value = RoleVO.Single.class)
     @ApiOperation("‍获取能够被 roleId 继承的父节点列表")
     public ResponseEntity<Collection<RoleVO>> getMenuParents(@ApiParam(value = "‍角色的id", required = true) @PathVariable String roleId) {
-        return responseOfGet(roleService.findRoleParents(roleId), RoleVO.class, RoleVO.Single.class);
+        return responseOfGet(BeanUtil.convert(roleService.findRoleParents(roleId), RoleVO.class));
     }
 
     public static class RoleReqVO {

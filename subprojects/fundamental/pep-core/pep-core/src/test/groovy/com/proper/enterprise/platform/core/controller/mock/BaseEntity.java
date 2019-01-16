@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.core.annotation.transform.pojo.domain;
+package com.proper.enterprise.platform.core.controller.mock;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;

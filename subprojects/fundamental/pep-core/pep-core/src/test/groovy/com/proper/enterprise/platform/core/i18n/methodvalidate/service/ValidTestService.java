@@ -1,10 +1,10 @@
 package com.proper.enterprise.platform.core.i18n.methodvalidate.service;
 
 import com.proper.enterprise.platform.core.i18n.methodvalidate.TestBean;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 

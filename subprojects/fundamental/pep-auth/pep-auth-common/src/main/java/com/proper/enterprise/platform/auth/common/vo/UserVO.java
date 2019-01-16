@@ -5,8 +5,6 @@ import com.proper.enterprise.platform.api.auth.model.Role;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
 
-import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
-import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.view.BaseView;
 
@@ -25,8 +23,6 @@ public class UserVO extends BaseVO implements User {
         this.superuser = false;
         super.setEnable(true);
     }
-
-    private static final String USER_ENTITY_PATH = "com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity";
 
     public interface Single extends BaseView {
 
@@ -75,15 +71,9 @@ public class UserVO extends BaseVO implements User {
 
     protected String pepDtype;
 
-    @POJOConverter(fromClassName = USER_ENTITY_PATH,
-        fieldName = "roleEntities",
-        targetClassName = USER_ENTITY_PATH)
     @JsonView(value = {CurrentUser.class})
     private Collection<RoleVO> roles;
 
-    @POJOConverter(fromClassName = USER_ENTITY_PATH,
-        fieldName = "userGroupEntities",
-        targetClassName = USER_ENTITY_PATH)
     @JsonView(value = {CurrentUser.class})
     private Collection<UserGroupVO> userGroups;
     /**

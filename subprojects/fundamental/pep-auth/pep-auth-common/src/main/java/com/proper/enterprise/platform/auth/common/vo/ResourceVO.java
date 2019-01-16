@@ -3,8 +3,6 @@ package com.proper.enterprise.platform.auth.common.vo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.model.DataRestrain;
 import com.proper.enterprise.platform.api.auth.model.Resource;
-import com.proper.enterprise.platform.core.convert.annotation.POJOConverter;
-import com.proper.enterprise.platform.core.convert.annotation.POJORelevance;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
@@ -17,7 +15,6 @@ import java.util.Collection;
 
 @POJORelevance(relevanceDOClassName = "com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity")
 public class ResourceVO extends BaseVO implements Resource {
-    private static final String RESOURCE_ENTITY_PATH = "com.proper.enterprise.platform.auth.common.jpa.entity.ResourceEntity";
 
     public ResourceVO() {
     }
@@ -45,14 +42,8 @@ public class ResourceVO extends BaseVO implements Resource {
     @JsonView(value = {Single.class})
     private DataDicLite resourceType;
 
-    @POJOConverter(fromClassName = RESOURCE_ENTITY_PATH,
-        fieldName = "menus",
-        targetClassName = RESOURCE_ENTITY_PATH)
     private Collection<MenuVO> menus;
 
-    @POJOConverter(fromClassName = RESOURCE_ENTITY_PATH,
-        fieldName = "roles",
-        targetClassName = RESOURCE_ENTITY_PATH)
     private Collection<RoleVO> roles;
     /**
      * 标识
@@ -60,10 +51,6 @@ public class ResourceVO extends BaseVO implements Resource {
     @JsonView(value = {Single.class})
     private String identifier;
 
-
-    @POJOConverter(fromClassName = RESOURCE_ENTITY_PATH,
-        fieldName = "dataRestrainEntities",
-        targetClassName = RESOURCE_ENTITY_PATH)
     private Collection<DataRestrainVO> dataRestrainEntities;
 
     @JsonView(value = {Single.class})

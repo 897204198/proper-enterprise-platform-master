@@ -1,9 +1,12 @@
 package com.proper.enterprise.platform.core.jpa.curd.c.entity;
 
 import com.proper.enterprise.platform.core.jpa.curd.a.entity.AEntity;
+import com.proper.enterprise.platform.core.jpa.curd.b.api.B;
 import com.proper.enterprise.platform.core.jpa.curd.b.entity.BEntity;
 import com.proper.enterprise.platform.core.jpa.curd.c.api.C;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -50,5 +53,15 @@ public class CEntity extends BaseEntity implements C {
     public CEntity setBentity(BEntity bentity) {
         this.bentity = bentity;
         return this;
+    }
+
+    @Override
+    public B getB() {
+        return bentity;
+    }
+
+    @Override
+    public void setB(B b) {
+        this.bentity = BeanUtil.convert(b, BEntity.class);
     }
 }
