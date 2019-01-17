@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.workflow.flowable.rest.api;
 
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.core.controller.BaseController;
+import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.factory.PEPCandidateExtQueryFactory;
 import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
@@ -12,6 +13,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.flowable.idm.api.User;
+import org.flowable.idm.engine.impl.persistence.entity.UserEntityImpl;
+import org.flowable.ui.modeler.domain.Model;
+import org.flowable.ui.modeler.model.ModelKeyRepresentation;
+import org.flowable.ui.modeler.model.ModelRepresentation;
+import org.flowable.ui.modeler.serviceapi.ModelService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +31,9 @@ import java.util.*;
 @Api("/workflow/ext/modeler")
 @AuthcIgnore
 public class ModelerController extends BaseController {
+
+    @Autowired
+    private ModelService modelService;
 
     @RequestMapping(method = RequestMethod.GET, value = "/candidate/{candidateType}")
     @ApiOperation("‍流程设计器查询候选集合")
@@ -59,6 +70,21 @@ public class ModelerController extends BaseController {
         return responseOfGet(result);
     }
 
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    @ApiOperation("‍创建model(表单)")
+    public ModelRepresentation createForm(@RequestBody ModelRepresentation modelRepresentation) {
+        modelRepresentation.setKey(modelRepresentation.getKey().replaceAll(" ", ""));
+        ModelKeyRepresentation modelKeyInfo = modelService.validateModelKey(null, modelRepresentation.getModelType(), modelRepresentation.getKey());
+        if (modelKeyInfo.isKeyAlreadyExists()) {
+            return modelService.getModelRepresentation(modelKeyInfo.getId());
+        }
+
+        String json = modelService.createModelJson(modelRepresentation);
+
+        Model newModel = modelService.createModel(modelRepresentation, json, simulationCurrentUser());
+        return new ModelRepresentation(newModel);
+    }
+
     private Collection<ModelerIdmModel> convert(Collection<PEPCandidateModel> pepCandidateModels) {
         Collection<ModelerIdmModel> modelerIdmModels = new ArrayList<>();
         if (CollectionUtil.isEmpty(pepCandidateModels)) {
@@ -83,6 +109,12 @@ public class ModelerController extends BaseController {
         modelerIdmModel.setType(pepCandidateModel.getType());
         modelerIdmModel.setTypeName(pepCandidateModel.getTypeName());
         return modelerIdmModel;
+    }
+
+    private User simulationCurrentUser() {
+        User user = new UserEntityImpl();
+        user.setId(Authentication.getCurrentUserId());
+        return user;
     }
 
     /**

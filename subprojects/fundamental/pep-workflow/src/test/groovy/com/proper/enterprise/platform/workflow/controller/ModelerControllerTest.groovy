@@ -111,4 +111,25 @@ class ModelerControllerTest extends AbstractJPATest {
         result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(dataFlowable), HttpStatus.INTERNAL_SERVER_ERROR)
         assert I18NUtil.getMessage("workflow.condition.parse.error") == result
     }
+
+    @Test
+    @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
+    public void addForm(){
+
+        def modelProperties = [:]
+        modelProperties['name'] = '测试表单'
+        modelProperties['key'] = 'test'
+        modelProperties['description'] = '测试表单'
+        // 2 代表这个model 是表单
+        modelProperties['modelType'] = 2
+
+        def result = resOfPost("/workflow/ext/modeler", JSONUtil.toJSON(modelProperties), HttpStatus.OK)
+
+        assert null != result.id
+
+        def id = result.id
+        result = resOfPost("/workflow/ext/modeler", JSONUtil.toJSON(modelProperties), HttpStatus.OK)
+        assert id == result.id
+    }
 }
