@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
+import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
@@ -167,7 +169,13 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public String getParentId() {
-        return parentId;
+        if (StringUtil.isNotEmpty(this.parentId)) {
+            return this.parentId;
+        }
+        if (null == this.getParent()) {
+            return null;
+        }
+        return this.getParent().getId();
     }
 
     public void setParentId(String parentId) {
@@ -210,6 +218,9 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public boolean isLeaf() {
+        if (CollectionUtil.isEmpty(this.getChildren()) && CollectionUtil.isEmpty(this.getResources())) {
+            return true;
+        }
         return leaf;
     }
 
@@ -275,6 +286,9 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public String getMenuCode() {
+        if (null != this.getMenuType()) {
+            return this.getMenuType().getCode();
+        }
         return menuCode;
     }
 

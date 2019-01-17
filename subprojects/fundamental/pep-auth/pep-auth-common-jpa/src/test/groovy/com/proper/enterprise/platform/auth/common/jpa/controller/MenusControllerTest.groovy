@@ -568,5 +568,6 @@ class MenusControllerTest extends AbstractJPATest {
         mockUser(userVO.getId(), userVO.getUsername(), userVO.getPassword())
         def res = resOfGet('/auth/menus', HttpStatus.OK)
         assert res.count == 3
+        assert res.data[1].parentId != null
     }
 }
