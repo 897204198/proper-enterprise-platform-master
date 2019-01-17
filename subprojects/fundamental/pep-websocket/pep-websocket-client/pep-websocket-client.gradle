@@ -1,0 +1,12 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation  libraries.spring_messaging,
+                    libraries.spring_websocket
+
+    implementation  project(':pep-core')
+
+    testImplementation  project(':pep-auth-common-jpa'),
+                        project(':pep-test'),
+                        project(':pep-websocket')
+}

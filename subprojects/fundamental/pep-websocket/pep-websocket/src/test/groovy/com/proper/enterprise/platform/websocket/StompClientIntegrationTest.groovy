@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.websocket
 
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
 import com.proper.enterprise.platform.auth.common.vo.AccessTokenVO
+import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.test.AbstractIntegrationTest
 import com.proper.enterprise.platform.websocket.StompClientIntegrationTest.EmbeddedHandler
 import com.proper.enterprise.platform.websocket.controller.JsonMsgController
@@ -57,7 +58,7 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
     void connect(CountDownLatch latch, String user, String subscribe, String send = null, Object sendPayload = null) {
         def client = createClient(new StringMessageConverter())
         StompHeaders stompHeaders = new StompHeaders()
-        stompHeaders.add(UserHeaderInterceptor.USER_HEADER, user)
+        stompHeaders.add(PEPConstants.STOMP_USER_HEADER, user)
         client.connect(url, null, stompHeaders, new StompSessionHandlerAdapter() {
             @Override
             void afterConnected(StompSession session, StompHeaders connectedHeaders) {

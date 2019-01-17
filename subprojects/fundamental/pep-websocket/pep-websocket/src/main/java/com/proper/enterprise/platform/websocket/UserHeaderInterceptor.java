@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.websocket;
 
+import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import org.apache.catalina.realm.GenericPrincipal;
 import org.springframework.messaging.Message;
@@ -17,7 +18,6 @@ import java.util.Optional;
 @Component
 public class UserHeaderInterceptor implements ChannelInterceptor {
 
-    public static final String USER_HEADER = "PEP_STOMP_USER";
     private static final String NATIVE_HEADERS = "nativeHeaders";
 
     @Override
@@ -38,8 +38,8 @@ public class UserHeaderInterceptor implements ChannelInterceptor {
     protected Optional<String> extractNameFromUserHeader(Message<?> message) {
         Optional<String> optional = Optional.empty();
         LinkedMultiValueMap<String, String> nativeHeaders = (LinkedMultiValueMap<String, String>) message.getHeaders().get("nativeHeaders");
-        if (nativeHeaders != null && nativeHeaders.containsKey(USER_HEADER)) {
-            List<String> list = nativeHeaders.get(USER_HEADER);
+        if (nativeHeaders != null && nativeHeaders.containsKey(PEPConstants.STOMP_USER_HEADER)) {
+            List<String> list = nativeHeaders.get(PEPConstants.STOMP_USER_HEADER);
             if (CollectionUtil.isNotEmpty(list)) {
                 optional = Optional.of(list.get(0));
             }

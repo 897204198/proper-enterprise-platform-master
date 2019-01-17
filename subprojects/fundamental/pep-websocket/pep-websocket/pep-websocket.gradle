@@ -1,10 +1,8 @@
 apply plugin: 'java-library'
 
 dependencies {
-
-         implementation libraries.spring_messaging,
+        implementation  libraries.spring_messaging,
                         libraries.spring_websocket
-
          implementation project(':pep-core')
 
          runtimeElements libraries.tomcat_websocket
