@@ -17,6 +17,7 @@ import java.util.List;
  */
 @Aspect
 @Component
+@SuppressWarnings("unchecked")
 public class ServiceConvertInterceptor {
 
     @Around("execution(* com.proper..service.impl.*ServiceImpl.*(..)) || execution(* com.proper..service.impl.*ServiceSupport.*(..))")
@@ -26,6 +27,7 @@ public class ServiceConvertInterceptor {
         }
         return pjp.proceed(handleParam(pjp.getArgs()));
     }
+
 
     private Object[] handleParam(Object[] params) {
         List handleParams = new ArrayList();

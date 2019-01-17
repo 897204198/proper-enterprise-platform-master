@@ -59,27 +59,30 @@ public class UserGroupDaoImpl extends AbstractJpaServiceSupport<UserGroup, UserG
         return new UserGroupEntity();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public UserGroup save(UserGroup group) {
         return super.save(group);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public UserGroup updateForSelective(UserGroup group) {
         return super.updateForSelective(group);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
+    @Override
     public Collection<? extends UserGroup> getGroups(String name, String description, EnableEnum enable) {
-        return this.findAll(buildSpecification(name, description, enable), new Sort("seq"));
+        return this.findAll(buildSpecification(name, description, enable), Sort.by("seq"));
     }
 
     @Override
     public DataTrunk<? extends UserGroup> getGroupsPagination(String name, String description, EnableEnum enable) {
-        return this.findPage(buildSpecification(name, description, enable), new Sort("seq"));
+        return this.findPage(buildSpecification(name, description, enable), Sort.by("seq"));
     }
 
+    @SuppressWarnings("unchecked")
     private Specification<UserGroup> buildSpecification(String name, String description, EnableEnum enable) {
         Specification specification = new Specification<UserGroupEntity>() {
             @Override

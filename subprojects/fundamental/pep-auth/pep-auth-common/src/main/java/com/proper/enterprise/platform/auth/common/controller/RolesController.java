@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,10 +42,10 @@ public class RolesController extends BaseController {
             return responseOfGet(BeanUtil.convert(roleService.findRolesPagination(name, description, parentId, roleEnable),
                 RoleVO.class));
         } else {
-            Collection collection = roleService.findRolesLike(name, description, parentId, roleEnable);
-            DataTrunk<Role> dataTrunk = new DataTrunk();
+            Collection<? extends Role> collection = roleService.findRolesLike(name, description, parentId, roleEnable);
+            DataTrunk<Role> dataTrunk = new DataTrunk<>();
             dataTrunk.setCount(collection.size());
-            dataTrunk.setData(collection);
+            dataTrunk.setData(new ArrayList<>(collection));
             return responseOfGet(BeanUtil.convert(dataTrunk, RoleVO.class));
         }
     }

@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.core.service.BaseService;
 
 import java.util.Collection;
 
+@SuppressWarnings("unchecked")
 public interface ResourceDao extends BaseService<Resource, String> {
 
     /**

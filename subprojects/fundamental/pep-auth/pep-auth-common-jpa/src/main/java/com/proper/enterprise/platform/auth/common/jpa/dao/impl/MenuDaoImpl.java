@@ -51,7 +51,7 @@ public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository,
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
-        return findAll(specification, new Sort("parent", "sequenceNumber"));
+        return findAll(specification, Sort.by("parent", "sequenceNumber"));
     }
 
     @Override
@@ -76,14 +76,15 @@ public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository,
     @Override
     @SuppressWarnings("unchecked")
     public Collection<? extends Menu> findAll(String name, String description, String route, EnableEnum enable, String parentId) {
-        return super.findAll(buildUserSpecification(name, description, route, enable, parentId), new Sort("parent", "sequenceNumber"));
+        return super.findAll(buildUserSpecification(name, description, route, enable, parentId), Sort.by("parent", "sequenceNumber"));
     }
 
     @Override
     public DataTrunk<? extends Menu> findPage(String name, String description, String route, EnableEnum enable, String parentId) {
-        return this.findPage(buildUserSpecification(name, description, route, enable, parentId), new Sort("parent", "sequenceNumber"));
+        return this.findPage(buildUserSpecification(name, description, route, enable, parentId), Sort.by("parent", "sequenceNumber"));
     }
 
+    @SuppressWarnings("unchecked")
     private Specification<Menu> buildUserSpecification(String name, String description, String route, EnableEnum enable, String parentId) {
         Specification<Menu> specification = new Specification<Menu>() {
             @Override

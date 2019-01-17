@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.auth.model.AccessToken;
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService;
 import com.proper.enterprise.platform.auth.common.vo.AccessTokenVO;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +82,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
     private String unwrapBearer(String token) {
         return token.contains(TOKEN_FLAG_HEADER_BEARER)
-                ? token.replace(TOKEN_FLAG_HEADER_BEARER, "").trim() : token;
+            ? token.replace(TOKEN_FLAG_HEADER_BEARER, "").trim() : token;
     }
 
     @Override
@@ -122,7 +123,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
 
     @Override
     public String generate() {
-        return HmacUtils.hmacSha1Hex("PEP access T0ken", UUID.randomUUID().toString());
+        return new HmacUtils(HmacAlgorithms.HMAC_SHA_1, "PEP access T0ken").hmacHex(UUID.randomUUID().toString());
     }
 
     @Override

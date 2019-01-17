@@ -20,17 +20,18 @@ import java.util.Optional;
  * @param <IDT> ID泛型
  */
 public abstract class AbstractServiceSupport<T, R extends BaseRepository, IDT extends Serializable> extends AbstractQuerySupport
-        implements BaseService<T, IDT> {
+    implements BaseService<T, IDT> {
 
     /**
      * getRepository()
+     *
      * @return repository泛型
      */
     public abstract R getRepository();
 
     @Override
     @SuppressWarnings("unchecked")
-    public <S extends T> S save(S var1) {
+    public <S> S save(S var1) {
         return (S) getRepository().save(var1);
     }
 

@@ -43,6 +43,7 @@ public class DFSGridFSImpl extends AbstractDFSService {
     private GridFS gridFS;
 
     @PostConstruct
+    @SuppressWarnings("deprecation")
     public void postConstruct() {
         LOGGER.debug("Prepare to get database:{} ...", dfsProperties.getRootPath());
         DB db = mongoClient.getDB(dfsProperties.getRootPath());

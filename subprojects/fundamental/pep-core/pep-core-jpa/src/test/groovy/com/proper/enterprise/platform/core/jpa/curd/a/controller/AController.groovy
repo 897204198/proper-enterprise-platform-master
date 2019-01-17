@@ -21,7 +21,7 @@ public class AController extends BaseController {
 
     @PostMapping
     public ResponseEntity<AVO> post(@RequestBody AVO avo) {
-        return responseOfPost(aservice.save(BeanUtil.convert(avo, AEntity.class)), AVO.class);
+        return responseOfPost(BeanUtil.convert(aservice.save(BeanUtil.convert(avo, AEntity.class)), AVO.class));
     }
 
     @DeleteMapping
@@ -31,33 +31,33 @@ public class AController extends BaseController {
 
     @PutMapping
     public ResponseEntity<AVO> put(@RequestBody AVO avo) {
-        return responseOfPut(aservice.updateForSelective(BeanUtil.convert(avo, AEntity.class)), AVO.class);
+        return responseOfPut(BeanUtil.convert(aservice.updateForSelective(BeanUtil.convert(avo, AEntity.class)), AVO.class));
     }
 
     @GetMapping
     @JsonView(AVO.Single.class)
     public ResponseEntity<?> get() {
         if (isPageSearch()) {
-            return responseOfGet(aservice.findPage(), AVO.class);
+            return responseOfGet(BeanUtil.convert(aservice.findPage(), AVO.class));
         }
-        return responseOfGet(aservice.findAll(), AVO.class);
+        return responseOfGet(BeanUtil.convert(aservice.findAll(), AVO.class));
     }
 
     @GetMapping(path = "/bs")
     @JsonView(AVO.WithB.class)
     public ResponseEntity<Collection<AVO>> getWithB() {
-        return responseOfGet(aservice.findAll(), AVO.class);
+        return responseOfGet(BeanUtil.convert(aservice.findAll(), AVO.class));
     }
 
     @PostMapping(path = "/{aid}/b/{bid}")
     @JsonView(AVO.WithB.class)
     public ResponseEntity<AVO> addB(@PathVariable String aid, @PathVariable String bid) {
-        return responseOfPost(aservice.addB(aid, bid), AVO.class);
+        return responseOfPost(BeanUtil.convert(aservice.addB(aid, bid), AVO.class));
     }
 
     @PostMapping(path = "/{aid}/c/{cid}")
     public ResponseEntity<AVO> addC(@PathVariable String aid, @PathVariable String cid) {
-        return responseOfPost(aservice.addC(aid, cid), AVO.class);
+        return responseOfPost(BeanUtil.convert(aservice.addC(aid, cid), AVO.class));
     }
 
 

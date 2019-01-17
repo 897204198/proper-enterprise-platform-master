@@ -145,12 +145,12 @@ public class UserServiceImpl implements UserService {
         }
         Collection<Resource> resources = new HashSet<>();
         //获得用户启用角色的资源
-        Collection<Role> roles = (Collection<Role>) roleService.getFilterRoles(user.getRoles());
+        Collection<Role> roles = new ArrayList<>(roleService.getFilterRoles(user.getRoles()));
         if (CollectionUtil.isNotEmpty(roles)) {
             resources.addAll(roleService.getRoleResources(roles, resourceEnable));
         }
         //获得用户启用用户组的资源
-        Collection<UserGroup> groups = (Collection<UserGroup>) userGroupService.getFilterGroups(user.getUserGroups());
+        Collection<UserGroup> groups = new ArrayList<>(userGroupService.getFilterGroups(user.getUserGroups()));
         if (CollectionUtil.isNotEmpty(groups)) {
             resources.addAll(userGroupService.getGroupResources(groups, resourceEnable));
         }

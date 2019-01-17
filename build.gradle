@@ -34,7 +34,7 @@ allprojects {
             '-Xlint:-options',
             '-Xlint:deprecation',
             '-Xlint:unchecked',
-//            '-Werror'
+            '-Werror'
         ]
     }
 

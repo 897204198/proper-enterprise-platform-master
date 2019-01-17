@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.core.jpa.repository;
 
-import org.hibernate.SQLQuery;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Component;
 
@@ -28,9 +28,12 @@ public class NativeRepository {
         return query.getResultList();
     }
 
+
+    @SuppressWarnings("deprecation")
     public List executeEntityMapQuery(String sql) {
         Query query = em.createNativeQuery(sql);
-        query.unwrap(SQLQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+        // TODO: 2019/1/11 待处理  过期的方法 jpa并未提出替换方案 但是方法过期了等提出方案后替换
+        query.unwrap(NativeQuery.class).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
         return query.getResultList();
     }
 

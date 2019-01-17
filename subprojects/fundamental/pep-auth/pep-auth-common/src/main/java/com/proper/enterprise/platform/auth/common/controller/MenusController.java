@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @RestController
@@ -42,10 +43,10 @@ public class MenusController extends BaseController {
         if (isPageSearch()) {
             return responseOfGet(BeanUtil.convert(service.findMenusPagination(name, description, route, menuEnable, parentId), MenuVO.class));
         } else {
-            Collection collection = service.getMenus(name, description, route, menuEnable, parentId);
-            DataTrunk<Menu> dataTrunk = new DataTrunk();
+            Collection<? extends Menu> collection = service.getMenus(name, description, route, menuEnable, parentId);
+            DataTrunk<Menu> dataTrunk = new DataTrunk<>();
             dataTrunk.setCount(collection.size());
-            dataTrunk.setData(collection);
+            dataTrunk.setData(new ArrayList<>(collection));
             return responseOfGet(BeanUtil.convert(dataTrunk, MenuVO.class));
         }
     }
@@ -263,6 +264,11 @@ public class MenusController extends BaseController {
             this.menuCode = menuCode;
         }
 
+        @Override
+        public String toString() {
+            return JSONUtil.toJSONIgnoreException(this);
+        }
+
         public String getDescription() {
             return description;
         }
@@ -270,12 +276,6 @@ public class MenusController extends BaseController {
         public void setDescription(String description) {
             this.description = description;
         }
-
-        @Override
-        public String toString() {
-            return JSONUtil.toJSONIgnoreException(this);
-        }
-
     }
 
     public static class ResourceModelVO {

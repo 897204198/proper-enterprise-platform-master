@@ -268,7 +268,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         if (null == userGroup) {
             return new ArrayList<>();
         }
-        Collection<Role> roles = (Collection<Role>) roleService.getFilterRoles(userGroup.getRoles());
+        Collection<Role> roles = new ArrayList<>(roleService.getFilterRoles(userGroup.getRoles()));
         return roleService.getRoleResources(roles, resourceEnable);
     }
 

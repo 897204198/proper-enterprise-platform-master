@@ -8,6 +8,7 @@ import com.proper.enterprise.platform.core.service.BaseService;
 import java.util.Collection;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public interface RoleDao extends BaseService<Role, String> {
 
     /**

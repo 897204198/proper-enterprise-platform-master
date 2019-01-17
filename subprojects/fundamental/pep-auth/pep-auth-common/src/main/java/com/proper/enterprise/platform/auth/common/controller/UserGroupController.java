@@ -42,10 +42,10 @@ public class UserGroupController extends BaseController {
         if (isPageSearch()) {
             return responseOfGet(BeanUtil.convert(service.getGroupsPagination(name, description, userGroupEnable), UserGroupVO.class));
         } else {
-            Collection collection = service.getGroups(name, description, userGroupEnable);
-            DataTrunk<UserGroup> dataTrunk = new DataTrunk();
+            Collection<? extends UserGroup> collection = service.getGroups(name, description, userGroupEnable);
+            DataTrunk<UserGroup> dataTrunk = new DataTrunk<>();
             dataTrunk.setCount(collection.size());
-            dataTrunk.setData(collection);
+            dataTrunk.setData(new ArrayList<>(collection));
             return responseOfGet(BeanUtil.convert(dataTrunk, UserGroupVO.class));
         }
     }

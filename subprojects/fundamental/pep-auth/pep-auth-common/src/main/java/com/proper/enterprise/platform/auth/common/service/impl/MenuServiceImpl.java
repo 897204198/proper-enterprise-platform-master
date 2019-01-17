@@ -107,7 +107,7 @@ public class MenuServiceImpl implements MenuService {
     @SuppressWarnings("unchecked")
     public Collection<? extends Menu> getMenus(User user) {
         if (user.getSuperuser()) {
-            return menuDao.findAll(new Sort("parent", "sequenceNumber"));
+            return menuDao.findAll(Sort.by("parent", "sequenceNumber"));
         }
         List<Menu> result = new ArrayList<>(0);
         if (user.getEnable()) {
@@ -385,12 +385,14 @@ public class MenuServiceImpl implements MenuService {
                 }
 
                 Collection<ResourceVO> resList = new ArrayList<>();
-                Collection<Resource> resourceList = (Collection<Resource>) menu.getResources();
-                for (Resource resource : resourceList) {
-                    if (resource != null && resource.getEnable()) {
-                        ResourceVO resourceDetail = new ResourceVO();
-                        BeanUtils.copyProperties(resource, resourceDetail);
-                        resList.add(resourceDetail);
+                if (null != menu.getResources()) {
+                    Collection<Resource> resourceList = new ArrayList<>(menu.getResources());
+                    for (Resource resource : resourceList) {
+                        if (resource != null && resource.getEnable()) {
+                            ResourceVO resourceDetail = new ResourceVO();
+                            BeanUtils.copyProperties(resource, resourceDetail);
+                            resList.add(resourceDetail);
+                        }
                     }
                 }
                 detail.setResources(resList);

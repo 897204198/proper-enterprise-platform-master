@@ -64,6 +64,7 @@ public class RoleDaoImpl extends AbstractJpaServiceSupport<Role, RoleRepository,
         return roleRepository.findByNameAndEnable(name, true);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<? extends Role> findRolesByParentId(List<String> parentIds) {
         if (CollectionUtil.isEmpty(parentIds)) {
@@ -86,7 +87,7 @@ public class RoleDaoImpl extends AbstractJpaServiceSupport<Role, RoleRepository,
     @Override
     @SuppressWarnings("unchecked")
     public Collection<? extends Role> findRolesLike(String name, String description, String parentId, EnableEnum enable) {
-        return super.findAll(buildRolesSpecification(name, description, parentId, enable), new Sort("name"));
+        return super.findAll(buildRolesSpecification(name, description, parentId, enable), Sort.by("name"));
     }
 
     @Override
@@ -107,9 +108,10 @@ public class RoleDaoImpl extends AbstractJpaServiceSupport<Role, RoleRepository,
 
     @Override
     public DataTrunk<? extends Role> findRolesPagination(String name, String description, String parentId, EnableEnum enable) {
-        return this.findPage(buildRolesSpecification(name, description, parentId, enable), new Sort("name"));
+        return this.findPage(buildRolesSpecification(name, description, parentId, enable), Sort.by("name"));
     }
 
+    @SuppressWarnings("unchecked")
     private Specification<Role> buildRolesSpecification(String name, String description, String parentId, EnableEnum enable) {
         return new Specification<Role>() {
             @Override

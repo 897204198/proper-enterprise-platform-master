@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @RestController
@@ -156,10 +157,11 @@ public class UsersController extends BaseController {
         if (isPageSearch()) {
             return responseOfGet(BeanUtil.convert(userService.findUsersPagination(username, name, email, phone, userEnable), UserVO.class));
         } else {
-            Collection collection = userService.getUsersByAndCondition(username, name, email, phone, userEnable);
-            DataTrunk<User> dataTrunk = new DataTrunk();
+            Collection<? extends User> collection = userService.getUsersByAndCondition(username,
+                name, email, phone, userEnable);
+            DataTrunk<User> dataTrunk = new DataTrunk<>();
             dataTrunk.setCount(collection.size());
-            dataTrunk.setData(collection);
+            dataTrunk.setData(new ArrayList<>(collection));
             return responseOfGet(BeanUtil.convert(dataTrunk, UserVO.class));
         }
     }

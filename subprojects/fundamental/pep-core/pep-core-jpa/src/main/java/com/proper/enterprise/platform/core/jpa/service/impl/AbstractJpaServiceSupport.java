@@ -1,6 +1,5 @@
 package com.proper.enterprise.platform.core.jpa.service.impl;
 
-import com.proper.enterprise.platform.core.api.IBase;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
 import com.proper.enterprise.platform.core.jpa.service.BaseJpaService;
@@ -23,12 +22,12 @@ import java.util.Optional;
  * @param <R>   repository泛型
  * @param <IDT> ID泛型
  */
-public abstract class AbstractJpaServiceSupport<T extends IBase, R extends BaseJpaRepository, IDT extends Serializable>
+public abstract class AbstractJpaServiceSupport<T, R extends BaseJpaRepository, IDT extends Serializable>
     extends AbstractServiceSupport<T, R, IDT> implements BaseJpaService<T, IDT> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <S extends T> S updateForSelective(S var1) {
+    public <S> S updateForSelective(S var1) {
         return (S) getRepository().updateForSelective(var1);
     }
 

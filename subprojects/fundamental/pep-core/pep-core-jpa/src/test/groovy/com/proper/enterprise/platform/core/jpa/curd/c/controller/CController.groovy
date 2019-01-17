@@ -20,7 +20,7 @@ public class CController extends BaseController {
 
     @PostMapping
     public ResponseEntity<CVO> post(@RequestBody CVO cvo) {
-        return responseOfPost(cservice.save(BeanUtil.convert(cvo, CEntity.class)), CVO.class);
+        return responseOfPost(BeanUtil.convert(cservice.save(BeanUtil.convert(cvo, CEntity.class)), CVO.class));
     }
 
     @DeleteMapping
@@ -31,13 +31,13 @@ public class CController extends BaseController {
 
     @PostMapping(path = "/{cid}/b/{bid}")
     public ResponseEntity<CVO> addC(@PathVariable String cid, @PathVariable String bid) {
-        return responseOfPost(cservice.addB(cid, bid), CVO.class);
+        return responseOfPost(BeanUtil.convert(cservice.addB(cid, bid), CVO.class));
     }
 
     @GetMapping
     @JsonView(value = CVO.Single.class)
     public ResponseEntity<?> get() {
-        return responseOfGet(cservice.findAll(), CVO.class);
+        return responseOfGet(BeanUtil.convert(cservice.findAll(), CVO.class));
     }
 
 }

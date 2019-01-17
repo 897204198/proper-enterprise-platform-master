@@ -48,6 +48,7 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
     @Autowired
     private PasswordEncryptService pwdService;
 
+    @SuppressWarnings("unchecked")
     @Override
     public User save(User user) {
         if (null == user.getSuperuser()) {
@@ -98,6 +99,7 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
         return userRepo.findByIdAndEnableTrue(userId);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<? extends User> getUsersByOrCondition(String condition, EnableEnum enable) {
         Specification<User> specification = new Specification<User>() {
@@ -193,11 +195,13 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
         return collection.size() > 0;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public User updateForSelective(User user) {
         return super.updateForSelective(user);
     }
 
+    @SuppressWarnings("unchecked")
     private Specification<User> buildUserSpecification(String userName, String name, String email, String phone, EnableEnum enable) {
         Specification<User> specification = new Specification<User>() {
             @Override
@@ -229,11 +233,13 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
         if (user == null) {
             return null;
         }
-        Collection<Role> roles = (Collection<Role>) user.getRoles();
-        if (roles != null && roles.size() > 0 && StringUtil.isNotBlank(roleId)) {
-            for (Role role : roles) {
-                if (roleId.equals(role.getId())) {
-                    return role;
+        if (null != user.getRoles()) {
+            Collection<Role> roles = new ArrayList<>(user.getRoles());
+            if (roles != null && roles.size() > 0 && StringUtil.isNotBlank(roleId)) {
+                for (Role role : roles) {
+                    if (roleId.equals(role.getId())) {
+                        return role;
+                    }
                 }
             }
         }

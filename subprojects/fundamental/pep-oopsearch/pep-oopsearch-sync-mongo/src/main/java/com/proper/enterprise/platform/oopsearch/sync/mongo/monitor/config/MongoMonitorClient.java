@@ -76,12 +76,14 @@ public class MongoMonitorClient {
         shardSetClients = new ShardSetFinder().findShardSets(hostMongo);
     }
 
+    @SuppressWarnings("deprecation")
     private void initTimeDB() {
         timeDB = hostMongo.getDB(TIME_DB_NAME);
     }
 
     private class ShardSetFinder {
 
+        @SuppressWarnings("deprecation")
         public Map<String, MongoClient> findShardSets(MongoClient mongoS) {
             DBCursor find = mongoS.getDB("admin").getSisterDB("config")
                 .getCollection("shards").find();

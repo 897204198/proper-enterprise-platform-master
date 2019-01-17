@@ -30,6 +30,7 @@ public class ResourceDaoImpl extends AbstractJpaServiceSupport<Resource, Resourc
         return resourceRepository;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Resource save(Resource resource) {
         if (null == resource.getEnable()) {
@@ -38,6 +39,7 @@ public class ResourceDaoImpl extends AbstractJpaServiceSupport<Resource, Resourc
         return resourceRepository.save((ResourceEntity) resource);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Resource updateForSelective(Resource resource) {
         return super.updateForSelective(resource);
@@ -56,6 +58,7 @@ public class ResourceDaoImpl extends AbstractJpaServiceSupport<Resource, Resourc
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<? extends Resource> findAll(String name, EnableEnum enable) {
         Specification<Resource> specification = new Specification<Resource>() {

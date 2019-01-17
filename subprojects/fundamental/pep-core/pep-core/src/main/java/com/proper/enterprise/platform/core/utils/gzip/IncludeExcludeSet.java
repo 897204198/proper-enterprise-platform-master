@@ -33,6 +33,7 @@ import java.util.function.Predicate;
  * @param <P> The type of element of the set (often a pattern)
  * @param <T> The type of the instance passed to the predicate
  */
+@SuppressWarnings("unchecked")
 public class IncludeExcludeSet<P,T> implements Predicate<T>
 {
     private final Set<P> _includes;

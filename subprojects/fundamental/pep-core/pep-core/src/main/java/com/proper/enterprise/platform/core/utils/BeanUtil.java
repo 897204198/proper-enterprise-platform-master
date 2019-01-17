@@ -17,8 +17,6 @@ public class BeanUtil {
     private BeanUtil() {
     }
 
-    private static final String VOID_STR = "void";
-
     /**
      * 根据类型实例化对象
      *
@@ -251,7 +249,12 @@ public class BeanUtil {
             targets = new ArrayList<>();
         }
         for (Object source : sources) {
-            Object target = BeanUtil.newInstance(targetGenericityType);
+            Object target = null;
+            try {
+                target = targetGenericityType.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new FatalBeanException("Could newInstance" + targetGenericityType.getName(), e);
+            }
             copyProperties(source, target, ignoreNull, currentDepth + 1, expectDepth, ignoreProperties);
             targets.add(target);
         }

@@ -18,7 +18,7 @@ public class BController extends BaseController {
 
     @PostMapping
     public ResponseEntity<BVO> post(@RequestBody BVO bvo) {
-        return responseOfPost(bservice.save(BeanUtil.convert(bvo, BEntity.class)), BVO.class);
+        return responseOfPost(BeanUtil.convert(bservice.save(BeanUtil.convert(bvo, BEntity.class)), BVO.class));
     }
 
     @DeleteMapping
@@ -28,14 +28,15 @@ public class BController extends BaseController {
 
     @PutMapping
     public ResponseEntity<BVO> put(@RequestBody BVO bvo) {
-        return responseOfPut(bservice.updateForSelective(BeanUtil.convert(bvo, BEntity.class)), BVO.class);
+        return responseOfPut(BeanUtil.convert(bservice.updateForSelective(BeanUtil.convert(bvo, BEntity.class)),
+            BVO.class));
     }
 
     @GetMapping
     public ResponseEntity<?> get() {
         if (isPageSearch()) {
-            return responseOfGet(bservice.findPage(), BVO.class);
+            return responseOfGet(BeanUtil.convert(bservice.findPage(), BVO.class));
         }
-        return responseOfGet(bservice.findAll(), BVO.class);
+        return responseOfGet(BeanUtil.convert(bservice.findAll(), BVO.class));
     }
 }

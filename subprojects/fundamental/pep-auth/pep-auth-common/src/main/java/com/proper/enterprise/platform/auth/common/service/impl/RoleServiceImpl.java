@@ -140,7 +140,8 @@ public class RoleServiceImpl implements RoleService {
         if (null == role) {
             return new ArrayList<>();
         }
-        return recursionRoleParents(role, new HashSet());
+        Collection<? extends Role> roleParents = recursionRoleParents(role, new HashSet<>());
+        return new ArrayList<>(roleParents);
     }
 
 
@@ -187,8 +188,10 @@ public class RoleServiceImpl implements RoleService {
         if (role == null) {
             return new ArrayList<>();
         }
-        Collection currentMenus = menuService.getFilterMenusAndParent(role.getMenus());
-        result.addAll(currentMenus);
+        Collection<? extends Menu> currentMenus = menuService.getFilterMenusAndParent(role.getMenus());
+        if (null != currentMenus) {
+            result.addAll(currentMenus);
+        }
         //获取父角色集合
         Collection<? extends Role> parentList = this.findParentRoles(roleId);
         for (Role detail : parentList) {
@@ -264,6 +267,7 @@ public class RoleServiceImpl implements RoleService {
         return getRoleResources(role, resourceEnable);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<? extends Resource> getRoleResources(Collection<? extends Role> roles, EnableEnum resourceEnable) {
         Set resourceSet = new HashSet();
@@ -280,6 +284,7 @@ public class RoleServiceImpl implements RoleService {
         return resourceService.getFilterResources(recursionResource(role, new HashSet(), false), resourceEnable);
     }
 
+    @SuppressWarnings("unchecked")
     private Collection<? extends Resource> recursionResource(Role role, Set resourceSet, boolean extend) {
         if (null == resourceSet) {
             resourceSet = new HashSet();
