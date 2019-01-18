@@ -277,13 +277,6 @@ public class MenusController extends BaseController {
             return JSONUtil.toJSONIgnoreException(this);
         }
 
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
     }
 
     public static class ResourceModelVO {
