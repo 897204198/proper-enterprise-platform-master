@@ -264,6 +264,14 @@ public class MenusController extends BaseController {
             this.menuCode = menuCode;
         }
 
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
         @Override
         public String toString() {
             return JSONUtil.toJSONIgnoreException(this);
