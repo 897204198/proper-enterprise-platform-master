@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -14,6 +15,9 @@ public class WebSocketMessageBrokerConfiguration implements WebSocketMessageBrok
 
     private UserHeaderInterceptor userHeaderInterceptor;
 
+    @Value("${pep.access-control.allow-origin:*}")
+    private String allowedOrigins;
+
     @Autowired
     public WebSocketMessageBrokerConfiguration(UserHeaderInterceptor userHeaderInterceptor) {
         this.userHeaderInterceptor = userHeaderInterceptor;
@@ -21,7 +25,7 @@ public class WebSocketMessageBrokerConfiguration implements WebSocketMessageBrok
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/stomp").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint("/stomp").setAllowedOrigins(allowedOrigins).withSockJS();
     }
 
     @Override

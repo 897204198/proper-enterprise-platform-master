@@ -7,10 +7,7 @@ import com.proper.enterprise.platform.configs.properties.ExecutorProperties;
 import com.proper.enterprise.platform.configs.properties.SchedulerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.*;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.scheduling.TaskScheduler;
@@ -31,6 +28,7 @@ import java.util.List;
 @EnableAspectJAutoProxy
 @EnableConfigurationProperties
 @EnableScheduling
+@PropertySource({"classpath:/application-tomcat.properties", "classpath:/application-access.properties"})
 public class PEPConfiguration {
 
     private AccessControlProperties accessControlProperties;

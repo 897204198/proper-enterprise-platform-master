@@ -12,6 +12,9 @@ public class AccessControlProperties {
     private String allowMethods = "GET, PUT, POST, DELETE, OPTIONS";
     /**
      * 允许跨域访问的来源
+     * 支持 * 或单个来源
+     *
+     * 详见 https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
      */
     private String allowOrigin = "*";
     /**
