@@ -5,7 +5,9 @@ dependencies {
                         libraries.spring_websocket
          implementation project(':pep-core')
 
-         runtimeElements libraries.tomcat_websocket
+         runtimeElements libraries.netty_all,
+                         libraries.reactor_netty,
+                         libraries.tomcat_websocket
 
       testImplementation project(':pep-auth-common-jpa'),
                          project(':pep-test')

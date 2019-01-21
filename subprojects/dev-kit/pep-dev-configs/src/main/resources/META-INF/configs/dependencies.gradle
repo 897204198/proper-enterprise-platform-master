@@ -190,7 +190,11 @@ libraries.mysql_binlog_connector_java = 'com.github.shyiko:mysql-binlog-connecto
 
 libraries.mysql_driver = 'org.mariadb.jdbc:mariadb-java-client:1.5.4'
 //libraries.mysql_driver = 'mysql:mysql-connector-java:5.1.38'
+
 //libraries.neo4j_driver = 'org.neo4j.driver:neo4j-java-driver:1.5.0'
+
+libraries.netty_all = 'io.netty:netty-all'
+
 libraries.okhttp = 'com.squareup.okhttp3:okhttp:3.4.1'
 libraries.oracle_driver = 'com.oracle:ojdbc6:1.0'
 
@@ -204,6 +208,8 @@ libraries.quartz = [
     "org.quartz-scheduler:quartz:${versions.quartz}"
 //    "org.quartz-scheduler:quartz-jobs:${versions.quartz}"
 ]
+
+libraries.reactor_netty = 'io.projectreactor.netty:reactor-netty:0.8.4.RELEASE'
 
 libraries.redisson = 'org.redisson:redisson:3.5.3'
 
