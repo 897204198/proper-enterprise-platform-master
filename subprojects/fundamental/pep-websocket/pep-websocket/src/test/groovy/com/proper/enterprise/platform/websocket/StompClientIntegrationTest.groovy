@@ -52,7 +52,7 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
     void testStringMessage() {
         CountDownLatch latch = new CountDownLatch(1)
         connect(latch, 'str', '/topic/test/str', '/app/test/str', 'hinex')
-        assert latch.await(1, TimeUnit.SECONDS)
+        assert latch.await(3, TimeUnit.SECONDS)
     }
 
     void connect(CountDownLatch latch, String user, String subscribe, String send = null, Object sendPayload = null) {
@@ -132,7 +132,7 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
             }
         })
 
-        assert latch.await(3, TimeUnit.SECONDS)
+        assert latch.await(5, TimeUnit.SECONDS)
     }
 
     def sendMessage(StompSession session, String msg, CountDownLatch latch) {
@@ -153,7 +153,7 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
         connect(latch1, 'u1', subscribe)
         connect(latch2, 'u2', "${subscribe}1")
         connect(latch3, 'u3', subscribe)
-        assert latch1.await(1, TimeUnit.SECONDS) && !latch2.await(1, TimeUnit.SECONDS) && latch3.await(1, TimeUnit.SECONDS)
+        assert latch1.await(3, TimeUnit.SECONDS) && !latch2.await(3, TimeUnit.SECONDS) && latch3.await(3, TimeUnit.SECONDS)
     }
 
     @Test
@@ -162,7 +162,7 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
         CountDownLatch latch2 = new CountDownLatch(1)
         connect(latch1, 'single_u1', '/user/topic/test/single')
         connect(latch2, 'single_u2', '/user/topic/test/single')
-        assert !latch1.await(1, TimeUnit.SECONDS) && latch2.await(1, TimeUnit.SECONDS)
+        assert !latch1.await(3, TimeUnit.SECONDS) && latch2.await(3, TimeUnit.SECONDS)
     }
 
     @Ignore
