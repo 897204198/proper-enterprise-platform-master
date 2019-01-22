@@ -3,9 +3,12 @@ package com.proper.enterprise.platform.workflow.flowable.rest.api;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.security.Authentication;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
+import com.proper.enterprise.platform.workflow.enums.ParserEnum;
 import com.proper.enterprise.platform.workflow.factory.PEPCandidateExtQueryFactory;
 import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
+import com.proper.enterprise.platform.workflow.model.PEPVariablesModel;
 import com.proper.enterprise.platform.workflow.service.impl.PEPCandidateUserExtQueryImpl;
 import com.proper.enterprise.platform.workflow.util.CandidateIdUtil;
 import com.proper.enterprise.platform.workflow.util.FlowableConditionUtil;
@@ -55,15 +58,14 @@ public class ModelerController extends BaseController {
     @ApiOperation("‍‍流程设计器转换分支条件")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ConditionModel> getCondition(@RequestBody ConditionModel conditionModel) {
-        Map<String, Object> params = new HashMap<>(conditionModel.getParams().size());
-        conditionModel.getParams().forEach(
-            variablesModel -> params.put(variablesModel.getName(), variablesModel.getId())
-        );
         String sequenceCondition;
-        if (conditionModel.getParsing()) {
-            sequenceCondition = FlowableConditionUtil.toFlowableCondition(conditionModel.getSequenceCondition(), params);
+        List<PEPVariablesModel> pepVariablesModels = new ArrayList<>(BeanUtil.convert(conditionModel.getParams(), PEPVariablesModel.class));
+        if (conditionModel.getParserEnum() == ParserEnum.TONATUAL) {
+            sequenceCondition = FlowableConditionUtil.toNaturalCondition(conditionModel.getSequenceCondition(),
+                pepVariablesModels);
         } else {
-            sequenceCondition = FlowableConditionUtil.toNatural(conditionModel.getSequenceCondition(), params);
+            sequenceCondition = FlowableConditionUtil.toFlowableCondition(conditionModel.getSequenceCondition(),
+                pepVariablesModels);
         }
         ConditionModel result = new ConditionModel();
         result.setSequenceCondition(sequenceCondition);
@@ -185,8 +187,8 @@ public class ModelerController extends BaseController {
         @ApiModelProperty(name = "‍替换变量", required = true)
         private List<VariablesModel> params;
 
-        @ApiModelProperty(name = "‍转换方向, true 为转换为flowable条件, fasle 为转换为自然语言")
-        private Boolean parsing;
+        @ApiModelProperty(name = "‍解析类型")
+        private ParserEnum parserEnum;
 
         public String getSequenceCondition() {
             return sequenceCondition;
@@ -204,15 +206,15 @@ public class ModelerController extends BaseController {
             this.params = params;
         }
 
-        public Boolean getParsing() {
-            if (parsing == null) {
-                return false;
+        public ParserEnum getParserEnum() {
+            if (parserEnum == null) {
+                return ParserEnum.TOFLOWABLE;
             }
-            return parsing;
+            return parserEnum;
         }
 
-        public void setParsing(Boolean parsing) {
-            this.parsing = parsing;
+        public void setParserEnum(ParserEnum parserEnum) {
+            this.parserEnum = parserEnum;
         }
     }
 
@@ -222,6 +224,15 @@ public class ModelerController extends BaseController {
 
         @ApiModelProperty(name = "‍变量名", required = true)
         private String name;
+
+        @ApiModelProperty(name = "‍是否为文本值")
+        private Boolean textValue;
+
+        @ApiModelProperty(name = "‍‍组件名")
+        private String componentKey;
+
+        @ApiModelProperty(name = "‍字典类型数据对应关系")
+        private List<VariablesChildrenModel> children;
 
         public String getId() {
             return id;
@@ -237,6 +248,58 @@ public class ModelerController extends BaseController {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public Boolean getTextValue() {
+            if (null == textValue) {
+                return false;
+            }
+            return textValue;
+        }
+
+        public void setTextValue(Boolean textValue) {
+            this.textValue = textValue;
+        }
+
+        public String getComponentKey() {
+            return componentKey;
+        }
+
+        public void setComponentKey(String componentKey) {
+            this.componentKey = componentKey;
+        }
+
+        public List<VariablesChildrenModel> getChildren() {
+            return children;
+        }
+
+        public void setChildren(List<VariablesChildrenModel> children) {
+            this.children = children;
+        }
+    }
+
+    private static class VariablesChildrenModel {
+
+        @ApiModelProperty(name = "‍字典值展示内容", required = true)
+        private String label;
+
+        @ApiModelProperty(name = "‍字典值存储内容", required = true)
+        private String value;
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
     }
 }
