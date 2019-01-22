@@ -18,7 +18,15 @@ public class WebSocketMessageBrokerConfiguration implements WebSocketMessageBrok
     private static final String[] ENDPOINTS = new String[]{"/stomp"};
     private static final String[] APP_DES_PREFIXES = new String[]{"/app"};
     private static final String[] DES_PREFIXES = new String[]{"/topic"};
+
+    /**
+     * 当没有用户和服务可以处理消息的时候 统一向该地址发送广播
+     */
     private static final String USER_DEST_BROADCAST = "/topic/pep-unresolved-user";
+
+    /**
+     * 集群场景下的用户注册地址  使多服务端间用户透明
+     */
     private static final String USER_REGISTRY_BROADCAST = "/topic/pep-user-registry";
 
     @Value("${pep.access-control.allow-origin:*}")
