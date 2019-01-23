@@ -15,6 +15,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * stomp 拦截器
+ * 连接握手前进行拦截
+ * 从请求头STOMP_USER_HEADER中获取用户信息
+ * 并将用户信息封装在请求信息中 用来点对点发送
+ */
 @Component
 public class UserHeaderInterceptor implements ChannelInterceptor {
 

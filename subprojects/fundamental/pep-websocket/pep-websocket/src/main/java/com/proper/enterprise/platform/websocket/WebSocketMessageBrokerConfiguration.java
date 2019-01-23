@@ -49,11 +49,25 @@ public class WebSocketMessageBrokerConfiguration implements WebSocketMessageBrok
         this.userHeaderInterceptor = userHeaderInterceptor;
     }
 
+    /**
+     * 注册stomp
+     * 默认允许跨域访问 以socket形式启动
+     *
+     * @param registry 注册器
+     */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint(ENDPOINTS).setAllowedOrigins(allowedOrigins).withSockJS();
     }
 
+    /**
+     * 配置消息代理
+     * 默认简单代理
+     * 当设置useExternalBroker为true后启动中继代理
+     * 中继代理需要消息队列实现
+     *
+     * @param registry 注册器
+     */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes(APP_DES_PREFIXES);
@@ -69,6 +83,12 @@ public class WebSocketMessageBrokerConfiguration implements WebSocketMessageBrok
         }
     }
 
+    /**
+     * 配置握手前拦截器
+     * 注册用户信息拦截器
+     *
+     * @param registration 注册器
+     */
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(userHeaderInterceptor);
