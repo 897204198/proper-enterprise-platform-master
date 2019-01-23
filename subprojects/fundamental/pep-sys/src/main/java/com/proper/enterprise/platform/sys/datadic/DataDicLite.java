@@ -1,6 +1,8 @@
 package com.proper.enterprise.platform.sys.datadic;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.PEPPropertiesLoader;
+import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.sys.properties.SysDataDicProperties;
 
 import java.io.Serializable;
@@ -11,6 +13,10 @@ import java.io.Serializable;
  * 仅包含必须持久化到数据库中的数据字典信息（类别 和 编码）
  */
 public interface DataDicLite extends Serializable {
+
+    public interface DataDicView extends BaseView {
+
+    }
 
     /**
      * 数据字典类型属性在持久化时，按照如下格式保存：
@@ -24,6 +30,7 @@ public interface DataDicLite extends Serializable {
      *
      * @return 数据字典类别
      */
+    @JsonView(value = BaseView.class)
     String getCatalog();
 
     /**
@@ -38,6 +45,7 @@ public interface DataDicLite extends Serializable {
      *
      * @return 编码
      */
+    @JsonView(value = BaseView.class)
     String getCode();
 
     /**
