@@ -85,4 +85,13 @@ public class StreamlineServiceImpl implements StreamlineService {
         }
         return signEntity.getServiceKey();
     }
+
+    @Override
+    public String getSign(String signature) {
+        SignEntity signEntity = signRepository.findBySignature(signature);
+        if (null == signEntity) {
+            return null;
+        }
+        return signEntity.getServiceKey();
+    }
 }

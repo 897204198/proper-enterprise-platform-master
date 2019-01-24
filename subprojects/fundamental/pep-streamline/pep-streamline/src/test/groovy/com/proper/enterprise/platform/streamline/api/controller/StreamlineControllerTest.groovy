@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.streamline.api.controller
 
 import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService
+import com.proper.enterprise.platform.streamline.entity.SignEntity
 import com.proper.enterprise.platform.streamline.repository.SignRepository
 import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest
@@ -203,5 +204,20 @@ class StreamlineControllerTest extends AbstractJPATest {
         MvcResult result = get(URL + "/" + signRequestParam.getUserName() + "/" + "test4", HttpStatus.OK)
         assert "test2" == result.getResponse().getContentAsString()
         assert "test2" == result.getResponse().getHeader(StreamlineConstant.SERVICE_KEY)
+    }
+
+    @Test
+    void getServiceKeyBySignature() {
+        SignEntity signEntity = new SignEntity()
+        signEntity.setBusinessId("test")
+        signEntity.setSignature("signature")
+        signEntity.setServiceKey("testSignature")
+        signEntity.setEnable(true)
+        signRepository.save(signEntity)
+        //查询新签名找到
+        MvcResult result = get(URL + "/signature", HttpStatus.OK)
+        assert "testSignature" == result.getResponse().getContentAsString()
+        assert "testSignature" == result.getResponse().getHeader(StreamlineConstant.SERVICE_KEY)
+
     }
 }
