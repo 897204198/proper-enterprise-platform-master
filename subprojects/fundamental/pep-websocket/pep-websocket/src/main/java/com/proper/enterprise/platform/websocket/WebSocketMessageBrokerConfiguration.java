@@ -41,6 +41,8 @@ public class WebSocketMessageBrokerConfiguration implements WebSocketMessageBrok
     private String brokerUser;
     @Value("${pep.websocket.broker.password}")
     private String brokerPwd;
+    @Value("${pep.websocket.broker.virtual-host}")
+    private String virtualHost;
 
     private UserHeaderInterceptor userHeaderInterceptor;
 
@@ -77,7 +79,8 @@ public class WebSocketMessageBrokerConfiguration implements WebSocketMessageBrok
                 .setUserRegistryBroadcast(USER_REGISTRY_BROADCAST)
                 .setRelayHost(relayHost).setRelayPort(relayPort)
                 .setSystemLogin(brokerUser).setSystemPasscode(brokerPwd)
-                .setClientLogin(brokerUser).setClientPasscode(brokerPwd);
+                .setClientLogin(brokerUser).setClientPasscode(brokerPwd)
+                .setVirtualHost(virtualHost);
         } else {
             registry.enableSimpleBroker(DES_PREFIXES);
         }

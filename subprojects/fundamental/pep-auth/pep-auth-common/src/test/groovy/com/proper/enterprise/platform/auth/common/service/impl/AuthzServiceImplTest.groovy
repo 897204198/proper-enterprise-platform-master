@@ -68,7 +68,13 @@ class AuthzServiceImplTest extends AbstractJPATest {
     @Test
     void hasBeanList() {
         // com.proper.enterprise.platform.configs.PEPConfiguration.ignorePatternsListOptions
-        assert ignorePatternsList.size() == 1
+        boolean flag = false
+        for (String str : ignorePatternsList) {
+            if ("OPTIONS:/**".equals(str)) {
+                flag = true
+            }
+        }
+        assert flag
     }
 
 }
