@@ -22,18 +22,33 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
-class SuccessfulStartListener implements ApplicationListener<ContextRefreshedEvent> {
+public class SuccessfulStartListener implements ApplicationListener<ContextRefreshedEvent> {
 
     private CoreProperties coreProperties;
 
     private ServerProperties serverProperties;
 
+    private List<String> successMsgs = new ArrayList<>();
+
+    private Integer maxMassageLength;
+
     @Autowired
     public SuccessfulStartListener(CoreProperties coreProperties, ServerProperties serverProperties) {
         this.coreProperties = coreProperties;
         this.serverProperties = serverProperties;
+        this.addSuccessMsg("Propersoft Enterprise Platform (v " + PEPVersion.getVersion() + ") Started Successfully!");
+    }
+
+    public void addSuccessMsg(String msg) {
+        this.successMsgs.add(msg);
+        if (this.maxMassageLength == null) {
+            this.maxMassageLength = 0;
+        }
+        this.maxMassageLength = Math.max(this.maxMassageLength, msg.length());
     }
 
     @Override
@@ -46,16 +61,21 @@ class SuccessfulStartListener implements ApplicationListener<ContextRefreshedEve
         final String profile = getProfiles(event.getApplicationContext());
         sendStatInfo(profile, start, null);
 
-        PrintStream ps = System.out;
-        String success = "|| Propersoft Enterprise Platform (v" + PEPVersion.getVersion() + ") Started Successfully! ||";
-        int len = success.length();
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
+        int splitLength = "||  ||".length();
+        StringBuilder sb = new StringBuilder(this.maxMassageLength + splitLength);
+        for (int i = 0; i < this.maxMassageLength + splitLength; i++) {
             sb.append("=");
         }
+
+        PrintStream ps = System.out;
         ps.println();
         ps.println(sb.toString());
-        ps.println(success);
+        for (String successMsg : successMsgs) {
+            ps.print("|| ");
+            ps.printf("%-" + this.maxMassageLength + "s", successMsg);
+            ps.print(" ||");
+            ps.println();
+        }
         ps.println(sb.toString());
         ps.println();
 

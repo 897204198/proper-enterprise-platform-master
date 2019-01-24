@@ -15,6 +15,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 @Configuration
@@ -89,4 +91,10 @@ public class CoreConfiguration {
         return methodValidationPostProcessor;
     }
 
+    @Bean
+    List<String> ignorePatternsListIndex() {
+        // banner 接口增加 AuthcIgnore 需要依赖 pep_auth_api
+        // 使用ignorePatterns...则不需要依赖任何模块进行调用
+        return Arrays.asList("GET:/", "GET:/banner");
+    }
 }
