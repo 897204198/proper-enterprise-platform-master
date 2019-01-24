@@ -32,6 +32,11 @@ public class WebSocketBrokerProperties {
      */
     private String password = "guest";
 
+    /**
+     * vhost of MQ
+     */
+    private String virtualHost = "/";
+
     public boolean isEnable() {
         return enable;
     }
@@ -70,5 +75,13 @@ public class WebSocketBrokerProperties {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getVirtualHost() {
+        return virtualHost;
+    }
+
+    public void setVirtualHost(String virtualHost) {
+        this.virtualHost = virtualHost;
     }
 }

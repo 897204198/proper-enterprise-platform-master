@@ -1,4 +1,4 @@
-pep-websocket
+pep-websocket-server
 =============
 
 重要配置
