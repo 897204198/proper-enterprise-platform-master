@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.test.AbstractIntegrationTest
 import com.proper.enterprise.platform.websocket.StompClientIntegrationTest.EmbeddedHandler
 import com.proper.enterprise.platform.websocket.controller.JsonMsgController
+import com.proper.enterprise.platform.websocket.util.StompMessageSendUtil
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -175,6 +176,22 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
         connect(latch2, 'as_u2', '/topic/sync')
         connect(latch3, 'as_u3', '/topic/sync')
         assert latch1.await(20, TimeUnit.SECONDS)
+    }
+
+    @Test
+    void stompMessageSendUtil() {
+        CountDownLatch latch1 = new CountDownLatch(1)
+        connect(latch1, 'sendUtil', '/user/topic/stompMessageSendUtil/client')
+        sleep(500)
+        StompMessageSendUtil.send('sendUtil', '/topic/stompMessageSendUtil/client', "test")
+        assert latch1.await(3, TimeUnit.SECONDS)
+
+
+        CountDownLatch latch2 = new CountDownLatch(1)
+        connect(latch2, 'sendUtil', '/topic/stompMessageSendUtil')
+        sleep(500)
+        StompMessageSendUtil.send('sendUtil', '/topic/stompMessageSendUtil', "test")
+        assert latch2.await(3, TimeUnit.SECONDS)
     }
 
 }
