@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.notice.server.push.dao.service.PushNoticeConfigService;
 import com.proper.enterprise.platform.notice.server.push.vo.PushConfigVO;
 import com.proper.enterprise.platform.notice.server.sdk.enums.PushChannelEnum;
+import com.proper.enterprise.platform.notice.server.sdk.enums.PushProfileEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -198,6 +199,9 @@ public class PushNoticeConfigController extends BaseController {
         @ApiModelProperty(name = "‍证书密码", required = true)
         private String certPassword;
 
+        @ApiModelProperty(name = "‍推送环境")
+        private PushProfileEnum pushProfile;
+
         public String getAppKey() {
             return appKey;
         }
@@ -252,6 +256,14 @@ public class PushNoticeConfigController extends BaseController {
 
         public void setCertPassword(String certPassword) {
             this.certPassword = certPassword;
+        }
+
+        public PushProfileEnum getPushProfile() {
+            return pushProfile;
+        }
+
+        public void setPushProfile(PushProfileEnum pushProfile) {
+            this.pushProfile = pushProfile;
         }
 
         @Override
