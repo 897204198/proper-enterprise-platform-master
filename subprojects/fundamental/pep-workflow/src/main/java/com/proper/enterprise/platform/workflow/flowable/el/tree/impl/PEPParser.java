@@ -1,5 +1,7 @@
 package com.proper.enterprise.platform.workflow.flowable.el.tree.impl;
 
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.workflow.api.AbstractPEPBaseComponent;
 import com.proper.enterprise.platform.workflow.enums.ComponentKeyEnum;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -160,6 +162,9 @@ public class PEPParser extends Parser {
             String textFlag = "_text";
             if (pepVariablesModel == null && this.parserEnum == ParserEnum.TONATUAL && name.endsWith(textFlag)) {
                 pepVariablesModel = getPepVariablesModelMap().get(name.substring(0, name.length() - 5));
+            }
+            if (pepVariablesModel == null) {
+                throw new ErrMsgException(name + I18NUtil.getMessage("workflow.condition.property.notFound"));
             }
             if (pepVariablesModel != null) {
                 AbstractPEPBaseComponent component =

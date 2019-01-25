@@ -136,6 +136,10 @@ class ModelerControllerTest extends AbstractJPATest {
         data['sequenceCondition'] = "\${部门=='研发部'"
         result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(data), HttpStatus.INTERNAL_SERVER_ERROR)
         assert I18NUtil.getMessage("workflow.condition.brace.notMatch") == result
+
+        data['sequenceCondition'] = "\${部门}==研发部"
+        result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(data), HttpStatus.INTERNAL_SERVER_ERROR)
+        assert "研发部" + I18NUtil.getMessage("workflow.condition.property.notFound") == result
     }
 
     @Test

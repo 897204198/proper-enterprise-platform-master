@@ -43,6 +43,8 @@ public class FlowableConditionUtil {
         try {
             PEPParser pepParser = createParser(parseCondition, pepVariablesModelMap, ParserEnum.TOFLOWABLE);
             parseCondition = pepParser.tree().getRoot().getStructuralId(null);
+        } catch (ErrMsgException pepException) {
+            throw new ErrMsgException(pepException.getMessage());
         } catch (Exception e) {
             LOGGER.error("The condition parse cause an error : {}", e);
             throw new ErrMsgException(I18NUtil.getMessage("workflow.condition.parse.error"));
@@ -66,6 +68,8 @@ public class FlowableConditionUtil {
             PEPParser pepParser = createParser(condition, pepVariablesModelMap, ParserEnum.TONATUAL);
             String conditionAfter = pepParser.tree().getRoot().getStructuralId(null);
             return conditionAfter.substring(2, conditionAfter.length() - 1);
+        } catch (ErrMsgException pepException) {
+            throw new ErrMsgException(pepException.getMessage());
         } catch (Exception e) {
             LOGGER.error("The condition parse cause an error : {}", e);
             throw new ErrMsgException(I18NUtil.getMessage("workflow.condition.parse.error"));

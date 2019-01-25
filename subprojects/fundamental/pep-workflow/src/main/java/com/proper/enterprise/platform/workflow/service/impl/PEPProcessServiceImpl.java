@@ -5,6 +5,8 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.PEPPropertiesLoader;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
@@ -33,6 +35,8 @@ import org.flowable.engine.history.HistoricProcessInstanceQuery;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.history.HistoricTaskInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -44,6 +48,8 @@ import java.util.Map;
 
 @Service
 public class PEPProcessServiceImpl implements PEPProcessService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PEPProcessServiceImpl.class);
 
     private RuntimeService runtimeService;
 
@@ -107,8 +113,13 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         //设置允许是skip
         globalVariables.put(WorkFlowConstants.SKIP_EXPRESSION_ENABLED, true);
         globalVariables = globalVariableInitDecorator.init(globalVariables, processDefinition);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
-        return new PEPProcInst(processInstance).convert();
+        try {
+            ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
+            return new PEPProcInst(processInstance).convert();
+        } catch (Exception e) {
+            LOGGER.error("workflow start process error:processDefinitionId:{}", processDefinition.getId(), e);
+            throw new ErrMsgException(I18NUtil.getMessage("workflow.task.complete.error"));
+        }
     }
 
     @Override
