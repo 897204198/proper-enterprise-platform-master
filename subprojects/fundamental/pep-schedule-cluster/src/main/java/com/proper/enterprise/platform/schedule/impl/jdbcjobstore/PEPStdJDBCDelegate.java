@@ -20,8 +20,9 @@ import java.sql.SQLException;
  * The solution
  * Use SerializationUtil to deserialize object which fixed the problem.
  *
- * @author zhangjl
+ * TODO Has any use case after using spring boot to replace with gretty plugin?
  */
+@Deprecated
 public class PEPStdJDBCDelegate extends StdJDBCDelegate {
 
     @Override

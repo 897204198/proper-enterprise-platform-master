@@ -25,7 +25,6 @@ class StompClientSpec extends Specification {
     def handler = new StompFrameStringHandler() {
         @Override
         void handleFrame(StompHeaders headers, @Nullable Object payload) {
-            println " ======== HINEX ========="
             println payload
         }
     }

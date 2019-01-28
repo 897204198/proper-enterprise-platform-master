@@ -1,0 +1,8 @@
+dependencies {
+
+        implementation project(':pep-core'),
+                       project(':pep-websocket-client')
+
+    testImplementation project(':pep-test')
+
+}

@@ -15,8 +15,6 @@ import java.util.List;
 
 /**
  * 每日定时任务：统计前一天的推送数据
- *
- * @author guozhimin
  */
 @Component("pushStatisticTask")
 public class PushStatisticTaskScheduler {

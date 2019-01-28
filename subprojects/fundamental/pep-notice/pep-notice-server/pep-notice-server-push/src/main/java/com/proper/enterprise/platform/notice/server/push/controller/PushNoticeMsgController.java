@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 推送消息统计
- *
- * @author guozhimin
  */
 @RestController
 @Api(tags = "/notice/server/push")

@@ -10,8 +10,6 @@ import java.io.IOException;
  * Utility service for JSON Web Token (http://jwt.io/)
  * Only support JWT type and HS256 algorithm now
  * Use user id as key of apiSecret caches
- *
- * @author Hinex
  */
 public interface JWTService extends AccessTokenService {
 
