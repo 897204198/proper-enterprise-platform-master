@@ -49,7 +49,7 @@ public class PEPModelServiceImpl implements PEPModelService {
     }
 
     @Override
-    public ResultListDataRepresentation getModels(String filter, String sort, Integer modelType) {
+    public ResultListDataRepresentation getModels(String filter, String sort, Integer modelType, PEPModelVO.ModelStatus modelStatus) {
         if (StringUtils.isEmpty(filter)) {
             filter = null;
         }
@@ -63,7 +63,7 @@ public class PEPModelServiceImpl implements PEPModelService {
             pepModelVOS.add(new PEPModelVO(model));
             modelKeys.add(model.getKey());
         }
-        List<PEPModelVO> returnData = packageModelAndProcess(pepModelVOS, getProcessDefinitionsByKey(modelKeys));
+        List<PEPModelVO> returnData = packageModelAndProcess(pepModelVOS, getProcessDefinitionsByKey(modelKeys), modelStatus);
         ResultListDataRepresentation resultListDataRepresentation = new ResultListDataRepresentation();
         resultListDataRepresentation.setData(returnData);
         resultListDataRepresentation.setSize(returnData.size());
@@ -106,13 +106,18 @@ public class PEPModelServiceImpl implements PEPModelService {
     }
 
     private List<PEPModelVO> packageModelAndProcess(List<PEPModelVO> pepModelVOS,
-                                                    Map<String, PEPProcessDefinitionVO> pepProcessDefinitionMap) {
+                                                    Map<String, PEPProcessDefinitionVO> pepProcessDefinitionMap,
+                                                    PEPModelVO.ModelStatus modelStatus) {
+        List<PEPModelVO> newPEPModelVOs = new ArrayList<>();
         for (PEPModelVO pepModelVO : pepModelVOS) {
             PEPProcessDefinitionVO pepProcessDefinitionVO = pepProcessDefinitionMap.get(pepModelVO.getKey());
             if (null != pepProcessDefinitionVO) {
                 pepModelVO.setProcessVersion(pepProcessDefinitionVO.getVersion());
                 pepModelVO.setDeploymentTime(pepProcessDefinitionVO.getDeploymentTime());
                 pepModelVO.setStatus(buildModelStatus(pepModelVO, pepProcessDefinitionVO));
+                if (modelStatus == PEPModelVO.ModelStatus.DEPLOYED) {
+                    pepModelVO.setStatus(dataDicService.get(PEPModelVO.ModelStatus.DEPLOYED));
+                }
                 pepModelVO.setStartFormKey(pepProcessDefinitionVO.getStartFormKey());
                 List<FormProperty> formProperties = formService.getStartFormData(pepProcessDefinitionVO.getId())
                     .getFormProperties();
@@ -124,11 +129,16 @@ public class PEPModelServiceImpl implements PEPModelService {
                     }
                     pepModelVO.setFormProperties(CollectionUtil.isEmpty(pepPropertyMap) ? null : pepPropertyMap);
                 }
+                newPEPModelVOs.add(pepModelVO);
+                continue;
+            }
+            if (modelStatus == PEPModelVO.ModelStatus.DEPLOYED) {
                 continue;
             }
             pepModelVO.setStatus(dataDicService.get(PEPModelVO.ModelStatus.UN_DEPLOYED));
+            newPEPModelVOs.add(pepModelVO);
         }
-        return pepModelVOS;
+        return newPEPModelVOs;
     }
 
     private DataDicLite buildModelStatus(PEPModelVO pepModelVO, PEPProcessDefinitionVO pepProcessDefinitionVO) {

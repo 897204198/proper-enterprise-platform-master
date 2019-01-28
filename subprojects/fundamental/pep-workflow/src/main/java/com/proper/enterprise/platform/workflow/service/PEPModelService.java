@@ -7,12 +7,13 @@ public interface PEPModelService {
     /**
      * 根据条件查询model
      *
-     * @param filter    查询条件 （描述字段 description like)
-     * @param sort      排序
-     * @param modelType model类型
+     * @param filter      查询条件 （描述字段 description like)
+     * @param sort        排序
+     * @param modelType   model类型
+     * @param modelStatus 部署状态
      * @return ResultListDataRepresentation
      */
-    ResultListDataRepresentation getModels(String filter, String sort, Integer modelType);
+    ResultListDataRepresentation getModels(String filter, String sort, Integer modelType, PEPModelVO.ModelStatus modelStatus);
 
     /**
      * 更新model
