@@ -76,6 +76,11 @@ public class WebSocketClientEndpoint {
      */
     public interface MessageHandler {
 
+        /**
+         * Handle received message
+         *
+         * @param message message
+         */
         void handleMessage(String message);
 
     }
