@@ -62,7 +62,7 @@ class IntegrateSlackTest extends AbstractSpringTest {
             }
         })
 
-        WebSocketClient.send(clientId, '{"id":1, "type":"message", "channel":"C15C8EKPB", "text":"rtm msg"}')
+        WebSocketClient.send(clientId, "{'id':1, 'type':'message', 'channel':'$CHANNEL_TEST', 'text':'rtm msg'}")
 
         sleep(30*60*1000)
     }
