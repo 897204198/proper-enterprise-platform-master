@@ -5,6 +5,8 @@ import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.core.CoreProperties;
 import com.proper.enterprise.platform.core.PEPPropertiesLoader;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.DateUtil;
@@ -13,6 +15,7 @@ import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.decorator.GlobalVariableInitDecorator;
+import com.proper.enterprise.platform.workflow.enums.FlowableExceptionEnum;
 import com.proper.enterprise.platform.workflow.handler.GlobalVariableInitHandler;
 import com.proper.enterprise.platform.workflow.model.PEPExtForm;
 import com.proper.enterprise.platform.workflow.model.PEPProcInst;
@@ -24,6 +27,7 @@ import com.proper.enterprise.platform.workflow.vo.*;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
+import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.FormService;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
@@ -33,6 +37,8 @@ import org.flowable.engine.history.HistoricProcessInstanceQuery;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.history.HistoricTaskInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -44,6 +50,8 @@ import java.util.Map;
 
 @Service
 public class PEPProcessServiceImpl implements PEPProcessService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PEPProcessServiceImpl.class);
 
     private RuntimeService runtimeService;
 
@@ -107,8 +115,16 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         //设置允许是skip
         globalVariables.put(WorkFlowConstants.SKIP_EXPRESSION_ENABLED, true);
         globalVariables = globalVariableInitDecorator.init(globalVariables, processDefinition);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
-        return new PEPProcInst(processInstance).convert();
+        try {
+            ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
+            return new PEPProcInst(processInstance).convert();
+        } catch (FlowableException flowableException) {
+            LOGGER.error("workflow complete task error:processDefinitionId:{}", processDefinition, flowableException);
+            throw new ErrMsgException(FlowableExceptionEnum.convertFlowableException(flowableException));
+        } catch (Exception e) {
+            LOGGER.error("workflow start process error:processDefinitionId:{}", processDefinition.getId(), e);
+            throw new ErrMsgException(I18NUtil.getMessage("workflow.task.complete.error"));
+        }
     }
 
     @Override

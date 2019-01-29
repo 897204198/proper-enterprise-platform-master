@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.workflow.controller
 import com.proper.enterprise.platform.core.i18n.I18NUtil
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
+import com.proper.enterprise.platform.workflow.enums.ParserEnum
 import com.proper.enterprise.platform.workflow.flowable.rest.api.ModelerController
 import org.junit.Test
 import org.springframework.http.HttpStatus
@@ -61,40 +62,44 @@ class ModelerControllerTest extends AbstractJPATest {
     @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
         "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
     void parsingCondition() {
+        parsingConditionError()
+
         def data = [:]
         data['sequenceCondition'] = "\${organizationName=='研发部'&&(vacationTime<2||vacationType=='事假')}"
         def list = [["id":"organizationName","name":"部门"],
                     ["id":"vacationTime","name":"请假时长"],
                     ["id":"vacationType","name":"请假类型"]]
         data['params'] = list
-        data['parsing'] = true
+        data['parserEnum'] = ParserEnum.TONATUAL
         def result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(data), HttpStatus.OK)
         assert "\${部门} == '研发部' && (\${请假时长} < 2 || \${请假类型} == '事假')" == result.sequenceCondition
 
         data['sequenceCondition'] = "\${部门}=='研发部'&&(\${请假时长}<2||\${请假类型}=='事假')"
-        list = [["id":"organizationName","name":"部门"],
-                ["id":"vacationTime","name":"请假时长"],
-                ["id":"vacationType","name":"请假类型"]]
+        list = [["id":"organizationName","name":"部门","componentKey":"OopSystemCurrent"],
+                ["id":"vacationTime","name":"请假时长","componentKey":"InputNumber"],
+                ["id":"vacationType","name":"请假类型","componentKey":"Select","textValue":true,"children":[["label":"事假","value":"A"], ["label":"病假","value":"B"]]]]
         data['params'] = list
-        data['parsing'] = false
+        data['parserEnum'] = ParserEnum.TOFLOWABLE
         result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(data), HttpStatus.OK)
-        assert "\${organizationName=='研发部'&&(vacationTime<2||vacationType=='事假')}" == result.sequenceCondition
+        assert "\${organizationName_text == '研发部' && (vacationTime < 2 || vacationType == 'A')}" == result.sequenceCondition
 
         def dataNatural = [:]
-        dataNatural['sequenceCondition'] = "(\${请假时长}+\${出差时长})<2 && \${申请人} =='大哥' ||(\${请假时长}/\${出差时长}>=5)"
+        dataNatural['sequenceCondition'] = "(\${请假时长}+\${出差时长})<2 && \${申请人} =='事假' ||(\${请假时长}/\${出差时长}>=5) || \${请假类型} == '病假' && \${审批人} == '大哥'"
         def listParam = [["id":"vacationTime","name":"请假时长"],
                          ["id":"tripTime","name":"出差时长"],
-                         ["id":"initiator","name":"申请人"]]
+                         ["id":"vacationType","name":"请假类型","componentKey":"Select","textValue":true,"children":[["label":"事假","value":"A"], ["label":"病假","value":"B"]]],
+                         ["id":"initiator","name":"申请人"],
+                         ["id":"approvePerson","name":"审批人","componentKey":"OopGroupUserPicker"]]
         dataNatural['params'] = listParam
         result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(dataNatural), HttpStatus.OK)
-        assert "\${(vacationTime+tripTime)<2 && initiator =='大哥' ||(vacationTime/tripTime>=5)}" == result.sequenceCondition
+        assert "\${(vacationTime + tripTime) < 2 && initiator == '事假' || (vacationTime / tripTime >= 5) || vacationType == 'B' && approvePerson_text == '大哥'}" == result.sequenceCondition
 
         def dataFlowable = [:]
         dataFlowable['sequenceCondition'] = result.sequenceCondition
         dataFlowable['params'] = listParam
-        dataFlowable['parsing'] = true
+        dataFlowable['parserEnum'] = ParserEnum.TONATUAL
         result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(dataFlowable), HttpStatus.OK)
-        assert "(\${请假时长} + \${出差时长}) < 2 && \${申请人} == '大哥' || (\${请假时长} / \${出差时长} >= 5)" == result.sequenceCondition
+        assert "(\${请假时长} + \${出差时长}) < 2 && \${申请人} == '事假' || (\${请假时长} / \${出差时长} >= 5) || \${请假类型} == '病假' && \${审批人} == '大哥'" == result.sequenceCondition
 
         dataNatural = [:]
         dataNatural['sequenceCondition'] = "({请假时长}+\${出差时长})<2 && \${申请人} =='大哥' ||(\${请假时长}/\${出差时长}>=5)"
@@ -103,13 +108,38 @@ class ModelerControllerTest extends AbstractJPATest {
                      ["id":"initiator","name":"申请人"]]
         dataNatural['params'] = listParam
         result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(dataNatural), HttpStatus.INTERNAL_SERVER_ERROR)
-        assert I18NUtil.getMessage("workflow.condition.parse.error") == result
+        assert I18NUtil.getMessage("workflow.condition.notStartWithDollar") == result
 
         dataFlowable['sequenceCondition'] = ""
         dataFlowable['params'] = listParam
-        dataFlowable['parsing'] = true
+        dataFlowable['parserEnum'] = ParserEnum.TONATUAL
         result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(dataFlowable), HttpStatus.INTERNAL_SERVER_ERROR)
         assert I18NUtil.getMessage("workflow.condition.parse.error") == result
+    }
+
+    void parsingConditionError() {
+        def data = [:]
+
+        data['sequenceCondition'] = "{部门}=='研发部'"
+        def list = [["id":"organizationName","name":"部门"],
+                    ["id":"vacationTime","name":"请假时长"],
+                    ["id":"vacationType","name":"请假类型"]]
+        data['params'] = list
+        data['parserEnum'] = ParserEnum.TOFLOWABLE
+        def result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(data), HttpStatus.INTERNAL_SERVER_ERROR)
+        assert I18NUtil.getMessage("workflow.condition.notStartWithDollar") == result
+
+        data['sequenceCondition'] = "\$部门=='研发部'"
+        result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(data), HttpStatus.INTERNAL_SERVER_ERROR)
+        assert I18NUtil.getMessage("workflow.condition.notEndWithBrace") == result
+
+        data['sequenceCondition'] = "\${部门=='研发部'"
+        result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(data), HttpStatus.INTERNAL_SERVER_ERROR)
+        assert I18NUtil.getMessage("workflow.condition.brace.notMatch") == result
+
+        data['sequenceCondition'] = "\${部门}==研发部"
+        result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(data), HttpStatus.INTERNAL_SERVER_ERROR)
+        assert "研发部" + I18NUtil.getMessage("workflow.condition.property.notFound") == result
     }
 
     @Test

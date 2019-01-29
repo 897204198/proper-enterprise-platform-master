@@ -63,6 +63,11 @@ class ModelsControllerTest extends AbstractJPATest {
             , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
         assert PEPModelVO.ModelStatus.UN_DEPLOYED.name() == nodeploy.getData().get(0).status.code
 
+        representation = JSONUtil.parse(get('/repository/models/?modelType=0&modelStatus=DEPLOYED'
+            , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
+        for (Map deployModelVO : representation.getData()) {
+            assert PEPModelVO.ModelStatus.DEPLOYED.name() == deployModelVO.status.code
+        }
 
         Map nodeployModelVO = nodeploy.getData().get(0)
         nodeployModelVO.put("name", "nodeploy2")

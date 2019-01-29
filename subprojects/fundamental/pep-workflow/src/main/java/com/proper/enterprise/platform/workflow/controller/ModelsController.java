@@ -65,8 +65,9 @@ public class ModelsController extends BaseController {
     @ApiOperation("‍获得流程model集合")
     public ResultListDataRepresentation getModels(@ApiParam(value = "modelKey") String filter,
                                                   @ApiParam(value = "‍排序 ModelSort") String sort,
-                                                  @ApiParam(value = "‍流程类型 AbstractModel") Integer modelType) {
-        return pepModelService.getModels(filter, sort, modelType);
+                                                  @ApiParam(value = "‍流程类型 AbstractModel") Integer modelType,
+                                                  @ApiParam(value = "‍流程状态") PEPModelVO.ModelStatus modelStatus) {
+        return pepModelService.getModels(filter, sort, modelType, modelStatus);
     }
 
 }

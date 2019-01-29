@@ -41,16 +41,22 @@ public class TemplateServiceImpl extends AbstractJpaServiceSupport<TemplateEntit
         List<TemplateDetailVO> details = templateDocument.getDetails();
         TemplateVO templateVO = BeanUtil.convert(templateDocument, TemplateVO.class);
         if (templateVO.getMuti()) {
+            List<TemplateDetailVO> tmpDetails = new ArrayList<>(details.size());
             for (TemplateDetailVO template : details) {
-                template.setTitle(TemplateUtil.template2Content(template.getTitle(), templateParams));
-                template.setTemplate(TemplateUtil.template2Content(template.getTemplate(), templateParams));
+                TemplateDetailVO tmpTemplate = new TemplateDetailVO();
+                tmpTemplate.setTitle(TemplateUtil.template2Content(template.getTitle(), templateParams));
+                tmpTemplate.setTemplate(TemplateUtil.template2Content(template.getTemplate(), templateParams));
+                tmpTemplate.setType(template.getType());
+                tmpDetails.add(tmpTemplate);
             }
-            templateVO.setDetails(details);
+            templateVO.setDetails(tmpDetails);
         } else {
             TemplateDetailVO template = details.get(0);
-            template.setTitle(TemplateUtil.template2Content(template.getTitle(), templateParams));
-            template.setTemplate(TemplateUtil.template2Content(template.getTemplate(), templateParams));
-            templateVO.setDetail(template);
+            TemplateDetailVO tmpTemplate = new TemplateDetailVO();
+            tmpTemplate.setTitle(TemplateUtil.template2Content(template.getTitle(), templateParams));
+            tmpTemplate.setTemplate(TemplateUtil.template2Content(template.getTemplate(), templateParams));
+            tmpTemplate.setType(template.getType());
+            templateVO.setDetail(tmpTemplate);
         }
         return templateVO;
     }

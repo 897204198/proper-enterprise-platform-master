@@ -39,6 +39,9 @@ class TemplateServiceTest extends AbstractJPATest {
         templateParams.put("clinicNum", "654321")
         TemplateVO templates = templateService.getTemplate('code', templateParams)
         assert '订单号:123456;病历号:654321' == templates.getDetail().getTemplate()
+
+        TemplateVO existTemplates = templateService.get(templateDocument.id)
+        assert '订单号:{orderNum};病历号:{clinicNum}' == existTemplates.getDetail().getTemplate()
     }
 
     @Test
@@ -80,6 +83,14 @@ class TemplateServiceTest extends AbstractJPATest {
         for (TemplateDetailVO templateDetailVO : list) {
             assert templateDetailVO != null
             assert templateDetailVO.getTemplate().indexOf("{") == -1
+        }
+
+        TemplateVO existTemplates = templateService.get(templateDocument.id)
+        List<TemplateDetailVO> existList = existTemplates.getDetails()
+        assert existList.size() == 2
+        for (TemplateDetailVO templateDetailVO : existList) {
+            assert templateDetailVO != null
+            assert templateDetailVO.getTemplate().indexOf("{") != -1
         }
     }
 
