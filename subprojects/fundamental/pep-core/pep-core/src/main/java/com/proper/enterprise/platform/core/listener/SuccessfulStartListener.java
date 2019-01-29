@@ -18,7 +18,6 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -78,8 +77,8 @@ class SuccessfulStartListener implements ApplicationListener<ContextRefreshedEve
             contextPath = "/";
         }
         String begin = LocalDateTime.ofInstant(Instant.ofEpochMilli(start), ZoneId.systemDefault()).toString();
-        String range = end == null ? "" : Duration.ofMillis(end - start).toString();
-        String url = String.format("%s/%s/%s/%s%s/%s/%s", coreProperties.getStatSite(), ver, profile, mac, contextPath, begin, range);
+        String range = end == null ? "" : String.valueOf(end - start);
+        String url = String.format("%s/%s,%s,%s,%s,%s,%s", coreProperties.getStatSite(), ver, profile, mac, contextPath, begin, range);
         // Don't care request success or error, connection timeout in 200 ms
         HttpClient.get(url, 200, new Callback() {
             @Override
