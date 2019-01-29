@@ -15,6 +15,7 @@ import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.ProcInstConvert;
 import com.proper.enterprise.platform.workflow.decorator.GlobalVariableInitDecorator;
+import com.proper.enterprise.platform.workflow.enums.FlowableExceptionEnum;
 import com.proper.enterprise.platform.workflow.handler.GlobalVariableInitHandler;
 import com.proper.enterprise.platform.workflow.model.PEPExtForm;
 import com.proper.enterprise.platform.workflow.model.PEPProcInst;
@@ -26,6 +27,7 @@ import com.proper.enterprise.platform.workflow.vo.*;
 import com.proper.enterprise.platform.workflow.vo.enums.PEPProcInstStateEnum;
 import com.proper.enterprise.platform.workflow.vo.enums.ShowType;
 import org.apache.commons.collections.MapUtils;
+import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.FormService;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
@@ -116,6 +118,9 @@ public class PEPProcessServiceImpl implements PEPProcessService {
         try {
             ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId(), globalVariables);
             return new PEPProcInst(processInstance).convert();
+        } catch (FlowableException flowableException) {
+            LOGGER.error("workflow complete task error:processDefinitionId:{}", processDefinition, flowableException);
+            throw new ErrMsgException(FlowableExceptionEnum.convertFlowableException(flowableException));
         } catch (Exception e) {
             LOGGER.error("workflow start process error:processDefinitionId:{}", processDefinition.getId(), e);
             throw new ErrMsgException(I18NUtil.getMessage("workflow.task.complete.error"));

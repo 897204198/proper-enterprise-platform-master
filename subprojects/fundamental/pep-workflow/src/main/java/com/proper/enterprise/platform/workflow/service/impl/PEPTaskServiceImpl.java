@@ -13,6 +13,7 @@ import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.convert.TaskConvert;
 import com.proper.enterprise.platform.workflow.convert.VariableConvert;
+import com.proper.enterprise.platform.workflow.enums.FlowableExceptionEnum;
 import com.proper.enterprise.platform.workflow.flowable.idm.service.impl.PEPGroupQueryImpl;
 import com.proper.enterprise.platform.workflow.model.PEPExtForm;
 import com.proper.enterprise.platform.workflow.model.PEPWorkflowPage;
@@ -24,6 +25,7 @@ import com.proper.enterprise.platform.workflow.util.VariableUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO;
 import org.apache.commons.collections.MapUtils;
+import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.TaskService;
 import org.flowable.identitylink.api.IdentityLinkInfo;
@@ -99,6 +101,9 @@ public class PEPTaskServiceImpl implements PEPTaskService {
         }
         try {
             taskService.complete(taskId, globalVariables);
+        } catch (FlowableException flowableException) {
+            LOGGER.error("workflow complete task error:taskId:{}", taskId, flowableException);
+            throw new ErrMsgException(FlowableExceptionEnum.convertFlowableException(flowableException));
         } catch (Exception e) {
             LOGGER.error("workflow complete task error:taskId:{}", taskId, e);
             throw new ErrMsgException(I18NUtil.getMessage("workflow.task.complete.error"));
