@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.streamline.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.streamline.api.service.StreamlineService;
+import com.proper.enterprise.platform.streamline.service.StreamlineService;
 import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant;
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;
 import io.swagger.annotations.Api;

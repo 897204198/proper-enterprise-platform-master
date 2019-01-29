@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.streamline.api.service;
+package com.proper.enterprise.platform.streamline.service;
 
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;
 import org.springframework.validation.annotation.Validated;

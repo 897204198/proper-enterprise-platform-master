@@ -2,7 +2,8 @@ apply plugin: 'java-library'
 
 dependencies {
                    api project(':pep-streamline-sdk')
-        implementation project(':pep-sys')
+        implementation project(':pep-sys'),
+                       project(':pep-auth-api')
 
     testImplementation project(':pep-streamline'),
                        project(':pep-auth-common-jpa'),

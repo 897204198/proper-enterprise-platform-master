@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.streamline.entity;
 
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
-import com.proper.enterprise.platform.streamline.api.model.Sign;
+import com.proper.enterprise.platform.streamline.model.Sign;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

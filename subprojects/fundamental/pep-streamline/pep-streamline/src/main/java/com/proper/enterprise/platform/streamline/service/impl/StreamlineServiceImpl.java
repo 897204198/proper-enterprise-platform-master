@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.streamline.service.impl;
 import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.digest.MD5;
-import com.proper.enterprise.platform.streamline.api.service.StreamlineService;
+import com.proper.enterprise.platform.streamline.service.StreamlineService;
 import com.proper.enterprise.platform.streamline.entity.SignEntity;
 import com.proper.enterprise.platform.streamline.repository.SignRepository;
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;

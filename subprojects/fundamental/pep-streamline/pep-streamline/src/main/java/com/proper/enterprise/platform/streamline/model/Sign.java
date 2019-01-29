@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.streamline.api.model;
+package com.proper.enterprise.platform.streamline.model;
 
 import com.proper.enterprise.platform.core.api.IBase;
 
