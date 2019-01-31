@@ -127,6 +127,28 @@ public class NoticeSendServiceImpl {
         accessNoticeServer(noticeVO);
     }
 
+    public void sendNoticeEmail(String to,
+                                String cc,
+                                String bcc,
+                                String title,
+                                String content,
+                                Map<String, Object> custom,
+                                String... attachmentIds) {
+        Set<String> set = new HashSet<>();
+        set.add(to);
+        TargetModel targetModel = new TargetModel();
+        targetModel.setId(to);
+        targetModel.setName(to);
+        targetModel.setTo(to);
+        targetModel.setTargetExtMsg("cc", cc);
+        targetModel.setTargetExtMsg("bcc", bcc);
+        targetModel.setTargetExtMsg("attachmentIds", attachmentIds);
+        NoticeDocument noticeDocument = this.packageNoticeDocument(null, set, custom, NoticeType.EMAIL, title, content);
+        noticeDocument.setTarget(targetModel);
+        NoticeRequest noticeVO = this.saveNotice(noticeDocument);
+        accessNoticeServer(noticeVO);
+    }
+
     private void analysis(NoticeDocument noticeDocument, Collection<? extends User> users) {
         NoticeAnalysisUtil.isUsersExist(noticeDocument);
         NoticeAnalysisUtil.isThereATarget(noticeDocument);

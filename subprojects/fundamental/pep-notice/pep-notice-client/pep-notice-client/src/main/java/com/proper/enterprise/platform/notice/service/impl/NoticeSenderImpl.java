@@ -97,6 +97,17 @@ public class NoticeSenderImpl implements NoticeSender {
     }
 
     @Override
+    public void sendNoticeEmail(String to,
+                                String cc,
+                                String bcc,
+                                String title,
+                                String content,
+                                Map<String, Object> custom,
+                                String... attachmentIds) {
+        noticeSendService.sendNoticeEmail(to, cc, bcc, title, content, custom, attachmentIds);
+    }
+
+    @Override
     public void sendNoticeSMS(String phone, String content, Map<String, Object> custom) {
         noticeSendService.sendNoticeSMS(phone, content, custom);
     }

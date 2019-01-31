@@ -141,6 +141,16 @@ class NoticeSenderImplTest extends AbstractJPATest {
     }
 
     @Test
+    void sendEmail() {
+        noticeSendService.sendNoticeEmail("Wf@propersoft.cn", null, null, "testTitle", "test Email", null, null)
+        waitExecutorDone()
+        List<NoticeDocument> result = noticeMsgRepository.findAll()
+        assert result.get(0).getTargets().get(0).getTo() == "Wf@propersoft.cn"
+        assert result.get(0).getNoticeUrl() == "http://test"
+        assert result.get(0).getToken() == "testToken"
+    }
+
+    @Test
     void sendSMS() {
         Map<String, Object> custom = new HashMap<>()
         noticeSendService.sendNoticeSMS("12345678901", "ceshi SMS", custom)

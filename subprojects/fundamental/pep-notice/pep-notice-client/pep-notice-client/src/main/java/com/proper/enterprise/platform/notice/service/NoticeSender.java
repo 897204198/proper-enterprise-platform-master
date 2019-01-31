@@ -9,6 +9,26 @@ import java.util.Set;
 public interface NoticeSender {
 
     /**
+     * 根据邮箱发送短信
+     *
+     * @param to            收件人
+     * @param cc            抄送人
+     * @param bcc           密送人
+     * @param title         主题
+     * @param content       内容
+     * @param custom        扩展属性
+     * @param attachmentIds 附件Id集合
+     */
+    @Async
+    void sendNoticeEmail(String to,
+                         String cc,
+                         String bcc,
+                         String title,
+                         String content,
+                         Map<String, Object> custom,
+                         String... attachmentIds);
+
+    /**
      * 根据手机号发送短信
      *
      * @param phone        手机号

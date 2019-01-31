@@ -68,7 +68,7 @@ class WorkflowEmailSendTest extends AbstractIntegrationTest {
         config.put('mailServerUsername', 'Wf@propersoft.cn')
         config.put('mailServerPassword', '9x5qDmxsyrzMra5W')
         config.put('mailServerUseSSL', true)
-        config.put('mailServerDefaultFrom', 'Wf@propersoft.cn')
+        config.put('mailServerDefaultFrom', '普日<Wf@propersoft.cn>')
         post("/notice/server/config/" + NoticeType.EMAIL + "/testEmailSendForWF?access_token=" + token, JSONUtil.toJSON(config), HttpStatus.CREATED)
         Map searchConf = resOfGet("/notice/server/config/" + NoticeType.EMAIL + "/testEmailSendForWF?access_token=" + token, HttpStatus.OK)
         assert searchConf.get("mailServerHost") == "smtp.exmail.qq.com"

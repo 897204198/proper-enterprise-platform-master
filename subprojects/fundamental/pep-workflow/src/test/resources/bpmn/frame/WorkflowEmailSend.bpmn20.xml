@@ -3,7 +3,7 @@
   <process id="WorkflowEmailSend" name="WorkflowEmailSend" isExecutable="true">
     <startEvent id="startEvent1"></startEvent>
     <scriptTask id="sid-26B53552-D29A-489C-9195-28B88BFA5C33" name="邮件发送1" flowable:autoStoreVariables="false">
-      <script><![CDATA[#{workflowMailSenderImpl.send("Wf@propersoft.cn,Wf@propersoft.cn","testSendMailCode",execution)}]]></script>
+      <script><![CDATA[#{workflowMailSenderImpl.send("收件人<Wf@propersoft.cn>,Wf@propersoft.cn","testSendMailCode",execution)}]]></script>
     </scriptTask>
     <sequenceFlow id="sid-B402A80E-C972-413B-8286-847F42669811" sourceRef="startEvent1" targetRef="sid-26B53552-D29A-489C-9195-28B88BFA5C33"></sequenceFlow>
     <endEvent id="sid-9D4DB798-86F9-4A28-9040-EF699571F58E"></endEvent>
