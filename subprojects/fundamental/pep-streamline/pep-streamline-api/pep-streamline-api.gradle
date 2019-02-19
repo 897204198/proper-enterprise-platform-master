@@ -1,6 +1,0 @@
-apply plugin: 'java-library'
-
-dependencies {
-               api project(':pep-streamline-sdk')
-    implementation project(':pep-core')
-}

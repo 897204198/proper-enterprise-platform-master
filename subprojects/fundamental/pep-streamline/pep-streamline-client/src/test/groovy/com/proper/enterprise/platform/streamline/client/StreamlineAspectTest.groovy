@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.streamline
+package com.proper.enterprise.platform.streamline.client
 
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
 import com.proper.enterprise.platform.api.auth.service.UserService

@@ -1,8 +1,0 @@
-dependencies {
-     implementation project(':pep-streamline-client'),
-                    project(':pep-auth-api')
-
-    testImplementation project(':pep-test'),
-                       project(':pep-auth-common-jpa'),
-                       project(':pep-streamline')
-}

@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.streamline.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.streamline.api.service.StreamlineService;
+import com.proper.enterprise.platform.streamline.service.StreamlineService;
 import com.proper.enterprise.platform.streamline.sdk.constants.StreamlineConstant;
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;
 import io.swagger.annotations.Api;
@@ -90,6 +90,19 @@ public class StreamlineController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> get(@PathVariable String userName, @PathVariable String password) {
         String serviceKey = streamlineService.getSign(userName, password);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(StreamlineConstant.SERVICE_KEY, serviceKey);
+        return StringUtil.isEmpty(serviceKey) ? responseOfGet(null) : responseOfGet(serviceKey, headers);
+    }
+
+    @GetMapping(value = "/{signature}")
+    @ApiOperation("‍根据签名获取服务标识")
+    @ApiImplicitParams(value = {
+        @ApiImplicitParam(name = "signature", value = "‍签名", required = true, type = "String"),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> get(@PathVariable String signature) {
+        String serviceKey = streamlineService.getSign(signature);
         HttpHeaders headers = new HttpHeaders();
         headers.add(StreamlineConstant.SERVICE_KEY, serviceKey);
         return StringUtil.isEmpty(serviceKey) ? responseOfGet(null) : responseOfGet(serviceKey, headers);

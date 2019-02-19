@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.auth.streamline;
+package com.proper.enterprise.platform.streamline.client.aspect;
 
 import com.proper.enterprise.platform.api.auth.aop.UserPointcutSupport;
 import com.proper.enterprise.platform.api.auth.model.User;

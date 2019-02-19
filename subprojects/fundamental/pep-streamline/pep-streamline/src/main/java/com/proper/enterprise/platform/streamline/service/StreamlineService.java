@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.streamline.api.service;
+package com.proper.enterprise.platform.streamline.service;
 
 import com.proper.enterprise.platform.streamline.sdk.request.SignRequest;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -17,10 +17,10 @@ public interface StreamlineService {
     /**
      * 根据用户名和密码注册标记
      *
-     * @param businessId   用户Id
-     * @param userName     用户名
-     * @param password     密码
-     * @param serviceKey   服务端唯一标识
+     * @param businessId 用户Id
+     * @param userName   用户名
+     * @param password   密码
+     * @param serviceKey 服务端唯一标识
      */
     void addSign(@NotEmpty(message = "{streamline.addSign.businessId.notEmpty}") String businessId,
                  @NotEmpty(message = "{streamline.addSign.userName.notEmpty}") String userName,
@@ -45,9 +45,9 @@ public interface StreamlineService {
     /**
      * 根据用户名和密码更新标记
      *
-     * @param userName    用户名
-     * @param password    密码
-     * @param businessId  用户Id
+     * @param userName   用户名
+     * @param password   密码
+     * @param businessId 用户Id
      */
     void updateSign(String userName, String password, String businessId);
 
@@ -66,5 +66,14 @@ public interface StreamlineService {
      * @return 服务端标识
      */
     String getSign(String userName, String password);
+
+
+    /**
+     * 根据签名获得服务端标识
+     *
+     * @param signature 签名
+     * @return 服务端标识
+     */
+    String getSign(String signature);
 
 }
