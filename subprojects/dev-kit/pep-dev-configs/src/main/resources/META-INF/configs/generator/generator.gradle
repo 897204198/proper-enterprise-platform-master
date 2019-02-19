@@ -132,8 +132,8 @@ def initProjectParam() {
     if ("" == modelParam || null == modelParam) {
         throw new Exception("=======================buildCode modelParam like -Pmodel=*** is required | example gradlew buildCode -Pmodel=five -PmodelPackage=four=======================")
     }
-    if (!modelParam.toString().startsWith("${projectGenerator.name}-")) {
-        modelParam = "${projectGenerator.name}-" + modelParam
+    if (!modelParam.toString().startsWith("${projectGenerator.modelStartName}-")) {
+        modelParam = "${projectGenerator.modelStartName}-" + modelParam
     }
     haveBusiness = project.getProperties().containsKey('business')
     haveParentPath = project.getProperties().containsKey('parentPath')
@@ -150,19 +150,19 @@ def initProjectParam() {
     parseModelPackage()
     parseBusinessPackage()
     this.subProjRoot = "${rootProject.projectDir}/subprojects/" + (haveParentPath ? parentPath + modelName : modelName)
-    this.projectPackagePath = "${subProjRoot}/src/main/java/com/proper/enterprise/${projectGenerator.path}/${modelPackagePath}" + (haveBusiness ? "/${businessName}" : "")
-    this.projectPackageName = "${rootPackageName}.${projectGenerator.path}.${modelPackageName}" + (haveBusiness ? ".${businessName}" : "")
-    this.testProGroovyPath = "$subProjRoot/src/test/groovy/com/proper/enterprise/${projectGenerator.path}/${modelPackagePath}" + (haveBusiness ? "/${businessName}" : "")
+    this.projectPackagePath = "${subProjRoot}/src/main/java/com/proper/enterprise/${projectGenerator.artifact}/${modelPackagePath}" + (haveBusiness ? "/${businessName}" : "")
+    this.projectPackageName = "${rootPackageName}.${projectGenerator.artifact}.${modelPackageName}" + (haveBusiness ? ".${businessName}" : "")
+    this.testProGroovyPath = "$subProjRoot/src/test/groovy/com/proper/enterprise/${projectGenerator.artifact}/${modelPackagePath}" + (haveBusiness ? "/${businessName}" : "")
     this.testPropertiesPath = "$subProjRoot/src/test/resources/conf/$modelPackagePath"
     this.testI18nPath = "$subProjRoot/src/test/resources/i18n/$modelPackagePath"
     this.testSpringPath = "$subProjRoot/src/test/resources/spring/$modelPackagePath"
-    this.liquibasePath = "$subProjRoot/src/main/resources/liquibase/${projectGenerator.version}/changelogs/"+("pep"==projectGenerator.name?"":projectGenerator.name)
+    this.liquibasePath = "$subProjRoot/src/main/resources/liquibase/${projectGenerator.version}/changelogs/"+("pep"==projectGenerator.modelStartName?"":projectGenerator.modelStartName)
 }
 
 def parseModelPackage() {
-    this.modelPackageName = (this.modelName - "${projectGenerator.name}-").replace('-', '.')
-    this.modelPackagePath = (this.modelName - "${projectGenerator.name}-").replace('-', '/')
-    this.modelResourceName = this.modelName - "${projectGenerator.name}-"
+    this.modelPackageName = (this.modelName - "${projectGenerator.modelStartName}-").replace('-', '.')
+    this.modelPackagePath = (this.modelName - "${projectGenerator.modelStartName}-").replace('-', '/')
+    this.modelResourceName = this.modelName - "${projectGenerator.modelStartName}-"
     this.testI18nKey = "${modelResourceName}.test.max.error"
 }
 
@@ -206,12 +206,12 @@ def initBusinessParam() {
     this.testControllerPath = "${testProGroovyPath}/${singleControllerPackageName}"
     this.testMockPath = "${testProGroovyPath}/mock"
     this.testMockPackageName = "${projectPackageName}.mock"
-    this.businessDataTableName = "${projectGenerator.name}_${(this.modelName - "${projectGenerator.name}-").replace('-', '_')}" + (haveBusiness ? "_${businessName.toString().toUpperCase()}" : "")
+    this.businessDataTableName = "${projectGenerator.modelStartName}_${(this.modelName - "${projectGenerator.modelStartName}-").replace('-', '_')}" + (haveBusiness ? "_${businessName.toString().toUpperCase()}" : "")
 }
 
 def mkProcessDir() {
     mkdir(subProjRoot)
-    mkdir("$subProjRoot/src/main/java/com/proper/enterprise/${projectGenerator.path}")
+    mkdir("$subProjRoot/src/main/java/com/proper/enterprise/${projectGenerator.artifact}")
     mkdir("$subProjRoot/src/main/resources")
     mkdir(testProGroovyPath)
     mkdir("$subProjRoot/src/test/resources")
@@ -378,7 +378,7 @@ import org.springframework.stereotype.Component;
  * 满足规范且编译后 会在配置文件中查看到对于此配置的描述及默认值
  */
 @Component
-@ConfigurationProperties(prefix = "${projectGenerator.name}.${businessName}")
+@ConfigurationProperties(prefix = "${projectGenerator.modelStartName}.${businessName}")
 public class ${propertiesName} {
 }""")
     }
