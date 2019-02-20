@@ -2,15 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="import" href="./banner">
 </head>
 <body>
     <script>
-        var template = document.querySelector('link[rel="import"]');
-        var banner = document.createElement('pre');
-        var space = '                                                       ';
-        banner.innerText = space + template.import.body.innerText;
-        document.body.appendChild(banner);
+        try {
+          fetch('./banner')
+            .then(res => res.text()
+              .then(r => {
+                var banner = document.createElement('pre');
+                banner.innerText = r;
+                document.body.appendChild(banner);
+              }));
+        } catch (e) {
+          console.log(e);
+        }
     </script>
 </body>
 </html>
