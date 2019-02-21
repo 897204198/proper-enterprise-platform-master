@@ -41,6 +41,11 @@ public class ApplicationVO extends BaseVO {
      */
     private Boolean defaultValue;
 
+    /**
+     * 角标数
+     */
+    private String msgCount;
+
     public String getName() {
         return name;
     }
@@ -95,5 +100,13 @@ public class ApplicationVO extends BaseVO {
 
     public void setDefaultValue(Boolean defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    public String getMsgCount() {
+        return msgCount;
+    }
+
+    public void setMsgCount(String msgCount) {
+        this.msgCount = msgCount;
     }
 }
