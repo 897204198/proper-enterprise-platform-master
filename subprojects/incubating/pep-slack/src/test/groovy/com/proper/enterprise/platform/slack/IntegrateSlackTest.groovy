@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+
 @Ignore
 class IntegrateSlackTest extends AbstractSpringTest {
 
@@ -54,17 +57,20 @@ class IntegrateSlackTest extends AbstractSpringTest {
             println jsonObj
         }
 
+        CountDownLatch latch = new CountDownLatch(1)
         def clientId = 'rtm-bot'
         WebSocketClient.connect(clientId, wss, new WebSocketClientEndpoint.MessageHandler() {
             @Override
             void handleMessage(String message) {
                 LOGGER.debug("message: {}", message)
+                latch.countDown()
             }
         })
 
-        WebSocketClient.send(clientId, "{'id':1, 'type':'message', 'channel':'$CHANNEL_TEST', 'text':'rtm msg'}")
+        // Send msg to slack will cause abnormally connection close, do NOT use ws client to send msg to slack
+//        WebSocketClient.send(clientId, "{'id':1, 'type':'message', 'channel':'$CHANNEL_TEST', 'text':'rtm msg'}")
 
-        sleep(30*60*1000)
+        assert latch.await(5, TimeUnit.SECONDS)
     }
 
 }
