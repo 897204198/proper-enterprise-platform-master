@@ -1,0 +1,16 @@
+dependencies {
+
+        implementation project(':pep-core')
+
+        implementation libraries.netty_all,
+                       libraries.reactor_netty,
+                       libraries.spring_messaging,
+                       libraries.spring_websocket,
+                       libraries.tomcat_websocket
+
+    testImplementation project(':pep-auth-common-jpa'),
+                       project(':pep-test')
+
+       testRuntimeOnly libraries.jackson_databind
+
+}
