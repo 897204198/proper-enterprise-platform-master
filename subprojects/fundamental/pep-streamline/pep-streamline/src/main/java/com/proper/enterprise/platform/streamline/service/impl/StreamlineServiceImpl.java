@@ -2,6 +2,8 @@ package com.proper.enterprise.platform.streamline.service.impl;
 
 import com.proper.enterprise.platform.api.auth.service.PasswordEncryptService;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
+import com.proper.enterprise.platform.core.i18n.I18NUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.utils.digest.MD5;
 import com.proper.enterprise.platform.streamline.service.StreamlineService;
 import com.proper.enterprise.platform.streamline.entity.SignEntity;
@@ -93,5 +95,16 @@ public class StreamlineServiceImpl implements StreamlineService {
             return null;
         }
         return signEntity.getServiceKey();
+    }
+
+    @Override
+    public void validSignature(String signature) {
+        if (StringUtil.isEmpty(signature)) {
+            throw new ErrMsgException(I18NUtil.getMessage("streamline.valid.signature.fail"));
+        }
+        SignEntity signEntity = signRepository.findBySignature(signature);
+        if (null == signEntity) {
+            throw new ErrMsgException(I18NUtil.getMessage("streamline.valid.signature.fail"));
+        }
     }
 }
