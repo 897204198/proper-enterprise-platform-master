@@ -2,8 +2,8 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-
-    <changeSet author="pep (generator)" id="change_ver0.5.x_template_details_type_ddl">
+    <!-- oracle 无法将 varchar 直接转换为 CLOB (即TEXT) 类型, 先保持 varchar(2000), 之后根据需求进行修改 -->
+    <changeSet author="pep (generator)" id="change_ver0.5.x_template_details_type_ddl" dbms="mysql,h2">
         <!-- h2数据库不存在 TEXT 类型, h2保持 varchar(2000)的类型 -->
         <modifyDataType tableName="PEP_TEMPLATE" columnName="DETAILS" newDataType="TEXT"/>
     </changeSet>

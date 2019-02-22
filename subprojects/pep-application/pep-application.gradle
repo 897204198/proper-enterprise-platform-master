@@ -9,9 +9,10 @@ dependencies {
     runtimeClasspath libraries.spring_boot_starter_web
 
     // Choose by datasource
-    // available choices: libraries.h2, libraries.mysql_driver
+    // available choices: libraries.h2, libraries.mysql_driver, libraries.oracle_driver
     runtimeClasspath libraries.h2
     // available choices: project(':pep-oopsearch-sync-h2'), project(':pep-oopsearch-sync-mysql')
+    // Unselected when using libraries.oracle_driver
     runtimeClasspath project(':pep-oopsearch-sync-h2')
 
          // Necessary when using Web Service

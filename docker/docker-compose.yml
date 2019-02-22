@@ -16,6 +16,19 @@ pep-mongo:
   volumes:
     - ./mongo/data:/data/db
     - ./mongo/devops/:/code/devops/current/
+pep-oracle-ee-12c:
+  image: oracle/database:12.2.0.1-ee
+  hostname: properdb
+  restart: always
+  volumes:
+    - ./oracle/oradata:/opt/oracle/oradata
+  environment:
+    - TZ=Asia/Shanghai
+    - ORACLE_PWD=Proper123
+    - ORACLE_CHARACTERSET=ZHS16GBK
+  ports:
+    - "1521:1521"
+    - "5500:5500"
 pep-redis:
   image: redis:5.0.0
   volumes:
