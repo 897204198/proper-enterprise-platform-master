@@ -44,7 +44,7 @@ public class ApplicationVO extends BaseVO {
     /**
      * 角标数
      */
-    private String msgCount;
+    private String total;
 
     public String getName() {
         return name;
@@ -102,11 +102,11 @@ public class ApplicationVO extends BaseVO {
         this.defaultValue = defaultValue;
     }
 
-    public String getMsgCount() {
-        return msgCount;
+    public String getTotal() {
+        return total;
     }
 
-    public void setMsgCount(String msgCount) {
-        this.msgCount = msgCount;
+    public void setTotal(String total) {
+        this.total = total;
     }
 }
