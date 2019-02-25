@@ -22,6 +22,11 @@ public final class PEPConstants {
      */
     public static final String RESPONSE_SYSTEM_ERROR_MSG = "SYSTEM_ERROR";
 
+    /**
+     * STOMP请求头用户标识
+     */
+    public static final String STOMP_USER_HEADER = "PEP_STOMP_USER";
+
     /*
      * 静态方法调用私有构造函数，以覆盖对构造函数的测试
      */
