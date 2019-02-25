@@ -76,4 +76,11 @@ public interface StreamlineService {
      */
     String getSign(String signature);
 
+    /**
+     * 校验签名
+     *
+     * @param signature 签名
+     */
+    void validSignature(String signature);
+
 }

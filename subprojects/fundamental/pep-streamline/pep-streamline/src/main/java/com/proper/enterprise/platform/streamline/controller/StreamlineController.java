@@ -107,4 +107,15 @@ public class StreamlineController extends BaseController {
         headers.add(StreamlineConstant.SERVICE_KEY, serviceKey);
         return StringUtil.isEmpty(serviceKey) ? responseOfGet(null) : responseOfGet(serviceKey, headers);
     }
+
+    @PostMapping(value = "/signature")
+    @ApiOperation("‍验证签名")
+    @ApiImplicitParams(value = {
+        @ApiImplicitParam(name = "signature", value = "‍签名", required = true, type = "String"),
+    })
+    public ResponseEntity<String> validSignature(@RequestBody String signature) {
+        streamlineService.validSignature(signature);
+        return responseOfPost(null);
+    }
+
 }
