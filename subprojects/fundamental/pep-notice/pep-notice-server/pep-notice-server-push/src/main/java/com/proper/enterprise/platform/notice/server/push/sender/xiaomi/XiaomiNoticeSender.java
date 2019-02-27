@@ -47,6 +47,14 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
      */
     private static final int MIN_NOTIFY_ID = 10000;
 
+    private static final int NOTIFY_TYPE_ALL = -1;
+
+    private static final int NOTIFY_TYPE_SOUND = 1;
+
+    private static final int NOTIFY_TYPE_VIBRATE = 2;
+
+    private static final int NOTIFY_TYPE_LIGHTS = 4;
+
     private int notifyId = MIN_NOTIFY_ID;
 
     @Autowired
@@ -107,7 +115,7 @@ public class XiaomiNoticeSender extends AbstractPushSendSupport implements Notic
         // 设置app的包名packageName
         msgBuilder.restrictedPackageName(xiaomiNoticeConfigurator.getPushPackage(notice.getAppKey(), PushChannelEnum.XIAOMI));
         // 推送提醒方式
-        msgBuilder.notifyType(1);
+        msgBuilder.notifyType(NOTIFY_TYPE_ALL);
         // 通知栏要显示多条推送消息需配置不同的notifyId
         msgBuilder.notifyId(getNextNotifyId());
         // 获取自定义配置

@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.server.push.nav.api.xiaomi
 
 import com.proper.enterprise.platform.core.utils.DateUtil
+import com.proper.enterprise.platform.notice.server.push.sender.xiaomi.XiaomiNoticeSender
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import com.xiaomi.xmpush.server.Message
@@ -20,7 +21,6 @@ import static com.proper.enterprise.platform.notice.server.push.constant.XiaomiC
 @Ignore
 class XiaomiPushTest extends AbstractJPATest {
 
-
     @Test
     void testPushMessage() {
         def mCustomer = new HashMap()
@@ -32,6 +32,7 @@ class XiaomiPushTest extends AbstractJPATest {
         msgBuilder.passThrough(0)
         msgBuilder.restrictedPackageName(PACKAGENAME)
         msgBuilder.payload(mCustomerString)
+        msgBuilder.notifyType(XiaomiNoticeSender.NOTIFY_TYPE_ALL)
         Message build = msgBuilder.build()
 
         def sender = new Sender(APPSECRET)
