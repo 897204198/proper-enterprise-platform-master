@@ -6,12 +6,14 @@ dependencies {
 
         implementation project(':pep-auth-api'),
                        project(':pep-core-mongo'),
+                       project(':pep-notice-client-api'),
                        project(':pep-notice-set'),
                        project(':pep-notice-push-client'),
                        project(':pep-schedule-cluster'),
                        project(':pep-template')
 
     testImplementation project(':pep-test'),
-                       project(':pep-auth-common-jpa')
+                       project(':pep-auth-common-jpa'),
+                       project(':pep-notice-client-embed')
 
 }

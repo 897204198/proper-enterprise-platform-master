@@ -16,6 +16,7 @@ dependencies {
         implementation project(':pep-auth-common-jpa'),
                        project(':pep-cache-api'),
                        project(':pep-core-mongo'),
+                       project(':pep-notice-client-api'),
                        project(':pep-notice-client'),
                        project(':pep-template')
 
@@ -28,6 +29,7 @@ dependencies {
                        project(':pep-notice-server-email')
 
        testRuntimeOnly project(':pep-auth-jwt'),
-                       project(':pep-cache-ehcache')
+                       project(':pep-cache-ehcache'),
+                       project(':pep-notice-client-embed')
 
 }
