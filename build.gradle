@@ -112,7 +112,7 @@ subprojects {
     targetCompatibility = 1.8
 
     group = 'com.proper.enterprise.platform'
-    // Needs to change version in PEPVersion.java:10:17 TOGETHER!!
+    // Needs to change version in PEPVersion.java:13:17 TOGETHER!!
     // And keep them SAME!!
     // Use .RELEASE or -SNAPSHOT suffix after version code
     version = '0.5.1-SNAPSHOT'
