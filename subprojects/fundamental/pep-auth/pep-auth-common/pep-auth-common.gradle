@@ -5,10 +5,12 @@ dependencies {
                    api project(':pep-auth-api'),
                        project(':pep-notice-client')
 
-        implementation project(':pep-cache-api')
+        implementation project(':pep-cache-api'),
+                       project(':pep-notice-client-api')
 
     testImplementation project(':pep-test'),
-                       project(':pep-auth-common-jpa')
+                       project(':pep-auth-common-jpa'),
+                       project(':pep-notice-client-embed')
 
        testRuntimeOnly project(':pep-cache-ehcache')
 

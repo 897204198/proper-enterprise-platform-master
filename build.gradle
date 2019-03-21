@@ -108,7 +108,7 @@ subprojects {
 
     group = 'com.proper.enterprise.platform'
     // Needs to change version in PEPVersion.java:10:17 TOGETHER!!
-    version = '0.5.0.4.RELEASE'
+    version = '0.5.0.5.RELEASE'
 
     test {
         reports.html.enabled = false

@@ -158,7 +158,7 @@ public interface NoticeSender {
      * @param title       标题
      * @param content     正文
      * @param custom      扩展字段
-     * @param catalog     目录
+     * @param catalog     消息设置分类
      * @param noticeType  消息渠道
      */
     @Async

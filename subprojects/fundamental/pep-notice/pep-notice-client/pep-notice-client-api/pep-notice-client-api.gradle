@@ -1,0 +1,7 @@
+apply plugin: 'java-library'
+
+dependencies {
+               api project(':pep-notice-server-sdk')
+    implementation project(':pep-auth-api'),
+                   project(':pep-notice-set')
+}

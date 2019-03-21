@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.notice.service.impl;
 
 import com.proper.enterprise.platform.notice.server.sdk.enums.NoticeType;
+import com.proper.enterprise.platform.notice.service.NoticeSendService;
 import com.proper.enterprise.platform.notice.service.NoticeSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,8 @@ import java.util.Set;
 @Service
 public class NoticeSenderImpl implements NoticeSender {
 
-    @Autowired
-    private NoticeSendServiceImpl noticeSendService;
+    @Autowired(required = false)
+    private NoticeSendService noticeSendService;
 
     @Override
     public void sendNotice(String toUserId, String code, Map<String, Object> custom) {
