@@ -40,6 +40,7 @@ pep-server:
   volumes:
     - ./pep/app:/usr/local/pep/app
     - ./pep/logs:/usr/local/pep/logs
+  working_dir: /usr/local/pep
   links:
     - pep-mongo:mongo
     - pep-mysql:mysql
