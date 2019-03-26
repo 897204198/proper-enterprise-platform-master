@@ -5,8 +5,13 @@
     <property name="FILE_LOG_PATTERN" value="%5p [%d{yy-MM-dd-HH:mm:ss}] %40.40c:%4L - %m%n"/>
     <property name="CONSOLE_LOG_PATTERN" value="%5p [%d{yy-MM-dd-HH:mm:ss}] %40.40c:%4L - %m%n"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" optional="true" />
-    <logger name="com.proper" level="debug" />
-    <logger name="org.springframework.web" level="debug" />
+    <springProfile name="dev">
+        <logger name="com.proper" level="debug" />
+        <logger name="org.springframework.web" level="debug" />
+    </springProfile>
+    <springProfile name="production">
+        <logger name="com.proper" level="info" />
+    </springProfile>
     <root level="ERROR">
         <appender-ref ref="CONSOLE" />
     </root>

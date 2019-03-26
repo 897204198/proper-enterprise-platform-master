@@ -228,7 +228,11 @@ Change Log 文件放在对应模块下`src/main/resources/liquibase/changelogs`�
 
 * 当有较大版本升级时(例如：v0.4.x 升级到v0.5.x)，需要按照重整基线叠加变更的方式处理：changelog 按版本放置，历史版本(v0.4.x) 如：`src/main/resources/0.4.x/history/changelog-ddl-*.xml` 或者 `src/main/resources/0.4.x/history/changelog-dml-*.xml` ，新的版本的基线 如：`src/main/resources/0.5.x/init/changelog-ddl-*.xml`或者 `src/main/resources/0.5.x/init/changelog-dml-*.xml`，累计变更仍需放在原有的changelogs下 如：`src/main/resources/changelogs/changelog-ddl-*.xml`或者 `src/main/resources/changelogs/changelog-dml-*.xml`
 
-* 异常不允许直接 `printStackTrace`，应记录到日志中
+* 异常不允许直接 `printStackTrace`，应记录到日志中, 日志打印需要将堆栈进行输入, 避免只打印 `e.getMessage()`
+
+    ```
+    LOGGER.error("execute failed", e);
+    ```
 
 * 记录日志时，应采用 `Slf4j` 推荐的方式，避免日志信息通过 `+` 拼接
 

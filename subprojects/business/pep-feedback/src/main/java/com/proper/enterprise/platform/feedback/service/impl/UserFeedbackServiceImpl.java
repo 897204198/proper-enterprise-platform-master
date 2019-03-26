@@ -173,7 +173,7 @@ public class UserFeedbackServiceImpl implements UserFeedbackService {
             paramMapList.add(paramMap);
             pushInfo(userFeedBackDocument.getUserId(), paramMapList);
             LOGGER.debug("Push feedback information !");
-            LOGGER.debug("feedback Id :" + userFeedBackDocument.getId());
+            LOGGER.debug("feedback Id : {}", userFeedBackDocument.getId());
         }
         return userFeedBackDocument;
     }
