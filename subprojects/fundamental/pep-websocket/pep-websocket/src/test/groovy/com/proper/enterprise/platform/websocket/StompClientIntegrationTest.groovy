@@ -52,7 +52,7 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
     @Test
     void testStringMessage() {
         CountDownLatch latch = new CountDownLatch(1)
-        connect(latch, 'str', '/topic/test/str', '/app/test/str', 'hinex')
+        connect(latch, 'str', '/topic/test.str', '/app/test.str', 'hinex')
         assert latch.await(3, TimeUnit.SECONDS)
     }
 
@@ -114,7 +114,7 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
         stompClient.connect(url, new StompSessionHandlerAdapter() {
             @Override
             void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-                session.subscribe('/topic/test/json', new StompFrameHandler() {
+                session.subscribe('/topic/test.json', new StompFrameHandler() {
                     @Override
                     Type getPayloadType(StompHeaders headers) {
                         return JsonMsgController.Greeting.class
@@ -138,7 +138,7 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
 
     def sendMessage(StompSession session, String msg, CountDownLatch latch) {
         try {
-            session.send("/app/test/json", [name: msg])
+            session.send("/app/test.json", [name: msg])
         } catch (Throwable t) {
             t.printStackTrace()
             latch.countDown()
@@ -150,7 +150,7 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
         CountDownLatch latch1 = new CountDownLatch(1)
         CountDownLatch latch2 = new CountDownLatch(1)
         CountDownLatch latch3 = new CountDownLatch(1)
-        def subscribe = '/topic/test/broadcast'
+        def subscribe = '/topic/test.broadcast'
         connect(latch1, 'u1', subscribe)
         connect(latch2, 'u2', "${subscribe}1")
         connect(latch3, 'u3', subscribe)
@@ -161,8 +161,8 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
     void testSendToUser() {
         CountDownLatch latch1 = new CountDownLatch(1)
         CountDownLatch latch2 = new CountDownLatch(1)
-        connect(latch1, 'single_u1', '/user/topic/test/single')
-        connect(latch2, 'single_u2', '/user/topic/test/single')
+        connect(latch1, 'single_u1', '/user/topic/test.single')
+        connect(latch2, 'single_u2', '/user/topic/test.single')
         assert !latch1.await(3, TimeUnit.SECONDS) && latch2.await(3, TimeUnit.SECONDS)
     }
 
@@ -181,9 +181,9 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
     @Test
     void stompMessageSendUtil() {
         CountDownLatch latch1 = new CountDownLatch(1)
-        connect(latch1, 'sendUtil', '/user/topic/stompMessageSendUtil/client')
+        connect(latch1, 'sendUtil', '/user/topic/stompMessageSendUtil.client')
         sleep(500)
-        StompMessageSendUtil.send('sendUtil', '/topic/stompMessageSendUtil/client', "test")
+        StompMessageSendUtil.send('sendUtil', '/topic/stompMessageSendUtil.client', "test")
         assert latch1.await(3, TimeUnit.SECONDS)
 
 

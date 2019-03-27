@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -72,6 +73,7 @@ public class WebSocketMessageBrokerConfiguration implements WebSocketMessageBrok
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.setPathMatcher(new AntPathMatcher("."));
         registry.setApplicationDestinationPrefixes(APP_DES_PREFIXES);
         if (useExternalBroker) {
             registry.enableStompBrokerRelay(DES_PREFIXES)

@@ -20,8 +20,8 @@ class StrMsgController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StrMsgController.class)
 
-    @MessageMapping("/test/str")
-    @SendTo("/topic/test/str")
+    @MessageMapping("test.str")
+    @SendTo("/topic/test.str")
     String handle(String greeting) {
         LOGGER.debug("Received {}", greeting)
         return "[" + LocalDateTime.now().toString() + ": " + greeting
@@ -29,12 +29,12 @@ class StrMsgController {
 
     @Scheduled(fixedDelay = 100L)
     String broadcast() {
-        template.convertAndSend('/topic/test/broadcast', RandomStringUtils.randomAlphanumeric(5))
+        template.convertAndSend('/topic/test.broadcast', RandomStringUtils.randomAlphanumeric(5))
     }
 
     @Scheduled(fixedDelay = 100L)
     String sendToUser() {
-        template.convertAndSendToUser('single_u2', '/topic/test/single', RandomStringUtils.randomAlphanumeric(5))
+        template.convertAndSendToUser('single_u2', '/topic/test.single', RandomStringUtils.randomAlphanumeric(5))
     }
 
 }

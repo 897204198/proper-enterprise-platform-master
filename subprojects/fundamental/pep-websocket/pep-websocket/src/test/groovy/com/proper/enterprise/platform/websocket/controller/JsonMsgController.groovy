@@ -11,8 +11,8 @@ class JsonMsgController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonMsgController.class)
 
-    @MessageMapping("/test/json")
-    @SendTo("/topic/test/json")
+    @MessageMapping("test.json")
+    @SendTo("/topic/test.json")
     Greeting handle(Hello greeting) {
         LOGGER.debug("Received {}", greeting.getName())
         return new Greeting("Hello " + greeting.getName())
