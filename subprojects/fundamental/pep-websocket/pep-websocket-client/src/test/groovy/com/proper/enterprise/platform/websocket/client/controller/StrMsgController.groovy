@@ -13,15 +13,15 @@ class StrMsgController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StrMsgController.class)
 
-    @MessageMapping("/test/str")
-    @SendTo("/topic/test/str")
+    @MessageMapping("test.str")
+    @SendTo("/topic/test.str")
     String handle(String greeting) {
         LOGGER.debug("Received {}", greeting)
         return "[" + LocalDateTime.now().toString() + ": " + greeting
     }
 
-    @MessageMapping("/test/str/add")
-    @SendTo("/topic/test/str/add")
+    @MessageMapping("test.str.add")
+    @SendTo("/topic/test.str.add")
     String addhandle(String greeting) {
         LOGGER.debug("Received {}", greeting)
         return "[" + LocalDateTime.now().toString() + ": " + greeting

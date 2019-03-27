@@ -2,9 +2,9 @@ package com.proper.enterprise.platform.websocket
 
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
 import com.proper.enterprise.platform.auth.common.vo.AccessTokenVO
-import com.proper.enterprise.platform.core.PEPConstants
 import com.proper.enterprise.platform.test.AbstractIntegrationTest
-import com.proper.enterprise.platform.websocket.StompClientIntegrationTest.EmbeddedHandler
+import com.proper.enterprise.platform.websocket.client.stomp.StompClient
+import com.proper.enterprise.platform.websocket.client.stomp.StompFrameStringHandler
 import com.proper.enterprise.platform.websocket.controller.JsonMsgController
 import com.proper.enterprise.platform.websocket.util.StompMessageSendUtil
 import org.junit.After
@@ -14,17 +14,10 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.lang.Nullable
 import org.springframework.messaging.converter.MappingJackson2MessageConverter
-import org.springframework.messaging.converter.StringMessageConverter
 import org.springframework.messaging.simp.stomp.StompFrameHandler
 import org.springframework.messaging.simp.stomp.StompHeaders
 import org.springframework.messaging.simp.stomp.StompSession
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter
-import org.springframework.web.socket.client.WebSocketClient
-import org.springframework.web.socket.client.standard.StandardWebSocketClient
-import org.springframework.web.socket.messaging.WebSocketStompClient
-import org.springframework.web.socket.sockjs.client.SockJsClient
-import org.springframework.web.socket.sockjs.client.Transport
-import org.springframework.web.socket.sockjs.client.WebSocketTransport
 
 import java.lang.reflect.Type
 import java.util.concurrent.CountDownLatch
@@ -57,35 +50,23 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
     }
 
     void connect(CountDownLatch latch, String user, String subscribe, String send = null, Object sendPayload = null) {
-        def client = createClient(new StringMessageConverter())
-        StompHeaders stompHeaders = new StompHeaders()
-        stompHeaders.add(PEPConstants.STOMP_USER_HEADER, user)
-        client.connect(url, null, stompHeaders, new StompSessionHandlerAdapter() {
-            @Override
-            void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-                def handler = new EmbeddedHandler(latch)
-                session.subscribe(subscribe, handler)
-                if (!subscribe.startsWith('/user')) {
-                    session.subscribe("/user$subscribe", handler)
-                }
-                if (send > '' && sendPayload != null) {
-                    session.send(send, sendPayload)
-                }
-            }
-        })
+        StompClient.connect(user, url)
+        def handler = new EmbeddedHandler(latch)
+        StompClient.subscribe(user, subscribe, handler)
+        if (!subscribe.startsWith('/user')) {
+            StompClient.subscribe(user, "/user$subscribe", handler)
+        }
+        if (send > '' && sendPayload != null) {
+            StompClient.send(user, send, sendPayload)
+        }
     }
 
-    class EmbeddedHandler implements StompFrameHandler {
+    class EmbeddedHandler implements StompFrameStringHandler {
 
         CountDownLatch latch
 
         EmbeddedHandler(CountDownLatch latch) {
             this.latch = latch
-        }
-
-        @Override
-        Type getPayloadType(StompHeaders headers) {
-            return String.class
         }
 
         @Override
@@ -97,18 +78,9 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
         }
     }
 
-    def createClient(msgConverter) {
-        List<Transport> transports = new ArrayList<>()
-        transports.add(new WebSocketTransport(new StandardWebSocketClient()))
-        WebSocketClient webSocketClient = new SockJsClient(transports)
-        WebSocketStompClient stompClient = new WebSocketStompClient(webSocketClient)
-        stompClient.setMessageConverter(msgConverter)
-        stompClient
-    }
-
     @Test
     void testJsonMsg() {
-        def stompClient = createClient(new MappingJackson2MessageConverter())
+        def stompClient = StompClient.createClient(new MappingJackson2MessageConverter())
         final CountDownLatch latch = new CountDownLatch(3)
 
         stompClient.connect(url, new StompSessionHandlerAdapter() {

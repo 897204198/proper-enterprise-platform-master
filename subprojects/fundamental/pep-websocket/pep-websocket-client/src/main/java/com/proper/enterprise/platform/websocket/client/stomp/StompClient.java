@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.websocket.client.stomp;
 
+import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.PEPConstants;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import org.slf4j.Logger;
@@ -7,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.*;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.WebSocketClient;
@@ -144,6 +147,19 @@ public class StompClient {
         WebSocketClient webSocketClient = new SockJsClient(transports);
         WebSocketStompClient stompClient = new WebSocketStompClient(webSocketClient);
         stompClient.setMessageConverter(msgConverter);
+        // Client needs to enable heartbeat explicitly to keep idle connection alive
+        // See more info at https://www.rabbitmq.com/heartbeats.html
+        // See heartbeat part of Spring doc as below:
+        // https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#websocket-stomp-client
+        TaskScheduler scheduler;
+        try {
+            scheduler = PEPApplicationContext.getBean("taskScheduler", TaskScheduler.class);
+        } catch (Exception e) {
+            LOGGER.warn("Could NOT get task scheduler from Spring, create a new task scheduler as fallback.");
+            scheduler = new ThreadPoolTaskScheduler();
+            ((ThreadPoolTaskScheduler) scheduler).initialize();
+        }
+        stompClient.setTaskScheduler(scheduler);
         return stompClient;
     }
 

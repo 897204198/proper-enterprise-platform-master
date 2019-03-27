@@ -8,15 +8,14 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" optional="true" />
 
-    <springProfile name="dev">
-        <logger name="com.proper" level="debug" />
-        <!-- Map url to controller -->
-        <logger name="org.springframework.web.servlet.mvc.method.annotation" level="trace" />
-    </springProfile>
-    <springProfile name="production">
-        <logger name="com.proper" level="warn" />
-    </springProfile>
+    <logger name="com.proper" level="trace" />
+    <!-- Map url to controller -->
+    <logger name="org.springframework.web.servlet.mvc.method.annotation" level="trace" />
+    <!--<logger name="org.springframework.messaging.simp.stomp" level="trace" />-->
+    <!--<logger name="org.springframework.web.socket.sockjs" level="trace" />-->
+
     <root level="warn">
         <appender-ref ref="CONSOLE" />
     </root>
+
 </configuration>

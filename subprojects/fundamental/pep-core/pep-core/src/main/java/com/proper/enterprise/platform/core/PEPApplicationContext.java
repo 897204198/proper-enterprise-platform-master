@@ -23,15 +23,15 @@ public class PEPApplicationContext implements ApplicationContextAware {
         return HOLDER.applicationContext;
     }
 
-    public static Object getBean(String name) {
+    public static Object getBean(String name) throws BeansException {
         return HOLDER.applicationContext.getBean(name);
     }
 
-    public static <T> T getBean(Class<T> requiredType) {
+    public static <T> T getBean(Class<T> requiredType) throws BeansException {
         return HOLDER.applicationContext.getBean(requiredType);
     }
 
-    public static <T> T getBean(String name, Class<T> requiredType) {
+    public static <T> T getBean(String name, Class<T> requiredType) throws BeansException {
         return HOLDER.applicationContext.getBean(name, requiredType);
     }
 

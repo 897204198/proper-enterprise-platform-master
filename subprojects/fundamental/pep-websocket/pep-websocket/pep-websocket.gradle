@@ -9,6 +9,7 @@ dependencies {
                        libraries.tomcat_websocket
 
     testImplementation project(':pep-auth-common-jpa'),
+                       project(':pep-websocket-client'),
                        project(':pep-test')
 
        testRuntimeOnly libraries.jackson_databind
