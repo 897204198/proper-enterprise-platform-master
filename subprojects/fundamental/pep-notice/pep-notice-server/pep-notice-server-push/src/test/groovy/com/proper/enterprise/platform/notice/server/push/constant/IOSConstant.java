@@ -4,7 +4,7 @@ public class IOSConstant {
 
     public static final String CENT_PATH = "classpath*:com/proper/enterprise/platform/notice/server/push/ios/cert/icmp_dev_pro.p12";
 
-    public static final String PASSWORD = "1234";
+    public static final String PASSWORD = "1";
 
     public static final String TOPIC = "com.proper.icmp.dev";
 
