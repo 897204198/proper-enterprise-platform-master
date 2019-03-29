@@ -181,7 +181,11 @@ class MenusControllerTest extends AbstractJPATest {
 
         def parents = JSONUtil.parse(get('/auth/menus/parents', HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
-        assert parents.size() == 3
+        assert parents.size() == 5
+        // when null == getChildren(), leaf is true
+        for (def parent : parents) {
+            assert !parent.leaf
+        }
         assert parents.get(0).size() == 13
 
     }

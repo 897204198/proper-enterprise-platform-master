@@ -39,6 +39,7 @@ public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository,
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<? extends Menu> findParents(EnableEnum enable) {
         Specification<Menu> specification = new Specification<Menu>() {
             @Override
@@ -47,7 +48,7 @@ public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository,
                 if (null != enable && EnableEnum.ALL != enable) {
                     predicates.add(cb.equal(root.get("enable"), enable == EnableEnum.ENABLE));
                 }
-                predicates.add(cb.isNull(root.get("parent").get("id")));
+                predicates.add(cb.isNotEmpty(root.get("children")));
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
