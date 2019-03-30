@@ -35,17 +35,20 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
     @Test
     void addSubscribeAfterConnect() {
         def stompUser = 'u1'
-        StompClient.connect(stompUser, url)
+        def client = StompClient.connect(stompUser, url)
 
         subscribeAndSendMsgCheck(stompUser, '/topic/test.str', '/app/test.str', 'test1')
 
         //动态增加订阅
         subscribeAndSendMsgCheck(stompUser, '/topic/test.str.add', '/app/test.str.add', 'test2')
+
+        client.disconnect()
     }
 
     private static void subscribeAndSendMsgCheck(String stompUser, String topic, String sendDes, String sendPayload) {
         CountDownLatch latch = new CountDownLatch(1)
-        StompClient.subscribe(stompUser, topic, new StompFrameStringHandler() {
+        def client = StompClient.getInstance(stompUser)
+        client.subscribe(topic, new StompFrameStringHandler() {
             @Override
             void handleFrame(StompHeaders headers, @Nullable Object payload) {
                 if (payload.endsWith(sendPayload)) {
@@ -53,15 +56,15 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
                 }
             }
         })
-        StompClient.send(stompUser, sendDes, sendPayload)
+        client.send(sendDes, sendPayload)
         assert latch.await(1, TimeUnit.SECONDS)
     }
 
     @Test
     void multiClients() {
         def u1 = 'user1', u2 = 'user2'
-        StompClient.connect(u1, url)
-        StompClient.connect(u2, url)
+        def client1 = StompClient.connect(u1, url)
+        def client2 = StompClient.connect(u2, url)
 
         CountDownLatch latch = new CountDownLatch(2)
         def broadcast = '/topic/test.str'
@@ -74,10 +77,13 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
                 }
             }
         }
-        StompClient.subscribe(u1, broadcast, handler)
-        StompClient.subscribe(u2, broadcast, handler)
-        StompClient.send(u1, '/app/test.str', msg)
+        client1.subscribe(broadcast, handler)
+        client2.subscribe(broadcast, handler)
+        client1.send('/app/test.str', msg)
         assert latch.await(1, TimeUnit.SECONDS)
+
+        client1.disconnect()
+        client2.disconnect()
     }
 
     @Test
@@ -86,10 +92,10 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
         def topic = '/topic/test.str'
         def des = '/app/test.str'
         def msg = 'could not receive msg after unsubscribe'
-        StompClient.connect(stompUser, url)
+        def client = StompClient.connect(stompUser, url)
 
         CountDownLatch latch = new CountDownLatch(2)
-        StompClient.subscribe(stompUser, topic, new StompFrameStringHandler() {
+        client.subscribe(topic, new StompFrameStringHandler() {
             @Override
             void handleFrame(StompHeaders headers, @Nullable Object payload) {
                 if (payload.endsWith(msg)) {
@@ -97,12 +103,14 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
                 }
             }
         })
-        StompClient.send(stompUser, des, msg)
+        client.send(des, msg)
         assert !latch.await(200, TimeUnit.MILLISECONDS)
-        StompClient.unsubscribe(stompUser, topic)
-        StompClient.send(stompUser, des, msg)
+        client.unsubscribe(topic)
+        client.send(des, msg)
         assert !latch.await(100, TimeUnit.MILLISECONDS)
         assert latch.getCount() == 1
+
+        client.disconnect()
     }
 
 }

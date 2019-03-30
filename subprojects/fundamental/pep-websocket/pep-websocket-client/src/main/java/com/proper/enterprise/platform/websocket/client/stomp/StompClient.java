@@ -30,9 +30,6 @@ public class StompClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StompClient.class);
 
-    /**
-     * 使用 STOMP User 标识作为 key 的 STOMP 客户端 Map
-     */
     private static Map<String, StompClient> clientRegistry = new HashMap<>(16);
 
     /**
@@ -81,14 +78,28 @@ public class StompClient {
 
     /**
      * 连接至 url，并给客户端标识为 clientId
+     * 仅支持 String 类型消息
      *
-     * @param clientId 客户端标识
-     * @param url      连接地址
+     * @param  clientId 客户端标识（自定义）
+     * @param  url      连接地址
+     * @return 客户端实例
      */
-    public static void connect(String clientId, String url) {
+    public static StompClient connect(String clientId, String url) {
+        return connect(clientId, url, new StringMessageConverter());
+    }
+
+    /**
+     * 连接至 url，并给客户端标识为 clientId
+     *
+     * @param  clientId  客户端标识（自定义）
+     * @param  url       连接地址
+     * @param  converter 消息转换器
+     * @return 客户端实例
+     */
+    public static StompClient connect(String clientId, String url, MessageConverter converter) {
         StompClient client = clientRegistry.containsKey(clientId) ? clientRegistry.get(clientId) : new StompClient(clientId, url);
         if (client.webSocketStompClient == null) {
-            client.webSocketStompClient = createClient(new StringMessageConverter());
+            client.webSocketStompClient = createClient(converter);
         }
         client.webSocketStompClient.connect(url, (WebSocketHttpHeaders) null, getStompHeaders(clientId), new StompSessionHandlerAdapter() {
             @Override
@@ -139,6 +150,7 @@ public class StompClient {
         });
         // First time to put client into registry
         clientRegistry.put(clientId, client);
+        return client;
     }
 
     private static WebSocketStompClient createClient(MessageConverter msgConverter) {
@@ -173,27 +185,32 @@ public class StompClient {
     }
 
     /**
-     * 使某 Client 订阅某个主题
+     * 根据客户端 ID 获得客户端实例
      *
-     * @param  clientId 客户端 id
-     * @param  topic    主题
-     * @param  handler  处理器
-     * @throws InterruptedException 获得 session 时可能会抛出
+     * @param  clientId ID
+     * @return 客户端实例
      */
-    public static void subscribe(String clientId, String topic, StompFrameHandler handler) throws InterruptedException {
-        StompClient client = getClient(clientId);
-        StompSession.Subscription subscription = getSession(clientId).subscribe(topic, handler);
-        client.subscriptions.put(topic, new StompSubscription(topic, handler, subscription));
-        clientRegistry.put(clientId, client);
-    }
-
-    private static StompClient getClient(String clientId) {
+    public static StompClient getInstance(String clientId) {
         Assert.isTrue(clientRegistry.containsKey(clientId), String.format("Could NOT find client with id '%s', maybe not connected.", clientId));
         return clientRegistry.get(clientId);
     }
 
-    private static StompSession getSession(String clientId) throws InterruptedException, RuntimeException {
-        StompClient client = getClient(clientId);
+    /**
+     * 订阅某个主题
+     *
+     * @param  topic    主题
+     * @param  handler  处理器
+     * @throws InterruptedException 获得 session 时可能会抛出
+     */
+    public void subscribe(String topic, StompFrameHandler handler) throws InterruptedException {
+        StompClient client = getInstance(clientId);
+        StompSession.Subscription subscription = getSession().subscribe(topic, handler);
+        client.subscriptions.put(topic, new StompSubscription(topic, handler, subscription));
+        clientRegistry.put(clientId, client);
+    }
+
+    private StompSession getSession() throws InterruptedException, RuntimeException {
+        StompClient client = getInstance(clientId);
         int timeout = RETRY_INTERVALS[0];
         if (client.connectLatch.await(timeout, TimeUnit.SECONDS)) {
             return client.stompSession;
@@ -203,28 +220,35 @@ public class StompClient {
     }
 
     /**
-     * 使某 Client 取消订阅某个主题
+     * 取消订阅某个主题
      *
-     * @param clientId 客户端 id
      * @param topic    主题
      */
-    public static void unsubscribe(String clientId, String topic) {
-        StompClient client = getClient(clientId);
+    public void unsubscribe(String topic) {
+        StompClient client = getInstance(clientId);
         if (client.subscriptions.containsKey(topic)) {
             client.subscriptions.get(topic).getSubscription().unsubscribe();
         }
     }
 
     /**
-     * 使用某 Client 向指定目的地发送信息
+     * 向指定目的地发送信息
      *
-     * @param clientId    客户端 id
      * @param destination 消息目的地
      * @param payload     消息内容
      * @throws InterruptedException 获得 session 时可能会抛出
      */
-    public static void send(String clientId, String destination, Object payload) throws InterruptedException {
-        getSession(clientId).send(destination, payload);
+    public void send(String destination, Object payload) throws InterruptedException {
+        getSession().send(destination, payload);
+    }
+
+    /**
+     * 断开客户端连接
+     *
+     * @throws InterruptedException 获得 session 时可能会抛出
+     */
+    public void disconnect() throws InterruptedException {
+        getSession().disconnect();
     }
 
 }

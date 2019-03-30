@@ -2,20 +2,25 @@ package com.proper.enterprise.platform.websocket.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import javax.websocket.*;
+import java.io.IOException;
 import java.net.URI;
 
+/**
+ * See also {@link javax.websocket.Endpoint}
+ */
 @ClientEndpoint
 public class WebSocketClientEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketClientEndpoint.class);
 
     private Session userSession;
-    private MessageHandler messageHandler;
+    private EventHandler eventHandler;
 
-    WebSocketClientEndpoint(URI endpointURI, MessageHandler msgHandler) {
-        this.messageHandler = msgHandler;
+    WebSocketClientEndpoint(URI endpointURI, EventHandler msgHandler) {
+        this.eventHandler = msgHandler;
         try {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             container.connectToServer(this, endpointURI);
@@ -45,6 +50,7 @@ public class WebSocketClientEndpoint {
     public void onClose(Session userSession, CloseReason reason) {
         LOGGER.info("Closing websocket connection {} for reason {}", userSession.getId(), reason);
         this.userSession = null;
+        this.eventHandler.onClose();
     }
 
     /**
@@ -54,12 +60,24 @@ public class WebSocketClientEndpoint {
      */
     @OnMessage
     public void onMessage(String message) {
-        if (this.messageHandler != null) {
-            this.messageHandler.handleMessage(message);
+        if (this.eventHandler != null) {
+            this.eventHandler.onMessage(message);
         } else {
             LOGGER.warn("Received message {}, but no message handler, "
                         + "use WebSocketClientEndpoint.setMessageHandler to set one before use!", message);
         }
+    }
+
+    /**
+     * Event that is triggered when a protocol error occurs.
+     *
+     * @param throwable The exception.
+     */
+    @OnError
+    public void onError(Session userSession, Throwable throwable) {
+        LOGGER.error("Error occurs on {}", userSession.getId(), throwable);
+        this.userSession = null;
+        this.eventHandler.onError();
     }
 
     /**
@@ -68,20 +86,42 @@ public class WebSocketClientEndpoint {
      * @param message message
      */
     void sendMessage(String message) {
-        this.userSession.getAsyncRemote().sendText(message);
+        Assert.notNull(userSession, "Could NOT get session, connection maybe already closed or error!");
+        userSession.getAsyncRemote().sendText(message);
+    }
+
+    void disconnect() {
+        Assert.notNull(userSession, "Could NOT get session, connection maybe already closed or error!");
+        if (userSession.isOpen()) {
+            try {
+                userSession.close();
+            } catch (IOException e) {
+                LOGGER.error("Error occurs when closing connection {}", userSession.getId(), e);
+            }
+        }
     }
 
     /**
-     * Message handler.
+     * Event handler.
      */
-    public interface MessageHandler {
+    public interface EventHandler {
 
         /**
          * Handle received message
          *
          * @param message message
          */
-        void handleMessage(String message);
+        void onMessage(String message);
+
+        /**
+         * Handle error event, default to do nothing
+         */
+        default void onError() { }
+
+        /**
+         * Handle close event, default to do nothing
+         */
+        default void onClose() { }
 
     }
 

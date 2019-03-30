@@ -16,8 +16,6 @@ import org.springframework.lang.Nullable
 import org.springframework.messaging.converter.MappingJackson2MessageConverter
 import org.springframework.messaging.simp.stomp.StompFrameHandler
 import org.springframework.messaging.simp.stomp.StompHeaders
-import org.springframework.messaging.simp.stomp.StompSession
-import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter
 
 import java.lang.reflect.Type
 import java.util.concurrent.CountDownLatch
@@ -50,14 +48,14 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
     }
 
     void connect(CountDownLatch latch, String user, String subscribe, String send = null, Object sendPayload = null) {
-        StompClient.connect(user, url)
+        def client = StompClient.connect(user, url)
         def handler = new EmbeddedHandler(latch)
-        StompClient.subscribe(user, subscribe, handler)
+        client.subscribe(subscribe, handler)
         if (!subscribe.startsWith('/user')) {
-            StompClient.subscribe(user, "/user$subscribe", handler)
+            client.subscribe("/user$subscribe", handler)
         }
         if (send > '' && sendPayload != null) {
-            StompClient.send(user, send, sendPayload)
+            client.send(send, sendPayload)
         }
     }
 
@@ -80,37 +78,33 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void testJsonMsg() {
-        def stompClient = StompClient.createClient(new MappingJackson2MessageConverter())
         final CountDownLatch latch = new CountDownLatch(3)
 
-        stompClient.connect(url, new StompSessionHandlerAdapter() {
+        def client = StompClient.connect('testJsonMsg', url, new MappingJackson2MessageConverter())
+        client.subscribe('/topic/test.json', new StompFrameHandler() {
             @Override
-            void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-                session.subscribe('/topic/test.json', new StompFrameHandler() {
-                    @Override
-                    Type getPayloadType(StompHeaders headers) {
-                        return JsonMsgController.Greeting.class
-                    }
+            Type getPayloadType(StompHeaders headers) {
+                return JsonMsgController.Greeting.class
+            }
 
-                    @Override
-                    void handleFrame(StompHeaders headers, @Nullable Object payload) {
-                        if (payload.getContent().startsWith('Hello Spring')) {
-                            latch.countDown()
-                        }
-                    }
-                })
-                sendMessage(session, "Springxxx", latch)
-                sendMessage(session, "Spring", latch)
-                sendMessage(session, "Springzzzz", latch)
+            @Override
+            void handleFrame(StompHeaders headers, @Nullable Object payload) {
+                if (payload.getContent().startsWith('Hello Spring')) {
+                    latch.countDown()
+                }
             }
         })
+
+        sendMessage(client, "Springxxx", latch)
+        sendMessage(client, "Spring", latch)
+        sendMessage(client, "Springzzzz", latch)
 
         assert latch.await(5, TimeUnit.SECONDS)
     }
 
-    def sendMessage(StompSession session, String msg, CountDownLatch latch) {
+    def sendMessage(StompClient client, String msg, CountDownLatch latch) {
         try {
-            session.send("/app/test.json", [name: msg])
+            client.send('/app/test.json', [name: msg])
         } catch (Throwable t) {
             t.printStackTrace()
             latch.countDown()

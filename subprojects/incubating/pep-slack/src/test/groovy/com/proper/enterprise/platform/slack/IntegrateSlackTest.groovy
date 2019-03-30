@@ -59,18 +59,19 @@ class IntegrateSlackTest extends AbstractSpringTest {
 
         CountDownLatch latch = new CountDownLatch(1)
         def clientId = 'rtm-bot'
-        WebSocketClient.connect(clientId, wss, new WebSocketClientEndpoint.MessageHandler() {
+        def client = WebSocketClient.connect(clientId, wss, new WebSocketClientEndpoint.EventHandler() {
             @Override
-            void handleMessage(String message) {
+            void onMessage(String message) {
                 LOGGER.debug("message: {}", message)
                 latch.countDown()
             }
         })
 
         // Send msg to slack will cause abnormally connection close, do NOT use ws client to send msg to slack
-//        WebSocketClient.send(clientId, "{'id':1, 'type':'message', 'channel':'$CHANNEL_TEST', 'text':'rtm msg'}")
+//        client.send("{'id':1, 'type':'message', 'channel':'$CHANNEL_TEST', 'text':'rtm msg'}")
 
         assert latch.await(5, TimeUnit.SECONDS)
+        client.disconnect()
     }
 
 }

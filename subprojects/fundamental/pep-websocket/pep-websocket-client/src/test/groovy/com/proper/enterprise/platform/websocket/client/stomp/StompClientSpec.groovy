@@ -13,13 +13,14 @@ class StompClientSpec extends Specification {
     def topic = '/topic/all'
 
     def 'connect'() {
-        StompClient.connect(clientId, url)
-        StompClient.subscribe(clientId, topic, handler)
+        def client = StompClient.connect(clientId, url)
+        client.subscribe(topic, handler)
 
         sleep(10*60*1000)
 
         expect:
         1 == 1
+        client.disconnect()
     }
 
     def handler = new StompFrameStringHandler() {

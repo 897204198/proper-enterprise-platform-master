@@ -12,17 +12,18 @@ class WebSocketClientSpec extends Specification {
 
     def echo() {
         CountDownLatch latch = new CountDownLatch(1)
-        WebSocketClient.connect(clientId, ws, new WebSocketClientEndpoint.MessageHandler() {
+        def client = WebSocketClient.connect(clientId, ws, new WebSocketClientEndpoint.EventHandler() {
             @Override
-            void handleMessage(String message) {
+            void onMessage(String message) {
                 println "Echo $message"
                 latch.countDown()
             }
         })
-        WebSocketClient.send(clientId, 'Hello')
+        client.send('Hello')
 
         expect:
         latch.await(1, TimeUnit.SECONDS)
+        client.disconnect()
     }
 
 }
