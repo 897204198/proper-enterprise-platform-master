@@ -221,6 +221,15 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
+    @Override
+    public Collection<? extends User> getUsers(String userNames) {
+        if (StringUtil.isEmpty(userNames)) {
+            return null;
+        }
+        String[] names = userNames.split("\\,");
+        return userDao.getUsers(Arrays.asList(names));
+    }
+
 
     @Override
     public Collection<? extends UserGroup> getUserGroups(String userId) {

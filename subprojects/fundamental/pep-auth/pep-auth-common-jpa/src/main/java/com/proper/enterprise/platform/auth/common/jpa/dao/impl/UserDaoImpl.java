@@ -159,6 +159,11 @@ public class UserDaoImpl extends AbstractJpaServiceSupport<User, UserRepository,
     }
 
     @Override
+    public Collection<? extends User> getUsers(List<String> userNames) {
+        return userRepo.findByUsernameIn(userNames);
+    }
+
+    @Override
     public User addUserRole(String userId, String roleId) {
         User user = this.findById(userId);
         if (null == hasRole(user, roleId)) {

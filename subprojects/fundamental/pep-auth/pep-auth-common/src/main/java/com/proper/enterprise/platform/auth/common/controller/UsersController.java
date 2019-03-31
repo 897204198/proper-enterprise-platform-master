@@ -16,6 +16,7 @@ import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.api.auth.service.UserNoticeService;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 @RestController
@@ -143,6 +145,24 @@ public class UsersController extends BaseController {
         return responseOfGet(BeanUtil.convert(userService.get(userId), UserVO.class));
     }
 
+    @GetMapping(path = "/usernames")
+    @JsonView(UserVO.Single.class)
+    @ApiOperation("‍根据用户账号集合获取用户集合")
+    public ResponseEntity<Collection<UserVO>> getByUserNames(@ApiParam(value = "‍用户账号集合‍", required = true) String usernames) {
+        return responseOfGet(BeanUtil.convert(userService.getUsers(usernames), UserVO.class));
+    }
+
+    @GetMapping(path = "/ids")
+    @JsonView(UserVO.Single.class)
+    @ApiOperation("‍根据用户id集合获取用户集合")
+    public ResponseEntity<Collection<UserVO>> getByIds(@ApiParam(value = "‍用户id集合‍", required = true) String ids) {
+        if (StringUtil.isEmpty(ids)) {
+            return responseOfGet(null);
+        }
+        String[] idAttr = ids.split("\\,");
+        return responseOfGet(BeanUtil.convert(userService.getUsersByIds(Arrays.asList(idAttr)), UserVO.class));
+    }
+
     @GetMapping
     @JsonView(UserVO.Single.class)
     @ApiOperation("‍取得查询用户信息列表")
@@ -191,6 +211,7 @@ public class UsersController extends BaseController {
                                                            @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
         return responseOfGet(BeanUtil.convert(userService.getUserRoles(userId, roleEnable), RoleVO.class));
     }
+
 
     public static class UserModelVO {
 

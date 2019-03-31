@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.service.BaseService;
 
 import java.util.Collection;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public interface UserDao extends BaseService<User, String> {
@@ -143,4 +144,12 @@ public interface UserDao extends BaseService<User, String> {
      * @return 用户
      */
     User updateResetPassword(String userId, String password);
+
+    /**
+     * 根据用户名集合查询用户集合
+     *
+     * @param userNames 用户名集合
+     * @return 用户集合
+     */
+    Collection<? extends User> getUsers(List<String> userNames);
 }

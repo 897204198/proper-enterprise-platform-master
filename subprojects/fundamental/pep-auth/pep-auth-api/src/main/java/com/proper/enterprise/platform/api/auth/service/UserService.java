@@ -231,5 +231,11 @@ public interface UserService {
      */
     Collection<? extends User> getFilterUsers(Collection<? extends User> users, EnableEnum userEnable);
 
-
+    /**
+     * 根据用户名集合查询用户集合
+     *
+     * @param userNames 用户名集合,分隔
+     * @return 用户集合
+     */
+    Collection<? extends User> getUsers(String userNames);
 }

@@ -447,7 +447,6 @@ class UsersControllerTest extends AbstractJPATest {
     }
 
 
-
     @Test
     public void resetPassword() {
         def userReq = [:]
@@ -487,6 +486,54 @@ class UsersControllerTest extends AbstractJPATest {
         updateReq['username'] = 'user_update'
         UserVO userAfterVO = JSONUtil.parse(put(URI + "/current", JSONUtil.toJSON(updateReq), HttpStatus.OK).response.contentAsString, UserVO.class)
         assert userAfterVO.getUsername() == 'user_update'
+    }
+
+    @Test
+    void getUserByUserNames() {
+        def userReq = [:]
+        userReq['username'] = 'user_dup'
+        userReq['name'] = 'name'
+        userReq['password'] = 'password'
+        userReq['email'] = 'email'
+        userReq['phone'] = '123'
+        userReq['enable'] = true
+        UserVO userVO = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString, UserVO.class)
+        def userReq2 = [:]
+        userReq2['username'] = 'user_dup2'
+        userReq2['name'] = 'name'
+        userReq2['password'] = 'password'
+        userReq2['email'] = 'email'
+        userReq2['phone'] = '123'
+        userReq2['enable'] = true
+        UserVO userVO2 = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq2), HttpStatus.CREATED).response.contentAsString, UserVO.class)
+        List<UserVO> userVOS = JSONUtil.parse(get('/auth/users/usernames?usernames=user_dup,user_dup2', HttpStatus.OK).getResponse().getContentAsString(),
+            List.class)
+        assert userVOS.size() == 2;
+
+    }
+
+    @Test
+    void getUserByIds() {
+        def userReq = [:]
+        userReq['username'] = 'user_dup'
+        userReq['name'] = 'name'
+        userReq['password'] = 'password'
+        userReq['email'] = 'email'
+        userReq['phone'] = '123'
+        userReq['enable'] = true
+        UserVO userVO = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq), HttpStatus.CREATED).response.contentAsString, UserVO.class)
+        def userReq2 = [:]
+        userReq2['username'] = 'user_dup2'
+        userReq2['name'] = 'name'
+        userReq2['password'] = 'password'
+        userReq2['email'] = 'email'
+        userReq2['phone'] = '123'
+        userReq2['enable'] = true
+        UserVO userVO2 = JSONUtil.parse(post(URI, JSONUtil.toJSON(userReq2), HttpStatus.CREATED).response.contentAsString, UserVO.class)
+        List<UserVO> userVOS = JSONUtil.parse(get('/auth/users/ids?ids=' + userVO.getId() + ',' + userVO2.getId(), HttpStatus.OK).getResponse().getContentAsString(),
+            List.class)
+        assert userVOS.size() == 2;
+
     }
 
     @After
