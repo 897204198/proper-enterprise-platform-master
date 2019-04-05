@@ -53,10 +53,13 @@ class AppVersionManagerControllerTest extends AbstractJPATest {
     void updateVersionInfo() {
         long updatever = 300001
         def app = resOfGet("/app/versions/" + updatever, HttpStatus.OK)
+        assert !app.forceUpdate
         app.note = "这是更新后的内容信息"
+        app.forceUpdate = true
         MvcResult result = put(prefix, JSONUtil.toJSON(app), HttpStatus.OK)
         AppVersionDocument app1 = JSONUtil.parse(result.getResponse().getContentAsString(), AppVersionDocument.class)
         assert app.note == app1.getNote()
+        assert app1.getForceUpdate()
     }
 
     @Test

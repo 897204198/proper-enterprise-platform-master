@@ -59,6 +59,11 @@ public class AppVersionDocument extends BaseDocument {
      */
     private String publishTime;
 
+    /**
+     * 是否强制更新
+     */
+    private Boolean forceUpdate;
+
     public AppVersionDocument() { }
 
     public AppVersionDocument(String version, String androidURL, String note) {
@@ -121,6 +126,17 @@ public class AppVersionDocument extends BaseDocument {
 
     public void setPublishTime(String publishTime) {
         this.publishTime = publishTime;
+    }
+
+    public Boolean getForceUpdate() {
+        if (forceUpdate == null) {
+            return false;
+        }
+        return forceUpdate;
+    }
+
+    public void setForceUpdate(Boolean forceUpdate) {
+        this.forceUpdate = forceUpdate;
     }
 
     public String getPublisher() {

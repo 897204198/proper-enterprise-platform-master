@@ -91,6 +91,9 @@ public class AppVersionManagerController extends BaseController {
         @ApiModelProperty(name = "‍版本说明", required = true)
         private String note;
 
+        @ApiModelProperty(name = "‍是否强制更新", required = true)
+        private Boolean forceUpdate;
+
         private AppVersionVO() {
         }
 
@@ -130,6 +133,17 @@ public class AppVersionManagerController extends BaseController {
 
         public void setNote(String note) {
             this.note = note;
+        }
+
+        public Boolean getForceUpdate() {
+            if (forceUpdate == null) {
+                return false;
+            }
+            return forceUpdate;
+        }
+
+        public void setForceUpdate(Boolean forceUpdate) {
+            this.forceUpdate = forceUpdate;
         }
 
         @Override

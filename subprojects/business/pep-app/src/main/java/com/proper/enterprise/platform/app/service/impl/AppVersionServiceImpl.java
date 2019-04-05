@@ -53,6 +53,7 @@ public class AppVersionServiceImpl implements AppVersionService {
             version.setAndroidURL(appVersion.getAndroidURL());
             version.setIosURL(appVersion.getIosURL());
             version.setNote(appVersion.getNote());
+            version.setForceUpdate(appVersion.getForceUpdate());
         }
         return repo.save(version);
     }

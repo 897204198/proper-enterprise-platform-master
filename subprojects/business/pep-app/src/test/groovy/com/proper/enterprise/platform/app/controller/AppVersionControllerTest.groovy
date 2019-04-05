@@ -30,6 +30,9 @@ class AppVersionControllerTest extends AbstractJPATest {
             appVersionDocument.setNote("第" + version + "版的解释说明")
             appVersionDocument.setAndroidURL("http://test.com/" + version)
             appVersionDocument.setIosURL("itunes://test.com/" + version)
+            if (version % 2 == 0) {
+                appVersionDocument.setForceUpdate(true)
+            }
             service.saveOrUpdate(appVersionDocument)
         }
     }
