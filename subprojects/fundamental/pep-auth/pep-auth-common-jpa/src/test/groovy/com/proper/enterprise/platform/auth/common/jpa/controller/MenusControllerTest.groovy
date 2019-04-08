@@ -269,6 +269,46 @@ class MenusControllerTest extends AbstractJPATest {
     }
 
     @Test
+    void testGetChildMenu() {
+        mockUser('test1', 't1', 'pwd')
+
+        MenuEntity menuEntity = new MenuEntity()
+        menuEntity.setName("test_name1")
+        menuEntity.setEnable(true)
+        menuEntity.setIcon('test_icon1')
+        menuEntity.setSequenceNumber(52)
+        menuEntity.setRoute("/bbc")
+        menuEntity = menuRepository.save(menuEntity)
+
+        MenuEntity menuEntity2 = new MenuEntity()
+        menuEntity2.setName("test_name2")
+        menuEntity2.setEnable(true)
+        menuEntity2.setIcon('test_icon1')
+        menuEntity2.setSequenceNumber(52)
+        menuEntity2.setRoute("/bbc/b")
+        menuEntity2.setParent(menuEntity)
+        menuEntity2 = menuRepository.save(menuEntity2)
+
+        MenuEntity menuEntity3 = new MenuEntity()
+        menuEntity3.setName("test_name3")
+        menuEntity3.setEnable(true)
+        menuEntity3.setIcon('test_icon1')
+        menuEntity3.setSequenceNumber(52)
+        menuEntity3.setRoute("/bbc/c")
+        menuEntity3.setParent(menuEntity)
+        menuEntity3 = menuRepository.save(menuEntity3)
+
+        def children = JSONUtil.parse(get('/auth/menus/parent/' + menuEntity.getId(), HttpStatus.OK)
+            .getResponse().getContentAsString(), List.class)
+
+        assert children.size() == 2
+
+        def menus = JSONUtil.parse(get('/auth/menus/names?names=test_name2,test_name3', HttpStatus.OK)
+            .getResponse().getContentAsString(), List.class)
+        assert menus.size() == 2
+    }
+
+    @Test
     void testEntity() {
         MenuEntity menu = new MenuEntity()
         menu.setName("tar")

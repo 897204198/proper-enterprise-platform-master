@@ -6,6 +6,7 @@ import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.service.BaseService;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface MenuDao extends BaseService<Menu, String> {
     /**
@@ -14,6 +15,13 @@ public interface MenuDao extends BaseService<Menu, String> {
      * @return 菜单
      */
     Menu get(String id);
+
+    /**
+     *  根据父菜单ID获取子菜单
+     * @param parentId 父菜单ID
+     * @return 菜单集合
+     */
+    Collection<? extends Menu> findByParentId(String parentId);
 
     /**
      *  根据不同的权限获取菜单
@@ -63,4 +71,11 @@ public interface MenuDao extends BaseService<Menu, String> {
      * @return 修改后的菜单实体
      */
     Menu updateForSelective(Menu menu);
+
+    /**
+     *  根据菜单名称集合获取菜单列表
+     * @param names 菜单名称集合
+     * @return 菜单集合
+     */
+    Collection<? extends Menu> getMenusByNames(List<String> names);
 }

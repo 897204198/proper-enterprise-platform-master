@@ -64,6 +64,10 @@ public class MenuServiceImpl implements MenuService {
         return menuDao.get(id);
     }
 
+    @Override
+    public Collection<? extends Menu> getChildMenus(String parentId) {
+        return menuDao.findByParentId(parentId);
+    }
 
     @Override
     public Menu save(Menu menu) {
@@ -125,6 +129,15 @@ public class MenuServiceImpl implements MenuService {
             result.sort(new BeanComparator("parent", "sequenceNumber"));
         }
         return result;
+    }
+
+    @Override
+    public Collection<? extends Menu> getMenus(String menuNames) {
+        if (StringUtil.isEmpty(menuNames)) {
+            return null;
+        }
+        String[] names = menuNames.split("\\,");
+        return menuDao.getMenusByNames(Arrays.asList(names));
     }
 
     @Override

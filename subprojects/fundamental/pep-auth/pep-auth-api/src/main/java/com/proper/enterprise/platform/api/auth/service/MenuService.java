@@ -16,6 +16,13 @@ public interface MenuService {
     Menu get(String id);
 
     /**
+     * 获取子菜单
+     * @param parentId 父菜单id;
+     * @return 菜单集合;
+     */
+    Collection<? extends Menu> getChildMenus(String parentId);
+
+    /**
      * 新增菜单;
      * @param menu 菜单;
      * @return 菜单;
@@ -48,6 +55,14 @@ public interface MenuService {
      * @return 菜单集合
      */
     Collection<? extends Menu> getMenus(User user);
+
+    /**
+     * 根据菜单名称获取菜单集合，
+     *
+     * @param menuNames 菜单名称集合
+     * @return 菜单集合
+     */
+    Collection<? extends Menu> getMenus(String menuNames);
 
     /**
      * 根据当前用户以及查询条件获得用户拥有的所有角色权限范围内的菜单集合，

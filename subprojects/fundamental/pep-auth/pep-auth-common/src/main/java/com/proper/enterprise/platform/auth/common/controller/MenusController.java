@@ -85,6 +85,13 @@ public class MenusController extends BaseController {
         return responseOfGet(BeanUtil.convert(service.get(menuId), MenuVO.class));
     }
 
+    @GetMapping(path = "/names")
+    @JsonView(MenuVO.Single.class)
+    @ApiOperation("‍根据用户账号集合获取用户集合")
+    public ResponseEntity<Collection<MenuVO>> getMenuDetailByNames(@ApiParam(value = "‍菜单名称集合‍", required = true) String names) {
+        return responseOfGet(BeanUtil.convert(service.getMenus(names), MenuVO.class));
+    }
+
     @PutMapping(path = "/{menuId}")
     @JsonView(MenuVO.Single.class)
     @ApiOperation("‍更新指定菜单ID的信息")
@@ -98,6 +105,13 @@ public class MenusController extends BaseController {
             menu = service.update(reqMenu);
         }
         return responseOfPut(BeanUtil.convert(menu, MenuVO.class));
+    }
+
+    @GetMapping(path = "/parent/{menuParentId}")
+    @JsonView(MenuVO.MenuWithResource.class)
+    @ApiOperation("‍取得指定菜单ID的子资源列表信息")
+    public ResponseEntity<Collection<MenuVO>> getMenuChildResources(@ApiParam(value = "‍菜单的id", required = true) @PathVariable String menuParentId) {
+        return responseOfGet(BeanUtil.convert(service.getChildMenus(menuParentId), MenuVO.class));
     }
 
     @GetMapping(path = "/{menuId}/resources")

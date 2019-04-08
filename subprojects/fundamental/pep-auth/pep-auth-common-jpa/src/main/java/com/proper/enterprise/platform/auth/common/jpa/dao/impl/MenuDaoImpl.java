@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.jpa.dao.impl;
 import com.proper.enterprise.platform.api.auth.dao.MenuDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
+import com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity;
 import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
@@ -36,6 +37,13 @@ public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository,
     @Override
     public Menu get(String id) {
         return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Collection<? extends Menu> findByParentId(String parentId) {
+        MenuEntity menuEntity = new MenuEntity();
+        menuEntity.setId(parentId);
+        return repository.findByParent(menuEntity);
     }
 
     @Override
@@ -122,6 +130,11 @@ public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository,
     @Override
     public Menu updateForSelective(Menu menu) {
         return super.updateForSelective(menu);
+    }
+
+    @Override
+    public Collection<? extends Menu> getMenusByNames(List<String> names) {
+        return repository.findByNameIn(names);
     }
 
 
