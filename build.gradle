@@ -115,7 +115,7 @@ subprojects {
     // Needs to change version in PEPVersion.java:13:17 TOGETHER!!
     // And keep them SAME!!
     // Use .RELEASE or -SNAPSHOT suffix after version code
-    version = '0.5.1.1.RELEASE'
+    version = '0.5.2-SNAPSHOT'
 
     test {
         reports.html.enabled = false
