@@ -70,7 +70,9 @@ public class WebSocketClient {
      * 断开客户端连接
      */
     public void disconnect() {
-        clientRegistry.get(clientId).endpoint.disconnect();
+        WebSocketClient client = clientRegistry.get(clientId);
+        client.endpoint.disconnect();
+        clientRegistry.remove(clientId);
     }
 
 }

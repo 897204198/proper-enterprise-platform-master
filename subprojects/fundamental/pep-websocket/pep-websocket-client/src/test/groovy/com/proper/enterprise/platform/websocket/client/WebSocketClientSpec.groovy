@@ -24,6 +24,7 @@ class WebSocketClientSpec extends Specification {
         expect:
         latch.await(1, TimeUnit.SECONDS)
         client.disconnect()
+        WebSocketClient.getInstance(clientId) == null
     }
 
 }
