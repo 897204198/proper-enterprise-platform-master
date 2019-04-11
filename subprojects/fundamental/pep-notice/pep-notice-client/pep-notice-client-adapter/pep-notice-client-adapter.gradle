@@ -1,7 +1,9 @@
 dependencies {
-    implementation project(':pep-notice-client-api'),
-                   project(':pep-notice-client'),
-                   project(':pep-notice-set'),
+
+    implementation project(':pep-auth-api'),
                    project(':pep-core-mongo'),
-                   project(':pep-auth-api')
+                   project(':pep-notice-client-api'),
+                   project(':pep-notice-client'),
+                   project(':pep-notice-set')
+
 }
