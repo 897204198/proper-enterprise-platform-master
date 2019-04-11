@@ -3,6 +3,13 @@
                    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+ <changeSet id="insert-role-rule-20190408" author="zjl">
+        <addColumn tableName="PEP_AUTH_ROLES">
+            <column name="RULE_CODE" type="VARCHAR(255)"></column>
+            <column name="RULE_VALUE" type="VARCHAR(4000)"></column>
+        </addColumn>
+</changeSet>
     <changeSet author="fm (generator)" id="change_pep_auth_menu_uniqueKey_route_parentId">
         <dropUniqueConstraint tableName="PEP_AUTH_MENUS" constraintName="UK_RBVJ8E5FVAFV4HRKD95VQYEY"/>
         <addUniqueConstraint columnNames="ROUTE,PARENT_ID" constraintName="UK_RBVJ8E5FVAFV4HRKD95VQYEY" tableName="PEP_AUTH_MENUS"/>

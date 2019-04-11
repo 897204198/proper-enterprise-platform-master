@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--数据变更-->
+    <!--初始化OOPSEARCH 数据-->
+    <changeSet author="generator(generator)" id="auth-rule_generator_dml_oopsearch_init">
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="auth-rule_code"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <!--别名 与controller中的参数对应-->
+            <column name="COLUMN_ALIAS" value="code"/>
+            <!--字段的描述(展示于回显)-->
+            <column name="COLUMN_DESC" value="编码"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <!--模块名称需要提前与前台确认-->
+            <column name="MODULE_NAME" value="auth-rule"/>
+            <!--在表中的列名称-->
+            <column name="SEARCH_COLUMN" value="CODE"/>
+            <!--表名-->
+            <column name="TABLE_NAME" value="pep_auth_rule"/>
+            <!--controller对应的url(支持restful)-->
+            <column name="URL" value="/auth-rule"/>
+        </insert>
+        <insert tableName="PEP_OOPSEARCH_CONFIG">
+            <column name="ID" value="auth-rule_name"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <!--别名 与controller中的参数对应-->
+            <column name="COLUMN_ALIAS" value="name"/>
+            <!--字段的描述(展示于回显)-->
+            <column name="COLUMN_DESC" value="名称"/>
+            <column name="COLUMN_TYPE" value="string"/>
+            <!--模块名称需要提前与前台确认-->
+            <column name="MODULE_NAME" value="auth-rule"/>
+            <!--在表中的列名称-->
+            <column name="SEARCH_COLUMN" value="NAME"/>
+            <!--表名-->
+            <column name="TABLE_NAME" value="pep_auth_rule"/>
+            <!--controller对应的url(支持restful)-->
+            <column name="URL" value="/auth-rule"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RULE">
+            <column name="ID" value="pep_rule_all_user"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="CODE" value="userAll"/>
+            <column name="NAME" value="全部用户"/>
+            <column name="TYPE" value="RULE;USER"/>
+            <column name="SORT" valueNumeric="0"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RULE">
+            <column name="ID" value="pep_rule_user"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="CODE" value="user"/>
+            <column name="NAME" value="指定用户"/>
+            <column name="TYPE" value="RULE;USER"/>
+            <column name="SORT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RULE">
+            <column name="ID" value="pep_rule_group_all"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="CODE" value="groupAll"/>
+            <column name="NAME" value="全部用户组"/>
+            <column name="TYPE" value="RULE;GROUP"/>
+            <column name="SORT" valueNumeric="2"/>
+        </insert>
+        <insert tableName="PEP_AUTH_RULE">
+            <column name="ID" value="pep_rule_group"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="CODE" value="group"/>
+            <column name="NAME" value="指定用户组"/>
+            <column name="TYPE" value="RULE;GROUP"/>
+            <column name="SORT" valueNumeric="3"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

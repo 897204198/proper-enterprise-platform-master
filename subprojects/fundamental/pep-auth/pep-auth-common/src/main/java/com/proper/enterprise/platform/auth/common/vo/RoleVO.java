@@ -58,6 +58,10 @@ public class RoleVO extends BaseVO implements Role {
 
     private Collection<ResourceVO> resources;
 
+    private String ruleCode;
+
+    private String ruleValue;
+
     public String getParentId() {
         if (StringUtil.isNotEmpty(this.parentId)) {
             return this.parentId;
@@ -67,6 +71,27 @@ public class RoleVO extends BaseVO implements Role {
         }
         return this.getParent().getId();
     }
+
+    @Override
+    public void setRuleCode(String code) {
+        this.ruleCode = code;
+    }
+
+    @Override
+    public String getRuleCode() {
+        return this.ruleCode;
+    }
+
+    @Override
+    public void setRuleValue(String value) {
+        this.ruleValue = value;
+    }
+
+    @Override
+    public String getRuleValue() {
+        return this.ruleValue;
+    }
+
 
     public void setParentId(String parentId) {
         this.parentId = parentId;

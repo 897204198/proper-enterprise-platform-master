@@ -153,6 +153,9 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Collection<? extends Role> getFilterRoles(Collection<? extends Role> roles, EnableEnum roleEnable) {
         Collection<Role> result = new HashSet<>();
+        if (CollectionUtil.isEmpty(roles)) {
+            return result;
+        }
         for (Role role : roles) {
             if (EnableEnum.ALL == roleEnable) {
                 result.add(role);

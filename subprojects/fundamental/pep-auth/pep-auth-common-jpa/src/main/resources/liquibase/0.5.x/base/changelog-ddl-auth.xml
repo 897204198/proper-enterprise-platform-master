@@ -503,20 +503,27 @@
     </changeSet>
 
     <changeSet author="pep (generator)" id="init_ver0.5.x_auth_changebyauth_refactor" dbms="h2,mysql">
-        <addUniqueConstraint tableName="PEP_AUTH_MENUS" columnNames="NAME,PARENT_ID" constraintName="UK_PEP_AUTH_MENUS_NAME_PARENTID"/>
-        <addUniqueConstraint tableName="PEP_AUTH_RESOURCES" columnNames="NAME" constraintName="UK_PEP_AUTH_RESOURCES_NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_MENUS" columnNames="NAME,PARENT_ID"
+                             constraintName="UK_PEP_AUTH_MENUS_NAME_PARENTID"/>
+        <addUniqueConstraint tableName="PEP_AUTH_RESOURCES" columnNames="NAME"
+                             constraintName="UK_PEP_AUTH_RESOURCES_NAME"/>
         <addUniqueConstraint tableName="PEP_AUTH_ROLES" columnNames="NAME" constraintName="UK_PEP_AUTH_ROLES_NAME"/>
-        <addUniqueConstraint tableName="PEP_AUTH_USERS" columnNames="USERNAME" constraintName="UK_PEP_AUTH_USERS_USERNAME"/>
-        <addUniqueConstraint tableName="PEP_AUTH_USERGROUPS" columnNames="NAME" constraintName="UK_PEP_AUTH_USERGROUPS_NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_USERS" columnNames="USERNAME"
+                             constraintName="UK_PEP_AUTH_USERS_USERNAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_USERGROUPS" columnNames="NAME"
+                             constraintName="UK_PEP_AUTH_USERGROUPS_NAME"/>
     </changeSet>
 
     <changeSet author="pep (generator)" id="init_ver0.5.x_auth_changebyauth_refactor" dbms="oracle">
-        <addUniqueConstraint tableName="PEP_AUTH_MENUS" columnNames="NAME,PARENT_ID" constraintName="UK_MENUS_NAME_PARENTID"/>
-        <addUniqueConstraint tableName="PEP_AUTH_RESOURCES" columnNames="NAME" constraintName="UK_PEP_AUTH_RESOURCES_NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_MENUS" columnNames="NAME,PARENT_ID"
+                             constraintName="UK_MENUS_NAME_PARENTID"/>
+        <addUniqueConstraint tableName="PEP_AUTH_RESOURCES" columnNames="NAME"
+                             constraintName="UK_PEP_AUTH_RESOURCES_NAME"/>
         <addUniqueConstraint tableName="PEP_AUTH_ROLES" columnNames="NAME" constraintName="UK_PEP_AUTH_ROLES_NAME"/>
         <!-- oracle 对于约束规则校验, 表 PEP_AUTH_USERS 已存在 USERNAME 的唯一约束, Line 254 -->
         <!-- <addUniqueConstraint tableName="PEP_AUTH_USERS" columnNames="USERNAME" constraintName="UK_PEP_AUTH_USERS_USERNAME"/> -->
-        <addUniqueConstraint tableName="PEP_AUTH_USERGROUPS" columnNames="NAME" constraintName="UK_PEP_AUTH_USERGROUPS_NAME"/>
+        <addUniqueConstraint tableName="PEP_AUTH_USERGROUPS" columnNames="NAME"
+                             constraintName="UK_PEP_AUTH_USERGROUPS_NAME"/>
     </changeSet>
 
     <changeSet author="pep (generator)" id="init_ver0.5.x_auth_token_table">
@@ -546,6 +553,7 @@
         </createTable>
         <addPrimaryKey columnNames="ID" constraintName="UK_PEP_AUTH_TOKENS" tableName="PEP_AUTH_TOKENS"/>
         <addUniqueConstraint columnNames="TOKEN" constraintName="UK_PEP_AUTH_TOKENS_TOKEN" tableName="PEP_AUTH_TOKENS"/>
-        <addUniqueConstraint columnNames="USER_ID" constraintName="UK_PEP_AUTH_TOKENS_USER_ID" tableName="PEP_AUTH_TOKENS"/>
+        <addUniqueConstraint columnNames="USER_ID" constraintName="UK_PEP_AUTH_TOKENS_USER_ID"
+                             tableName="PEP_AUTH_TOKENS"/>
     </changeSet>
 </databaseChangeLog>

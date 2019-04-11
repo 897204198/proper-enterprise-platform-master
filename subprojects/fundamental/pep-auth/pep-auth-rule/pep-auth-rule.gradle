@@ -1,0 +1,9 @@
+dependencies {
+
+        implementation project(':pep-core-jpa'),
+                       project(':pep-sys')
+
+    testImplementation project(':pep-auth-common-jpa'),
+                       project(':pep-test')
+
+}

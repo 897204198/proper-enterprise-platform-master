@@ -4,6 +4,8 @@ import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.*;
+import com.proper.enterprise.platform.auth.rule.AuthRuleFactory;
+import com.proper.enterprise.platform.auth.rule.BaseAuthRuleService;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.security.Authentication;
@@ -255,7 +257,31 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
         }
-        return roleService.getFilterRoles(user.getRoles(), roleEnable);
+        Collection<Role> roles = new ArrayList<>(roleService.getFilterRoles(user.getRoles(), roleEnable));
+        Collection<Role> ruleRoles = getUserRuleRoles(userId, roleEnable);
+        if (CollectionUtil.isNotEmpty(ruleRoles)) {
+            roles.addAll(ruleRoles);
+        }
+        return roles;
+    }
+
+    private Collection<Role> getUserRuleRoles(String userId, EnableEnum roleEnable) {
+        Collection<? extends Role> roles = roleService.findRolesLike(null, roleEnable);
+        List<Role> returnRoles = new ArrayList<>();
+        for (Role role : roles) {
+            if (StringUtil.isEmpty(role.getRuleCode())) {
+                continue;
+            }
+            BaseAuthRuleService authRuleService = AuthRuleFactory.produce(role.getRuleCode());
+            if (null != authRuleService) {
+                Set<String> userIds = authRuleService.perform(role.getRuleValue());
+                if (CollectionUtil.isNotEmpty(userIds) && userIds.contains(userId)) {
+                    returnRoles.add(role);
+                }
+            }
+
+        }
+        return returnRoles;
     }
 
     private void validateUserName(User user) {

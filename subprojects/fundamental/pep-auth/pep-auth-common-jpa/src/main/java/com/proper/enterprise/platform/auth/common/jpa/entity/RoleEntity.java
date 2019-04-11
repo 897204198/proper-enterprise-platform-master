@@ -61,8 +61,34 @@ public class RoleEntity extends BaseEntity implements Role {
         uniqueConstraints = @UniqueConstraint(columnNames = {"ROLE_ID", "RESOURCE_ID"}))
     private Collection<ResourceEntity> resourcesEntities;
 
+    private String ruleCode;
+
+    @Column(length = 4000)
+    private String ruleValue;
+
     public String getParentId() {
         return parentId;
+    }
+
+
+    @Override
+    public void setRuleCode(String code) {
+        this.ruleCode = code;
+    }
+
+    @Override
+    public String getRuleCode() {
+        return this.ruleCode;
+    }
+
+    @Override
+    public void setRuleValue(String value) {
+        this.ruleValue = value;
+    }
+
+    @Override
+    public String getRuleValue() {
+        return this.ruleValue;
     }
 
     @Override

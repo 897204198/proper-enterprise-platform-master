@@ -116,7 +116,8 @@ public class MenuServiceImpl implements MenuService {
         List<Menu> result = new ArrayList<>(0);
         if (user.getEnable()) {
             Set<Menu> menus = new HashSet<>();
-            menus = addRoleMenus(user.getRoles(), menus);
+
+            menus = addRoleMenus(userService.getUserRoles(user.getId(), EnableEnum.ENABLE), menus);
             if (CollectionUtil.isNotEmpty(user.getUserGroups())) {
                 for (UserGroup userGroup : user.getUserGroups()) {
                     if (userGroup.getEnable()) {

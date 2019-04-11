@@ -6,15 +6,16 @@ import java.util.Collection;
 
 /**
  * 角色
- *
+ * <p>
  * 角色定义应用的使用权限，权限控制至菜单叶子节点表示的`资源`。
  * 角色以树形结构组织，角色`可继承`，子角色权限范围是父角色权限范围的子集。
+ * <p>
  *
  * // TODO 权限应定义在菜单上
  * 权限分为两种类型：
- *  - `可分配`：用户只能将该资源进行分配，不能在系统中使用该资源代表的功能。
- *  - `可使用`：用户可以在系统中见到和使用该资源代表的功能，但不能将该资源分配给其他用户/角色。
- *
+ * - `可分配`：用户只能将该资源进行分配，不能在系统中使用该资源代表的功能。
+ * - `可使用`：用户可以在系统中见到和使用该资源代表的功能，但不能将该资源分配给其他用户/角色。
+ * <p>
  * 角色和用户的关系可通过`角色规则`进行设定，默认无角色规则，可从用户方面选择未设置角色规则的角色。
  */
 public interface Role extends IBase {
@@ -119,8 +120,37 @@ public interface Role extends IBase {
 
     /**
      * 获取上级角色id
+     *
      * @return 上级角色id
      */
     String getParentId();
+
+    /**
+     * 设置规则编码
+     *
+     * @param code 规则编码
+     */
+    void setRuleCode(String code);
+
+    /**
+     * 获得规则编码
+     *
+     * @return 规则编码
+     */
+    String getRuleCode();
+
+    /**
+     * 设置规则值
+     *
+     * @param value 规则值
+     */
+    void setRuleValue(String value);
+
+    /**
+     * 获得规则值
+     *
+     * @return 规则值
+     */
+    String getRuleValue();
 
 }

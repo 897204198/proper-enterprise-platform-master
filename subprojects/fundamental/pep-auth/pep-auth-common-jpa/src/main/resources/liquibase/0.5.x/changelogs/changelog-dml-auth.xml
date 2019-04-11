@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="insert-rule-datadic-20190408" author="zjl">
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_rule_user"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="RULE"/>
+            <column name="DD_CODE" value="USER"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="用户规则"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_rule_group"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="RULE"/>
+            <column name="DD_CODE" value="GROUP"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="用户组规则"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+        </insert>
+        <insert tableName="PEP_SYS_DATA_DIC">
+            <column name="ID" value="pep_rule_role"/>
+            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
+            <column name="CREATE_USER_ID" value="PEP"/>
+            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
+            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
+            <column name="DD_CATALOG" value="RULE"/>
+            <column name="DD_CODE" value="ROLE"/>
+            <column name="IS_DEFAULT" value="Y"/>
+            <column name="DD_NAME" value="角色规则"/>
+            <column name="DD_ORDER" valueNumeric="0"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

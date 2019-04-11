@@ -5,7 +5,8 @@ dependencies {
                    api project(':pep-auth-api'),
                        project(':pep-notice-client')
 
-        implementation project(':pep-cache-api'),
+        implementation project(':pep-auth-rule'),
+                       project(':pep-cache-api'),
                        project(':pep-notice-client-api')
 
     testImplementation project(':pep-test'),
