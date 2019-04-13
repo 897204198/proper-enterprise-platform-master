@@ -7,6 +7,7 @@ import com.proper.enterprise.platform.core.service.BaseService;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface MenuDao extends BaseService<Menu, String> {
     /**
@@ -51,6 +52,14 @@ public interface MenuDao extends BaseService<Menu, String> {
 
     /**
      * 多条件组合查询菜单
+     *
+     * @param fetchProperties 扩展查询条件
+     * @return 菜单集合
+     */
+    Collection<? extends Menu> findAll(Map fetchProperties);
+
+    /**
+     * 多条件组合查询菜单
      * @param name 姓名
      * @param description 说明
      * @param route 路径
@@ -59,6 +68,14 @@ public interface MenuDao extends BaseService<Menu, String> {
      * @return 菜单集合
      */
     DataTrunk<? extends Menu> findPage(String name, String description, String route, EnableEnum enable, String parentId);
+
+    /**
+     * 多条件组合查询菜单
+     *
+     * @param fetchProperties 扩展查询条件
+     * @return 菜单集合
+     */
+    DataTrunk<? extends Menu> findPage(Map fetchProperties);
 
     /**
      * 删除所有

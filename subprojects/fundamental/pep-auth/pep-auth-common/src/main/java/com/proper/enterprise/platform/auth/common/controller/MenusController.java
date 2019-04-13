@@ -11,6 +11,7 @@ import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import io.swagger.annotations.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth/menus")
@@ -38,12 +41,20 @@ public class MenusController extends BaseController {
     })
     public ResponseEntity<DataTrunk<MenuVO>> get(@ApiParam("‍菜单名称‍") String name, @ApiParam("‍菜单描述‍") String description,
                                                  @ApiParam("‍前端路径‍") String route,
+                                                 @ApiParam("‍菜单类型") DataDicLite menuType,
                                                  @ApiParam("‍菜单状态‍") @RequestParam(defaultValue = "ENABLE") EnableEnum menuEnable,
                                                  @ApiParam("‍父节点ID‍") String parentId) {
+        Map<String, Object> fetchProperties = new HashMap<>(5);
+        fetchProperties.put("menuType", menuType);
+        fetchProperties.put("name", name);
+        fetchProperties.put("description", description);
+        fetchProperties.put("enable", menuEnable);
+        fetchProperties.put("parentId", parentId);
         if (isPageSearch()) {
-            return responseOfGet(BeanUtil.convert(service.findMenusPagination(name, description, route, menuEnable, parentId), MenuVO.class));
+            return responseOfGet(BeanUtil.convert(service.findMenusPagination(fetchProperties),
+                MenuVO.class));
         } else {
-            Collection<? extends Menu> collection = service.getMenus(name, description, route, menuEnable, parentId);
+            Collection<? extends Menu> collection = service.getMenus(fetchProperties);
             DataTrunk<Menu> dataTrunk = new DataTrunk<>();
             dataTrunk.setCount(collection.size());
             dataTrunk.setData(new ArrayList<>(collection));

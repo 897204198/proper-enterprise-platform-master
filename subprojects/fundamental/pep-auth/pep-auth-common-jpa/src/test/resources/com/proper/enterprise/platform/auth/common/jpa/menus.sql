@@ -1,6 +1,6 @@
 INSERT INTO pep_auth_menus (id, name, route, icon, parent_id, sequence_number, description) VALUES ('a1', '应用1', '/a1', null, null, '0', 'des');
-INSERT INTO pep_auth_menus (id, name, route, icon, parent_id, sequence_number) VALUES ('a1-m1', '菜单1', '/a1/m1', null, 'a1', '0');
-INSERT INTO pep_auth_menus (id, name, route, icon, parent_id, sequence_number) VALUES ('a1-m2', '菜单2', '/a1/m2', null, 'a1', '1');
+INSERT INTO pep_auth_menus (id, name, route, icon, parent_id, sequence_number, MENU_TYPE) VALUES ('a1-m1', '菜单1', '/a1/m1', null, 'a1', '0', 'MENU_TYPE;1');
+INSERT INTO pep_auth_menus (id, name, route, icon, parent_id, sequence_number, MENU_TYPE) VALUES ('a1-m2', '菜单2', '/a1/m2', null, 'a1', '1', 'MENU_TYPE;1');
 INSERT INTO pep_auth_menus (id, name, route, icon, parent_id, sequence_number) VALUES ('a1-m1-1', '菜单11', '/a1/m1/1', null, 'a1-m1', '0');
 INSERT INTO pep_auth_menus (id, name, route, icon, parent_id, sequence_number) VALUES ('a1-m1-2', '菜单12', '/a1/m1/2', null, 'a1-m1', '1');
 INSERT INTO pep_auth_menus (id, name, route, icon, parent_id, sequence_number) VALUES ('a1-m1-3', '菜单13', '/a1/m1/3', null, 'a1-m1', '2');

@@ -16,6 +16,7 @@ import com.proper.enterprise.platform.core.entity.DataTrunk
 import com.proper.enterprise.platform.core.exception.ErrMsgException
 import com.proper.enterprise.platform.core.i18n.I18NUtil
 import com.proper.enterprise.platform.core.security.Authentication
+import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
 import org.junit.Test
@@ -153,6 +154,13 @@ class MenuServiceImplTest extends AbstractJPATest {
 
         def menus2 = menuService.getMenus("menu3", null, null, EnableEnum.ALL, null)
         assert menus2.size() > 0
+
+        def map = [:]
+        map['menuType'] = new DataDicLiteBean("MENU_TYPE", "1")
+        map['name'] = 'menu2'
+        map['enable'] = EnableEnum.ALL
+        def menusByCode = menuService.getMenus(map)
+        assert menusByCode.size() > 0
     }
 
     @Test

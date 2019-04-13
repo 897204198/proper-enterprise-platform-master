@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 
 import java.util.Collection;
+import java.util.Map;
 
 public interface MenuService {
 
@@ -78,6 +79,15 @@ public interface MenuService {
     Collection<? extends Menu> getMenus(String name, String description, String route, EnableEnum enable, String parentId);
 
     /**
+     * 根据当前用户以及查询条件获得用户拥有的所有角色权限范围内的菜单集合，
+     *       需去重，并按 parent 和 sequence number 排序
+     *       用户可直接被赋予某角色，也可通过隶属某用户组且用户组拥有某角色而获得角色权限
+     * @param fetchProperties 扩展查询条件
+     * @return 菜单集合
+     */
+    Collection<? extends Menu> getMenus(Map fetchProperties);
+
+    /**
      * 根据菜单集合获取过滤后的菜单包括父菜单
      * @param menus 菜单集合
      * @return 菜单集合
@@ -113,14 +123,26 @@ public interface MenuService {
     /**
      * 按照查询条件获取菜单信息列表
      *
-     * @param name        菜单名称
-     * @param description 菜单描述
-     * @param route       前端路径
-     * @param enable      菜单状态
-     * @param parentId    父菜单ID
+     * @param name            菜单名称
+     * @param description     菜单描述
+     * @param route           前端路径
+     * @param enable          菜单状态
+     * @param parentId        父菜单ID
      * @return 获取菜单信息列表
      */
-    DataTrunk<? extends Menu> findMenusPagination(String name, String description, String route, EnableEnum enable, String parentId);
+    DataTrunk<? extends Menu> findMenusPagination(String name,
+                                                  String description,
+                                                  String route,
+                                                  EnableEnum enable,
+                                                  String parentId);
+
+    /**
+     * 按照查询条件获取菜单信息列表
+     *
+     * @param fetchProperties 扩展查询条件
+     * @return 获取菜单信息列表
+     */
+    DataTrunk<? extends Menu> findMenusPagination(Map fetchProperties);
 
     /**
      * 删除多条菜单数据

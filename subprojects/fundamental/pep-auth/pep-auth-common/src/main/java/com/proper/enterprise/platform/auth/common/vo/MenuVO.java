@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.vo;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.model.Resource;
@@ -97,6 +98,7 @@ public class MenuVO extends BaseVO implements Menu {
      * 菜单类别数据字典
      */
     @JsonView(value = {Single.class})
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
     private DataDicLite menuType;
 
     /**

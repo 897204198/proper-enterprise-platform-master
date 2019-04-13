@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.sys.datadic.util;
 
 import com.proper.enterprise.platform.core.PEPApplicationContext;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.DataDicVO;
@@ -75,6 +76,19 @@ public class DataDicUtil {
         DataDic vo = new DataDicVO();
         BeanUtils.copyProperties(dataDic, vo);
         return vo;
+    }
+
+    public static boolean isNull(DataDicLite dataDicLite) {
+        if (dataDicLite == null) {
+            return true;
+        }
+        if (StringUtil.isNull(dataDicLite.getCatalog())) {
+            return true;
+        }
+        if (StringUtil.isNull(dataDicLite.getCode())) {
+            return true;
+        }
+        return false;
     }
 
 }

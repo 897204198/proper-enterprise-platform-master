@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.auth.common.jpa.controller
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.proper.enterprise.platform.api.auth.service.MenuService
 import com.proper.enterprise.platform.api.auth.service.ResourceService
 import com.proper.enterprise.platform.api.auth.service.RoleService
@@ -352,6 +353,9 @@ class MenusControllerTest extends AbstractJPATest {
 
         def value2 = resOfGet('/auth/menus?name=菜单2&description=&parentId=a1&route=/a1/m2&enable=Y&pageNo=1&pageSize=2', HttpStatus.OK)
         value2.count == 1
+
+        def valueMenuType = resOfGet('/auth/menus?name=&description=&parentId=&route=&enable=&pageNo=1&pageSize=2&catalog=MENU_TYPE&code=1', HttpStatus.OK)
+        assert valueMenuType.count == 2
     }
 
     @Test
@@ -400,7 +404,7 @@ class MenusControllerTest extends AbstractJPATest {
         MenuVO menuVO = JSONUtil.parse(get('/auth/menus/' + menuEntity.getId(), HttpStatus.OK).getResponse().getContentAsString(), MenuVO.class)
         menuVO.setParentId(parentEntity.getId())
         MenuVO updateVO = JSONUtil.parse(put('/auth/menus/' + menuVO.getId(), JSONUtil.toJSON(menuVO), HttpStatus.OK).getResponse().getContentAsString(), MenuVO.class)
-        List<MenuVO> menuVOs = JSONUtil.parse(get('/auth/menus/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        List<MenuVO> menuVOs = JSONUtil.parse(get('/auth/menus/resources', HttpStatus.OK).getResponse().getContentAsString(), new TypeReference<List<MenuVO>>(){})
         for (MenuVO menu : menuVOs) {
             if ("/bbc".equals(menu.getRoute())) {
                 assert menu.getParentId() == parentEntity.getId()
@@ -550,12 +554,12 @@ class MenusControllerTest extends AbstractJPATest {
         resourceVO.setIdentifier("edit")
 
         post('/auth/menus/' + menuChildrenVO.getId() + "/resources", JSONUtil.toJSON(resourceVO), HttpStatus.CREATED)
-        List<MenuVO> menuVOs = JSONUtil.parse(get('/auth/menus/resources', HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        List<MenuVO> menuVOs = JSONUtil.parse(get('/auth/menus/resources', HttpStatus.OK).getResponse().getContentAsString(), new TypeReference<List<MenuVO>>(){})
         assert menuVOs.size() > 0
         boolean validate = false
         for (MenuVO menuVO : menuVOs) {
             if ("/ccc/ddd/eee".equals(menuVO.getRoute())) {
-                assert menuVO.getParentId() == menuParentVO.getId()
+                assert menuVO.getParentId() == menuParentVO.id
                 List<ResourceVO> resourceVOs = menuVO.getResources()
                 assert resourceVOs.get(0).name == resourceVO.getName()
                 validate = true

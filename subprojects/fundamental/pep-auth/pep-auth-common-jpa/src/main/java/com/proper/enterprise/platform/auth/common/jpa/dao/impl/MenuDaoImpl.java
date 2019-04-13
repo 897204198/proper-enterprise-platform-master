@@ -8,6 +8,8 @@ import com.proper.enterprise.platform.auth.common.jpa.repository.MenuRepository;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.jpa.service.impl.AbstractJpaServiceSupport;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
+import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,6 +22,7 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository, String> implements MenuDao {
@@ -84,17 +87,62 @@ public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository,
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends Menu> findAll(String name, String description, String route, EnableEnum enable, String parentId) {
-        return super.findAll(buildUserSpecification(name, description, route, enable, parentId), Sort.by("parent", "sequenceNumber"));
+    public Collection<? extends Menu> findAll(String name,
+                                              String description,
+                                              String route,
+                                              EnableEnum enable,
+                                              String parentId) {
+        return super.findAll(
+            buildUserSpecification(name, description, route, enable, parentId, null), Sort.by("parent", "sequenceNumber"));
     }
 
     @Override
-    public DataTrunk<? extends Menu> findPage(String name, String description, String route, EnableEnum enable, String parentId) {
-        return this.findPage(buildUserSpecification(name, description, route, enable, parentId), Sort.by("parent", "sequenceNumber"));
+    public Collection<? extends Menu> findAll(Map fetchProperties) {
+        if (fetchProperties == null) {
+            return null;
+        }
+        return super.findAll(
+            buildUserSpecification(
+                (String) fetchProperties.get("name"),
+                (String) fetchProperties.get("description"),
+                (String) fetchProperties.get("route"),
+                (EnableEnum) fetchProperties.get("enable"),
+                (String) fetchProperties.get("parentId"),
+                (DataDicLite) fetchProperties.get("menuType")), Sort.by("parent", "sequenceNumber"));
+    }
+
+    @Override
+    public DataTrunk<? extends Menu> findPage(String name,
+                                              String description,
+                                              String route,
+                                              EnableEnum enable,
+                                              String parentId) {
+        return this.findPage(
+            buildUserSpecification(name, description, route, enable, parentId, null), Sort.by("parent", "sequenceNumber"));
+    }
+
+    @Override
+    public DataTrunk<? extends Menu> findPage(Map fetchProperties) {
+        if (fetchProperties == null) {
+            return null;
+        }
+        return this.findPage(
+            buildUserSpecification(
+                (String) fetchProperties.get("name"),
+                (String) fetchProperties.get("description"),
+                (String) fetchProperties.get("route"),
+                (EnableEnum) fetchProperties.get("enable"),
+                (String) fetchProperties.get("parentId"),
+                (DataDicLite) fetchProperties.get("menuType")), Sort.by("parent", "sequenceNumber"));
     }
 
     @SuppressWarnings("unchecked")
-    private Specification<Menu> buildUserSpecification(String name, String description, String route, EnableEnum enable, String parentId) {
+    private Specification<Menu> buildUserSpecification(String name,
+                                                       String description,
+                                                       String route,
+                                                       EnableEnum enable,
+                                                       String parentId,
+                                                       DataDicLite menuType) {
         Specification<Menu> specification = new Specification<Menu>() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
@@ -115,6 +163,9 @@ public class MenuDaoImpl extends AbstractJpaServiceSupport<Menu, MenuRepository,
                     predicates.add(cb.equal(root.get("parent").get("id"), parentId));
                 } else if (SUPER_PARENTID.equals(parentId)) {
                     predicates.add(cb.isNull(root.get("parent").get("id")));
+                }
+                if (!DataDicUtil.isNull(menuType)) {
+                    predicates.add(cb.equal(root.get("menuType"), menuType));
                 }
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }

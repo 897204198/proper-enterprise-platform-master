@@ -77,6 +77,10 @@ public class MenuServiceImpl implements MenuService {
         if (null == menu.getSequenceNumber()) {
             menu.setSequenceNumber(0);
         }
+        String menuCode = menu.getMenuCode();
+        if (StringUtil.isNotNull(menuCode)) {
+            menu.setMenuType(new DataDicLiteBean("MENU_TYPE", menuCode));
+        }
         validate(menu);
         String parentId = menu.getParentId();
         if (StringUtil.isNotNull(parentId) && !DEFAULT_VALUE.equals(parentId)) {
@@ -143,13 +147,37 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<? extends Menu> getMenus(String name, String description, String route, EnableEnum enable, String parentId) {
+    public Collection<? extends Menu> getMenus(String name,
+                                               String description,
+                                               String route,
+                                               EnableEnum enable,
+                                               String parentId) {
         Set<Menu> menus = new HashSet<>();
         Collection<? extends Menu> filterMenus = menuDao.findAll(name, description, route, enable, parentId);
         Collection<? extends Menu> roleMenus = getMenus();
         for (Menu menu : roleMenus) {
             if (filterMenus.contains(menu)) {
                 menus.addAll(recursionMenu(menu, menus, enable));
+            }
+        }
+        List<Menu> returnMenus = new ArrayList<>(menus);
+        returnMenus.sort(new BeanComparator("parent", "sequenceNumber"));
+        return returnMenus;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Collection<? extends Menu> getMenus(Map fetchProperties) {
+        Set<Menu> menus = new HashSet<>();
+        Collection<? extends Menu> filterMenus = menuDao.findAll(fetchProperties);
+        Collection<? extends Menu> roleMenus = getMenus();
+        for (Menu menu : roleMenus) {
+            if (filterMenus.contains(menu)) {
+                if (fetchProperties == null) {
+                    menus.addAll(recursionMenu(menu, menus, EnableEnum.ALL));
+                } else {
+                    menus.addAll(recursionMenu(menu, menus, (EnableEnum) fetchProperties.get("enable")));
+                }
             }
         }
         List<Menu> returnMenus = new ArrayList<>(menus);
@@ -180,8 +208,17 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataTrunk<? extends Menu> findMenusPagination(String name, String description, String route, EnableEnum enable, String parentId) {
+    public DataTrunk<? extends Menu> findMenusPagination(String name,
+                                                         String description,
+                                                         String route,
+                                                         EnableEnum enable,
+                                                         String parentId) {
         return menuDao.findPage(name, description, route, enable, parentId);
+    }
+
+    @Override
+    public DataTrunk<? extends Menu> findMenusPagination(Map fetchProperties) {
+        return menuDao.findPage(fetchProperties);
     }
 
 
