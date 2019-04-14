@@ -160,4 +160,22 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
         assert latch2.await(3, TimeUnit.SECONDS)
     }
 
+    @Test
+    void sendHeaderAndPayload() {
+        def client = StompClient.connect('with header', url)
+
+        def latch = new CountDownLatch(2)
+        def handler = new EmbeddedHandler(latch)
+        client.subscribe('/topic/test.str.hasHeader', handler)
+
+        def headers = new StompHeaders()
+        headers.setDestination('/app/test.str.withHeader')
+        def header = 'test_header'
+        headers.set(header, 'TEST_HEADER')
+        client.send(headers, header)
+
+        client.send('testPepStompUser', '/app/test.str.fixedHeader', '')
+        assert latch.await(1, TimeUnit.SECONDS)
+    }
+
 }

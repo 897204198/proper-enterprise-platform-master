@@ -175,11 +175,11 @@ public class StompClient {
         return stompClient;
     }
 
-    private static StompHeaders getStompHeaders(String clientId) {
+    private static StompHeaders getStompHeaders(String pepStompUser) {
         StompHeaders stompHeaders = new StompHeaders();
-        if (StringUtil.isNotEmpty(clientId)) {
+        if (StringUtil.isNotEmpty(pepStompUser)) {
             // 使用这个自定义 Header 标识客户端，可用来给指定客户端发送消息
-            stompHeaders.add(PEPConstants.STOMP_USER_HEADER, clientId);
+            stompHeaders.add(PEPConstants.STOMP_USER_HEADER, pepStompUser);
         }
         return stompHeaders;
     }
@@ -239,7 +239,34 @@ public class StompClient {
      * @throws InterruptedException 获得 session 时可能会抛出
      */
     public void send(String destination, Object payload) throws InterruptedException {
-        getSession().send(destination, payload);
+        StompHeaders headers = new StompHeaders();
+        headers.setDestination(destination);
+        send(headers, payload);
+    }
+
+    /**
+     * 向指定目的地发送信息
+     *
+     * @param destination 消息目的地
+     * @param payload     消息内容
+     * @throws InterruptedException 获得 session 时可能会抛出
+     */
+    public void send(String pepStompUser, String destination, Object payload) throws InterruptedException {
+        StompHeaders headers = getStompHeaders(pepStompUser);
+        headers.setDestination(destination);
+        send(headers, payload);
+    }
+
+    /**
+     * 发送 headers 和 payload
+     * headers 中需包含 destination
+     *
+     * @param headers 消息头
+     * @param payload 消息内容
+     * @throws InterruptedException 获得 session 时可能会抛出
+     */
+    public void send(StompHeaders headers, Object payload) throws InterruptedException {
+        getSession().send(headers, payload);
     }
 
     /**
