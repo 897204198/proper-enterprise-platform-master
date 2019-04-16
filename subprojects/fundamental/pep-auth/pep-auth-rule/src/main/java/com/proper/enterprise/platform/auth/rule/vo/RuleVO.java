@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.auth.rule.vo;
 
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
-import com.proper.enterprise.platform.sys.datadic.DataDicVO;
+import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean;
 
 public class RuleVO extends BaseVO {
 
@@ -13,7 +13,7 @@ public class RuleVO extends BaseVO {
 
     private String name;
 
-    private DataDicVO type;
+    private DataDicLiteBean type;
 
     private Integer sort;
 
@@ -33,11 +33,11 @@ public class RuleVO extends BaseVO {
         this.name = name;
     }
 
-    public DataDicVO getType() {
+    public DataDicLiteBean getType() {
         return type;
     }
 
-    public void setType(DataDicVO type) {
+    public void setType(DataDicLiteBean type) {
         this.type = type;
     }
 

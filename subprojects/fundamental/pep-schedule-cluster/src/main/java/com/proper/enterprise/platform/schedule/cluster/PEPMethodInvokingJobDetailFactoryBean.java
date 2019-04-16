@@ -229,9 +229,9 @@ public class PEPMethodInvokingJobDetailFactoryBean extends ArgumentConvertingMet
 
                 methodInvoker.invoke();
             } catch (Exception e) {
-                String errorMessage = "Could not invoke method '" + mTargetMethod + "' on target bean [" + mTargetBean + "]";
-                LOGGER.error(errorMessage, e);
-                throw new JobExecutionException(errorMessage, e, false);
+//                String errorMessage = "Could not invoke method '" + mTargetMethod + "' on target bean [" + mTargetBean + "]";
+//                LOGGER.error(errorMessage, e);
+//                throw new JobExecutionException(errorMessage, e, false);
             }
         }
     }

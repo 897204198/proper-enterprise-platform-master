@@ -2,8 +2,8 @@ package com.proper.enterprise.platform.auth.rule.entity;
 
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.converter.DataDicLiteConverter;
-import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity;
 
 import javax.persistence.*;
 
@@ -21,7 +21,7 @@ public class AuthRuleEntity extends BaseEntity {
 
     @Convert(converter = DataDicLiteConverter.class)
     @Column(nullable = false)
-    private DataDicEntity type;
+    private DataDicLite type;
 
     @Column(nullable = false, length = 10)
     private Integer sort;
@@ -42,11 +42,11 @@ public class AuthRuleEntity extends BaseEntity {
         this.name = name;
     }
 
-    public DataDicEntity getType() {
+    public DataDicLite getType() {
         return type;
     }
 
-    public void setType(DataDicEntity type) {
+    public void setType(DataDicLite type) {
         this.type = type;
     }
 

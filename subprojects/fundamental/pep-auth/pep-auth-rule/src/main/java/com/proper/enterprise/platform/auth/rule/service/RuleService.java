@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.rule.service;
 
 import com.proper.enterprise.platform.auth.rule.vo.RuleVO;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 
@@ -18,6 +19,14 @@ public interface RuleService {
      * @return 保存后的vo
      */
     RuleVO save(@Valid RuleVO ruleVO);
+
+    /**
+     * 根据Id集合删除 id用,分隔
+     *
+     * @param ids ids
+     * @return true删除成功  false未删除
+     */
+    boolean deleteByIds(String ids);
 
     /**
      * 根据Id删除
@@ -38,10 +47,19 @@ public interface RuleService {
     /**
      * 根据编码获取规则
      *
-     * @param code 编码
+         * @param code 编码
      * @return 规则VO
      */
     RuleVO getCode(String code);
+
+
+    /**
+     * 根据id获取规则
+     *
+     * @param id id
+     * @return 规则VO
+     */
+    RuleVO get(String id);
 
     /**
      * 查询
@@ -51,7 +69,7 @@ public interface RuleService {
      * @param type 类型
      * @return VO集合
      */
-    Collection<RuleVO> findAll(String code, String name, String type);
+    Collection<RuleVO> findAll(String code, String name, DataDicLite type);
 
     /**
      * 分页查询
@@ -62,6 +80,6 @@ public interface RuleService {
      * @param pageable 分页参数
      * @return 分页VO对象
      */
-    DataTrunk<RuleVO> findAll(String code, String name, String type, Pageable pageable);
+    DataTrunk<RuleVO> findAll(String code, String name, DataDicLite type, Pageable pageable);
 
 }

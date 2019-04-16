@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.auth.rule.repository;
 
 import com.proper.enterprise.platform.auth.rule.entity.AuthRuleEntity;
 import com.proper.enterprise.platform.core.jpa.repository.BaseJpaRepository;
+import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -23,7 +24,7 @@ public interface AuthRuleRepository extends BaseJpaRepository<AuthRuleEntity, St
     @Query("select t from AuthRuleEntity t where (t.code=:code or :code is null )"
         + " and (t.name=:name or :name is null )"
         + " and (t.type=:type or :type is null ) order by t.sort")
-    List<AuthRuleEntity> findAll(@Param("code") String code, @Param("name") String name, @Param("type") String type);
+    List<AuthRuleEntity> findAll(@Param("code") String code, @Param("name") String name, @Param("type") DataDicLite type);
 
     /**
      * 根据修改时间倒叙分页查询
@@ -38,7 +39,7 @@ public interface AuthRuleRepository extends BaseJpaRepository<AuthRuleEntity, St
     @Query("select t from AuthRuleEntity t where (t.code=:code or :code is null )"
         + " and (t.name=:name or :name is null )"
         + " and (t.type=:type or :type is null ) order by t.sort")
-    Page<AuthRuleEntity> findAll(@Param("code") String code, @Param("name") String name, @Param("type") String type, Pageable pageable);
+    Page<AuthRuleEntity> findAll(@Param("code") String code, @Param("name") String name, @Param("type") DataDicLite type, Pageable pageable);
 
 
     /**

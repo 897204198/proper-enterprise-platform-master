@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.auth.rule.controller
 
 import com.proper.enterprise.platform.auth.rule.service.RuleService
-import com.proper.enterprise.platform.sys.datadic.DataDicVO
+import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean
 import org.junit.Test
 import com.proper.enterprise.platform.auth.rule.vo.RuleVO
 import com.proper.enterprise.platform.test.AbstractJPATest
@@ -21,11 +21,10 @@ class RuleControllerTest extends AbstractJPATest {
         ruleVO.setCode("code")
         ruleVO.setName("name")
         ruleVO.setSort(1)
-        DataDicVO dataDicVO = new DataDicVO()
-        dataDicVO.setName("1")
-        dataDicVO.setCode("2")
-        dataDicVO.setCatalog("3")
-        ruleVO.setType(dataDicVO)
+        DataDicLiteBean dataDic = new DataDicLiteBean()
+        dataDic.setCode("2")
+        dataDic.setCatalog("3")
+        ruleVO.setType(dataDic)
         RuleVO result = resOfPost(URL, ruleVO)
         expect:
         assert null != result.getId()
@@ -38,11 +37,10 @@ class RuleControllerTest extends AbstractJPATest {
         ruleVO.setCode("code")
         ruleVO.setName("name")
         ruleVO.setSort(1)
-        DataDicVO dataDicVO = new DataDicVO()
-        dataDicVO.setName("1")
-        dataDicVO.setCode("2")
-        dataDicVO.setCatalog("3")
-        ruleVO.setType(dataDicVO)
+        DataDicLiteBean dataDic = new DataDicLiteBean()
+        dataDic.setCode("2")
+        dataDic.setCatalog("3")
+        ruleVO.setType(dataDic)
         RuleVO result = resOfPost(URL, ruleVO)
         RuleVO getVO = ruleService.getCode("code")
         assert getVO.getName() == "name"

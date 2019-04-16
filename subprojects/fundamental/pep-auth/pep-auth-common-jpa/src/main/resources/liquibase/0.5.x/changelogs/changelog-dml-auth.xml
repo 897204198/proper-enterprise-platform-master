@@ -28,17 +28,13 @@
             <column name="DD_NAME" value="用户组规则"/>
             <column name="DD_ORDER" valueNumeric="0"/>
         </insert>
-        <insert tableName="PEP_SYS_DATA_DIC">
-            <column name="ID" value="pep_rule_role"/>
-            <column name="CREATE_TIME" value="2017-02-20 00:00:00"/>
-            <column name="CREATE_USER_ID" value="PEP"/>
-            <column name="LAST_MODIFY_TIME" value="2017-02-20 00:00:00"/>
-            <column name="LAST_MODIFY_USER_ID" value="PEP"/>
-            <column name="DD_CATALOG" value="RULE"/>
-            <column name="DD_CODE" value="ROLE"/>
-            <column name="IS_DEFAULT" value="Y"/>
-            <column name="DD_NAME" value="角色规则"/>
-            <column name="DD_ORDER" valueNumeric="0"/>
+    </changeSet>
+    <changeSet id="insert-rule-datadic-20190415" author="zjl">
+        <insert tableName="PEP_SYS_DATA_DIC_CATALOG">
+            <column name="ID" value="RULE_TYPE"/>
+            <column name="DD_CATALOG_CODE" value="RULE"/>
+            <column name="DD_CATALOG_NAME" value="权限规则类型"/>
+            <column name="DD_CATALOG_ORDER" value="5"/>
         </insert>
     </changeSet>
 </databaseChangeLog>
