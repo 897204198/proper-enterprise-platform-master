@@ -192,6 +192,28 @@ public class RolesController extends BaseController {
         @ApiModelProperty(name = "‍角色父节点 ID", required = true)
         private String parentId;
 
+        @ApiModelProperty(name = "‍规则编码")
+        private String ruleCode;
+
+        @ApiModelProperty(name = "‍规则值")
+        private String ruleValue;
+
+        public String getRuleCode() {
+            return ruleCode;
+        }
+
+        public void setRuleCode(String ruleCode) {
+            this.ruleCode = ruleCode;
+        }
+
+        public String getRuleValue() {
+            return ruleValue;
+        }
+
+        public void setRuleValue(String ruleValue) {
+            this.ruleValue = ruleValue;
+        }
+
         public String getName() {
             return name;
         }

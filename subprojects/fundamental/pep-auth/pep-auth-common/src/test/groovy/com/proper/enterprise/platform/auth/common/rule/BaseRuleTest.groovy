@@ -8,7 +8,7 @@ import com.proper.enterprise.platform.auth.common.jpa.entity.UserEntity
 import com.proper.enterprise.platform.auth.common.jpa.entity.UserGroupEntity
 import com.proper.enterprise.platform.auth.rule.service.RuleService
 import com.proper.enterprise.platform.auth.rule.vo.RuleVO
-import com.proper.enterprise.platform.sys.datadic.DataDicVO
+import com.proper.enterprise.platform.sys.datadic.DataDicLiteBean
 import com.proper.enterprise.platform.test.AbstractJPATest
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -37,8 +37,7 @@ abstract class BaseRuleTest extends AbstractJPATest {
 
     void createRule(String code, String type) {
         RuleVO ruleVO = new RuleVO()
-        DataDicVO dataDicVO = new DataDicVO()
-        dataDicVO.setName(type)
+        DataDicLiteBean dataDicVO = new DataDicLiteBean()
         dataDicVO.setCode(type)
         dataDicVO.setCatalog("RULE")
         ruleVO.setType(dataDicVO)

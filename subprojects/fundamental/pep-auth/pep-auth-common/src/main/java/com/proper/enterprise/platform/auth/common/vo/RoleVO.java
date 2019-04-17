@@ -58,8 +58,10 @@ public class RoleVO extends BaseVO implements Role {
 
     private Collection<ResourceVO> resources;
 
+    @JsonView(value = {UserGroupVO.GroupWithRole.class, Single.class})
     private String ruleCode;
 
+    @JsonView(value = {UserGroupVO.GroupWithRole.class, Single.class})
     private String ruleValue;
 
     public String getParentId() {
