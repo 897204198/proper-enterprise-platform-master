@@ -35,6 +35,7 @@ dependencies {
     runtimeClasspath project(':pep-announcement'),
                      project(':pep-app'),
                      project(':pep-auth-jwt'),
+                     project(':pep-auth-rule'),
                      project(':pep-av-backend'),
                      project(':pep-dev-tools'),
                      // Needs one dfs implementation if use DFS API
