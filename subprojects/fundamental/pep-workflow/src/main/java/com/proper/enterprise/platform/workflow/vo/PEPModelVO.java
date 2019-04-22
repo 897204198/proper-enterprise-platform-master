@@ -47,6 +47,8 @@ public class PEPModelVO {
     @JsonDeserialize(as = DataDicEntity.class)
     private DataDicLite status;
 
+    private WFCategoryVO workflowCategory;
+
     public PEPModelVO() {
 
     }
@@ -216,6 +218,13 @@ public class PEPModelVO {
         this.formProperties = formProperties;
     }
 
+    public WFCategoryVO getWorkflowCategory() {
+        return workflowCategory;
+    }
+
+    public void setWorkflowCategory(WFCategoryVO workflowCategory) {
+        this.workflowCategory = workflowCategory;
+    }
 
     public Model convert() {
         Model model = BeanUtil.convert(this, Model.class);

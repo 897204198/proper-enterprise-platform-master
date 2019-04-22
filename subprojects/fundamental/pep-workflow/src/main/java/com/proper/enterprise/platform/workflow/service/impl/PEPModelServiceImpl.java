@@ -1,5 +1,7 @@
 package com.proper.enterprise.platform.workflow.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proper.enterprise.platform.core.security.Authentication;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
@@ -7,12 +9,15 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.workflow.model.PEPProperty;
+import com.proper.enterprise.platform.workflow.service.WFCategoryService;
 import com.proper.enterprise.platform.workflow.vo.PEPModelVO;
 import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO;
 import com.proper.enterprise.platform.workflow.service.PEPModelService;
 import com.proper.enterprise.platform.workflow.vo.PEPPropertyVO;
 import org.apache.commons.lang3.StringUtils;
 
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.editor.language.json.converter.BpmnJsonConverter;
 import org.flowable.engine.FormService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.form.FormProperty;
@@ -21,13 +26,20 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.ui.common.model.ResultListDataRepresentation;
 import org.flowable.ui.modeler.domain.Model;
 import org.flowable.ui.modeler.repository.ModelRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
 public class PEPModelServiceImpl implements PEPModelService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PEPModelServiceImpl.class);
+
+    private static final String PROCESS_NAMESPACE = "http://www.flowable.org/processdef";
 
     private ModelRepository modelRepository;
 
@@ -36,6 +48,12 @@ public class PEPModelServiceImpl implements PEPModelService {
     private DataDicService dataDicService;
 
     private FormService formService;
+
+    @Autowired
+    private WFCategoryService wfCategoryService;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     @Autowired
     PEPModelServiceImpl(ModelRepository modelRepository,
@@ -50,6 +68,15 @@ public class PEPModelServiceImpl implements PEPModelService {
 
     @Override
     public ResultListDataRepresentation getModels(String filter, String sort, Integer modelType, PEPModelVO.ModelStatus modelStatus) {
+        return getModels(filter, sort, modelType, null, modelStatus);
+    }
+
+    @Override
+    public ResultListDataRepresentation getModels(String filter,
+                                                  String sort,
+                                                  Integer modelType,
+                                                  String workflowCategoryCode,
+                                                  PEPModelVO.ModelStatus modelStatus) {
         if (StringUtils.isEmpty(filter)) {
             filter = null;
         }
@@ -60,7 +87,26 @@ public class PEPModelServiceImpl implements PEPModelService {
         Set<String> modelKeys = new HashSet<>();
         List<PEPModelVO> pepModelVOS = new ArrayList<>();
         for (Model model : list) {
-            pepModelVOS.add(new PEPModelVO(model));
+            PEPModelVO pepModelVO = new PEPModelVO(model);
+            String modelCategoryCode = "";
+            if (model.getModelEditorJson() == null) {
+                pepModelVO.setWorkflowCategory(wfCategoryService.getByCode(PROCESS_NAMESPACE));
+                modelCategoryCode = PROCESS_NAMESPACE;
+            } else {
+                try {
+                    JsonNode jsonNode = objectMapper.readTree(model.getModelEditorJson());
+                    BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
+                    BpmnModel bpmnModel = bpmnJsonConverter.convertToBpmnModel(jsonNode);
+                    pepModelVO.setWorkflowCategory(wfCategoryService.getByCode(bpmnModel.getTargetNamespace()));
+                    modelCategoryCode = bpmnModel.getTargetNamespace();
+                } catch (IOException e) {
+                    LOGGER.error("get model targetNameSpce cause an error : {}", e);
+                }
+            }
+            if (StringUtils.isNotEmpty(workflowCategoryCode) && !workflowCategoryCode.equals(modelCategoryCode)) {
+                continue;
+            }
+            pepModelVOS.add(pepModelVO);
             modelKeys.add(model.getKey());
         }
         List<PEPModelVO> returnData = packageModelAndProcess(pepModelVOS, getProcessDefinitionsByKey(modelKeys), modelStatus);
@@ -80,6 +126,29 @@ public class PEPModelServiceImpl implements PEPModelService {
         targetModel.setLastUpdated(new Date());
         targetModel.setLastUpdatedBy(Authentication.getCurrentUserId());
         modelRepository.save(targetModel);
+        return pepModelVO;
+    }
+
+    @Override
+    public PEPModelVO updateModelCategory(String id, String workflowCategoryCode) {
+        Model targetModel = modelRepository.get(id);
+        if (StringUtil.isNotEmpty(workflowCategoryCode) && StringUtil.isNotEmpty(targetModel.getModelEditorJson())) {
+            try {
+                JsonNode jsonNode = objectMapper.readTree(targetModel.getModelEditorJson());
+                BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
+                BpmnModel bpmnModel = bpmnJsonConverter.convertToBpmnModel(jsonNode);
+                bpmnModel.setTargetNamespace(workflowCategoryCode);
+                jsonNode = bpmnJsonConverter.convertToJson(bpmnModel);
+                targetModel.setModelEditorJson(objectMapper.writeValueAsString(jsonNode));
+            } catch (IOException e) {
+                LOGGER.error("get model targetNameSpce cause an error : {}", e);
+            }
+        }
+        targetModel.setLastUpdated(new Date());
+        targetModel.setLastUpdatedBy(Authentication.getCurrentUserId());
+        modelRepository.save(targetModel);
+        PEPModelVO pepModelVO = new PEPModelVO(targetModel);
+        pepModelVO.setWorkflowCategory(wfCategoryService.getByCode(workflowCategoryCode));
         return pepModelVO;
     }
 

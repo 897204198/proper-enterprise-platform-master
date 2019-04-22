@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.workflow.controller;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.workflow.service.DeployService;
 import com.proper.enterprise.platform.workflow.service.PEPModelService;
+import com.proper.enterprise.platform.workflow.service.WFCategoryService;
 import com.proper.enterprise.platform.workflow.vo.PEPModelVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,6 +36,8 @@ public class ModelsController extends BaseController {
     private ModelService modelService;
     @Autowired
     private FormService formService;
+    @Autowired
+    private WFCategoryService wfCategoryService;
 
     @RequestMapping(value = "/{modelId}/deployment", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
@@ -47,10 +50,12 @@ public class ModelsController extends BaseController {
             .orderBy(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_VERSION).desc()
             .list().get(0);
         String startFormKey = formService.getStartFormKey(processDefinition.getId());
-        return responseOfPost(new PEPModelVO(model.getId(),
+        PEPModelVO pepModelVO = new PEPModelVO(model.getId(),
             model.getName(),
             deployment.getDeploymentTime(),
-            processDefinition.getVersion(), startFormKey));
+            processDefinition.getVersion(), startFormKey);
+        pepModelVO.setWorkflowCategory(wfCategoryService.getByCode(processDefinition.getCategory()));
+        return responseOfPost(pepModelVO);
     }
 
     @RequestMapping(value = "/{modelId}", method = RequestMethod.PUT)
@@ -61,13 +66,21 @@ public class ModelsController extends BaseController {
         return responseOfPut(pepModelService.update(pepModel));
     }
 
+    @RequestMapping(value = "/{modelId}/wfCategory", method = RequestMethod.PUT)
+    @ApiOperation("‍根据模板Id修改model所属类别")
+    public ResponseEntity<PEPModelVO> changeModelCategory(@PathVariable @ApiParam(value = "‍模板Id", required = true) String modelId,
+                                                          @ApiParam(value = "‍流程类别编码") @RequestParam String workflowCategoryCode) {
+        return responseOfPut(pepModelService.updateModelCategory(modelId, workflowCategoryCode));
+    }
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     @ApiOperation("‍获得流程model集合")
     public ResultListDataRepresentation getModels(@ApiParam(value = "modelKey") String filter,
                                                   @ApiParam(value = "‍排序 ModelSort") String sort,
                                                   @ApiParam(value = "‍流程类型 AbstractModel") Integer modelType,
+                                                  @ApiParam(value = "‍流程类别编码") String workflowCategoryCode,
                                                   @ApiParam(value = "‍流程状态") PEPModelVO.ModelStatus modelStatus) {
-        return pepModelService.getModels(filter, sort, modelType, modelStatus);
+        return pepModelService.getModels(filter, sort, modelType, workflowCategoryCode, modelStatus);
     }
 
 }

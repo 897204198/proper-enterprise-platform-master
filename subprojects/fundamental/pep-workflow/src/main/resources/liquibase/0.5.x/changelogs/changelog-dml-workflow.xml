@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="fm (generator)" id="init_ver0.5.x_workflow_dml_category">
+        <insert tableName="PEP_WF_CATEGORY">
+            <column name="ID" value="root"/>
+            <column name="CREATE_TIME" value="2019-04-19 17:32:18.651"/>
+            <column name="CREATE_USER_ID" value="pep-sysadmin"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2019-04-19 17:32:18.651"/>
+            <column name="LAST_MODIFY_USER_ID" value="pep-sysadmin"/>
+            <column name="NAME" value="流程分类"/>
+            <column name="CODE" value="ROOT"/>
+            <column name="DESCRIPTION" value="流程分类"/>
+            <column name="SORT" value="0"/>
+        </insert>
+        <insert tableName="PEP_WF_CATEGORY">
+            <column name="ID" value="default-category"/>
+            <column name="CREATE_TIME" value="2019-04-19 17:32:18.651"/>
+            <column name="CREATE_USER_ID" value="pep-sysadmin"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2019-04-19 17:32:18.651"/>
+            <column name="LAST_MODIFY_USER_ID" value="pep-sysadmin"/>
+            <column name="NAME" value="默认类别"/>
+            <column name="CODE" value="DEFAULT_CATEGORY"/>
+            <column name="DESCRIPTION" value="默认类别(未分类流程)"/>
+            <column name="SORT" value="0"/>
+            <column name="PARENT_ID" value="root"/>
+        </insert>
+        <insert tableName="PEP_WF_CATEGORY">
+            <column name="ID" value="default-flowable-category"/>
+            <column name="CREATE_TIME" value="2019-04-19 17:32:18.651"/>
+            <column name="CREATE_USER_ID" value="pep-sysadmin"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2019-04-19 17:32:18.651"/>
+            <column name="LAST_MODIFY_USER_ID" value="pep-sysadmin"/>
+            <column name="NAME" value="Flowable流程"/>
+            <column name="CODE" value="http://www.flowable.org/processdef"/>
+            <column name="DESCRIPTION" value="Flowable流程"/>
+            <column name="SORT" value="0"/>
+            <column name="PARENT_ID" value="default-category"/>
+        </insert>
+        <insert tableName="PEP_WF_CATEGORY">
+            <column name="ID" value="default-activiti-category"/>
+            <column name="CREATE_TIME" value="2019-04-19 17:32:18.651"/>
+            <column name="CREATE_USER_ID" value="pep-sysadmin"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2019-04-19 17:32:18.651"/>
+            <column name="LAST_MODIFY_USER_ID" value="pep-sysadmin"/>
+            <column name="NAME" value="Activiti流程"/>
+            <column name="CODE" value="http://www.activiti.org/processdef"/>
+            <column name="DESCRIPTION" value="Activiti流程"/>
+            <column name="SORT" value="1"/>
+            <column name="PARENT_ID" value="default-category"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

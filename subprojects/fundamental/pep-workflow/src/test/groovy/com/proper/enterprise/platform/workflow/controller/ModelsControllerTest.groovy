@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 
+@Sql("/com/proper/enterprise/platform/workflow/wfCategory.sql")
 class ModelsControllerTest extends AbstractJPATest {
     @Autowired
     ModelService modelService
@@ -30,11 +31,15 @@ class ModelsControllerTest extends AbstractJPATest {
         Map modelVO2 = resOfPost('/repository/models/' + models.get(0).id + '/deployment', new PEPModelVO())
         assert modelVO1.processVersion < modelVO2.processVersion
         assert modelVO1.name == modelVO2.name
+        assert modelVO1.workflowCategory.code == "http://www.flowable.org/processdef"
+        assert modelVO1.workflowCategory.name == "默认Flowable类别"
     }
 
 
     @Test
-    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
+    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql",
+        "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql",
+        "/com/proper/enterprise/platform/workflow/wfCategory.sql"])
     void testGetModels() {
         def searchKey = "validateNamedUser"
         List<AbstractModel> models = modelRepository.findByModelTypeAndFilter(AbstractModel.MODEL_TYPE_BPMN, searchKey.toLowerCase(), null)
@@ -78,5 +83,13 @@ class ModelsControllerTest extends AbstractJPATest {
             , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
         assert "nodeploy2" == nodeploy2.getData().get(0).name
         assert "nodeploy2" == nodeploy2.getData().get(0).description
+
+        ResultListDataRepresentation modelVOs = JSONUtil.parse(get('/repository/models/?filter=' + searchKey + '&modelType=0'
+            , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
+        put('/repository/models/' + models.get(0).id + '/wfCategory?workflowCategoryCode=http://www.activiti.org/processdef', JSONUtil.toJSON("")
+            , HttpStatus.OK)
+        ResultListDataRepresentation modelVOs2 = JSONUtil.parse(get('/repository/models/?filter=' + searchKey + '&modelType=0'
+            , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
+        assert "默认Activiti类别" == modelVOs2.getData().get(0).workflowCategory.name
     }
 }

@@ -12,8 +12,11 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.enums.AppConfigEnum;
 import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
+import com.proper.enterprise.platform.workflow.factory.PEPCandidateExtQueryFactory;
+import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
 import com.proper.enterprise.platform.workflow.model.PEPWorkflowNoticeUrlBusinessParam;
 import com.proper.enterprise.platform.workflow.model.PEPWorkflowNoticeUrlParam;
+import com.proper.enterprise.platform.workflow.util.CandidateIdUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.flowable.identitylink.service.impl.persistence.entity.IdentityLinkEntity;
 import org.flowable.task.api.Task;
@@ -34,6 +37,10 @@ public abstract class AbstractWorkFlowNoticeSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractWorkFlowNoticeSupport.class);
 
     public static final String TASK_PAGE_URL = "#/webapp/workflow/workflowMainPop?param=";
+
+    private static final String GROUP_CONF_CODE = "GROUP";
+
+    private static final String ROLE_CONF_CODE = "ROLE";
 
     @Autowired
     private UserGroupDao userGroupDao;
@@ -76,7 +83,16 @@ public abstract class AbstractWorkFlowNoticeSupport {
                     userIds.add(identityLinkEntity.getUserId());
                 }
                 if (identityLinkEntity.isGroup()) {
-                    userIds.addAll(queryUserIdByGroup(identityLinkEntity.getGroupId()));
+                    CandidateIdUtil.CandidateId candidateId = CandidateIdUtil.decode(identityLinkEntity.getGroupId());
+                    PEPCandidateModel pepCandidateModel = PEPCandidateExtQueryFactory
+                        .product(candidateId.getType())
+                        .findCandidateById(candidateId.getId());
+                    if (GROUP_CONF_CODE.equals(candidateId.getType())) {
+                        userIds.addAll(queryUserIdByGroup(pepCandidateModel.getId()));
+                    }
+                    if (ROLE_CONF_CODE.equals(candidateId.getType())) {
+                        userIds.addAll(queryUserIdByRole(pepCandidateModel.getId()));
+                    }
                 }
             }
         }
@@ -84,6 +100,7 @@ public abstract class AbstractWorkFlowNoticeSupport {
     }
 
     protected Set<String> queryUserIdByGroup(String groupId) {
+
         Set<String> userIds = new HashSet<>();
         if (StringUtil.isEmpty(groupId)) {
             return userIds;
