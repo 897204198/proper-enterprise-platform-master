@@ -180,13 +180,11 @@ class MenusControllerTest extends AbstractJPATest {
 
         get('/auth/menus/' + id, HttpStatus.OK).getResponse().getContentAsString() == ''
 
+        // after menus has multi-level, this API should get all menus
         def parents = JSONUtil.parse(get('/auth/menus/parents', HttpStatus.OK)
             .getResponse().getContentAsString(), List.class)
-        assert parents.size() == 5
-        // when null == getChildren(), leaf is true
-        for (def parent : parents) {
-            assert !parent.leaf
-        }
+        assert parents.size() == 15
+
         assert parents.get(0).size() == 13
 
     }
