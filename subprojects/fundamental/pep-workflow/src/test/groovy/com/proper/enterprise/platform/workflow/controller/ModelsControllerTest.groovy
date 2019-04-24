@@ -91,5 +91,9 @@ class ModelsControllerTest extends AbstractJPATest {
         ResultListDataRepresentation modelVOs2 = JSONUtil.parse(get('/repository/models/?filter=' + searchKey + '&modelType=0'
             , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
         assert "默认Activiti类别" == modelVOs2.getData().get(0).workflowCategory.name
+
+        ResultListDataRepresentation modelVOs3 = JSONUtil.parse(get('/repository/models/?filter=' + searchKey + '&workflowCategoryCode=DEFAULT_CATEGORY&modelType=0'
+            , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
+        assert "默认Activiti类别" == modelVOs3.getData().get(0).workflowCategory.name
     }
 }

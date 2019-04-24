@@ -14,6 +14,7 @@ import com.proper.enterprise.platform.workflow.vo.PEPModelVO;
 import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO;
 import com.proper.enterprise.platform.workflow.service.PEPModelService;
 import com.proper.enterprise.platform.workflow.vo.PEPPropertyVO;
+import com.proper.enterprise.platform.workflow.vo.WFCategoryVO;
 import org.apache.commons.lang3.StringUtils;
 
 import org.flowable.bpmn.model.BpmnModel;
@@ -86,6 +87,11 @@ public class PEPModelServiceImpl implements PEPModelService {
         List<Model> list = modelRepository.findByModelTypeAndFilter(modelType, filter, sort);
         Set<String> modelKeys = new HashSet<>();
         List<PEPModelVO> pepModelVOS = new ArrayList<>();
+        Set<String> codes = new HashSet<>();
+        if (StringUtils.isNotEmpty(workflowCategoryCode)) {
+            codes.add(workflowCategoryCode);
+            codes = getCodes(workflowCategoryCode, codes);
+        }
         for (Model model : list) {
             PEPModelVO pepModelVO = new PEPModelVO(model);
             String modelCategoryCode = "";
@@ -103,7 +109,7 @@ public class PEPModelServiceImpl implements PEPModelService {
                     LOGGER.error("get model targetNameSpce cause an error : {}", e);
                 }
             }
-            if (StringUtils.isNotEmpty(workflowCategoryCode) && !workflowCategoryCode.equals(modelCategoryCode)) {
+            if (StringUtils.isNotEmpty(workflowCategoryCode) && !codes.contains(modelCategoryCode)) {
                 continue;
             }
             pepModelVOS.add(pepModelVO);
@@ -270,5 +276,20 @@ public class PEPModelServiceImpl implements PEPModelService {
             inValue.add("#{" + paramName + "[" + i + "]}");
         }
         return fieldName + " IN (" + StringUtils.join(inValue, ",") + ")";
+    }
+
+    private Set<String> getCodes(String workflowCategoryCode, Set<String> codes) {
+        WFCategoryVO wfCategoryVO = wfCategoryService.getByCode(workflowCategoryCode);
+        if (null == wfCategoryVO) {
+            return codes;
+        }
+        Collection<WFCategoryVO> wfCategoryVOS = wfCategoryVO.getChildren();
+        if (CollectionUtil.isNotEmpty(wfCategoryVOS)) {
+            wfCategoryVOS.forEach(wfCategoryVO1 -> {
+                codes.add(wfCategoryVO1.getCode());
+                getCodes(wfCategoryVO1.getCode(), codes);
+            });
+        }
+        return codes;
     }
 }
