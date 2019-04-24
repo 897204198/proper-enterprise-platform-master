@@ -2,13 +2,16 @@ package com.proper.enterprise.platform.auth.common.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
+import com.proper.enterprise.platform.api.auth.enums.OriginEnum;
 import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.api.auth.service.*;
+import com.proper.enterprise.platform.auth.common.vo.RoleVO;
 import com.proper.enterprise.platform.auth.rule.AuthRuleFactory;
 import com.proper.enterprise.platform.auth.rule.BaseAuthRuleService;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.security.Authentication;
+import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.i18n.I18NService;
@@ -252,15 +255,30 @@ public class UserServiceImpl implements UserService {
         return getUserRoles(userId, EnableEnum.ENABLE);
     }
 
+    @Override
     public Collection<? extends Role> getUserRoles(String userId, EnableEnum roleEnable) {
+        return getUserRoles(userId, roleEnable, OriginEnum.ALL);
+    }
+
+    @Override
+    public Collection<? extends Role> getUserRoles(String userId, EnableEnum roleEnable, OriginEnum origin) {
         User user = this.get(userId);
         if (user == null) {
             throw new ErrMsgException(i18NService.getMessage("pep.auth.common.user.get.failed"));
         }
-        Collection<Role> roles = new ArrayList<>(roleService.getFilterRoles(user.getRoles(), roleEnable));
-        Collection<Role> ruleRoles = getUserRuleRoles(userId, roleEnable);
-        if (CollectionUtil.isNotEmpty(ruleRoles)) {
-            roles.addAll(ruleRoles);
+        Collection<RoleVO> roles = new ArrayList<>();
+        if (OriginEnum.ALLOTMENT == origin || OriginEnum.ALL == origin) {
+            Collection<RoleVO> allotmentRoles =
+                BeanUtil.convert(new ArrayList<>(roleService.getFilterRoles(user.getRoles(), roleEnable)), RoleVO.class);
+            allotmentRoles.forEach(role -> role.setOrigin(OriginEnum.ALLOTMENT));
+            roles.addAll(allotmentRoles);
+        }
+        if (OriginEnum.RULE == origin || OriginEnum.ALL == origin) {
+            Collection<RoleVO> ruleRoles = BeanUtil.convert(getUserRuleRoles(userId, roleEnable), RoleVO.class);
+            ruleRoles.forEach(role -> role.setOrigin(OriginEnum.RULE));
+            if (CollectionUtil.isNotEmpty(ruleRoles)) {
+                roles.addAll(ruleRoles);
+            }
         }
         return roles;
     }

@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.vo;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.proper.enterprise.platform.api.auth.enums.OriginEnum;
 import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.StringUtil;
@@ -64,6 +65,9 @@ public class RoleVO extends BaseVO implements Role {
     @JsonView(value = {UserGroupVO.GroupWithRole.class, Single.class})
     private String ruleValue;
 
+    @JsonView(value = {UserGroupVO.GroupWithRole.class, Single.class})
+    private OriginEnum origin;
+
     public String getParentId() {
         if (StringUtil.isNotEmpty(this.parentId)) {
             return this.parentId;
@@ -92,6 +96,16 @@ public class RoleVO extends BaseVO implements Role {
     @Override
     public String getRuleValue() {
         return this.ruleValue;
+    }
+
+    @Override
+    public void setOrigin(OriginEnum origin) {
+        this.origin = origin;
+    }
+
+    @Override
+    public OriginEnum getOrigin() {
+        return this.origin;
     }
 
 

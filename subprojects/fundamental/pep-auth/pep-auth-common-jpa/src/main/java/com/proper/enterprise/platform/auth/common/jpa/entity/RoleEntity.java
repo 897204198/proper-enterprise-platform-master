@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.auth.common.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.proper.enterprise.platform.api.auth.enums.OriginEnum;
 import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
@@ -66,6 +67,9 @@ public class RoleEntity extends BaseEntity implements Role {
     @Column(length = 4000)
     private String ruleValue;
 
+    @Transient
+    private OriginEnum origin;
+
     public String getParentId() {
         return parentId;
     }
@@ -89,6 +93,16 @@ public class RoleEntity extends BaseEntity implements Role {
     @Override
     public String getRuleValue() {
         return this.ruleValue;
+    }
+
+    @Override
+    public void setOrigin(OriginEnum origin) {
+        this.origin = origin;
+    }
+
+    @Override
+    public OriginEnum getOrigin() {
+        return this.origin;
     }
 
     @Override

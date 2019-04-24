@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.annotation.AuthcIgnore;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
+import com.proper.enterprise.platform.api.auth.enums.OriginEnum;
 import com.proper.enterprise.platform.api.auth.model.RetrievePasswordParam;
 import com.proper.enterprise.platform.api.auth.model.User;
 import com.proper.enterprise.platform.api.auth.service.UserService;
@@ -208,8 +209,10 @@ public class UsersController extends BaseController {
     @ApiOperation("‍取得指定用户ID的角色列表")
     public ResponseEntity<Collection<RoleVO>> getUserRoles(@ApiParam(value = "‍‍‍用户ID‍", required = true) @PathVariable String userId,
                                                            @ApiParam("‍角色状态(ALL;ENABLE为默认;DISABLE)‍")
-                                                           @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable) {
-        return responseOfGet(BeanUtil.convert(userService.getUserRoles(userId, roleEnable), RoleVO.class));
+                                                           @RequestParam(defaultValue = "ENABLE") EnableEnum roleEnable,
+                                                           @ApiParam("‍角色来源(ALL为默认;ALLOTMENT为分配的角色;RULE为规则查出的角色)‍")
+                                                               @RequestParam(defaultValue = "ALL") OriginEnum origin) {
+        return responseOfGet(BeanUtil.convert(userService.getUserRoles(userId, roleEnable, origin), RoleVO.class));
     }
 
 

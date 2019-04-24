@@ -1,6 +1,7 @@
 package com.proper.enterprise.platform.api.auth.service;
 
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
+import com.proper.enterprise.platform.api.auth.enums.OriginEnum;
 import com.proper.enterprise.platform.api.auth.model.*;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 
@@ -221,6 +222,16 @@ public interface UserService {
      * @return 角色集合
      */
     Collection<? extends Role> getUserRoles(String userId, EnableEnum roleEnable);
+
+    /**
+     * 获取指定用户角色集合
+     *
+     * @param userId     用户ID
+     * @param roleEnable 角色默认为启用
+     * @param origin     角色来源, 默认查询关联+规则
+     * @return 角色集合
+     */
+    Collection<? extends Role> getUserRoles(String userId, EnableEnum roleEnable, OriginEnum origin);
 
     /**
      * 根据传入的用户集合，获取合法的用户集合(过滤掉valid、enable为false的)

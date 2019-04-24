@@ -321,8 +321,12 @@ def mkLiquibase() {
             "            <column defaultValue=\"PEP\" name=\"LAST_MODIFY_USER_ID\" type=\"VARCHAR(255)\">\n" +
             "                <constraints nullable=\"false\"/>\n" +
             "            </column>\n" +
+            "            <column defaultValue=\"Y\" name=\"ENABLE\" type=\"CHAR(1)\">\n" +
+            "                <constraints nullable=\"false\"/>\n" +
+            "            </column>\n" +
             "            <column name=\"TEST\" type=\"INT(10)\"/>\n" +
             "        </createTable>\n" +
+            "        <addPrimaryKey tableName=\"${businessDataTableName.toString().toUpperCase()}\" columnNames=\"ID\" constraintName=\"PK_${businessDataTableName.toString().toUpperCase()}\"/>\n" +
             "    </changeSet>\n" +
             "</databaseChangeLog>")
     }

@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.api.auth.model;
 
+import com.proper.enterprise.platform.api.auth.enums.OriginEnum;
 import com.proper.enterprise.platform.core.api.IBase;
 
 import java.util.Collection;
@@ -153,4 +154,17 @@ public interface Role extends IBase {
      */
     String getRuleValue();
 
+    /**
+     * 角色来源
+     *
+     * @param origin 来源
+     */
+    void setOrigin(OriginEnum origin);
+
+    /**
+     * 获得角色来源
+     *
+     * @return 来源(ALLOTMENT/RULE)
+     */
+    OriginEnum getOrigin();
 }

@@ -39,4 +39,7 @@
         <addUniqueConstraint columnNames="CODE" constraintName="UK_PEP_RULE_CODE"
                              tableName="PEP_AUTH_RULE"/>
     </changeSet>
+    <changeSet id="auth-rule_add_primaryKey" author="fm">
+        <addPrimaryKey tableName="PEP_AUTH_RULE" columnNames="ID" constraintName="PK_PEP_AUTH_RULE"/>
+    </changeSet>
 </databaseChangeLog>

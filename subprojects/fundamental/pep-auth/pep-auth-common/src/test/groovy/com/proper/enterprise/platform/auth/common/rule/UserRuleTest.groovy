@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.auth.common.rule
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum
 import com.proper.enterprise.platform.api.auth.model.Role
 import org.junit.Test
+import org.springframework.http.HttpStatus
 import org.springframework.test.context.jdbc.Sql
 
 class UserRuleTest extends BaseRuleTest {
@@ -16,6 +17,17 @@ class UserRuleTest extends BaseRuleTest {
         createRole("allUserDisable", "userAll", "ALL", false)
         Collection<Role> roles = userService.getUserRoles(userId, EnableEnum.ENABLE)
         assert roles.size() == 1
+
+        Collection<Role> allRoles = resOfGet("/auth/users/" + userId + "/roles?roleEnable=ALL", HttpStatus.OK)
+        assert allRoles.size() == 2
+        allRoles.each {role -> assert role.origin == 'RULE'}
+
+        Collection<Role> allotmentRoles = resOfGet("/auth/users/" + userId + "/roles?roleEnable=ALL&origin=ALLOTMENT", HttpStatus.OK)
+        assert allotmentRoles.size() == 0
+
+        Collection<Role> ruleRoles = resOfGet("/auth/users/" + userId + "/roles?roleEnable=ALL&origin=RULE", HttpStatus.OK)
+        assert ruleRoles.size() == 2
+        ruleRoles.each {role -> assert role.origin == 'RULE'}
     }
 
     @Test
