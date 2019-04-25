@@ -50,6 +50,18 @@ class WFCategoryControllerTest extends AbstractJPATest {
         wfCategoryVO.setCode("testCode2")
         wfCategoryVO.setSort(null)
         assert I18NUtil.getMessage("workflow.category.sort.notBlank") == post(URL, JSONUtil.toJSON(wfCategoryVO), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+
+        wfCategoryVO.setName("测试类别")
+        wfCategoryVO.setCode("testCode2")
+        wfCategoryVO.setSort(1)
+        wfCategoryVO.setParentId("parentCategory")
+        assert I18NUtil.getMessage("workflow.category.name.unique") == post(URL, JSONUtil.toJSON(wfCategoryVO), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
+
+        wfCategoryVO.setName("测试类别2")
+        wfCategoryVO.setCode("testCode")
+        wfCategoryVO.setSort(1)
+        wfCategoryVO.setParentId("parentCategory")
+        assert I18NUtil.getMessage("workflow.category.code.unique") == post(URL, JSONUtil.toJSON(wfCategoryVO), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getContentAsString()
     }
 
     @Test

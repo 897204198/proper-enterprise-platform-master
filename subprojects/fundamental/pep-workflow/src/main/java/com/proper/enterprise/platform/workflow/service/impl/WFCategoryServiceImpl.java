@@ -25,6 +25,7 @@ public class WFCategoryServiceImpl implements WFCategoryService {
 
     @Override
     public WFCategoryVO save(WFCategoryVO wfCategoryVO) {
+        valid(wfCategoryVO);
         WFCategoryEntity wfCategoryEntity = BeanUtil.convert(wfCategoryVO, WFCategoryEntity.class);
         String parentId = wfCategoryVO.getParentId();
         if (StringUtil.isNotNull(parentId) && !DEFAULT_VALUE.equals(parentId)) {
@@ -52,6 +53,7 @@ public class WFCategoryServiceImpl implements WFCategoryService {
 
     @Override
     public WFCategoryVO update(WFCategoryVO wfCategoryVO) {
+        valid(wfCategoryVO);
         WFCategoryEntity wfCategoryEntity = BeanUtil.convert(wfCategoryVO, WFCategoryEntity.class);
         String parentId = wfCategoryVO.getParentId();
         if (StringUtil.isNotNull(parentId) && !DEFAULT_VALUE.equals(parentId)) {
@@ -81,5 +83,16 @@ public class WFCategoryServiceImpl implements WFCategoryService {
     @Override
     public WFCategoryVO getByCode(String code) {
         return BeanUtil.convert(wfCategoryRepository.findByCode(code).orElse(null), WFCategoryVO.class);
+    }
+
+    private void valid(WFCategoryVO wfCategoryVO) {
+        WFCategoryEntity wfCategoryEntity = wfCategoryRepository.findByCode(wfCategoryVO.getCode()).orElse(null);
+        if (wfCategoryEntity != null && !wfCategoryEntity.getId().equals(wfCategoryVO.getId())) {
+            throw new ErrMsgException(I18NUtil.getMessage("workflow.category.code.unique"));
+        }
+        wfCategoryEntity = wfCategoryRepository.findByName(wfCategoryVO.getName()).orElse(null);
+        if (wfCategoryEntity != null && !wfCategoryEntity.getId().equals(wfCategoryVO.getId())) {
+            throw new ErrMsgException(I18NUtil.getMessage("workflow.category.name.unique"));
+        }
     }
 }

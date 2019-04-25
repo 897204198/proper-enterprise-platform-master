@@ -55,4 +55,12 @@ public interface WFCategoryRepository extends BaseJpaRepository<WFCategoryEntity
      * @return 流程类别对象
      */
     Optional<WFCategoryEntity> findByCode(String code);
+
+    /**
+     * 根据流程类别名称获取流程类别对象
+     *
+     * @param name 流程类别名称
+     * @return 流程类别对象
+     */
+    Optional<WFCategoryEntity> findByName(String name);
 }
