@@ -1,5 +1,6 @@
 package com.proper.enterprise.platform.sys.datadic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proper.enterprise.platform.core.jpa.annotation.CacheEntity;
 import com.proper.enterprise.platform.core.jpa.entity.BaseEntity;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
@@ -24,6 +25,14 @@ public class DataDicCatalogEntity extends BaseEntity {
 
     @Column(nullable = false, name = "DD_CATALOG_ORDER", columnDefinition = "int(10) DEFAULT 1")
     private Integer sort;
+
+    /**
+     * 父菜单
+     */
+    @ManyToOne
+    @JoinColumn(name = "PARENT_ID")
+    @JsonIgnore
+    private DataDicCatalogEntity parent;
 
     public String getCatalogCode() {
         return catalogCode;
@@ -55,6 +64,14 @@ public class DataDicCatalogEntity extends BaseEntity {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public DataDicCatalogEntity getParent() {
+        return parent;
+    }
+
+    public void setParent(DataDicCatalogEntity parent) {
+        this.parent = parent;
     }
 
     @Override

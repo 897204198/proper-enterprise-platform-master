@@ -2,6 +2,7 @@ package com.proper.enterprise.platform.sys.datadic.vo;
 
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
+import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
 
 import javax.persistence.EnumType;
@@ -18,6 +19,10 @@ public class DataDicCatalogVO extends BaseVO {
 
     @Enumerated(EnumType.STRING)
     private DataDicTypeEnum catalogType;
+
+    private DataDicCatalogVO parent;
+
+    private String parentId;
 
     private Integer sort;
 
@@ -51,6 +56,28 @@ public class DataDicCatalogVO extends BaseVO {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public String getParentId() {
+        if (StringUtil.isNotEmpty(this.parentId)) {
+            return this.parentId;
+        }
+        if (null == this.getParent()) {
+            return null;
+        }
+        return this.getParent().getId();
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public DataDicCatalogVO getParent() {
+        return parent;
+    }
+
+    public void setParent(DataDicCatalogVO parent) {
+        this.parent = parent;
     }
 
     @Override

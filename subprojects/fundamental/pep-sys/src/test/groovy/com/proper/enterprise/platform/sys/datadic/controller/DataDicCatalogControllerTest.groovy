@@ -119,7 +119,7 @@ class DataDicCatalogControllerTest extends AbstractJPATest {
         DataDicCatalogVO sava2 = dataDicCatalogService.save(dataDicCatalogVO2)
 
         DataTrunk<DataDicCatalogVO> dataDicEntities = JSONUtil.parse(get(datadicUrl + "?catalogType=SYSTEM", HttpStatus.OK).getResponse()
-                .getContentAsString(), DataTrunk.class)
+            .getContentAsString(), DataTrunk.class)
         assert dataDicEntities.data.size() == 2
         DataTrunk<DataDicCatalogVO> dataDicEntities2 = JSONUtil.parse(get(datadicUrl + "?catalogType=BUSINESS", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert dataDicEntities2.data.size() == 0
@@ -132,9 +132,29 @@ class DataDicCatalogControllerTest extends AbstractJPATest {
         DataTrunk<DataDicCatalogVO> dataDicCatalogsALL = JSONUtil.parse(get(datadicUrl + "?catalogCode=catalog&enable=ALL", HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert dataDicCatalogsALL.data.size() == 1
 
-        DataTrunk<DataDicCatalogVO> dataDicCatalogsSort= JSONUtil.parse(get(datadicUrl, HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        DataTrunk<DataDicCatalogVO> dataDicCatalogsSort = JSONUtil.parse(get(datadicUrl, HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
         assert dataDicCatalogsSort.data.size() == 2
         assert dataDicCatalogsSort.data.get(0).catalogName == 'name2'
         assert dataDicCatalogsSort.data.get(1).catalogName == 'name'
+    }
+
+
+    @Test
+    void testParent() {
+        DataDicCatalogVO dataDicCatalogVO = new DataDicCatalogVO()
+        dataDicCatalogVO.setCatalogCode("catalog")
+        dataDicCatalogVO.setCatalogName("code")
+        DataDicCatalogVO saveDataDicCatalogVO = resOfPost(datadicUrl, dataDicCatalogVO)
+
+        DataDicCatalogVO childRenVO = new DataDicCatalogVO()
+        childRenVO.setCatalogCode("children")
+        childRenVO.setCatalogName("children")
+        childRenVO.setParentId(saveDataDicCatalogVO.getId())
+        DataDicCatalogVO saveChildrenVO = resOfPost(datadicUrl, childRenVO)
+
+        DataTrunk<DataDicCatalogVO> dataDicCatalogsSort = JSONUtil.parse(get(datadicUrl + '?catalogCode=children', HttpStatus.OK).getResponse().getContentAsString(), DataTrunk.class)
+        assert dataDicCatalogsSort.data.size() == 1
+        assert dataDicCatalogsSort.data.get(0).catalogName == 'children'
+        assert dataDicCatalogsSort.data.get(0).parentId == saveDataDicCatalogVO.getId()
     }
 }

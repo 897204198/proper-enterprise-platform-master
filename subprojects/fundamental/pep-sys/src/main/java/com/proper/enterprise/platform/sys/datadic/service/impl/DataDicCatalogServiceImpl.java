@@ -86,8 +86,11 @@ public class DataDicCatalogServiceImpl implements DataDicCatalogService {
             dataDicCatalogVO.setSort(1);
         }
         validUnique(dataDicCatalogVO);
-        return BeanUtil.convert(dataDicCatalogRepository.save(
-            BeanUtil.convert(dataDicCatalogVO, DataDicCatalogEntity.class)), DataDicCatalogVO.class);
+        DataDicCatalogEntity catalogEntity = BeanUtil.convert(dataDicCatalogVO, DataDicCatalogEntity.class);
+        if (StringUtil.isNotEmpty(dataDicCatalogVO.getParentId())) {
+            catalogEntity.setParent(dataDicCatalogRepository.getOne(dataDicCatalogVO.getParentId()));
+        }
+        return BeanUtil.convert(dataDicCatalogRepository.save(catalogEntity), DataDicCatalogVO.class);
     }
 
     @Override
@@ -97,8 +100,11 @@ public class DataDicCatalogServiceImpl implements DataDicCatalogService {
             throw new ErrMsgException("Could NOT find data dic cataglog with " + dataDicCatalogVO.getId());
         });
         String oldCatalogCode = oldCatalog.getCatalogCode();
-        DataDicCatalogEntity dataDicCatalogEntity = dataDicCatalogRepository.updateForSelective(
-            BeanUtil.convert(dataDicCatalogVO, DataDicCatalogEntity.class));
+        DataDicCatalogEntity catalogEntity = BeanUtil.convert(dataDicCatalogVO, DataDicCatalogEntity.class);
+        if (StringUtil.isNotEmpty(dataDicCatalogVO.getParentId())) {
+            catalogEntity.setParent(dataDicCatalogRepository.getOne(dataDicCatalogVO.getParentId()));
+        }
+        DataDicCatalogEntity dataDicCatalogEntity = dataDicCatalogRepository.updateForSelective(catalogEntity);
         if (!dataDicCatalogEntity.getCatalogCode().equals(oldCatalogCode)) {
             dataDicService.updateCatalog(oldCatalogCode, dataDicCatalogEntity.getCatalogCode());
         }
@@ -124,7 +130,6 @@ public class DataDicCatalogServiceImpl implements DataDicCatalogService {
         dataDicCatalogRepository.deleteAll(dataCatalogs);
         return true;
     }
-
 
     private void validUnique(DataDicCatalogVO dataDicCatalogVO) {
         DataDicCatalogEntity dataDicCatalogEntity = dataDicCatalogRepository.findByCatalogCode(dataDicCatalogVO.getCatalogCode());

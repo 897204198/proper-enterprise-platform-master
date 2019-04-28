@@ -38,7 +38,7 @@ public class OplogExecutor {
             LOGGER.error("MongoCommandException can't start oplog", e);
         } catch (Exception e) {
             LOGGER.error("sync oplog error:", e);
-            oplogMonitor.start(collection);
+            this.execute(collection);
             LOGGER.info("restart oplog");
         }
     }

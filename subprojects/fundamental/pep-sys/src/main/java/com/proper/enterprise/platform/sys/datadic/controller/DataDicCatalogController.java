@@ -59,8 +59,8 @@ public class DataDicCatalogController extends BaseController {
     @GetMapping
     @ApiOperation("‍取得数据字典信息列表")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
-            @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
+        @ApiImplicitParam(name = "pageNo", value = "‍页码", required = true, paramType = "query", dataType = "int"),
+        @ApiImplicitParam(name = "pageSize", value = "‍每页条数", required = true, paramType = "query", dataType = "int")
     })
     public ResponseEntity<DataTrunk> get(String catalogCode, String catalogName, DataDicTypeEnum catalogType, EnableEnum enable) {
         if (isPageSearch()) {
@@ -94,6 +94,9 @@ public class DataDicCatalogController extends BaseController {
         @ApiModelProperty(name = "‍排序", required = true)
         private Integer sort;
 
+        @ApiModelProperty(name = "‍父分类Id")
+        private String parentId;
+
         public String getCatalogCode() {
             return catalogCode;
         }
@@ -124,6 +127,14 @@ public class DataDicCatalogController extends BaseController {
 
         public void setSort(Integer sort) {
             this.sort = sort;
+        }
+
+        public String getParentId() {
+            return parentId;
+        }
+
+        public void setParentId(String parentId) {
+            this.parentId = parentId;
         }
 
         @Override
