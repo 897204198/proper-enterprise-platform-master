@@ -156,5 +156,32 @@ class DataDicCatalogControllerTest extends AbstractJPATest {
         assert dataDicCatalogsSort.data.size() == 1
         assert dataDicCatalogsSort.data.get(0).catalogName == 'children'
         assert dataDicCatalogsSort.data.get(0).parentId == saveDataDicCatalogVO.getId()
+
+        delete(datadicUrl + "?ids=" + saveDataDicCatalogVO.getId(), HttpStatus.INTERNAL_SERVER_ERROR).getResponse().getErrorMessage() == I18NUtil.getMessage("pep.sys.datadic.catalog.del.relevanceChildren.error")
+    }
+
+    @Test
+    void testQueryByParent() {
+        DataDicCatalogVO dataDicCatalogVO = new DataDicCatalogVO()
+        dataDicCatalogVO.setCatalogCode("catalog")
+        dataDicCatalogVO.setCatalogName("code")
+        DataDicCatalogVO saveDataDicCatalogVO = resOfPost(datadicUrl, dataDicCatalogVO)
+
+        DataDicCatalogVO childRenVO = new DataDicCatalogVO()
+        childRenVO.setCatalogCode("children")
+        childRenVO.setCatalogName("children")
+        childRenVO.setParentId(saveDataDicCatalogVO.getId())
+        DataDicCatalogVO saveChildrenVO = resOfPost(datadicUrl, childRenVO)
+        DataDicCatalogVO childRenChildRenVO = new DataDicCatalogVO()
+        childRenChildRenVO.setCatalogCode("childrenChildren")
+        childRenChildRenVO.setCatalogName("childrenChildren")
+        childRenChildRenVO.setParentId(saveChildrenVO.getId())
+        DataDicCatalogVO saveChildrenChildrenVO = resOfPost(datadicUrl, childRenChildRenVO)
+
+        List<DataDicCatalogVO> dataDicCatalogs = JSONUtil.parse(get(datadicUrl + "/parentCatalog/catalog", HttpStatus.OK).getResponse().getContentAsString(), List.class)
+        assert dataDicCatalogs.size() == 3
+        assert dataDicCatalogs.get(0)['id'] == saveDataDicCatalogVO.getId()
+        assert dataDicCatalogs.get(1)['parentId'] == saveDataDicCatalogVO.getId()
+        assert dataDicCatalogs.get(2)['parentId'] == saveChildrenVO.getId()
     }
 }

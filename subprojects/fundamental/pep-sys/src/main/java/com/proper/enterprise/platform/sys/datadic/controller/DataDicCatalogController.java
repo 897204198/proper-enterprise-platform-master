@@ -80,6 +80,14 @@ public class DataDicCatalogController extends BaseController {
         return responseOfGet(dataDicCatalogService.get(id));
     }
 
+    @GetMapping(path = "/parentCatalog/{parentCatalog}")
+    @ApiOperation("‍根据分类获得分类下的数据字典集合")
+    public ResponseEntity<?> getByParentCatalog(@ApiParam(value = "‍应用id", required = true) @PathVariable String parentCatalog,
+                                                @ApiParam("‍‍字典类型") DataDicTypeEnum dataDicType,
+                                                @ApiParam("‍启用停用") @RequestParam(defaultValue = "ENABLE") EnableEnum enable) {
+        return responseOfGet(dataDicCatalogService.findByParentCatalog(parentCatalog, dataDicType, enable));
+    }
+
     public static class DataDicCatalogModelVO {
 
         @ApiModelProperty(name = "‍数据字典项编码", required = true)

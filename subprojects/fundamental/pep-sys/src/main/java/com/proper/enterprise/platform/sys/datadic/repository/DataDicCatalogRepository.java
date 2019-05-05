@@ -50,6 +50,22 @@ public interface DataDicCatalogRepository extends BaseJpaRepository<DataDicCatal
     Page<DataDicCatalogEntity> findAll(@Param("catalogCode") String catalogCode, @Param("catalogName") String catalogName,
                                        @Param("catalogType") DataDicTypeEnum catalogType, @Param("enable") Boolean enable, Pageable pageable);
 
+    /**
+     * 查询接口
+     *
+     * @param parentCatalog 字典项code
+     * @param catalogType   字典项类型
+     * @param enable        是否启用
+     * @return 字典项集合
+     */
+    @Query(value = "SELECT c FROM DataDicCatalogEntity c where"
+        + " (c.parent.catalogCode=:parentCatalog or :parentCatalog is null)"
+        + " and (catalogType=:catalogType or :catalogType is null)"
+        + " and (enable=:enable or :enable is null)"
+        + " order by sort asc")
+    List<DataDicCatalogEntity> findAllByParentCatalogCode(@Param("parentCatalog") String parentCatalog,
+                                                          @Param("catalogType") DataDicTypeEnum catalogType,
+                                                          @Param("enable") Boolean enable);
 
     /**
      * 根据字典项code获取字典项

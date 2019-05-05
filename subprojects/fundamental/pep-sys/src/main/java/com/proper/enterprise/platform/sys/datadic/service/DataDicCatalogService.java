@@ -37,6 +37,15 @@ public interface DataDicCatalogService {
     DataTrunk<DataDicCatalogVO> findPage(String catalogCode, String catalogName, DataDicTypeEnum catalogType,
                                          EnableEnum enable, Pageable pageable);
 
+    /**
+     * 获得某父级分类下的数据字典集合
+     *
+     * @param parentCatalog 父级分类名
+     * @param dataDicType   字典类型
+     * @param enable        启用停用
+     * @return 数据字典集合
+     */
+    Collection<DataDicCatalogVO> findByParentCatalog(String parentCatalog, DataDicTypeEnum dataDicType, EnableEnum enable);
 
     /**
      * 根据 id 获得数据字典节点

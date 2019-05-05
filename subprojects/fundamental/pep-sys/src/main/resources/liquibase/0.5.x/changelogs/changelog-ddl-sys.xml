@@ -14,4 +14,8 @@
             <column name="PARENT_ID"/>
         </createIndex>
     </changeSet>
+    <changeSet author="fm" id="add-sys-parent-fk-20190430">
+        <addForeignKeyConstraint baseTableName="PEP_SYS_DATA_DIC_CATALOG" baseColumnNames="PARENT_ID" constraintName="FK_PEP_SYS_DATA_DIC_CATALOG_PARENT_ID" referencedTableName="PEP_SYS_DATA_DIC_CATALOG"
+                                 referencedColumnNames="ID"/>
+    </changeSet>
 </databaseChangeLog>

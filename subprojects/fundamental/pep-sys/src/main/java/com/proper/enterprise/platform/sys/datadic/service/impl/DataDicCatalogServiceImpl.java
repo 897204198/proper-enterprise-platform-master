@@ -17,8 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 @Service
 public class DataDicCatalogServiceImpl implements DataDicCatalogService {
@@ -67,6 +66,29 @@ public class DataDicCatalogServiceImpl implements DataDicCatalogService {
         }
         return BeanUtil.convert(dataDicCatalogRepository.findAll(catalogCode, catalogName,
             catalogType, searchEnable, pageable), DataDicCatalogVO.class);
+    }
+
+    @Override
+    public Collection<DataDicCatalogVO> findByParentCatalog(String parentCatalog, DataDicTypeEnum dataDicType, EnableEnum enable) {
+        if (StringUtil.isEmpty(parentCatalog)) {
+            return new ArrayList<>();
+        }
+        if (null == enable) {
+            enable = EnableEnum.ENABLE;
+        }
+        Collection<DataDicCatalogEntity> dataDicCatalogEntities = dataDicCatalogRepository.findAllByParentCatalogCode(
+            parentCatalog,
+            dataDicType,
+            EnableEnum.ALL != enable ? enable == EnableEnum.ENABLE : null);
+        if (null == dataDicCatalogEntities) {
+            return new ArrayList<>();
+        }
+        Collection<DataDicCatalogVO> dataDicCatalogVOS = new ArrayList<>();
+        dataDicCatalogVOS.add(BeanUtil.convert(dataDicCatalogRepository.findByCatalogCode(parentCatalog), DataDicCatalogVO.class));
+        for (DataDicCatalogEntity dataDicCatalogEntity : dataDicCatalogEntities) {
+            dataDicCatalogVOS.addAll(findByParentCatalog(dataDicCatalogEntity.getCatalogCode(), dataDicType, enable));
+        }
+        return dataDicCatalogVOS;
     }
 
     @Override
@@ -122,6 +144,13 @@ public class DataDicCatalogServiceImpl implements DataDicCatalogService {
             return false;
         }
         for (DataDicCatalogEntity dataDicCatalogEntity : dataCatalogs) {
+            Collection<DataDicCatalogEntity> childrenCatalog = dataDicCatalogRepository.findAllByParentCatalogCode(
+                dataDicCatalogEntity.getCatalogCode(),
+                null,
+                null);
+            if (CollectionUtil.isNotEmpty(childrenCatalog)) {
+                throw new ErrMsgException(I18NUtil.getMessage("pep.sys.datadic.catalog.del.relevanceChildren.error"));
+            }
             Collection datadics = dataDicService.findByCatalog(dataDicCatalogEntity.getCatalogCode());
             if (CollectionUtil.isNotEmpty(datadics)) {
                 throw new ErrMsgException(I18NUtil.getMessage("pep.sys.datadic.catalog.del.relevance.error"));
