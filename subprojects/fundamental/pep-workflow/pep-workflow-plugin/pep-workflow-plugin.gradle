@@ -1,0 +1,32 @@
+apply plugin: 'java-library'
+
+dependencies {
+
+                   api libraries.flowable_engine
+
+        implementation  project(':pep-auth-common-jpa'),
+                        project(':pep-core-mongo'),
+                        project(':pep-notice-client-api'),
+                        project(':pep-notice-client'),
+                        project(':pep-template'),
+                        project(':pep-workflow'),
+                        project(':pep-websocket')
+
+    testImplementation project(':pep-test'),
+                       project(':pep-file'),
+                       project(':pep-dfs-mongo'),
+                       project(':pep-notice-server-app'),
+                       project(':pep-notice-server-email'),
+                       project(':pep-websocket-client')
+
+    testImplementation  libraries.netty_all,
+                        libraries.reactor_netty,
+                        libraries.spring_messaging,
+                        libraries.spring_websocket,
+                        libraries.tomcat_websocket
+
+       testRuntimeOnly project(':pep-auth-jwt'),
+                       project(':pep-cache-ehcache'),
+                       project(':pep-notice-client-embed')
+
+}

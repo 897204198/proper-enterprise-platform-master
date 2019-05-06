@@ -47,7 +47,8 @@ dependencies {
                      project(':pep-notice-client'),
                      project(':pep-oopsearch-sync-mongo'),
                      project(':pep-websocket'),
-                     project(':pep-workflow')
+                     project(':pep-workflow'),
+                     project(':pep-workflow-plugin')
 
 }
 

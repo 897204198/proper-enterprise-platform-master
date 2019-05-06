@@ -1,0 +1,30 @@
+apply plugin: 'java-library'
+
+dependencies {
+
+                   api libraries.flowable_engine
+
+        implementation libraries.flowable_http,
+                       libraries.flowable_idm_spring_configurator,
+                       libraries.flowable_spring_boot_starter_process,
+                       libraries.flowable_spring_boot_starter_process_rest,
+                       libraries.flowable_spring_configurator,
+                       libraries.flowable_ui_modeler_rest,
+                       libraries.javax_inject,
+                       libraries.liquibase
+
+        implementation project(':pep-auth-api'),
+                       project(':pep-cache-api'),
+                       project(':pep-configs')
+
+           runtimeOnly libraries.commons_fileupload
+
+    testImplementation project(':pep-auth-common-jpa'),
+                       project(':pep-test'),
+                       project(':pep-file'),
+                       project(':pep-dfs-mongo')
+
+       testRuntimeOnly project(':pep-auth-jwt'),
+                       project(':pep-cache-ehcache')
+
+}

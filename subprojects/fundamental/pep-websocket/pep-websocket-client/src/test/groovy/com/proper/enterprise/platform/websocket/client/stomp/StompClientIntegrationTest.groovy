@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.websocket.client.stomp
 import com.proper.enterprise.platform.api.auth.service.AccessTokenService
 import com.proper.enterprise.platform.auth.common.vo.AccessTokenVO
 import com.proper.enterprise.platform.test.AbstractIntegrationTest
+import com.proper.enterprise.platform.websocket.util.StompMessageSendUtil
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -79,7 +80,8 @@ class StompClientIntegrationTest extends AbstractIntegrationTest {
         }
         client1.subscribe(broadcast, handler)
         client2.subscribe(broadcast, handler)
-        client1.send('/app/test.str', msg)
+        StompMessageSendUtil.send('/topic/test.str', msg)
+//        client1.send('/topic/test.str', msg)
         assert latch.await(1, TimeUnit.SECONDS)
 
         client1.disconnect()
