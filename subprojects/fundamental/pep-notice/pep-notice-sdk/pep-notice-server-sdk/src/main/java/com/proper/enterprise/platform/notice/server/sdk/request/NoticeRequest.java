@@ -39,7 +39,6 @@ public class NoticeRequest implements Serializable {
      * 消息内容
      */
     @NotEmpty(message = "{notice.server.param.content.cantBeEmpty}", groups = NoticeSendApi.class)
-    @Length(message = "{notice.server.param.content.isTooLong}", max = 2048, groups = NoticeSendApi.class)
     private String content;
 
     /**

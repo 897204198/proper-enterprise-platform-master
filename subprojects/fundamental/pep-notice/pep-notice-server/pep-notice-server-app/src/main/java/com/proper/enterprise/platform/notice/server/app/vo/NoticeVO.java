@@ -47,7 +47,6 @@ public class NoticeVO extends BaseVO implements Notice {
      * 消息内容
      */
     @NotEmpty(message = "{notice.server.param.content.cantBeEmpty}")
-    @Length(message = "{notice.server.param.content.isTooLong}", max = 2048)
     private String content;
 
     /**
