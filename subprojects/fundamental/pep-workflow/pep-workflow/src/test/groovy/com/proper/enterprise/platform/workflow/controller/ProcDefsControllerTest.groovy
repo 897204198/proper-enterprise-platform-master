@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.workflow.controller
 
-import com.proper.enterprise.platform.workflow.plugin.service.DeployService
+import com.proper.enterprise.platform.workflow.service.DeployService
 import com.proper.enterprise.platform.workflow.test.WorkflowAbstractTest
 import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO
 import org.junit.Test

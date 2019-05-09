@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.workflow.plugin.service.impl;
+package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.workflow.handler.GlobalVariableInitHandler;
 import org.flowable.engine.repository.ProcessDefinition;

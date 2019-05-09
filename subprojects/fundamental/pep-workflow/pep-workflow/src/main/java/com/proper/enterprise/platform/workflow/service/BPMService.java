@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.workflow.plugin.service;
+package com.proper.enterprise.platform.workflow.service;
 
 import com.proper.enterprise.platform.api.cache.CacheDuration;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;

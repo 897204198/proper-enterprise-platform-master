@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.workflow.flowable
 
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.workflow.flowable.service.AssigneeService
-import com.proper.enterprise.platform.workflow.plugin.service.DeployService
+import com.proper.enterprise.platform.workflow.service.DeployService
 import org.flowable.engine.RuntimeService
 import org.flowable.engine.TaskService
 import org.flowable.engine.runtime.ProcessInstance

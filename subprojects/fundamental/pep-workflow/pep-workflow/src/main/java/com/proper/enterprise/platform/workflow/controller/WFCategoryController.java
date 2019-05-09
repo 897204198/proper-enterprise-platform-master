@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.workflow.controller;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import com.proper.enterprise.platform.workflow.plugin.service.WFCategoryService;
+import com.proper.enterprise.platform.workflow.service.WFCategoryService;
 import com.proper.enterprise.platform.workflow.vo.WFCategoryVO;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;

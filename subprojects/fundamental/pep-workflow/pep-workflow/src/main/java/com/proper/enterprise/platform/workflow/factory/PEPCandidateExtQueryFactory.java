@@ -4,7 +4,7 @@ import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.workflow.entity.WFIdmQueryConfEntity;
-import com.proper.enterprise.platform.workflow.plugin.service.PEPCandidateExtQuery;
+import com.proper.enterprise.platform.workflow.service.PEPCandidateExtQuery;
 import com.proper.enterprise.platform.workflow.util.WFIdmQueryConfUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

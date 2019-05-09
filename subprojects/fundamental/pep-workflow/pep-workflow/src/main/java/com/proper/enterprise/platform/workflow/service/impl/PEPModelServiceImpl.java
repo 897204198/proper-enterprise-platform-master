@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.workflow.plugin.service.impl;
+package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,10 +9,10 @@ import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
 import com.proper.enterprise.platform.sys.datadic.service.DataDicService;
 import com.proper.enterprise.platform.workflow.model.PEPProperty;
-import com.proper.enterprise.platform.workflow.plugin.service.WFCategoryService;
+import com.proper.enterprise.platform.workflow.service.WFCategoryService;
 import com.proper.enterprise.platform.workflow.vo.PEPModelVO;
 import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO;
-import com.proper.enterprise.platform.workflow.plugin.service.PEPModelService;
+import com.proper.enterprise.platform.workflow.service.PEPModelService;
 import com.proper.enterprise.platform.workflow.vo.PEPPropertyVO;
 import com.proper.enterprise.platform.workflow.vo.WFCategoryVO;
 import org.apache.commons.lang3.StringUtils;

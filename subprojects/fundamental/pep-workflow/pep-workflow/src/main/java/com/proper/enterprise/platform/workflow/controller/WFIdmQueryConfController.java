@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.workflow.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.workflow.entity.WFIdmQueryConfEntity;
-import com.proper.enterprise.platform.workflow.plugin.service.WFIdmQueryConfService;
+import com.proper.enterprise.platform.workflow.service.WFIdmQueryConfService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

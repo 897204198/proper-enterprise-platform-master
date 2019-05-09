@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.workflow.controller
 
 import com.proper.enterprise.platform.test.AbstractJPATest
-import com.proper.enterprise.platform.workflow.plugin.service.DeployService
+import com.proper.enterprise.platform.workflow.service.DeployService
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

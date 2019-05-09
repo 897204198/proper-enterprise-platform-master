@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.workflow.util;
 
 import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.workflow.entity.WFIdmQueryConfEntity;
-import com.proper.enterprise.platform.workflow.plugin.service.WFIdmQueryConfService;
+import com.proper.enterprise.platform.workflow.service.WFIdmQueryConfService;
 
 import java.util.Collection;
 

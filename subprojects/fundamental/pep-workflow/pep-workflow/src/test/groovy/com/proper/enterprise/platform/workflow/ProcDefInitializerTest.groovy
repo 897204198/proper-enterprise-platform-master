@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.workflow
 
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.workflow.enums.ProcDefDeployType
-import com.proper.enterprise.platform.workflow.plugin.service.DeployService
+import com.proper.enterprise.platform.workflow.service.DeployService
 import org.flowable.ui.modeler.domain.AbstractModel
 import org.flowable.ui.modeler.domain.Model
 import org.flowable.ui.modeler.repository.ModelRepository

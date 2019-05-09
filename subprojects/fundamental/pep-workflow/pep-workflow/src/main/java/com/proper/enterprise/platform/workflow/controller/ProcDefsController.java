@@ -1,7 +1,7 @@
 package com.proper.enterprise.platform.workflow.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.workflow.plugin.service.PEPProcDefsService;
+import com.proper.enterprise.platform.workflow.service.PEPProcDefsService;
 import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

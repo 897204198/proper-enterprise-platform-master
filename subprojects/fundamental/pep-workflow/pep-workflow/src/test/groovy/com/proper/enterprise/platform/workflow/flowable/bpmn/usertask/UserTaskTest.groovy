@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.workflow.flowable.bpmn.usertask
 
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.workflow.flowable.service.AssigneeService
-import com.proper.enterprise.platform.workflow.plugin.service.DeployService
+import com.proper.enterprise.platform.workflow.service.DeployService
 import org.flowable.engine.HistoryService
 import org.flowable.engine.IdentityService
 import org.flowable.engine.RuntimeService

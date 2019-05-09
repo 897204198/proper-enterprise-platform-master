@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.workflow.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.workflow.plugin.service.PEPProcessService;
+import com.proper.enterprise.platform.workflow.service.PEPProcessService;
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPathVO;

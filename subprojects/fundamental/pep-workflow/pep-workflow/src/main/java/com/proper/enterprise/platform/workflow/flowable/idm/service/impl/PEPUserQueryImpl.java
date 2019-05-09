@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.workflow.flowable.idm.service.impl;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.factory.PEPCandidateExtQueryFactory;
 import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
-import com.proper.enterprise.platform.workflow.plugin.service.impl.PEPCandidateUserExtQueryImpl;
+import com.proper.enterprise.platform.workflow.service.impl.PEPCandidateUserExtQueryImpl;
 import org.flowable.common.engine.impl.interceptor.CommandContext;
 import org.flowable.idm.api.User;
 import org.flowable.idm.engine.impl.UserQueryImpl;

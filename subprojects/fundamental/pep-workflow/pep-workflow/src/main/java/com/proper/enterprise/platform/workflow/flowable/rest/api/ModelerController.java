@@ -9,7 +9,7 @@ import com.proper.enterprise.platform.workflow.enums.ParserEnum;
 import com.proper.enterprise.platform.workflow.factory.PEPCandidateExtQueryFactory;
 import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
 import com.proper.enterprise.platform.workflow.model.PEPVariablesModel;
-import com.proper.enterprise.platform.workflow.plugin.service.impl.PEPCandidateUserExtQueryImpl;
+import com.proper.enterprise.platform.workflow.service.impl.PEPCandidateUserExtQueryImpl;
 import com.proper.enterprise.platform.workflow.util.CandidateIdUtil;
 import com.proper.enterprise.platform.workflow.util.FlowableConditionUtil;
 import io.swagger.annotations.Api;

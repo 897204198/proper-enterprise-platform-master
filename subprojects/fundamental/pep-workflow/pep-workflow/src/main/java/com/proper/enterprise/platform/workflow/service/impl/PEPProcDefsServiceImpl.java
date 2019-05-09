@@ -1,7 +1,7 @@
-package com.proper.enterprise.platform.workflow.plugin.service.impl;
+package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.workflow.model.PEPProcessDefinition;
-import com.proper.enterprise.platform.workflow.plugin.service.PEPProcDefsService;
+import com.proper.enterprise.platform.workflow.service.PEPProcDefsService;
 import com.proper.enterprise.platform.workflow.vo.PEPProcessDefinitionVO;
 import org.apache.commons.io.IOUtils;
 import org.flowable.engine.RepositoryService;

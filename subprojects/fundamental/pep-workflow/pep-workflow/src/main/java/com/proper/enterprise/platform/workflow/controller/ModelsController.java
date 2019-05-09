@@ -1,9 +1,9 @@
 package com.proper.enterprise.platform.workflow.controller;
 
 import com.proper.enterprise.platform.core.controller.BaseController;
-import com.proper.enterprise.platform.workflow.plugin.service.DeployService;
-import com.proper.enterprise.platform.workflow.plugin.service.PEPModelService;
-import com.proper.enterprise.platform.workflow.plugin.service.WFCategoryService;
+import com.proper.enterprise.platform.workflow.service.DeployService;
+import com.proper.enterprise.platform.workflow.service.PEPModelService;
+import com.proper.enterprise.platform.workflow.service.WFCategoryService;
 import com.proper.enterprise.platform.workflow.vo.PEPModelVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.workflow.plugin.service.impl;
+package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.UserGroup;
@@ -6,7 +6,7 @@ import com.proper.enterprise.platform.api.auth.service.UserGroupService;
 import com.proper.enterprise.platform.api.auth.service.UserService;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
-import com.proper.enterprise.platform.workflow.plugin.service.PEPCandidateExtQuery;
+import com.proper.enterprise.platform.workflow.service.PEPCandidateExtQuery;
 import com.proper.enterprise.platform.workflow.util.WFIdmQueryConfUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

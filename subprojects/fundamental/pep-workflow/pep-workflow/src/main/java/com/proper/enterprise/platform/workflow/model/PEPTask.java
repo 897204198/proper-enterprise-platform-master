@@ -11,7 +11,7 @@ import com.proper.enterprise.platform.workflow.api.PEPForm;
 import com.proper.enterprise.platform.workflow.constants.WorkFlowConstants;
 import com.proper.enterprise.platform.workflow.entity.WFIdmQueryConfEntity;
 import com.proper.enterprise.platform.workflow.factory.PEPCandidateExtQueryFactory;
-import com.proper.enterprise.platform.workflow.plugin.service.impl.PEPCandidateUserExtQueryImpl;
+import com.proper.enterprise.platform.workflow.service.impl.PEPCandidateUserExtQueryImpl;
 import com.proper.enterprise.platform.workflow.util.CandidateIdUtil;
 import com.proper.enterprise.platform.workflow.util.WFIdmQueryConfUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;

@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.workflow.plugin.service.impl;
+package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.api.auth.dao.UserDao;
 import com.proper.enterprise.platform.api.auth.model.User;
@@ -19,8 +19,8 @@ import com.proper.enterprise.platform.workflow.model.PEPExtForm;
 import com.proper.enterprise.platform.workflow.model.PEPWorkflowPage;
 import com.proper.enterprise.platform.workflow.predicate.VariableQueryPredicate;
 import com.proper.enterprise.platform.workflow.repository.PEPHistoricVariableInstanceRepository;
-import com.proper.enterprise.platform.workflow.plugin.service.PEPProcessService;
-import com.proper.enterprise.platform.workflow.plugin.service.PEPTaskService;
+import com.proper.enterprise.platform.workflow.service.PEPProcessService;
+import com.proper.enterprise.platform.workflow.service.PEPTaskService;
 import com.proper.enterprise.platform.workflow.util.VariableUtil;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO;

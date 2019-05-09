@@ -1,6 +1,6 @@
 package com.proper.enterprise.platform.workflow.controller
 
-import com.proper.enterprise.platform.workflow.plugin.service.impl.PEPProcessServiceImpl
+import com.proper.enterprise.platform.workflow.service.impl.PEPProcessServiceImpl
 import com.proper.enterprise.platform.workflow.test.WorkflowAbstractTest
 import com.proper.enterprise.platform.workflow.vo.PEPProcInstVO
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO

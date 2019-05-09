@@ -3,7 +3,7 @@ package com.proper.enterprise.platform.workflow.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.core.controller.BaseController;
 import com.proper.enterprise.platform.core.entity.DataTrunk;
-import com.proper.enterprise.platform.workflow.plugin.service.PEPTaskService;
+import com.proper.enterprise.platform.workflow.service.PEPTaskService;
 import com.proper.enterprise.platform.workflow.vo.PEPTaskVO;
 import com.proper.enterprise.platform.workflow.vo.PEPWorkflowPageVO;
 import io.swagger.annotations.*;

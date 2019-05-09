@@ -1,6 +1,6 @@
-package com.proper.enterprise.platform.workflow.plugin.service.impl
+package com.proper.enterprise.platform.workflow.service.impl
 
-import com.proper.enterprise.platform.workflow.plugin.service.PEPTaskService
+import com.proper.enterprise.platform.workflow.service.PEPTaskService
 import com.proper.enterprise.platform.workflow.test.WorkflowAbstractTest
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired

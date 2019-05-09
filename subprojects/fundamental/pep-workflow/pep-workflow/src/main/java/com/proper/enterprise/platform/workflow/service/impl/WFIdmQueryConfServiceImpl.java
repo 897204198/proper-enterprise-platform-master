@@ -1,9 +1,9 @@
-package com.proper.enterprise.platform.workflow.plugin.service.impl;
+package com.proper.enterprise.platform.workflow.service.impl;
 
 import com.proper.enterprise.platform.core.jpa.annotation.CacheQuery;
 import com.proper.enterprise.platform.workflow.entity.WFIdmQueryConfEntity;
 import com.proper.enterprise.platform.workflow.repository.WFIdmQueryConfRepository;
-import com.proper.enterprise.platform.workflow.plugin.service.WFIdmQueryConfService;
+import com.proper.enterprise.platform.workflow.service.WFIdmQueryConfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

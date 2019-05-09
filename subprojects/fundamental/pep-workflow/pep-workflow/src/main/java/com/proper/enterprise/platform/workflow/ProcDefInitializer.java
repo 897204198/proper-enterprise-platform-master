@@ -2,7 +2,7 @@ package com.proper.enterprise.platform.workflow;
 
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.enums.ProcDefDeployType;
-import com.proper.enterprise.platform.workflow.plugin.service.DeployService;
+import com.proper.enterprise.platform.workflow.service.DeployService;
 import org.flowable.engine.repository.Deployment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.proper.enterprise.platform.workflow.plugin.service;
+package com.proper.enterprise.platform.workflow.service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.proper.enterprise.platform.core.CoreProperties;
