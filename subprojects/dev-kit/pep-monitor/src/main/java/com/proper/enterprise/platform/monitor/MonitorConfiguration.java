@@ -18,7 +18,7 @@ public class MonitorConfiguration {
 
     @Bean
     public List<String> ignorePatternsListMonitor() {
-        return Arrays.asList("GET:/**/druid/**", "POST:/**/druid/**", "GET:/actuator/**");
+        return Arrays.asList("GET:/**/druid/**", "POST:/**/druid/**", "GET:/actuator/**", "GET:/monitoring");
     }
 
     @Bean

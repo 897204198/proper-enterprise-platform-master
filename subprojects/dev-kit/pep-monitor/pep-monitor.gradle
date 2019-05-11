@@ -1,7 +1,10 @@
 dependencies {
+
         implementation libraries.druid_spring_boot_starter,
                        libraries.flowable_spring_boot_autoconfigure,
+                       libraries.java_melody_spring_boot_starter,
                        libraries.spring_boot_starter_actuator
 
     testImplementation project(':pep-test')
+
 }

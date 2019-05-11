@@ -10,6 +10,7 @@ class MonitorIntegrationTest extends AbstractIntegrationTest {
     void test() {
         get('/druid', HttpStatus.OK)
         get('/actuator', HttpStatus.OK)
+        get('/monitoring', HttpStatus.OK)
     }
 
 }
