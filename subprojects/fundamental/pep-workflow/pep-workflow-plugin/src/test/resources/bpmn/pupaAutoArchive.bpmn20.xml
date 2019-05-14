@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
-  <process id="pupaAutoArchive" name="pupaAutoArchive" isExecutable="true">
-    <startEvent id="startEvent1" flowable:formKey="form1"></startEvent>
-    <scriptTask id="sid-0736D8B8-21A7-4D73-AFDA-BE160D3E6A84" flowable:autoStoreVariables="false">
-      <script><![CDATA[#{autoArchivePupa.archive(execution)}]]></script>
+  <process id="gd" name="gd" isExecutable="true">
+    <startEvent id="startEvent1" flowable:formKey="@gd"></startEvent>
+    <scriptTask id="sid-0736D8B8-21A7-4D73-AFDA-BE160D3E6A84" flowable:autoStoreVariables="false" flowable:assignee="user1">
+      <script><![CDATA[#{autoArchivePupa.archive(execution,'@gd')}]]></script>
     </scriptTask>
     <sequenceFlow id="sid-9C761240-EC4B-4A91-AD45-572A0F3BA639" sourceRef="startEvent1" targetRef="sid-0736D8B8-21A7-4D73-AFDA-BE160D3E6A84"></sequenceFlow>
     <endEvent id="sid-30BDDCF0-DB67-426E-88A0-A4E01AC86C5E"></endEvent>
