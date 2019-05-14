@@ -8,7 +8,8 @@ dependencies {
         implementation libraries.druid_spring_boot_starter,
                        libraries.hibernate_entitymanager,
                        libraries.liquibase,
+                       libraries.reflections,
                        libraries.spring_orm
-        
+
     testImplementation project(':pep-test')
 }
