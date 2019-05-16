@@ -3,11 +3,13 @@ package com.proper.enterprise.platform.sys.datadic.vo;
 import com.proper.enterprise.platform.core.pojo.BaseVO;
 import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.sys.datadic.DataDic;
 import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 
 public class DataDicCatalogVO extends BaseVO {
 
@@ -25,6 +27,8 @@ public class DataDicCatalogVO extends BaseVO {
     private String parentId;
 
     private Integer sort;
+
+    private Collection<? extends DataDic> dataDics;
 
     public String getCatalogCode() {
         return catalogCode;
@@ -78,6 +82,14 @@ public class DataDicCatalogVO extends BaseVO {
 
     public void setParent(DataDicCatalogVO parent) {
         this.parent = parent;
+    }
+
+    public Collection<? extends DataDic> getDataDics() {
+        return dataDics;
+    }
+
+    public void setDataDics(Collection<? extends DataDic> dataDics) {
+        this.dataDics = dataDics;
     }
 
     @Override

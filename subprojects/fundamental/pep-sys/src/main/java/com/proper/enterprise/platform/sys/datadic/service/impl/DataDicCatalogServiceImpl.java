@@ -84,7 +84,9 @@ public class DataDicCatalogServiceImpl implements DataDicCatalogService {
             return new ArrayList<>();
         }
         Collection<DataDicCatalogVO> dataDicCatalogVOS = new ArrayList<>();
-        dataDicCatalogVOS.add(BeanUtil.convert(dataDicCatalogRepository.findByCatalogCode(parentCatalog), DataDicCatalogVO.class));
+        DataDicCatalogVO dataDicCatalogVO = BeanUtil.convert(dataDicCatalogRepository.findByCatalogCode(parentCatalog), DataDicCatalogVO.class);
+        dataDicCatalogVO.setDataDics(dataDicService.findByCatalog(parentCatalog, dataDicType, enable));
+        dataDicCatalogVOS.add(dataDicCatalogVO);
         for (DataDicCatalogEntity dataDicCatalogEntity : dataDicCatalogEntities) {
             dataDicCatalogVOS.addAll(findByParentCatalog(dataDicCatalogEntity.getCatalogCode(), dataDicType, enable));
         }

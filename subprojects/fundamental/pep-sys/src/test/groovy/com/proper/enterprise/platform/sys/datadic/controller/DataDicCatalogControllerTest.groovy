@@ -5,6 +5,7 @@ import com.proper.enterprise.platform.core.i18n.I18NUtil
 import com.proper.enterprise.platform.sys.datadic.entity.DataDicEntity
 import com.proper.enterprise.platform.sys.datadic.enums.DataDicTypeEnum
 import com.proper.enterprise.platform.sys.datadic.service.DataDicCatalogService
+import com.proper.enterprise.platform.sys.datadic.service.DataDicService
 import com.proper.enterprise.platform.sys.datadic.vo.DataDicCatalogVO
 import com.proper.enterprise.platform.test.AbstractJPATest
 import com.proper.enterprise.platform.test.utils.JSONUtil
@@ -18,6 +19,9 @@ class DataDicCatalogControllerTest extends AbstractJPATest {
 
     @Autowired
     private DataDicCatalogService dataDicCatalogService
+
+    @Autowired
+    private DataDicService dataDicService
 
     @Test
     void testSave() {
@@ -178,10 +182,32 @@ class DataDicCatalogControllerTest extends AbstractJPATest {
         childRenChildRenVO.setParentId(saveChildrenVO.getId())
         DataDicCatalogVO saveChildrenChildrenVO = resOfPost(datadicUrl, childRenChildRenVO)
 
+        DataDicEntity dataDic1 = new DataDicEntity()
+        dataDic1.setCatalog("children")
+        dataDic1.setCode("code")
+        dataDic1.setName("name")
+        dataDic1.setDeft(true)
+        dataDic1.setOrder(1)
+        DataDicEntity dataDic2 = new DataDicEntity()
+        dataDic2.setCatalog("children")
+        dataDic2.setCode("code2")
+        dataDic2.setName("name2")
+        dataDic2.setOrder(2)
+        DataDicEntity dataDic3 = new DataDicEntity()
+        dataDic3.setCatalog("childrenChildren")
+        dataDic3.setCode("code3")
+        dataDic3.setName("name3")
+        dataDic3.setOrder(1)
+        DataDicEntity sava1 = dataDicService.save(dataDic1)
+        DataDicEntity sava2 = dataDicService.save(dataDic2)
+        DataDicEntity sava3 = dataDicService.save(dataDic3)
+
         List<DataDicCatalogVO> dataDicCatalogs = JSONUtil.parse(get(datadicUrl + "/parentCatalog/catalog", HttpStatus.OK).getResponse().getContentAsString(), List.class)
         assert dataDicCatalogs.size() == 3
         assert dataDicCatalogs.get(0)['id'] == saveDataDicCatalogVO.getId()
         assert dataDicCatalogs.get(1)['parentId'] == saveDataDicCatalogVO.getId()
+        assert dataDicCatalogs.get(1)['dataDics'].size == 2
         assert dataDicCatalogs.get(2)['parentId'] == saveChildrenVO.getId()
+        assert dataDicCatalogs.get(2)['dataDics'].size == 1
     }
 }
