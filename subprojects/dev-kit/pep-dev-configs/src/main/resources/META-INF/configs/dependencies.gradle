@@ -84,6 +84,11 @@ configurations.all {
     exclude module: 'flowable-spring-security'
 }
 
+configurations.testImplementation {
+    // Exclude duplicated org.json.JSONObject with org.json depend by jackson-datatype-json-org
+    exclude module: 'android-json'
+}
+
 libraries.ali_webpay = 'com.ali.webpay:ali-webpay:1.0.0'
 
 //libraries.aspectjrt = "org.aspectj:aspectjrt:${versions.aspectj}"
