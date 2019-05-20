@@ -162,4 +162,27 @@ class ModelerControllerTest extends AbstractJPATest {
         result = resOfPost("/workflow/ext/modeler", JSONUtil.toJSON(modelProperties), HttpStatus.OK)
         assert id == result.id
     }
+
+    @Test
+    @Sql(["/com/proper/enterprise/platform/workflow/identity.sql",
+        "/com/proper/enterprise/platform/workflow/datadics.sql", "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql"])
+    void parsingConditionFixedTest() {
+        def data = [:]
+
+        data['sequenceCondition'] = "\${部门}=='研发部'&&(\${请假时长}<2||\${请假类型}=='事假')"
+        def list = [["id":"organizationName","name":"部门","componentKey":"OopSystemCurrent"],
+                ["id":"vacationTime","name":"请假时长","componentKey":"InputNumber"],
+                ["id":"vacationType","name":"请假类型","componentKey":"Select","textValue":true,"children":[]]]
+        data['params'] = list
+        data['parserEnum'] = ParserEnum.TOFLOWABLE
+        def result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(data), HttpStatus.OK)
+        assert "\${organizationName_text == '研发部' && (vacationTime < 2 || vacationType_text == '事假')}" == result.sequenceCondition
+
+        def dataFlowable = [:]
+        dataFlowable['sequenceCondition'] = result.sequenceCondition
+        dataFlowable['params'] = list
+        dataFlowable['parserEnum'] = ParserEnum.TONATUAL
+        result = resOfPost("/workflow/ext/modeler/condition", JSONUtil.toJSON(dataFlowable), HttpStatus.OK)
+        assert "\${部门} == '研发部' && (\${请假时长} < 2 || \${请假类型} == '事假')" == result.sequenceCondition
+    }
 }

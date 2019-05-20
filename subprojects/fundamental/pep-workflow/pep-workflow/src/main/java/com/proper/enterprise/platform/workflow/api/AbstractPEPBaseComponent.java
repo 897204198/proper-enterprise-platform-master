@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.workflow.api;
 import com.proper.enterprise.platform.workflow.enums.ParserEnum;
 import com.proper.enterprise.platform.workflow.model.PEPVariablesChildrenModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,9 @@ public class AbstractPEPBaseComponent {
     }
 
     public List<PEPVariablesChildrenModel> getPepVariablesChildrenModels() {
+        if (pepVariablesChildrenModels == null) {
+            return new ArrayList<>();
+        }
         return pepVariablesChildrenModels;
     }
 
