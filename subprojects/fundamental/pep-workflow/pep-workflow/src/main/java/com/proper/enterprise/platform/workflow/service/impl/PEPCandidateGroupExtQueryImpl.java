@@ -18,16 +18,21 @@ import java.util.List;
 @Service("pepCandidateGroupExtQuery")
 public class PEPCandidateGroupExtQueryImpl implements PEPCandidateExtQuery {
 
-    private static final String GROUP_CONF_CODE = "GROUP";
-
     private UserGroupService userGroupService;
 
     private UserService userService;
+
+    public static final String GROUP_CONF_CODE = "GROUP";
 
     @Autowired
     public PEPCandidateGroupExtQueryImpl(UserGroupService userGroupService, UserService userService) {
         this.userGroupService = userGroupService;
         this.userService = userService;
+    }
+
+    @Override
+    public String getType() {
+        return GROUP_CONF_CODE;
     }
 
     @Override
@@ -77,8 +82,8 @@ public class PEPCandidateGroupExtQueryImpl implements PEPCandidateExtQuery {
     private PEPCandidateModel convert(UserGroup userGroup) {
         PEPCandidateModel pepCandidateModel = new PEPCandidateModel();
         pepCandidateModel.setId(userGroup.getId());
-        pepCandidateModel.setType(GROUP_CONF_CODE);
-        pepCandidateModel.setTypeName(WFIdmQueryConfUtil.findByType(GROUP_CONF_CODE).getName());
+        pepCandidateModel.setType(getType());
+        pepCandidateModel.setTypeName(WFIdmQueryConfUtil.findByType(getType()).getName());
         pepCandidateModel.setName(userGroup.getName());
         return pepCandidateModel;
     }

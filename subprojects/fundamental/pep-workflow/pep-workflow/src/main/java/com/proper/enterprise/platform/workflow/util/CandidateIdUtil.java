@@ -3,6 +3,7 @@ package com.proper.enterprise.platform.workflow.util;
 import com.proper.enterprise.platform.core.exception.ErrMsgException;
 import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
+import com.proper.enterprise.platform.workflow.service.impl.PEPCandidateUserExtQueryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,10 @@ public class CandidateIdUtil {
         }
         if (StringUtil.isEmpty(type)) {
             throw new ErrMsgException("CandidateType can't be empty");
+        }
+        //用户Id flowable中不做处理
+        if (PEPCandidateUserExtQueryImpl.USER_CONF_CODE.equals(type)) {
+            return id;
         }
         return id + "_" + type;
     }

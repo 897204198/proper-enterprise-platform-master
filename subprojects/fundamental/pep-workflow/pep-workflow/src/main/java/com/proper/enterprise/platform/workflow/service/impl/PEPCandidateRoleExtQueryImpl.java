@@ -17,8 +17,6 @@ import java.util.List;
 @Service("pepCandidateRoleExtQuery")
 public class PEPCandidateRoleExtQueryImpl implements PEPCandidateExtQuery {
 
-    private static final String ROLE_CONF_CODE = "ROLE";
-
     private RoleService roleService;
 
     private UserService userService;
@@ -26,6 +24,11 @@ public class PEPCandidateRoleExtQueryImpl implements PEPCandidateExtQuery {
     public PEPCandidateRoleExtQueryImpl(RoleService roleService, UserService userService) {
         this.userService = userService;
         this.roleService = roleService;
+    }
+
+    @Override
+    public String getType() {
+        return "ROLE";
     }
 
     @Override
@@ -74,8 +77,8 @@ public class PEPCandidateRoleExtQueryImpl implements PEPCandidateExtQuery {
     private PEPCandidateModel convert(Role role) {
         PEPCandidateModel pepCandidateModel = new PEPCandidateModel();
         pepCandidateModel.setId(role.getId());
-        pepCandidateModel.setType(ROLE_CONF_CODE);
-        pepCandidateModel.setTypeName(WFIdmQueryConfUtil.findByType(ROLE_CONF_CODE).getName());
+        pepCandidateModel.setType(getType());
+        pepCandidateModel.setTypeName(WFIdmQueryConfUtil.findByType(getType()).getName());
         pepCandidateModel.setName(role.getName());
         return pepCandidateModel;
     }

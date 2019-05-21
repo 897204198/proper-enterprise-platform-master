@@ -4,6 +4,7 @@ import com.proper.enterprise.platform.core.utils.CollectionUtil;
 import com.proper.enterprise.platform.workflow.entity.WFIdmQueryConfEntity;
 import com.proper.enterprise.platform.workflow.factory.PEPCandidateExtQueryFactory;
 import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
+import com.proper.enterprise.platform.workflow.service.impl.PEPCandidateRuleExtQueryImpl;
 import com.proper.enterprise.platform.workflow.util.CandidateIdUtil;
 import com.proper.enterprise.platform.workflow.util.WFIdmQueryConfUtil;
 import org.flowable.common.engine.impl.interceptor.CommandContext;
@@ -43,9 +44,12 @@ public class PEPGroupQueryImpl extends GroupQueryImpl {
 
     private List<Group> findCandidatesByUser(String userId) {
         List<Group> groups = new ArrayList<>();
-
         List<WFIdmQueryConfEntity> wfIdmQueryConfEntities = new ArrayList<>(WFIdmQueryConfUtil.findAll());
         for (WFIdmQueryConfEntity wfIdmQueryConfEntity : wfIdmQueryConfEntities) {
+            //排除规则查询 规则直接指定到人
+            if (PEPCandidateRuleExtQueryImpl.RULE_CONF_CODE.equals(wfIdmQueryConfEntity.getType())) {
+                continue;
+            }
             groups.addAll(convertCollection(PEPCandidateExtQueryFactory
                 .product(wfIdmQueryConfEntity.getType()).findCandidatesByUser(userId)));
         }
@@ -56,6 +60,10 @@ public class PEPGroupQueryImpl extends GroupQueryImpl {
         List<Group> groups = new ArrayList<>();
         List<WFIdmQueryConfEntity> wfIdmQueryConfEntities = new ArrayList<>(WFIdmQueryConfUtil.findAll());
         for (WFIdmQueryConfEntity wfIdmQueryConfEntity : wfIdmQueryConfEntities) {
+            //排除规则查询 规则直接指定到人
+            if (PEPCandidateRuleExtQueryImpl.RULE_CONF_CODE.equals(wfIdmQueryConfEntity.getType())) {
+                continue;
+            }
             Group group = convert(PEPCandidateExtQueryFactory
                 .product(wfIdmQueryConfEntity.getType()).findCandidateById(id));
             if (null == group) {
@@ -70,6 +78,10 @@ public class PEPGroupQueryImpl extends GroupQueryImpl {
         List<Group> groups = new ArrayList<>();
         List<WFIdmQueryConfEntity> wfIdmQueryConfEntities = new ArrayList<>(WFIdmQueryConfUtil.findAll());
         for (WFIdmQueryConfEntity wfIdmQueryConfEntity : wfIdmQueryConfEntities) {
+            //排除规则查询 规则直接指定到人
+            if (PEPCandidateRuleExtQueryImpl.RULE_CONF_CODE.equals(wfIdmQueryConfEntity.getType())) {
+                continue;
+            }
             groups.addAll(convertCollection(PEPCandidateExtQueryFactory
                 .product(wfIdmQueryConfEntity.getType()).findAllCandidates()));
         }

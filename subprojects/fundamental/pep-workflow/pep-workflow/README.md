@@ -163,3 +163,33 @@ location ^~ /ng2/workflow {
   2. 脚本编写为 `com.proper.enterprise.platform.workflow.plugin.util.ArchiveUtil.archiveToMongo(execution, 'testForm')`
      >其中 testForm 为需要归档的表单数据的表单关键字。
       需要归档多个表单则后面增加表单关键字即可, 如 archiveToMongo(execution, 'testForm', 'test2Form')
+      
+- 流程候选添加
+  
+  1. 平台提供内置候选人，候选用户组，候选角色 
+  2. 支持添加自定义候选类型 添加方式
+     1. 实现PEPCandidateExtQuery接口
+     2. 在PEP_WF_IDM_QUERY_CONF表中插入对应的初始化数据即可
+     
+- 流程规则添加
+  1. 平台支持流程在设置经办人的时候通过规则设置
+  2. 规则添加条件
+     1. 规则类型必须对应一个候选类型  如：用户规则，用户组规则
+     2. 规则的返回结果必须为String类型的集合，用来表示一类候选的Id集合 如:用户id集合等
+     
+  3. 规则添加方法 规则类型必须对应一个候选类型  如：用户规则，用户组规则
+     1. 定义一个bean,bean中包含一个public方法返回结果为String类型的集合,返回前调用CandidateIdUtil.encode方法并传递候选类型，用来表示一类候选的Id集合 如:用户id集合等
+        用户组规则示例:
+        ```
+        @Component("testGroupCandidateRule")
+        public class TestGroupRuleServiceImpl {
+        
+            public List<String> setCandidateRule(ExecutionEntity execution) {
+                List<String> candidateGroupIds = new ArrayList<>();
+                candidateGroupIds.add("group2");
+                return CandidateIdUtil.encode(candidateGroupIds, PEPCandidateGroupExtQueryImpl.GROUP_CONF_CODE);
+            }
+        }
+        ``` 
+      2. 在PEP_WF_IDM_RULE_CONF表中添加数据:规则名称，规则类型(对应候选类型),具体规则，遵循uel，如：#{testGroupCandidateRule.setCandidateRule(execution)}即可   
+      

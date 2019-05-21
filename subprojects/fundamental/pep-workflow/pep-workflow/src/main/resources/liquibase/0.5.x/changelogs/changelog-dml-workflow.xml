@@ -53,4 +53,18 @@
             <column name="PARENT_ID" value="default-category"/>
         </insert>
     </changeSet>
+    <changeSet id="add_candidate_ext_rule_conf" author="zjl">
+        <insert tableName="PEP_WF_IDM_QUERY_CONF">
+            <column name="ID" value="workflow-idm-query-config-rule"/>
+            <column name="CREATE_TIME" value="2018-10-11 17:32:18.651"/>
+            <column name="CREATE_USER_ID" value="pep-sysadmin"/>
+            <column name="ENABLE" value="Y"/>
+            <column name="LAST_MODIFY_TIME" value="2018-10-11 17:32:18.651"/>
+            <column name="LAST_MODIFY_USER_ID" value="pep-sysadmin"/>
+            <column name="TYPE" value="RULE"/>
+            <column name="NAME" value="根据规则分配"/>
+            <column name="BEAN_NAME" value="pepCandidaterRuleExtQuery"/>
+            <column name="SORT" value="999"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

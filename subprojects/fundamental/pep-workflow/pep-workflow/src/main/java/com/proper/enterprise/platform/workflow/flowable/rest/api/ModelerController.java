@@ -9,6 +9,7 @@ import com.proper.enterprise.platform.workflow.enums.ParserEnum;
 import com.proper.enterprise.platform.workflow.factory.PEPCandidateExtQueryFactory;
 import com.proper.enterprise.platform.workflow.model.PEPCandidateModel;
 import com.proper.enterprise.platform.workflow.model.PEPVariablesModel;
+import com.proper.enterprise.platform.workflow.service.impl.PEPCandidateRuleExtQueryImpl;
 import com.proper.enterprise.platform.workflow.service.impl.PEPCandidateUserExtQueryImpl;
 import com.proper.enterprise.platform.workflow.util.CandidateIdUtil;
 import com.proper.enterprise.platform.workflow.util.FlowableConditionUtil;
@@ -54,6 +55,15 @@ public class ModelerController extends BaseController {
             .findCandidatesByNameLike(name)));
     }
 
+
+    @RequestMapping(method = RequestMethod.GET, value = "/rule")
+    @ApiOperation("‍流程设计器查询规则集合")
+    public ResponseEntity<Collection<ModelerIdmModel>> getRule() {
+        return responseOfGet(convert(PEPCandidateExtQueryFactory
+            .product(PEPCandidateRuleExtQueryImpl.RULE_CONF_CODE)
+            .findAllCandidates()));
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/condition")
     @ApiOperation("‍‍流程设计器转换分支条件")
     @ResponseStatus(HttpStatus.OK)
@@ -80,9 +90,7 @@ public class ModelerController extends BaseController {
         if (modelKeyInfo.isKeyAlreadyExists()) {
             return modelService.getModelRepresentation(modelKeyInfo.getId());
         }
-
         String json = modelService.createModelJson(modelRepresentation);
-
         Model newModel = modelService.createModel(modelRepresentation, json, simulationCurrentUser());
         return new ModelRepresentation(newModel);
     }
