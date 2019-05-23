@@ -59,7 +59,11 @@ class ApiNoticeSendControllerTest extends AbstractServerAppTest {
         NoticeRequest noticeRequest = new NoticeRequest()
         noticeRequest.setBatchId("sendNoticeTest")
         noticeRequest.setNoticeType(NoticeType.MOCK)
-        noticeRequest.setContent("text")
+        StringBuilder content = new StringBuilder()
+        for (int i = 0; i <100 ; i++) {
+            content.append("sendNoticeTestsendNoticeTest")
+        }
+        noticeRequest.setContent(content.toString())
         List<NoticeTarget> targets = new ArrayList<>()
         NoticeTarget target = new NoticeTarget()
         target.setTo("toMe")

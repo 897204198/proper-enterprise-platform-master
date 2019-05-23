@@ -43,7 +43,7 @@ public class NoticeEntity extends BaseEntity implements Notice {
     /**
      * 消息内容
      */
-    @Column(nullable = false, length = 2048)
+    @Column(nullable = false, columnDefinition = "text")
     private String content;
 
     /**

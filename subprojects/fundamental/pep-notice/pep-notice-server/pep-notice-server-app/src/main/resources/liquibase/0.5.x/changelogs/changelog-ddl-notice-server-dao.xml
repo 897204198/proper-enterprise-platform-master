@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!-- Oracle 无法将 varchar 直接修改类型为 clob, 提示ORA-22858: 数据类型的变更无效, 需要先删除列再新建列 -->
+    <changeSet author="fm" id="change_dataTypeToNclob_201905171130" dbms="mysql,h2">
+        <modifyDataType columnName="CONTENT"
+                        newDataType="nclob"
+                        tableName="PEP_NOTICE_MSG"/>
+    </changeSet>
+</databaseChangeLog>
