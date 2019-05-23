@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.proper.enterprise.platform.api.auth.enums.EnableEnum;
 import com.proper.enterprise.platform.api.auth.model.Menu;
 import com.proper.enterprise.platform.api.auth.service.MenuService;
+import com.proper.enterprise.platform.auth.common.convert.MenuConvert;
 import com.proper.enterprise.platform.auth.common.vo.MenuVO;
 import com.proper.enterprise.platform.auth.common.vo.ResourceVO;
 import com.proper.enterprise.platform.auth.common.vo.RoleVO;
@@ -19,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,10 +55,10 @@ public class MenusController extends BaseController {
                 MenuVO.class));
         } else {
             Collection<? extends Menu> collection = service.getMenus(fetchProperties);
-            DataTrunk<Menu> dataTrunk = new DataTrunk<>();
+            DataTrunk<MenuVO> dataTrunk = new DataTrunk<>();
             dataTrunk.setCount(collection.size());
-            dataTrunk.setData(new ArrayList<>(collection));
-            return responseOfGet(BeanUtil.convert(dataTrunk, MenuVO.class));
+            dataTrunk.setData(MenuConvert.convert(collection));
+            return responseOfGet(dataTrunk);
         }
     }
 
@@ -155,7 +155,7 @@ public class MenusController extends BaseController {
     @ApiOperation("‍父节点菜单列表")
     public ResponseEntity<Collection<MenuVO>> getMenuParents(@ApiParam("‍资源状态(ALL为默认;ENABLE;DISABLE)‍")
                                                              @RequestParam(defaultValue = "ALL") EnableEnum menuEnable) {
-        return responseOfGet(BeanUtil.convert(service.getMenuParents(menuEnable), MenuVO.class));
+        return responseOfGet(MenuConvert.convert(service.getMenuParents(menuEnable)));
     }
 
     @PostMapping(path = "/{menuId}/resources")

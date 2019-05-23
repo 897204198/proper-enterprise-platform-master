@@ -10,8 +10,8 @@ import com.proper.enterprise.platform.core.utils.JSONUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
 import com.proper.enterprise.platform.core.view.BaseView;
 import com.proper.enterprise.platform.sys.datadic.DataDicLite;
-import com.proper.enterprise.platform.sys.datadic.util.DataDicUtil;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @POJORelevance(relevanceDOClassName = "com.proper.enterprise.platform.auth.common.jpa.entity.MenuEntity")
@@ -195,7 +195,10 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public void addChild(Menu menu) {
-
+        if (null == this.children) {
+            this.children = new ArrayList<>();
+        }
+        this.children.add((MenuVO) menu);
     }
 
     @Override
@@ -222,6 +225,9 @@ public class MenuVO extends BaseVO implements Menu {
     public boolean isLeaf() {
         if (CollectionUtil.isEmpty(this.getChildren()) && CollectionUtil.isEmpty(this.getResources())) {
             return true;
+        }
+        if (null == leaf) {
+            return false;
         }
         return leaf;
     }
@@ -263,7 +269,7 @@ public class MenuVO extends BaseVO implements Menu {
 
     @Override
     public DataDicLite getMenuType() {
-        return DataDicUtil.convert(menuType);
+        return this.menuType;
     }
 
     @Override
