@@ -18,7 +18,9 @@ import com.proper.enterprise.platform.workflow.vo.WFCategoryVO;
 import org.apache.commons.lang3.StringUtils;
 
 import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.editor.constants.StencilConstants;
 import org.flowable.editor.language.json.converter.BpmnJsonConverter;
+import org.flowable.editor.language.json.converter.BpmnJsonConverterUtil;
 import org.flowable.engine.FormService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.form.FormProperty;
@@ -101,10 +103,9 @@ public class PEPModelServiceImpl implements PEPModelService {
             } else {
                 try {
                     JsonNode jsonNode = objectMapper.readTree(model.getModelEditorJson());
-                    BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
-                    BpmnModel bpmnModel = bpmnJsonConverter.convertToBpmnModel(jsonNode);
-                    pepModelVO.setWorkflowCategory(wfCategoryService.getByCode(bpmnModel.getTargetNamespace()));
-                    modelCategoryCode = bpmnModel.getTargetNamespace();
+                    String namespace = BpmnJsonConverterUtil.getPropertyValueAsString(StencilConstants.PROPERTY_PROCESS_NAMESPACE, jsonNode);
+                    pepModelVO.setWorkflowCategory(wfCategoryService.getByCode(namespace));
+                    modelCategoryCode = namespace;
                 } catch (IOException e) {
                     LOGGER.error("get model targetNameSpce cause an error : {}", e);
                 }

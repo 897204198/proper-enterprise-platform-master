@@ -96,4 +96,24 @@ class ModelsControllerTest extends AbstractJPATest {
             , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
         assert "默认Activiti类别" == modelVOs3.getData().get(0).workflowCategory.name
     }
+
+    @Test
+    @Sql(["/com/proper/enterprise/platform/workflow/datadics.sql",
+        "/com/proper/enterprise/platform/workflow/wfIdmQueryConf.sql",
+        "/com/proper/enterprise/platform/workflow/wfCategory.sql"])
+    void testGetLaneModel() {
+        def searchKey = "test_lane_process"
+        ResultListDataRepresentation modelVOs = JSONUtil.parse(get('/repository/models/?filter=' + searchKey + '&modelType=0'
+            , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
+        assert "默认类别" == modelVOs.getData().get(0).workflowCategory.name
+
+        ResultListDataRepresentation modelVOs2 = JSONUtil.parse(get('/repository/models/?filter=' + searchKey + '&modelType=0'
+            , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
+        put('/repository/models/' + modelVOs2.getData().get(0).id + '/wfCategory?workflowCategoryCode=http://www.activiti.org/processdef', JSONUtil.toJSON("")
+            , HttpStatus.OK)
+
+        ResultListDataRepresentation modelVOs3 = JSONUtil.parse(get('/repository/models/?filter=' + searchKey + '&workflowCategoryCode=DEFAULT_CATEGORY&modelType=0'
+            , HttpStatus.OK).getResponse().getContentAsString(), ResultListDataRepresentation.class)
+        assert "默认Activiti类别" == modelVOs3.getData().get(0).workflowCategory.name
+    }
 }
