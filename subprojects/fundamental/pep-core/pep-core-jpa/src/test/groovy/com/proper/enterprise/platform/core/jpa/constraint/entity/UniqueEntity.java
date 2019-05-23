@@ -7,25 +7,24 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-@Table(name = "PEP_UNIQUE_A")
+@Table(name = "PEP_UNIQUE_A", indexes = @Index(unique = true, columnList = "code", name = "UK_TD7CI9HAE6GOL91BPMVVOINVC"))
 public class UniqueEntity extends BaseEntity {
 
-    @Column(unique = true)
-    @ConstraintViolationMessage(name = "UK_TD7CI9HAE6GOL91BPMVVOINVC_INDEX_2", message = "code cant be repeat")
+    @ConstraintViolationMessage(name = "UK_TD7CI9HAE6GOL91BPMVVOINVC", message = "code cant be repeat")
     private String code;
 
     @OneToOne
-    @JoinColumn(name = "fk_id", foreignKey = @ForeignKey(name = "TEST_FK_NAME"))
-    @ConstraintViolationMessage(name = "TEST_FK_NAME", message = "cant delete fk because have unique used")
+    @JoinColumn(name = "fk_id", foreignKey = @ForeignKey(name = "FK_NAME"))
+    @ConstraintViolationMessage(name = "FK_NAME", message = "cant delete fk because have unique used")
     private FkEntity fkEntity;
 
     @ManyToMany
     @JoinTable(name = "PEP_UNIQUE_FKMANY",
         joinColumns = @JoinColumn(name = "UNIQUE_ID"),
         inverseJoinColumns = @JoinColumn(name = "FK_MANY_ID"),
-        inverseForeignKey = @ForeignKey(name = "TEST_FK_MANY_NAME"),
+        inverseForeignKey = @ForeignKey(name = "FK_MANY_NAME"),
         uniqueConstraints = @UniqueConstraint(columnNames = {"UNIQUE_ID", "FK_MANY_ID"}))
-    @ConstraintViolationMessage(name = "TEST_FK_MANY_NAME", message = "cant delete fk many because have unique used")
+    @ConstraintViolationMessage(name = "FK_MANY_NAME", message = "cant delete fk many because have unique used")
     private Collection<FkManyEntity> fkManyEntities;
 
     public String getCode() {

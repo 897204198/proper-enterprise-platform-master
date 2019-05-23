@@ -5,13 +5,13 @@ import com.proper.enterprise.platform.core.i18n.I18NUtil;
 import com.proper.enterprise.platform.core.jpa.annotation.ConstraintViolationMessage;
 import com.proper.enterprise.platform.core.utils.BeanUtil;
 import com.proper.enterprise.platform.core.utils.StringUtil;
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -20,54 +20,82 @@ import java.util.regex.Pattern;
 @Component
 public class ConstraintViolationExceptionHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConstraintViolationExceptionHandler.class);
-
     @Autowired
     private Map<String, String> entityTableMapping;
 
-    private static final String UNIQUE_INDEX_VIOLATION_KEY = "Unique index or primary key violation";
-
-    private static final String REFERENTIAL_INTEGRITY_VIOLATION_KEY = "Referential integrity constraint violation";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConstraintViolationExceptionHandler.class);
 
     /**
-     * 唯一约束获取约束名称正则
+     * H2唯一索引解析索引名正则
      */
-    private static final Pattern UNIQUE_INDEX_PATTERN = Pattern.compile("(?<=" + UNIQUE_INDEX_VIOLATION_KEY + ": \").*?(?= ON)");
+    private static final String H2_UNIQUE_INDEX_PATTERN = "(?:UK_).*?(?=_INDEX)";
 
     /**
-     * 唯一约束获取表名正则
+     * MYSQL唯一索引解析索引名正则
      */
-    private static final Pattern UNIQUE_TABLE_PATTERN = Pattern.compile("(?<=ON PUBLIC.).*?(?=\\()");
+    private static final String MYSQL_UNIQUE_INDEX_PATTERN = "(?:UK_).*?(?=')";
 
     /**
-     * 完整约束获取约束名称正则
+     * H2外键约束解析索引名正则
      */
-    private static final Pattern INTEGRITY_INDEX_PATTERN = Pattern.compile("(?<=" + REFERENTIAL_INTEGRITY_VIOLATION_KEY + ": \\\").*?(?=\\:)");
+    private static final String H2_INTEGRITY_INDEX_PATTERN = "(?:FK_).*?(?=: )";
 
     /**
-     * 完整约束获取表名正则
+     * MYSQL外键约束解析索引名正则
      */
-    private static final Pattern INTEGRITY_TABLE_PATTERN = Pattern.compile("(?<=PUBLIC.).*?(?= FOREIGN)");
+    private static final String MYSQL_INTEGRITY_INDEX_PATTERN = "(?<=CONSTRAINT `).*?(?=` FOREIGN KEY)";
 
-    public void handle(ConstraintViolationException throwable) {
-        String message = throwable.getSQLException().getLocalizedMessage();
-        if (StringUtil.isEmpty(message)) {
-            return;
-        }
-        String[] keys = message.split("\\:");
-        if (keys.length == 0) {
-            return;
-        }
-        String messageKey = keys[0];
-        if (UNIQUE_INDEX_VIOLATION_KEY.equals(messageKey)) {
-            uniqueHandle(message);
-        }
-        if (REFERENTIAL_INTEGRITY_VIOLATION_KEY.equals(messageKey)) {
-            integrityHandle(message);
-        }
+    /**
+     * H2外键约束表名解析正则
+     */
+    private static final String H2_INTEGRITY_TABLE_PATTERN = "(?<=PUBLIC.).*?(?= FOREIGN)";
+
+    /**
+     * MYSQL外键约束表名解析正则
+     */
+    private static final String MYSQL_INTEGRITY_TABLE_PATTERN = "(?<=\\.`).*?(?=\\`, CONSTRAINT)";
+
+
+    /**
+     * 获取约束名称正则
+     */
+    private static final Pattern INDEX_PATTERN = Pattern.compile(H2_UNIQUE_INDEX_PATTERN
+        + "|" + MYSQL_UNIQUE_INDEX_PATTERN + "|" + H2_INTEGRITY_INDEX_PATTERN + "|" + MYSQL_INTEGRITY_INDEX_PATTERN);
+
+
+    /**
+     * 获取表名正则
+     */
+    private static final Pattern TABLE_PATTERN = Pattern
+        .compile("(?<=into ).*?(?= \\()|(?<=update ).*?(?= set)|(?<=delete from ).*?(?= where)"
+            + "|" + H2_INTEGRITY_TABLE_PATTERN + "|" + MYSQL_INTEGRITY_TABLE_PATTERN);
+
+
+    public void handle(SQLException throwable) {
+        String message = throwable.getMessage();
+        String indexName = getIndexName(message);
+        String tableName = getTableName(message).toUpperCase();
+        throwErrorMsg(indexName, tableName);
     }
 
-    private void throwErrorMsg(String indexName, String tableName) {
+
+    private String getIndexName(String message) {
+        Matcher indexNameMatcher = INDEX_PATTERN.matcher(message);
+        if (indexNameMatcher.find()) {
+            return indexNameMatcher.group();
+        }
+        return null;
+    }
+
+    private String getTableName(String message) {
+        Matcher tableNameMatcher = TABLE_PATTERN.matcher(message);
+        if (tableNameMatcher.find()) {
+            return tableNameMatcher.group();
+        }
+        return null;
+    }
+
+    protected void throwErrorMsg(String indexName, String tableName) {
         if (StringUtil.isEmpty(indexName) || StringUtil.isEmpty(tableName)) {
             LOGGER.debug("indexName or tableName isEmpty {},{}", indexName, tableName);
             return;
@@ -84,50 +112,5 @@ public class ConstraintViolationExceptionHandler {
                 throw new ErrMsgException(I18NUtil.getMessage(constraintViolationMessage.message()));
             }
         }
-    }
-
-    private void uniqueHandle(String message) {
-        String indexName = getUniqueIndexName(message);
-        String tableName = getUniqueTableName(message).toUpperCase();
-        throwErrorMsg(indexName, tableName);
-    }
-
-    private void integrityHandle(String message) {
-        String indexName = getIntegrityIndexName(message);
-        String tableName = getIntegrityTableName(message).toUpperCase();
-        throwErrorMsg(indexName, tableName);
-    }
-
-
-    private String getIntegrityIndexName(String message) {
-        Matcher indexNameMatcher = INTEGRITY_INDEX_PATTERN.matcher(message);
-        if (indexNameMatcher.find()) {
-            return indexNameMatcher.group();
-        }
-        return null;
-    }
-
-    private String getIntegrityTableName(String message) {
-        Matcher tableNameMatcher = INTEGRITY_TABLE_PATTERN.matcher(message);
-        if (tableNameMatcher.find()) {
-            return tableNameMatcher.group();
-        }
-        return null;
-    }
-
-    private String getUniqueIndexName(String message) {
-        Matcher indexNameMatcher = UNIQUE_INDEX_PATTERN.matcher(message);
-        if (indexNameMatcher.find()) {
-            return indexNameMatcher.group();
-        }
-        return null;
-    }
-
-    private String getUniqueTableName(String message) {
-        Matcher tableNameMatcher = UNIQUE_TABLE_PATTERN.matcher(message);
-        if (tableNameMatcher.find()) {
-            return tableNameMatcher.group();
-        }
-        return null;
     }
 }
