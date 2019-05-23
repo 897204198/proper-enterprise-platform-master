@@ -157,12 +157,11 @@ location ^~ /ng2/workflow {
 
 - 自动归档
   
-  在流程设计器中选择 > 脚本任务节点
-  配置脚本任务节点：
-  1. 脚本格式设置为 `groovy`
-  2. 脚本编写为 `com.proper.enterprise.platform.workflow.plugin.util.ArchiveUtil.archiveToMongo(execution, 'testForm')`
-     >其中 testForm 为需要归档的表单数据的表单关键字。
-      需要归档多个表单则后面增加表单关键字即可, 如 archiveToMongo(execution, 'testForm', 'test2Form')
+  在流程设计器中选择 > 服务任务节点
+    配置服务任务节点：
+    1. 表达式为 `#{autoArchiveToMongoService.archive(execution, 'testForm')`
+       >其中 testForm 为需要归档的表单数据的表单关键字。
+        需要归档多个表单则后面增加表单关键字即可, 如 archiveToMongo(execution, 'testForm', 'test2Form')
       
 - 流程候选添加
   

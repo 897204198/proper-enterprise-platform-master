@@ -1,9 +1,13 @@
-package com.proper.enterprise.platform.workflow.plugin.util;
+package com.proper.enterprise.platform.workflow.util;
 
 import com.proper.enterprise.platform.core.PEPApplicationContext;
 import com.proper.enterprise.platform.workflow.plugin.service.AutoArchiveService;
 import org.flowable.engine.impl.persistence.entity.ExecutionEntity;
 
+/**
+ * TODO remove after 2019/7/1 删除前需查看旧流程是否还存在
+ */
+@Deprecated
 public class ArchiveUtil {
 
     private ArchiveUtil() {

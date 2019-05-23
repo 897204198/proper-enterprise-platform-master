@@ -24,7 +24,7 @@
     <sequenceFlow id="sid-76F5FB51-71B5-486C-8531-A1FE49F9F53B" sourceRef="sid-3CA29967-28A2-49EE-BB7F-0A7F342F2713" targetRef="sid-2D64E70F-F54B-433D-9B45-3C4742E7A1EF"></sequenceFlow>
     <sequenceFlow id="sid-C0450306-D846-43CE-8BE2-10D8299AFC6A" sourceRef="sid-8FC203AF-1000-4C34-A9EA-A248D221C08B" targetRef="sid-3CA29967-28A2-49EE-BB7F-0A7F342F2713"></sequenceFlow>
     <scriptTask id="sid-3CA29967-28A2-49EE-BB7F-0A7F342F2713" name="自动归档" scriptFormat="groovy" flowable:autoStoreVariables="false">
-      <script><![CDATA[com.proper.enterprise.platform.workflow.plugin.util.ArchiveUtil.archiveToMongo(execution, 'form1', 'form2')]]></script>
+      <script><![CDATA[com.proper.enterprise.platform.workflow.util.ArchiveUtil.archiveToMongo(execution, 'form1', 'form2')]]></script>
     </scriptTask>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_autoArchive">
