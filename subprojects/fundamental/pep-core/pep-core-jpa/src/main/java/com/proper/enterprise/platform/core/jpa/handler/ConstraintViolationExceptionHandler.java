@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -71,8 +70,7 @@ public class ConstraintViolationExceptionHandler {
             + "|" + H2_INTEGRITY_TABLE_PATTERN + "|" + MYSQL_INTEGRITY_TABLE_PATTERN);
 
 
-    public void handle(SQLException throwable) {
-        String message = throwable.getMessage();
+    public void handle(String message) {
         String indexName = getIndexName(message);
         String tableName = getTableName(message).toUpperCase();
         throwErrorMsg(indexName, tableName);
