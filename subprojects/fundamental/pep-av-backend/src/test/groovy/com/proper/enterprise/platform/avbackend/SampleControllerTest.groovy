@@ -48,13 +48,21 @@ class SampleControllerTest extends AbstractJPATest {
         def document = [:]
         document['name'] = 'test'
         document['enable'] = true
+        Map<String, String> obj1 = new HashMap<>(16)
+        obj1.put("a", "b")
+        document['obj'] = obj1
         CreateReturnModel returnModel = createDocument(collectionName, document)
         document['name'] = 'test1'
         document['enable'] = false
+        Map<String, String> obj = new HashMap<>(16)
+        obj.put("a", "a")
+        document['obj'] = obj
         QueryReturnModel queryReturnOldModel = queryDocument(collectionName, null)
         List<Map> listOld = queryReturnOldModel.getResults()
         String oldModifyTime = listOld.get(0).get(MongoConstants.LAST_MODIFY_TIME)
         assert "test1" == listOld.get(0).get(MongoConstants.CREATE_USER_ID)
+        Map<String, String> returnObj = listOld.get(0).get("obj")
+        assert "b" == returnObj.get("a")
         mockUser("test2")
         Authentication.setCurrentUserId("test2")
         Thread.sleep(1000)
@@ -66,6 +74,8 @@ class SampleControllerTest extends AbstractJPATest {
         assert DateUtil.toDate(oldModifyTime, PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()).getTime() <
             DateUtil.toDate(list.get(0).get(MongoConstants.LAST_MODIFY_TIME).toString(), PEPPropertiesLoader.load(CoreProperties.class).getDefaultDatetimeFormat()).getTime()
         assert "test2" == list.get(0).get(MongoConstants.LAST_MODIFY_USER_ID)
+        Map<String, String> returnObj2 = list.get(0).get("obj")
+        assert "a" == returnObj2.get("a")
         deleteDocument(collectionName, returnModel.getObjectId())
     }
 

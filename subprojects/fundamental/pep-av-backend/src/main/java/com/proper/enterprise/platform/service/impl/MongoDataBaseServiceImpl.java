@@ -71,6 +71,9 @@ public class MongoDataBaseServiceImpl implements MongoDataBaseService {
             if (root.get(field).isBoolean()) {
                 setMap.put(field, root.get(field).booleanValue());
             }
+            if (root.get(field).isObject()) {
+                setMap.put(field, root.get(field));
+            }
             if (root.get(field).isTextual()) {
                 LOGGER.debug("Set {} to {}", field, root.get(field).textValue());
                 setMap.put(field, root.get(field).textValue());
